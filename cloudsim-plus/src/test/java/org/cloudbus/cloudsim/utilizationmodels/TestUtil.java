@@ -11,7 +11,7 @@ import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
- * An utility class used by {@link UtilizationModelDynamic} tests.
+ * A utility class used by {@link UtilizationModelDynamic} tests.
  *
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 4.0.0
@@ -29,7 +29,7 @@ final class TestUtil {
      */
     private TestUtil(){/**/}
 
-    /* default */ static UtilizationModelDynamic createUtilizationModel(
+    static UtilizationModelDynamic createUtilizationModel(
         final double usagePercentInc,
         final double initUsage,
         final int initSimulationTime)
@@ -47,7 +47,7 @@ final class TestUtil {
         return utilizationModel;
     }
 
-    /* default */ static UtilizationModelDynamic createUtilizationModel(final double usagePercentInc, final double initUsage) {
+    static UtilizationModelDynamic createUtilizationModel(final double usagePercentInc, final double initUsage) {
         return createUtilizationModel(usagePercentInc, initUsage, 0);
     }
 
@@ -84,7 +84,7 @@ final class TestUtil {
         }
     }
 
-    /* default */ static void checkUtilization(
+    static void checkUtilization(
         final double initUsage,
         final double usagePercentInc,
         final UtilizationModelDynamic instance)
