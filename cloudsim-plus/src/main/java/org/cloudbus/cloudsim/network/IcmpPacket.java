@@ -91,7 +91,7 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
     /**
      * The baud rate (in bits/s) of each output link of entities where the packet traverses.
      */
-    private final List<Double> baudRates;
+    private final List<Double> baudRateList;
 
     private final DecimalFormat num;
 
@@ -124,7 +124,7 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
         this.entities = new ArrayList<>();
         this.entryTimes = new ArrayList<>();
         this.exitTimes = new ArrayList<>();
-        this.baudRates = new ArrayList<>();
+        this.baudRateList = new ArrayList<>();
 
         lastHop = this.source;
         tag = CloudSimTags.ICMP_PKT_SUBMIT;
@@ -163,7 +163,7 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
             final long resID = entities.get(i).getId();
             final String entry = getData(entryTimes, i);
             final String exit = getData(exitTimes, i);
-            final String bandwidth = getData(baudRates, i);
+            final String bandwidth = getData(baudRateList, i);
 
             sb.append("Entity ").append(resID).append("\t\t")
               .append(String.format("%s%s%s%s%s%s%s%n", entry, tab, tab, exit, tab, tab, bandwidth));
@@ -287,7 +287,7 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
     }
 
     /**
-     * Gets the bottleneck bandwidth between the source and the destination.
+     * Gets the bottleneck bandwidth (baud rate) between the source and the destination.
      *
      * @return the bottleneck bandwidth (in bits/s)
      */
@@ -340,9 +340,9 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
      * @param baudRate the entity's baud rate in bits/s
      */
     public void addBaudRate(final double baudRate) {
-        baudRates.add(baudRate);
-        if (bandwidth < 0 || baudRate < bandwidth) {
-            bandwidth = baudRate;
+        baudRateList.add(baudRate);
+        if (this.bandwidth < 0 || baudRate < this.bandwidth) {
+            this.bandwidth = baudRate;
         }
     }
 
@@ -352,7 +352,7 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
      * @return
      */
     public List<Double> getDetailBaudRate() {
-        return Collections.unmodifiableList(baudRates);
+        return Collections.unmodifiableList(baudRateList);
     }
 
     /**
