@@ -46,7 +46,6 @@ import java.util.*;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.stream.Stream;
 
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
@@ -699,13 +698,13 @@ public class HostFaultInjection extends CloudSimEntity {
      * @return
      */
     private double totalVmsRecoveryTimeInMinutes(final DatacenterBroker broker) {
-        final Stream<Double> stream = broker == null ?
+        final var timeStream = broker == null ?
                 vmRecoveryTimeSecsMap.values().stream() :
                 vmRecoveryTimeSecsMap.entrySet().stream()
                     .filter(entry -> broker.equals(entry.getKey().getBroker()))
                     .map(Map.Entry::getValue);
 
-        final double recoverySeconds = stream
+        final double recoverySeconds = timeStream
                                         .map(secs -> secs >= 0 ? secs : getSimulation().clock() - Math.abs(secs))
                                         .reduce(0.0, Double::sum);
 
@@ -822,7 +821,7 @@ public class HostFaultInjection extends CloudSimEntity {
      * @return the number of PEs just failed for the Host, which is equals to the input number
      */
     private int generateHostPesFaults(final int numberOfPesToFail) {
-        final List<Pe> peList = lastFailedHost.getWorkingPeList()
+        final var peList = lastFailedHost.getWorkingPeList()
             .stream()
             .limit(numberOfPesToFail)
             .collect(toList());
