@@ -71,11 +71,12 @@ public class VmPacket implements NetworkPacket<Vm> {
      * @param receiverCloudlet cloudlet that has to receive the packet
      */
     public VmPacket(
-        Vm sourceVm,
-        Vm destinationVm,
-        long size,
-        Cloudlet senderCloudlet,
-        Cloudlet receiverCloudlet) {
+        final Vm sourceVm,
+        final Vm destinationVm,
+        final long size,
+        final Cloudlet senderCloudlet,
+        final Cloudlet receiverCloudlet)
+    {
         super();
         this.sourceVm = sourceVm;
         this.destinationVm = destinationVm;
@@ -124,7 +125,7 @@ public class VmPacket implements NetworkPacket<Vm> {
      * @param sourceVmId the source VM id to set
      */
     @Override
-    public void setSource(Vm sourceVmId) {
+    public void setSource(final Vm sourceVmId) {
         this.sourceVm = sourceVmId;
     }
 
@@ -148,7 +149,7 @@ public class VmPacket implements NetworkPacket<Vm> {
      * @param destinationVmId the destination VM id to set
      */
     @Override
-    public void setDestination(Vm destinationVmId) {
+    public void setDestination(final Vm destinationVmId) {
         this.destinationVm = destinationVmId;
     }
 
