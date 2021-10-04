@@ -243,12 +243,12 @@ public class CloudletTaskSchedulerSimple implements CloudletTaskScheduler {
      * @return the list of packets sent from the given VM
      */
     private List<VmPacket> getListOfPacketsSentFromVm(final Vm sourceVm){
-        vmPacketsReceivedMap.putIfAbsent(sourceVm, new ArrayList<>());
-        return vmPacketsReceivedMap.get(sourceVm);
+        return vmPacketsReceivedMap.getOrDefault(sourceVm, new ArrayList<>());
     }
 
     @Override
     public boolean addPacketToListOfPacketsSentFromVm(final VmPacket pkt){
-        return getListOfPacketsSentFromVm(pkt.getSource()).add(pkt);
+        final Vm vm = pkt.getSource();
+        return vmPacketsReceivedMap.compute(vm, (k, v) -> v == null ? new ArrayList<>() : v).add(pkt);
     }
 }
