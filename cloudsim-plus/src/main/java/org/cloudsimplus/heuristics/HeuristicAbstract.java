@@ -29,14 +29,14 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
 /**
- * A base class for {@link Heuristic} implementations.
+ * An abstract class for {@link Heuristic} implementations.
  *
  * @author Manoel Campos da Silva Filho
  * @param <S> The {@link HeuristicSolution class of solutions} the heuristic will deal with.
- *            It start with an initial
- *           solution (usually random, depending on each sub-class implementation)
- *           and executes the solution search in order
- *           to find a satisfying solution (defined by a stop criteria)
+ *            It starts with an initial
+ *            solution (usually random, depending on each sub-class implementation)
+ *            and executes the solution search in order
+ *            to find a satisfying solution (defined by a stop criteria)
  * @since CloudSim Plus 1.0
  */
 public abstract class HeuristicAbstract<S extends HeuristicSolution<?>>  implements Heuristic<S> {
@@ -65,7 +65,7 @@ public abstract class HeuristicAbstract<S extends HeuristicSolution<?>>  impleme
 	 * @param random a random number generator
 	 * @param solutionClass reference to the generic class that will be used to instantiate heuristic solutions
 	 */
-	/* default */ HeuristicAbstract(final ContinuousDistribution random, final Class<S> solutionClass){
+	HeuristicAbstract(final ContinuousDistribution random, final Class<S> solutionClass){
 		this.solutionClass = solutionClass;
 		this.random = random;
 		this.searchesByIteration = 1;
@@ -87,7 +87,6 @@ public abstract class HeuristicAbstract<S extends HeuristicSolution<?>>  impleme
 	}
 
 	/**
-	 *
 	 * @return a random number generator
 	 */
 	protected ContinuousDistribution getRandom(){
@@ -113,9 +112,9 @@ public abstract class HeuristicAbstract<S extends HeuristicSolution<?>>  impleme
 	public int getRandomValue(final int maxValue){
 		final double uniform = getRandom().sample();
 
-        /*always get an index between [0 and size[,
+        /* Always get an index between [0 and size[,
         regardless if the random number generator returns
-        values between [0 and 1[ or >= 1*/
+        values between [0 and 1[ or >= 1 */
 		return (int)(uniform >= 1 ? uniform % maxValue : uniform * maxValue);
 	}
 
