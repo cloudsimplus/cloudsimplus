@@ -59,7 +59,7 @@ public class HostPacket implements NetworkPacket<NetworkHost> {
      * @param vmPacket vm packet containing information of sender and receiver Cloudlets and their VMs.
      */
     public HostPacket(final NetworkHost sourceHost, final VmPacket vmPacket) {
-        this.vmPacket = vmPacket;
+        this.vmPacket = Objects.requireNonNull(vmPacket);
         this.sendTime = vmPacket.getSendTime();
         this.setSource(sourceHost);
     }
