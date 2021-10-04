@@ -120,7 +120,7 @@ public final class BriteNetworkTopology implements NetworkTopology {
      */
     private BriteNetworkTopology(final InputStreamReader reader) {
         this();
-        final TopologyReaderBrite instance = new TopologyReaderBrite();
+        final var instance = new TopologyReaderBrite();
         graph = instance.readGraphFile(reader);
         generateMatrices();
     }
@@ -145,24 +145,27 @@ public final class BriteNetworkTopology implements NetworkTopology {
      */
     private double[][] createBwMatrix(final TopologicalGraph graph, final boolean directed) {
         final int nodes = graph.getNumberOfNodes();
-
-        final double[][] mtx = new double[nodes][nodes];
-
-        // cleanup matrix
-        for (int i = 0; i < nodes; i++) {
-            for (int j = 0; j < nodes; j++) {
-                mtx[i][j] = 0.0;
-            }
-        }
+        final double[][] matrix = newMatrix(nodes);
 
         for (final TopologicalLink edge : graph.getLinksList()) {
-            mtx[edge.getSrcNodeID()][edge.getDestNodeID()] = edge.getLinkBw();
+            matrix[edge.getSrcNodeID()][edge.getDestNodeID()] = edge.getLinkBw();
             if (!directed) {
-                mtx[edge.getDestNodeID()][edge.getSrcNodeID()] = edge.getLinkBw();
+                matrix[edge.getDestNodeID()][edge.getSrcNodeID()] = edge.getLinkBw();
             }
         }
 
-        return mtx;
+        return matrix;
+    }
+
+    private double[][] newMatrix(final int nodes) {
+        final double[][] matrix = new double[nodes][nodes];
+        for (int i = 0; i < nodes; i++) {
+            for (int j = 0; j < nodes; j++) {
+                matrix[i][j] = 0.0;
+            }
+        }
+
+        return matrix;
     }
 
     @Override
