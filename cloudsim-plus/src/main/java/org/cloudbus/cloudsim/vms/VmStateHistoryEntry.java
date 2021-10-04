@@ -116,16 +116,11 @@ public class VmStateHistoryEntry {
 
     @Override
     public boolean equals(final Object obj) {
-        if(!(obj instanceof VmStateHistoryEntry)) {
-            return false;
-        }
-
-        final VmStateHistoryEntry entry = (VmStateHistoryEntry)obj;
-
-        return entry.time == this.time &&
-               entry.inMigration == this.inMigration &&
-               entry.allocatedMips == this.allocatedMips &&
-               entry.requestedMips == this.requestedMips;
+        return obj instanceof VmStateHistoryEntry that &&
+               that.time == this.time &&
+               that.inMigration == this.inMigration &&
+               that.allocatedMips == this.allocatedMips &&
+               that.requestedMips == this.requestedMips;
     }
 
     @Override
