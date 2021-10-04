@@ -33,7 +33,7 @@ import static org.cloudbus.cloudsim.util.MathUtil.percent;
  * @since CloudSim Plus 6.0.0
  */
 public final class Util {
-    /** A private default constructor to avoid class instantiation. */
+    /** A private constructor to avoid class instantiation. */
     private Util(){/**/}
 
     /**
