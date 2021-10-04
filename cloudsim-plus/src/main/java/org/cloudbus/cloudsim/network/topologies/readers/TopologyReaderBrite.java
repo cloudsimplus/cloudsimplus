@@ -35,18 +35,20 @@ import java.util.function.Function;
  * @since CloudSim Toolkit 1.0
  */
 public class TopologyReaderBrite implements TopologyReader {
-    /**
-     * Represents the state indicating to just find the start of the node-declaration.
-     */
-    private static final int PARSE_NOTHING = 0;
+    enum ParseState {
+        /**
+         * Represents the state indicating to just find the start of the node-declaration.
+         */
+        NOTHING,
 
-    /** Represents the state indicating to retrieve all node-information. */
-    private static final int PARSE_NODES = 1;
+        /** Represents the state indicating to retrieve all node-information. */
+        NODES,
 
-    /** Represents the state indicating to retrieve all edges-information. */
-    private static final int PARSE_EDGES = 2;
+        /** Represents the state indicating to retrieve all edges-information. */
+        EDGES
+    };
 
-    private int state = PARSE_NOTHING;
+    private ParseState state = ParseState.NOTHING;
 
     /**
      * The network Topological Graph.
@@ -64,21 +66,23 @@ public class TopologyReaderBrite implements TopologyReader {
         try(var buffer = new BufferedReader(reader)) {
             String nextLine;
             while ((nextLine = buffer.readLine()) != null) {
-                if (state == PARSE_NOTHING) {
-                    if (nextLine.contains("Nodes:")) {
-                        state = PARSE_NODES;
-                    }
+                switch (state) {
+                    case NOTHING -> parseNothing(nextLine);
+                    case NODES -> parseNodeString(nextLine);
+                    case EDGES -> parseEdgesString(nextLine);
                 }
-                else if (state == PARSE_NODES)
-                    parseNodeString(nextLine);
-                else if (state == PARSE_EDGES)
-                    parseEdgesString(nextLine);
             }
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
 
         return graph;
+    }
+
+    private void parseNothing(final String nextLine) {
+        if (nextLine.contains("Nodes:")) {
+            state = ParseState.NODES;
+        }
     }
 
 
@@ -90,7 +94,7 @@ public class TopologyReaderBrite implements TopologyReader {
     private void parseNodeString(final String nodeLine) {
         // first test to step to the next parsing-state (edges)
         if (nodeLine.contains("Edges:")) {
-            state = PARSE_EDGES;
+            state = ParseState.EDGES;
             return;
         }
 
@@ -112,7 +116,6 @@ public class TopologyReaderBrite implements TopologyReader {
      * @param nodeLine A line read from the file
      */
     private void parseEdgesString(final String nodeLine) {
-
         // List of fields in the line to parse
         // EdgeID, fromNode, toNode, euclideanLength, linkDelay, linkBandwidth, AS_from, AS_to, type
         final Double[] parsedFields = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
