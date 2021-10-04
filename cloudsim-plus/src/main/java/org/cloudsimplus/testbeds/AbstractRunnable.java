@@ -29,10 +29,10 @@ package org.cloudsimplus.testbeds;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 6.1.0
  */
-public abstract class AbstractExperiment implements Runnable {
+public abstract class AbstractRunnable implements Runnable {
     protected boolean verbose;
 
-    public AbstractExperiment() {
+    public AbstractRunnable() {
         this.verbose = false;
     }
 
@@ -47,7 +47,7 @@ public abstract class AbstractExperiment implements Runnable {
     /**
      * Prints a line break only if {@link #isVerbose()}.
      */
-    public AbstractExperiment println(){
+    public AbstractRunnable println(){
         return println("");
     }
 
@@ -55,7 +55,7 @@ public abstract class AbstractExperiment implements Runnable {
      * Prints a message and a line break only if {@link #isVerbose()}.
      * @param msg the message to print
      */
-    public AbstractExperiment println(final String msg){
+    public AbstractRunnable println(final String msg){
         if(verbose){
             System.out.println(msg);
         }
@@ -68,7 +68,7 @@ public abstract class AbstractExperiment implements Runnable {
      * @param format the message format
      * @param args the values to print
      */
-    public AbstractExperiment println(final String format, final Object ...args){
+    public AbstractRunnable println(final String format, final Object ...args){
         return print(format + "%n", args);
     }
 
@@ -76,7 +76,7 @@ public abstract class AbstractExperiment implements Runnable {
      * Prints a message only if {@link #isVerbose()}.
      * @param msg the message to print
      */
-    public AbstractExperiment print(final String msg){
+    public AbstractRunnable print(final String msg){
         if(verbose){
             System.out.print(msg);
         }
@@ -89,7 +89,7 @@ public abstract class AbstractExperiment implements Runnable {
      * @param format the message format
      * @param args the values to print
      */
-    public AbstractExperiment print(final String format, final Object ...args){
+    public AbstractRunnable print(final String format, final Object ...args){
         if(verbose){
             System.out.printf(format, args);
         }
@@ -112,7 +112,7 @@ public abstract class AbstractExperiment implements Runnable {
      * @param verbose true if the results have to be output, false otherwise
      * @return
      */
-    public AbstractExperiment setVerbose(final boolean verbose) {
+    public AbstractRunnable setVerbose(final boolean verbose) {
         this.verbose = verbose;
         return this;
     }

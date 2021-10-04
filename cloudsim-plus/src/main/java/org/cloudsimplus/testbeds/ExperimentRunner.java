@@ -51,7 +51,7 @@ import static java.util.stream.Collectors.toList;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
-public abstract class ExperimentRunner<T extends Experiment> extends AbstractExperiment {
+public abstract class ExperimentRunner<T extends Experiment> extends AbstractRunnable {
     /**@see #isParallel() */
     private final boolean parallel;
 

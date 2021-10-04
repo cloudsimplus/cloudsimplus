@@ -49,7 +49,7 @@ import java.util.function.Supplier;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
-public abstract class Experiment extends AbstractExperiment {
+public abstract class Experiment extends AbstractRunnable {
     protected final ExperimentRunner runner;
     protected int hostsNumber;
     private int datacentersNumber;
