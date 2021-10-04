@@ -63,7 +63,7 @@ import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
  * pp. 19–26, 1989.</a>
  * @since CloudSim Plus 1.0
  */
-public abstract class SimulatedAnnealing<S extends HeuristicSolution<?>> extends HeuristicAbstract<S> {
+public abstract class SimulatedAnnealingAbstract<S extends HeuristicSolution<?>> extends HeuristicAbstract<S> {
     /** @see #getColdTemperature() */
     private double coldTemperature;
 
@@ -79,7 +79,7 @@ public abstract class SimulatedAnnealing<S extends HeuristicSolution<?>> extends
 	 * @param random a pseudo random number generator
      * @param solutionClass reference to the generic class that will be used to instantiate heuristic solutions
      */
-    SimulatedAnnealing(final ContinuousDistribution random, final Class<S> solutionClass){
+    SimulatedAnnealingAbstract(final ContinuousDistribution random, final Class<S> solutionClass){
         super(random, solutionClass);
     }
 

@@ -38,7 +38,7 @@ import java.util.List;
  * @since CloudSim Plus 1.0
  */
 public class CloudletToVmMappingSimulatedAnnealing
-      extends SimulatedAnnealing<CloudletToVmMappingSolution>
+      extends SimulatedAnnealingAbstract<CloudletToVmMappingSolution>
       implements CloudletToVmMappingHeuristic
 {
     private CloudletToVmMappingSolution initialSolution;
