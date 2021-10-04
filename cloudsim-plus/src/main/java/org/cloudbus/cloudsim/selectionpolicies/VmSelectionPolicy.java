@@ -13,7 +13,7 @@ import org.cloudbus.cloudsim.vms.Vm;
 
 /**
  * An interface to be used to implement VM selection policies for a list of migratable VMs.
- * The selection is defined by sub classes.
+ * The selection is defined by sub-classes.
  *
  * <br>If you are using any algorithms, policies or workload included in the power package please cite
  * the following paper:<br>
