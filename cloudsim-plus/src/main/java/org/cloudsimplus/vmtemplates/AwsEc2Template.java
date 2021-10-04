@@ -197,7 +197,7 @@ public class AwsEc2Template implements Comparable<AwsEc2Template> {
      * @param region the region to set
      * @see <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html">AWS Regions, Availability Zones, and Local Zones</a>
      */
-    public void setRegion(String region) {
+    public void setRegion(final String region) {
         this.region = region;
     }
 
