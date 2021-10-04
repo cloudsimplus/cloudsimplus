@@ -81,7 +81,7 @@ public final class Regression {
      * @see <a href="https://www.itl.nist.gov/div898/handbook/pmd/section1/pmd144.htm">LOESS</a>
      */
     public static double[] getLoessParameterEstimates(final double... y) {
-        final double[] x = MathUtil.createIndependentArray(y.length);
+        final double[] x = createIndependentArray(y.length);
         return newWeightedLinearRegression(x, y, getTricubeWeights(y.length))
                                .regress().getParameterEstimates();
     }
@@ -93,7 +93,7 @@ public final class Regression {
      * @return the robust loess parameter estimates
      */
     public static double[] getRobustLoessParameterEstimates(final double... y) {
-        final double[] x = MathUtil.createIndependentArray(y.length);
+        final double[] x = createIndependentArray(y.length);
         final SimpleRegression tricubeRegression =
                 newWeightedLinearRegression(x, y, getTricubeWeights(y.length));
         final double[] residuals = new double[y.length];
@@ -174,5 +174,21 @@ public final class Regression {
         }
 
         return correlationCoefficients;
+    }
+
+    /**
+     * Creates an array representing the independent variable for
+     * computing a linear regression.
+     *
+     * @param length the length of the array to create
+     * @return
+     */
+    private static double[] createIndependentArray(final int length) {
+        final double[] x = new double[length];
+        for (int i = 0; i < length; i++) {
+            x[i] = i + 1;
+        }
+
+        return x;
     }
 }

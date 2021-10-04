@@ -183,21 +183,6 @@ public final class MathUtil {
     }
 
     /**
-     * Creates an array representing the independent variable for
-     * computing a linear regression.
-     *
-     * @param length the length of the array to create
-     * @return
-     */
-    static double[] createIndependentArray(final int length) {
-        final double[] x = new double[length];
-        for (int i = 0; i < length; i++) {
-            x[i] = i + 1;
-        }
-        return x;
-    }
-
-    /**
      * Gets the absolute values of an array of values
      *
      * @param data the array of values
