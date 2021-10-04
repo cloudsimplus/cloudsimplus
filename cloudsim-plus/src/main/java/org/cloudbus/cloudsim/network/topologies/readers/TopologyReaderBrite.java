@@ -51,11 +51,11 @@ public class TopologyReaderBrite implements TopologyReader {
     }
 
     @Override
-    public TopologicalGraph readGraphFile(final InputStreamReader sreader) {
+    public TopologicalGraph readGraphFile(final InputStreamReader reader) {
         graph = new TopologicalGraph();
-        try(BufferedReader reader = new BufferedReader(sreader)) {
+        try(BufferedReader buffer = new BufferedReader(reader)) {
             String nextLine;
-            while ((nextLine = reader.readLine()) != null) {
+            while ((nextLine = buffer.readLine()) != null) {
                 // functionality to differentiate between all the parsing-states
                 // state that should just find the start of node-declaration
                 if (state == PARSE_NOTHING) {

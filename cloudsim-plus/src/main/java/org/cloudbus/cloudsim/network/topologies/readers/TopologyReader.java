@@ -34,10 +34,10 @@ public interface TopologyReader {
     /**
      * Reads a file and creates an {@link TopologicalGraph} object.
      *
-     * @param sreader the {@link InputStreamReader} to read the file
+     * @param reader the {@link InputStreamReader} to read the file
      * @return The created TopologicalGraph
      * @throws UncheckedIOException when the file cannot be accessed
      */
-    TopologicalGraph readGraphFile(InputStreamReader sreader);
+    TopologicalGraph readGraphFile(InputStreamReader reader);
 
 }
