@@ -65,7 +65,7 @@ public final class BriteNetworkTopology implements NetworkTopology {
     private TopologicalGraph graph;
 
     /**
-     * The entitiesMap between CloudSim entities and BRITE entities.
+     * The map between CloudSim entities and BRITE entities.
      * Each key is a CloudSim entity and each value the corresponding BRITE entity ID.
      */
     private Map<SimEntity, Integer> entitiesMap;
@@ -130,12 +130,8 @@ public final class BriteNetworkTopology implements NetworkTopology {
      * between elements.
      */
     private void generateMatrices() {
-        // creates the delay matrix
         delayMatrix = new DelayMatrix(getTopologicalGraph(), false);
-
-        // creates the bw matrix
         bwMatrix = createBwMatrix(getTopologicalGraph(), false);
-
         networkEnabled = true;
     }
 
