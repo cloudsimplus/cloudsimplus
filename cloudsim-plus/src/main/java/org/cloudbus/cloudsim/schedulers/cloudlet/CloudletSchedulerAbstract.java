@@ -327,14 +327,14 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * Cloudlet was found or not
      */
     protected Optional<CloudletExecution> findCloudletInAllLists(final double cloudletId) {
-        //Concatenate all lists into a stream
-        final Stream<List<CloudletExecution>> streamOfAllLists
-            = Stream.of(cloudletExecList, cloudletPausedList, cloudletWaitingList,
-            cloudletFinishedList, cloudletFailedList);
+        final var cloudletExecInfoListStream = Stream.of(
+            cloudletExecList, cloudletPausedList, cloudletWaitingList,
+            cloudletFinishedList, cloudletFailedList
+        );
 
         //Gets all elements in each list and makes them a single full list,
         //returning the first Cloudlet with the given id
-        return streamOfAllLists
+        return cloudletExecInfoListStream
             .flatMap(List::stream)
             .filter(cle -> cle.getCloudletId() == cloudletId)
             .findFirst();
