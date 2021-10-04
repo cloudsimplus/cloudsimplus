@@ -67,7 +67,7 @@ final class TestUtil {
         return Math.max(0, utilizationPercentage);
     }
 
-    public static void checkUtilization(
+    static void checkUtilization(
         final double initUsage,
         final double usagePercentInc,
         final double maxUsagePercent,
