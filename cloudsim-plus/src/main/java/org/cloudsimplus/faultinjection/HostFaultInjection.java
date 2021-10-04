@@ -336,7 +336,7 @@ public class HostFaultInjection extends CloudSimEntity {
         if(hostWorkingPes > 0) {
             LOGGER.error(
                 "{}: {}: Generated {} PEs failures from {} previously working PEs for {} at minute {}.{}" +
-                    "\t  Current Working PEs: {} | Number of VMs: {}{}",
+                "\t  Current Working PEs: {} | Number of VMs: {}{}",
                 getSimulation().clockStr(), getClass().getSimpleName(), lastNumberOfFailedPes,
                 previousNumOfWorkingPes, lastFailedHost, getSimulation().clock() / 60, System.lineSeparator(),
                 hostWorkingPes, lastFailedHost.getVmList().size(), msg);
@@ -588,9 +588,7 @@ public class HostFaultInjection extends CloudSimEntity {
          As the broker is expected to request vm creation and destruction,
          it is set here as the sender of the vm destroy request.
          */
-        getSimulation().sendNow(
-                broker, datacenter,
-                CloudSimTags.VM_DESTROY, vm);
+        getSimulation().sendNow(broker, datacenter, CloudSimTags.VM_DESTROY, vm);
     }
 
     /**
