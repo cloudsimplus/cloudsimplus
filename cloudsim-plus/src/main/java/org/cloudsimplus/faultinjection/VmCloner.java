@@ -102,12 +102,6 @@ public interface VmCloner {
     int getMaxClonesNumber();
 
     /**
-     * Checks if the maximum number of Vm clones to be created was reached.
-     * @return true if the maximum number of clones was reached, false otherwise
-     */
-    boolean isMaxClonesNumberReached();
-
-    /**
      * Sets the maximum number of Vm clones to create.
      * For instance, if this value is equal to 2,
      * it means if all VMs from a given broker are destroyed multiple times,
@@ -119,4 +113,10 @@ public interface VmCloner {
      * @return
      */
     VmCloner setMaxClonesNumber(int maxClonesNumber);
+
+    /**
+     * Checks if the maximum number of Vm clones to be created was reached.
+     * @return true if the maximum number of clones was reached, false otherwise
+     */
+    boolean isMaxClonesNumberReached();
 }
