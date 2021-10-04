@@ -38,7 +38,7 @@ import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
  */
 public interface CloudletResourceAllocationFailEventInfo extends CloudletEventInfo {
     /**
-     * The the class of the resource the Cloudlet is requesting.
+     * The class of the resource the Cloudlet is requesting.
      * @return
      */
     Class<? extends ResourceManageable> getResourceClass();
