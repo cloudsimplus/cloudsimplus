@@ -64,10 +64,10 @@ public interface Heuristic<S extends HeuristicSolution<?>> {
      * Computes the acceptance probability to define if a neighbor solution
      * has to be accepted or not, compared to the {@link #getBestSolutionSoFar()}.
      *
-     * @return the acceptance probability, in scale from [0 to 1] where
-     * 0 is to maintain the {@link #getBestSolutionSoFar() current solution},
-     * 1 is to accept the neighbor solution, while intermediate
-     * values defines the probability that the neighbor solution
+     * @return the acceptance probability, in scale from [0 to 1] where:
+     * 0 is to maintain the {@link #getBestSolutionSoFar() current solution};
+     * 1 is to accept the neighbor solution;
+     * intermediate values defines the probability that the neighbor solution
      * will be randomly accepted.
      */
     double getAcceptanceProbability();
@@ -143,8 +143,8 @@ public interface Heuristic<S extends HeuristicSolution<?>> {
 	 * @return the final solution
 	 * @see #getBestSolutionSoFar()
      *
-	 * @TODO Try to parallelize the solution finding in order
-     *       to reduce search time using Parallel Streams.
+	 * TODO Try to parallelize the solution finding in order
+     *      to reduce search time using Parallel Streams.
 	 */
 	S solve();
 
