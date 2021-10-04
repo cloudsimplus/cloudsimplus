@@ -10,6 +10,8 @@ package org.cloudbus.cloudsim.network;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.network.NetworkHost;
 
+import java.util.Objects;
+
 /**
  * Represents a packet which travels from one {@link Host} to another.
  * Each packet contains: IDs of the sender VM into the source Host and receiver VM into the destination Host which are
@@ -42,10 +44,10 @@ public class HostPacket implements NetworkPacket<NetworkHost> {
     private final VmPacket vmPacket;
 
     /** @see #getSource() */
-    private NetworkHost senderHost;
+    private NetworkHost sourceHost;
 
     /** @see #getDestination() */
-    private NetworkHost receiverHost;
+    private NetworkHost destinationHost;
 
     /** @see #getSendTime() */
     private double sendTime;
@@ -56,13 +58,13 @@ public class HostPacket implements NetworkPacket<NetworkHost> {
     /**
      * Creates a packet to be sent through the network between two hosts.
      *
-     * @param senderHost host sending the packet
+     * @param sourceHost host sending the packet
      * @param vmPacket vm packet containing information of sender and receiver Cloudlets and their VMs.
      */
-    public HostPacket(final NetworkHost senderHost, final VmPacket vmPacket) {
+    public HostPacket(final NetworkHost sourceHost, final VmPacket vmPacket) {
         this.vmPacket = vmPacket;
         this.sendTime = vmPacket.getSendTime();
-        this.senderHost = senderHost;
+        this.setSource(sourceHost);
     }
 
     /**
@@ -81,16 +83,16 @@ public class HostPacket implements NetworkPacket<NetworkHost> {
      */
     @Override
     public NetworkHost getSource() {
-        return senderHost;
+        return sourceHost;
     }
 
     /**
      * Sets the {@link Host} that this packet is coming from (the sender).
-     * @param senderHost the source Host id to set
+     * @param sourceHost the source Host id to set
      */
     @Override
-    public void setSource(final NetworkHost senderHost) {
-        this.senderHost = senderHost;
+    public final void setSource(final NetworkHost sourceHost) {
+        this.sourceHost = Objects.requireNonNull(sourceHost);
     }
 
     /**
@@ -99,16 +101,16 @@ public class HostPacket implements NetworkPacket<NetworkHost> {
      */
     @Override
     public NetworkHost getDestination() {
-        return receiverHost;
+        return destinationHost;
     }
 
     /**
-     * Sets the {@link Host} that the packet is going to.
-     * @param receiverHost the receiver Host id to set
+     * Sets the {@link Host} that the packet is going to (the receiver).
+     * @param destinationHost the receiver Host id to set
      */
     @Override
-    public void setDestination(final NetworkHost receiverHost) {
-        this.receiverHost = receiverHost;
+    public void setDestination(final NetworkHost destinationHost) {
+        this.destinationHost = Objects.requireNonNull(destinationHost);
     }
 
     @Override
