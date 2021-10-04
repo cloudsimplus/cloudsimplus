@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Represents a metric of a SLA contract.
+ * Represents a metric of an SLA contract.
  * Follows the standard defined by
  * <a href="http://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/viewing_metrics_with_cloudwatch.html">AWS Cloudwatch</a>.
  *
@@ -44,10 +44,17 @@ public class SlaMetric {
     private List<SlaMetricDimension> dimensions;
     private String name;
 
+    /**
+     * Creates an SLA metric with no name.
+     */
     public SlaMetric(){
         this("");
     }
 
+    /**
+     * Creates an SLA metric
+     * @param name the metric name
+     */
     public SlaMetric(final String name){
         this.name = name;
         this.dimensions = new ArrayList<>();
@@ -90,8 +97,8 @@ public class SlaMetric {
 
     /**
      * Gets a {@link SlaMetricDimension} representing the maximum value expected for the metric.
-     * If the {@link SlaMetricDimension#getValue()} is equals to {@link Double#MAX_VALUE}, it means
-     * there is no maximum value.
+     * If the {@link SlaMetricDimension#getValue()} is equals to {@link Double#MAX_VALUE},
+     * it means there is no maximum value.
      * @return
      */
     public SlaMetricDimension getMaxDimension() {
