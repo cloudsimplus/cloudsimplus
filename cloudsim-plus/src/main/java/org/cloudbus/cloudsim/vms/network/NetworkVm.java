@@ -17,9 +17,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * NetworkVm class extends {@link VmSimple} to support simulation of networked
- * datacenters. It executes actions related to management of packets (sent and
- * received).
+ * A Vm supporting simulation of network communication.
+ * It executes actions related to management of packets
+ * (sent and received).
  *
  * <p>Please refer to following publication for more details:
  * <ul>
@@ -73,7 +73,6 @@ public class NetworkVm extends VmSimple {
         super(mipsCapacity, numberOfPes);
         cloudletList = new ArrayList<>();
     }
-
 
     /** Indicates if the VM is free or not. */
     public boolean isFree() {
