@@ -31,5 +31,10 @@ package org.cloudbus.cloudsim.core;
  * @since CloudSim Plus 1.0
  */
 public interface ChangeableId extends Identifiable {
+    /**
+     * Sets the id of the object.
+     * -1 indicates the object has no id.
+     * @param id the id to set
+     */
     void setId(long id);
 }
