@@ -60,9 +60,7 @@ public final class BriteNetworkTopology implements NetworkTopology {
     /** @see #getBwMatrix() */
     private double[][] bwMatrix;
 
-    /**
-     * @see #getTopologicalGraph()
-     */
+    /** @see #getTopologicalGraph() */
     private TopologicalGraph graph;
 
     /**
@@ -82,7 +80,7 @@ public final class BriteNetworkTopology implements NetworkTopology {
     }
 
     /**
-     * Instantiates a Network Topology.
+     * Instantiates an empty Network Topology.
      * @see #BriteNetworkTopology(String)
      * @see #BriteNetworkTopology(InputStreamReader)
      * @see #getInstance(String)
