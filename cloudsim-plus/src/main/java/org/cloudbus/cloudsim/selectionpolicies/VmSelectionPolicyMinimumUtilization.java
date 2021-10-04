@@ -13,8 +13,9 @@ import org.cloudbus.cloudsim.vms.Vm;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Predicate;
+
+import static java.util.Comparator.comparingDouble;
 
 /**
  * A VM selection policy that selects for migration the VM with Minimum Utilization (MU)
@@ -36,18 +37,17 @@ import java.util.function.Predicate;
 public class VmSelectionPolicyMinimumUtilization implements VmSelectionPolicy {
     @Override
     public Vm getVmToMigrate(final Host host) {
-        final List<? extends Vm> migratableVms = host.getMigratableVms();
+        final List<Vm> migratableVms = host.getMigratableVms();
         if (migratableVms.isEmpty()) {
             return Vm.NULL;
         }
 
         final Predicate<Vm> inMigration = Vm::isInMigration;
-        final Comparator<? super Vm> cpuUsageComparator =
-            Comparator.comparingDouble(vm -> vm.getCpuPercentUtilization(vm.getSimulation().clock()));
-        final Optional<? extends Vm> optional = migratableVms.stream()
-                                                             .filter(inMigration.negate())
-                                                             .min(cpuUsageComparator);
-        return optional.isPresent() ? optional.get() : Vm.NULL;
+        final Comparator<Vm> vmCpuUsageComparator = comparingDouble(Vm::getCpuPercentUtilization);
+        return migratableVms.stream()
+                            .filter(inMigration.negate())
+                            .min(vmCpuUsageComparator)
+                            .orElse(Vm.NULL);
     }
 
 }
