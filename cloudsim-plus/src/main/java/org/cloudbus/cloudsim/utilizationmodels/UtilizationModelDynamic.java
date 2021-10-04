@@ -29,13 +29,15 @@ import java.util.Objects;
 import java.util.function.Function;
 
 /**
- * A Cloudlet {@link UtilizationModel} that allows to increase the utilization of the related resource along
- * the simulation time. It accepts a Lambda Expression that defines how the utilization increment must behave.
- * By this way, the class enables the developer to define such a behaviour when instantiating objects
- * of this class.
+ * A Cloudlet {@link UtilizationModel} that allows to increase the utilization of
+ * the related resource along the simulation time.
+ * It accepts a Lambda Expression that defines how the utilization increment must behave.
+ * This way, the class enables the developer to define such a behaviour when instantiating
+ * objects of this class.
  *
- * <p>For instance, it is possible to use the class to arithmetically or geometrically increment resource usage,
- * but any kind of increment as logarithmic or exponential is possible.
+ * <p>For instance, it is possible to use the class to arithmetically or
+ * geometrically increment resource usage, but any kind of increment as
+ * logarithmic or exponential is possible.
  * For more details, see the {@link #setUtilizationUpdateFunction(Function)}.</p>
  *
  * @author Manoel Campos da Silva Filho
@@ -59,9 +61,7 @@ public class UtilizationModelDynamic extends UtilizationModelAbstract {
     /** @see #getMaxResourceUtilization() */
     private double maxResourceUtilization;
 
-    /**
-     * @see #setUtilizationUpdateFunction(Function)
-     */
+    /** @see #setUtilizationUpdateFunction(Function) */
     private Function<UtilizationModelDynamic, Double> utilizationUpdateFunction;
 
     /**
@@ -178,8 +178,8 @@ public class UtilizationModelDynamic extends UtilizationModelAbstract {
          * to readonly. This way, the  {@link #getUtilization()} doesn't use such a function
          * to return the current utilization, but the last utilization value stored
          * in the {@link #currentUtilization} attribute.
-         * Without such a trick, if the researcher calls the {@link #getUtilization(double)} method inside
-         * the the update function he/she assigned to the UtilizationModel,
+         * Without such a trick, if the researcher calls the {@link #getUtilization(double)}
+         * method inside the update function he/she assigned to the UtilizationModel,
          * that will cause an infinite loop, since the {@link #getUtilization(double)} will call
          * the given function to increase the current utilization and return the current value.
          */
@@ -203,8 +203,8 @@ public class UtilizationModelDynamic extends UtilizationModelAbstract {
     }
 
     /**
-     * <p>It will automatically increment the {@link #getUtilization()}
-     * by applying the {@link #setUtilizationUpdateFunction(Function) increment function}.</p>
+     * It will automatically increment the {@link #getUtilization()}
+     * by applying the {@link #setUtilizationUpdateFunction(Function) increment function}.
      */
     @Override
     protected double getUtilizationInternal(final double time) {
@@ -219,8 +219,8 @@ public class UtilizationModelDynamic extends UtilizationModelAbstract {
             and also to enable the developer to call the getUtilization() method from
             his/her given utilizationUpdateFunction on such an instance,
             without causing infinity loop. Without passing a UtilizationModel clone,
-            since the utilizationUpdateFunction function usually will call this current one, that in turns
-            calls the utilizationUpdateFunction to update the utilization progress,
+            since the utilizationUpdateFunction function usually will call this current one,
+            that in turns calls the utilizationUpdateFunction to update the utilization progress,
             it would lead to an infinity loop.
             */
             currentUtilization = utilizationUpdateFunction.apply(new UtilizationModelDynamic(this));
@@ -287,11 +287,14 @@ public class UtilizationModelDynamic extends UtilizationModelAbstract {
     }
 
     /**
-     * Sets the function defining how the resource utilization will be incremented or decremented along the time.
+     * Sets the function defining how the resource utilization will be
+     * incremented or decremented along the time.
      *
-     * <p>Such a function must require one {@link UtilizationModelDynamic} parameter and return the new resource utilization.
+     * <p>Such a function must require one {@link UtilizationModelDynamic} parameter
+     * and return the new resource utilization.
      * When this function is called internally by this {@code UtilizationModel},
-     * it receives a read-only {@link UtilizationModelDynamic} instance and allow the developer using this {@code UtilizationModel} to
+     * it receives a read-only {@link UtilizationModelDynamic} instance and allow
+     * the developer using this {@code UtilizationModel} to
      * define how the utilization must be updated.
      *
      * <p>For instance, to define an arithmetic increment, a Lambda function
@@ -305,16 +308,17 @@ public class UtilizationModelDynamic extends UtilizationModelAbstract {
      * since the last time the utilization was computed.</p>
      *
      * <p>The value returned by the given Lambda Expression will be automatically validated
-     * to avoid negative utilization or utilization over 100% (when the {@code UtilizationModel} {@link #getUnit() unit}
-     * is defined in percentage). The function would be defined to decrement the utilization along the time,
+     * to avoid negative utilization or utilization over 100%
+     * (when the {@code UtilizationModel} {@link #getUnit() unit} is defined in percentage).
+     * The function would be defined to decrement the utilization along the time,
      * by just changing the plus to a minus signal.</p>
      *
-     * <p>Defining a geometric progression for the resource utilization is as simple as changing the plus signal
-     * to a multiplication signal.</p>
+     * <p>Defining a geometric progression for the resource utilization is as simple as
+     * changing the plus signal to a multiplication signal.</p>
      *
      * @param utilizationUpdateFunction the utilization increment function to set, that will receive the
-     *                                  UtilizationModel instance and must return the new utilization value
-     *                                  based on the previous utilization.
+     *                                  UtilizationModel instance and must return the new utilization
+     *                                  value based on the previous utilization.
      * @return
      */
     public final UtilizationModelDynamic setUtilizationUpdateFunction(final Function<UtilizationModelDynamic, Double> utilizationUpdateFunction) {
