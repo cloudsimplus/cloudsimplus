@@ -29,6 +29,10 @@ final class TestUtil {
      */
     private TestUtil(){/**/}
 
+    static UtilizationModelDynamic createUtilizationModel(final double usagePercentInc, final double initUsage) {
+        return createUtilizationModel(usagePercentInc, initUsage, 0);
+    }
+
     static UtilizationModelDynamic createUtilizationModel(
         final double usagePercentInc,
         final double initUsage,
@@ -47,24 +51,12 @@ final class TestUtil {
         return utilizationModel;
     }
 
-    static UtilizationModelDynamic createUtilizationModel(final double usagePercentInc, final double initUsage) {
-        return createUtilizationModel(usagePercentInc, initUsage, 0);
-    }
-
-    private static double computeExpectedUtilization(
-        final double time,
-        final double initialUtilizationPercentage,
+    static void checkUtilization(
+        final double initUsage,
         final double usagePercentInc,
-        final double maxUsagePercent)
+        final UtilizationModelDynamic instance)
     {
-        final double utilizationPercentage =
-            initialUtilizationPercentage + (time * usagePercentInc);
-
-        if (usagePercentInc >= 0) {
-            return Math.min(utilizationPercentage, maxUsagePercent);
-        }
-
-        return Math.max(0, utilizationPercentage);
+        checkUtilization(initUsage, usagePercentInc, Conversion.HUNDRED_PERCENT, instance);
     }
 
     static void checkUtilization(
@@ -84,11 +76,19 @@ final class TestUtil {
         }
     }
 
-    static void checkUtilization(
-        final double initUsage,
+    private static double computeExpectedUtilization(
+        final double time,
+        final double initialUtilizationPercentage,
         final double usagePercentInc,
-        final UtilizationModelDynamic instance)
+        final double maxUsagePercent)
     {
-        TestUtil.checkUtilization(initUsage, usagePercentInc, Conversion.HUNDRED_PERCENT, instance);
+        final double utilizationPercentage =
+            initialUtilizationPercentage + (time * usagePercentInc);
+
+        if (usagePercentInc >= 0) {
+            return Math.min(utilizationPercentage, maxUsagePercent);
+        }
+
+        return Math.max(0, utilizationPercentage);
     }
 }
