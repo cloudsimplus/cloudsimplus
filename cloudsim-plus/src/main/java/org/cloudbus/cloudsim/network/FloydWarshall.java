@@ -65,9 +65,9 @@ public class FloydWarshall {
 
         this.numVertices = numVertices;
         this.vertices = IntStream.range(0, numVertices).boxed().collect(toList());
-        dk_minus_one = new double[numVertices][numVertices];
-        pk = new int[numVertices][numVertices];
-        pk_minus_one = new int[numVertices][numVertices];
+        this.dk_minus_one = new double[numVertices][numVertices];
+        this.pk = new int[numVertices][numVertices];
+        this.pk_minus_one = new int[numVertices][numVertices];
     }
 
     /**
@@ -78,7 +78,7 @@ public class FloydWarshall {
      * @param originalDelayMatrix original delay matrix
      * @return the new delay matrix (dk)
      */
-    public double[][] computeShortestPaths(double[][] originalDelayMatrix) {
+    public double[][] computeShortestPaths(final double[][] originalDelayMatrix) {
         savePreviousDelays(originalDelayMatrix);
         return computeShortestPaths();
     }
@@ -108,7 +108,7 @@ public class FloydWarshall {
      * @param dk the delay matrix to be updated
      * @param k maximum number of hops to try finding the shortest path between each vertex i and j
      */
-    private void computeShortestPathForSpecificNumberOfHops(double[][] dk, int k) {
+    private void computeShortestPathForSpecificNumberOfHops(final double[][] dk, final int k) {
         for(final int i: vertices) {
             computeShortestPathFromVertexToAllVertices(dk, k, i);
         }
@@ -127,7 +127,7 @@ public class FloydWarshall {
      *                that this BiConsumer receives are the index i and j representing the path
      *                between two vertices, for all existing vertices
      */
-    private void updateMatrices(BiConsumer<Integer, Integer> updater){
+    private void updateMatrices(final BiConsumer<Integer, Integer> updater){
         for(final int i: vertices) {
             for(final int j: vertices) {
                 updater.accept(i, j);
@@ -144,7 +144,7 @@ public class FloydWarshall {
      * @param k maximum number of hops to try finding the shortest path between each vertex i and j
      * @param i the index of the vertex to compute its distance to all the other vertices
      */
-    private void computeShortestPathFromVertexToAllVertices(double[][] dk, int k, int i) {
+    private void computeShortestPathFromVertexToAllVertices(final double[][] dk, final int k, final int i) {
         for(final int j: vertices) {
             pk[i][j] = -1;
             if (i != j) {
@@ -165,7 +165,7 @@ public class FloydWarshall {
      *
      * @param originalDelayMatrix the original delay matrix
      */
-    private void savePreviousDelays(double[][] originalDelayMatrix) {
+    private void savePreviousDelays(final double[][] originalDelayMatrix) {
         for(final int i: vertices) {
             for(final int j: vertices) {
                 dk_minus_one[i][j] = Double.MAX_VALUE;
