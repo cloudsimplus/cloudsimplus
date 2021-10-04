@@ -8,6 +8,8 @@
 
 package org.cloudbus.cloudsim.utilizationmodels;
 
+import static org.cloudbus.cloudsim.util.Conversion.HUNDRED_PERCENT;
+
 /**
  * A {@link UtilizationModel} that according to which, a Cloudlet always utilizes
  * a given allocated resource from its Vm at 100%, all the time.
@@ -26,6 +28,6 @@ public class UtilizationModelFull extends UtilizationModelAbstract {
      */
     @Override
     protected final double getUtilizationInternal(final double time) {
-        return 1;
+        return HUNDRED_PERCENT;
     }
 }
