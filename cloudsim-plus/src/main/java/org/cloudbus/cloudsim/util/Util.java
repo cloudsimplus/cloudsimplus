@@ -103,13 +103,6 @@ public final class Util {
      * @return the new square matrix
      */
     public static double[][] newMatrix(final int size) {
-        final double[][] matrix = new double[size][size];
-        for (int i = 0; i < size; i++) {
-            for (int j = 0; j < size; j++) {
-                matrix[i][j] = 0.0;
-            }
-        }
-
-        return matrix;
+        return new double[size][size];
     }
 }
