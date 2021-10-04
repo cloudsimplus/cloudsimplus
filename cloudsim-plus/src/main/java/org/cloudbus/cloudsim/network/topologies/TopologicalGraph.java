@@ -11,6 +11,7 @@ package org.cloudbus.cloudsim.network.topologies;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Represents a graph containing vertices (nodes) and edges (links),
@@ -51,7 +52,7 @@ public class TopologicalGraph {
      * @param edge the topological link
      */
     public void addLink(final TopologicalLink edge) {
-        linksList.add(edge);
+        linksList.add(Objects.requireNonNull(edge));
     }
 
     /**
@@ -60,7 +61,7 @@ public class TopologicalGraph {
      * @param node the topological node to add
      */
     public void addNode(final TopologicalNode node) {
-        nodeList.add(node);
+        nodeList.add(Objects.requireNonNull(node));
     }
 
     /**
