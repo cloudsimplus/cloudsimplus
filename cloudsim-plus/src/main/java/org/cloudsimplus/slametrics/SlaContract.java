@@ -33,7 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Represents a SLA Contract containing a list of metrics.
+ * Represents an SLA Contract containing a list of metrics.
  * It follows the standard used by
  * <a href="http://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/viewing_metrics_with_cloudwatch.html">Amazon Cloudwatch</a>.
  * <p>The constants inside the class define the names
@@ -79,7 +79,8 @@ public class SlaContract {
 
     /**
      * Gets an {@link SlaContract} from a JSON file inside the <b>application's resource directory</b>.
-     * @param jsonFilePath the <b>relative path</b> to the JSON file representing the SLA contract to read
+     * @param jsonFilePath the <b>relative path</b> to the JSON file representing the
+     *                     SLA contract to read
      * @return a {@link SlaContract} read from the JSON file
      */
     public static SlaContract getInstance(final String jsonFilePath) {
@@ -98,7 +99,7 @@ public class SlaContract {
     }
 
     /**
-     * @return the metrics
+     * @return the metrics list
      */
     public List<SlaMetric> getMetrics() {
         return metrics;
@@ -108,9 +109,9 @@ public class SlaContract {
      * @param metrics the metrics to set
      */
     public void setMetrics(final List<SlaMetric> metrics) {
-        /*Since the contract can be read from a file, the metrics
-        * can be in fact null. This way, instantiates an empty list
-        * instead of using Objects.requiredNonNull().*/
+        /* Since the contract can be read from a file, the metrics
+        *  can be in fact null. This way, instantiates an empty list
+        *  instead of using Objects.requiredNonNull(). */
         this.metrics = metrics == null ? new ArrayList<>() : metrics;
     }
 
