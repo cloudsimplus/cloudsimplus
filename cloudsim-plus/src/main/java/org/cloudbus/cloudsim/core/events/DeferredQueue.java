@@ -111,7 +111,7 @@ public class DeferredQueue implements EventQueue {
      * Removes the event from the queue.
      *
      * @param event the event
-     * @return true, if successful
+     * @return true if successful; false otherwise
      */
     public boolean remove(final SimEvent event) {
         return eventList.remove(event);
@@ -121,7 +121,7 @@ public class DeferredQueue implements EventQueue {
      * Removes all the events from the queue.
      *
      * @param events the events
-     * @return true, if successful
+     * @return true if successful; false otherwise
      */
     public boolean removeAll(final Collection<SimEvent> events) {
         return eventList.removeAll(events);
@@ -132,7 +132,7 @@ public class DeferredQueue implements EventQueue {
     }
 
     /**
-     * Clears the queue.
+     * Clears the queue removing all elements.
      */
     public void clear() {
         eventList.clear();
