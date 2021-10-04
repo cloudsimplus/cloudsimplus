@@ -26,8 +26,6 @@ package org.cloudsimplus.faultinjection;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.vms.Vm;
 
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -45,15 +43,7 @@ import java.util.function.UnaryOperator;
  * @since CloudSim Plus 1.2.3
  */
 public interface VmCloner {
-    VmCloner NULL = new VmCloner() {
-        @Override public int getClonedVmsNumber() { return 0;}
-        @Override public Map.Entry<Vm, List<Cloudlet>> clone(Vm sourceVm) { return new HashMap.SimpleEntry<>(Vm.NULL, Collections.EMPTY_LIST); }
-        @Override public VmCloner setVmClonerFunction(UnaryOperator<Vm> vmClonerFunction) { return this; }
-        @Override public VmCloner setCloudletsClonerFunction(Function<Vm, List<Cloudlet>> cloudletsClonerFunction) { return this; }
-        @Override public int getMaxClonesNumber() { return 0; }
-        @Override public boolean isMaxClonesNumberReached() { return false; }
-        @Override public VmCloner setMaxClonesNumber(int maxClonesNumber) { return this; }
-    };
+    VmCloner NULL = new VmClonerNull();
 
     /**
      * Gets the number of VMs cloned so far.
