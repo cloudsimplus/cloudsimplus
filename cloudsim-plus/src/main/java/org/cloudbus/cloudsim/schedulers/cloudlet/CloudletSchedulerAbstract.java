@@ -467,9 +467,9 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * @param cle      Cloudlet to set its status
      * @param currentStatus the current cloudlet status
      * @param newStatus     the new status to set
-     * @TODO The parameter currentStatus only exists
-     *       because apparently, the cloudlet status is not being accordingly changed
-     *       along the simulation run.
+     * TODO The parameter currentStatus only exists
+     *      because apparently, the cloudlet status is not being accordingly changed
+     *      along the simulation run.
      */
     private void changeStatusOfCloudlet(final CloudletExecution cle, final Status currentStatus, final Status newStatus) {
         if ((currentStatus == Status.INEXEC || currentStatus == Status.READY) && cle.getCloudlet().isFinished()) {
@@ -702,11 +702,11 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * @return the executed length, in Number of Instructions (I), since the last time cloudlet was processed.
      * @see #updateCloudletsProcessing(double)
      *
-     * @TODO This method is being called 2 times more than required.
-     *       Despite it is not causing any apparent issue, it has to be
-     *       investigated. For instance, for simulation time 2, with 2 cloudlets, the
-     *       method is being called 4 times instead of just 2 (1 for each cloudlet for
-     *       that time).
+     * TODO This method is being called 2 times more than required.
+     *      Despite it is not causing any apparent issue, it has to be
+     *      investigated. For instance, for simulation time 2, with 2 cloudlets, the
+     *      method is being called 4 times instead of just 2 (1 for each cloudlet for
+     *      that time).
      */
     private double cloudletExecutedInstructionsForTimeSpan(final CloudletExecution cle, final double currentTime) {
         /* The time the Cloudlet spent executing in fact, since the last time Cloudlet update was
@@ -780,7 +780,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
 
             /*
              * Since using VMem requires some portion of the RAM to be swapped between the disk
-             * to open up RAM space, the required RAM cannot be higher then the RAM capacity
+             * to open up RAM space, the required RAM cannot be higher than the RAM capacity
              * neither than the available disk space.
              */
             (vmRam, requestedRam) -> requestedRam <= vmRam.getCapacity() && requestedRam <= vm.getStorage().getAvailableResource(),
