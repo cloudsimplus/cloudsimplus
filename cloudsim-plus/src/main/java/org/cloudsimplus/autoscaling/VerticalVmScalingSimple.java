@@ -37,7 +37,8 @@ import java.util.function.Function;
 
 /**
  * A {@link VerticalVmScaling} implementation which allows a {@link DatacenterBroker}
- * to perform on demand up or down scaling for some {@link Vm} resource, such as {@link Ram}, {@link Pe} or {@link Bandwidth}.
+ * to perform on demand up or down scaling for some {@link Vm} resource, such as {@link Ram},
+ * {@link Pe} or {@link Bandwidth}.
  *
  * <p>For each resource that is required to be scaled, a distinct {@link VerticalVmScaling}
  * instance must be assigned to the VM to be scaled.</p>
@@ -55,8 +56,9 @@ public class VerticalVmScalingSimple extends VmScalingAbstract implements Vertic
     /**
      * Creates a VerticalVmScalingSimple with a {@link ResourceScalingGradual} scaling type.
      *
-     * @param resourceClassToScale the class of Vm resource that this scaling object will request up or down scaling
-     *  (such as {@link Ram}.class, {@link Bandwidth}.class or {@link Processor}.class).
+     * @param resourceClassToScale the class of Vm resource that this scaling object will request
+     *                             up or down scaling (such as {@link Ram}.class,
+     *                             {@link Bandwidth}.class or {@link Processor}.class).
      * @param scalingFactor the factor (a percentage value in scale from 0 to 1)
      *                      that will be used to scale a Vm resource up or down,
      *                      whether such a resource is over or underloaded, according to the
@@ -100,7 +102,7 @@ public class VerticalVmScalingSimple extends VmScalingAbstract implements Vertic
 
     /**
      * {@inheritDoc}
-     * <p>This class's constructors define a {@link ResourceScalingGradual}
+     * <p>This class' constructors define a {@link ResourceScalingGradual}
      * as the default {@link ResourceScaling}.</p>
      * @param resourceScaling {@inheritDoc}
      * @return {@inheritDoc}
@@ -226,7 +228,6 @@ public class VerticalVmScalingSimple extends VmScalingAbstract implements Vertic
     @Override
     protected boolean requestUpScaling(final double time) {
         final DatacenterBroker broker = this.getVm().getBroker();
-        //@TODO Previously, the src was the VM and the dest the broker. However, the VM isn't a SimEntity. See if this change brakes anything
         broker.getSimulation().sendNow(broker, broker, CloudSimTags.VM_VERTICAL_SCALING, this);
         return true;
     }
