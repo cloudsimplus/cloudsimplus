@@ -41,6 +41,11 @@ import java.util.List;
  * @since CloudSim Toolkit 1.0
  */
 public class IcmpPacket implements NetworkPacket<SimEntity> {
+    /**
+     * A default value to indicate {@link #baudRate} was not set yet.
+     */
+    private static final int UNSET_BAUD_RATE = -1;
+
     /* @see #getTag() */
     private int tag;
 
@@ -128,7 +133,7 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
 
         lastHop = this.source;
         tag = CloudSimTags.ICMP_PKT_SUBMIT;
-        baudRate = -1;
+        baudRate = UNSET_BAUD_RATE;
         num = new DecimalFormat("#0.000#");
     }
 
@@ -341,7 +346,7 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
      */
     public void addBaudRate(final double baudRate) {
         baudRateList.add(baudRate);
-        if (this.baudRate < 0 || this.baudRate > baudRate) {
+        if (this.baudRate <= UNSET_BAUD_RATE || this.baudRate > baudRate) {
             this.baudRate = baudRate;
         }
     }
