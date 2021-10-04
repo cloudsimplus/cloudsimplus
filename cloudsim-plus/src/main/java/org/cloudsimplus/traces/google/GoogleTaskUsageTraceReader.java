@@ -462,8 +462,8 @@ public final class GoogleTaskUsageTraceReader extends GoogleTraceReaderAbstract<
      *         to the given parameter
      */
     private UtilizationModel createUtilizationModel(final UtilizationModel source, final double initialUtilization){
-        if(source instanceof UtilizationModelDynamic){
-            return new UtilizationModelDynamic((UtilizationModelDynamic)source, initialUtilization);
+        if(source instanceof UtilizationModelDynamic umDynamic){
+            return new UtilizationModelDynamic(umDynamic, initialUtilization);
         }
 
         return new UtilizationModelDynamic(initialUtilization);

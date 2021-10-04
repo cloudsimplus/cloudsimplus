@@ -290,8 +290,8 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
 
     @Override
     public HostSuitability allocateHostForVm(final Vm vm, final Host host) {
-        if(vm instanceof VmGroup){
-            return createVmsFromGroup((VmGroup) vm, host);
+        if(vm instanceof VmGroup vmGroup){
+            return createVmsFromGroup(vmGroup, host);
         }
 
         return createVm(vm, host);

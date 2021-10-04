@@ -257,8 +257,8 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         for (final var entity : customerEntities) {
             entity.setBroker(this);
             entity.setArrivedTime(getSimulation().clock());
-            if(entity instanceof VmGroup) {
-                configureEntities(((VmGroup)entity).getVmList());
+            if(entity instanceof VmGroup vmGroup) {
+                configureEntities(vmGroup.getVmList());
             }
         }
     }
@@ -610,15 +610,14 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     }
 
     private boolean requestVmVerticalScaling(final SimEvent evt) {
-        if (!(evt.getData() instanceof VerticalVmScaling)) {
-            throw new InvalidEventDataTypeException(evt, "VM_VERTICAL_SCALING", "VerticalVmScaling");
+        if (evt.getData() instanceof VerticalVmScaling scaling) {
+            getSimulation().sendNow(
+                evt.getSource(), scaling.getVm().getHost().getDatacenter(),
+                CloudSimTags.VM_VERTICAL_SCALING, scaling);
+            return true;
         }
 
-        final var scaling = (VerticalVmScaling) evt.getData();
-        getSimulation().sendNow(
-            evt.getSource(), scaling.getVm().getHost().getDatacenter(),
-            CloudSimTags.VM_VERTICAL_SCALING, scaling);
-        return true;
+        throw new InvalidEventDataTypeException(evt, "VM_VERTICAL_SCALING", "VerticalVmScaling");
     }
 
     /**

@@ -83,9 +83,9 @@ public interface Simulation {
                 entity.setId(++id);
             }
 
-            if (entity instanceof VmGroup) {
-                entity = (T) setIdForEntitiesWithoutOne(((VmGroup) entity).getVmList(), entity);
-                id = entity.getId();
+            if (entity instanceof VmGroup vmGroup) {
+                entity = (T) setIdForEntitiesWithoutOne(vmGroup.getVmList(), vmGroup);
+                id = vmGroup.getId();
             }
         }
 

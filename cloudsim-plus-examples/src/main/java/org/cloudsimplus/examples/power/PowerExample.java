@@ -213,7 +213,7 @@ public class PowerExample {
         vmList.sort(comparingLong(vm -> vm.getHost().getId()));
         for (Vm vm : vmList) {
             final PowerModelHost powerModel = vm.getHost().getPowerModel();
-            final double hostStaticPower = powerModel instanceof PowerModelHostSimple ? ((PowerModelHostSimple)powerModel).getStaticPower() : 0;
+            final double hostStaticPower = powerModel instanceof PowerModelHostSimple powerModelHost ? powerModelHost.getStaticPower() : 0;
             final double hostStaticPowerByVm = hostStaticPower / vm.getHost().getVmCreatedList().size();
 
             //VM CPU utilization relative to the host capacity
