@@ -92,7 +92,7 @@ public class CloudletSendTask extends CloudletTask {
      * and clearing the list of packets, marking the
      * task as finished.
      *
-     * @param sendTime packets' send time to set
+     * @param sendTime packets' send time to set (in seconds)
      * @return the packet list with their send time updated to the given time
      */
     public List<VmPacket> getPacketsToSend(final double sendTime) {

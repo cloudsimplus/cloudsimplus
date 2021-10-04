@@ -66,26 +66,26 @@ public interface NetworkPacket<T extends Identifiable> {
     void setDestination(T destination);
 
     /**
-     * Gets the time when the packet was sent.
+     * Gets the time (in seconds) when the packet was sent.
      * @return
      */
     double getSendTime();
 
     /**
      * Sets the time when the packet was sent.
-     * @param time the time to set
+     * @param time the time to set (in seconds)
      */
     void setSendTime(double time);
 
     /**
-     * Gets the time when the packet was received.
+     * Gets the time (in seconds) when the packet was received.
      * @return
      */
     double getReceiveTime();
 
     /**
      * Sets the time when the packet was received.
-     * @param time the time to set
+     * @param time the time to set (in seconds)
      */
     void setReceiveTime(double time);
 }
