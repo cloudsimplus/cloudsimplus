@@ -181,12 +181,12 @@ public final class BriteNetworkTopology implements NetworkTopology {
         addNodeMapping(src);
         addNodeMapping(dest);
 
-        graph.addLink(new TopologicalLink(entitiesMap.get(src), entitiesMap.get(dest), (float) latency, (float) bandwidth));
+        graph.addLink(new TopologicalLink(entitiesMap.get(src), entitiesMap.get(dest), latency, bandwidth));
         generateMatrices();
     }
 
     @Override
-    public void removeLink(SimEntity src, SimEntity dest) {
+    public void removeLink(final SimEntity src, final SimEntity dest) {
         throw new UnsupportedOperationException("Removing links is not yet supported on BriteNetworkTopologies");
     }
 
