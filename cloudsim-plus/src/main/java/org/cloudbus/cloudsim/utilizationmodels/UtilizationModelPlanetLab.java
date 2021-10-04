@@ -16,9 +16,10 @@ import java.util.function.UnaryOperator;
  * Datacenter workload (trace) file.
  *
  * <p>
- * Each PlanetLab trace file available contains CPU utilization measured at every 5 minutes (300 seconds) inside PlanetLab VMs.
- * This value in seconds is commonly used for the {@link #getSchedulingInterval() scheduling interval} attribute
- * when instantiating an object of this class.
+ * Each PlanetLab trace file available contains CPU utilization measured at every
+ * 5 minutes (300 seconds) inside PlanetLab VMs.
+ * This value in seconds is commonly used for the {@link #getSchedulingInterval() scheduling interval}
+ * attribute when instantiating an object of this class.
  * </p>
  */
 public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
@@ -40,7 +41,8 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
     /**
      * The resource utilization for an entire day, in intervals
      * defined by {@link #schedulingInterval}
-     * (each line on available trace files represent resource utilization for a time interval of 5 minutes).
+     * (each line on available trace files represent resource utilization for a time
+     * interval of 5 minutes).
      * The size of the array is defined according to the number of utilization samples
      * specified in the constructor.
      *
@@ -408,25 +410,30 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
      * Gets the previous index of the {@link #utilization} inside the trace file that corresponds to a given time.
      * The trace file contains utilization according to a {@link #getSchedulingInterval()}.
      * Considering that the time given isn't multiple of this interval, this method
-     * returns the index of the {@link #utilization} containing the utilization for the previous time multiple of the scheduling interval.
+     * returns the index of the {@link #utilization} containing the utilization for the
+     * previous time multiple of the scheduling interval.
      *
      * @param time the time to get the index of the {@link #utilization} that contains the utilization
      *             for that time
-     * @return the index of the {@link #utilization} containing the utilization for the previous time multiple of the scheduling interval
+     * @return the index of the {@link #utilization} containing the utilization for the
+     *         previous time multiple of the scheduling interval
      */
     private int getPrevUtilizationIndex(final double time) {
         return (int)Math.floor(getUtilizationIndex(time));
     }
 
     /**
-     * Gets the previous index of the {@link #utilization} inside the trace file that corresponds to a given time.
+     * Gets the previous index of the {@link #utilization} inside the trace file that
+     * corresponds to a given time.
      * The trace file contains utilization according to a {@link #getSchedulingInterval()}.
      * Considering that the time given isn't multiple of this interval, this method
-     * returns the index of the {@link #utilization} containing the utilization for the next time multiple of the scheduling interval.
+     * returns the index of the {@link #utilization} containing the utilization
+     * for the next time multiple of the scheduling interval.
      *
      * @param time the time to get the index of the {@link #utilization} that contains the utilization
      *             for that time
-     * @return the index of the {@link #utilization} containing the utilization for the next time multiple of the scheduling interval
+     * @return the index of the {@link #utilization} containing the utilization for
+     *         the next time multiple of the scheduling interval
      */
     private int getNextUtilizationIndex(final double time) {
         //Computes the modulo again since the Math.ceil may return an index higher than the size of the utilization array
@@ -457,8 +464,8 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
      * @return the number of samples inside such indexes interval
      */
     protected final int getIntervalSize(final int startIndex, final int endIndex) {
-        /*@TODO The interval size should add 1, but this is the original formula.
-                It needs to be checked the impact in tests.*/
+        /*TODO The interval size should add 1, but this is the original formula.
+               It needs to be checked the impact in tests.*/
         final int index = endIndex - startIndex;
 
         return index >= 0 ? index : (utilization.length - startIndex) + endIndex;
@@ -494,5 +501,4 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
 
         this.schedulingInterval = schedulingInterval;
     }
-
 }
