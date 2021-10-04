@@ -45,14 +45,14 @@ public interface AbstractMachine<T extends Resource> extends ChangeableId, Resou
     AbstractMachine NULL = new AbstractMachineNull();
 
     /**
-     * Gets the machine bandwidth (bw) capacity in Megabits/s.
+     * Gets a resource representing the machine bandwidth (bw) in Megabits/s.
      *
-     * @return the machine bw capacity
+     * @return the machine bw resource
      */
     Resource getBw();
 
     /**
-     * Gets the machine memory resource in Megabytes.
+     * Gets a resource representing the machine memory in Megabytes.
      *
      * @return the machine memory
      */
