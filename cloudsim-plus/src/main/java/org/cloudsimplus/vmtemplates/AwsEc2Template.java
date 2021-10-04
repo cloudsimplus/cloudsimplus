@@ -25,6 +25,7 @@ package org.cloudsimplus.vmtemplates;
 
 import com.google.gson.Gson;
 import org.cloudbus.cloudsim.util.ResourceLoader;
+import org.cloudbus.cloudsim.vms.Vm;
 
 import java.io.InputStreamReader;
 import java.nio.file.Path;
@@ -35,6 +36,7 @@ import java.nio.file.Paths;
  * <a href="http://aws.amazon.com/ec2/">Amazon EC2 VM Instance</a> template.
  * This class enables reading a template from a JSON file, containing actual configurations for VMs
  * available in <a href="http://aws.amazon.com/">Amazon Web Services</a>.
+ * Such templates can be used to create {@link Vm} instances.
  *
  * <p>For more details, check
  * <a href="http://www.di.ubi.pt/~mario/files/MScDissertation-RaysaOliveira.pdf">Raysa Oliveira's Master Thesis (only in Portuguese)</a>.</p>
@@ -116,24 +118,47 @@ public class AwsEc2Template implements Comparable<AwsEc2Template> {
         return template;
     }
 
+    /**
+     * Gets the name of the template.
+     * @return
+     */
     public String getName() {return name; }
 
+    /**
+     * Sets the name of the template.
+     * @param name the name to set
+     */
     public void setName(final String name) {
         this.name = name;
     }
 
+    /**
+     * Gets the number of CPUs {PEs} for the VM instance
+     * @return
+     */
     public int getCpus() {
         return cpus;
     }
 
+    /**
+     * Sets the number of CPUs {PEs} for the VM instance
+     * @param cpus number of CPUs to set
+     */
     public void setCpus(final int cpus) {
         this.cpus = cpus;
     }
 
+    /**
+     * Gets the VM RAM capacity (in MB)
+     */
     public int getMemoryInMB() {
         return memoryInMB;
     }
 
+    /**
+     * Sets the VM RAM capacity (in MB)
+     * @param memoryInMB RAM capacity to set
+     */
     public void setMemoryInMB(final int memoryInMB) {
         this.memoryInMB = memoryInMB;
     }
@@ -146,6 +171,10 @@ public class AwsEc2Template implements Comparable<AwsEc2Template> {
         return pricePerHour;
     }
 
+    /**
+     * Sets the price per hour of a VM created from this template
+     * @param pricePerHour the price to set
+     */
     public void setPricePerHour(final double pricePerHour) {
         this.pricePerHour = pricePerHour;
     }
@@ -159,6 +188,11 @@ public class AwsEc2Template implements Comparable<AwsEc2Template> {
         return region;
     }
 
+    /**
+     * Sets the AWS Region in which the instance is run.
+     * @param region the region to set
+     * @see <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html">AWS Regions, Availability Zones, and Local Zones</a>
+     */
     public void setRegion(String region) {
         this.region = region;
     }
