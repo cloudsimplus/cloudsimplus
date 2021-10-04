@@ -33,7 +33,7 @@ import java.util.function.Function;
 import static java.util.Objects.requireNonNull;
 
 /**
- * An abstract class to be used for implementing a {@link DatacenterBroker}.
+ * An abstract class for implementing {@link DatacenterBroker}s.
  *
  * @author Rodrigo N. Calheiros
  * @author Anton Beloglazov
