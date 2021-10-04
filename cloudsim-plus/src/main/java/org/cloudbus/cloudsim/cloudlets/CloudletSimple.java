@@ -16,8 +16,7 @@ import java.util.Objects;
 
 /**
  * Cloudlet implements the basic features of an application/job/task to be executed
- * by a {@link Vm} on behalf of a given user. It stores, despite all the
- * information encapsulated in the Cloudlet, the ID of the VM running it.
+ * by a {@link Vm} on behalf of a given user.
  *
  * @author Rodrigo N. Calheiros
  * @author Anton Beloglazov
