@@ -39,9 +39,7 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
      * The list of every {@link Datacenter} where the cloudlet has been executed.
      * In case it starts and finishes executing in a single Datacenter, without
      * being migrated, this list will have only one item.
-     *
-     * TODO There isn't Cloudlet migration, so this attribute doesn't make sense.
-     *      But since a lot of methods uses it, it's removal has to be carefully assessed.
+     * TODO: Check CloudletDatacenterExecution TODO
      */
     private final List<CloudletDatacenterExecution> datacenterExecutionList;
 

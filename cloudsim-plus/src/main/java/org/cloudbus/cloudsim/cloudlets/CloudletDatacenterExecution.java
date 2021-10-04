@@ -6,6 +6,8 @@ import org.cloudbus.cloudsim.datacenters.Datacenter;
  * Internal class that keeps track of Cloudlet's movement in different
  * {@link Datacenter Datacenters}. Each time a cloudlet is run on a given Datacenter,
  * the Cloudlet's execution history on each Datacenter is registered inside the {@link Cloudlet}.
+ * TODO There isn't Cloudlet migration, so this attribute doesn't make sense.
+ *      But since a lot of methods uses it, it's removal has to be carefully assessed.
  */
 final class CloudletDatacenterExecution {
     static final CloudletDatacenterExecution NULL = new CloudletDatacenterExecution();
