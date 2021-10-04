@@ -58,7 +58,7 @@ public final class SlaMetricDimension {
         return name;
     }
 
-    public SlaMetricDimension setName(String name) {
+    public SlaMetricDimension setName(final String name) {
         this.name = name;
         return this;
     }
@@ -118,7 +118,7 @@ public final class SlaMetricDimension {
         return unit;
     }
 
-    public SlaMetricDimension setUnit(String unit) {
+    public SlaMetricDimension setUnit(final String unit) {
         this.unit = unit;
         return this;
     }
