@@ -66,11 +66,11 @@ public class VmClonerSimple implements VmCloner {
 
     @Override
     public Map.Entry<Vm, List<Cloudlet>> clone(final Vm sourceVm) {
-        final Vm clonedVm = vmClonerFunction.apply(requireNonNull(sourceVm));
-        final List<Cloudlet> clonedCloudlets = cloudletsClonerFunction.apply(sourceVm);
-        clonedCloudlets.forEach(cloudlet -> cloudlet.setVm(clonedVm));
+        final var clonedVm = vmClonerFunction.apply(requireNonNull(sourceVm));
+        final var clonedCloudletList = cloudletsClonerFunction.apply(sourceVm);
+        clonedCloudletList.forEach(cloudlet -> cloudlet.setVm(clonedVm));
         clonedVmsNumber++;
-        return new HashMap.SimpleEntry<>(clonedVm, clonedCloudlets);
+        return new HashMap.SimpleEntry<>(clonedVm, clonedCloudletList);
     }
 
     @Override
