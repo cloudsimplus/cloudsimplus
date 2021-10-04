@@ -51,4 +51,18 @@ class UtilTest {
             }
         }
     }
+
+    @Test
+    void newMatrixWithDefaultValue() {
+        final int size = 10;
+        final double defaultVal = Double.MAX_VALUE;
+        final var matrix = Util.newSquareMatrix(size, defaultVal);
+        final var msg = "Value at position %d,%d is not as expected";
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix[i].length; j++) {
+                assertEquals(defaultVal, matrix[i][j], String.format(msg, i, j));
+            }
+        }
+    }
+
 }

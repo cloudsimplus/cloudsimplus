@@ -105,4 +105,21 @@ public final class Util {
     public static double[][] newSquareMatrix(final int size) {
         return new double[size][size];
     }
+
+    /**
+     * Creates a square matrix with a given size
+     * @param size the matrix size, defining the number of columns and rows
+     * @param defaultValue default value for all matrix positions.
+     * @return the new square matrix
+     */
+    public static double[][] newSquareMatrix(final int size, final double defaultValue) {
+        final var matrix = newSquareMatrix(size);
+        for (final double[] line : matrix) {
+            for (int col = 0; col < size; ++col) {
+                line[col] = defaultValue;
+            }
+        }
+
+        return matrix;
+    }
 }
