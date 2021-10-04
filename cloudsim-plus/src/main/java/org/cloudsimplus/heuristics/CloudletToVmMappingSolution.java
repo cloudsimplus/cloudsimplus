@@ -40,7 +40,8 @@ import java.util.stream.Collectors;
 public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudlet, Vm>> {
     /**
      * When two double values are subtracted to check if they are equal zero,
-     * there may be some precision issues. This value is used to check the absolute difference between the two values
+     * there may be some precision issues. This value is used to check the absolute
+     * difference between the two values
      * to avoid that solutions with little decimal difference be
      * considered different one of the other.
      */
