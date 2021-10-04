@@ -8,10 +8,7 @@
 
 package org.cloudbus.cloudsim.network.topologies.readers;
 
-import org.cloudbus.cloudsim.network.topologies.Point2D;
 import org.cloudbus.cloudsim.network.topologies.TopologicalGraph;
-import org.cloudbus.cloudsim.network.topologies.TopologicalLink;
-import org.cloudbus.cloudsim.network.topologies.TopologicalNode;
 import org.cloudbus.cloudsim.util.ResourceLoader;
 
 import java.io.BufferedReader;
@@ -35,76 +32,20 @@ import java.util.function.Function;
  * @since CloudSim Toolkit 1.0
  */
 public class TopologyReaderBrite implements TopologyReader {
-    enum ParseState {
-        /**
-         * Represents the state indicating to just find the start of the node-declaration.
-         */
-        NOTHING {
-            @Override
-            void parse(final TopologyReaderBrite reader, final String line) {
-                if (line.contains("Nodes:")) {
-                    reader.state = ParseState.NODES;
-                }
-            }
-        },
-
-        /** Represents the state indicating to retrieve all node-information. */
-        NODES {
-            @Override
-            void parse(final TopologyReaderBrite reader, final String line) {
-                // first test to step to the next parsing-state (edges)
-                if (line.contains("Edges:")) {
-                    reader.state = ParseState.EDGES;
-                    return;
-                }
-
-                // List of fields in the line to parse
-                // NodeID, xpos, ypos, inDegree, outDegree, AS_id, type(router/AS)
-                final Integer[] parsedFields = {0, 0, 0};
-                if(!reader.parseLine(line, parsedFields, Integer::valueOf)){
-                    return;
-                }
-
-                final Point2D coordinates = new Point2D(parsedFields[1], parsedFields[2]);
-                final TopologicalNode topoNode = new TopologicalNode(parsedFields[0], coordinates);
-                reader.graph.addNode(topoNode);
-            }
-        },
-
-        /** Represents the state indicating to retrieve all edges-information. */
-        EDGES {
-            @Override
-            void parse(final TopologyReaderBrite reader, final String line) {
-                // List of fields in the line to parse
-                // EdgeID, fromNode, toNode, euclideanLength, linkDelay, linkBandwidth, AS_from, AS_to, type
-                final Double[] parsedFields = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
-                if(!reader.parseLine(line, parsedFields, Double::valueOf)){
-                    return;
-                }
-
-                final int fromNode = parsedFields[1].intValue();
-                final int toNode = parsedFields[2].intValue();
-                final double linkDelay = parsedFields[4];
-                final double linkBandwidth = parsedFields[5];
-
-                reader.graph.addLink(new TopologicalLink(fromNode, toNode, linkDelay, linkBandwidth));
-            }
-        };
-
-        /**
-         * Parses a line from the trace file
-         * @param reader the reader processing the file
-         * @param line current line read from the file
-         */
-        abstract void parse(final TopologyReaderBrite reader, final String line);
-    };
-
-    private ParseState state = ParseState.NOTHING;
+    private ParsingState state = ParsingState.NOTHING;
 
     /**
      * The network Topological Graph.
      */
     private TopologicalGraph graph;
+
+    TopologicalGraph getGraph() {
+        return graph;
+    }
+
+    void setState(final ParsingState state) {
+        this.state = state;
+    }
 
     @Override
     public TopologicalGraph readGraphFile(final String filename) {
@@ -138,7 +79,7 @@ public class TopologyReaderBrite implements TopologyReader {
      * @param <T>          the type of the values of the output array
      * @return true if any field was parsed, false otherwise
      */
-    private <T extends Number> boolean parseLine(
+    <T extends Number> boolean parseLine(
         final String nodeLine, final T[] parsedFields, final Function<String, T> castFunction)
     {
         final StringTokenizer tokenizer = new StringTokenizer(nodeLine);
