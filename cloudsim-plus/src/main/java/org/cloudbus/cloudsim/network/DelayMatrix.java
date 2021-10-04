@@ -78,15 +78,7 @@ public class DelayMatrix {
 	 */
 	private void createDelayMatrix(final TopologicalGraph graph, final boolean directed) {
 		mTotalNodeNum = graph.getNumberOfNodes();
-		mDelayMatrix = Util.newSquareMatrix(mTotalNodeNum);
-
-		// cleanup the complete distance-matrix with "0"s
-		for (int row = 0; row < mTotalNodeNum; ++row) {
-			for (int col = 0; col < mTotalNodeNum; ++col) {
-				mDelayMatrix[row][col] = Double.MAX_VALUE;
-			}
-		}
-
+		mDelayMatrix = Util.newSquareMatrix(mTotalNodeNum, Double.MAX_VALUE);
 
         for (final TopologicalLink edge : graph.getLinksList()) {
 			mDelayMatrix[edge.getSrcNodeID()][edge.getDestNodeID()] = edge.getLinkDelay();
