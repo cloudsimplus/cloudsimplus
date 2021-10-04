@@ -15,33 +15,25 @@ package org.cloudbus.cloudsim.vms;
  */
 public class VmStateHistoryEntry {
 
-    /**
-     * The time.
-     */
+    /** @see #getTime() */
     private double time;
 
-    /**
-     * The allocated mips.
-     */
+    /** @see #getAllocatedMips() */
     private double allocatedMips;
 
-    /**
-     * The requested mips.
-     */
+    /** @see #getRequestedMips() */
     private double requestedMips;
 
-    /**
-     * The is in migration.
-     */
+    /** @see #isInMigration() */
     private boolean inMigration;
 
     /**
      * Instantiates a new VmStateHistoryEntry
      *
-     * @param time the time
+     * @param time the time the state information is being collected.
      * @param allocatedMips the allocated mips
      * @param requestedMips the requested mips
-     * @param inMigration the is in migration
+     * @param inMigration if the VM was in migration for that time
      */
     public VmStateHistoryEntry(double time, double allocatedMips, double requestedMips, boolean inMigration) {
         setTime(time);
@@ -51,7 +43,7 @@ public class VmStateHistoryEntry {
     }
 
     /**
-     * Sets the time.
+     * Sets the time the state information is being collected (in seconds).
      *
      * @param time the new time
      */
@@ -60,9 +52,9 @@ public class VmStateHistoryEntry {
     }
 
     /**
-     * Gets the time.
+     * Gets the time the state information is being collected (in seconds).
      *
-     * @return the time
+     * @return the time (in seconds)
      */
     public double getTime() {
         return time;
