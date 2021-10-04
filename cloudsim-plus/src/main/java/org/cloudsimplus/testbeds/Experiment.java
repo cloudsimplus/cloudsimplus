@@ -42,7 +42,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
- * A base class to implement simulation experiments
+ * An abstract class to implement simulation experiments
  * that can be executed in a repeatable way
  * by a {@link ExperimentRunner}.
  *
