@@ -138,22 +138,6 @@ public abstract class Experiment extends AbstractRunnable {
         this.seed = validateSeed(seed);
     }
 
-    private long validateSeed(long seed) {
-        if(runner == null){
-            return seed;
-        }
-
-        if (runner.isToReuseSeedFromFirstHalfOfExperiments(index)) {
-            final int previousExperiment = index - runner.halfSimulationRuns();
-            seed = runner.getSeed(previousExperiment);
-        } else {
-            seed = runner.getBaseSeed() + index;
-        }
-
-        runner.addSeed(seed);
-        return seed;
-    }
-
     public final List<Cloudlet> getCloudletList() {
         return Collections.unmodifiableList(cloudletList);
     }
@@ -193,18 +177,6 @@ public abstract class Experiment extends AbstractRunnable {
     }
 
     /**
-     * Checks if {@link #isVerbose()} in order to call {@link #printResults()}
-     * to print the experiment results.
-     *
-     * @see #printResults()
-     */
-    private void printResultsInternal() {
-        if (runner == null || runner.isVerbose()) {
-            printResults();
-        }
-    }
-
-    /**
      * Prints the results for the experiment.
      *
      * The method has to be implemented by subclasses in order to output the
@@ -213,6 +185,37 @@ public abstract class Experiment extends AbstractRunnable {
      * @see #printResultsInternal()
      */
     public abstract void printResults();
+
+    /**
+     * Gets the object that is in charge to run the experiment.
+     *
+     * @return
+     */
+    public ExperimentRunner getRunner() {
+        return runner;
+    }
+
+    /**
+     * Gets the list of created DatacenterBrokers.
+     *
+     * @return
+     */
+    public List<DatacenterBroker> getBrokerList() {
+        return brokerList;
+    }
+
+    /**
+     * Sets a {@link Consumer} that will be called before the simulation scenario is built.
+     *
+     * <p>Setting a Consumer object is optional.</p>
+     * @param <T> the class of the experiment
+     * @param beforeExperimentBuild the beforeExperimentBuild Consumer to set
+     * @return
+     */
+    public <T extends Experiment> T setBeforeExperimentBuild(final Consumer<T> beforeExperimentBuild) {
+        this.beforeExperimentBuild = Objects.requireNonNull(beforeExperimentBuild);
+        return (T)this;
+    }
 
     /**
      * Creates the simulation scenario to run the experiment.
@@ -224,32 +227,11 @@ public abstract class Experiment extends AbstractRunnable {
         createBrokers();
 
         brokerList.stream().sorted().forEach(b -> {
-                createAndSubmitVmsInternal(b);
-                createAndSubmitCloudletsInternal(b);
+            createAndSubmitVmsInternal(b);
+            createAndSubmitCloudletsInternal(b);
         });
 
         afterExperimentBuild(this);
-    }
-
-    private void createDatacenters() {
-        if(datacentersNumber <= 0){
-            throw new IllegalStateException("The number of Datacenters to create was not set");
-        }
-
-        for (int i = 0; i < datacentersNumber; i++) {
-            datacenterList.add(createDatacenter(i));
-        }
-    }
-
-    /**
-     * Creates a datacenter using a {@link VmAllocationPolicy}
-     * supplied by the {@link #vmAllocationPolicySupplier}.
-     * @param index index of the datatacenter being created, from the {@link #datacentersNumber}.
-     * @return
-     * @see #setVmAllocationPolicySupplier(Supplier)
-     */
-    protected Datacenter createDatacenter(final int index) {
-        return new DatacenterSimple(simulation, createHosts(), newVmAllocationPolicy());
     }
 
     /**
@@ -272,6 +254,68 @@ public abstract class Experiment extends AbstractRunnable {
      * @return the created DatacenterBroker
      */
     protected abstract DatacenterBroker createBroker();
+
+    /**
+     * Creates a DatacenterBroker and adds it to the
+     * {@link #getBrokerList() DatacenterBroker list}.
+     *
+     * @return the created DatacenterBroker.
+     * @see #createBrokers()
+     */
+    private DatacenterBroker createBrokerAndAddToList() {
+        final var broker = createBroker();
+        brokerList.add(broker);
+        return broker;
+    }
+
+    /**
+     * Creates a datacenter using a {@link VmAllocationPolicy}
+     * supplied by the {@link #vmAllocationPolicySupplier}.
+     * @param index index of the datatacenter being created, from the {@link #datacentersNumber}.
+     * @return
+     * @see #setVmAllocationPolicySupplier(Supplier)
+     */
+    protected Datacenter createDatacenter(final int index) {
+        return new DatacenterSimple(simulation, createHosts(), newVmAllocationPolicy());
+    }
+
+    private void createDatacenters() {
+        if(datacentersNumber <= 0){
+            throw new IllegalStateException("The number of Datacenters to create was not set");
+        }
+
+        for (int i = 0; i < datacentersNumber; i++) {
+            datacenterList.add(createDatacenter(i));
+        }
+    }
+
+    private long validateSeed(long seed) {
+        if(runner == null){
+            return seed;
+        }
+
+        if (runner.isToReuseSeedFromFirstHalfOfExperiments(index)) {
+            final int previousExperiment = index - runner.halfSimulationRuns();
+            seed = runner.getSeed(previousExperiment);
+        } else {
+            seed = runner.getBaseSeed() + index;
+        }
+
+        runner.addSeed(seed);
+        return seed;
+    }
+
+    /**
+     * Checks if {@link #isVerbose()} in order to call {@link #printResults()}
+     * to print the experiment results.
+     *
+     * @see #printResults()
+     */
+    private void printResultsInternal() {
+        if (runner == null || runner.isVerbose()) {
+            printResults();
+        }
+    }
 
     /**
      * Creates a list of Cloudlets to be used by the experiment.
@@ -305,21 +349,8 @@ public abstract class Experiment extends AbstractRunnable {
     protected final int nextVmId(){
         return ++lastVmId;
     }
-
     protected final int nextCloudletId(){
         return ++lastCloudletId;
-    }
-    /**
-     * Creates a DatacenterBroker and adds it to the
-     * {@link #getBrokerList() DatacenterBroker list}.
-     *
-     * @return the created DatacenterBroker.
-     * @see #createBrokers()
-     */
-    private DatacenterBroker createBrokerAndAddToList() {
-        final var broker = createBroker();
-        brokerList.add(broker);
-        return broker;
     }
 
     /**
@@ -360,37 +391,6 @@ public abstract class Experiment extends AbstractRunnable {
     }
 
     protected abstract Host createHost(int id);
-
-    /**
-     * Gets the object that is in charge to run the experiment.
-     *
-     * @return
-     */
-    public ExperimentRunner getRunner() {
-        return runner;
-    }
-
-    /**
-     * Gets the list of created DatacenterBrokers.
-     *
-     * @return
-     */
-    public List<DatacenterBroker> getBrokerList() {
-        return brokerList;
-    }
-
-    /**
-     * Sets a {@link Consumer} that will be called before the simulation scenario is built.
-     *
-     * <p>Setting a Consumer object is optional.</p>
-     * @param <T> the class of the experiment
-     * @param beforeExperimentBuild the beforeExperimentBuild Consumer to set
-     * @return
-     */
-    public <T extends Experiment> T setBeforeExperimentBuild(final Consumer<T> beforeExperimentBuild) {
-        this.beforeExperimentBuild = Objects.requireNonNull(beforeExperimentBuild);
-        return (T)this;
-    }
 
     private <T extends Experiment> void beforeExperimentBuild(final T experiment) {
         ((Consumer<T>)this.beforeExperimentBuild).accept(experiment);
