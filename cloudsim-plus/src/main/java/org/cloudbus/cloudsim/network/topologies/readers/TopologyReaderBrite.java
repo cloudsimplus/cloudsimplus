@@ -61,7 +61,7 @@ public class TopologyReaderBrite implements TopologyReader {
     @Override
     public TopologicalGraph readGraphFile(final InputStreamReader reader) {
         graph = new TopologicalGraph();
-        try(BufferedReader buffer = new BufferedReader(reader)) {
+        try(var buffer = new BufferedReader(reader)) {
             String nextLine;
             while ((nextLine = buffer.readLine()) != null) {
                 if (state == PARSE_NOTHING) {
@@ -69,12 +69,10 @@ public class TopologyReaderBrite implements TopologyReader {
                         state = PARSE_NODES;
                     }
                 }
-                else if (state == PARSE_NODES) {
+                else if (state == PARSE_NODES)
                     parseNodeString(nextLine);
-                }
-                else if (state == PARSE_EDGES) {
+                else if (state == PARSE_EDGES)
                     parseEdgesString(nextLine);
-                }
             }
         } catch (IOException e) {
             throw new UncheckedIOException(e);
@@ -89,7 +87,7 @@ public class TopologyReaderBrite implements TopologyReader {
      *
      * @param nodeLine A line read from the file
      */
-    private void parseNodeString(String nodeLine) {
+    private void parseNodeString(final String nodeLine) {
         // first test to step to the next parsing-state (edges)
         if (nodeLine.contains("Edges:")) {
             state = PARSE_EDGES;
@@ -113,7 +111,7 @@ public class TopologyReaderBrite implements TopologyReader {
      *
      * @param nodeLine A line read from the file
      */
-    private void parseEdgesString(String nodeLine) {
+    private void parseEdgesString(final String nodeLine) {
 
         // List of fields in the line to parse
         // EdgeID, fromNode, toNode, euclideanLength, linkDelay, linkBandwidth, AS_from, AS_to, type
@@ -143,7 +141,9 @@ public class TopologyReaderBrite implements TopologyReader {
      * @param <T>          the type of the values of the output array
      * @return true if any field was parsed, false otherwise
      */
-    private <T extends Number> boolean parseLine(String nodeLine, T[] parsedFields, Function<String, T> castFunction){
+    private <T extends Number> boolean parseLine(
+        final String nodeLine, final T[] parsedFields, final Function<String, T> castFunction)
+    {
         final StringTokenizer tokenizer = new StringTokenizer(nodeLine);
         if (!tokenizer.hasMoreElements()) {
             return false;
