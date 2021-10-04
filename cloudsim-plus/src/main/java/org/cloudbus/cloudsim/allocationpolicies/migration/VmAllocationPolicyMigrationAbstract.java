@@ -381,7 +381,7 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
      * @param overloadedHosts the list of overloaded Hosts
      * @return the new VM placement map where each key is a VM
      * and each value is the Host to place it.
-     * @TODO See issue in {@link #getVmsToMigrateFromOverloadedHost(Host)}
+     * TODO See issue in {@link #getVmsToMigrateFromOverloadedHost(Host)}
      */
     private Map<Vm, Host> getMigrationMapFromOverloadedHosts(final Set<Host> overloadedHosts) {
         if(overloadedHosts.isEmpty()) {
