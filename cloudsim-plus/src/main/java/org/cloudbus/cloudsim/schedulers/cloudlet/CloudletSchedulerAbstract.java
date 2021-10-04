@@ -38,11 +38,9 @@ import static java.util.stream.Collectors.toList;
 import static org.cloudsimplus.listeners.CloudletResourceAllocationFailEventInfo.of;
 
 /**
- * Implements the basic features of a {@link CloudletScheduler}, representing
- * the policy of scheduling performed by a virtual machine to run its
- * {@link Cloudlet Cloudlets}. So, classes extending this must execute
- * Cloudlets. The interface for cloudlet management is also implemented in this
- * class. Each VM has to have its own instance of a CloudletScheduler.
+ * An abstract class for implementing {@link CloudletScheduler}s representing
+ * scheduling policies performed by a virtual machine to run its
+ * {@link Cloudlet Cloudlets}. Each VM must have its own instance of a CloudletScheduler.
  *
  * @author Rodrigo N. Calheiros
  * @author Anton Beloglazov
@@ -50,33 +48,25 @@ import static org.cloudsimplus.listeners.CloudletResourceAllocationFailEventInfo
  * @since CloudSim Toolkit 1.0
  */
 public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
-    /**
-     * @see #getCloudletPausedList()
-     */
+    /** @see #getCloudletPausedList() */
     private final List<CloudletExecution> cloudletPausedList;
-    /**
-     * @see #getCloudletFinishedList()
-     */
+
+    /** @see #getCloudletFinishedList() */
     private final List<CloudletExecution> cloudletFinishedList;
-    /**
-     * @see #getCloudletFailedList()
-     */
+
+    /** @see #getCloudletFailedList() */
     private final List<CloudletExecution> cloudletFailedList;
-    /**
-     * @see #getTaskScheduler()
-     */
+
+    /** @see #getTaskScheduler() */
     private CloudletTaskScheduler taskScheduler;
-    /**
-     * @see #getPreviousTime()
-     */
+
+    /** @see #getPreviousTime() */
     private double previousTime;
-    /**
-     * @see #getCurrentMipsShare()
-     */
+
+    /** @see #getCurrentMipsShare() */
     private MipsShare currentMipsShare;
-    /**
-     * @see #getCloudletExecList()
-     */
+
+    /** @see #getCloudletExecList() */
     private final List<CloudletExecution> cloudletExecList;
 
     /** @see #enableCloudletSubmittedList() */
@@ -90,23 +80,17 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      */
     private final List<CloudletExecution> cloudletWaitingList;
 
-    /**
-     * @see #getVm()
-     */
+    /** @see #getVm() */
     private Vm vm;
 
-    /**
-     * @see #getCloudletReturnedList()
-     */
+    /** @see #getCloudletReturnedList() */
     private final Set<Cloudlet> cloudletReturnedList;
 
-    /**
-     * @see #addOnCloudletResourceAllocationFail(EventListener)
-     */
+    /** @see #addOnCloudletResourceAllocationFail(EventListener) */
     private final List<EventListener<CloudletResourceAllocationFailEventInfo>> resourceAllocationFailListeners;
 
     /**
-     * Creates a new CloudletScheduler object.
+     * Creates a CloudletScheduler.
      */
     protected CloudletSchedulerAbstract() {
         setPreviousTime(0.0);
