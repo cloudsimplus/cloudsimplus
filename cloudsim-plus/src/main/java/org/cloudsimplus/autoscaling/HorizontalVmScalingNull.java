@@ -51,7 +51,5 @@ final class HorizontalVmScalingNull implements HorizontalVmScaling {
     @Override public Vm getVm() {
         return Vm.NULL;
     }
-    @Override public VmScaling setVm(Vm vm) {
-        return this;
-    }
+    @Override public void setVm(Vm vm) {/**/}
 }

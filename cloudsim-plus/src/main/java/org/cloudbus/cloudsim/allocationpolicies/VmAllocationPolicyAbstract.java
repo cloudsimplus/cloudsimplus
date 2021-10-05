@@ -13,7 +13,6 @@ import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.HostSuitability;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.Processor;
-import org.cloudbus.cloudsim.resources.ResourceManageable;
 import org.cloudbus.cloudsim.schedulers.MipsShare;
 import org.cloudbus.cloudsim.util.Conversion;
 import org.cloudbus.cloudsim.vms.Vm;
@@ -136,13 +135,13 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
      * @see #upScaleVmVertically(VerticalVmScaling)
      */
     private boolean scaleVmPesUpOrDown(final VerticalVmScaling scaling) {
-        final double numberOfPesForScaling = scaling.getResourceAmountToScale();
-        if (numberOfPesForScaling == 0) {
+        final double pesNumberForScaling = scaling.getResourceAmountToScale();
+        if (pesNumberForScaling == 0) {
             return false;
         }
 
         if (scaling.isVmOverloaded() && isNotHostPesSuitableToUpScaleVm(scaling)) {
-            showResourceIsUnavailable(scaling);
+            scaling.logResourceUnavailable();
             return false;
         }
 
@@ -150,7 +149,7 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
         vm.getHost().getVmScheduler().deallocatePesFromVm(vm);
         final int signal = scaling.isVmUnderloaded() ? -1 : 1;
         //Removes or adds some capacity from/to the resource, respectively if the VM is under or overloaded
-        vm.getProcessor().sumCapacity((long) numberOfPesForScaling * signal);
+        vm.getProcessor().sumCapacity((long) pesNumberForScaling * signal);
 
         vm.getHost().getVmScheduler().allocatePesForVm(vm);
         return true;
@@ -183,42 +182,7 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
      * @see #upScaleVmVertically(VerticalVmScaling)
      */
     private boolean upScaleVmNonCpuResource(final VerticalVmScaling scaling) {
-        final var resourceManageableClass = scaling.getResourceClass();
-        final ResourceManageable hostResource = scaling.getVm().getHost().getResource(resourceManageableClass);
-        final double extraAmountToAllocate = scaling.getResourceAmountToScale();
-        if (!hostResource.isAmountAvailable(extraAmountToAllocate)) {
-            return false;
-        }
-
-        final var resourceProvisioner = scaling.getVm().getHost().getProvisioner(resourceManageableClass);
-        final var vmResource = scaling.getVm().getResource(resourceManageableClass);
-        final double newTotalVmResource = (double) vmResource.getCapacity() + extraAmountToAllocate;
-        if (!resourceProvisioner.allocateResourceForVm(scaling.getVm(), newTotalVmResource)) {
-            showResourceIsUnavailable(scaling);
-            return false;
-        }
-
-        LOGGER.info(
-            "{}: {}: {} more {} allocated to {}: new capacity is {}. Current resource usage is {}%",
-            scaling.getVm().getSimulation().clockStr(),
-            scaling.getClass().getSimpleName(),
-            (long) extraAmountToAllocate, resourceManageableClass.getSimpleName(),
-            scaling.getVm(), vmResource.getCapacity(),
-            vmResource.getPercentUtilization() * 100);
-        return true;
-    }
-
-    private void showResourceIsUnavailable(final VerticalVmScaling scaling) {
-        final var resourceManageableClass = scaling.getResourceClass();
-        final var hostResource = scaling.getVm().getHost().getResource(resourceManageableClass);
-        final double extraAmountToAllocate = scaling.getResourceAmountToScale();
-        LOGGER.warn(
-            "{}: {}: {} requested more {} of {} capacity but the {} has just {} of available {}",
-            scaling.getVm().getSimulation().clockStr(),
-            scaling.getClass().getSimpleName(),
-            scaling.getVm(), (long) extraAmountToAllocate,
-            resourceManageableClass.getSimpleName(), scaling.getVm().getHost(),
-            hostResource.getAvailableResource(), resourceManageableClass.getSimpleName());
+        return scaling.allocateResourceForVm();
     }
 
     /**
@@ -234,24 +198,25 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
         final double amountToDeallocate = scaling.getResourceAmountToScale();
         final var resourceProvisioner = scaling.getVm().getHost().getProvisioner(resourceManageableClass);
         final double newTotalVmResource = vmResource.getCapacity() - amountToDeallocate;
-        if (!resourceProvisioner.allocateResourceForVm(scaling.getVm(), newTotalVmResource)) {
-            LOGGER.error(
-                "{}: {}: {} requested to reduce {} capacity by {} but an unexpected error occurred and the resource was not resized",
+        if (resourceProvisioner.allocateResourceForVm(scaling.getVm(), newTotalVmResource)) {
+            LOGGER.info(
+                "{}: {}: {} {} deallocated from {}: new capacity is {}. Current resource usage is {}%",
                 scaling.getVm().getSimulation().clockStr(),
                 scaling.getClass().getSimpleName(),
-                scaling.getVm(),
-                resourceManageableClass.getSimpleName(), (long) amountToDeallocate);
-            return false;
+                (long) amountToDeallocate, resourceManageableClass.getSimpleName(),
+                scaling.getVm(), vmResource.getCapacity(),
+                vmResource.getPercentUtilization() * 100);
+            return true;
         }
 
-        LOGGER.info(
-            "{}: {}: {} {} deallocated from {}: new capacity is {}. Current resource usage is {}%",
+        LOGGER.error(
+            "{}: {}: {} requested to reduce {} capacity by {} but an unexpected error occurred and the resource was not resized",
             scaling.getVm().getSimulation().clockStr(),
             scaling.getClass().getSimpleName(),
-            (long) amountToDeallocate, resourceManageableClass.getSimpleName(),
-            scaling.getVm(), vmResource.getCapacity(),
-            vmResource.getPercentUtilization() * 100);
-        return true;
+            scaling.getVm(),
+            resourceManageableClass.getSimpleName(), (long) amountToDeallocate);
+        return false;
+
     }
 
     /**

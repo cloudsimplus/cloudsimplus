@@ -27,6 +27,8 @@ import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.listeners.VmHostEventInfo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * An interface to allow implementing
@@ -37,6 +39,8 @@ import org.cloudsimplus.listeners.VmHostEventInfo;
  * @since CloudSim Plus 1.0.0
  */
 public interface VmScaling {
+    Logger LOGGER = LoggerFactory.getLogger(VmScaling.class.getSimpleName());
+
     /**
      * An attribute that implements the Null Object Design Pattern for {@link VmScaling}
      * objects.
@@ -56,9 +60,8 @@ public interface VmScaling {
      * <p><b>When the VmScaling is assigned to a Vm, the Vm sets itself to the VmScaling object,
      * creating an association between the two objects.</b></p>
      * @param vm the Vm to set
-     * @return
      */
-    VmScaling setVm(Vm vm);
+    void setVm(Vm vm);
 
     /**
      * Requests the Vm to be scaled up or down if it is over or underloaded, respectively.

@@ -39,7 +39,7 @@ public abstract class VmScalingAbstract implements VmScaling {
     private Vm vm;
 
     protected VmScalingAbstract() {
-        this.setVm(Vm.NULL);
+        this.vm = Vm.NULL;
     }
 
     @Override
@@ -48,9 +48,8 @@ public abstract class VmScalingAbstract implements VmScaling {
     }
 
     @Override
-    public final VmScaling setVm(final Vm vm) {
+    public void setVm(final Vm vm) {
         this.vm = Objects.requireNonNull(vm);
-        return this;
     }
 
     /**

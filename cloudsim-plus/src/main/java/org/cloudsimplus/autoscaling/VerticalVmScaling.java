@@ -112,14 +112,6 @@ public interface VerticalVmScaling extends VmScaling {
     Class<? extends ResourceManageable> getResourceClass();
 
     /**
-     * Sets the class of Vm resource that this scaling object will request up or down scaling.
-     * Such a class can be {@link Ram}.class, {@link Bandwidth}.class or {@link Pe}.class.
-     * @param resourceClass the resource class to set
-     * @return
-     */
-    VerticalVmScaling setResourceClass(Class<? extends ResourceManageable> resourceClass);
-
-    /**
      * Gets the factor that will be used to scale a Vm resource up or down,
      * whether such a resource is over or underloaded, according to the
      * defined predicates.
@@ -308,4 +300,13 @@ public interface VerticalVmScaling extends VmScaling {
      * @return the amount of allocated resource
      */
     long getAllocatedResource();
+
+    /**
+     * Tries to allocate more resources for a VM,
+     * if there is availability.
+     * @return
+     */
+    boolean allocateResourceForVm();
+
+    void logResourceUnavailable();
 }
