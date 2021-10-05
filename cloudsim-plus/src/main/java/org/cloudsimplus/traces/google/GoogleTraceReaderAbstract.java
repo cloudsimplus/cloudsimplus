@@ -57,7 +57,7 @@ abstract class GoogleTraceReaderAbstract<T extends Identifiable> extends TraceRe
     /* default */  GoogleTraceReaderAbstract(final String filePath, final InputStream reader) {
         super(filePath, reader);
         this.setFieldDelimiterRegex(",");
-        availableObjectsMap = new HashMap();
+        availableObjectsMap = new HashMap<>();
     }
 
     /**
