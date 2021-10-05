@@ -7,7 +7,7 @@ These guidelines are mainly relevant when you are planning to contribute to the 
 # Ways You Can Contribute
 
 1. Clicking on the "Star" button at the top of the project's GitHub page, giving us more visibility.
-1. Using CloudSim Plus at your academic work and citing us in your publications. See the [Publications Section](#publications) for more information.
+1. Using CloudSim Plus at your academic work and citing us in your publications. See the [Publications Section](https://cloudsimplus.org/#publications) for more information.
 1. Promoting CloudSim Plus at your social networks and research groups.
 1. Participating on the [Google Groups Forum](https://groups.google.com/group/cloudsim-plus) by reporting your experiences using the framework, answering other users' questions or simply participating in the discussions. Just make sure you read the forum policies at its home page before posting there.
 1. Reporting issues (check instructions below).
@@ -22,11 +22,11 @@ If you want to contribute in some of the 3 last ways presented above, please fol
 
 1. Make sure you have a [GitHub account](https://github.com/signup/free)
 1. [Check if you are using the latest development version of CloudSim Plus](http://cloudsimplus.readthedocs.io/en/latest/syncing-you-fork-or-clone.html). 
-1. Submit a [ticket for your issue](/issues), assuming one does not already exist. Check the next sub-section for more details. 
+1. Submit a [ticket for your issue](https://github.com/manoelcampos/cloudsimplus/issues), assuming one does not already exist. Check the next sub-section for more details. 
 
 ## Requesting a Feature or Reporting an Issue
 
-If you just want to request a feature or report an issue, look if the issue/feature you want to report/request hasn't been reported/requested yet at the [issues page](https://github.com/manoelcampos/cloudsim-plus/issues). Try checking the existing issues/features and search using some keywords before creating a new ticket. You can also check the [Google Groups Forum](https://groups.google.com/group/cloudsim-plus) to see if there is any discussion about the subject. If the issue/feature has not been created in the issues page yet, feel free to create a ticket there.
+If you just want to request a feature or report an issue, look if the issue/feature you want to report/request hasn't been reported/requested yet at the [issues page](https://github.com/manoelcampos/cloudsimplus/issues). Try checking the existing issues/features and search using some keywords before creating a new ticket. You can also check the [Google Groups Forum](https://groups.google.com/group/cloudsim-plus) to see if there is any discussion about the subject. If the issue/feature has not been created in the issues page yet, feel free to create a ticket there.
 
 If you are planing to fix an issue or implement a feature, after reporting it, we recommend you to firstly discuss the subject at the [Google Groups Forum](https://groups.google.com/group/cloudsim-plus) and your proposed implementation. This is important to make other users and the CloudSim Plus team to know what you are planning to do and to avoid simultaneous work on the same issues/features.
 
