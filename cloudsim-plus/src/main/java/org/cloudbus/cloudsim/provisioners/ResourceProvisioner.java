@@ -66,7 +66,7 @@ public interface ResourceProvisioner {
      *
      * @param vm the virtual machine for which the resource is being allocated
      * @param newTotalVmResource the new total amount of resource to allocate to the VM,
-     * changing the allocate resource to this new amount. It doesn't increase
+     * changing the allocated resource to this new amount. It doesn't increase
      * the current allocated VM resource by the given amount, instead,
      * it changes the VM allocated resource to that specific amount
      * @return $true if the resource could be allocated; $false otherwise
