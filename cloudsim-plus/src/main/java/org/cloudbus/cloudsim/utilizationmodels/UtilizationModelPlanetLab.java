@@ -137,7 +137,6 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
      *
      * <p>If a mapper Function is not set, the values are used as read from the trace file,
      * without any change (except that the scale is always converted to [0..1]).</p>
-     * @param mapper a {@link UnaryOperator} Function to set
      * @throws NumberFormatException when a value inside the side is not a valid number
      * @see #getSchedulingInterval()
      * @see #getInstance(String)
