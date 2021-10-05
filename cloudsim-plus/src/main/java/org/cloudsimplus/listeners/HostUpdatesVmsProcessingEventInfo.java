@@ -50,13 +50,13 @@ public interface HostUpdatesVmsProcessingEventInfo extends HostEventInfo  {
      * @param host the {@link Host} where the event happened
      * @param nextCloudletCompletionTime the expected time for completion of the next {@link Cloudlet}
      */
-    static HostUpdatesVmsProcessingEventInfo of(final EventListener<? extends EventInfo> listener, final Host host, final double nextCloudletCompletionTime) {
+    static HostUpdatesVmsProcessingEventInfo of(final EventListener<HostUpdatesVmsProcessingEventInfo> listener, final Host host, final double nextCloudletCompletionTime) {
         final double time = host.getSimulation().clock();
         return new HostUpdatesVmsProcessingEventInfo() {
             @Override public double getNextCloudletCompletionTime() { return nextCloudletCompletionTime; }
             @Override public Host getHost() { return host; }
             @Override public double getTime() { return time; }
-            @Override public EventListener<? extends EventInfo> getListener() { return listener; }
+            @Override public EventListener<HostUpdatesVmsProcessingEventInfo> getListener() { return listener; }
         };
     }
 }

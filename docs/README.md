@@ -26,5 +26,5 @@ To build the documentation in html use:
 make html
 ```
 
-After that, you can navigate the generated documentation locally by accessing the [_build](_build) directory. 
+After that, you can navigate the generated documentation locally by accessing the `_build` directory. 
 To publish the updated documentation to ReadTheDocs site, just commit any changes (which don't include the _build directory) and push them to GitHub.
