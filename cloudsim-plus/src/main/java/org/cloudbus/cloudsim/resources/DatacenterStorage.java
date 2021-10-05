@@ -162,7 +162,7 @@ public class DatacenterStorage {
         }
 
         for (final SanStorage storage : getStorageList()) {
-            if (storage.isAmountAvailable((long) file.getSize())) {
+            if (storage.isAmountAvailable(file.getSize())) {
                 storage.addFile(file);
                 return DataCloudTags.FILE_ADD_SUCCESSFUL;
             }

@@ -70,7 +70,7 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractRun
     /** @see #getSimulationRuns() */
     private int simulationRuns;
 
-    private AtomicInteger finishedRuns;
+    private final AtomicInteger finishedRuns;
 
     /** @see #getExperimentsStartTimeSecs() */
     private long experimentsStartTimeSecs;
@@ -82,7 +82,7 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractRun
     private final boolean applyAntitheticVariates;
 
     /** @see #getBatchesNumber() */
-    private int batchesNumber;
+    private final int batchesNumber;
 
     /**
      * A Map containing a List of values for each metric to be computed.

@@ -401,7 +401,7 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
         }
         LOGGER.info(
             "{}: VmAllocationPolicy: Reallocation of VMs from overloaded hosts: {}{}",
-            getDatacenter().getSimulation().clockStr(), System.lineSeparator(), builder.toString());
+            getDatacenter().getSimulation().clockStr(), System.lineSeparator(), builder);
 
         return migrationMap;
     }

@@ -70,7 +70,6 @@ public class CsvTableColumn extends AbstractTableColumn {
         return String.format(DATA_COL_SEPARATOR_FORMAT, super.generateData(data), getTable().getColumnSeparator());
     }
 
-
     /**
      * Align a string to the right side, based on the length of the title
      * header of the column.

@@ -886,7 +886,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
             return cloudletsAffectedList;
         }
 
-        LOGGER.warn("Vm: " + vm.getId() + " does not belong to this broker! Broker: " + this.toString());
+        LOGGER.warn("Vm: " + vm.getId() + " does not belong to this broker! Broker: " + this);
         return new ArrayList<>();
     }
 

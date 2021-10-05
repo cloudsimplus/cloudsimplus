@@ -39,10 +39,10 @@ import java.util.Objects;
 public class PowerMeasurement {
 
     /** @see #getStaticPower() */
-    private double staticPower;
+    private final double staticPower;
 
     /** @see #getDynamicPower() */
-    private double dynamicPower;
+    private final double dynamicPower;
 
     /**
      * Instantiates a power measurement with a given static and dynamic power consumption.

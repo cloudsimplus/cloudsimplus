@@ -68,7 +68,7 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
      * without any change (except that the scale is always converted to [0..1]).</p>
      * @see #UtilizationModelPlanetLab(String, UnaryOperator)
      */
-    private UnaryOperator<Double> mapper;
+    private final UnaryOperator<Double> mapper;
 
     /**
      * @see #getSchedulingInterval()
