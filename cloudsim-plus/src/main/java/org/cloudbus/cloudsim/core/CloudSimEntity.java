@@ -156,26 +156,28 @@ public abstract class CloudSimEntity implements SimEntity, Cloneable {
 
     @Override
     public boolean schedule(final SimEvent evt) {
-        if (!canSendEvent(evt)) {
-            return false;
+        if (canSendEvent(evt)) {
+            simulation.send(evt);
+            return true;
         }
-        simulation.send(evt);
-        return true;
+
+        return false;
     }
 
+    /**
+     * If the simulation has finished and an  {@link CloudSimTags#END_OF_SIMULATION}
+     * message is sent, it has to be processed to enable entities to shut down.
+     */
     private boolean canSendEvent(final SimEvent evt) {
-        /**
-         * If the simulation has finished and an  {@link CloudSimTags#END_OF_SIMULATION}
-         * message is sent, it has to be processed to enable entities to shut down.
-         */
-        if (!simulation.isRunning() && evt.getTag() != CloudSimTags.END_OF_SIMULATION) {
-            LOGGER.warn(
-                "{}: {}: Cannot send events before simulation starts or after it finishes. Trying to send message {} to {}",
-                getSimulation().clockStr(), this, evt.getTag(), evt.getDestination());
-            return false;
+        if (simulation.isRunning() || evt.getTag() == CloudSimTags.END_OF_SIMULATION) {
+            return true;
         }
 
-        return true;
+        LOGGER.warn(
+            "{}: {}: Cannot send events before simulation starts or after it finishes. Trying to send message {} to {}",
+            getSimulation().clockStr(), this, evt.getTag(), evt.getDestination());
+        return false;
+
     }
 
     /**
@@ -240,11 +242,9 @@ public abstract class CloudSimEntity implements SimEntity, Cloneable {
      */
     public void scheduleFirst(final SimEntity dest, final double delay, final int tag, final Object data) {
         final var evt = new CloudSimEvent(delay, this, dest, tag, data);
-        if (!canSendEvent(evt)) {
-            return;
+        if (canSendEvent(evt)) {
+            simulation.sendFirst(evt);
         }
-
-        simulation.sendFirst(evt);
     }
 
     /**
