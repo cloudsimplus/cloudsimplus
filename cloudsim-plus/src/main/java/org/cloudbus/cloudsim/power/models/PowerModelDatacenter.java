@@ -2,6 +2,8 @@ package org.cloudbus.cloudsim.power.models;
 
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 
+import java.util.Objects;
+
 /**
  * Abstract implementation of a data center power model.
  * @since CloudSim Plus 6.0.0
@@ -28,8 +30,6 @@ public abstract class PowerModelDatacenter implements PowerModel {
      * @param datacenter the Datacenter to set
      */
     public final void setDatacenter(final Datacenter datacenter) {
-        if(datacenter == null)
-            this.datacenter = Datacenter.NULL;
-        else this.datacenter = datacenter;
+        this.datacenter = Objects.requireNonNull(datacenter);
     }
 }
