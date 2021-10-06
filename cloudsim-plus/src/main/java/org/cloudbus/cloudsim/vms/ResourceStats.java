@@ -31,14 +31,14 @@ import java.util.Objects;
 import java.util.function.Function;
 
 /**
- * Computes statistics about {@link Resource} utilization for a given machine (VM or Host).
- * Such a resource can be, for instance, CPU, RAM or BW.
+ * A base class for computing statistics about {@link Resource} utilization
+ * for a given machine (VM or Host). Such a resource can be, for instance, CPU, RAM or BW.
  *
  * @param <T> The kind of machine to collect resource utilization statistics
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 6.1.0
  */
-public abstract class AbstractResourceStats<T extends AbstractMachine> {
+public class ResourceStats<T extends AbstractMachine> {
     private final Function<T, Double> resourceUtilizationFunction;
     private final T machine;
     private final SummaryStatistics stats;
@@ -51,7 +51,7 @@ public abstract class AbstractResourceStats<T extends AbstractMachine> {
      * @param resourceUtilizationFunction a {@link Function} that receives a Machine
      *                                    and returns the current resource utilization for that machine
      */
-    public AbstractResourceStats(final T machine, final Function<T, Double> resourceUtilizationFunction){
+    protected ResourceStats(final T machine, final Function<T, Double> resourceUtilizationFunction){
         this.resourceUtilizationFunction = Objects.requireNonNull(resourceUtilizationFunction);
         this.machine = Objects.requireNonNull(machine);
         this.stats = new SummaryStatistics();

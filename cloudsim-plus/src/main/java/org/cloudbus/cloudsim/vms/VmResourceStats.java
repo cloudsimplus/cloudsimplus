@@ -31,7 +31,7 @@ import java.util.function.Function;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 6.1.0
  */
-public class VmResourceStats extends AbstractResourceStats<Vm> {
+public class VmResourceStats extends ResourceStats<Vm> {
     public static final VmResourceStats NULL = new VmResourceStats(Vm.NULL, vm -> 0.0) { @Override public boolean add(double time) { return false; }};
 
     /**

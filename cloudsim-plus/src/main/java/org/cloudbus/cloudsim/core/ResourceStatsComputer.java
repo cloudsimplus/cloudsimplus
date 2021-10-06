@@ -25,7 +25,7 @@ package org.cloudbus.cloudsim.core;
 
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.hosts.Host;
-import org.cloudbus.cloudsim.vms.AbstractResourceStats;
+import org.cloudbus.cloudsim.vms.ResourceStats;
 import org.cloudbus.cloudsim.vms.Vm;
 
 /**
@@ -38,7 +38,7 @@ import org.cloudbus.cloudsim.vms.Vm;
  * @author Manoel Camops da Silva Filho
  * @since CloudSim Plus 6.1.0
  */
-public interface ResourceStatsComputer<T extends AbstractResourceStats> {
+public interface ResourceStatsComputer<T extends ResourceStats> {
     /**
      * Gets machine's CPU utilization percentage statistics (between [0 and 1]).
      * <p><b>WARNING:</b> You need to enable the data collection and computation of statistics

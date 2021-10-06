@@ -33,7 +33,7 @@ import java.util.function.Function;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 6.1.0
  */
-public class HostResourceStats extends AbstractResourceStats<Host> {
+public class HostResourceStats extends ResourceStats<Host> {
     public static final HostResourceStats NULL = new HostResourceStats(Host.NULL, host -> 0.0) { @Override public boolean add(double time) { return false; }};
 
     /**
