@@ -673,6 +673,7 @@ public class HostFaultInjection extends CloudSimEntity {
     /**
      * Gets the total number of faults which affected all VMs from any broker.
      * @return
+     * @see #getTotalFaultsNumber(DatacenterBroker)
      */
     public long getTotalFaultsNumber() {
         return vmFaultsByBroker.values().size();
