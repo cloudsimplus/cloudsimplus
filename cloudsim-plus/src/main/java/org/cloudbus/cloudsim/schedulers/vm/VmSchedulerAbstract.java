@@ -109,8 +109,7 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
      * @param vm the VM to set the status of its used physical PEs
      * */
     private void updateHostPesStatusToBusy(final Vm vm) {
-        final List<Pe> peList = getHost().getFreePeList();
-        updateHostPesStatus(peList, vm.getNumberOfPes(), Pe.Status.BUSY);
+        updateHostPesStatus(host.getFreePeList(), vm.getNumberOfPes(), Pe.Status.BUSY);
     }
 
     /**
@@ -125,8 +124,8 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
             return;
         }
 
-        final List<Pe> selectedPes = peList.stream().limit(vPesNumber).collect(toList());
-        ((HostSimple)host).setPeStatus(selectedPes, newStatus);
+        final var selectedPesList = peList.stream().limit(vPesNumber).collect(toList());
+        ((HostSimple)host).setPeStatus(selectedPesList, newStatus);
     }
 
     protected abstract boolean allocatePesForVmInternal(Vm vm, MipsShare mipsShareRequested);
@@ -152,8 +151,7 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
      * @param removedPes number of PEs actually removed from the VM
      */
     private void updateHostUsedPesToFree(final long removedPes) {
-        final List<Pe> busyPeList = host.getBusyPeList();
-        updateHostPesStatus(busyPeList, removedPes, Pe.Status.FREE);
+        updateHostPesStatus(host.getBusyPeList(), removedPes, Pe.Status.FREE);
     }
 
     /**
