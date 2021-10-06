@@ -271,7 +271,7 @@ public abstract class Experiment extends AbstractRunnable {
     /**
      * Creates a datacenter using a {@link VmAllocationPolicy}
      * supplied by the {@link #vmAllocationPolicySupplier}.
-     * @param index index of the datatacenter being created, from the {@link #datacentersNumber}.
+     * @param index index of the datacenter being created, from the {@link #datacentersNumber}.
      * @return
      * @see #setVmAllocationPolicySupplier(Supplier)
      */

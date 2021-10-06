@@ -43,7 +43,7 @@ import java.util.function.Function;
  * </p>
  *
  * <p>The {@link GoogleTaskEventsTraceReader} cannot create the Cloudlets itself
- * by hardcoding some simulation specific parameters such as the {@link UtilizationModel}
+ * by hard-coding some simulation specific parameters such as the {@link UtilizationModel}
  * or cloudlet length. This way, it request a {@link Function} implemented
  * by the developer using the {@link GoogleTaskEventsTraceReader} class
  * that has the custom logic to create Cloudlets.

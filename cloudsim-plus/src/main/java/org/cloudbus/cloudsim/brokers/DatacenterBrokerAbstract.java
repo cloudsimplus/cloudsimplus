@@ -466,7 +466,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
             case CloudSimTags.CLOUDLET_RETURN -> processCloudletReturn(evt);
             case CloudSimTags.CLOUDLET_READY -> processCloudletReady(evt);
             /* The data of such a kind of event is a Runnable that has all
-             * the logic to update the Cloudlet's attributes.
+             * the logic to update Cloudlet's attributes.
              * This way, it will be run to perform such an update.
              * Check the documentation of the tag below for details.*/
             case CloudSimTags.CLOUDLET_UPDATE_ATTRIBUTES -> executeRunnableEvent(evt);
