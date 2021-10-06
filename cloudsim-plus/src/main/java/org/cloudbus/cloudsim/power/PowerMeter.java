@@ -6,7 +6,6 @@ import org.cloudbus.cloudsim.core.Simulation;
 import org.cloudbus.cloudsim.core.events.SimEvent;
 import org.cloudbus.cloudsim.power.models.PowerModel;
 
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
@@ -37,7 +36,7 @@ public class PowerMeter extends CloudSimEntity {
      * @param powerAwareEntity an entity to have its power consumption measured
      */
     public PowerMeter(final Simulation simulation, final PowerAware<? extends PowerModel> powerAwareEntity) {
-        this(simulation, Arrays.asList(powerAwareEntity));
+        this(simulation, List.of(powerAwareEntity));
     }
 
     /**
