@@ -429,7 +429,7 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractRun
      * @see UniformDistr#isApplyAntitheticVariates()
      * @see #createRandomGen(int, double, double)
      */
-    public <T extends StatisticalDistribution> T createRandomGen(final int experimentIndex, final Function<Long, T> randomGenCreator) {
+    public <S extends StatisticalDistribution> S createRandomGen(final int experimentIndex, final Function<Long, S> randomGenCreator) {
         Objects.requireNonNull(randomGenCreator, "The Function to instantiate the Random Number Generator cannot be null.");
 
         if(seeds.isEmpty()){
@@ -439,7 +439,7 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractRun
 
         if (isToReuseSeedFromFirstHalfOfExperiments(experimentIndex)) {
             final int expIndexFromFirstHalf = experimentIndex - halfSimulationRuns();
-            final T prng = randomGenCreator.apply(getSeed(expIndexFromFirstHalf));
+            final S prng = randomGenCreator.apply(getSeed(expIndexFromFirstHalf));
             prng.setApplyAntitheticVariates(true);
             return prng;
         }
