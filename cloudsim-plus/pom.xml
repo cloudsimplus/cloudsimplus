@@ -8,11 +8,11 @@
 
     <name>CloudSim Plus API</name>
     <description>CloudSim Plus: A modern, highly extensible and easier-to-use Java 8+ Framework for Modeling and Simulation of Cloud Computing Infrastructures and Services</description>
-    <url>http://cloudsimplus.org</url>
+    <url>https://cloudsimplus.org</url>
 
     <organization>
-        <name>Systems, Security and Image Communication Lab - Instituto de Telecomunicações (IT) - Universidade da Beira Interior (UBI) - Instituto Federal de Educação Ciência e Tecnologia do Tocantins (IFTO)</name>
-        <url>http://www.it.pt/MSP-Cv http://www.it.pt http://www.ubi.pt http://www.ifto.edu.br</url>
+        <name>Instituto de Telecomunicações (IT) - Universidade da Beira Interior (UBI) - Instituto Federal de Educação Ciência e Tecnologia do Tocantins (IFTO)</name>
+        <url>https://www.it.pt https://www.ubi.pt http://www.ifto.edu.br</url>
     </organization>
 
     <inceptionYear>2015</inceptionYear>
