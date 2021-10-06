@@ -71,7 +71,7 @@ public final class TaskEvent extends TaskData {
         return priority;
     }
 
-    protected TaskEvent setPriority(final int priority) {
+    TaskEvent setPriority(final int priority) {
         this.priority = priority;
         return this;
     }
@@ -117,7 +117,7 @@ public final class TaskEvent extends TaskData {
         return (long)(resourceRequestForCpuCores*maxCpuCores);
     }
 
-    /* default */ TaskEvent setResourceRequestForCpuCores(final double resourceRequestForCpuCores) {
+    TaskEvent setResourceRequestForCpuCores(final double resourceRequestForCpuCores) {
         this.resourceRequestForCpuCores = resourceRequestForCpuCores;
         return this;
     }
@@ -148,7 +148,7 @@ public final class TaskEvent extends TaskData {
         return resourceRequestForRam;
     }
 
-    /* default */ TaskEvent setResourceRequestForRam(final double resourceRequestForRam) {
+    TaskEvent setResourceRequestForRam(final double resourceRequestForRam) {
         this.resourceRequestForRam = resourceRequestForRam;
         return this;
     }
@@ -173,7 +173,7 @@ public final class TaskEvent extends TaskData {
         return resourceRequestForLocalDiskSpace;
     }
 
-    /* default */ TaskEvent setResourceRequestForLocalDiskSpace(final double resourceRequestForLocalDiskSpace) {
+    TaskEvent setResourceRequestForLocalDiskSpace(final double resourceRequestForLocalDiskSpace) {
         this.resourceRequestForLocalDiskSpace = resourceRequestForLocalDiskSpace;
         return this;
     }
@@ -187,7 +187,7 @@ public final class TaskEvent extends TaskData {
         return userName;
     }
 
-    /* default */ TaskEvent setUserName(final String userName) {
+    TaskEvent setUserName(final String userName) {
         this.userName = userName;
         return this;
     }
@@ -201,7 +201,7 @@ public final class TaskEvent extends TaskData {
         return timestamp;
     }
 
-    protected TaskEvent setTimestamp(final double timestamp) {
+    TaskEvent setTimestamp(final double timestamp) {
         this.timestamp = timestamp;
         return this;
     }
@@ -218,7 +218,7 @@ public final class TaskEvent extends TaskData {
         return schedulingClass;
     }
 
-    /* default */ TaskEvent setSchedulingClass(final int schedulingClass) {
+    TaskEvent setSchedulingClass(final int schedulingClass) {
         this.schedulingClass = schedulingClass;
         return this;
     }
@@ -236,7 +236,7 @@ public final class TaskEvent extends TaskData {
      * @param type the int value of the task event type
      * @return
      */
-    public TaskEvent setType(final int type) {
+    TaskEvent setType(final int type) {
         this.type = TaskEventType.getValue(type);
         return this;
     }
@@ -246,7 +246,7 @@ public final class TaskEvent extends TaskData {
      * @param reader
      * @return
      */
-    protected static TaskEvent of(final GoogleTaskEventsTraceReader reader) {
+    public static TaskEvent of(final GoogleTaskEventsTraceReader reader) {
         final TaskEvent event = new TaskEvent();
         /*@TODO The tasks with the same username must run inside the same user's VM,
          *       unless the machineID is different.
