@@ -292,7 +292,7 @@ public final class GoogleMachineEventsTraceReader extends GoogleTraceReaderAbstr
      *
      * @return the Host instance
      */
-    protected Host createHostFromTraceLine() {
+    Host createHostFromTraceLine() {
         final MachineEvent event = new MachineEvent();
         event.setCpuCores(MachineEventField.CPU_CAPACITY.getValue(this))
              .setRam(MachineEventField.RAM_CAPACITY.getValue(this))
@@ -317,7 +317,7 @@ public final class GoogleMachineEventsTraceReader extends GoogleTraceReaderAbstr
      *
      * @param host
      */
-    protected boolean addHostToRemovalList(final Host host) {
+    boolean addHostToRemovalList(final Host host) {
         return hostsForRemoval.add(host);
     }
 
@@ -329,7 +329,7 @@ public final class GoogleMachineEventsTraceReader extends GoogleTraceReaderAbstr
      * @param host the Host to be added
      * @return
      */
-    protected boolean addLaterAvailableHost(final Host host) {
+    boolean addLaterAvailableHost(final Host host) {
         return laterAvailableHosts.add(host);
     }
 
