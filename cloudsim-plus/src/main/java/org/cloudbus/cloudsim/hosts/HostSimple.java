@@ -1022,7 +1022,7 @@ public class HostSimple implements Host {
      */
     protected void incFailedPesNumber(final int inc) {
         this.failedPesNumber += inc;
-        workingPesNumber += -inc;
+        workingPesNumber -= inc;
     }
 
     /**
