@@ -173,7 +173,6 @@ public interface VerticalVmScaling extends VmScaling {
 
     /**
      * Gets the actual Vm {@link Resource} this scaling object is in charge of scaling.
-     * This resource is defined after calling the {@link #setResourceClass(Class)}.
      * @return
      */
     Resource getResource();

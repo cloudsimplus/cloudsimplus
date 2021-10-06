@@ -61,7 +61,7 @@ public abstract class AbstractResourceStats<T extends AbstractMachine> {
      * Collects the current resource utilization percentage (in scale from 0 to 1)
      * for the given time to the statistics.
      * @param time current simulation time
-     * @returnn true if data was collected, false otherwise (meaning it's not time to collect data).
+     * @return true if data was collected, false otherwise (meaning it's not time to collect data).
      */
     public boolean add(final double time) {
         try {
