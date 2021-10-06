@@ -157,12 +157,7 @@ public class File {
      * @return a clone of the current file (as a master copy) or null if an error occurs
      */
     public File makeMasterCopy() {
-        final File file = makeCopy();
-        if (file != null) {
-            file.setMasterCopy(true);
-        }
-
-        return file;
+        return makeCopy().setMasterCopy(true);
     }
 
     /**
@@ -403,8 +398,9 @@ public class File {
      * @param masterCopy a flag denotes true for master copy or false for a
      *                   replica
      */
-    public void setMasterCopy(final boolean masterCopy) {
+    public File setMasterCopy(final boolean masterCopy) {
         attribute.setMasterCopy(masterCopy);
+        return this;
     }
 
     /**
