@@ -30,7 +30,7 @@ public class LogNormalDistr extends LogNormalDistribution implements ContinuousD
     private long seed;
 
     /**
-     * Creates a Log-normal Pseudo-Random Number Generator (RNG).
+     * Creates a Log-normal Pseudo-Random Number Generator (PRNG).
      *
      * @param shape the shape parameter of this distribution
      * @param scale the scale parameter of this distribution
@@ -40,7 +40,7 @@ public class LogNormalDistr extends LogNormalDistribution implements ContinuousD
     }
 
     /**
-     * Creates a Log-normal Pseudo-Random Number Generator (RNG).
+     * Creates a Log-normal Pseudo-Random Number Generator (PRNG).
      * @param shape the shape parameter of this distribution
      * @param scale the scale parameter of this distribution
      * @param seed the seed
@@ -50,7 +50,7 @@ public class LogNormalDistr extends LogNormalDistribution implements ContinuousD
     }
 
     /**
-     * Creates a Log-normal Pseudo-Random Number Generator (RNG).
+     * Creates a Log-normal Pseudo-Random Number Generator (PRNG).
      * @param shape the shape parameter of this distribution
      * @param scale the scale parameter of this distribution
      * @param seed the seed
