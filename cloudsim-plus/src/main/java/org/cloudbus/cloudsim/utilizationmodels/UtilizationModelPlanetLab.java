@@ -266,7 +266,7 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
     }
 
     private UtilizationModelPlanetLab(
-        final InputStreamReader sreader,
+        final InputStreamReader reader,
         final double schedulingInterval,
         final int dataSamples,
         final UnaryOperator<Double> mapper) throws NumberFormatException
@@ -274,7 +274,7 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
         super();
         setSchedulingInterval(schedulingInterval);
         this.mapper = Objects.requireNonNull(mapper);
-        utilization = readWorkloadFile(sreader, dataSamples);
+        utilization = readWorkloadFile(reader, dataSamples);
     }
 
     private static InputStreamReader newReader(final String workloadFilePath) {
