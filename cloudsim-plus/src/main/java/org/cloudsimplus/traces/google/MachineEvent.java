@@ -70,7 +70,7 @@ public final class MachineEvent extends MachineDataBase {
         return ram;
     }
 
-    protected MachineEvent setRam(final long ram){
+    MachineEvent setRam(final long ram){
         this.ram = ram;
         return this;
     }
