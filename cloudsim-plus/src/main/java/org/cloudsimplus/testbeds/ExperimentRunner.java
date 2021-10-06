@@ -381,7 +381,8 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractRun
      * @return
      */
     private ExperimentRunner setSimulationRunsAsMultipleOfBatchNumber() {
-         simulationRuns = getBatchesNumber() * (int)Math.ceil(getSimulationRuns() / getBatchesNumber());
+        final double batches = getBatchesNumber();
+        simulationRuns = (int)(batches * Math.ceil(simulationRuns / batches));
          return this;
     }
 
