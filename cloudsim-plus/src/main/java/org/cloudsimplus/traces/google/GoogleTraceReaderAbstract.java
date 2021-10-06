@@ -88,7 +88,7 @@ abstract class GoogleTraceReaderAbstract<T extends Identifiable> extends TraceRe
      * Executes any pre-process before starting to read the trace file,
      * such as checking if required attributes were set.
      *
-     * @TODO Such a method should be defined as a Functional attribute.
+     * TODO Such a method should be defined as a Functional attribute.
      *       Since it won't be implemented by every subclass, by it being abstract,
      *       forces to subclasses to implement it (even if just including an empty method).
      */
@@ -97,7 +97,7 @@ abstract class GoogleTraceReaderAbstract<T extends Identifiable> extends TraceRe
     /**
      * Executes any post-process after the trace file was totally parsed.
      *
-     * @TODO Such a method should be defined as a Functional attribute.
+     * TODO Such a method should be defined as a Functional attribute.
      *       Since it won't be implemented by every subclass, by it being abstract,
      *       forces to subclasses to implement it (even if just including an empty method).
      */
