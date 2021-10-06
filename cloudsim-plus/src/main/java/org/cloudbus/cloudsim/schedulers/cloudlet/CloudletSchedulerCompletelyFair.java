@@ -211,9 +211,9 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
 	 * @see #getCloudletWeight(CloudletExecution)
 	 * @see #getWeightSumOfRunningCloudlets()
 	 */
-	protected double computeCloudletTimeSlice(final CloudletExecution cloudlet){
-		final double timeslice = getLatency() * getCloudletWeightPercentBetweenAllCloudlets(cloudlet);
-		return Math.min(timeslice, getMinimumGranularity());
+	private double computeCloudletTimeSlice(final CloudletExecution cloudlet){
+		final double timeSlice = getLatency() * getCloudletWeightPercentBetweenAllCloudlets(cloudlet);
+		return Math.min(timeSlice, getMinimumGranularity());
 	}
 
     /**
@@ -262,7 +262,7 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
 	 * @return the cloudlet weight to use PEs
      * @see #getCloudletNiceness(CloudletExecution)
 	 */
-	protected double getCloudletWeight(final CloudletExecution cloudlet){
+    private double getCloudletWeight(final CloudletExecution cloudlet){
 		return 1024.0/(Math.pow(1.25, getCloudletNiceness(cloudlet)));
 	}
 
@@ -277,7 +277,7 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
      * @return the cloudlet niceness
      * @see <a href="http://man7.org/linux/man-pages/man1/nice.1.html">Man Pages: Nice values for Linux processes</a>
      */
-    protected double getCloudletNiceness(final CloudletExecution cloudlet){
+    private double getCloudletNiceness(final CloudletExecution cloudlet){
         return -cloudlet.getCloudlet().getPriority();
     }
 
