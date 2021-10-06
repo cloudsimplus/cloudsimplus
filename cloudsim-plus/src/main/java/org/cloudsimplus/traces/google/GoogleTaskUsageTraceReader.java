@@ -373,31 +373,12 @@ public final class GoogleTaskUsageTraceReader extends GoogleTraceReaderAbstract<
 
     @Override
     protected boolean processParsedLineInternal() {
-        final TaskUsage taskUsage = createTaskUsageFromTraceLine();
+        final TaskUsage taskUsage = new TaskUsage(this);
         return brokers.stream()
                .flatMap(broker -> getAvailableObjects().stream())
                .filter(cloudlet -> cloudlet.getId() == taskUsage.getUniqueTaskId())
                .findFirst()
                .map(cloudlet -> requestCloudletUsageChange(cloudlet, taskUsage)).isPresent();
-    }
-
-    private TaskUsage createTaskUsageFromTraceLine() {
-        final TaskUsage usage = new TaskUsage();
-        usage
-            .setStartTime(FieldIndex.START_TIME.getValue(this))
-            .setEndTime(FieldIndex.END_TIME.getValue(this))
-            .setMeanCpuUsageRate(FieldIndex.MEAN_CPU_USAGE_RATE.getValue(this))
-            .setCanonicalMemoryUsage(FieldIndex.CANONICAL_MEMORY_USAGE.getValue(this))
-            .setAssignedMemoryUsage(FieldIndex.ASSIGNED_MEMORY_USAGE.getValue(this))
-            .setMaximumMemoryUsage(FieldIndex.MAXIMUM_MEMORY_USAGE.getValue(this))
-            .setMeanDiskIoTime(FieldIndex.MEAN_DISK_IO_TIME.getValue(this))
-            .setMeanLocalDiskSpaceUsed(FieldIndex.MEAN_LOCAL_DISK_SPACE_USED.getValue(this))
-            .setMaximumCpuUsage(FieldIndex.MAXIMUM_CPU_USAGE.getValue(this))
-            .setMaximumDiskIoTime(FieldIndex.MAXIMUM_DISK_IO_TIME.getValue(this))
-            .setJobId(FieldIndex.JOB_ID.getValue(this))
-            .setTaskIndex(FieldIndex.TASK_INDEX.getValue(this))
-            .setMachineId(FieldIndex.MACHINE_ID.getValue(this));
-        return usage;
     }
 
     /**

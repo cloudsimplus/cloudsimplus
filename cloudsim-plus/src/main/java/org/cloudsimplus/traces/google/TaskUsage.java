@@ -24,6 +24,9 @@
 package org.cloudsimplus.traces.google;
 
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
+import org.cloudsimplus.traces.google.GoogleTaskUsageTraceReader.FieldIndex;
+
+import java.util.Objects;
 
 /**
  * A data class to store the attributes representing the resource usage of a {@link Cloudlet},
@@ -46,46 +49,49 @@ public final class TaskUsage extends TaskData {
     private double maximumCpuUsage;
     private double maximumDiskIoTime;
 
+    public TaskUsage(final GoogleTaskUsageTraceReader reader) {
+        Objects.requireNonNull(reader);
+
+        this.startTime = FieldIndex.START_TIME.getValue(reader);
+        this.endTime = FieldIndex.END_TIME.getValue(reader);
+        this.meanCpuUsageRate = FieldIndex.MEAN_CPU_USAGE_RATE.getValue(reader);
+        this.canonicalMemoryUsage = FieldIndex.CANONICAL_MEMORY_USAGE.getValue(reader);
+        this.assignedMemoryUsage = FieldIndex.ASSIGNED_MEMORY_USAGE.getValue(reader);
+        this.maximumMemoryUsage = FieldIndex.MAXIMUM_MEMORY_USAGE.getValue(reader);
+        this.meanDiskIoTime = FieldIndex.MEAN_DISK_IO_TIME.getValue(reader);
+        this.meanLocalDiskSpaceUsed = FieldIndex.MEAN_LOCAL_DISK_SPACE_USED.getValue(reader);
+        this.maximumCpuUsage = FieldIndex.MAXIMUM_CPU_USAGE.getValue(reader);
+        this.maximumDiskIoTime = FieldIndex.MAXIMUM_DISK_IO_TIME.getValue(reader);
+        setJobId(FieldIndex.JOB_ID.getValue(reader));
+        setTaskIndex(FieldIndex.TASK_INDEX.getValue(reader));
+        setMachineId(FieldIndex.MACHINE_ID.getValue(reader));
+    }
+
     /**
      * Gets the start time of the measurement period (converted to seconds).
      * @return
-     * @see GoogleTaskUsageTraceReader.FieldIndex#START_TIME
+     * @see FieldIndex#START_TIME
      */
     public double getStartTime() {
         return startTime;
     }
 
-    TaskUsage setStartTime(final double startTime) {
-        this.startTime = startTime;
-        return this;
-    }
-
     /**
      * Gets the end time of the measurement period (converted to seconds).
      * @return
-     * @see GoogleTaskUsageTraceReader.FieldIndex#END_TIME
+     * @see FieldIndex#END_TIME
      */
     public double getEndTime() {
         return endTime;
     }
 
-    TaskUsage setEndTime(final double endTime) {
-        this.endTime = endTime;
-        return this;
-    }
-
     /**
      * Gets the mean CPU usage rate (in percentage from 0 to 1).
      * @return
-     * @see GoogleTaskUsageTraceReader.FieldIndex#MEAN_CPU_USAGE_RATE
+     * @see FieldIndex#MEAN_CPU_USAGE_RATE
      */
     public double getMeanCpuUsageRate() {
         return meanCpuUsageRate;
-    }
-
-    TaskUsage setMeanCpuUsageRate(final double meanCpuUsageRate) {
-        this.meanCpuUsageRate = meanCpuUsageRate;
-        return this;
     }
 
     /**
@@ -93,15 +99,10 @@ public final class TaskUsage extends TaskData {
      * i.e., the number of user accessible pages,
      * including page cache but excluding some pages marked as stale.
      * @return
-     * @see GoogleTaskUsageTraceReader.FieldIndex#CANONICAL_MEMORY_USAGE
+     * @see FieldIndex#CANONICAL_MEMORY_USAGE
      */
     public double getCanonicalMemoryUsage() {
         return canonicalMemoryUsage;
-    }
-
-    TaskUsage setCanonicalMemoryUsage(final double canonicalMemoryUsage) {
-        this.canonicalMemoryUsage = canonicalMemoryUsage;
-        return this;
     }
 
     /**
@@ -110,15 +111,10 @@ public final class TaskUsage extends TaskData {
      * to the container where the task was running inside the
      * Google Cluster.
      * @return
-     * @see GoogleTaskUsageTraceReader.FieldIndex#ASSIGNED_MEMORY_USAGE
+     * @see FieldIndex#ASSIGNED_MEMORY_USAGE
      */
     public double getAssignedMemoryUsage() {
         return assignedMemoryUsage;
-    }
-
-    TaskUsage setAssignedMemoryUsage(final double assignedMemoryUsage) {
-        this.assignedMemoryUsage = assignedMemoryUsage;
-        return this;
     }
 
     /**
@@ -127,29 +123,19 @@ public final class TaskUsage extends TaskData {
      * measurement observed over the measurement interval.
      * This value is not available for some tasks.
      * @return
-     * @see GoogleTaskUsageTraceReader.FieldIndex#MAXIMUM_MEMORY_USAGE
+     * @see FieldIndex#MAXIMUM_MEMORY_USAGE
      */
     public double getMaximumMemoryUsage() {
         return maximumMemoryUsage;
     }
 
-    TaskUsage setMaximumMemoryUsage(final double maximumMemoryUsage) {
-        this.maximumMemoryUsage = maximumMemoryUsage;
-        return this;
-    }
-
     /**
      * Gets the mean disk I/O time.
      * @return
-     * @see GoogleTaskUsageTraceReader.FieldIndex#MEAN_DISK_IO_TIME
+     * @see FieldIndex#MEAN_DISK_IO_TIME
      */
     public double getMeanDiskIoTime() {
         return meanDiskIoTime;
-    }
-
-    TaskUsage setMeanDiskIoTime(final double meanDiskIoTime) {
-        this.meanDiskIoTime = meanDiskIoTime;
-        return this;
     }
 
     /**
@@ -159,42 +145,27 @@ public final class TaskUsage extends TaskData {
      * Additionally, most disk space used by distributed, persistent storage (e.g. GFS, Colossus)
      * is not accounted for in this trace.
      * @return
-     * @see GoogleTaskUsageTraceReader.FieldIndex#MEAN_LOCAL_DISK_SPACE_USED
+     * @see FieldIndex#MEAN_LOCAL_DISK_SPACE_USED
      */
     public double getMeanLocalDiskSpaceUsed() {
         return meanLocalDiskSpaceUsed;
     }
 
-    TaskUsage setMeanLocalDiskSpaceUsed(final double meanLocalDiskSpaceUsed) {
-        this.meanLocalDiskSpaceUsed = meanLocalDiskSpaceUsed;
-        return this;
-    }
-
     /**
      * Gets the maximum CPU usage observed over the measurement interval.
      * @return
-     * @see GoogleTaskUsageTraceReader.FieldIndex#MAXIMUM_CPU_USAGE
+     * @see FieldIndex#MAXIMUM_CPU_USAGE
      */
     public double getMaximumCpuUsage() {
         return maximumCpuUsage;
     }
 
-    TaskUsage setMaximumCpuUsage(final double maximumCpuUsage) {
-        this.maximumCpuUsage = maximumCpuUsage;
-        return this;
-    }
-
     /**
      * Gets the maximum disk IO time observed over the measurement interval.
      * @return
-     * @see GoogleTaskUsageTraceReader.FieldIndex#MAXIMUM_DISK_IO_TIME
+     * @see FieldIndex#MAXIMUM_DISK_IO_TIME
      */
     public double getMaximumDiskIoTime() {
         return maximumDiskIoTime;
-    }
-
-    TaskUsage setMaximumDiskIoTime(final double maximumDiskIoTime) {
-        this.maximumDiskIoTime = maximumDiskIoTime;
-        return this;
     }
 }
