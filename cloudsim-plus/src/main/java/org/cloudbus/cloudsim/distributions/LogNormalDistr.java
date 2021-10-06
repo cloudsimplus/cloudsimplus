@@ -20,7 +20,7 @@ import java.io.Serial;
  * @author Marcos Dias de Assuncao
  * @since CloudSim Toolkit 1.0
  */
-public class LognormalDistr extends LogNormalDistribution implements ContinuousDistribution {
+public class LogNormalDistr extends LogNormalDistribution implements ContinuousDistribution {
     @Serial
     private static final long serialVersionUID = -1023800693849880578L;
 
@@ -35,7 +35,7 @@ public class LognormalDistr extends LogNormalDistribution implements ContinuousD
      * @param shape the shape parameter of this distribution
      * @param scale the scale parameter of this distribution
      */
-    public LognormalDistr(final double shape, final double scale) {
+    public LogNormalDistr(final double shape, final double scale) {
         this(shape, scale, StatisticalDistribution.defaultSeed());
     }
 
@@ -45,7 +45,7 @@ public class LognormalDistr extends LogNormalDistribution implements ContinuousD
      * @param scale the scale parameter of this distribution
      * @param seed the seed
      */
-    public LognormalDistr(final double shape, final double scale, final long seed) {
+    public LogNormalDistr(final double shape, final double scale, final long seed) {
         this(shape, scale, seed, StatisticalDistribution.newDefaultGen(seed));
     }
 
@@ -55,7 +55,7 @@ public class LognormalDistr extends LogNormalDistribution implements ContinuousD
      * @param scale the scale parameter of this distribution
      * @param seed the seed
      */
-    public LognormalDistr(final double shape, final double scale, final long seed, final RandomGenerator rng) {
+    public LogNormalDistr(final double shape, final double scale, final long seed, final RandomGenerator rng) {
         super(rng, scale, shape);
         if(seed < 0){
             throw new IllegalArgumentException("Seed cannot be negative");
@@ -81,7 +81,7 @@ public class LognormalDistr extends LogNormalDistribution implements ContinuousD
     }
 
     @Override
-    public LognormalDistr setApplyAntitheticVariates(final boolean applyAntitheticVariates) {
+    public LogNormalDistr setApplyAntitheticVariates(final boolean applyAntitheticVariates) {
         this.applyAntitheticVariates = applyAntitheticVariates;
         return this;
     }
