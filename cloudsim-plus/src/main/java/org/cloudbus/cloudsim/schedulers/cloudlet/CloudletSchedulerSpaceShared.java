@@ -11,6 +11,8 @@ import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.CloudletExecution;
 import org.cloudbus.cloudsim.resources.Pe;
 
+import java.io.Serial;
+
 /**
  * Implements a policy of scheduling performed by a
  * virtual machine to run its {@link Cloudlet Cloudlets}. It considers there
@@ -30,6 +32,8 @@ import org.cloudbus.cloudsim.resources.Pe;
  * @since CloudSim Toolkit 1.0
  */
 public class CloudletSchedulerSpaceShared extends CloudletSchedulerAbstract {
+    @Serial
+    private static final long serialVersionUID = 4699085761507163349L;
 
     @Override
     public double cloudletResume(Cloudlet cloudlet) {

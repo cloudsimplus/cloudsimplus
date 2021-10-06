@@ -11,6 +11,8 @@ import org.apache.commons.math3.distribution.GammaDistribution;
 import org.apache.commons.math3.random.JDKRandomGenerator;
 import org.apache.commons.math3.random.RandomGenerator;
 
+import java.io.Serial;
+
 /**
  * A Pseudo-Random Number Generator following the
  * <a href="https://en.wikipedia.org/wiki/Gamma_distribution">Gamma</a>
@@ -21,6 +23,9 @@ import org.apache.commons.math3.random.RandomGenerator;
  * @since CloudSim Toolkit 1.0
  */
 public class GammaDistr extends GammaDistribution implements ContinuousDistribution {
+    @Serial
+    private static final long serialVersionUID = 4299916221045352272L;
+
     /** @see #isApplyAntitheticVariates() */
     private boolean applyAntitheticVariates;
 

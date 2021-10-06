@@ -30,6 +30,7 @@ import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.schedulers.MipsShare;
 import org.cloudbus.cloudsim.util.MathUtil;
 
+import java.io.Serial;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -124,7 +125,10 @@ import static java.util.stream.Collectors.toList;
  * @see <a href="https://oakbytes.wordpress.com/linux-scheduler/">Linux Scheduler FAQ</a>
  */
 public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTimeShared {
-	/**
+    @Serial
+    private static final long serialVersionUID = 9077807080812191007L;
+
+    /**
 	 * @see #getMinimumGranularity()
 	 */
 	private int minimumGranularity = 2;

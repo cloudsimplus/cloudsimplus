@@ -11,6 +11,8 @@ import org.apache.commons.math3.distribution.WeibullDistribution;
 import org.apache.commons.math3.random.JDKRandomGenerator;
 import org.apache.commons.math3.random.RandomGenerator;
 
+import java.io.Serial;
+
 /**
  * A Pseudo-Random Number Generator following the
  * <a href="https://en.wikipedia.org/wiki/Weibull_distribution">Weibull
@@ -21,6 +23,9 @@ import org.apache.commons.math3.random.RandomGenerator;
  * @since CloudSim Toolkit 1.0
  */
 public class WeibullDistr extends WeibullDistribution implements ContinuousDistribution {
+    @Serial
+    private static final long serialVersionUID = -4265866419607842138L;
+
     /** @see #isApplyAntitheticVariates() */
     private boolean applyAntitheticVariates;
 

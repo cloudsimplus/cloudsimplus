@@ -10,6 +10,8 @@ package org.cloudbus.cloudsim.distributions;
 import org.apache.commons.math3.distribution.LogNormalDistribution;
 import org.apache.commons.math3.random.RandomGenerator;
 
+import java.io.Serial;
+
 /**
  * A Pseudo-Random Number Generator following the
  * <a href="https://en.wikipedia.org/wiki/Log-normal_distribution">Log-normal</a>
@@ -19,6 +21,9 @@ import org.apache.commons.math3.random.RandomGenerator;
  * @since CloudSim Toolkit 1.0
  */
 public class LognormalDistr extends LogNormalDistribution implements ContinuousDistribution {
+    @Serial
+    private static final long serialVersionUID = -1023800693849880578L;
+
     /** @see #isApplyAntitheticVariates() */
     private boolean applyAntitheticVariates;
 

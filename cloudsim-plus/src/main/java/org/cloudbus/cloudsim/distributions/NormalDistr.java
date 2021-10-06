@@ -3,6 +3,8 @@ package org.cloudbus.cloudsim.distributions;
 import org.apache.commons.math3.distribution.NormalDistribution;
 import org.apache.commons.math3.random.RandomGenerator;
 
+import java.io.Serial;
+
 /**
  * A Pseudo-Random Number Generator following the
  * <a href="https://en.wikipedia.org/wiki/Normal_distribution">Normal (Gaussian) distribution</a>.
@@ -10,6 +12,9 @@ import org.apache.commons.math3.random.RandomGenerator;
  * @author Manoel Campos da Silva Filho
  */
 public class NormalDistr extends NormalDistribution implements ContinuousDistribution{
+    @Serial
+    private static final long serialVersionUID = -111861609983327477L;
+
     /** @see #isApplyAntitheticVariates() */
     private boolean applyAntitheticVariates;
     private long seed;

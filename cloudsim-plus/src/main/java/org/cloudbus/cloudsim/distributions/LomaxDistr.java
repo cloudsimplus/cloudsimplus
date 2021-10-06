@@ -9,6 +9,8 @@ package org.cloudbus.cloudsim.distributions;
 
 import org.apache.commons.math3.random.RandomGenerator;
 
+import java.io.Serial;
+
 /**
  * A Pseudo-Random Number Generator following the
  * <a href="https://en.wikipedia.org/wiki/Lomax_distribution">
@@ -19,6 +21,9 @@ import org.apache.commons.math3.random.RandomGenerator;
  * @since CloudSim Toolkit 1.0
  */
 public class LomaxDistr extends ParetoDistr implements ContinuousDistribution {
+    @Serial
+    private static final long serialVersionUID = 8444069359429898420L;
+
     private long seed;
 
     /**

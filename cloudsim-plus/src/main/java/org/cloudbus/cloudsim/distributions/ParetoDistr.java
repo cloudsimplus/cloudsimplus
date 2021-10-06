@@ -10,6 +10,8 @@ package org.cloudbus.cloudsim.distributions;
 import org.apache.commons.math3.distribution.ParetoDistribution;
 import org.apache.commons.math3.random.RandomGenerator;
 
+import java.io.Serial;
+
 /**
  * A Pseudo-Random Number Generator following the
  * <a href="https://en.wikipedia.org/wiki/Pareto_distribution">Pareto</a>
@@ -20,6 +22,9 @@ import org.apache.commons.math3.random.RandomGenerator;
  * @since CloudSim Toolkit 1.0
  */
 public class ParetoDistr extends ParetoDistribution implements ContinuousDistribution {
+    @Serial
+    private static final long serialVersionUID = 5395364227220680901L;
+
     /** @see #isApplyAntitheticVariates() */
     private boolean applyAntitheticVariates;
 

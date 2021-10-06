@@ -10,6 +10,7 @@ import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.CloudletExecution;
 import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
 
+import java.io.Serial;
 import java.util.List;
 
 /**
@@ -73,6 +74,8 @@ import java.util.List;
  * @see CloudletSchedulerSpaceShared
  */
 public class CloudletSchedulerTimeShared extends CloudletSchedulerAbstract {
+    @Serial
+    private static final long serialVersionUID = 2115862129708036038L;
 
     /**
      * {@inheritDoc}

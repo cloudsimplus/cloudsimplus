@@ -12,6 +12,8 @@ import org.apache.commons.math3.distribution.UniformRealDistribution;
 import org.apache.commons.math3.random.JDKRandomGenerator;
 import org.apache.commons.math3.random.RandomGenerator;
 
+import java.io.Serial;
+
 /**
  * A Pseudo-Random Number Generator (RNG) following the
  * <a href="https://en.wikipedia.org/wiki/Uniform_distribution_(continuous)">
@@ -22,6 +24,9 @@ import org.apache.commons.math3.random.RandomGenerator;
  * @since CloudSim Toolkit 1.0
  */
 public class UniformDistr extends UniformRealDistribution implements ContinuousDistribution {
+    @Serial
+    private static final long serialVersionUID = 3341651849752903428L;
+
     /** @see #isApplyAntitheticVariates() */
     private boolean applyAntitheticVariates;
     private long seed;

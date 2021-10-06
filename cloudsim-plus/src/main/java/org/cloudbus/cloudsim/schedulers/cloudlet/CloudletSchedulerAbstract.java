@@ -25,6 +25,7 @@ import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudsimplus.listeners.CloudletResourceAllocationFailEventInfo;
 import org.cloudsimplus.listeners.EventListener;
 
+import java.io.Serial;
 import java.util.*;
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
@@ -48,6 +49,9 @@ import static org.cloudsimplus.listeners.CloudletResourceAllocationFailEventInfo
  * @since CloudSim Toolkit 1.0
  */
 public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
+    @Serial
+    private static final long serialVersionUID = -2314361120790372742L;
+
     /** @see #getCloudletPausedList() */
     private final List<CloudletExecution> cloudletPausedList;
 
