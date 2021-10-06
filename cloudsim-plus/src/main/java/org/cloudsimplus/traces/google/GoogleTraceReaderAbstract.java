@@ -25,6 +25,7 @@ package org.cloudsimplus.traces.google;
 
 import org.cloudbus.cloudsim.core.Identifiable;
 import org.cloudbus.cloudsim.util.TraceReaderAbstract;
+import org.cloudsimplus.traces.ParsingException;
 import org.cloudsimplus.traces.TraceReaderBase;
 
 import java.io.InputStream;
@@ -75,7 +76,7 @@ abstract class GoogleTraceReaderAbstract<T extends Identifiable> extends TraceRe
             try {
                 readFile(this::processParsedLine);
             } catch (Exception e) {
-                throw new RuntimeException("Error when processing the trace file. Current trace line: " + getLastLineNumber(), e);
+                throw new ParsingException("Error when processing the trace file. Current trace line: " + getLastLineNumber(), e);
             }
 
             postProcess();
