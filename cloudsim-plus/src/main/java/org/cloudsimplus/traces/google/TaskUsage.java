@@ -47,7 +47,7 @@ public final class TaskUsage extends TaskData {
     private double maximumDiskIoTime;
 
     /**
-     * Gets the start time​ of the measurement period (converted to seconds).
+     * Gets the start time of the measurement period (converted to seconds).
      * @return
      * @see GoogleTaskUsageTraceReader.FieldIndex#START_TIME
      */
@@ -55,13 +55,13 @@ public final class TaskUsage extends TaskData {
         return startTime;
     }
 
-    protected TaskUsage setStartTime(final double startTime) {
+    TaskUsage setStartTime(final double startTime) {
         this.startTime = startTime;
         return this;
     }
 
     /**
-     * Gets the end time​ of the measurement period (converted to seconds).
+     * Gets the end time of the measurement period (converted to seconds).
      * @return
      * @see GoogleTaskUsageTraceReader.FieldIndex#END_TIME
      */
@@ -69,7 +69,7 @@ public final class TaskUsage extends TaskData {
         return endTime;
     }
 
-    /* default */ TaskUsage setEndTime(final double endTime) {
+    TaskUsage setEndTime(final double endTime) {
         this.endTime = endTime;
         return this;
     }
@@ -83,7 +83,7 @@ public final class TaskUsage extends TaskData {
         return meanCpuUsageRate;
     }
 
-    /* default */ TaskUsage setMeanCpuUsageRate(final double meanCpuUsageRate) {
+    TaskUsage setMeanCpuUsageRate(final double meanCpuUsageRate) {
         this.meanCpuUsageRate = meanCpuUsageRate;
         return this;
     }
@@ -99,7 +99,7 @@ public final class TaskUsage extends TaskData {
         return canonicalMemoryUsage;
     }
 
-    /* default */ TaskUsage setCanonicalMemoryUsage(final double canonicalMemoryUsage) {
+    TaskUsage setCanonicalMemoryUsage(final double canonicalMemoryUsage) {
         this.canonicalMemoryUsage = canonicalMemoryUsage;
         return this;
     }
@@ -116,7 +116,7 @@ public final class TaskUsage extends TaskData {
         return assignedMemoryUsage;
     }
 
-    /* default */ TaskUsage setAssignedMemoryUsage(final double assignedMemoryUsage) {
+    TaskUsage setAssignedMemoryUsage(final double assignedMemoryUsage) {
         this.assignedMemoryUsage = assignedMemoryUsage;
         return this;
     }
@@ -133,7 +133,7 @@ public final class TaskUsage extends TaskData {
         return maximumMemoryUsage;
     }
 
-    /* default */ TaskUsage setMaximumMemoryUsage(final double maximumMemoryUsage) {
+    TaskUsage setMaximumMemoryUsage(final double maximumMemoryUsage) {
         this.maximumMemoryUsage = maximumMemoryUsage;
         return this;
     }
@@ -147,7 +147,7 @@ public final class TaskUsage extends TaskData {
         return meanDiskIoTime;
     }
 
-    /* default */ TaskUsage setMeanDiskIoTime(final double meanDiskIoTime) {
+    TaskUsage setMeanDiskIoTime(final double meanDiskIoTime) {
         this.meanDiskIoTime = meanDiskIoTime;
         return this;
     }
@@ -165,7 +165,7 @@ public final class TaskUsage extends TaskData {
         return meanLocalDiskSpaceUsed;
     }
 
-    /* default */ TaskUsage setMeanLocalDiskSpaceUsed(final double meanLocalDiskSpaceUsed) {
+    TaskUsage setMeanLocalDiskSpaceUsed(final double meanLocalDiskSpaceUsed) {
         this.meanLocalDiskSpaceUsed = meanLocalDiskSpaceUsed;
         return this;
     }
@@ -179,7 +179,7 @@ public final class TaskUsage extends TaskData {
         return maximumCpuUsage;
     }
 
-    /* default */ TaskUsage setMaximumCpuUsage(final double maximumCpuUsage) {
+    TaskUsage setMaximumCpuUsage(final double maximumCpuUsage) {
         this.maximumCpuUsage = maximumCpuUsage;
         return this;
     }
@@ -193,7 +193,7 @@ public final class TaskUsage extends TaskData {
         return maximumDiskIoTime;
     }
 
-    /* default */ TaskUsage setMaximumDiskIoTime(final double maximumDiskIoTime) {
+    TaskUsage setMaximumDiskIoTime(final double maximumDiskIoTime) {
         this.maximumDiskIoTime = maximumDiskIoTime;
         return this;
     }
