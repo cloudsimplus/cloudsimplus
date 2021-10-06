@@ -26,6 +26,7 @@ package org.cloudsimplus.traces.google;
 import org.cloudsimplus.traces.google.GoogleTaskUsageTraceReader.FieldIndex;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
@@ -41,20 +42,22 @@ public class GoogleTaskUsageTraceReaderTest {
      */
     @Test
     public void testFieldIndex(){
-        assertEquals(0, FieldIndex.START_TIME.ordinal());
-        assertEquals(1, FieldIndex.END_TIME.ordinal());
-        assertEquals(2, FieldIndex.JOB_ID.ordinal());
-        assertEquals(3, FieldIndex.TASK_INDEX.ordinal());
-        assertEquals(4, FieldIndex.MACHINE_ID.ordinal());
-        assertEquals(5, FieldIndex.MEAN_CPU_USAGE_RATE.ordinal());
-        assertEquals(6, FieldIndex.CANONICAL_MEMORY_USAGE.ordinal());
-        assertEquals(7, FieldIndex.ASSIGNED_MEMORY_USAGE.ordinal());
-        assertEquals(8, FieldIndex.UNMAPPED_PAGE_CACHE_MEMORY_USAGE.ordinal());
-        assertEquals(9, FieldIndex.TOTAL_PAGE_CACHE_MEMORY_USAGE.ordinal());
-        assertEquals(10, FieldIndex.MAXIMUM_MEMORY_USAGE.ordinal());
-        assertEquals(11, FieldIndex.MEAN_DISK_IO_TIME.ordinal());
-        assertEquals(12, FieldIndex.MEAN_LOCAL_DISK_SPACE_USED.ordinal());
-        assertEquals(13, FieldIndex.MAXIMUM_CPU_USAGE.ordinal());
-        assertEquals(14, FieldIndex.MAXIMUM_DISK_IO_TIME.ordinal());
+        assertAll(
+            () -> assertEquals(0, FieldIndex.START_TIME.ordinal()),
+            () -> assertEquals(1, FieldIndex.END_TIME.ordinal()),
+            () -> assertEquals(2, FieldIndex.JOB_ID.ordinal()),
+            () -> assertEquals(3, FieldIndex.TASK_INDEX.ordinal()),
+            () -> assertEquals(4, FieldIndex.MACHINE_ID.ordinal()),
+            () -> assertEquals(5, FieldIndex.MEAN_CPU_USAGE_RATE.ordinal()),
+            () -> assertEquals(6, FieldIndex.CANONICAL_MEMORY_USAGE.ordinal()),
+            () -> assertEquals(7, FieldIndex.ASSIGNED_MEMORY_USAGE.ordinal()),
+            () -> assertEquals(8, FieldIndex.UNMAPPED_PAGE_CACHE_MEMORY_USAGE.ordinal()),
+            () -> assertEquals(9, FieldIndex.TOTAL_PAGE_CACHE_MEMORY_USAGE.ordinal()),
+            () -> assertEquals(10, FieldIndex.MAXIMUM_MEMORY_USAGE.ordinal()),
+            () -> assertEquals(11, FieldIndex.MEAN_DISK_IO_TIME.ordinal()),
+            () -> assertEquals(12, FieldIndex.MEAN_LOCAL_DISK_SPACE_USED.ordinal()),
+            () -> assertEquals(13, FieldIndex.MAXIMUM_CPU_USAGE.ordinal()),
+            () -> assertEquals(14, FieldIndex.MAXIMUM_DISK_IO_TIME.ordinal())
+        );
     }
 }
