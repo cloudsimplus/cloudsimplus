@@ -76,6 +76,7 @@ public class AwsEc2Template implements Comparable<AwsEc2Template> {
     public AwsEc2Template(final AwsEc2Template source){
         this.name = source.name;
         this.cpus = source.cpus;
+        this.region = source.region;
         this.memoryInMB = source.memoryInMB;
         this.pricePerHour = source.pricePerHour;
         this.path = Paths.get(source.path.toUri());
