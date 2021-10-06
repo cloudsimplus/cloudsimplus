@@ -632,16 +632,6 @@ public class HostFaultInjection extends CloudSimEntity {
     }
 
     /**
-     * Gets the total number of faults happened for existing hosts.
-     * This isn't the total number of failed hosts because one
-     * host may fail multiple times.
-     * @return
-     */
-    public int getHostFaultsNumber() {
-        return hostFaultsNumber;
-    }
-
-    /**
      * Gets the Datacenter's availability as a percentage value between 0 and 1,
      * based on VMs' downtime (the times VMs took to be repaired).
      * @return
@@ -668,6 +658,16 @@ public class HostFaultInjection extends CloudSimEntity {
        // System.out.println(" Availability: broker " + broker + " value: " + mtbf / (mtbf + mttr));
         return mtbf / (mtbf + mttr);
 
+    }
+
+    /**
+     * Gets the total number of faults happened for existing hosts.
+     * This isn't the total number of failed hosts because one
+     * host may fail multiple times.
+     * @return
+     */
+    public int getHostFaultsNumber() {
+        return hostFaultsNumber;
     }
 
     /**
