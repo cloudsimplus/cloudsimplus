@@ -157,7 +157,7 @@ public final class ConfidenceInterval {
 
         /* The t-Distribution is used to determine the probability that
         the real population mean lies in a given interval. */
-        final TDistribution tDist = new TDistribution(freedomDegrees);
+        final var tDist = new TDistribution(freedomDegrees);
         final double significance = 1.0 - CONFIDENCE_LEVEL;
         return tDist.inverseCumulativeProbability(1.0 - significance / 2.0);
     }
