@@ -102,7 +102,7 @@ public final class ConfidenceInterval {
      * The Harry Perros' book states that if less than 30 samples are collected,
      * the t-Distribution has to be used to that purpose.
      *
-     * However, this article
+     * However, this
      * <a href="https://en.wikipedia.org/wiki/Confidence_interval#Basic_Steps">Wikipedia
      * article</a>
      * says that if the standard deviation of the real population is known, it
