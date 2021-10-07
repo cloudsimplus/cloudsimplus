@@ -84,7 +84,7 @@ abstract class NetworkVmExampleAbstract {
 
     /**
      * A Map representing a list of cloudlets from different applications.
-     * Each key represents the ID of a fictitious app that is composed of a list
+     * Each key represents the ID of an app that is composed by a list
      * of {@link  NetworkCloudlet}.
      */
     private final Map<Integer, List<NetworkCloudlet>> appMap;
