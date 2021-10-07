@@ -38,6 +38,8 @@ import java.util.List;
  * @since CloudSim Toolkit 3.0
  */
 public class NetworkVm extends VmSimple {
+    public static final NetworkVm NULL = new NetworkVm(0, 1);
+
     private List<NetworkCloudlet> cloudletList;
     private List<VmPacket> receivedPacketList;
     private boolean free;
