@@ -154,7 +154,7 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
             }
 
             final Host underloadedHost = getUnderloadedHost(ignoredSourceHosts);
-            if (underloadedHost == Host.NULL) {
+            if (Host.NULL.equals(underloadedHost)) {
                 break;
             }
             this.hostsUnderloaded = true;

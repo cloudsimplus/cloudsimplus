@@ -285,7 +285,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     @Override
     public DatacenterBroker submitVm(final Vm vm) {
         requireNonNull(vm);
-        if (vm == Vm.NULL) {
+        if (Vm.NULL.equals(vm)) {
             return this;
         }
 
@@ -1020,7 +1020,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
             return;
 
         final Vm vm = cloudlet.getVm();
-        final String vmMsg = vm == Vm.NULL ?
+        final String vmMsg = Vm.NULL.equals(vm) ?
                                 "it couldn't be mapped to any VM" :
                                 String.format("bind Vm %d is not available", vm.getId());
 

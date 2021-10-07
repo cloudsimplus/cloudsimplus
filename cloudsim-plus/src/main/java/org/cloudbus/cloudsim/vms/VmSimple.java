@@ -619,7 +619,7 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
 
     @Override
     public final void setHost(final Host host) {
-        if (requireNonNull(host) == Host.NULL) {
+        if (Host.NULL.equals(requireNonNull(host)))  {
             setCreated(false);
         }
         this.host = host;

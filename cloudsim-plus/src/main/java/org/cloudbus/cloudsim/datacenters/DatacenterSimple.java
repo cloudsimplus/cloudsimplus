@@ -275,7 +275,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     private void processHostRemovalRequest(final SimEvent srcEvt) {
         final long hostId = (long)srcEvt.getData();
         final Host host = getHostById(hostId);
-        if(host == Host.NULL) {
+        if(Host.NULL.equals(host)) {
             LOGGER.warn(
                 "{}: {}: Host {} was not found to be removed from {}.",
                 getSimulation().clockStr(), getClass().getSimpleName(), hostId, this);
@@ -832,12 +832,12 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     @Override
     public void requestVmMigration(final Vm sourceVm, Host targetHost) {
         //If Host.NULL is given, it must try to find a target host
-        if(targetHost == Host.NULL){
+        if(Host.NULL.equals(targetHost)){
             targetHost = vmAllocationPolicy.findHostForVm(sourceVm).orElse(Host.NULL);
         }
 
         //If a host couldn't be found yet
-        if(targetHost == Host.NULL) {
+        if(Host.NULL.equals(targetHost)) {
             LOGGER.warn("{}: {}: No suitable host found for {} in {}", sourceVm.getSimulation().clockStr(), getClass().getSimpleName(), sourceVm, this);
             return;
         }
@@ -845,7 +845,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         final Host sourceHost = sourceVm.getHost();
         final double delay = timeToMigrateVm(sourceVm, targetHost);
         final String msg1 =
-            sourceHost == Host.NULL ?
+            Host.NULL.equals(sourceHost) ?
                 String.format("%s to %s", sourceVm, targetHost) :
                 String.format("%s from %s to %s", sourceVm, sourceHost, targetHost);
 

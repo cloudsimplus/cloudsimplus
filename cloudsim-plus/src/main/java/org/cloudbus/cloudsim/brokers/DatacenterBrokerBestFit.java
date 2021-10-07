@@ -70,7 +70,7 @@ public class DatacenterBrokerBestFit extends DatacenterBrokerSimple {
             .min(Comparator.comparingLong(Vm::getExpectedFreePesNumber))
             .orElse(Vm.NULL);
 
-        if (mappedVm == Vm.NULL) {
+        if (Vm.NULL.equals(mappedVm)) {
             LOGGER.warn("{}: {}: {} (PEs: {}) couldn't be mapped to any suitable VM.",
                 getSimulation().clockStr(), getName(), cloudlet, cloudlet.getNumberOfPes());
         } else {
