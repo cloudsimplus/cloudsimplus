@@ -8,6 +8,7 @@
 package org.cloudbus.cloudsim.datacenters.network;
 
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicy;
+import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
 import org.cloudbus.cloudsim.core.Simulation;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
@@ -62,7 +63,24 @@ public class NetworkDatacenter extends DatacenterSimple {
         final List<? extends NetworkHost> hostList,
         final VmAllocationPolicy vmAllocationPolicy)
     {
-        super(simulation, hostList, vmAllocationPolicy);
+        this(simulation, hostList);
+        setVmAllocationPolicy(vmAllocationPolicy);
+    }
+
+    /**
+     * Creates a NetworkDatacenter that uses a {@link VmAllocationPolicySimple}
+     * as default.
+     *
+     * @param simulation The CloudSim instance that represents the simulation the Entity belongs to
+     * @param hostList list of {@link Host}s that will compound the Datacenter
+     *
+     * @throws IllegalArgumentException when this Host has zero number of PEs (Processing Elements).
+     */
+    public NetworkDatacenter(
+        final Simulation simulation,
+        final List<? extends NetworkHost> hostList)
+    {
+        super(simulation, hostList);
         switchMap = new ArrayList<>();
     }
 
