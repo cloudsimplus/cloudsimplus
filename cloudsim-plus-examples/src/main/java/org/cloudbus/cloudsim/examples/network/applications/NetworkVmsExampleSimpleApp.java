@@ -27,7 +27,7 @@ import static org.cloudbus.cloudsim.examples.network.applications.NetworkVmExamp
 
 /**
  * A simple example simulating a distributed application.
- * It show how 2 {@link NetworkCloudlet}'s communicate,
+ * It shows how 2 {@link NetworkCloudlet}'s communicate,
  * each one running inside VMs on different hosts.
  *
  * @author Manoel Campos da Silva Filho
@@ -220,7 +220,7 @@ public class NetworkVmsExampleSimpleApp {
     }
 
     /**
-     * Adds an execution task to the list of tasks of the given
+     * Adds an execution-task to the list of tasks of the given
      * {@link NetworkCloudlet}.
      *
      * @param cloudlet the {@link NetworkCloudlet} the task will belong to
@@ -233,15 +233,13 @@ public class NetworkVmsExampleSimpleApp {
     }
 
     /**
-     * Adds a send task to the list of tasks of the given {@link NetworkCloudlet}.
+     * Adds a send-task to the list of tasks of the given {@link NetworkCloudlet}.
      *
      * @param sourceCloudlet the {@link NetworkCloudlet} from which packets will be sent
      * @param destinationCloudlet the destination {@link NetworkCloudlet} to send packets to
      */
-    private void addSendTask(
-        NetworkCloudlet sourceCloudlet,
-        NetworkCloudlet destinationCloudlet) {
-        CloudletSendTask task = new CloudletSendTask(sourceCloudlet.getTasks().size());
+    private void addSendTask(final NetworkCloudlet sourceCloudlet, final NetworkCloudlet destinationCloudlet) {
+        final var task = new CloudletSendTask(sourceCloudlet.getTasks().size());
         task.setMemory(TASK_RAM);
         sourceCloudlet.addTask(task);
         for (int i = 0; i < NUMBER_OF_PACKETS_TO_SEND; i++) {
@@ -256,12 +254,10 @@ public class NetworkVmsExampleSimpleApp {
      * @param cloudlet the {@link NetworkCloudlet} the task will belong to
      * @param sourceCloudlet the {@link NetworkCloudlet} expected to receive packets from
      */
-    private void addReceiveTask(NetworkCloudlet cloudlet, NetworkCloudlet sourceCloudlet) {
-        CloudletReceiveTask task = new CloudletReceiveTask(
-                cloudlet.getTasks().size(), sourceCloudlet.getVm());
+    private void addReceiveTask(final NetworkCloudlet cloudlet, final NetworkCloudlet sourceCloudlet) {
+        final var task = new CloudletReceiveTask(cloudlet.getTasks().size(), sourceCloudlet.getVm());
         task.setMemory(TASK_RAM);
         task.setExpectedPacketsToReceive(NUMBER_OF_PACKETS_TO_SEND);
         cloudlet.addTask(task);
     }
-
 }
