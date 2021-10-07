@@ -8,7 +8,6 @@
  */
 package org.cloudbus.cloudsim.examples.network;
 
-import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
@@ -19,7 +18,6 @@ import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.HostSimple;
 import org.cloudbus.cloudsim.network.topologies.BriteNetworkTopology;
-import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.resources.SanStorage;
@@ -51,9 +49,9 @@ public class NetworkExample1 {
     private final Datacenter datacenter0;
     private final DatacenterBroker broker;
 
-    private List<Cloudlet> cloudletList;
-    private List<Vm> vmList;
-    private CloudSim simulation;
+    private final List<Cloudlet> cloudletList;
+    private final List<Vm> vmList;
+    private final CloudSim simulation;
 
     public static void main(String[] args) {
         new NetworkExample1();
@@ -71,7 +69,7 @@ public class NetworkExample1 {
         simulation = new CloudSim();
 
         datacenter0 = createDatacenter();
-        broker = createBroker();
+        broker = new DatacenterBrokerSimple(simulation);
         configureNetwork();
 
         createAndSubmitVms(broker);
@@ -86,7 +84,7 @@ public class NetworkExample1 {
 
     private void configureNetwork() {
         //load the network topology file
-        BriteNetworkTopology networkTopology = BriteNetworkTopology.getInstance(NETWORK_TOPOLOGY_FILE);
+        final var networkTopology = BriteNetworkTopology.getInstance(NETWORK_TOPOLOGY_FILE);
         simulation.setNetworkTopology(networkTopology);
 
         //maps CloudSim entities to BRITE entities
@@ -124,21 +122,20 @@ public class NetworkExample1 {
         final long size = 10000; //image size (Megabyte)
         final int ram = 512; //vm memory (Megabyte)
         final long bw = 1000; //in Megabits/s
-        Vm vm1 = new VmSimple(mips, VM_PES)
+        final Vm vm1 = new VmSimple(mips, VM_PES)
                 .setRam(ram).setBw(bw).setSize(size)
                 .setCloudletScheduler(new CloudletSchedulerTimeShared());
 
         vmList.add(vm1);
-
         broker.submitVmList(vmList);
     }
 
     private Datacenter createDatacenter() {
-        List<Host> hostList = new ArrayList<>();
-        List<Pe> peList = new ArrayList<>();
+        final List<Host> hostList = new ArrayList<>();
+        final List<Pe> peList = new ArrayList<>();
 
         final long mips = 1000;
-        peList.add(new PeSimple(mips, new PeProvisionerSimple()));
+        peList.add(new PeSimple(mips));
 
         final long ram = 2048; // in Megabytes
         final long storage = 1000000; // in Megabytes
@@ -147,15 +144,6 @@ public class NetworkExample1 {
         Host host = new HostSimple(ram, bw, storage, peList);
         hostList.add(host);
 
-        return new DatacenterSimple(simulation, hostList, new VmAllocationPolicySimple());
-    }
-
-    /**
-     * Creates a DatacenterBroker.
-     * We strongly encourage users to develop their own broker policies,
-     * to submit vms and cloudlets according to the specific rules of the simulated scenario.
-     */
-    private DatacenterBroker createBroker() {
-        return new DatacenterBrokerSimple(simulation);
+        return new DatacenterSimple(simulation, hostList);
     }
 }
