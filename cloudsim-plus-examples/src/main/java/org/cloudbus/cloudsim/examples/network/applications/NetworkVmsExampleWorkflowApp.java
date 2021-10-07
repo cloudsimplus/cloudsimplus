@@ -21,8 +21,7 @@ import java.util.List;
 public class NetworkVmsExampleWorkflowApp extends NetworkVmExampleAbstract {
     /**
      * Starts the execution of the example.
-     *
-     * @param args command line arguments
+     * @param args
      */
     public static void main(String[] args) {
         new NetworkVmsExampleWorkflowApp();
@@ -34,9 +33,8 @@ public class NetworkVmsExampleWorkflowApp extends NetworkVmExampleAbstract {
 
     @Override
     public List<NetworkCloudlet> createNetworkCloudlets(DatacenterBroker broker) {
-        NetworkCloudlet networkCloudletList[] = new NetworkCloudlet[3];
-        List<NetworkVm> selectedVms =
-                randomlySelectVmsForApp(broker, networkCloudletList.length);
+        final NetworkCloudlet networkCloudletList[] = new NetworkCloudlet[3];
+        final List<NetworkVm> selectedVms = randomlySelectVmsForApp(networkCloudletList.length);
 
         for(int i = 0; i < networkCloudletList.length; i++){
             networkCloudletList[i] =
@@ -70,19 +68,16 @@ public class NetworkVmsExampleWorkflowApp extends NetworkVmExampleAbstract {
      * @return
      */
     private NetworkCloudlet createNetworkCloudlet(NetworkVm vm, DatacenterBroker broker) {
-        UtilizationModel utilizationModel = new UtilizationModelFull();
-        NetworkCloudlet cloudlet = new NetworkCloudlet(1, NETCLOUDLET_PES_NUMBER);
+        final UtilizationModel utilizationModel = new UtilizationModelFull();
+        final var cloudlet = new NetworkCloudlet(1, CLOUDLET_PES);
         cloudlet
-                .setMemory(NETCLOUDLET_RAM)
-                .setFileSize(NETCLOUDLET_FILE_SIZE)
-                .setOutputSize(NETCLOUDLET_OUTPUT_SIZE)
+                .setMemory(CLOUDLET_RAM)
+                .setFileSize(CLOUDLET_FILE_SIZE)
+                .setOutputSize(CLOUDLET_OUTPUT_SIZE)
                 .setUtilizationModel(utilizationModel)
                 .setVm(vm)
                 .setBroker(vm.getBroker());
 
         return cloudlet;
     }
-
-
-
 }

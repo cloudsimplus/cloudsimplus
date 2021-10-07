@@ -1,10 +1,12 @@
 package org.cloudbus.cloudsim.examples.network.applications;
 
-import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
-import org.cloudbus.cloudsim.cloudlets.network.*;
+import org.cloudbus.cloudsim.cloudlets.network.CloudletExecutionTask;
+import org.cloudbus.cloudsim.cloudlets.network.CloudletReceiveTask;
+import org.cloudbus.cloudsim.cloudlets.network.CloudletSendTask;
+import org.cloudbus.cloudsim.cloudlets.network.NetworkCloudlet;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.datacenters.network.NetworkDatacenter;
 import org.cloudbus.cloudsim.distributions.UniformDistr;
@@ -64,32 +66,29 @@ abstract class NetworkVmExampleAbstract {
      * Each application is just a list of {@link  NetworkCloudlet}.
      * @see #appMap
      */
-    public static final int NUMBER_OF_APPS = 1;
+    public static final int APPS_NUMBER = 1;
 
-    public static final int  NETCLOUDLET_PES_NUMBER = VM_PES_NUMBER;
-    public static final int  NETCLOUDLET_EXECUTION_TASK_LENGTH = 4000;
-    public static final int  NETCLOUDLET_FILE_SIZE = 300;
-    public static final int  NETCLOUDLET_OUTPUT_SIZE = 300;
-    public static final long NETCLOUDLET_RAM = 100; // in Megabytes
+    public static final int CLOUDLET_PES = VM_PES_NUMBER;
+    public static final int TASK_LENGTH = 4000;
+    public static final int CLOUDLET_FILE_SIZE = 300;
+    public static final int CLOUDLET_OUTPUT_SIZE = 300;
+    public static final long CLOUDLET_RAM = 100; // in Megabytes
     private static final long PACKET_DATA_LENGTH_IN_BYTES = 1000;
-    private static final long NUMBER_OF_PACKETS_TO_SEND = 100;
+    private static final long PACKETS_TO_SEND = 100;
     private static final int SCHEDULING_INTERVAL = 5;
 
     private final CloudSim simulation;
 
-    /**
-     * @see #getVmList()
-     */
-    private List<NetworkVm> vmList;
-    private NetworkDatacenter datacenter;
-    private List<DatacenterBroker> brokerList;
+    private final List<NetworkVm> vmList;
+    private final NetworkDatacenter datacenter;
+    private final List<DatacenterBroker> brokerList;
 
     /**
      * A Map representing a list of cloudlets from different applications.
      * Each key represents the ID of a fictitious app that is composed of a list
      * of {@link  NetworkCloudlet}.
      */
-    private Map<Integer, List<NetworkCloudlet>> appMap;
+    private final Map<Integer, List<NetworkCloudlet>> appMap;
 
     /**
      * Creates, starts, stops the simulation and shows results.
@@ -114,7 +113,6 @@ abstract class NetworkVmExampleAbstract {
         }
 
         simulation.start();
-
         showSimulationResults();
     }
 
@@ -124,16 +122,14 @@ abstract class NetworkVmExampleAbstract {
      * @param cloudlet the {@link NetworkCloudlet} the task will belong to
      */
     protected static void addExecutionTask(NetworkCloudlet cloudlet) {
-        CloudletTask task = new CloudletExecutionTask(
-            cloudlet.getTasks().size(), NETCLOUDLET_EXECUTION_TASK_LENGTH);
-        task.setMemory(NETCLOUDLET_RAM);
+        final var task = new CloudletExecutionTask(cloudlet.getTasks().size(), TASK_LENGTH);
+        task.setMemory(CLOUDLET_RAM);
         cloudlet.addTask(task);
     }
 
     private void showSimulationResults() {
-        DatacenterBroker broker;
-        for(int i = 0; i < NUMBER_OF_APPS; i++){
-            broker = brokerList.get(i);
+        for(int i = 0; i < APPS_NUMBER; i++){
+            final DatacenterBroker broker = brokerList.get(i);
             List<Cloudlet> newList = broker.getCloudletFinishedList();
             String caption = broker.getName() + " - Application " + broker.getId();
             new CloudletsTableBuilder(newList)
@@ -158,8 +154,8 @@ abstract class NetworkVmExampleAbstract {
      * @return the list of created NetworkDatacenterBroker
      */
     private  List<DatacenterBroker> createBrokerForEachApp() {
-        List<DatacenterBroker> list = new ArrayList<>();
-        for(int i = 0; i < NUMBER_OF_APPS; i++){
+        final List<DatacenterBroker> list = new ArrayList<>();
+        for(int i = 0; i < APPS_NUMBER; i++){
             list.add(new DatacenterBrokerSimple(simulation));
         }
 
@@ -172,20 +168,19 @@ abstract class NetworkVmExampleAbstract {
      * @return the Datacenter
      */
     protected final NetworkDatacenter createDatacenter() {
-        final int numberOfHosts = EdgeSwitch.PORTS * AggregateSwitch.PORTS * RootSwitch.PORTS;
-        List<Host> hostList = new ArrayList<>(numberOfHosts);
-        for (int i = 0; i < numberOfHosts; i++) {
-            List<Pe> peList = createPEs(HOST_PES, HOST_MIPS);
-            Host host = new NetworkHost(HOST_RAM, HOST_BW, HOST_STORAGE, peList)
-                    .setRamProvisioner(new ResourceProvisionerSimple())
-                    .setBwProvisioner(new ResourceProvisionerSimple())
-                    .setVmScheduler(new VmSchedulerTimeShared());
+        final int hostsNumber = EdgeSwitch.PORTS * AggregateSwitch.PORTS * RootSwitch.PORTS;
+        final List<NetworkHost> hostList = new ArrayList<>(hostsNumber);
+        for (int i = 0; i < hostsNumber; i++) {
+            final List<Pe> peList = createPEs(HOST_PES, HOST_MIPS);
+            final var host = new NetworkHost(HOST_RAM, HOST_BW, HOST_STORAGE, peList);
+            host
+                .setRamProvisioner(new ResourceProvisionerSimple())
+                .setBwProvisioner(new ResourceProvisionerSimple())
+                .setVmScheduler(new VmSchedulerTimeShared());
             hostList.add(host);
         }
 
-        NetworkDatacenter dc =
-                new NetworkDatacenter(
-                        simulation, hostList, new VmAllocationPolicySimple());
+        final var dc = new NetworkDatacenter(simulation, hostList);
         dc.setSchedulingInterval(SCHEDULING_INTERVAL);
         dc.getCharacteristics()
             .setCostPerSecond(COST)
@@ -202,6 +197,7 @@ abstract class NetworkVmExampleAbstract {
         for (int i = 0; i < pesNumber; i++) {
             peList.add(new PeSimple(mips, new PeProvisionerSimple()));
         }
+
         return peList;
     }
 
@@ -210,7 +206,7 @@ abstract class NetworkVmExampleAbstract {
      * @param datacenter Datacenter where the network will be created
      */
     protected void createNetwork(final NetworkDatacenter datacenter) {
-        EdgeSwitch[] edgeSwitches = new EdgeSwitch[1];
+        final EdgeSwitch[] edgeSwitches = new EdgeSwitch[1];
         for (int i = 0; i < edgeSwitches.length; i++) {
             edgeSwitches[i] = new EdgeSwitch(simulation, datacenter);
             datacenter.addSwitch(edgeSwitches[i]);
@@ -236,7 +232,7 @@ abstract class NetworkVmExampleAbstract {
      * @param switchPorts the number of ports (N) the switches where the Host will be connected have
      * @return the index of the switch to connect the host
      */
-    public static final int getSwitchIndex(final NetworkHost host, final int switchPorts) {
+    public static int getSwitchIndex(final NetworkHost host, final int switchPorts) {
         return Math.round(host.getId() % Integer.MAX_VALUE) / switchPorts;
     }
 
@@ -248,10 +244,10 @@ abstract class NetworkVmExampleAbstract {
      * @return the list of created VMs
      */
     protected final List<NetworkVm> createAndSubmitVMs(DatacenterBroker broker) {
-        final int numberOfVms = getDatacenterHostList().size() * MAX_VMS_PER_HOST;
+        final int vmsNumber = getDatacenterHostList().size() * MAX_VMS_PER_HOST;
         final List<NetworkVm> list = new ArrayList<>();
-        for (int i = 0; i < numberOfVms; i++) {
-            NetworkVm vm = new NetworkVm(i, VM_MIPS, VM_PES_NUMBER);
+        for (int i = 0; i < vmsNumber; i++) {
+            final var vm = new NetworkVm(i, VM_MIPS, VM_PES_NUMBER);
             vm.setRam(VM_RAM)
               .setBw(VM_BW)
               .setSize(VM_SIZE)
@@ -271,20 +267,19 @@ abstract class NetworkVmExampleAbstract {
      * Randomly select a given number of VMs from the list of created VMs,
      * to be used by the NetworkCloudlets of the given application.
      *
-     * @param broker the broker where to get the existing VM list
-     * @param numberOfVmsToSelect number of VMs to selected from the existing list of VMs.
+     * @param vmsToSelect number of VMs to selected from the existing list of VMs.
      * @return The list of randomly selected VMs
      */
-    protected List<NetworkVm> randomlySelectVmsForApp(
-        DatacenterBroker broker, int numberOfVmsToSelect) {
-        List<NetworkVm> list = new ArrayList<>();
-        int numOfExistingVms = this.vmList.size();
-        UniformDistr rand = new UniformDistr(0, numOfExistingVms, 5);
-        for (int i = 0; i < numberOfVmsToSelect; i++) {
+    protected List<NetworkVm> randomlySelectVmsForApp(int vmsToSelect) {
+        final List<NetworkVm> list = new ArrayList<>();
+        final int existingVms = this.vmList.size();
+        final var rand = new UniformDistr(0, existingVms, 5);
+        for (int i = 0; i < vmsToSelect; i++) {
             final int vmIndex = (int)rand.sample() % vmList.size();
-            NetworkVm vm = vmList.get(vmIndex);
+            final NetworkVm vm = vmList.get(vmIndex);
             list.add(vm);
         }
+
         return list;
     }
 
@@ -299,10 +294,6 @@ abstract class NetworkVmExampleAbstract {
         return datacenter;
     }
 
-    public List<DatacenterBroker> getBrokerList() {
-        return brokerList;
-    }
-
     /**
      * Creates a list of {@link NetworkCloudlet}'s that represents
      * a single application and then submits the created cloudlets to a given Broker.
@@ -311,7 +302,7 @@ abstract class NetworkVmExampleAbstract {
      * @return the list of created  {@link NetworkCloudlet}'s
      */
     protected final List<NetworkCloudlet> createAppAndSubmitToBroker(DatacenterBroker broker) {
-        List<NetworkCloudlet> list = createNetworkCloudlets(broker);
+        final List<NetworkCloudlet> list = createNetworkCloudlets(broker);
         broker.submitCloudletList(list);
         return list;
     }
@@ -335,10 +326,10 @@ abstract class NetworkVmExampleAbstract {
         NetworkCloudlet sourceCloudlet,
         NetworkCloudlet destinationCloudlet)
     {
-        CloudletSendTask task = new CloudletSendTask(sourceCloudlet.getTasks().size());
-        task.setMemory(NETCLOUDLET_RAM);
+        final var task = new CloudletSendTask(sourceCloudlet.getTasks().size());
+        task.setMemory(CLOUDLET_RAM);
         sourceCloudlet.addTask(task);
-        for(int i = 0; i < NUMBER_OF_PACKETS_TO_SEND; i++) {
+        for(int i = 0; i < PACKETS_TO_SEND; i++) {
             task.addPacket(destinationCloudlet, PACKET_DATA_LENGTH_IN_BYTES);
         }
     }
@@ -350,10 +341,9 @@ abstract class NetworkVmExampleAbstract {
      * @param sourceCloudlet the {@link NetworkCloudlet} expected to receive packets from
      */
     protected void addReceiveTask(NetworkCloudlet cloudlet, NetworkCloudlet sourceCloudlet) {
-        CloudletReceiveTask task = new CloudletReceiveTask(
-                cloudlet.getTasks().size(), sourceCloudlet.getVm());
-        task.setMemory(NETCLOUDLET_RAM);
-        task.setExpectedPacketsToReceive(NUMBER_OF_PACKETS_TO_SEND);
+        final var task = new CloudletReceiveTask(cloudlet.getTasks().size(), sourceCloudlet.getVm());
+        task.setMemory(CLOUDLET_RAM);
+        task.setExpectedPacketsToReceive(PACKETS_TO_SEND);
         cloudlet.addTask(task);
     }
 }

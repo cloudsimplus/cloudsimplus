@@ -19,13 +19,12 @@ import java.util.List;
  * @author Manoel Campos da Silva Filho
  */
 public class NetworkVmsExampleBagOfTasksApp extends NetworkVmExampleAbstract {
-    private static final long CLOUDLET_TASK_MEMORY = 1000; // in Megabytes
-    private static final long NETWORK_CLOUDLET_LENGTH = 1;
+    private static final long TASK_MEMORY = 1000; // in Megabytes
+    private static final long CLOUDLET_LENGTH = 1;
 
     /**
      * Starts the execution of the example.
-     *
-     * @param args command line arguments
+     * @param args
      */
     public static void main(String[] args) {
         new NetworkVmsExampleBagOfTasksApp();
@@ -37,27 +36,27 @@ public class NetworkVmsExampleBagOfTasksApp extends NetworkVmExampleAbstract {
 
     @Override
     public List<NetworkCloudlet> createNetworkCloudlets(DatacenterBroker broker){
-        final int NETCLOUDLETS_FOR_EACH_APP = 2;
-        List<NetworkCloudlet> networkCloudletList = new ArrayList<>(NETCLOUDLETS_FOR_EACH_APP+1);
+        final int CLOUDLETS_BY_APP = 2;
+        final List<NetworkCloudlet> cloudletList = new ArrayList<>(CLOUDLETS_BY_APP+1);
         //basically, each task runs the simulation and then data is consolidated in one task
 
-        for(int i = 0; i < NETCLOUDLETS_FOR_EACH_APP; i++){
-            UtilizationModel utilizationModel = new UtilizationModelFull();
-            NetworkCloudlet cloudlet = new NetworkCloudlet(i, NETWORK_CLOUDLET_LENGTH, NETCLOUDLET_PES_NUMBER);
-            NetworkVm vm = getVmList().get(i);
+        for(int i = 0; i < CLOUDLETS_BY_APP; i++){
+            final UtilizationModel utilizationModel = new UtilizationModelFull();
+            final var cloudlet = new NetworkCloudlet(i, CLOUDLET_LENGTH, CLOUDLET_PES);
+            final NetworkVm vm = getVmList().get(i);
             cloudlet
-                    .setMemory(CLOUDLET_TASK_MEMORY)
-                    .setFileSize(NETCLOUDLET_FILE_SIZE)
-                    .setOutputSize(NETCLOUDLET_OUTPUT_SIZE)
+                    .setMemory(TASK_MEMORY)
+                    .setFileSize(CLOUDLET_FILE_SIZE)
+                    .setOutputSize(CLOUDLET_OUTPUT_SIZE)
                     .setUtilizationModel(utilizationModel)
                     .setVm(vm)
                     .setBroker(vm.getBroker());
-            networkCloudletList.add(cloudlet);
+            cloudletList.add(cloudlet);
         }
 
-        createTasksForNetworkCloudlets(networkCloudletList);
+        createTasksForNetworkCloudlets(cloudletList);
 
-        return networkCloudletList;
+        return cloudletList;
     }
 
     private void createTasksForNetworkCloudlets(final List<NetworkCloudlet> networkCloudletList) {
@@ -76,9 +75,7 @@ public class NetworkVmsExampleBagOfTasksApp extends NetworkVmExampleAbstract {
                 }
             }
             //The other NetworkCloudlets send data to the first one
-            else {
-                addSendTask(cloudlet, networkCloudletList.get(0));
-            }
+            else addSendTask(cloudlet, networkCloudletList.get(0));
         }
     }
 }
