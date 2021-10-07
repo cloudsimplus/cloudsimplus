@@ -12,6 +12,7 @@ import org.cloudbus.cloudsim.core.Simulation;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
 import org.cloudbus.cloudsim.hosts.Host;
+import org.cloudbus.cloudsim.hosts.network.NetworkHost;
 import org.cloudbus.cloudsim.network.switches.EdgeSwitch;
 import org.cloudbus.cloudsim.network.switches.Switch;
 
@@ -58,7 +59,7 @@ public class NetworkDatacenter extends DatacenterSimple {
      */
     public NetworkDatacenter(
         final Simulation simulation,
-        final List<? extends Host> hostList,
+        final List<? extends NetworkHost> hostList,
         final VmAllocationPolicy vmAllocationPolicy)
     {
         super(simulation, hostList, vmAllocationPolicy);
