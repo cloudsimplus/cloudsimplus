@@ -10,7 +10,6 @@ import org.cloudbus.cloudsim.cloudlets.network.NetworkCloudlet;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.datacenters.network.NetworkDatacenter;
 import org.cloudbus.cloudsim.distributions.UniformDistr;
-import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.network.NetworkHost;
 import org.cloudbus.cloudsim.network.switches.AggregateSwitch;
 import org.cloudbus.cloudsim.network.switches.EdgeSwitch;
@@ -139,7 +138,7 @@ abstract class NetworkVmExampleAbstract {
                 "Number of NetworkCloudlets for Application %s: %d%n", broker.getId(), newList.size());
         }
 
-        for(NetworkHost host: datacenter.<NetworkHost>getHostList()){
+        for(NetworkHost host: datacenter.getHostList()){
             System.out.printf("%nHost %d data transferred: %d bytes",
                     host.getId(), host.getTotalDataTransferBytes());
         }
@@ -212,7 +211,7 @@ abstract class NetworkVmExampleAbstract {
             datacenter.addSwitch(edgeSwitches[i]);
         }
 
-        for (NetworkHost host : datacenter.<NetworkHost>getHostList()) {
+        for (NetworkHost host : datacenter.getHostList()) {
             final int switchNum = getSwitchIndex(host, edgeSwitches[0].getPorts());
             edgeSwitches[switchNum].connectHost(host);
         }
@@ -259,7 +258,7 @@ abstract class NetworkVmExampleAbstract {
         return list;
     }
 
-    private List<Host> getDatacenterHostList() {
+    private List<NetworkHost> getDatacenterHostList() {
         return datacenter.getHostList();
     }
 

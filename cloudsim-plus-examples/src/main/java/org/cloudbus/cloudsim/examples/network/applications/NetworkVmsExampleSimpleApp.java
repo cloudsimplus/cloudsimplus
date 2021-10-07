@@ -84,7 +84,7 @@ public class NetworkVmsExampleSimpleApp {
         final List<Cloudlet> newList = broker.getCloudletFinishedList();
         new CloudletsTableBuilder(newList).build();
 
-        for (NetworkHost host : datacenter.<NetworkHost>getHostList()) {
+        for (NetworkHost host : datacenter.getHostList()) {
             System.out.printf("%nHost %d data transferred: %d bytes",
                     host.getId(), host.getTotalDataTransferBytes());
         }
@@ -136,7 +136,7 @@ public class NetworkVmsExampleSimpleApp {
             datacenter.addSwitch(edgeSwitches[i]);
         }
 
-        for (NetworkHost host : datacenter.<NetworkHost>getHostList()) {
+        for (NetworkHost host : datacenter.getHostList()) {
             final int switchNum = getSwitchIndex(host, edgeSwitches[0].getPorts());
             edgeSwitches[switchNum].connectHost(host);
         }

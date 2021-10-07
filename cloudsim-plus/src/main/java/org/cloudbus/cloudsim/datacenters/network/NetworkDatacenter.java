@@ -112,4 +112,10 @@ public class NetworkDatacenter extends DatacenterSimple {
     public List<Switch> getSwitchMap() {
         return Collections.unmodifiableList(switchMap);
     }
+
+    @Override
+    public List<NetworkHost> getHostList() {
+        return super.getHostList();
+    }
+
 }
