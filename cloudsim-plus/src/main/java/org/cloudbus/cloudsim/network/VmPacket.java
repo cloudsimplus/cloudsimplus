@@ -153,6 +153,10 @@ public class VmPacket implements NetworkPacket<NetworkVm> {
         this.destinationVm = destinationVm;
     }
 
+    public NetworkHost getDestinationHost() {
+        return destinationVm.getHost();
+    }
+
     /**
      * Gets the cloudlet sending the packet.
      * @return
