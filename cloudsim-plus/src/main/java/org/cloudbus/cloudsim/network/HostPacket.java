@@ -9,6 +9,8 @@ package org.cloudbus.cloudsim.network;
 
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.network.NetworkHost;
+import org.cloudbus.cloudsim.network.switches.EdgeSwitch;
+import org.cloudbus.cloudsim.vms.Vm;
 
 import java.util.Objects;
 
@@ -137,5 +139,14 @@ public class HostPacket implements NetworkPacket<NetworkHost> {
      */
     public VmPacket getVmPacket() {
         return vmPacket;
+    }
+
+    /**
+     * Gets the {@link EdgeSwitch} that the Host where the VM receiving a packet is connected to.
+     * @return the Edge Switch connected to the Host where the targeting VM is placed
+     */
+    public EdgeSwitch getVmEdgeSwitch() {
+        final Vm receiverVm = getVmPacket().getDestination();
+        return ((NetworkHost)receiverVm.getHost()).getEdgeSwitch();
     }
 }

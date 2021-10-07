@@ -383,14 +383,4 @@ public abstract class AbstractSwitch extends CloudSimEntity implements Switch {
         this.datacenter = datacenter;
     }
 
-    /**
-     * Gets the {@link EdgeSwitch} that the Host where the VM receiving a packet is connected to.
-     * @param pkt the packet targeting some VM
-     * @return the Edge Switch connected to the Host where the targeting VM is placed
-     */
-    protected EdgeSwitch getVmEdgeSwitch(final HostPacket pkt) {
-        final Vm receiverVm = pkt.getVmPacket().getDestination();
-        return ((NetworkHost)receiverVm.getHost()).getEdgeSwitch();
-    }
-
 }

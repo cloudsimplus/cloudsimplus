@@ -84,7 +84,7 @@ public class RootSwitch extends AbstractSwitch {
     protected void processPacketUp(final SimEvent evt) {
         super.processPacketUp(evt);
         final var netPkt = (HostPacket) evt.getData();
-        final var edgeSwitch = getVmEdgeSwitch(netPkt);
+        final var edgeSwitch = netPkt.getVmEdgeSwitch();
 
         final var optionalAggrSw = findAggregateConnectedToEdgeSwitch(edgeSwitch);
         optionalAggrSw.ifPresentOrElse(

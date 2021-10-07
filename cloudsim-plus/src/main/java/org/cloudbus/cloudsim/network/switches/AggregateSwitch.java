@@ -79,7 +79,7 @@ public class AggregateSwitch extends AbstractSwitch {
         so it needs to be sent to edge switch */
         super.processPacketDown(evt);
         final HostPacket netPkt = (HostPacket) evt.getData();
-        final Switch downlinkSw = getVmEdgeSwitch(netPkt);
+        final Switch downlinkSw = netPkt.getVmEdgeSwitch();
         addPacketToSendToDownlinkSwitch(downlinkSw, netPkt);
     }
 
@@ -88,7 +88,7 @@ public class AggregateSwitch extends AbstractSwitch {
         // packet is coming from edge router, so it needs to be sent to either root or another edge switch
         super.processPacketUp(evt);
         final HostPacket netPkt = (HostPacket) evt.getData();
-        final Switch downlinkSw = getVmEdgeSwitch(netPkt);
+        final Switch downlinkSw = netPkt.getVmEdgeSwitch();
 
         if (findConnectedEdgeSwitch(downlinkSw))
             addPacketToSendToDownlinkSwitch(downlinkSw, netPkt);
