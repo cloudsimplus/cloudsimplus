@@ -7,14 +7,13 @@
  */
 package org.cloudbus.cloudsim.network;
 
-import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.network.NetworkCloudlet;
-import org.cloudbus.cloudsim.hosts.Host;
-import org.cloudbus.cloudsim.vms.Vm;
+import org.cloudbus.cloudsim.hosts.network.NetworkHost;
+import org.cloudbus.cloudsim.vms.network.NetworkVm;
 
 /**
- * Represents a packet that travels from a {@link Vm} to another, through the virtual network
- * within a {@link Host}. It contains information about {@link NetworkCloudlet}s which are
+ * Represents a packet that travels from a {@link NetworkVm} to another, through the virtual network
+ * within a {@link NetworkHost}. It contains information about {@link NetworkCloudlet}s which are
  * communicating.
  *
  * <p>Please refer to following publication for more details:
@@ -35,19 +34,19 @@ import org.cloudbus.cloudsim.vms.Vm;
  *
  * @since CloudSim Toolkit 1.0
  */
-public class VmPacket implements NetworkPacket<Vm> {
+public class VmPacket implements NetworkPacket<NetworkVm> {
 
-    /** @see NetworkPacket#getSource() */
-    private Vm sourceVm;
+    /** @see #getSource() */
+    private NetworkVm sourceVm;
 
     /** @see #getDestination() */
-    private Vm destinationVm;
+    private NetworkVm destinationVm;
 
     /** @see #getSenderCloudlet() */
-    private final Cloudlet senderCloudlet;
+    private final NetworkCloudlet senderCloudlet;
 
     /** @see #getReceiverCloudlet() */
-    private final Cloudlet receiverCloudlet;
+    private final NetworkCloudlet receiverCloudlet;
 
     /** @see #getSize() */
     private final long size;
@@ -63,7 +62,7 @@ public class VmPacket implements NetworkPacket<Vm> {
     private double receiveTime;
 
     /**
-     * Creates a packet to be sent to to a VM inside the
+     * Creates a packet to be sent to a VM inside the
      * Host of the sender VM.
      * @param sourceVm id of the VM sending the packet
      * @param destinationVm id of the VM that has to receive the packet
@@ -72,11 +71,11 @@ public class VmPacket implements NetworkPacket<Vm> {
      * @param receiverCloudlet cloudlet that has to receive the packet
      */
     public VmPacket(
-        final Vm sourceVm,
-        final Vm destinationVm,
+        final NetworkVm sourceVm,
+        final NetworkVm destinationVm,
         final long size,
-        final Cloudlet senderCloudlet,
-        final Cloudlet receiverCloudlet)
+        final NetworkCloudlet senderCloudlet,
+        final NetworkCloudlet receiverCloudlet)
     {
         super();
         this.sourceVm = sourceVm;
@@ -114,7 +113,7 @@ public class VmPacket implements NetworkPacket<Vm> {
      * @return
      */
     @Override
-    public Vm getSource() {
+    public NetworkVm getSource() {
         return sourceVm;
     }
 
@@ -126,7 +125,7 @@ public class VmPacket implements NetworkPacket<Vm> {
      * @param sourceVm the source VM to set
      */
     @Override
-    public void setSource(final Vm sourceVm) {
+    public void setSource(final NetworkVm sourceVm) {
         this.sourceVm = sourceVm;
     }
 
@@ -138,7 +137,7 @@ public class VmPacket implements NetworkPacket<Vm> {
      * @return
      */
     @Override
-    public Vm getDestination() {
+    public NetworkVm getDestination() {
         return destinationVm;
     }
 
@@ -150,7 +149,7 @@ public class VmPacket implements NetworkPacket<Vm> {
      * @param destinationVm the destination VM to set
      */
     @Override
-    public void setDestination(final Vm destinationVm) {
+    public void setDestination(final NetworkVm destinationVm) {
         this.destinationVm = destinationVm;
     }
 
@@ -158,7 +157,7 @@ public class VmPacket implements NetworkPacket<Vm> {
      * Gets the cloudlet sending the packet.
      * @return
      */
-    public Cloudlet getSenderCloudlet() {
+    public NetworkCloudlet getSenderCloudlet() {
         return senderCloudlet;
     }
 
@@ -166,7 +165,7 @@ public class VmPacket implements NetworkPacket<Vm> {
      * Gets the cloudlet that has to receive the packet.
      * @return
      */
-    public Cloudlet getReceiverCloudlet() {
+    public NetworkCloudlet getReceiverCloudlet() {
         return receiverCloudlet;
     }
 
