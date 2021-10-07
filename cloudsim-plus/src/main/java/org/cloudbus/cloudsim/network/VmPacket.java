@@ -8,12 +8,13 @@
 package org.cloudbus.cloudsim.network;
 
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
+import org.cloudbus.cloudsim.cloudlets.network.NetworkCloudlet;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.vms.Vm;
 
 /**
  * Represents a packet that travels from a {@link Vm} to another, through the virtual network
- * within a {@link Host}. It contains information about Cloudlets which are
+ * within a {@link Host}. It contains information about {@link NetworkCloudlet}s which are
  * communicating.
  *
  * <p>Please refer to following publication for more details:
@@ -122,11 +123,11 @@ public class VmPacket implements NetworkPacket<Vm> {
      * This is the VM where the {@link #getSenderCloudlet() sending cloudlet}
      * is running.
      *
-     * @param sourceVmId the source VM id to set
+     * @param sourceVm the source VM to set
      */
     @Override
-    public void setSource(final Vm sourceVmId) {
-        this.sourceVm = sourceVmId;
+    public void setSource(final Vm sourceVm) {
+        this.sourceVm = sourceVm;
     }
 
     /**
@@ -146,11 +147,11 @@ public class VmPacket implements NetworkPacket<Vm> {
      * This is the VM where th {@link #getReceiverCloudlet() receiver cloudlet}
      * is running.
      *
-     * @param destinationVmId the destination VM id to set
+     * @param destinationVm the destination VM to set
      */
     @Override
-    public void setDestination(final Vm destinationVmId) {
-        this.destinationVm = destinationVmId;
+    public void setDestination(final Vm destinationVm) {
+        this.destinationVm = destinationVm;
     }
 
     /**
