@@ -167,18 +167,6 @@ public abstract class AbstractSwitch extends CloudSimEntity implements Switch {
         }
     }
 
-    private void forwardPacketsToSwitch(
-        final Switch destinationSwitch, final List<HostPacket> packetList,
-        final double bandwidth, final int cloudSimTag)
-    {
-        for (final HostPacket pkt : packetList) {
-            final double delay = packetTransferDelay(pkt, bandwidth, packetList.size());
-            send(destinationSwitch, delay, cloudSimTag, pkt);
-        }
-
-        packetList.clear();
-    }
-
     /**
      * Gets the list of packets to be sent to each Uplink Switch
      * and forward them.
@@ -191,6 +179,18 @@ public abstract class AbstractSwitch extends CloudSimEntity implements Switch {
             final double bw = uplinkBandwidth;
             forwardPacketsToSwitch(targetSwitch, hostPktList, bw, CloudSimTags.NETWORK_EVENT_UP);
         }
+    }
+
+    private void forwardPacketsToSwitch(
+        final Switch destinationSwitch, final List<HostPacket> packetList,
+        final double bandwidth, final int cloudSimTag)
+    {
+        for (final HostPacket pkt : packetList) {
+            final double delay = packetTransferDelay(pkt, bandwidth, packetList.size());
+            send(destinationSwitch, delay, cloudSimTag, pkt);
+        }
+
+        packetList.clear();
     }
 
     /**
