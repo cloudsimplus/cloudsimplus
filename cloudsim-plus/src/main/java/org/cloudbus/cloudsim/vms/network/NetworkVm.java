@@ -106,7 +106,7 @@ public class NetworkVm extends VmSimple {
     }
 
     /**
-     * The time when the VM finished to process its cloudlets.
+     * The time when the VM finishes processing its cloudlets.
      */
     public double getFinishTime() {
         return finishTime;
