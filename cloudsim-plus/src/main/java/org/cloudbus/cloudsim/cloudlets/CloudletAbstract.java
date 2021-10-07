@@ -213,7 +213,7 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
         this.lastExecutedDatacenterIdx = NOT_ASSIGNED;
         setBroker(DatacenterBroker.NULL);
         setFinishTime(NOT_ASSIGNED); // meaning this Cloudlet hasn't finished yet
-        setVm(Vm.NULL);
+        this.vm = Vm.NULL;
         setExecStartTime(0.0);
         setArrivedTime(0);
         setCreationTime(0);
@@ -620,7 +620,7 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
     }
 
     @Override
-    public final Cloudlet setVm(final Vm vm) {
+    public Cloudlet setVm(final Vm vm) {
         this.vm = vm;
         return this;
     }

@@ -7,7 +7,10 @@
  */
 package org.cloudbus.cloudsim.cloudlets.network;
 
+import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
+import org.cloudbus.cloudsim.vms.Vm;
+import org.cloudbus.cloudsim.vms.network.NetworkVm;
 
 import java.util.*;
 
@@ -196,5 +199,21 @@ public class NetworkCloudlet extends CloudletSimple {
         task.setCloudlet(this);
         tasks.add(task);
         return this;
+    }
+
+    @Override
+    public NetworkVm getVm() {
+        return (NetworkVm)super.getVm();
+    }
+
+    @Override
+    public Cloudlet setVm(final Vm vm) {
+        if(vm == Vm.NULL)
+            return super.setVm(NetworkVm.NULL);
+
+        if(vm instanceof NetworkVm)
+            return super.setVm(vm);
+
+        throw new IllegalArgumentException("NetworkCloudlet can just be executed by a NetworkVm");
     }
 }
