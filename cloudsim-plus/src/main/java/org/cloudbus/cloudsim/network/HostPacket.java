@@ -146,7 +146,7 @@ public class HostPacket implements NetworkPacket<NetworkHost> {
      * @return the Edge Switch connected to the Host where the targeting VM is placed
      */
     public EdgeSwitch getVmEdgeSwitch() {
-        final Vm receiverVm = getVmPacket().getDestination();
+        final Vm receiverVm = vmPacket.getDestination();
         return ((NetworkHost)receiverVm.getHost()).getEdgeSwitch();
     }
 }
