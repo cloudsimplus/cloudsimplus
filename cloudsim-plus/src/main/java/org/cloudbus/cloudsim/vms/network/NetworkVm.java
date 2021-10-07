@@ -9,8 +9,11 @@ package org.cloudbus.cloudsim.vms.network;
 
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.cloudlets.network.NetworkCloudlet;
+import org.cloudbus.cloudsim.hosts.Host;
+import org.cloudbus.cloudsim.hosts.network.NetworkHost;
 import org.cloudbus.cloudsim.network.VmPacket;
 import org.cloudbus.cloudsim.resources.Pe;
+import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
 
 import java.util.ArrayList;
@@ -116,5 +119,21 @@ public class NetworkVm extends VmSimple {
 
     public void setFinishTime(final double finishTime) {
         this.finishTime = finishTime;
+    }
+
+    @Override
+    public NetworkHost getHost() {
+        return (NetworkHost)super.getHost();
+    }
+
+    @Override
+    public Vm setHost(final Host host) {
+        if(host == Host.NULL)
+            return super.setHost(NetworkHost.NULL);
+
+        if(host instanceof NetworkHost)
+            return super.setHost(host);
+
+        throw new IllegalArgumentException("NetworkVm can only be run into a NetworkHost");
     }
 }

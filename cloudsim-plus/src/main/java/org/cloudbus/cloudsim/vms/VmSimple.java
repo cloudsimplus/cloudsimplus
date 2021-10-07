@@ -254,7 +254,7 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
         setVmm("Xen");
 
         setInMigration(false);
-        setHost(Host.NULL);
+        this.host = Host.NULL;
         setCloudletScheduler(new CloudletSchedulerTimeShared());
 
         this.setHorizontalScaling(HorizontalVmScaling.NULL);
