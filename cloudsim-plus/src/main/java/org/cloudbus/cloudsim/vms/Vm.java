@@ -493,8 +493,9 @@ public interface Vm extends AbstractMachine<Resource>, UniquelyIdentifiable, Com
      * Sets the PM that hosts the VM.
      *
      * @param host Host to run the VM
+     * @return
      */
-    void setHost(Host host);
+    Vm setHost(Host host);
 
     /**
      * Sets RAM capacity in Megabytes.

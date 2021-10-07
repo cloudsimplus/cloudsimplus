@@ -171,7 +171,7 @@ class VmNull implements Vm {
     @Override public Vm setBw(long bwCapacity) {
         return this;
     }
-    @Override public void setHost(Host host) {/**/}
+    @Override public Vm setHost(Host host) { return this; }
     @Override public void setInMigration(boolean migrating) {/**/}
     @Override public Vm setRam(long ramCapacity) {
         return this;
