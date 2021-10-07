@@ -41,7 +41,7 @@ import java.util.List;
  * @since CloudSim Toolkit 3.0
  */
 public class NetworkVm extends VmSimple {
-    public static final NetworkVm NULL = new NetworkVm(0, 1);
+    public static final NetworkVm NULL = new NetworkVm();
 
     private List<NetworkCloudlet> cloudletList;
     private List<VmPacket> receivedPacketList;
@@ -61,6 +61,13 @@ public class NetworkVm extends VmSimple {
     public NetworkVm(final int id, final long mipsCapacity, final int numberOfPes) {
         super(id, mipsCapacity, numberOfPes);
         cloudletList = new ArrayList<>();
+    }
+
+    /**
+     * Creates an empty VM
+     */
+    private NetworkVm(){
+        this(-1, 0, 1);
     }
 
     /**

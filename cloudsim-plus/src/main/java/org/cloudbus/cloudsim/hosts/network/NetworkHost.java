@@ -14,7 +14,6 @@ import org.cloudbus.cloudsim.network.HostPacket;
 import org.cloudbus.cloudsim.network.VmPacket;
 import org.cloudbus.cloudsim.network.switches.EdgeSwitch;
 import org.cloudbus.cloudsim.resources.Pe;
-import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.schedulers.cloudlet.network.CloudletTaskScheduler;
 import org.cloudbus.cloudsim.schedulers.cloudlet.network.CloudletTaskSchedulerSimple;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerSpaceShared;
@@ -49,7 +48,7 @@ import java.util.List;
  * @since CloudSim Toolkit 3.0
  */
 public class NetworkHost extends HostSimple {
-    public static final NetworkHost NULL = new NetworkHost(0, 0, 0, List.of(new PeSimple()));
+    public static final NetworkHost NULL = new NetworkHost();
     private static final Logger LOGGER = LoggerFactory.getLogger(NetworkHost.class.getSimpleName());
 
     private int totalDataTransferBytes;
@@ -87,6 +86,14 @@ public class NetworkHost extends HostSimple {
         hostPktsReceived = new ArrayList<>();
         pktsToSendForExternalVms = new ArrayList<>();
         pktsToSendForLocalVms = new ArrayList<>();
+    }
+
+    /**
+     * Creates an empty host.
+     */
+    private NetworkHost() {
+        this(0, 0, 0, List.of(Pe.NULL));
+        setId(-1);
     }
 
     @Override
