@@ -61,8 +61,9 @@ import java.util.Comparator;
 import java.util.List;
 
 /**
- * An example showing how to create 1 Datacenter with: 5 hosts
- * with increasing number of PEs (starting at 4 PEs for the 1st host); 3 VMs with 2 PEs each one;
+ * An example showing how to create 1 Datacenter having: 5 hosts
+ * with increasing number of PEs (starting at 4 PEs for the 1st host);
+ * 3 VMs with 2 PEs each one;
  * and 1 cloudlet by VM, each one having the same number of PEs from its VM.
  *
  *
@@ -70,7 +71,7 @@ import java.util.List;
  * a {@link VmAllocationPolicyMigrationBestFitStaticThreshold}.
  * Such a policy migrates VMs based on
  * a static host CPU utilization threshold.
- * The VmAllocationPolicy used in this example ignores power usage of Hosts.
+ * The VmAllocationPolicy used in this example ignores power consumption of Hosts.
  * This way, it isn't required to set a PowerModel for Hosts.</p>
  *
  * <p>According to the allocation policy, VM 0 will be allocated to Host 0.
@@ -86,32 +87,35 @@ import java.util.List;
  * </p>
  *
  * <p>The {@link VmAllocationPolicyMigrationBestFitStaticThreshold}
- * allows the definition of static under and over CPU utilization thresholds to
+ * allows setting static under/over CPU utilization thresholds to
  * enable VM migration.
- * The example uses a {@link UtilizationModelDynamic} to define that the CPU usage of cloudlets
- * increases along the simulation time.
+ * The example uses a {@link UtilizationModelDynamic} to define that CPU usage of cloudlets
+ * increases along simulation time.
  * The first 2 Cloudlets all start with a usage of 80% of CPU,
- * that increases along the time (see {@link #CLOUDLET_CPU_INCREMENT_PER_SECOND}).
- * The third Cloudlet starts a a lower CPU usage and increases in the same way.
+ * which increases along the time (see {@link #CLOUDLET_CPU_INCREMENT_PER_SECOND}).
+ * The third Cloudlet starts at a lower CPU usage and increases in the same way.
  * </p>
  *
  * <p>Some constants are used to create simulation objects such as
  * {@link  DatacenterSimple}, {@link  Host} and {@link  Vm}.
- * The values of these constants were careful and accordingly chosen to allow
- * migration of VMs due to either under and overloaded hosts and
- * to allow one developer to know exactly how the simulation will run
+ * The values of these constants were careful and accordingly chosen to allow:
+ * (i) migration of VMs due to either under and overloaded hosts; and (ii)
+ * the researcher to know exactly how the simulation will run
  * and what will be the final results.
- * Several values impact the simulation results, such as
- * hosts CPU capacity and number of PEs, VMs and cloudlets requirements
- * and even VM bandwidth (which defines the VM migration time).</p>
+ * </p>
  *
- * <p>This way, if you want to change these values, you must
+ * <p>
+ * Several values impact simulation results, such as
+ * (i) hosts CPU capacity and number of PEs,
+ * (ii) VMs and cloudlets requirements and
+ * (iii) even VM bandwidth (which defines the VM migration time).
+ *
+ * This way, if you want to change these values, you must
  * define new appropriated ones to allow the simulation
  * to run correctly.</p>
  *
- * <p>Realize that the Host State History is just collected
- * if {@link Host#isStateHistoryEnabled() history is enabled}
- * by calling {@link Host#enableStateHistory()}.</p>
+ * <p>Realize that Host State History is just collected
+ * if you enable that by calling {@link Host#enableStateHistory()}.</p>
  *
  * @author Manoel Campos da Silva Filho
  *
