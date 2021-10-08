@@ -1223,7 +1223,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
 
     @Override
     public DatacenterBroker setVmDestructionDelay(final double delay) {
-        if(delay <= getSimulation().getMinTimeBetweenEvents()){
+        if(delay <= getSimulation().getMinTimeBetweenEvents() && delay != DEF_VM_DESTRUCTION_DELAY){
             final var msg = "The delay should be larger then the simulation minTimeBetweenEvents to ensure VMs are gracefully shutdown.";
             throw new IllegalArgumentException(msg);
         }
