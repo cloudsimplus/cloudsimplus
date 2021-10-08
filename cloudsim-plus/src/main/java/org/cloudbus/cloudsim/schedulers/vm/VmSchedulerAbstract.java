@@ -69,12 +69,12 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
         if(requestedMips.isEmpty()){
             LOGGER.warn(
                 "{}: {}: It was requested an empty list of PEs for {} in {}",
-                getHost().getSimulation().clockStr(), getClass().getSimpleName(), vm, host);
+                host.getSimulation().clockStr(), getClass().getSimpleName(), vm, host);
             return false;
         }
 
 
-        if(getHost().isFailed()){
+        if(host.isFailed()){
             return false;
         }
 
@@ -231,10 +231,9 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
 
     @Override
     public double getTotalAvailableMips() {
-        final Stream<Vm> stream =
-            Stream.concat(host.getVmList().stream(), host.getVmsMigratingIn().stream());
+        final var vmStream = Stream.concat(host.getVmList().stream(), host.getVmsMigratingIn().stream());
         final double allocatedMips =
-                stream
+                vmStream
                     .map(vm -> (VmSimple)vm)
                     .mapToDouble(this::actualVmTotalRequestedMips)
                     .sum();
