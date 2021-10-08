@@ -440,6 +440,9 @@ public class HostSimple implements Host {
             return suitability;
         }
 
+        if(inMigration) {
+            vmsMigratingIn.add(vm);
+        }
         vm.setInMigration(inMigration);
         allocateResourcesForVm(vm);
 
@@ -1064,9 +1067,7 @@ public class HostSimple implements Host {
             return false;
         }
 
-        vmsMigratingIn.add(vm);
         if(!allocateResourcesForVm(vm, true).fully()){
-            vmsMigratingIn.remove(vm);
             return false;
         }
 
