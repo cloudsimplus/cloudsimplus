@@ -48,6 +48,7 @@ import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 import org.cloudsimplus.builders.tables.HostHistoryTableBuilder;
 import org.cloudsimplus.listeners.EventInfo;
 import org.cloudsimplus.listeners.EventListener;
+import org.cloudsimplus.listeners.VmHostEventInfo;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -136,6 +137,7 @@ public final class ManualMigrationExample1 {
     private CloudSim simulation;
     private List<Host> hostList;
     private boolean migrationRequested;
+    private int migrationsNumber;
 
     public static void main(String[] args) {
         new ManualMigrationExample1();
@@ -165,6 +167,7 @@ public final class ManualMigrationExample1 {
         System.out.printf("%nHosts CPU usage History (when the allocated MIPS is lower than the requested, it is due to VM migration overhead)%n");
 
         hostList.forEach(this::printHostHistory);
+        System.out.printf("Number of VM migrations: %d%n", migrationsNumber);
         System.out.println(getClass().getSimpleName() + " finished!");
     }
 
@@ -241,6 +244,25 @@ public final class ManualMigrationExample1 {
 
         vmList.addAll(list);
         broker.submitVmList(list);
+
+        vmList.forEach(vm -> vm.addOnMigrationStartListener(this::startMigration));
+    }
+
+    /**
+     * A listener method that is called when a VM migration starts.
+     * @param info information about the happened event
+     *
+     * @see #createAndSubmitVms(DatacenterBroker)
+     * @see Vm#addOnMigrationFinishListener(EventListener)
+     */
+    private void startMigration(final VmHostEventInfo info) {
+        final Vm vm = info.getVm();
+        final Host targetHost = info.getHost();
+        System.out.printf(
+            "# %.2f: %s started migrating to %s (you can perform any operation you want here)%n",
+            info.getTime(), vm, targetHost);
+
+        migrationsNumber++;
     }
 
     public Vm createVm(int pes) {
