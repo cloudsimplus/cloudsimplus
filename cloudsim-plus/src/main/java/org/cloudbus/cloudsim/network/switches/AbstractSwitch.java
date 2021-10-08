@@ -108,9 +108,10 @@ public abstract class AbstractSwitch extends CloudSimEntity implements Switch {
      * @param evt the packet sent
      */
     protected void processHostPacket(final SimEvent evt) {
-        final var pkt = (HostPacket) evt.getData();
-        final NetworkHost host = pkt.getDestination();
-        host.addReceivedNetworkPacket(pkt);
+        if(evt.getData() instanceof HostPacket pkt) {
+            final NetworkHost host = pkt.getDestination();
+            host.addReceivedNetworkPacket(pkt);
+        } else throw new IllegalStateException("NETWORK_EVENT_HOST SimEvent data must be a HostPacket");
     }
 
     /**
