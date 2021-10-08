@@ -12,6 +12,7 @@ import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.core.events.SimEvent;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.hosts.Host;
+import org.cloudbus.cloudsim.network.HostPacket;
 import org.cloudbus.cloudsim.power.PowerMeter;
 import org.cloudbus.cloudsim.power.models.PowerModel;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
@@ -305,6 +306,11 @@ public final class CloudSimTags {
      */
     public static final int NETWORK_EVENT_DOWN = BASE + 46;
 
+    /**
+     * Denotes the transmission of packets targeting a given Host.
+     * The {@link SimEvent#getData()} must be a {@link HostPacket}
+     * to be processed.
+     */
     public static final int NETWORK_EVENT_HOST = BASE + 47;
 
     /**
