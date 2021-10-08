@@ -1,7 +1,7 @@
 package org.cloudbus.cloudsim.util;
 
-import org.cloudbus.cloudsim.core.CloudSimTags;
-import org.cloudbus.cloudsim.core.CloudSimTagsTest;
+import org.cloudbus.cloudsim.core.CloudSimTag;
+import org.cloudbus.cloudsim.core.CloudSimTagTest;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -21,7 +21,7 @@ public class DataCloudTagsTest {
 
     @BeforeAll
     public static void setUpClass(){
-        constants = CloudSimTagsTest.getDeclaredConstants(CloudSimTags.class);
+        constants = CloudSimTagTest.getDeclaredConstants(CloudSimTag.class);
     }
 
     /**
@@ -30,8 +30,8 @@ public class DataCloudTagsTest {
     @Test
     public void testConstantsWithSameValue(){
         for (final Field field : constants) {
-            final Field anotherField = CloudSimTagsTest.getAnotherConstWithSameValue(constants, field);
-            final String msg = CloudSimTagsTest.msgFieldsWithDuplicatedValue(field, anotherField);
+            final Field anotherField = CloudSimTagTest.getAnotherConstWithSameValue(constants, field);
+            final String msg = CloudSimTagTest.msgFieldsWithDuplicatedValue(field, anotherField);
             assertEquals(field, anotherField, msg);
         }
     }

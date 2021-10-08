@@ -8,7 +8,7 @@
 package org.cloudbus.cloudsim.cloudlets;
 
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
-import org.cloudbus.cloudsim.core.CloudSimTags;
+import org.cloudbus.cloudsim.core.CloudSimTag;
 import org.cloudbus.cloudsim.core.CustomerEntityAbstract;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.resources.*;
@@ -362,7 +362,7 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
         /**
          * If the length is negative, it means the Cloudlet doesn't have a fixed length.
          * This way, it keeps running and increasing the executed length
-         * until a {@link CloudSimTags#CLOUDLET_FINISH} message is sent to the broker
+         * until a {@link CloudSimTag#CLOUDLET_FINISH} message is sent to the broker
          * or the simulation is terminated under request (by setting a termination time).*/
         return getLastExecutionInDatacenterInfo().getFinishedSoFar();
     }
@@ -375,7 +375,7 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
 
         /**
          * If length is negative, it means it is undefined.
-         * Check {@link CloudSimTags#CLOUDLET_FINISH} for details.
+         * Check {@link CloudSimTag#CLOUDLET_FINISH} for details.
          */
         return getLength() > 0 && getLastExecutionInDatacenterInfo().getFinishedSoFar() >= getLength();
     }
@@ -391,7 +391,7 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
          * finished length cannot be greater than the actual total length.
          * If the Cloudlet has a negative length, it means it doesn't have a defined
          * length, so that its length increases indefinitely until
-         * a {@link CloudSimTags#CLOUDLET_FINISH} message is sent to the broker. */
+         * a {@link CloudSimTag#CLOUDLET_FINISH} message is sent to the broker. */
         final long maxLengthToAdd = getLength() < 0 ?
                                     partialFinishedMI :
                                     Math.min(partialFinishedMI, absLength()-getFinishedLengthSoFar());
@@ -409,7 +409,7 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
         if(isFinished() && !isReturnedToBroker()){
             returnedToBroker = true;
             final var targetEntity = getSimulation().getCloudInfoService();
-            getSimulation().sendNow(targetEntity, getBroker(), CloudSimTags.CLOUDLET_RETURN, this);
+            getSimulation().sendNow(targetEntity, getBroker(), CloudSimTag.CLOUDLET_RETURN, this);
             vm.getCloudletScheduler().addCloudletToReturnedList(this);
         }
     }

@@ -330,7 +330,7 @@ public class CloudSim implements Simulation {
     private void notifyEndOfSimulationToEntities() {
         entities.stream()
             .filter(CloudSimEntity::isAlive)
-            .forEach(e -> sendNow(e, CloudSimTags.END_OF_SIMULATION));
+            .forEach(e -> sendNow(e, CloudSimTag.SIMULATION_END));
         LOGGER.info("{}: Processing last events before simulation shutdown.", clockStr());
 
         while (true) {
@@ -454,7 +454,7 @@ public class CloudSim implements Simulation {
     public void addEntity(final CloudSimEntity entity) {
         requireNonNull(entity);
         if (running) {
-            final var evt = new CloudSimEvent(SimEvent.Type.CREATE, 0, entity, SimEntity.NULL, -1, entity);
+            final var evt = new CloudSimEvent(SimEvent.Type.CREATE, 0, entity, SimEntity.NULL, CloudSimTag.NONE, entity);
             future.addEvent(evt);
         }
 
@@ -563,31 +563,31 @@ public class CloudSim implements Simulation {
         }
     }
 
-    private void sendNow(final SimEntity dest, final int tag) {
+    private void sendNow(final SimEntity dest, final CloudSimTag tag) {
         sendNow(cis, dest, tag, null);
     }
 
     @Override
-    public void sendNow(final SimEntity src, final SimEntity dest, final int tag, final Object data) {
+    public void sendNow(final SimEntity src, final SimEntity dest, final CloudSimTag tag, final Object data) {
         send(src, dest, 0, tag, data);
     }
 
     @Override
-    public void send(final SimEntity src, final SimEntity dest, final double delay, final int tag, final Object data) {
+    public void send(final SimEntity src, final SimEntity dest, final double delay, final CloudSimTag tag, final Object data) {
         send(new CloudSimEvent(SimEvent.Type.SEND, delay, src, dest, tag, data));
     }
 
     @Override
     public void send(final SimEvent evt) {
         requireNonNull(evt);
-        //Events with a negative tag have higher priority (except the "end of the simulation" event)
-        if(evt.getTag() < 0 && evt.getTag() != CloudSimTags.END_OF_SIMULATION)
+        //Events with a negative tag have higher priority
+        if(evt.getPriority() < 0)
             future.addEventFirst(evt);
         else future.addEvent(evt);
     }
 
     @Override
-    public void sendFirst(final SimEntity src, final SimEntity dest, final double delay, final int tag, final Object data) {
+    public void sendFirst(final SimEntity src, final SimEntity dest, final double delay, final CloudSimTag tag, final Object data) {
         sendFirst(new CloudSimEvent(SimEvent.Type.SEND, delay, src, dest, tag, data));
     }
 
@@ -751,7 +751,7 @@ public class CloudSim implements Simulation {
         }
 
         final var eventPredicate = waitPredicates.get(destEnt);
-        if (eventPredicate == null || evt.getTag() == 9999 || eventPredicate.test(evt)) {
+        if (eventPredicate == null || eventPredicate.test(evt)) {
             destEnt.setEventBuffer(new CloudSimEvent(evt));
             destEnt.setState(SimEntity.State.RUNNABLE);
             waitPredicates.remove(destEnt);

@@ -25,7 +25,7 @@ package org.cloudsimplus.traces.google;
 
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
-import org.cloudbus.cloudsim.core.CloudSimTags;
+import org.cloudbus.cloudsim.core.CloudSimTag;
 import org.cloudbus.cloudsim.core.Simulation;
 import org.cloudbus.cloudsim.core.events.CloudSimEvent;
 import org.cloudbus.cloudsim.util.ResourceLoader;
@@ -420,7 +420,7 @@ public final class GoogleTaskUsageTraceReader extends GoogleTraceReaderAbstract<
             final CloudSimEvent evt =
                 new CloudSimEvent(
                     taskUsage.getStartTime(), cloudlet.getBroker(),
-                    CloudSimTags.CLOUDLET_UPDATE_ATTRIBUTES, resourceUsageUpdateRunnable);
+                    CloudSimTag.CLOUDLET_UPDATE_ATTRIBUTES, resourceUsageUpdateRunnable);
             return cloudletUsageChangeEvents.add(evt);
         }
 

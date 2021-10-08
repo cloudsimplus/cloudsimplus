@@ -29,7 +29,7 @@ import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
 import org.cloudbus.cloudsim.core.CloudSim;
-import org.cloudbus.cloudsim.core.CloudSimTags;
+import org.cloudbus.cloudsim.core.CloudSimTag;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
 import org.cloudbus.cloudsim.hosts.Host;
@@ -56,7 +56,7 @@ import java.util.List;
  *  <li>(i) it reaches {@link Long#MAX_VALUE} MI executed or</li>
  *  <li>(ii) a positive length is dynamically defined (the time or event when the length of such Cloudlets are set
  *  can be defined in uncountable ways, according to developer needs)</li>
- *  <li>(iii) {@link CloudSimTags#CLOUDLET_FINISH} message is sent to the {@link DatacenterBroker}.</li>
+ *  <li>(iii) {@link CloudSimTag#CLOUDLET_FINISH} message is sent to the {@link DatacenterBroker}.</li>
  *  <li>(iv) the simulation is terminated by defining a termination time.</li>
  * </ul>
  *
@@ -77,6 +77,7 @@ public class IndefiniteLengthCloudlet {
 
     private static final int CLOUDLETS = 2;
     private static final int CLOUDLET_PES = 2;
+    
     /**
      * Defines a negative length for Cloudlets so that
      * they keep running until explicitly requested to finish.

@@ -7,7 +7,7 @@
  */
 package org.cloudbus.cloudsim.hosts.network;
 
-import org.cloudbus.cloudsim.core.CloudSimTags;
+import org.cloudbus.cloudsim.core.CloudSimTag;
 import org.cloudbus.cloudsim.hosts.HostSimple;
 import org.cloudbus.cloudsim.hosts.HostSuitability;
 import org.cloudbus.cloudsim.network.HostPacket;
@@ -186,7 +186,7 @@ public class NetworkHost extends HostSimple {
 
             getSimulation().send(
                     getDatacenter(), getEdgeSwitch(),
-                    delay, CloudSimTags.NETWORK_EVENT_UP, pkt);
+                    delay, CloudSimTag.NETWORK_EVENT_UP, pkt);
         }
 
         pktsToSendForExternalVms.clear();

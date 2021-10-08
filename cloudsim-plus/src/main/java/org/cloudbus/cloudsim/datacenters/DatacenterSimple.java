@@ -11,7 +11,7 @@ import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
 import org.cloudbus.cloudsim.allocationpolicies.migration.VmAllocationPolicyMigration;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.core.CloudSimEntity;
-import org.cloudbus.cloudsim.core.CloudSimTags;
+import org.cloudbus.cloudsim.core.CloudSimTag;
 import org.cloudbus.cloudsim.core.CustomerEntityAbstract;
 import org.cloudbus.cloudsim.core.Simulation;
 import org.cloudbus.cloudsim.core.events.PredicateType;
@@ -239,15 +239,15 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     }
 
     private boolean processHostEvents(final SimEvent evt) {
-        if (evt.getTag() == CloudSimTags.HOST_ADD) {
+        if (evt.getTag() == CloudSimTag.HOST_ADD) {
             processHostAdditionRequest(evt);
             return true;
-        } else if (evt.getTag() == CloudSimTags.HOST_REMOVE) {
+        } else if (evt.getTag() == CloudSimTag.HOST_REMOVE) {
             processHostRemovalRequest(evt);
             return true;
-        } else if (evt.getTag() == CloudSimTags.HOST_POWER_ON || evt.getTag() == CloudSimTags.HOST_POWER_OFF) {
+        } else if (evt.getTag() == CloudSimTag.HOST_POWER_ON || evt.getTag() == CloudSimTag.HOST_POWER_OFF) {
             final HostSimple host = (HostSimple)evt.getData();
-            host.processActivation(evt.getTag() == CloudSimTags.HOST_POWER_ON);
+            host.processActivation(evt.getTag() == CloudSimTag.HOST_POWER_ON);
         }
 
         return false;
@@ -297,7 +297,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         getSimulation().cancelAll(
             getSimulation().getCloudInfoService(),
             evt -> MathUtil.same(evt.getTime(), srcEvt.getTime()) &&
-                   evt.getTag() == CloudSimTags.HOST_REMOVE &&
+                   evt.getTag() == CloudSimTag.HOST_REMOVE &&
                    (long)evt.getData() == host.getId());
     }
 
@@ -310,7 +310,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     }
 
     private boolean processNetworkEvents(final SimEvent evt) {
-        if (evt.getTag() == CloudSimTags.ICMP_PKT_SUBMIT) {
+        if (evt.getTag() == CloudSimTag.ICMP_PKT_SUBMIT) {
             processPingRequest(evt);
             return true;
         }
@@ -324,22 +324,22 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      */
     private boolean processVmEvents(final SimEvent evt) {
         return switch (evt.getTag()) {
-            case CloudSimTags.VM_CREATE_ACK -> processVmCreate(evt);
-            case CloudSimTags.VM_VERTICAL_SCALING  -> requestVmVerticalScaling(evt);
-            case CloudSimTags.VM_DESTROY -> processVmDestroy(evt, false);
-            case CloudSimTags.VM_DESTROY_ACK -> processVmDestroy(evt, true);
-            case CloudSimTags.VM_MIGRATE -> finishVmMigration(evt, false);
-            case CloudSimTags.VM_MIGRATE_ACK -> finishVmMigration(evt, true);
-            case CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING -> updateCloudletProcessing() != Double.MAX_VALUE;
+            case VM_CREATE_ACK -> processVmCreate(evt);
+            case VM_VERTICAL_SCALING  -> requestVmVerticalScaling(evt);
+            case VM_DESTROY -> processVmDestroy(evt, false);
+            case VM_DESTROY_ACK -> processVmDestroy(evt, true);
+            case VM_MIGRATE -> finishVmMigration(evt, false);
+            case VM_MIGRATE_ACK -> finishVmMigration(evt, true);
+            case VM_UPDATE_CLOUDLET_PROCESSING -> updateCloudletProcessing() != Double.MAX_VALUE;
             default -> false;
         };
     }
 
     /**
-     * Process a {@link CloudSimTags#VM_VERTICAL_SCALING} request,
+     * Process a {@link CloudSimTag#VM_VERTICAL_SCALING} request,
      * trying to scale a Vm resource.
      *
-     * @param evt the received  {@link CloudSimTags#VM_VERTICAL_SCALING} event
+     * @param evt the received  {@link CloudSimTag#VM_VERTICAL_SCALING} event
      * @return true if the Vm was scaled, false otherwise
      */
     private boolean requestVmVerticalScaling(final SimEvent evt) {
@@ -353,19 +353,19 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     private boolean processCloudletEvents(final SimEvent evt) {
         return switch (evt.getTag()) {
             // New Cloudlet arrives
-            case CloudSimTags.CLOUDLET_SUBMIT -> processCloudletSubmit(evt, false);
+            case CLOUDLET_SUBMIT -> processCloudletSubmit(evt, false);
             // New Cloudlet arrives, but the sender asks for an ack
-            case CloudSimTags.CLOUDLET_SUBMIT_ACK -> processCloudletSubmit(evt, true);
+            case CLOUDLET_SUBMIT_ACK -> processCloudletSubmit(evt, true);
             // Cancels a previously submitted Cloudlet
-            case CloudSimTags.CLOUDLET_CANCEL -> processCloudlet(evt, CloudSimTags.CLOUDLET_CANCEL);
+            case CLOUDLET_CANCEL -> processCloudlet(evt, CloudSimTag.CLOUDLET_CANCEL);
             // Pauses a previously submitted Cloudlet
-            case CloudSimTags.CLOUDLET_PAUSE -> processCloudlet(evt, CloudSimTags.CLOUDLET_PAUSE);
+            case CLOUDLET_PAUSE -> processCloudlet(evt, CloudSimTag.CLOUDLET_PAUSE);
             // Pauses a previously submitted Cloudlet, but the sender asks for an acknowledgement
-            case CloudSimTags.CLOUDLET_PAUSE_ACK -> processCloudlet(evt, CloudSimTags.CLOUDLET_PAUSE_ACK);
+            case CLOUDLET_PAUSE_ACK -> processCloudlet(evt, CloudSimTag.CLOUDLET_PAUSE_ACK);
             // Resumes a previously submitted Cloudlet
-            case CloudSimTags.CLOUDLET_RESUME -> processCloudlet(evt, CloudSimTags.CLOUDLET_RESUME);
+            case CLOUDLET_RESUME -> processCloudlet(evt, CloudSimTag.CLOUDLET_RESUME);
             // Resumes a previously submitted Cloudlet, but the sender asks for an acknowledgement
-            case CloudSimTags.CLOUDLET_RESUME_ACK -> processCloudlet(evt, CloudSimTags.CLOUDLET_RESUME_ACK);
+            case CLOUDLET_RESUME_ACK -> processCloudlet(evt, CloudSimTag.CLOUDLET_RESUME_ACK);
             default -> false;
         };
     }
@@ -377,20 +377,20 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      */
     protected void processPingRequest(final SimEvent evt) {
         final IcmpPacket pkt = (IcmpPacket) evt.getData();
-        pkt.setTag(CloudSimTags.ICMP_PKT_RETURN);
+        pkt.setTag(CloudSimTag.ICMP_PKT_RETURN);
         pkt.setDestination(pkt.getSource());
 
         // returns the packet to the sender
-        sendNow(pkt.getSource(), CloudSimTags.ICMP_PKT_RETURN, pkt);
+        sendNow(pkt.getSource(), CloudSimTag.ICMP_PKT_RETURN, pkt);
     }
 
     /**
      * Processes a Cloudlet based on the event type.
-     *  @param evt information about the event just happened
-     * @param type event type
+     * @param evt information about the event just happened
+     * @param tag event tag
      * @return
      */
-    protected boolean processCloudlet(final SimEvent evt, final int type) {
+    protected boolean processCloudlet(final SimEvent evt, final CloudSimTag tag) {
         final Cloudlet cloudlet;
         try {
             cloudlet = (Cloudlet) evt.getData();
@@ -399,12 +399,12 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
             return false;
         }
 
-        return switch (type) {
-            case CloudSimTags.CLOUDLET_CANCEL -> processCloudletCancel(cloudlet);
-            case CloudSimTags.CLOUDLET_PAUSE -> processCloudletPause(cloudlet, false);
-            case CloudSimTags.CLOUDLET_PAUSE_ACK -> processCloudletPause(cloudlet, true);
-            case CloudSimTags.CLOUDLET_RESUME -> processCloudletResume(cloudlet, false);
-            case CloudSimTags.CLOUDLET_RESUME_ACK -> processCloudletResume(cloudlet, true);
+        return switch (tag) {
+            case CLOUDLET_CANCEL -> processCloudletCancel(cloudlet);
+            case CLOUDLET_PAUSE -> processCloudletPause(cloudlet, false);
+            case CLOUDLET_PAUSE_ACK -> processCloudletPause(cloudlet, true);
+            case CLOUDLET_RESUME -> processCloudletResume(cloudlet, false);
+            case CLOUDLET_RESUME_ACK -> processCloudletResume(cloudlet, true);
             default -> {
                 LOGGER.trace(
                     "{}: Unable to handle a request from {} with event tag = {}",
@@ -450,7 +450,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         if (estimatedFinishTime > 0.0 && !Double.isInfinite(estimatedFinishTime)) {
             send(this,
                 getCloudletProcessingUpdateInterval(estimatedFinishTime),
-                CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING);
+                CloudSimTag.VM_UPDATE_CLOUDLET_PROCESSING);
         }
 
         ((CustomerEntityAbstract)cloudlet).setCreationTime();
@@ -503,16 +503,16 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         if (estimatedFinishTime > 0.0 && estimatedFinishTime > clock()) {
             schedule(this,
                 getCloudletProcessingUpdateInterval(estimatedFinishTime),
-                CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING);
+                CloudSimTag.VM_UPDATE_CLOUDLET_PROCESSING);
         }
 
-        sendAck(ack, cloudlet, CloudSimTags.CLOUDLET_RESUME_ACK);
+        sendAck(ack, cloudlet, CloudSimTag.CLOUDLET_RESUME_ACK);
         return true;
     }
 
-    private void sendAck(final boolean ack, final Cloudlet cloudlet, final int cloudSimTagAck) {
+    private void sendAck(final boolean ack, final Cloudlet cloudlet, final CloudSimTag tag) {
         if (ack) {
-            sendNow(cloudlet.getBroker(), cloudSimTagAck, cloudlet);
+            sendNow(cloudlet.getBroker(), tag, cloudlet);
         }
     }
 
@@ -524,7 +524,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      */
     protected boolean processCloudletPause(final Cloudlet cloudlet, final boolean ack) {
         cloudlet.getVm().getCloudletScheduler().cloudletPause(cloudlet);
-        sendAck(ack, cloudlet, CloudSimTags.CLOUDLET_PAUSE_ACK);
+        sendAck(ack, cloudlet, CloudSimTag.CLOUDLET_PAUSE_ACK);
         return true;
     }
 
@@ -536,7 +536,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      */
     protected boolean processCloudletCancel(final Cloudlet cloudlet) {
         cloudlet.getVm().getCloudletScheduler().cloudletCancel(cloudlet);
-        sendNow(cloudlet.getBroker(), CloudSimTags.CLOUDLET_CANCEL, cloudlet);
+        sendNow(cloudlet.getBroker(), CloudSimTag.CLOUDLET_CANCEL, cloudlet);
         return true;
     }
 
@@ -559,7 +559,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
 
         /* Acknowledges that the request was received by the Datacenter,
           (the broker is expecting that if the Vm was created or not). */
-        send(vm.getBroker(), getSimulation().getMinTimeBetweenEvents(), CloudSimTags.VM_CREATE_ACK, vm);
+        send(vm.getBroker(), getSimulation().getMinTimeBetweenEvents(), CloudSimTag.VM_CREATE_ACK, vm);
 
         return hostAllocatedForVm;
     }
@@ -578,7 +578,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         vmAllocationPolicy.deallocateHostForVm(vm);
 
         if (ack) {
-            sendNow(vm.getBroker(), CloudSimTags.VM_DESTROY_ACK, vm);
+            sendNow(vm.getBroker(), CloudSimTag.VM_DESTROY_ACK, vm);
         }
 
         vm.getBroker().requestShutdownWhenIdle();
@@ -616,7 +616,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      * @param evt information about the event just happened
      * @param ack indicates if the event's sender expects to receive an
      * acknowledgement message when the event finishes being processed
-     * @see CloudSimTags#VM_MIGRATE
+     * @see CloudSimTag#VM_MIGRATE
      * @return
      */
     protected boolean finishVmMigration(final SimEvent evt, final boolean ack) {
@@ -644,11 +644,11 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
             vm.getBroker().getVmExecList().add(vm);
 
             if (ack) {
-                sendNow(evt.getSource(), CloudSimTags.VM_CREATE_ACK, vm);
+                sendNow(evt.getSource(), CloudSimTag.VM_CREATE_ACK, vm);
             }
         }
 
-        final SimEvent event = getSimulation().findFirstDeferred(this, new PredicateType(CloudSimTags.VM_MIGRATE));
+        final SimEvent event = getSimulation().findFirstDeferred(this, new PredicateType(CloudSimTag.VM_MIGRATE));
         if (event == null || event.getTime() > clock()) {
             //Updates processing of all Hosts again to get their latest state after the VMs migrations
             updateHostsProcessing();
@@ -687,7 +687,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         */
         sendCloudletSubmitAckToBroker(cloudlet, ack);
 
-        sendNow(cloudlet.getBroker(), CloudSimTags.CLOUDLET_RETURN, cloudlet);
+        sendNow(cloudlet.getBroker(), CloudSimTag.CLOUDLET_RETURN, cloudlet);
     }
 
     /**
@@ -707,7 +707,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
             return;
         }
 
-        sendNow(cloudlet.getBroker(), CloudSimTags.CLOUDLET_SUBMIT_ACK, cloudlet);
+        sendNow(cloudlet.getBroker(), CloudSimTag.CLOUDLET_SUBMIT_ACK, cloudlet);
     }
 
     /**
@@ -755,7 +755,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
 
         if (nextSimulationDelay != Double.MAX_VALUE) {
             nextSimulationDelay = getCloudletProcessingUpdateInterval(nextSimulationDelay);
-            schedule(nextSimulationDelay, CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING);
+            schedule(nextSimulationDelay, CloudSimTag.VM_UPDATE_CLOUDLET_PROCESSING);
         }
         setLastProcessTime(clock());
 
@@ -856,7 +856,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
 
         if(targetHost.addMigratingInVm(sourceVm)) {
             sourceHost.addVmMigratingOut(sourceVm);
-            send(this, delay, CloudSimTags.VM_MIGRATE, new TreeMap.SimpleEntry<>(sourceVm, targetHost));
+            send(this, delay, CloudSimTag.VM_MIGRATE, new TreeMap.SimpleEntry<>(sourceVm, targetHost));
         }
     }
 
@@ -881,7 +881,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     @Override
     protected void startInternal() {
         LOGGER.info("{}: {} is starting...", getSimulation().clockStr(), getName());
-        sendNow(getSimulation().getCloudInfoService(), CloudSimTags.DC_REGISTRATION_REQUEST, this);
+        sendNow(getSimulation().getCloudInfoService(), CloudSimTag.DC_REGISTRATION_REQUEST, this);
     }
 
     @Override

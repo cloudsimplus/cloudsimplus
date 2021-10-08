@@ -43,11 +43,11 @@ public interface SimEntityNullBase extends SimEntity {
     @Override default SimEntity setSimulation(Simulation simulation) { return this; }
     @Override default void processEvent(SimEvent evt) {/**/}
     @Override default boolean schedule(SimEvent evt) { return false; }
-    @Override default boolean schedule(SimEntity dest, double delay, int tag, Object data) { return false; }
-    @Override default boolean schedule(double delay, int tag, Object data) { return false; }
-    @Override default boolean schedule(SimEntity dest, double delay, int tag) { return false; }
-    @Override default boolean schedule(int tag, Object data) { return false; }
-    @Override default boolean schedule(double delay, int tag) { return false; }
+    @Override default boolean schedule(SimEntity dest, double delay, CloudSimTag tag, Object data) { return false; }
+    @Override default boolean schedule(double delay, CloudSimTag tag, Object data) { return false; }
+    @Override default boolean schedule(SimEntity dest, double delay, CloudSimTag tag) { return false; }
+    @Override default boolean schedule(CloudSimTag tag, Object data) { return false; }
+    @Override default boolean schedule(double delay, CloudSimTag tag) { return false; }
     @Override default void run() {/**/}
     @Override default boolean start() { return false; }
     @Override default void shutdown() {/**/}

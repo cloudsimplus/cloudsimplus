@@ -564,7 +564,7 @@ public class HostSimple implements Host {
            return this;
         }
 
-        final int tag = activate ? CloudSimTags.HOST_POWER_ON : CloudSimTags.HOST_POWER_OFF;
+        final CloudSimTag tag = activate ? CloudSimTag.HOST_POWER_ON : CloudSimTag.HOST_POWER_OFF;
         final String msg = (activate ? "on" : "off") + " (expected time: {} seconds).";
         LOGGER.info("{}: {} is being powered " + msg, getSimulation().clockStr(), this, delay);
         datacenter.schedule(delay, tag, this);

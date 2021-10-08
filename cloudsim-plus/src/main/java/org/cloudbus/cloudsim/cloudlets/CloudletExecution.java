@@ -8,7 +8,7 @@
 package org.cloudbus.cloudsim.cloudlets;
 
 import org.cloudbus.cloudsim.core.CloudSim;
-import org.cloudbus.cloudsim.core.CloudSimTags;
+import org.cloudbus.cloudsim.core.CloudSimTag;
 import org.cloudbus.cloudsim.core.events.CloudSimEvent;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
@@ -213,7 +213,7 @@ public class CloudletExecution {
         /**
          * If length is negative, that means it is undefined.
          * This way, here it's ensured the remaining length keeps
-         * increasing until a {@link CloudSimTags#CLOUDLET_FINISH} message
+         * increasing until a {@link CloudSimTag#CLOUDLET_FINISH} message
          * is received by the broker to finish the cloudlet
          *
          * Getting here, it's ensured the length is negative. This way,
@@ -285,7 +285,7 @@ public class CloudletExecution {
          * then sends a request to finish the Cloudlet. */
         if(finishRequestTime <= 0 && terminate && cloudlet.getLength() < 0){
             finishRequestTime = simulation.clock();
-            simulation.sendFirst(new CloudSimEvent(cloudlet.getBroker(), CloudSimTags.CLOUDLET_FINISH, cloudlet));
+            simulation.sendFirst(new CloudSimEvent(cloudlet.getBroker(), CloudSimTag.CLOUDLET_FINISH, cloudlet));
         }
     }
 

@@ -21,7 +21,7 @@ import org.cloudsimplus.autoscaling.VerticalVmScaling;
 import org.cloudsimplus.traces.google.GoogleTaskEventsTraceReader;
 
 /**
- * Contains various static command tags that indicate a type of action that
+ * Tags indicating a type of action that
  * needs to be undertaken by CloudSim entities when they receive or send events.
  * <b>NOTE:</b> To avoid conflicts with other tags,
  * CloudSim reserves numbers lower than 300 and the number 9600.
@@ -29,25 +29,23 @@ import org.cloudsimplus.traces.google.GoogleTaskEventsTraceReader;
  * @author Manzur Murshed
  * @author Rajkumar Buyya
  * @author Anthony Sulistio
+ * @author Manoel Campos da Silva Filho
  * @since CloudSim Toolkit 1.0
  */
-public final class CloudSimTags {
+public enum CloudSimTag implements Comparable<CloudSimTag> {
+    /** An unclassified tag. */
+    NONE(-1),
+
+    /**
+     * Tag used for requesting an entity to shut down.
+     * That ensures a graceful shutdown, after other entity events are processed.
+     */
+    ENTITY_SHUTDOWN(-2),
 
     /**
      * Denotes the end of simulation.
-     * Despite it has a negative value, it isn't a priority event.
      */
-    public static final int END_OF_SIMULATION = -1;
-
-    /**
-     * Starting constant value for cloud-related tags. *
-     */
-    private static final int BASE = 0;
-
-    /**
-     * Starting constant value for network-related tags. *
-     */
-    private static final int NET_BASE = 100;
+    SIMULATION_END,
 
     /**
      * Denotes a request from a Datacenter to register itself. This tag is normally used
@@ -55,36 +53,36 @@ public final class CloudSimTags {
      * When such a {@link SimEvent} is sent, the {@link SimEvent#getData()}
      * must be a {@link Datacenter} object.
      */
-    public static final int DC_REGISTRATION_REQUEST = BASE + 2;
+    DC_REGISTRATION_REQUEST,
 
     /**
      * Denotes a request from a broker to a {@link CloudInformationService} to get
      * the list of all Datacenters, including the ones that can support advanced reservation.
      */
-    public static final int DC_LIST_REQUEST = BASE + 4;
+    DC_LIST_REQUEST,
 
     /**
      * Denotes a request to register a {@link CloudInformationService} entity as a regional CIS.
      * When such a {@link SimEvent} is sent, the {@link SimEvent#getData()}
      * must be a {@link CloudInformationService} object.
      */
-    public static final int REGISTER_REGIONAL_CIS = BASE + 13;
+    REGISTER_REGIONAL_CIS,
 
     /**
      * Denotes a request to get a list of other regional CIS entities from the
      * system CIS entity.
      */
-    public static final int REQUEST_REGIONAL_CIS = BASE + 14;
+    REQUEST_REGIONAL_CIS,
 
     /**
      * This tag is used by an entity to send ping requests.
      */
-    public static final int ICMP_PKT_SUBMIT = NET_BASE + 5;
+    ICMP_PKT_SUBMIT,
 
     /**
      * This tag is used to return the ping request back to sender.
      */
-    public static final int ICMP_PKT_RETURN = NET_BASE + 6;
+    ICMP_PKT_RETURN,
 
     /**
      * Denotes the return of a finished Cloudlet back to the sender.
@@ -92,7 +90,7 @@ public final class CloudSimTags {
      * When an event of this type is sent, the {@link SimEvent#getData()}
      * must be a {@link Cloudlet} object.
      */
-    public static final int CLOUDLET_RETURN = BASE + 15;
+    CLOUDLET_RETURN,
 
     /**
      * Denotes the submission of a Cloudlet. This tag is normally used between
@@ -100,7 +98,7 @@ public final class CloudSimTags {
      * When an event of this type is sent, the {@link SimEvent#getData()}
      * must be a {@link Cloudlet} object.
      */
-    public static final int CLOUDLET_SUBMIT = BASE + 16;
+    CLOUDLET_SUBMIT,
 
     /**
      * Denotes the submission of a Cloudlet with an acknowledgement. This tag is
@@ -109,21 +107,21 @@ public final class CloudSimTags {
      * must be a {@link Cloudlet} object.
      *
      */
-    public static final int CLOUDLET_SUBMIT_ACK = BASE + 17;
+    CLOUDLET_SUBMIT_ACK,
 
     /**
      * Cancels a Cloudlet submitted in the Datacenter entity.
      * When an event of this type is sent, the {@link SimEvent#getData()}
      * must be a {@link Cloudlet} object.
      */
-    public static final int CLOUDLET_CANCEL = BASE + 18;
+    CLOUDLET_CANCEL,
 
     /**
      * Pauses a Cloudlet submitted in the Datacenter entity.
      * When an event of this type is sent, the {@link SimEvent#getData()}
      * must be a {@link Cloudlet} object.
      */
-    public static final int CLOUDLET_PAUSE = BASE + 19;
+    CLOUDLET_PAUSE,
 
     /**
      * Pauses a Cloudlet submitted in the Datacenter entity with an
@@ -131,14 +129,14 @@ public final class CloudSimTags {
      * When an event of this type is sent, the {@link SimEvent#getData()}
      * must be a {@link Cloudlet} object.
      */
-    public static final int CLOUDLET_PAUSE_ACK = BASE + 20;
+    CLOUDLET_PAUSE_ACK,
 
     /**
      * Resumes a Cloudlet submitted in the Datacenter entity.
      * When an event of this type is sent, the {@link SimEvent#getData()}
      * must be a {@link Cloudlet} object.
      */
-    public static final int CLOUDLET_RESUME = BASE + 21;
+    CLOUDLET_RESUME,
 
     /**
      * Resumes a Cloudlet submitted in the Datacenter entity with an
@@ -146,7 +144,7 @@ public final class CloudSimTags {
      * When an event of this type is sent, the {@link SimEvent#getData()}
      * must be a {@link Cloudlet} object.
      */
-    public static final int CLOUDLET_RESUME_ACK = BASE + 22;
+    CLOUDLET_RESUME_ACK,
 
     /**
      * Request a Cloudlet to be set as ready to start executing inside a VM.
@@ -162,14 +160,14 @@ public final class CloudSimTags {
      * When an event of this type is sent, the {@link SimEvent#getData()}
      * must be a {@link Cloudlet} object.
      */
-    public static final int CLOUDLET_READY = BASE + 23;
+    CLOUDLET_READY,
 
     /**
      * Request a Cloudlet to be set as failed.
      * When an event of this type is sent, the {@link SimEvent#getData()}
      * must be a {@link Cloudlet} object.
      */
-    public static final int CLOUDLET_FAIL = BASE + 24;
+    CLOUDLET_FAIL,
 
     /**
      * Requests an indefinite-length Cloudlet (negative value) to be finished by
@@ -185,7 +183,7 @@ public final class CloudSimTags {
      * That is way this event must be processed before other events.
      * </p>
      */
-    public static final int CLOUDLET_FINISH = -(BASE + 25);
+    CLOUDLET_FINISH(-2),
 
     /**
      * Requests a Cloudlet to be cancelled.
@@ -194,7 +192,7 @@ public final class CloudSimTags {
      * When an event of this type is sent, the {@link SimEvent#getData()}
      * must be a {@link Cloudlet} object.
      */
-    public static final int CLOUDLET_KILL = BASE + 26;
+    CLOUDLET_KILL,
 
     /**
      * Request a Cloudlet to have its attributes changed.
@@ -220,12 +218,12 @@ public final class CloudSimTags {
      *
      * <p>The {@code runnable} variable must be set as the data for the event to be sent with this tag.</p>
      */
-    public static final int CLOUDLET_UPDATE_ATTRIBUTES = BASE + 27;
+    CLOUDLET_UPDATE_ATTRIBUTES,
 
     /**
      * Denotes a request to retry creating waiting VMs from a {@link DatacenterBroker}.
      */
-    public static final int VM_CREATE_RETRY = BASE + 31;
+    VM_CREATE_RETRY,
 
     /**
      * Denotes a request to create a new VM in a {@link Datacenter}
@@ -236,14 +234,14 @@ public final class CloudSimTags {
      * one has only to call {@link Vm#isCreated()}.
      * </p>
      */
-    public static final int VM_CREATE_ACK = BASE + 32;
+    VM_CREATE_ACK,
 
     /**
      * Denotes a request to destroy a VM in a {@link Datacenter}.
      * When an event of this type is sent, the {@link SimEvent#getData()}
      * must be a {@link Vm} object.
      */
-    public static final int VM_DESTROY = BASE + 33;
+    VM_DESTROY,
 
     /**
      * Denotes a request to destroy a new VM in a {@link Datacenter} with
@@ -251,7 +249,7 @@ public final class CloudSimTags {
      * When an event of this type is sent, the {@link SimEvent#getData()}
      * must be a {@link Vm} object.
      */
-    public static final int VM_DESTROY_ACK = BASE + 34;
+    VM_DESTROY_ACK,
 
     /**
      * Denotes a request to finish the migration of a new VM in a {@link Datacenter}.
@@ -264,14 +262,14 @@ public final class CloudSimTags {
      * a suitable Host when the migration request message is processed.
      * </p>
      */
-    public static final int VM_MIGRATE = BASE + 35;
+    VM_MIGRATE,
 
     /**
      * Denotes a request to finish the migration of a new VM in a {@link Datacenter} with
      * acknowledgement information sent by the Datacenter.
      * @see #VM_MIGRATE
      */
-    public static final int VM_MIGRATE_ACK = BASE + 36;
+    VM_MIGRATE_ACK,
 
     /**
      * Denotes an internal event generated in a {@link Datacenter}
@@ -284,7 +282,7 @@ public final class CloudSimTags {
      * means that all Hosts from the Datacenter will have
      * its cloudlets updated.</p>
      */
-    public static final int VM_UPDATE_CLOUDLET_PROCESSING = BASE + 41;
+    VM_UPDATE_CLOUDLET_PROCESSING,
 
     /**
      * Denotes a request vertical scaling of VM resources
@@ -292,36 +290,36 @@ public final class CloudSimTags {
      * When an event of this type is sent, the {@link SimEvent#getData()}
      * must be a {@link VerticalVmScaling} object.
      */
-    public static final int VM_VERTICAL_SCALING = BASE + 42;
+    VM_VERTICAL_SCALING,
 
     /**
      * Denotes the transmission of packets up through the network topology.
      */
-    public static final int NETWORK_EVENT_UP = BASE + 43;
+    NETWORK_EVENT_UP,
 
-    public static final int NETWORK_EVENT_SEND = BASE + 44;
+    NETWORK_EVENT_SEND,
 
     /**
      * Denotes the transmission of packets down through the network topology.
      */
-    public static final int NETWORK_EVENT_DOWN = BASE + 46;
+    NETWORK_EVENT_DOWN,
 
     /**
      * Denotes the transmission of packets targeting a given Host.
      * The {@link SimEvent#getData()} must be a {@link HostPacket}
      * to be processed.
      */
-    public static final int NETWORK_EVENT_HOST = BASE + 47;
+    NETWORK_EVENT_HOST,
 
     /**
      * Denotes failure events such as hosts or VMs failures.
     */
-    public static final int FAILURE = BASE + 48;
+    FAILURE,
 
     /**
      * Denotes a request to generate a host failure.
      */
-    public static final int HOST_FAILURE = FAILURE + 1;
+    HOST_FAILURE,
 
     /**
      * Denotes a request to a Datacenter to add a Host or list of Hosts to a Datacenter.
@@ -329,7 +327,7 @@ public final class CloudSimTags {
      * to the Datacenter where the message is being sent to.
      * The source of such events is the {@link CloudInformationService}.
      */
-    public static final int HOST_ADD = BASE + 60;
+    HOST_ADD,
 
     /**
      * Denotes a request to a Datacenter to remove a Host or list of Hosts from a Datacenter.
@@ -343,32 +341,55 @@ public final class CloudSimTags {
      * The source of such events is the {@link CloudInformationService}.
      * </p>
      */
-    public static final int HOST_REMOVE = BASE + 61;
+    HOST_REMOVE,
 
     /**
      * Denotes a power measurement performed periodically by a {@link PowerMeter} on
      * entities having a {@link PowerModel}, such as {@link Datacenter}s and {@link Host}s.
      */
-    public static final int POWER_MEASUREMENT = BASE + 70;
+    POWER_MEASUREMENT,
 
     /**
      * Denotes a tag for starting up a {@link Host} inside a {@link Datacenter}.
      * When such a {@link SimEvent} is sent, the {@link SimEvent#getData()}
      * must be a {@link Host} object.
      */
-    public static final int HOST_POWER_ON = BASE + 71;
+    HOST_POWER_ON,
 
     /**
      * Denotes a tag for shutting down a {@link Host} inside a {@link Datacenter}.
      * When such a {@link SimEvent} is sent, the {@link SimEvent#getData()}
      * must be a {@link Host} object.
      */
-    public static final int HOST_POWER_OFF = BASE + 72;
+    HOST_POWER_OFF;
+
+    private final int priority;
+
+    CloudSimTag() {
+        this.priority = 0;
+    }
 
     /**
-     * Private constructor to avoid class instantiation.
+     * Creates an event tag with a given priority.
+     * Negative values give higher priority.
+     * @param priority the priority to set
      */
-    private CloudSimTags() {
-        throw new UnsupportedOperationException("CloudSimTags cannot be instantiated");
+    CloudSimTag(final int priority) {
+        this.priority = priority;
+    }
+
+    public int priority(){
+        return priority;
+    }
+
+    /**
+     * Checks if this tag is between a given range of tags,
+     * according to their {@link #ordinal()} values.
+     * @param startInclusive the tag starting the range to check
+     * @param endInclusive the tag finishing the range to check
+     * @return
+     */
+    public boolean between(final CloudSimTag startInclusive, final CloudSimTag endInclusive){
+        return this.ordinal() >= startInclusive.ordinal() && this.ordinal() <= endInclusive.ordinal();
     }
 }

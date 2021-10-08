@@ -26,7 +26,7 @@ package org.cloudsimplus.traces.google;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.core.CloudSim;
-import org.cloudbus.cloudsim.core.CloudSimTags;
+import org.cloudbus.cloudsim.core.CloudSimTag;
 import org.cloudbus.cloudsim.core.events.CloudSimEvent;
 import org.cloudbus.cloudsim.util.ResourceLoader;
 import org.cloudbus.cloudsim.util.TraceReaderAbstract;
@@ -216,11 +216,11 @@ public class GoogleTaskEventsTraceReader extends GoogleTraceReaderAbstract<Cloud
 
     /**
      * Send a message to the broker to request change in a Cloudlet status,
-     * using some tags from {@link CloudSimTags} such as {@link CloudSimTags#CLOUDLET_READY}.
-     * @param tag a CLOUDLET tag from the {@link CloudSimTags} used to send a message to request the Cloudlet status change
+     * using some tags from {@link CloudSimTag} such as {@link CloudSimTag#CLOUDLET_READY}.
+     * @param tag a CLOUDLET tag from the {@link CloudSimTag} used to send a message to request the Cloudlet status change
      * @return true if the request was created, false otherwise
      */
-    /* default */ boolean requestCloudletStatusChange(final int tag) {
+    /* default */ boolean requestCloudletStatusChange(final CloudSimTag tag) {
         final TaskEvent taskEvent = TaskEvent.of(this);
         final DatacenterBroker broker = brokerManager.getBroker(taskEvent.getUserName());
         final double delay = taskEvent.getTimestamp();
@@ -321,7 +321,7 @@ public class GoogleTaskEventsTraceReader extends GoogleTraceReaderAbstract<Cloud
             new CloudSimEvent(
                 taskEvent.getTimestamp(),
                 statusChangeSimEvt.getDestination(),
-                CloudSimTags.CLOUDLET_UPDATE_ATTRIBUTES, attributesUpdateRunnable);
+                CloudSimTag.CLOUDLET_UPDATE_ATTRIBUTES, attributesUpdateRunnable);
 
         //Sends the event to change the Cloudlet attributes
         addEventToSend(cloudlet, attrsChangeSimEvt);

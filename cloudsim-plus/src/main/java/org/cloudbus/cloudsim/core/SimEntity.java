@@ -106,56 +106,56 @@ public interface SimEntity extends Nameable, Runnable, Comparable<SimEntity> {
 
     /**
      * Sends an event from the entity to itself with no delay.
-     * @param tag   An user-defined number representing the type of event.
+     * @param tag   a tag representing the type of event.
      * @return true if the event was sent; false if the simulation was not started yet
      */
-    default boolean schedule(int tag) {
+    default boolean schedule(CloudSimTag tag) {
         return schedule(0, tag);
     }
 
     /**
      * Sends an event from the entity to itself.
      * @param delay How many seconds after the current simulation time the event should be sent
-     * @param tag   An user-defined number representing the type of event.
+     * @param tag   a tag representing the type of event.
      * @param data  The data to be sent with the event.
      * @return true if the event was sent; false if the simulation was not started yet
      */
-    boolean schedule(double delay, int tag, Object data);
+    boolean schedule(double delay, CloudSimTag tag, Object data);
 
     /**
      * Sends an event from the entity to itself with no data.
      * @param delay How many seconds after the current simulation time the event should be sent
-     * @param tag   An user-defined number representing the type of event.
+     * @param tag   a tag representing the type of event.
      * @return true if the event was sent; false if the simulation was not started yet
      */
-    boolean schedule(double delay, int tag);
+    boolean schedule(double delay, CloudSimTag tag);
 
     /**
      * Sends an event to another entity.
      * @param dest  the destination entity
      * @param delay How many seconds after the current simulation time the event should be sent
-     * @param tag   An user-defined number representing the type of event.
+     * @param tag   a tag representing the type of event.
      * @param data  The data to be sent with the event.
      * @return true if the event was sent; false if the simulation was not started yet
      */
-    boolean schedule(SimEntity dest, double delay, int tag, Object data);
+    boolean schedule(SimEntity dest, double delay, CloudSimTag tag, Object data);
 
     /**
      * Sends an event to another entity with <b>no</b> attached data.
      * @param dest the destination entity
      * @param delay How many seconds after the current simulation time the event should be sent
-     * @param tag   An user-defined number representing the type of event.
+     * @param tag   a tag representing the type of event.
      * @return true if the event was sent; false if the simulation was not started yet
      */
-    boolean schedule(SimEntity dest, double delay, int tag);
+    boolean schedule(SimEntity dest, double delay, CloudSimTag tag);
 
     /**
      * Sends an event from the entity to itself with <b>no</b> delay.
-     * @param tag   An user-defined number representing the type of event.
+     * @param tag   a tag representing the type of event.
      * @param data  The data to be sent with the event.
      * @return true if the event was sent; false if the simulation was not started yet
      */
-    boolean schedule(int tag, Object data);
+    boolean schedule(CloudSimTag tag, Object data);
 
     /**
      * The run loop to process events fired during the simulation. The events

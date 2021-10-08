@@ -15,7 +15,7 @@
  */
 package org.cloudbus.cloudsim.network;
 
-import org.cloudbus.cloudsim.core.CloudSimTags;
+import org.cloudbus.cloudsim.core.CloudSimTag;
 import org.cloudbus.cloudsim.core.SimEntity;
 
 import java.text.DecimalFormat;
@@ -47,7 +47,7 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
     private static final int UNSET_BAUD_RATE = -1;
 
     /* @see #getTag() */
-    private int tag;
+    private CloudSimTag tag;
 
     /**
      * The packet name.
@@ -132,7 +132,7 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
         this.baudRateList = new ArrayList<>();
 
         this.lastHop = this.source;
-        this.tag = CloudSimTags.ICMP_PKT_SUBMIT;
+        this.tag = CloudSimTag.ICMP_PKT_SUBMIT;
         this.baudRate = UNSET_BAUD_RATE;
         this.num = new DecimalFormat("#0.000#");
     }
@@ -430,30 +430,31 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
 
     /**
      * Gets the packet direction that indicates if it is going or returning.
-     * The direction can be {@link CloudSimTags#ICMP_PKT_SUBMIT}
-     * or {@link CloudSimTags#ICMP_PKT_RETURN}.
+     * The direction can be {@link CloudSimTag#ICMP_PKT_SUBMIT}
+     * or {@link CloudSimTag#ICMP_PKT_RETURN}.
      *
      * @return
      */
-    public int getTag() {
+    public CloudSimTag getTag() {
         return tag;
     }
 
     /**
      * Sets the packet direction that indicates if it is going or returning.
-     * The direction can be {@link CloudSimTags#ICMP_PKT_SUBMIT}
-     * or {@link CloudSimTags#ICMP_PKT_RETURN}.
+     * The direction can be {@link CloudSimTag#ICMP_PKT_SUBMIT}
+     * or {@link CloudSimTag#ICMP_PKT_RETURN}.
      *
      * @param tag the direction to set
-     * @return true if the tag is valid, false otherwise
      */
-    public boolean setTag(final int tag) {
-        if (tag < CloudSimTags.ICMP_PKT_SUBMIT || tag > CloudSimTags.ICMP_PKT_RETURN) {
-            return false;
+    public void setTag(final CloudSimTag tag) {
+        if (tag.between(CloudSimTag.ICMP_PKT_SUBMIT, CloudSimTag.ICMP_PKT_RETURN)) {
+            this.tag = tag;
         }
-
-        this.tag = tag;
-        return true;
+        else {
+            final var fmt = "Tag must be between %s and %s";
+            final var msg = String.format(fmt, CloudSimTag.ICMP_PKT_SUBMIT, CloudSimTag.ICMP_PKT_RETURN);
+            throw new IllegalArgumentException(msg);
+        }
     }
 
 }

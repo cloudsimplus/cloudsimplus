@@ -1,7 +1,6 @@
 package org.cloudbus.cloudsim.power;
 
 import org.cloudbus.cloudsim.core.CloudSimEntity;
-import org.cloudbus.cloudsim.core.CloudSimTags;
 import org.cloudbus.cloudsim.core.Simulation;
 import org.cloudbus.cloudsim.core.events.SimEvent;
 import org.cloudbus.cloudsim.power.models.PowerModel;
@@ -11,7 +10,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Supplier;
 
-import static org.cloudbus.cloudsim.core.CloudSimTags.POWER_MEASUREMENT;
+import static org.cloudbus.cloudsim.core.CloudSimTag.POWER_MEASUREMENT;
 
 /**
  * Periodically measures the current power usage of one or more {@link PowerAware} entities,
@@ -77,7 +76,7 @@ public class PowerMeter extends CloudSimEntity {
     public void processEvent(final SimEvent evt) {
         switch (evt.getTag()) {
             case POWER_MEASUREMENT -> measurePowerConsumption();
-            case CloudSimTags.END_OF_SIMULATION -> shutdown();
+            case SIMULATION_END -> shutdown();
             default -> throw new IllegalStateException("Unknown Event: " + evt);
         }
     }

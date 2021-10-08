@@ -24,7 +24,7 @@
 package org.cloudsimplus.traces.google;
 
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
-import org.cloudbus.cloudsim.core.CloudSimTags;
+import org.cloudbus.cloudsim.core.CloudSimTag;
 
 /**
  * Defines the type of {@link TaskEvent} (a line) in the trace file
@@ -76,7 +76,7 @@ public enum TaskEventType {
     SCHEDULE{
         @Override
         protected boolean process(final GoogleTaskEventsTraceReader reader) {
-            return reader.requestCloudletStatusChange(CloudSimTags.CLOUDLET_READY);
+            return reader.requestCloudletStatusChange(CloudSimTag.CLOUDLET_READY);
         }
     },
 
@@ -89,7 +89,7 @@ public enum TaskEventType {
     EVICT{
         @Override
         protected boolean process(final GoogleTaskEventsTraceReader reader) {
-            return reader.requestCloudletStatusChange(CloudSimTags.CLOUDLET_PAUSE);
+            return reader.requestCloudletStatusChange(CloudSimTag.CLOUDLET_PAUSE);
         }
     },
 
@@ -100,7 +100,7 @@ public enum TaskEventType {
     FAIL{
         @Override
         protected boolean process(final GoogleTaskEventsTraceReader reader) {
-            return reader.requestCloudletStatusChange(CloudSimTags.CLOUDLET_FAIL);
+            return reader.requestCloudletStatusChange(CloudSimTag.CLOUDLET_FAIL);
         }
     },
 
@@ -110,7 +110,7 @@ public enum TaskEventType {
     FINISH{
         @Override
         protected boolean process(final GoogleTaskEventsTraceReader reader) {
-            return reader.requestCloudletStatusChange(CloudSimTags.CLOUDLET_FINISH);
+            return reader.requestCloudletStatusChange(CloudSimTag.CLOUDLET_FINISH);
         }
     },
 
@@ -121,7 +121,7 @@ public enum TaskEventType {
     KILL{
         @Override
         protected boolean process(final GoogleTaskEventsTraceReader reader) {
-            return reader.requestCloudletStatusChange(CloudSimTags.CLOUDLET_CANCEL);
+            return reader.requestCloudletStatusChange(CloudSimTag.CLOUDLET_CANCEL);
         }
     },
 

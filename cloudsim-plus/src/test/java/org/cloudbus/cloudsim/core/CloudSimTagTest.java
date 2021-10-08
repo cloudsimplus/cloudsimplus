@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 /**
  * @author Manoel Campos da Silva Filho
  */
-public class CloudSimTagsTest {
+public class CloudSimTagTest {
     /**
      * List of constants from the class under test.
      */
@@ -22,7 +22,7 @@ public class CloudSimTagsTest {
 
     @BeforeAll
     public static void setUpClass(){
-        constants = getDeclaredConstants(CloudSimTags.class);
+        constants = getDeclaredConstants(CloudSimTag.class);
     }
 
     /**
@@ -38,10 +38,10 @@ public class CloudSimTagsTest {
 
     public static List<Field> getDeclaredConstants(Class aClass) {
         final List<Field> list = Stream.of(aClass.getDeclaredFields())
-            .filter(CloudSimTagsTest::isFieldConstant)
+            .filter(CloudSimTagTest::isFieldConstant)
             .collect(Collectors.toList());
 
-        list.forEach(CloudSimTagsTest::setAccessible);
+        list.forEach(CloudSimTagTest::setAccessible);
         return list;
     }
 

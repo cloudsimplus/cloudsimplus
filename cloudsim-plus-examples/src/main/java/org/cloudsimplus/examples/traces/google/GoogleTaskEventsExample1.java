@@ -28,7 +28,7 @@ import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
 import org.cloudbus.cloudsim.core.CloudSim;
-import org.cloudbus.cloudsim.core.CloudSimTags;
+import org.cloudbus.cloudsim.core.CloudSimTag;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
 import org.cloudbus.cloudsim.hosts.Host;
@@ -88,7 +88,7 @@ import static org.cloudbus.cloudsim.util.MathUtil.positive;
  *
  * TODO A joint example that creates Hosts and Cloudlets from trace files will be useful.
  * TODO See https://github.com/manoelcampos/cloudsim-plus/issues/151
- * TODO {@link CloudSimTags#CLOUDLET_FAIL} events aren't been processed.
+ * TODO {@link CloudSimTag#CLOUDLET_FAIL} events aren't been processed.
  * TODO It has to be checked how to make the Cloudlet to be executed in the
  *      Host specified in the trace file.
  */
@@ -106,7 +106,7 @@ public class GoogleTaskEventsExample1 {
 
     /**
      * Defines a negative length for Cloudlets created from the Google Task Events Trace file
-     * so that they can run indefinitely until a {@link CloudSimTags#CLOUDLET_FINISH}
+     * so that they can run indefinitely until a {@link CloudSimTag#CLOUDLET_FINISH}
      * event is received by the {@link DatacenterBroker}.
      * Check out {@link Cloudlet#setLength(long)} for details.
      */

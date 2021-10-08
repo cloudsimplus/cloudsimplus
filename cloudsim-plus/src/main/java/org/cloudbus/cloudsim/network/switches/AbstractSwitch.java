@@ -9,7 +9,7 @@ package org.cloudbus.cloudsim.network.switches;
 
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.core.CloudSimEntity;
-import org.cloudbus.cloudsim.core.CloudSimTags;
+import org.cloudbus.cloudsim.core.CloudSimTag;
 import org.cloudbus.cloudsim.core.events.PredicateType;
 import org.cloudbus.cloudsim.core.events.SimEvent;
 import org.cloudbus.cloudsim.datacenters.network.NetworkDatacenter;
@@ -88,16 +88,16 @@ public abstract class AbstractSwitch extends CloudSimEntity implements Switch {
     @Override
     protected void startInternal() {
         LOGGER.info("{} is starting...", getName());
-        schedule(CloudSimTags.DC_LIST_REQUEST);
+        schedule(CloudSimTag.DC_LIST_REQUEST);
     }
 
     @Override
     public void processEvent(final SimEvent evt) {
         switch (evt.getTag()) {
-            case CloudSimTags.NETWORK_EVENT_UP -> processPacketUp(evt);
-            case CloudSimTags.NETWORK_EVENT_DOWN -> processPacketDown(evt);
-            case CloudSimTags.NETWORK_EVENT_SEND -> processPacketForward();
-            case CloudSimTags.NETWORK_EVENT_HOST -> processHostPacket(evt);
+            case NETWORK_EVENT_UP -> processPacketUp(evt);
+            case NETWORK_EVENT_DOWN -> processPacketDown(evt);
+            case NETWORK_EVENT_SEND -> processPacketForward();
+            case NETWORK_EVENT_HOST -> processHostPacket(evt);
             default -> LOGGER.trace("{}: {}: Unknown event {} received.", getSimulation().clockStr(), this, evt.getTag());
         }
     }
@@ -121,8 +121,8 @@ public abstract class AbstractSwitch extends CloudSimEntity implements Switch {
      */
     protected void processPacketDown(final SimEvent evt) {
         // Packet coming from up level router has to send downward.
-        getSimulation().cancelAll(this, new PredicateType(CloudSimTags.NETWORK_EVENT_SEND));
-        schedule(this, getSwitchingDelay(), CloudSimTags.NETWORK_EVENT_SEND);
+        getSimulation().cancelAll(this, new PredicateType(CloudSimTag.NETWORK_EVENT_SEND));
+        schedule(this, getSwitchingDelay(), CloudSimTag.NETWORK_EVENT_SEND);
     }
 
     /**
@@ -141,8 +141,8 @@ public abstract class AbstractSwitch extends CloudSimEntity implements Switch {
      */
     protected void processPacketUp(final SimEvent evt) {
         // Packet coming from down level router has to be sent up.
-        getSimulation().cancelAll(this, new PredicateType(CloudSimTags.NETWORK_EVENT_SEND));
-        schedule(this, switchingDelay, CloudSimTags.NETWORK_EVENT_SEND);
+        getSimulation().cancelAll(this, new PredicateType(CloudSimTag.NETWORK_EVENT_SEND));
+        schedule(this, switchingDelay, CloudSimTag.NETWORK_EVENT_SEND);
     }
 
     /**
@@ -164,7 +164,7 @@ public abstract class AbstractSwitch extends CloudSimEntity implements Switch {
         for (final var targetSwitch: downlinkSwitchPacketMap.keySet()) {
             final var hostPktList = getDownlinkSwitchPacketList(targetSwitch);
             final double bw = this.downlinkBandwidth;
-            forwardPacketsToSwitch(targetSwitch, hostPktList, bw, CloudSimTags.NETWORK_EVENT_DOWN);
+            forwardPacketsToSwitch(targetSwitch, hostPktList, bw, CloudSimTag.NETWORK_EVENT_DOWN);
         }
     }
 
@@ -178,17 +178,17 @@ public abstract class AbstractSwitch extends CloudSimEntity implements Switch {
         for (final var targetSwitch : uplinkSwitchPacketMap.keySet()) {
             final var hostPktList = getUplinkSwitchPacketList(targetSwitch);
             final double bw = uplinkBandwidth;
-            forwardPacketsToSwitch(targetSwitch, hostPktList, bw, CloudSimTags.NETWORK_EVENT_UP);
+            forwardPacketsToSwitch(targetSwitch, hostPktList, bw, CloudSimTag.NETWORK_EVENT_UP);
         }
     }
 
     private void forwardPacketsToSwitch(
         final Switch destinationSwitch, final List<HostPacket> packetList,
-        final double bandwidth, final int cloudSimTag)
+        final double bandwidth, final CloudSimTag tag)
     {
         for (final HostPacket pkt : packetList) {
             final double delay = packetTransferDelay(pkt, bandwidth, packetList.size());
-            send(destinationSwitch, delay, cloudSimTag, pkt);
+            send(destinationSwitch, delay, tag, pkt);
         }
 
         packetList.clear();
@@ -203,7 +203,7 @@ public abstract class AbstractSwitch extends CloudSimEntity implements Switch {
     private void forwardPacketsToHosts() {
         for (final NetworkHost host : packetToHostMap.keySet()) {
             final var hostPktList = getHostPacketList(host);
-            forwardPacketsToSwitch(this, hostPktList, downlinkBandwidth, CloudSimTags.NETWORK_EVENT_HOST);
+            forwardPacketsToSwitch(this, hostPktList, downlinkBandwidth, CloudSimTag.NETWORK_EVENT_HOST);
         }
     }
 

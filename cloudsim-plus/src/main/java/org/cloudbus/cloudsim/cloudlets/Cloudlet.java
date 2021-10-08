@@ -7,7 +7,7 @@
 package org.cloudbus.cloudsim.cloudlets;
 
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
-import org.cloudbus.cloudsim.core.CloudSimTags;
+import org.cloudbus.cloudsim.core.CloudSimTag;
 import org.cloudbus.cloudsim.core.CustomerEntity;
 import org.cloudbus.cloudsim.core.UniquelyIdentifiable;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
@@ -645,7 +645,7 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
      *
      * <p>In case the length is a negative value, it means
      * the Cloudlet doesn't have a defined length, this way,
-     * it keeps running until a {@link CloudSimTags#CLOUDLET_FINISH}
+     * it keeps running until a {@link CloudSimTag#CLOUDLET_FINISH}
      * message is sent to the {@link DatacenterBroker}.</p>
      *
      * <p>According to this length and the power of the VM processor (in
@@ -669,7 +669,7 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
      *
      * <p>In case the length is a negative value, it means
      * the Cloudlet doesn't have a defined length, this way,
-     * it keeps running until a {@link CloudSimTags#CLOUDLET_FINISH}
+     * it keeps running until a {@link CloudSimTag#CLOUDLET_FINISH}
      * message is sent to the {@link DatacenterBroker}.</p>
 
      * <p>According to this length and the power of the VM processor (in

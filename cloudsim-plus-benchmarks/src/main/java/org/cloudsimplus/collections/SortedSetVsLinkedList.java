@@ -25,6 +25,7 @@ package org.cloudsimplus.collections;
 
 import org.apache.commons.math3.random.RandomGenerator;
 import org.apache.commons.math3.random.Well19937c;
+import org.cloudbus.cloudsim.core.CloudSimTag;
 import org.cloudbus.cloudsim.core.SimEntity;
 import org.cloudbus.cloudsim.core.events.CloudSimEvent;
 import org.cloudbus.cloudsim.core.events.SimEvent;
@@ -182,7 +183,7 @@ public class SortedSetVsLinkedList {
     }
 
     private CloudSimEvent createEvent(final double time) {
-        final CloudSimEvent evt = new CloudSimEvent(time, SimEntity.NULL, SimEntity.NULL, 0, null);
+        final CloudSimEvent evt = new CloudSimEvent(time, SimEntity.NULL, SimEntity.NULL, CloudSimTag.NONE, null);
         evt.setSerial(++serial);
         return evt;
     }

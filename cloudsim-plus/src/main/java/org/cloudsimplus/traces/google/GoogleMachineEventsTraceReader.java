@@ -24,7 +24,7 @@
 package org.cloudsimplus.traces.google;
 
 import org.cloudbus.cloudsim.core.CloudInformationService;
-import org.cloudbus.cloudsim.core.CloudSimTags;
+import org.cloudbus.cloudsim.core.CloudSimTag;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.resources.Pe;
@@ -228,7 +228,7 @@ public final class GoogleMachineEventsTraceReader extends GoogleTraceReaderAbstr
      */
     private void sendLaterHostsAdditionAndRemovalRequests() {
         final CloudInformationService cis = datacenterForLaterHosts.getSimulation().getCloudInfoService();
-        laterAvailableHosts.forEach(host -> cis.schedule(datacenterForLaterHosts, host.getStartTime(), CloudSimTags.HOST_ADD, host));
+        laterAvailableHosts.forEach(host -> cis.schedule(datacenterForLaterHosts, host.getStartTime(), CloudSimTag.HOST_ADD, host));
 
         //Sends a request to every Datacenter to try remove the Hosts (since we don't have how to know which Datacenter each Host is)
         cis.getDatacenterList().forEach(this::sendHostsRemovalRequests);
@@ -250,7 +250,7 @@ public final class GoogleMachineEventsTraceReader extends GoogleTraceReaderAbstr
          * it cancel the subsequent messages to the next Datacenters.
          * Since the Host was already found, the simulator doesn't need
          * to keep looking for the Host inside the other datacenters.*/
-        hostsForRemoval.forEach(host -> cis.schedule(dc, host.getShutdownTime() + dc.getId() * 0.00001, CloudSimTags.HOST_REMOVE, host.getId()));
+        hostsForRemoval.forEach(host -> cis.schedule(dc, host.getShutdownTime() + dc.getId() * 0.00001, CloudSimTag.HOST_REMOVE, host.getId()));
     }
 
     @Override

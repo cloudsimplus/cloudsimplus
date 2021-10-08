@@ -159,7 +159,7 @@ public final class CloudSimMocker {
     public void sendNow() {
         Mockito.doNothing()
                .when(mock)
-               .sendNow(Mockito.any(), Mockito.any(), Mockito.anyInt(), Mockito.any());
+               .sendNow(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any());
     }
 
     public void send() {

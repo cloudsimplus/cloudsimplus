@@ -27,7 +27,7 @@ import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.core.AbstractMachine;
 import org.cloudbus.cloudsim.core.CloudSimEntity;
-import org.cloudbus.cloudsim.core.CloudSimTags;
+import org.cloudbus.cloudsim.core.CloudSimTag;
 import org.cloudbus.cloudsim.core.Simulation;
 import org.cloudbus.cloudsim.core.events.SimEvent;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
@@ -51,7 +51,7 @@ import java.util.function.Predicate;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
-import static org.cloudbus.cloudsim.core.CloudSimTags.HOST_FAILURE;
+import static org.cloudbus.cloudsim.core.CloudSimTag.HOST_FAILURE;
 
 /**
  * Generates random failures for the {@link Pe}'s of {@link Host}s
@@ -591,7 +591,7 @@ public class HostFaultInjection extends CloudSimEntity {
          As the broker is expected to request vm creation and destruction,
          it is set here as the sender of the vm destroy request.
          */
-        getSimulation().sendNow(broker, datacenter, CloudSimTags.VM_DESTROY, vm);
+        getSimulation().sendNow(broker, datacenter, CloudSimTag.VM_DESTROY, vm);
     }
 
     /**

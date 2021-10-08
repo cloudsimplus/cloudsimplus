@@ -8,6 +8,7 @@
 package org.cloudbus.cloudsim.core.events;
 
 import org.cloudbus.cloudsim.core.CloudSim;
+import org.cloudbus.cloudsim.core.CloudSimTag;
 import org.cloudbus.cloudsim.core.SimEntity;
 import org.cloudbus.cloudsim.core.Simulation;
 import org.cloudsimplus.listeners.EventInfo;
@@ -48,7 +49,7 @@ public final class CloudSimEvent implements SimEvent {
      */
     private SimEntity dest;
 
-    private final int tag;
+    private final CloudSimTag tag;
 
     private final Object data;
 
@@ -67,7 +68,7 @@ public final class CloudSimEvent implements SimEvent {
     public CloudSimEvent(
         final double delay,
         final SimEntity src, final SimEntity dest,
-        final int tag, final Object data)
+        final CloudSimTag tag, final Object data)
     {
         this(Type.SEND, delay, src, dest, tag, data);
     }
@@ -79,7 +80,7 @@ public final class CloudSimEvent implements SimEvent {
      * @param tag the tag that identifies the type of the message
      *            (which is used by the destination entity to perform operations based on the message type)
      */
-    public CloudSimEvent(final double delay, final SimEntity dest, final int tag) {
+    public CloudSimEvent(final double delay, final SimEntity dest, final CloudSimTag tag) {
         this(delay, dest, tag, null);
     }
 
@@ -92,7 +93,7 @@ public final class CloudSimEvent implements SimEvent {
      *            (which is used by the destination entity to perform operations based on the message type)
      * @param data the data attached to the message, that depends on the message tag
      */
-    public CloudSimEvent(final SimEntity dest, final int tag, Object data) {
+    public CloudSimEvent(final SimEntity dest, final CloudSimTag tag, Object data) {
         this(0, dest, tag, data);
     }
 
@@ -106,7 +107,7 @@ public final class CloudSimEvent implements SimEvent {
      */
     public CloudSimEvent(
         final double delay,
-        final SimEntity dest, final int tag, final Object data)
+        final SimEntity dest, final CloudSimTag tag, final Object data)
     {
         this(Type.SEND, delay, dest, dest, tag, data);
     }
@@ -120,7 +121,7 @@ public final class CloudSimEvent implements SimEvent {
      *            (which is used by the destination entity to perform operations based on the message type)
      */
     public CloudSimEvent(
-        final SimEntity dest, final int tag)
+        final SimEntity dest, final CloudSimTag tag)
     {
         this(Type.SEND, 0, dest, dest, tag, null);
     }
@@ -132,7 +133,7 @@ public final class CloudSimEvent implements SimEvent {
      * @param delay how many seconds after the current simulation time the event should be scheduled
      */
     public CloudSimEvent(final Type type, final double delay, final SimEntity src) {
-        this(type, delay, src, SimEntity.NULL, -1, null);
+        this(type, delay, src, SimEntity.NULL, CloudSimTag.NONE, null);
     }
 
     /**
@@ -159,7 +160,7 @@ public final class CloudSimEvent implements SimEvent {
     public CloudSimEvent(
         final Type type, final double delay,
         final SimEntity src, final SimEntity dest,
-        final int tag, final Object data)
+        final CloudSimTag tag, final Object data)
     {
         if (delay < 0) {
             throw new IllegalArgumentException("Delay can't be negative.");
@@ -196,26 +197,26 @@ public final class CloudSimEvent implements SimEvent {
     }
 
     @Override
-    public int compareTo(final SimEvent evt) {
-        if (evt == null || evt == SimEvent.NULL) {
+    public int compareTo(final SimEvent that) {
+        if (that == null || that == SimEvent.NULL) {
             return 1;
         }
 
-        if (this == evt) {
+        if (this == that) {
             return 0;
         }
 
-        int res = Double.compare(time, evt.getTime());
+        int res = Double.compare(time, that.getTime());
         if (res != 0) {
             return res;
         }
 
-        res = Integer.compare(tag, evt.getTag());
+        res = this.tag.compareTo(that.getTag());
         if (res != 0) {
             return res;
         }
 
-        return Long.compare(serial, evt.getSerial());
+        return Long.compare(serial, that.getSerial());
     }
 
     @Override
@@ -242,13 +243,13 @@ public final class CloudSimEvent implements SimEvent {
     }
 
     @Override
-    public SimEntity scheduledBy() {
-        return src;
+    public CloudSimTag getTag() {
+        return tag;
     }
 
     @Override
-    public int getTag() {
-        return tag;
+    public int getPriority() {
+        return tag.priority();
     }
 
     @Override

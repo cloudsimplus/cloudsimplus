@@ -6,7 +6,7 @@
  */
 package org.cloudbus.cloudsim.core.events;
 
-import org.cloudbus.cloudsim.core.CloudSimTags;
+import org.cloudbus.cloudsim.core.CloudSimTag;
 import org.cloudbus.cloudsim.core.SimEntity;
 import org.cloudbus.cloudsim.core.Simulation;
 import org.cloudsimplus.listeners.EventInfo;
@@ -68,20 +68,20 @@ public interface SimEvent extends Comparable<SimEvent>, EventInfo {
     double getEndWaitingTime();
 
     /**
-     * Gets the entity which scheduled this event.
+     * Gets the tag that classifies this event.
+     * The meaning of such a tag depends on the entities that generate and receive the event.
+     * Usually it is defined from a constant value defined in {@link CloudSimTag}.
      *
      * @return
      */
-    SimEntity scheduledBy();
+    CloudSimTag getTag();
 
     /**
-     * Gets the user-defined tag of this event.
-     * The meaning of such a tag depends on the entities that generate and receive the event.
-     * Usually it is defined from a constant value defined in {@link CloudSimTags}.
-     *
+     * Gets the priority of this event.
+     * Negative values indicates higher priority.
      * @return
      */
-    int getTag();
+    int getPriority();
 
     /**
      * Gets the data object passed in this event.

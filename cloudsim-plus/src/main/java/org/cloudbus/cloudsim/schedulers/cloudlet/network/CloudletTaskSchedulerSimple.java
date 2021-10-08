@@ -9,7 +9,7 @@ package org.cloudbus.cloudsim.schedulers.cloudlet.network;
 
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.network.*;
-import org.cloudbus.cloudsim.core.CloudSimTags;
+import org.cloudbus.cloudsim.core.CloudSimTag;
 import org.cloudbus.cloudsim.network.VmPacket;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.slf4j.Logger;
@@ -210,7 +210,7 @@ public class CloudletTaskSchedulerSimple implements CloudletTaskScheduler {
         }
 
         final var dc = getVm().getHost().getDatacenter();
-        dc.schedule(dc, dc.getSimulation().getMinTimeBetweenEvents(), CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING);
+        dc.schedule(dc, dc.getSimulation().getMinTimeBetweenEvents(), CloudSimTag.VM_UPDATE_CLOUDLET_PROCESSING);
     }
 
     @Override

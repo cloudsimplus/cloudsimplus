@@ -23,6 +23,7 @@
  */
 package org.cloudbus.cloudsim.core.events;
 
+import org.cloudbus.cloudsim.core.CloudSimTag;
 import org.cloudbus.cloudsim.core.SimEntity;
 import org.cloudbus.cloudsim.core.Simulation;
 import org.cloudsimplus.listeners.EventInfo;
@@ -43,12 +44,10 @@ final class SimEventNull implements SimEvent {
         return SimEntity.NULL;
     }
     @Override public double getEndWaitingTime() { return 0; }
-    @Override public SimEntity scheduledBy() {
-        return SimEntity.NULL;
+    @Override public CloudSimTag getTag() {
+        return CloudSimTag.NONE;
     }
-    @Override public int getTag() {
-        return 0;
-    }
+    @Override public int getPriority() { return 0; }
     @Override public Object getData() {
         return 0;
     }

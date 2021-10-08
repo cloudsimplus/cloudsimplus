@@ -66,11 +66,11 @@ public class CloudInformationService extends CloudSimEntity {
     @Override
     public void processEvent(final SimEvent evt) {
         switch (evt.getTag()) {
-            case CloudSimTags.REGISTER_REGIONAL_CIS -> cisList.add((CloudInformationService) evt.getData());
-            case CloudSimTags.REQUEST_REGIONAL_CIS -> super.send(evt.getSource(), 0, evt.getTag(), cisList);
-            case CloudSimTags.DC_REGISTRATION_REQUEST -> datacenterList.add((Datacenter) evt.getData());
+            case REGISTER_REGIONAL_CIS -> cisList.add((CloudInformationService) evt.getData());
+            case REQUEST_REGIONAL_CIS -> super.send(evt.getSource(), 0, evt.getTag(), cisList);
+            case DC_REGISTRATION_REQUEST -> datacenterList.add((Datacenter) evt.getData());
             // A Broker is requesting a list of all datacenters.
-            case CloudSimTags.DC_LIST_REQUEST -> super.send(evt.getSource(), 0, evt.getTag(), datacenterList);
+            case DC_LIST_REQUEST -> super.send(evt.getSource(), 0, evt.getTag(), datacenterList);
         }
     }
 
@@ -97,7 +97,7 @@ public class CloudInformationService extends CloudSimEntity {
     }
 
     /**
-     * Sends a {@link CloudSimTags#END_OF_SIMULATION} signal to all entity IDs
+     * Sends a {@link CloudSimTag#SIMULATION_END} signal to all entity IDs
      * mentioned in the given list.
      *
      * @param list List of entities to notify about simulation end
@@ -107,7 +107,7 @@ public class CloudInformationService extends CloudSimEntity {
             return;
         }
 
-        list.forEach(entity -> super.send(entity, 0L, CloudSimTags.END_OF_SIMULATION));
+        list.forEach(entity -> super.send(entity, 0L, CloudSimTag.SIMULATION_END));
     }
 
 }

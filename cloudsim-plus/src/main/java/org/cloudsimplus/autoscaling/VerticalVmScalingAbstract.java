@@ -24,7 +24,7 @@
 package org.cloudsimplus.autoscaling;
 
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
-import org.cloudbus.cloudsim.core.CloudSimTags;
+import org.cloudbus.cloudsim.core.CloudSimTag;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisioner;
 import org.cloudbus.cloudsim.resources.*;
 import org.cloudbus.cloudsim.vms.Vm;
@@ -225,7 +225,7 @@ public abstract class VerticalVmScalingAbstract extends VmScalingAbstract implem
     @Override
     protected boolean requestUpScaling(final double time) {
         final DatacenterBroker broker = this.getVm().getBroker();
-        broker.getSimulation().sendNow(broker, broker, CloudSimTags.VM_VERTICAL_SCALING, this);
+        broker.getSimulation().sendNow(broker, broker, CloudSimTag.VM_VERTICAL_SCALING, this);
         return true;
     }
 
