@@ -46,7 +46,7 @@ import java.util.Comparator;
 import java.util.List;
 
 /**
- * A example showing how to run the simulation synchronously,
+ * An example showing how to run the simulation synchronously,
  * (by calling {@link CloudSim#startSync()}).
  * This way, the researcher can interact with the simulation,
  * for instance to collect data.

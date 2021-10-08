@@ -45,7 +45,7 @@ import java.util.Comparator;
 import java.util.List;
 
 /**
- * A example that show the usage of the {@link VmAllocationPolicyRoundRobin},
+ * An example that show the usage of the {@link VmAllocationPolicyRoundRobin},
  * that cyclically places VMs into Hosts. This way, it places a VM into a Host
  * and moves to the next Host.
  * All hosts are not powered-on when created. As VMs need to be placed,

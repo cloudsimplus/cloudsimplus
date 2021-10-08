@@ -57,7 +57,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * A example showing how to implement a custom
+ * An example showing how to implement a custom
  * {@link VmAllocationPolicy} that randomly
  * selects suitable Hosts to place submitted VMs.
  * Check the {@link #createDatacenter()} method for details.

@@ -52,7 +52,7 @@ import java.util.List;
 import java.util.function.Function;
 
 /**
- * A example showing how to create VMs and Cloudlets
+ * An example showing how to create VMs and Cloudlets
  * for multiple customers, each one represented
  * by a {@link DatacenterBroker} object.
  *

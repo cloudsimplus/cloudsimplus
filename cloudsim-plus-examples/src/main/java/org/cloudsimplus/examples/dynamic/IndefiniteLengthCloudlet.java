@@ -50,7 +50,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A example showing how to create Cloudlets with an indefinite length,
+ * An example showing how to create Cloudlets with an indefinite length,
  * so that each Cloudlet stops running only if:
  * <ul>
  *  <li>(i) it reaches {@link Long#MAX_VALUE} MI executed or</li>
@@ -77,7 +77,7 @@ public class IndefiniteLengthCloudlet {
 
     private static final int CLOUDLETS = 2;
     private static final int CLOUDLET_PES = 2;
-    
+
     /**
      * Defines a negative length for Cloudlets so that
      * they keep running until explicitly requested to finish.

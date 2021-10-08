@@ -48,7 +48,7 @@ import java.util.Comparator;
 import java.util.List;
 
 /**
- * A example showing how to submit {@link VmGroup groups of VMs} to a broker
+ * An example showing how to submit {@link VmGroup groups of VMs} to a broker
  * to try placing all VMs belonging to a group into the same Host.
  * It creates two groups but there is no Host
  * with enough capacity to place all VMs from the second group.
