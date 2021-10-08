@@ -378,6 +378,10 @@ public enum CloudSimTag implements Comparable<CloudSimTag> {
         this.priority = priority;
     }
 
+    /**
+     * Gets the event tag priority.
+     * Negative values indicates higher priority.
+     */
     public int priority(){
         return priority;
     }
