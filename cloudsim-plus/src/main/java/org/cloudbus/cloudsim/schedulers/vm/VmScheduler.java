@@ -35,6 +35,13 @@ public interface VmScheduler {
     Logger LOGGER = LoggerFactory.getLogger(VmScheduler.class.getSimpleName());
 
     /**
+     * The default percentage to define the CPU overhead of VM migration
+     * if one is not explicitly set.
+     * @see #getVmMigrationCpuOverhead()
+     */
+    double DEF_VM_MIGRATION_CPU_OVERHEAD = 0.1;
+
+    /**
      * An attribute that implements the Null Object Design Pattern for {@link VmScheduler}
      * objects.
      */
