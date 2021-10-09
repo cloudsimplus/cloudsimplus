@@ -75,7 +75,7 @@ final class CloudletSchedulerSpaceSharedTestUtil {
     /* default */ static CloudletSchedulerSpaceShared createScheduler(final Vm vm) {
         final CloudletSchedulerSpaceShared scheduler = new CloudletSchedulerSpaceShared();
         scheduler.setVm(vm);
-        scheduler.setCurrentMipsShare(new MipsShare(vm.getNumberOfPes(), vm.getMips()));
+        scheduler.setCurrentMipsShare(new MipsShare(vm.getProcessor()));
         return scheduler;
     }
 }

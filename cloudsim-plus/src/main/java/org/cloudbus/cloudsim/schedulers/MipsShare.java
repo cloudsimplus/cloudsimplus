@@ -24,6 +24,7 @@
 package org.cloudbus.cloudsim.schedulers;
 
 import org.cloudbus.cloudsim.resources.Pe;
+import org.cloudbus.cloudsim.resources.Processor;
 
 /**
  * Represents the requested or allocated MIPS capacity for a given number of {@link Pe}s from a VM.
@@ -49,6 +50,14 @@ public class MipsShare {
      */
     public MipsShare(final double mips){
         this(1, mips);
+    }
+
+    /**
+     * Creates a MIPS share according to a given {@link Processor} capacity.
+     * @param processor the processor to get its capacity to create the MipsShare
+     */
+    public MipsShare(final Processor processor){
+        this(processor.getCapacity(), processor.getMips());
     }
 
     /**

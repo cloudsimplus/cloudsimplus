@@ -79,7 +79,7 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
 
     @Override
     public final boolean allocatePesForVm(final Vm vm) {
-        return allocatePesForVm(vm, new MipsShare(vm.getNumberOfPes(), vm.getMips()));
+        return allocatePesForVm(vm, new MipsShare(vm.getProcessor()));
     }
 
     @Override

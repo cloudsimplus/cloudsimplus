@@ -420,7 +420,7 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
             return host.getVmScheduler().getRequestedMips(this);
         }
 
-        return new MipsShare(getNumberOfPes(), getMips());
+        return new MipsShare(processor);
     }
 
     @Override
