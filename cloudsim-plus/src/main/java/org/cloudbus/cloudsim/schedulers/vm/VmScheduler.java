@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory;
 /**
  * An interface that represents the policy used by a
  * Virtual Machine Monitor (VMM) to share processing power of a PM among VMs
- * running in a host.  Each host has to use is own instance of a
+ * running in a host.  Each host has to use its own instance of a
  * VmScheduler that will so schedule the allocation of host's PEs for
  * VMs running on it.
  *
