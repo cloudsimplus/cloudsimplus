@@ -241,6 +241,10 @@ public class HostSimpleTest {
         assertEquals(0, targetHost.getAvailableStorage());
     }
 
+    /**
+     * During migration, by default, just 10% of capacity is allocated (it's the migration overhead).
+     * @see VmScheduler#DEF_VM_MIGRATION_CPU_OVERHEAD
+     */
     @Test
     public void testAddMigratingInVmAndCheckAllocatedMips() {
         final int numberOfPes = 1;
@@ -250,7 +254,6 @@ public class HostSimpleTest {
             0, VM_MIPS, numberOfPes, RAM, BW, STORAGE,
             new CloudletSchedulerTimeShared());
         targetHost.addMigratingInVm(vm);
-        //During migration, just  10% of capacity is allocated (it's the migration overhead)
         final double allocatedMips = 50;
         assertEquals(allocatedMips, targetHost.getTotalAllocatedMipsForVm(vm));
     }
