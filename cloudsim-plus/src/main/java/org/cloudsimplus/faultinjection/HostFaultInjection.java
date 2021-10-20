@@ -215,7 +215,7 @@ public class HostFaultInjection extends CloudSimEntity {
     private final Map<Host, List<Double>> hostFaultsTimeSecsMap;
 
     /**
-     * A map to store the number of faults that affected all VMs from each broker.
+     * A map to store the number of faults that caused all VMs from a broker to be destroyed.
      */
     private final Map<DatacenterBroker, Integer> vmFaultsByBroker;
 
@@ -328,7 +328,7 @@ public class HostFaultInjection extends CloudSimEntity {
         hostFaultsNumber++;
         registerHostFaultTime();
 
-        final long previousNumOfWorkingPes = lastFailedHost.getWorkingPesNumber();
+        final long previousWorkingPes = lastFailedHost.getWorkingPesNumber();
         this.lastFailedPesNumber = generateHostPesFaults(pesFailures);
         final long hostWorkingPes = lastFailedHost.getWorkingPesNumber();
         final long vmsRequiredPes = getWorkingVmsPesCount();
@@ -336,10 +336,10 @@ public class HostFaultInjection extends CloudSimEntity {
         final String msg = lastFailedHost.getVmList().isEmpty() ? "" : " | VMs required PEs: " + vmsRequiredPes;
         if(hostWorkingPes > 0) {
             LOGGER.error(
-                "{}: {}: Generated {} PEs failures from {} previously working PEs for {} at minute {}.{}" +
-                "\t  Current Working PEs: {} | Number of VMs: {}{}",
+                "{}: {}: Generated {} PEs failures in {} at {}.{}" +
+                "\t  Previous working PEs: {} | Current Working PEs: {} | Current VMs: {}{}",
                 getSimulation().clockStr(), getClass().getSimpleName(), lastFailedPesNumber,
-                previousNumOfWorkingPes, lastFailedHost, getSimulation().clock() / 60, System.lineSeparator(),
+                lastFailedHost, getTime(), System.lineSeparator(), previousWorkingPes,
                 hostWorkingPes, lastFailedHost.getVmList().size(), msg);
         }
 
@@ -350,6 +350,10 @@ public class HostFaultInjection extends CloudSimEntity {
         } else {
             deallocateFailedHostPesFromVms();
         }
+    }
+
+    private String getTime() {
+        return TimeUtil.secondsToStr(getSimulation().clock());
     }
 
     /**
@@ -396,8 +400,9 @@ public class HostFaultInjection extends CloudSimEntity {
         final int vms = lastFailedHost.getVmList().size();
         final String msg = vms > 0 ? String.format("affecting all its %d VMs", vms) : "but there was no running VM";
         LOGGER.error(
-                "{}: All the {} PEs of {} failed, {}.",
-                getSimulation().clockStr(), lastFailedHost.getNumberOfPes(), lastFailedHost, msg);
+                "{}: {}: All {} PEs from {} failed at {}, {}.",
+                getSimulation().clockStr(), getClass().getSimpleName(),
+                lastFailedHost.getNumberOfPes(), lastFailedHost, getTime(), msg);
         setVmListToFailed(lastFailedHost.getVmList());
     }
 
@@ -407,15 +412,15 @@ public class HostFaultInjection extends CloudSimEntity {
      */
     private void logNoVmFault() {
         if(lastFailedHost.getVmList().isEmpty()){
-            LOGGER.info("\tThere aren't VMs running on the failed Host.");
+            LOGGER.info("There aren't VMs running on the failed Host {}.", lastFailedHost.getId());
             return;
         }
 
         final int vmsRequiredPes = (int) getWorkingVmsPesCount();
         LOGGER.info(
-                "\tNumber of failed PEs is less than PEs required by all its {} VMs, thus it doesn't affect any VM.{}" +
-                "Total PEs: {} | Total Failed PEs: {} | Working PEs: {} | Current PEs required by VMs: {}.",
-                lastFailedHost.getVmList().size(), System.lineSeparator(),
+                "{}: {}: Number of failed PEs in Host {} is smaller than working ones required by all VMs, not affecting any VM.{}" +
+                "\t  Total PEs: {} | Total Failed PEs: {} | Working PEs: {} | Current PEs required by VMs: {}.",
+                getSimulation().clockStr(), getClass().getSimpleName(), lastFailedHost.getId(), System.lineSeparator(),
                 lastFailedHost.getNumberOfPes(), lastFailedHost.getFailedPesNumber(),
                 lastFailedHost.getWorkingPesNumber(), vmsRequiredPes);
     }
@@ -425,9 +430,6 @@ public class HostFaultInjection extends CloudSimEntity {
      * {@link #getLastFailedHost() last failed Host} from affected VMs.
      */
     private void deallocateFailedHostPesFromVms() {
-        LOGGER.error("\t{} PEs just failed. There is a total of {} working PEs.",
-            lastFailedPesNumber,
-                lastFailedHost.getWorkingPesNumber());
         cyclicallyRemoveFailedHostPesFromVms();
 
         final List<Vm> vmsWithoutPes =
@@ -450,7 +452,7 @@ public class HostFaultInjection extends CloudSimEntity {
         List<Vm> vmsWithPes = getVmsWithPEsFromFailedHost();
         final int affectedVms = Math.min(vmsWithPes.size(), failedPesToRemoveFromVms);
 
-        LOGGER.warn("\t{} VMs affected from a total of {}. {} PEs are going to be removed from them.",
+        LOGGER.warn("{} VMs affected from a total of {}. {} PEs are going to be removed from them.",
                 affectedVms, lastFailedHost.getVmList().size(), failedPesToRemoveFromVms);
         int idx = 0;
         while (!vmsWithPes.isEmpty() && failedPesToRemoveFromVms > 0) {
@@ -463,7 +465,7 @@ public class HostFaultInjection extends CloudSimEntity {
             vm.getProcessor().deallocateAndRemoveResource(1);
 
             LOGGER.warn(
-                    "\tRemoving 1 PE from VM {} due to Host PE failure. New VM PEs Number: {}",
+                    "Removing 1 PE from VM {} due to Host PE failure. New VM PEs Number: {}",
                     vm.getId(), vm.getNumberOfPes());
             idx++;
             vmsWithPes = getVmsWithPEsFromFailedHost();
@@ -496,10 +498,10 @@ public class HostFaultInjection extends CloudSimEntity {
      * Sets all VMs from a given list as failed, due to Host PEs failures.
      */
     private void setVmListToFailed(final List<Vm> vms) {
-        final Map<DatacenterBroker, Vm> lastVmFailedByBroker = getLastFailedVmByBroker(vms);
+        final Map<DatacenterBroker, Vm> lastVmFailedByBrokerMap = getLastFailedVmByBroker(vms);
 
         vms.forEach(this::setVmToFailed);
-        lastVmFailedByBroker.forEach(this::createVmCloneIfAllVmsDestroyed);
+        lastVmFailedByBrokerMap.forEach(this::createVmCloneIfAllVmsDestroyed);
     }
 
     private Map<DatacenterBroker, Vm> getLastFailedVmByBroker(final List<Vm> vmsWithoutPes) {
@@ -543,19 +545,23 @@ public class HostFaultInjection extends CloudSimEntity {
         }
 
         if(!isVmClonerSet(broker)) {
-            LOGGER.warn("\tA Vm Cloner was not set for {}. So that VM failure will not be recovered.", broker);
+            LOGGER.warn("A Vm Cloner was not set for {}. So that VM failure will not be recovered.", broker);
             return;
         }
 
         final VmCloner cloner = getVmCloner(broker);
         if(cloner.isMaxClonesNumberReached()){
-            LOGGER.warn("\tThe maximum allowed number of {} VMs to create has been reached.", cloner.getMaxClonesNumber());
+            LOGGER.warn("The maximum allowed number of {} VMs to create has been reached.", cloner.getMaxClonesNumber());
             return;
         }
 
         registerFaultOfAllVms(broker);
         final double recoveryTimeSecs = getRandomRecoveryTimeForVmInSecs();
-        LOGGER.info("\tTime to recovery from fault by cloning the failed VM: {} minutes", recoveryTimeSecs/60.0);
+        final String time = String.format("%.2f", recoveryTimeSecs / 60.0);
+        LOGGER.info(
+            "{}: {}: Time to recovery from fault by cloning the last failed VM on {}: {} minutes.",
+            getSimulation().clockStr(), getClass().getSimpleName(),
+            lastVmFailedFromBroker.getBroker(), time);
 
         final Map.Entry<Vm, List<Cloudlet>> entry = cloner.clone(lastVmFailedFromBroker);
 
@@ -584,8 +590,8 @@ public class HostFaultInjection extends CloudSimEntity {
         final DatacenterBroker broker = vm.getBroker();
         if(isVmClonerSet(broker) && isSomeVmWorking(broker)){
             LOGGER.info(
-                "\t{} destroyed but not cloned, since there are {} VMs for the {} yet",
-                vm, getRunningVmsNumber(broker), broker);
+                "{}: {}: {} destroyed on {} but not cloned, since there are {} VMs for the broker yet.",
+                getSimulation().clockStr(), broker, vm, vm.getHost(), getRunningVmsNumber(broker));
         }
 
         /*
@@ -659,7 +665,6 @@ public class HostFaultInjection extends CloudSimEntity {
         final double mttr = meanTimeToRepairVmFaultsInMinutes(broker);
        // System.out.println(" Availability: broker " + broker + " value: " + mtbf / (mtbf + mttr));
         return mtbf / (mtbf + mttr);
-
     }
 
     /**
