@@ -25,6 +25,8 @@ package org.cloudsimplus.faultinjection;
 
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.vms.Vm;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Map;
@@ -43,6 +45,8 @@ import java.util.function.UnaryOperator;
  * @since CloudSim Plus 1.2.3
  */
 public interface VmCloner {
+    Logger LOGGER = LoggerFactory.getLogger(VmCloner.class.getSimpleName());
+
     VmCloner NULL = new VmClonerNull();
 
     /**
