@@ -796,7 +796,7 @@ public class HostFaultInjection extends CloudSimEntity {
      * @return the MTTR (in minutes) or zero if no VM was destroyed due to Host failure
      */
     public double meanTimeToRepairVmFaultsInMinutes() {
-        return meanTimeToRepairVmFaultsInMinutes(null);
+        return vmFaultsByBroker.keySet().stream().mapToDouble(this::meanTimeToRepairVmFaultsInMinutes).average().orElse(0);
     }
 
     /**
@@ -804,7 +804,7 @@ public class HostFaultInjection extends CloudSimEntity {
      * belonging to given broker.
      * If a null broker is given, computes the MTTR of all VMs for all existing brokers.
      *
-     * @param broker the broker to get the MTTR for or null if the MTTR is to be computed for all brokers
+     * @param broker the broker to get the MTTR for
      * @return the current MTTR (in minutes) or zero if no VM was destroyed due to Host failure
      */
     public double meanTimeToRepairVmFaultsInMinutes(final DatacenterBroker broker) {
