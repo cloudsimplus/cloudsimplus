@@ -58,6 +58,18 @@ import java.util.List;
  * Example showing how to inject random {@link Pe} faults into Hosts using
  * {@link HostFaultInjection} objects.
  *
+ * <p>It's considered that we have multiple VMs from a given customer (broker),
+ * where all VMs are running the same services for load balancing and fault tolerance.
+ * If a VM fails, since they are providing the same service and there are other equal VMs running,
+ * there is no need for recovery.
+ * If the failures don't demand recovery, no new VMs need to be started up, since no service was stopped.
+ * </p>
+ *
+ * <p>If you run this example multiple times, it will give the same results.
+ * Check {@link #createFaultInjectionForHosts(Datacenter)} to set
+ * a different seed for the fault injection random number generator
+ * to get different results at each run.</p>
+ *
  * @author raysaoliveira
  * @since CloudSim Plus 1.2.0
  */
