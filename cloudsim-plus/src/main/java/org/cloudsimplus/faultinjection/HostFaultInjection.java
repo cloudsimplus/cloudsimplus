@@ -52,6 +52,7 @@ import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 import static org.cloudbus.cloudsim.core.CloudSimTag.HOST_FAILURE;
+import static org.cloudbus.cloudsim.util.Conversion.HUNDRED_PERCENT;
 
 /**
  * Generates random failures for the {@link Pe}'s of {@link Host}s
@@ -637,7 +638,8 @@ public class HostFaultInjection extends CloudSimEntity {
      * @return
      */
     public double availability() {
-         return availability(null);
+        //If there is no fault for any broker, the total availability is 1 (100%)
+        return vmFaultsByBroker.keySet().stream().mapToDouble(this::availability).average().orElse(HUNDRED_PERCENT);
     }
 
     /**
