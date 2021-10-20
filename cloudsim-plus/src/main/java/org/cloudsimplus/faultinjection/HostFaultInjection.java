@@ -678,7 +678,7 @@ public class HostFaultInjection extends CloudSimEntity {
      * @see #getTotalFaultsNumber(DatacenterBroker)
      */
     public long getTotalFaultsNumber() {
-        return vmFaultsByBroker.values().size();
+        return vmFaultsByBroker.values().stream().mapToLong(v -> v).sum();
     }
 
     /**
