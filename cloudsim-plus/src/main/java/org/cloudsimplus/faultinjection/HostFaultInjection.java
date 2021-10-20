@@ -780,13 +780,9 @@ public class HostFaultInjection extends CloudSimEntity {
      * @see #meanTimeBetweenHostFaultsInMinutes()
      */
     public double meanTimeBetweenVmFaultsInMinutes(final DatacenterBroker broker) {
-        final double faultsFromBroker = getTotalFaultsNumber(broker);
-        if(faultsFromBroker == 0){
-            return 0;
-        }
+        final double faults = getTotalFaultsNumber(broker);
+        return faults == 0 ? 0 : getSimulation().clockInMinutes() - meanTimeToRepairVmFaultsInMinutes(broker);
 
-        final double totalVmsRecoveryTimeInMinutes = meanTimeToRepairVmFaultsInMinutes(broker);
-        return getSimulation().clockInMinutes() - totalVmsRecoveryTimeInMinutes;
     }
 
     /**
@@ -808,12 +804,9 @@ public class HostFaultInjection extends CloudSimEntity {
      * @return the current MTTR (in minutes) or zero if no VM was destroyed due to Host failure
      */
     public double meanTimeToRepairVmFaultsInMinutes(final DatacenterBroker broker) {
-        final double faultsFromBroker = getTotalFaultsNumber(broker);
-        if(faultsFromBroker == 0){
-            return 0;
-        }
+        final double faults = getTotalFaultsNumber(broker);
+        return faults == 0 ? 0 : totalVmsRecoveryTimeInMinutes(broker) / faults;
 
-        return totalVmsRecoveryTimeInMinutes(broker) / faultsFromBroker;
     }
 
     /**
