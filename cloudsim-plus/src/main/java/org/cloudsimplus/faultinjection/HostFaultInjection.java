@@ -763,7 +763,7 @@ public class HostFaultInjection extends CloudSimEntity {
      * @see #meanTimeBetweenHostFaultsInMinutes()
      */
     public double meanTimeBetweenVmFaultsInMinutes() {
-        return meanTimeBetweenVmFaultsInMinutes(null);
+        return vmFaultsByBroker.keySet().stream().mapToDouble(this::meanTimeBetweenVmFaultsInMinutes).average().orElse(0);
     }
 
     /**
