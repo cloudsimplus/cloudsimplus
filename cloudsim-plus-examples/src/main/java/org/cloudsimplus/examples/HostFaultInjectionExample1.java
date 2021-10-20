@@ -169,7 +169,7 @@ public final class HostFaultInjectionExample1 {
         System.out.printf("# Mean Time To Repair Failures of VMs (MTTR): %.2f minutes%n", fault.meanTimeToRepairVmFaultsInMinutes());
         System.out.printf("# Mean Time Between Failures (MTBF) affecting all VMs: %.2f minutes%n", fault.meanTimeBetweenVmFaultsInMinutes());
         System.out.printf("# Hosts MTBF: %.2f minutes%n", fault.meanTimeBetweenHostFaultsInMinutes());
-        System.out.printf("# Availability: %.2f%%%n%n", fault.availability()*100);
+        System.out.printf("# Availability: %.4f%%%n%n", fault.availability()*100);
     }
 
     private void createVmsAndCloudlets() {
