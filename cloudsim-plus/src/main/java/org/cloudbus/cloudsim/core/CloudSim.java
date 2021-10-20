@@ -197,7 +197,10 @@ public class CloudSim implements Simulation {
 
         // Allow all entities to exit their body method
         if (!abortRequested) {
-            entities.forEach(SimEntity::run);
+            //Uses indexed loop to avoid ConcurrentModificationException
+            for (int i = 0; i < entities.size(); i++) {
+                entities.get(i).run();
+            }
         }
 
         shutdownEntities();
