@@ -130,9 +130,11 @@ public final class HostFaultInjectionExample1 {
         simulation.start();
         new CloudletsTableBuilder(broker.getCloudletFinishedList()).build();
 
+        final int k = poisson.getK();
+        final double interArrival = poisson.getInterArrivalMeanTime();
         System.out.printf(
-            "%n# Mean Number of Failures per Hour: %.3f (1 failure expected at each %.2f hours).%n",
-            MEAN_FAILURE_NUMBER_PER_HOUR, poisson.getInterArrivalMeanTime());
+            "%n# Mean Number of Failures per Hour: %.3f (%.3f x %.0f = %d failure expected at each %.0f hours).%n",
+            MEAN_FAILURE_NUMBER_PER_HOUR, MEAN_FAILURE_NUMBER_PER_HOUR, interArrival, k, interArrival);
         System.out.printf("# Number of Host faults: %d%n", fault.getHostFaultsNumber());
         System.out.printf("# Number of VM faults (VMs destroyed): %d%n", fault.getTotalFaultsNumber());
         System.out.printf("# Time the simulations finished: %.4f hours%n", simulation.clockInHours());
