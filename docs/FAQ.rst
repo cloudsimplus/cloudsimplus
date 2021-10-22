@@ -70,7 +70,7 @@ project and it is ready to be used. See `How to Use
 section <http://cloudsimplus.org/#how-to-use-cloudsim-plus>`__ for more
 details.
 
-**The current version requires JDK 8.**
+**The current version requires JDK 17.**
 
 4. How can I learn more about CloudSim Plus ?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -107,6 +107,174 @@ Anyway, if you don't know Java 8 yet, it's a good time to start learning. There 
 online. You can start by checking the links above or subscribing for the `JDK 8 Massive Open and Online Course: Lambdas and Streams Introduction <https://apexapps.oracle.com/pls/apex/f?p=44785:145:10040796816707::NO:RP,145:P145_EVENT_ID,P145_PREV_PAGE:5067,2>`__ at the Oracle Learning Library. 
 If new classes aren't scheduled yet, the videos are available at `YouTube <https://www.youtube.com/playlist?list=PLMod1hYiIvSZL1xclvHcsV2dMiminf19x>`__.
 But if you can attend the course, you'll have more resources such as a exercises and a discussion forum.
+
+--------------
+
+Why CloudSim Plus?
+--------------------------------------------------------------------
+1. Why should I care about this CloudSim fork? I just want to build my simulations. :neutral\_face:
+-----------------------------------------------------------------------------------------------------
+
+| Well, the design of the tool has a direct impact when you need to
+extend it to include some feature required for your simulations.
+| The simulator has a set of classes that implement interfaces such as
+``VmScheduler``, ``CloudletScheduler``, ``VmAllocationPolicy``,
+``ResourceProvisioner``,
+| ``UtilizationModel``, ``PowerModel`` and ``DatacenterBroker`` and
+provide basic algorithms for different goals.
+| For instance, the ``VmAllocationPolicySimple`` class implements a
+Worst Fit
+| policy that selects the PM having the least number of processor cores
+in use to host a VM.
+
+| Usually you have to write your own implementations of these classes,
+such as a Best Fit ``VmAllocationPolicy``,
+| a resource ``UtilizationModel`` with an upper threshold or a
+``DatacenterBroker`` that selects the best ``Datacenter`` to submit a
+VM.
+
+| Several software engineering principles aim to ease the task of
+creating new classes to implement those features.
+| They also try to avoid forcing you to change core classes of the
+simulator in order to introduce a feature you need to implement.
+| **Changing these core classes just to implement a particular feature
+which will be used only in your simulations is a bad practice,
+since you will not be able to automatically update your project to new
+versions of the simulator,
+without losing your changes or struggling to fix merge conflicts.**
+
+| As we have seen in forums that we've attended, many times users have
+to perform these changes in core classes
+| just to implement some specific features they need. We think those
+problems are enough reasons
+| that show the need of a new re-engineered version of the simulator.
+
+.. raw:: html
+
+   <p align="right"><a href="#top">:arrow_up:</a></p>
+
+2. But why an independent CloudSim fork? :unamused:
+-----------------------------------------------------
+
+| The original CloudSim moved on to a new major release,
+| introducing a completely new set of classes to provide Container as a
+Service (CaaS) simulations,
+| before the changes proposed here being merged to the official
+repository.
+| This way, all the work performed here was not incorporated to allow
+this new CaaS module to be developed using this redesigned version.
+| Unfortunately, there are several months of hard work that would need
+to be replicated to merge both projects.
+| In reason of that, CloudSim Plus was born as an independent fork,
+following its own way and philosophies.
+
+.. raw:: html
+
+   <p align="right"><a href="#top">:arrow_up:</a></p>
+
+3. What are the practical differences of using CloudSim Plus instead of CloudSim? How can I update my simulations to use CloudSim Plus?
+-----------------------------------------------------------------------------------------------------------------------------------------
+
+| It's much easier to use CloudSim Plus.
+| A complete, side-by-side `comparison between CloudSim and CloudSim
+Plus Java simulation scenarios
+is available
+here <http://cloudsimplus.org/docs/CloudSim-and-CloudSimPlus-Comparison.html>`__.
+
+| To update your simulations to use the CloudSim Plus you have to change
+the way that some objects are instantiated,
+| because some new interfaces were introduced to follow the "program to
+an interface,
+| not an implementation" recommendation and also to increase
+`abstraction <https://en.wikipedia.org/wiki/Abstraction_(software_engineering)>`__.
+| These new interfaces were also crucial to implement the `Null Object
+Pattern <https://en.wikipedia.org/wiki/Null_Object_pattern>`__
+| to try avoiding ``NullPointerException``\ s.
+
+| The initialization of the simulation is not performed by the static
+``CloudSim.startSimulation`` method anymore, which required a lot of
+parameters.
+| Now you have just to instantiate a ``CloudSim`` object using the
+default, no-arguments constructor, as shown below.
+| This instance is used in the constructor of ``DatacenterBroker`` and
+``Datacenter`` objects:
+
+.. code:: java
+
+    CloudSim cloudsim = new CloudSim();
+
+| The classes ``Datacenter``, ``DatacenterCharacteristics``, ``Host``,
+``Pe``, ``Vm`` and ``Cloudlet`` were renamed due to
+| the introduction of interfaces with these same names. Now all these
+classes have a suffix *Simple*
+| (as already defined for some previous classes such as
+``PeProvisionerSimple`` and ``VmAllocationPolicySimple``).
+| For instance, to instantiate a ``Cloudlet`` you have to execute a code
+such as:
+
+``java CloudletSimple cloudlet = new CloudletSimple(required, parameters, here);``
+
+| However, since these interfaces were introduced in order to also
+enable the creation of different cloudlet classes,
+| the recommendation is to declare your object using the interface, not
+the class:
+
+``java Cloudlet cloudlet = new CloudletSimple(required, parameters, here);``
+
+| The method ``setBrokerId(int userId)`` from ``Vm`` and ``Cloudlet``
+were refactored to ``setBroker(DatacenterBroker broker)``,
+| now requiring a ``DatacenterBroker`` instead of just an int ID which
+may be even nonexistent.
+
+| You don't need to explicitly create a ``DatacenterCharacteristics``
+anymore. Such object is created internally when a ``Datacenter`` is
+created.
+| A ``VmAllocationPolicy`` doesn't require any parameter at all. A
+``Datacenter`` doesn't require a name, storage list and scheduling
+interval too.
+| The name will be automatically defined. It and all the other parameter
+can be set further using the respective setter methods.
+| Now it is just required a ``CloudSim``, a ``Host`` list and a
+``VmAllocationPolicy`` instance.
+
+.. code:: java
+
+    Datacenter dc0 = new DatacenterSimple(cloudsim, hostList, new VmAllocationPolicySimple());
+
+| The way you instantiate a host has changed too. The classes
+``RamProvisionerSimple`` and ``BwProvisionerSimple`` don't exist
+anymore.
+| Now you just have the generic class ``ResourceProvisionerSimple`` with
+a default no-args constructor.
+| And you don't even need to creating instances of this class, since the
+Hosts use it as default.
+
+| RAM and bandwidth capacity of the host now are given in the
+constructor, as it already was for storage.
+| A ``VmScheduler`` constructor doesn't require any parameter and the
+``VmSchedulerSpaceShared``
+| is used by default. You don't need to set an ID for each Host, since
+| if one is not given, when the List of hosts is attached to a
+Datacenter, it will generate an ID for those hosts.
+| Instantiating a host now should be similar to:
+
+.. code:: java
+
+    long ram = 20480; //in MB
+    long bw = 1000000; //in Megabits/s
+    long storage = 1000000; //in MB
+    //Uses ResourceProvisionerSimple by default for RAM and BW provisioning
+    //Uses VmSchedulerSpaceShared by default for VM scheduling
+    Host host = new HostSimple(ram, bw, storage, pesList);
+    host.setRamProvisioner(new ResourceProvisionerSimple());
+
+| Additionally, the interface ``Storage`` was renamed to ``FileStorage``
+and its implementations are
+| ``SanStorage`` and ``HarddriveStorage``, that can be used as before.
+| Finally, since the packages were reorganized, you have to adjust them.
+| However, use your IDE to correct the imports for you.
+| A complete and clear example was presented in the Examples section
+above.
 
 --------------
 
