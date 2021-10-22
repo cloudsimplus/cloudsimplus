@@ -45,10 +45,10 @@ The efforts dedicated to this project have been recognized by the [EU/Brasil Clo
 A post about CloudSim Plus is available at 
 [this page of the Forum](https://eubrasilcloudforum.eu/en/instituto-federal-de-educação-do-tocantins-brazil-instituto-de-telecomunicações-portugal-and), including a White Paper available in the [Publications Section](#publications).
 
-CloudSim Plus is developed through a partnership between the [Instituto de Telecomunicações (IT, Portugal)](http://www.it.pt), 
+CloudSim Plus started through a partnership between the [Instituto de Telecomunicações (IT, Portugal)](http://www.it.pt), 
 the [Universidade da Beira Interior (UBI, Portugal)](http://www.ubi.pt) 
 and the [Instituto Federal de Educação Ciência e Tecnologia do Tocantins (IFTO, Brazil)](http://www.ifto.edu.br). 
-It is partially supported by the Portuguese [Fundação para a Ciência e a Tecnologia (FCT)](https://www.fct.pt) 
+It was partially supported by the Portuguese [Fundação para a Ciência e a Tecnologia (FCT)](https://www.fct.pt) 
 and by the [Brazilian foundation Coordenação de Aperfeiçoamento de Pessoal de Nível Superior (CAPES)](http://www.capes.gov.br).
 
 **NOTE**
