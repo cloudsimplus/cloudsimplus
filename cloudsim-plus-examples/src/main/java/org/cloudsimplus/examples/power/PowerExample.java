@@ -68,7 +68,7 @@ import static java.util.Comparator.comparingLong;
  * for each Host by calling {@code host.setPowerModel(powerModel)}.
  *
  * <p>It creates the number of cloudlets defined in
- * {@link #CLOUDLETS}. All cloudlets will required 100% of PEs they are using all the time.
+ * {@link #CLOUDLETS}. All cloudlets will require 100% of PEs they are using all the time.
  * Half of these cloudlets are created with the length defined by {@link #CLOUDLET_LENGTH}
  * and the other half will have the double of this length.
  * This way, it's possible to see that for the last half of the
@@ -76,26 +76,23 @@ import static java.util.Comparator.comparingLong;
  * and therefore doesn't consume the maximum power.</p>
  *
  * <p>However, you may notice in this case that the power usage isn't
- * half of the maximum consumption, because there is a minimum
+ * half of the maximum consumption, because there is a static minimum
  * amount of power to use, even if the Host is idle,
  * which is defined by {@link #STATIC_POWER}.
- * In the case of the {@link PowerModelHost},
- * there is a constant power which is computed
- * and added to consumer power when it
- * is lower or equal to the minimum usage percentage.</p>
+ * Check {@link PowerModelHostSimple#PowerModelHostSimple(double, double)}.
+ * </p>
  *
- * <p>Realize that the Host CPU Utilization History is only computed
+ * <p>Realize that the Host CPU Utilization History is only stored
  * if VMs utilization history is enabled by calling
  * {@code vm.getUtilizationHistory().enable()}</p>
  *
  * <p>Each line in the table with CPU utilization and power consumption shows
- * the data from the time specified in the line up to the time before the value in the next line.
- * For instance, consider the scheduling interval is 10, the time in the first line is 0 and
+ * the data from the time specified in the line, up to the time before the value in the next line.
+ * For instance, consider the scheduling interval is 10, the time in the first line is 1 and
  * it shows 100% CPU utilization and 100 W of power consumption.
  * Then, the next line contains data for time 10.
- * That means between time 0 and time 9 (from time 0 to 9 we have 10 samples),
- * the CPU utilization and power consumption
- * is the one provided for time 0.</p>
+ * It means that for any point between time 1 to time 10,
+ * the CPU utilization and power consumption is the one provided in that first line.</p>
  *
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.2.4
