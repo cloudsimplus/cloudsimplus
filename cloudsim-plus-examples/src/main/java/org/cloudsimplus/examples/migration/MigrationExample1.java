@@ -117,8 +117,6 @@ import static java.util.Comparator.comparingLong;
  * if you enable that by calling {@link Host#enableStateHistory()}.</p>
  *
  * @author Manoel Campos da Silva Filho
- *
- * TODO Verify if inter-datacenter VM migration is working by default using the DatacenterBroker class.
  */
 public final class MigrationExample1 {
     /**
