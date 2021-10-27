@@ -27,7 +27,7 @@ import java.util.function.Predicate;
  * <b>disregarding energy consumption</b>.</p>
  *
  * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 7.1.2
+ * @since CloudSim Plus 7.2.0
  */
 public class VmAllocationPolicyMigrationFirstFitStaticThreshold extends VmAllocationPolicyMigrationStaticThreshold {
     private int lastHostIndex;

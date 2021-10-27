@@ -107,7 +107,7 @@ import static java.util.stream.Collectors.joining;
  * if you enable that by calling {@link Host#enableStateHistory()}.</p>
  *
  * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 7.1.2
+ * @since CloudSim Plus 7.2.0
  */
 public final class InterDatacenterMigration1 {
     /**
