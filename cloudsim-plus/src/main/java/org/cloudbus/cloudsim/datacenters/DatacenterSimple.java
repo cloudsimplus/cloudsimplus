@@ -39,6 +39,7 @@ import java.util.*;
 import java.util.stream.Stream;
 
 import static java.util.Objects.requireNonNull;
+import static java.util.function.Predicate.not;
 import static java.util.stream.Collectors.toList;
 import static org.cloudbus.cloudsim.util.BytesConversion.bitesToBytes;
 
@@ -222,10 +223,8 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
             host.setId(++nextId);
         }
 
-        host.setDatacenter(this);
+        host.setSimulation(getSimulation()).setDatacenter(this);
         host.setActive(((HostSimple)host).isActivateOnDatacenterStartup());
-        host.setSimulation(getSimulation());
-
         return nextId;
     }
 
@@ -881,6 +880,10 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     @Override
     protected void startInternal() {
         LOGGER.info("{}: {} is starting...", getSimulation().clockStr(), getName());
+        hostList.stream()
+                .filter(not(Host::isActive))
+                .map(host -> (HostSimple)host)
+                .forEach(host -> host.setActive(host.isActivateOnDatacenterStartup()));
         sendNow(getSimulation().getCloudInfoService(), CloudSimTag.DC_REGISTRATION_REQUEST, this);
     }
 

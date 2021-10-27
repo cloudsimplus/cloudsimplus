@@ -567,6 +567,12 @@ public class HostSimple implements Host {
            return this;
         }
 
+        /*If the simulation is not running and there is a startup delay,
+        * when the datacenter is started up, it will request such a Host activation. */
+        if(!simulation.isRunning()){
+            return this;
+        }
+
         final CloudSimTag tag = activate ? CloudSimTag.HOST_POWER_ON : CloudSimTag.HOST_POWER_OFF;
         final String msg = (activate ? "on" : "off") + " (expected time: {} seconds).";
         LOGGER.info("{}: {} is being powered " + msg, getSimulation().clockStr(), this, delay);
@@ -1108,7 +1114,10 @@ public class HostSimple implements Host {
 
     @Override
     public final void setDatacenter(final Datacenter datacenter) {
-        checkSimulationIsRunningAndAttemptedToChangeHost("Datacenter");
+        if(!Datacenter.NULL.equals(this.datacenter)) {
+            checkSimulationIsRunningAndAttemptedToChangeHost("Datacenter");
+        }
+
         this.datacenter = datacenter;
     }
 
