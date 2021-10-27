@@ -626,6 +626,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         final var entry = (Map.Entry<Vm, Host>) evt.getData();
 
         final Vm vm = entry.getKey();
+        final Host sourceHost = vm.getHost();
         final Host targetHost = entry.getValue();
 
         //Updates processing of all Hosts to get their latest state before migrating VMs
@@ -654,7 +655,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         }
 
         if (suitability.fully())
-            LOGGER.info("{}: Migration of {} to {} is completed", getSimulation().clockStr(), vm, targetHost);
+            LOGGER.info("{}: Migration of {} from {} to {} is completed.", getSimulation().clockStr(), vm, sourceHost, targetHost);
         else LOGGER.error(
             "{}: {}: Allocation of {} to the destination {} failed due to {}!",
             getSimulation().clockStr(), this, vm, targetHost, suitability);
