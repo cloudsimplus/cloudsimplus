@@ -328,21 +328,15 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
      */
     protected abstract Optional<Host> defaultFindHostForVm(Vm vm);
 
-    /**
-     * {@inheritDoc}
-     *
-     * <p><b>This method implementation doesn't perform any
-     * VM placement optimization and, in fact, has no effect.
-     * Classes implementing the {@link VmAllocationPolicyMigration}
-     * provide actual implementations for this method that can be overridden
-     * by subclasses.
-     * </b></p>
-     *
-     * @param vmList {@inheritDoc}
-     * @return {@inheritDoc}
-     */
     @Override
     public Map<Vm, Host> getOptimizedAllocationMap(final List<? extends Vm> vmList) {
+        /*
+         * This method implementation doesn't perform any
+         * VM placement optimization and, in fact, has no effect.
+         * Classes implementing the {@link VmAllocationPolicyMigration}
+         * provide actual implementations for this method that can be overridden
+         * by subclasses.
+         */
         return Collections.emptyMap();
     }
 
