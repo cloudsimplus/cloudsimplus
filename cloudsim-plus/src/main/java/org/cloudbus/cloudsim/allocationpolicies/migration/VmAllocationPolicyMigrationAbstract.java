@@ -9,8 +9,10 @@ package org.cloudbus.cloudsim.allocationpolicies.migration;
 
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicy;
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicyAbstract;
+import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.selectionpolicies.VmSelectionPolicy;
+import org.cloudbus.cloudsim.util.TimeUtil;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
 
@@ -67,6 +69,23 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
     private boolean hostsOverloaded;
 
     /**
+     * The datacenter to try migrating VMs to.
+     * The initial value is the {@link #getDatacenter()} this
+     * policy is linked to, so that the policy tries
+     * inter-datacenter VM migration before a different datacenter.
+     */
+    private Datacenter targetMigrationDc;
+
+    /**
+     * The index of the datacenter from the entire {@link org.cloudbus.cloudsim.core.CloudInformationService}
+     * datacenter list to try migrating VMs to if the {@link #targetMigrationDc}
+     * has no suitable Hosts.
+     * This is just used when the {@link #getDatacenter()} linked to this policy doesn't have suitable Hosts for
+     * inter-datacenter VM migration. This way, a different datacenter is tried.
+     */
+    private int targetMigrationDcIndex;
+
+    /**
      * Creates a VmAllocationPolicy.
      * It uses a {@link #DEF_UNDERLOAD_THRESHOLD default under utilization threshold}.
      *
@@ -74,6 +93,12 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
      */
     public VmAllocationPolicyMigrationAbstract(final VmSelectionPolicy vmSelectionPolicy) {
         this(vmSelectionPolicy, null);
+    }
+
+    @Override
+    public void setDatacenter(final Datacenter datacenter) {
+        super.setDatacenter(datacenter);
+        this.targetMigrationDc = datacenter;
     }
 
     /**
@@ -102,16 +127,36 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
         final Set<Host> overloadedHosts = getOverloadedHosts();
         this.hostsOverloaded = !overloadedHosts.isEmpty();
         printOverUtilizedHosts(overloadedHosts);
-        saveAllocation();
 
         final Map<Vm, Host> migrationMap = getMigrationMapFromOverloadedHosts(overloadedHosts);
         updateMigrationMapFromUnderloadedHosts(overloadedHosts, migrationMap);
-        if(migrationMap.isEmpty()){
-            return migrationMap;
+
+        if (hostsOverloaded && migrationMap.isEmpty()) {
+            hostSearchRetry();
         }
 
-        restoreAllocation();
         return migrationMap;
+    }
+
+    private void hostSearchRetry() {
+        final var dcList = getDatacenter().getSimulation().getCloudInfoService().getDatacenterList();
+
+        final double hostSearchRetryDelay = getDatacenter().getHostSearchRetryDelay();
+        final var msg = hostSearchRetryDelay > 0 ?
+            "in " + TimeUtil.secondsToStr(hostSearchRetryDelay) :
+            "as soon as possible";
+
+        final boolean singleDc = dcList.size() == 1;
+        final var targetDcName = singleDc || getDatacenter().equals(targetMigrationDc) ? "" : String.format("on %s ", targetMigrationDc);
+        LOGGER.warn(
+            "{}: {}: An under or overload situation was detected on {}, however there aren't suitable Hosts {}to manage that. Trying again {}.",
+            getDatacenter().getSimulation().clock(), getClass().getSimpleName(), getDatacenter(), targetDcName, msg);
+
+        if (!singleDc) {
+            //Next time, try migrating some VMs from this to other datacenter
+            targetMigrationDcIndex = ++targetMigrationDcIndex % dcList.size();
+            this.targetMigrationDc = dcList.get(targetMigrationDcIndex);
+        }
     }
 
     /**
@@ -365,20 +410,29 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
             return  Collections.emptyMap();
         }
 
-        final var vmsToMigrateList = getVmsToMigrateFromOverloadedHosts(overloadedHosts);
-        sortByCpuUtilization(vmsToMigrateList, getDatacenter().getSimulation().clock());
-        final var migrationMap = new HashMap<Vm, Host>();
+        saveAllocation();
+        final Map<Vm, Host> migrationMap = new HashMap<>();
+        try {
+            final var vmsToMigrateList = getVmsToMigrateFromOverloadedHosts(overloadedHosts);
+            sortByCpuUtilization(vmsToMigrateList, getDatacenter().getSimulation().clock());
 
-        final var builder = new StringBuilder();
-        for (final Vm vm : vmsToMigrateList) {
-            findHostForVm(vm, overloadedHosts).ifPresent(targetHost -> {
-                addVmToMigrationMap(migrationMap, vm, targetHost);
-                appendVmMigrationMsgToStringBuilder(builder, vm, targetHost);
-            });
+            final var builder = new StringBuilder();
+            final VmAllocationPolicy targetVmAllocationPolicy = targetMigrationDc.getVmAllocationPolicy();
+            for (final Vm vm : vmsToMigrateList) {
+                targetVmAllocationPolicy.findHostForVm(vm).ifPresent(targetHost -> {
+                    addVmToMigrationMap(migrationMap, vm, targetHost);
+                    appendVmMigrationMsgToStringBuilder(builder, vm, targetHost);
+                });
+            }
+
+            if(!migrationMap.isEmpty()) {
+                LOGGER.info(
+                    "{}: {}: Reallocation of VMs from overloaded hosts: {}{}",
+                    getDatacenter().getSimulation().clockStr(), getClass().getSimpleName(), System.lineSeparator(), builder);
+            }
+        } finally {
+            restoreAllocation();
         }
-        LOGGER.info(
-            "{}: VmAllocationPolicy: Reallocation of VMs from overloaded hosts: {}{}",
-            getDatacenter().getSimulation().clockStr(), System.lineSeparator(), builder);
 
         return migrationMap;
     }

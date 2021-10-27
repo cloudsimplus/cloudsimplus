@@ -12,9 +12,7 @@ import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Collection;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 /**
  * A Cloud Information Service (CIS) is an entity that provides cloud resource
@@ -39,7 +37,7 @@ public class CloudInformationService extends CloudSimEntity {
      * A list containing all Datacenters that are registered at the
      * Cloud Information Service (CIS).
      */
-    private final Set<Datacenter> datacenterList;
+    private final List<Datacenter> datacenterList;
 
     /**
      * List of all regional CIS.
@@ -53,7 +51,7 @@ public class CloudInformationService extends CloudSimEntity {
      */
     CloudInformationService(final CloudSim simulation) {
         super(simulation);
-        datacenterList = new TreeSet<>();
+        datacenterList = new ArrayList<>();
         cisList = new TreeSet<>();
     }
 
@@ -92,7 +90,7 @@ public class CloudInformationService extends CloudSimEntity {
      *
      * @return
      */
-    public Set<Datacenter> getDatacenterList() {
+    public List<Datacenter> getDatacenterList() {
         return datacenterList;
     }
 

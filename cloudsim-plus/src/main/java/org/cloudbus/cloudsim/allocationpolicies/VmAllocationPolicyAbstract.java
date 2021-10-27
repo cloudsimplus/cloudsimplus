@@ -7,7 +7,6 @@
  */
 package org.cloudbus.cloudsim.allocationpolicies;
 
-import org.cloudbus.cloudsim.allocationpolicies.migration.VmAllocationPolicyMigration;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.HostSuitability;
@@ -89,7 +88,7 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
      * @param datacenter the Datacenter to set
      */
     @Override
-    public final void setDatacenter(final Datacenter datacenter) {
+    public void setDatacenter(final Datacenter datacenter) {
         this.datacenter = requireNonNull(datacenter);
     }
 

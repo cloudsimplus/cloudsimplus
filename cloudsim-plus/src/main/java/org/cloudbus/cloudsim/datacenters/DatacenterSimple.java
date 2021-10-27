@@ -26,7 +26,6 @@ import org.cloudbus.cloudsim.resources.DatacenterStorage;
 import org.cloudbus.cloudsim.resources.SanStorage;
 import org.cloudbus.cloudsim.util.InvalidEventDataTypeException;
 import org.cloudbus.cloudsim.util.MathUtil;
-import org.cloudbus.cloudsim.util.TimeUtil;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudsimplus.autoscaling.VerticalVmScaling;
@@ -788,23 +787,11 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         }
 
         if(areThereUnderOrOverloadedHostsAndMigrationIsSupported()){
-            logHostSearchRetry();
             lastUnderOrOverloadedDetection = clock();
         }
     }
 
-    private void logHostSearchRetry() {
-        if (!lastMigrationMap.isEmpty()) {
-            return;
-        }
 
-        final var msg = hostSearchRetryDelay > 0 ?
-                          "in " + TimeUtil.secondsToStr(hostSearchRetryDelay) :
-                          "as soon as possible";
-        LOGGER.warn(
-            "{}: Datacenter: An under or overload situation was detected but currently, however there aren't suitable Hosts to manage that. Trying again {}.",
-            clock(), msg);
-    }
 
     /**
      * Indicates if it's time to check if suitable Hosts are available to migrate VMs

@@ -26,7 +26,9 @@ import org.cloudsimplus.listeners.EventInfo;
 import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.traces.google.GoogleTaskEventsTraceReader;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -173,7 +175,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         this.cloudletsFinishedList = new ArrayList<>();
         this.cloudletsCreatedList = new ArrayList<>();
         this.cloudletSubmittedList = new ArrayList<>();
-        setDatacenterList(new TreeSet<>());
+        setDatacenterList(new ArrayList<>());
 
         setDatacenterMapper(this::defaultDatacenterMapper);
         setVmMapper(this::defaultVmMapper);
@@ -621,14 +623,14 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      * @param evt a CloudSimEvent object
      */
     private void processDatacenterListRequest(final SimEvent evt) {
-        if(evt.getData() instanceof Set datacenterSet) {
+        if(evt.getData() instanceof List datacenterSet) {
             setDatacenterList(datacenterSet);
             LOGGER.info("{}: {}: List of {} datacenters(s) received.", getSimulation().clockStr(), getName(), datacenterList.size());
             requestDatacenterToCreateWaitingVms(false, false);
             return;
         }
 
-        throw new InvalidEventDataTypeException(evt, "DC_LIST_REQUEST", "Set<Datacenter>");
+        throw new InvalidEventDataTypeException(evt, "DC_LIST_REQUEST", "List<Datacenter>");
     }
 
     /**
@@ -1145,7 +1147,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      *
      * @param datacenterList the new dc list
      */
-    private void setDatacenterList(final Set<Datacenter> datacenterList) {
+    private void setDatacenterList(final List<Datacenter> datacenterList) {
         this.datacenterList = new ArrayList<>(datacenterList);
         if(selectClosestDatacenter){
             this.datacenterList.sort(Comparator.comparingDouble(Datacenter::getTimeZone));
