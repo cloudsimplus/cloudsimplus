@@ -54,18 +54,6 @@ public class HostHistoryTableBuilder extends TableBuilderAbstract<HostStateHisto
         this.host = host;
     }
 
-    /**
-     * Instantiates a builder to print the history of a Host using the a
-     * given {@link Table}.
-     *
-     * @param host the Host to get the history to print
-     * @param table the {@link Table} used to build the table with the Cloudlets data
-     */
-    public HostHistoryTableBuilder(final Host host, final Table table) {
-        this(host);
-        this.setTable(table);
-    }
-
     @Override
     protected void createTableColumns() {
         TableColumn col = getTable().addColumn("Time ").setFormat("%5.0f");
