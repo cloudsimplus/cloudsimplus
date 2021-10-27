@@ -18,7 +18,6 @@ import java.util.*;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.stream.Stream;
 
 import static java.util.Comparator.comparingDouble;
 import static java.util.stream.Collectors.*;
@@ -297,9 +296,7 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
 
     @Override
     protected Optional<Host> defaultFindHostForVm(final Vm vm) {
-        final var excludedHostsSet = new HashSet<Host>();
-        excludedHostsSet.add(vm.getHost());
-        return findHostForVm(vm, excludedHostsSet);
+        return findHostForVm(vm, host -> true);
     }
 
     /**
@@ -311,57 +308,35 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
      * and the final selection of the Host to other method.</p>
      *
      * @param vm the VM
-     * @param excludedHosts the excluded hosts
-     * @return an {@link Optional} containing a suitable Host to place the VM or an empty {@link Optional} if not found
-     * @see #findHostForVmInternal(Vm, Stream)
-     */
-    private Optional<Host> findHostForVm(final Vm vm, final Set<? extends Host> excludedHosts) {
-        /*The predicate always returns true to indicate that, in fact, it is not
-        applying any additional filter.*/
-        return findHostForVm(vm, excludedHosts, host -> true);
-    }
-
-    /**
-     * Finds a Host that has enough resources to place a given VM and that will not
-     * be overloaded after the placement. The selected Host will be that
-     * one with most efficient power usage for the given VM.
-     *
-     * <p>This method performs the basic filtering and delegates additional ones
-     * and the final selection of the Host to other method.</p>
-     *
-     * @param vm the VM
-     * @param excludedHosts the excluded hosts
      * @param predicate an additional {@link Predicate} to be used to filter
      *                  the Host to place the VM
      * @return an {@link Optional} containing a suitable Host to place the VM or an empty {@link Optional} if not found
-     * @see #findHostForVmInternal(Vm, Stream)
+     * @see #findHostForVmInternal(Vm, Predicate)
      */
-    private Optional<Host> findHostForVm(final Vm vm, final Set<? extends Host> excludedHosts, final Predicate<Host> predicate) {
-        final var hostStream = this.getHostList().stream()
-            .filter(host -> !excludedHosts.contains(host))
-            .filter(host -> host.isSuitableForVm(vm))
-            .filter(host -> isNotHostOverloadedAfterAllocation(host, vm))
-            .filter(predicate);
+    private Optional<Host> findHostForVm(final Vm vm, final Predicate<Host> predicate) {
+        final var newPredicate =
+            predicate
+                .and(host -> !host.equals(vm.getHost()))
+                .and(host -> host.isSuitableForVm(vm))
+                .and(host -> isNotHostOverloadedAfterAllocation(host, vm));
 
-        return findHostForVmInternal(vm, hostStream);
+        return findHostForVmInternal(vm, newPredicate);
     }
 
     /**
      * Applies additional filters to the Hosts Stream and performs the actual Host selection.
-     * This method is a Stream's final operation, that it, it closes the Stream and returns an {@link Optional} value.
-     *
-     * <p>This method can be overridden by sub-classes to change the method used to select the Host for the given VM.</p>
+     * It can be overridden by sub-classes to change the way to select the Host for a given VM.
      *
      * @param vm the VM to find a Host to be placed into
-     * @param hostStream a {@link Stream} containing the Hosts after passing the basic filtering
+     * @param predicate a {@link Predicate} to filter suitable Hosts
      * @return an {@link Optional} containing a suitable Host to place the VM or an empty {@link Optional} if not found
-     * @see #findHostForVm(Vm, Set)
+     * @see #findHostForVm(Vm, Predicate)
      */
-    protected Optional<Host> findHostForVmInternal(final Vm vm, final Stream<Host> hostStream){
+    protected Optional<Host> findHostForVmInternal(final Vm vm, final Predicate<Host> predicate){
         final Comparator<Host> hostPowerConsumptionComparator =
             comparingDouble(host -> getPowerDifferenceAfterAllocation(host, vm));
 
-        return hostStream.min(hostPowerConsumptionComparator);
+        return getHostList().stream().filter(predicate).min(hostPowerConsumptionComparator);
     }
 
     /**
@@ -430,7 +405,7 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
         sortByCpuUtilization(vmsToMigrate, getDatacenter().getSimulation().clock());
         for (final Vm vm : vmsToMigrate) {
             //try to find a target Host to place a VM from an underloaded Host that is not underloaded too
-            final Optional<Host> optional = findHostForVm(vm, excludedHosts, host -> !isHostUnderloaded(host));
+            final Optional<Host> optional = findHostForVm(vm, host -> !isHostUnderloaded(host));
             if (optional.isEmpty()) {
                 LOGGER.warn(
                     "{}: VmAllocationPolicy: A new Host, which isn't also underloaded or won't be overloaded, couldn't be found to migrate {}. Migration of VMs from the underloaded {} cancelled.",

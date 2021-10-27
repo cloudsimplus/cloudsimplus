@@ -12,11 +12,12 @@ import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.selectionpolicies.VmSelectionPolicy;
 import org.cloudbus.cloudsim.vms.Vm;
 
-import java.util.Comparator;
 import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Function;
-import java.util.stream.Stream;
+import java.util.function.Predicate;
+
+import static java.util.Comparator.comparingDouble;
 
 /**
  * A {@link VmAllocationPolicy} that uses a Static CPU utilization Threshold (THR) to
@@ -78,13 +79,13 @@ public class VmAllocationPolicyMigrationBestFitStaticThreshold extends VmAllocat
      * </p>
      *
      * @param vm {@inheritDoc}
-     * @param hostStream {@inheritDoc}
+     * @param predicate {@inheritDoc}
      * @return {@inheritDoc}
      */
     @Override
-    protected Optional<Host> findHostForVmInternal(final Vm vm, final Stream<Host> hostStream) {
+    protected Optional<Host> findHostForVmInternal(final Vm vm, final Predicate<Host> predicate) {
         /*It's ignoring the super class intentionally to avoid the additional filtering performed there
         * and to apply a different method to select the Host to place the VM.*/
-        return hostStream.max(Comparator.comparingDouble(Host::getCpuMipsUtilization));
+        return getHostList().stream().filter(predicate).max(comparingDouble(Host::getCpuMipsUtilization));
     }
 }
