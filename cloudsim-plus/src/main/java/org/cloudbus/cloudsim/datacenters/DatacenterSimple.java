@@ -960,8 +960,10 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      */
     private <T extends Vm> List<T> getVmList() {
         return (List<T>) Collections.unmodifiableList(
-                getHostList().stream()
-                    .flatMap(h -> h.getVmList().stream())
+                getHostList()
+                    .stream()
+                    .map(Host::getVmList)
+                    .flatMap(List::stream)
                     .collect(toList()));
     }
 
