@@ -23,7 +23,6 @@
  */
 package org.cloudsimplus.examples.power;
 
-import ch.qos.logback.classic.Level;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
@@ -47,7 +46,6 @@ import org.cloudbus.cloudsim.vms.VmResourceStats;
 import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 import org.cloudsimplus.examples.resourceusage.VmsRamAndBwUsageExample;
-import org.cloudsimplus.util.Log;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -143,7 +141,9 @@ public class PowerExample {
     }
 
     private PowerExample() {
-        Log.setLevel(Level.WARN);
+        /*Enables just some level of log messages.
+          Make sure to import org.cloudsimplus.util.Log;*/
+        //Log.setLevel(ch.qos.logback.classic.Level.WARN);
 
         simulation = new CloudSim();
         hostList = new ArrayList<>(HOSTS);
