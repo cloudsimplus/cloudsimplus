@@ -360,7 +360,7 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
      */
     private Map<Vm, Host> getMigrationMapFromOverloadedHosts(final Set<Host> overloadedHosts) {
         if(overloadedHosts.isEmpty()) {
-            return  new HashMap<>();
+            return  Collections.emptyMap();
         }
 
         final var vmsToMigrateList = getVmsToMigrateFromOverloadedHosts(overloadedHosts);
