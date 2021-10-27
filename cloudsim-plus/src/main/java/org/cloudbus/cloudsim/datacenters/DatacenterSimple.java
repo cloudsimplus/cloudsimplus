@@ -782,7 +782,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
             return;
         }
 
-        lastMigrationMap = getVmAllocationPolicy().getOptimizedAllocationMap(getVmList());
+        lastMigrationMap = vmAllocationPolicy.getOptimizedAllocationMap(getVmList());
         for (final Map.Entry<Vm, Host> entry : lastMigrationMap.entrySet()) {
             requestVmMigration(entry.getKey(), entry.getValue());
         }
