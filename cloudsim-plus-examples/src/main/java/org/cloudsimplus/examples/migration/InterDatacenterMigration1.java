@@ -65,6 +65,17 @@ import static java.util.stream.Collectors.joining;
  * An example showing how to create 2 Datacenters having different
  * number of Hosts and VMs with heterogeneous capacity/requirements.
  *
+ * <p>
+ * Despite there isn't the concept of multi-cloud environments on CloudSim Plus,
+ * this example can be used to simulate that.
+ * If you consider you have 2 or more datacenters where some of them belong to a cloud provider
+ * and other ones belong to another provider.
+ *
+ * Since the example is performing VM migration between those datacenters,
+ * we can consider in that case we are performing VM migration between
+ * cloud providers.
+ * </p>
+ *
  * <p>The example then performs VM migration using
  * a {@link VmAllocationPolicyMigrationFirstFitStaticThreshold}.
  * Such a policy migrates VMs based on
