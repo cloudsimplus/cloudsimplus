@@ -43,6 +43,7 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
+import org.cloudsimplus.listeners.CloudletVmEventInfo;
 import org.cloudsimplus.listeners.EventListener;
 
 import java.util.ArrayList;
@@ -159,14 +160,17 @@ public class CreateCloudletAfterLastFinishedOne {
         cloudletList.add(cloudlet);
 
         if(cloudletList.size() < CLOUDLETS){
-            cloudlet.addOnFinishListener(info -> {
-                System.out.printf("\t# %.2f: Requesting creation of new Cloudlet after %s finishes executing.%n", info.getTime(), info.getCloudlet());
-                createAndSubmitOneCloudlet();
-            });
+            cloudlet.addOnFinishListener(this::cloudletFinishListener);
         }
 
-
         broker.submitCloudlet(cloudlet);
+    }
+
+    private void cloudletFinishListener(final CloudletVmEventInfo info) {
+        System.out.printf(
+            "\t# %.2f: Requesting creation of new Cloudlet after %s finishes executing.%n",
+            info.getTime(), info.getCloudlet());
+        createAndSubmitOneCloudlet();
     }
 
     /**
