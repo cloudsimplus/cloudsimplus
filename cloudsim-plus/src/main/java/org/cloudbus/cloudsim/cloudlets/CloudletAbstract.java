@@ -397,7 +397,6 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
                                     Math.min(partialFinishedMI, absLength()-getFinishedLengthSoFar());
         getLastExecutionInDatacenterInfo().addFinishedSoFar(maxLengthToAdd);
         returnToBrokerIfFinished();
-        notifyListenersIfCloudletIsFinished();
         return true;
     }
 
@@ -420,7 +419,7 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
      * It then removes the registered listeners to avoid a Listener to be notified
      * multiple times about a Cloudlet termination.
      */
-    private void notifyListenersIfCloudletIsFinished() {
+    void notifyListenersIfCloudletIsFinished() {
         if (isFinished()) {
             onFinishListeners.forEach(listener -> listener.update(CloudletVmEventInfo.of(listener, this)));
             onFinishListeners.clear();
@@ -530,11 +529,8 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
 
     @Override
     public double getActualCpuTime() {
-        if (getFinishTime() == NOT_ASSIGNED) {
-            return NOT_ASSIGNED;
-        }
-
-        return finishTime - execStartTime;
+        final double time = getFinishTime() == NOT_ASSIGNED ? getSimulation().clock() : finishTime;
+        return time - execStartTime;
     }
 
     @Override

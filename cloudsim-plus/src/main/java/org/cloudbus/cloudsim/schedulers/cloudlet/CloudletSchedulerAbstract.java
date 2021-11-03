@@ -963,8 +963,8 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      */
     private void setCloudletFinishTimeAndAddToFinishedList(final CloudletExecution cle) {
         final double clock = vm.getSimulation().clock();
-        cle.setFinishTime(clock);
         cloudletFinish(cle);
+        cle.setFinishTime(clock);
     }
 
     /**

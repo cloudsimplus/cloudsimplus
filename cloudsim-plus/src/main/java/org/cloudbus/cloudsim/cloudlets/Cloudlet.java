@@ -172,10 +172,10 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
     double getAccumulatedBwCost();
 
     /**
-     * Returns the total execution time of the Cloudlet in seconds.
+     * Gets the total execution time of the Cloudlet so far (in seconds),
+     * if the Cloudlet has finished already or not.
      *
-     * @return time in which the Cloudlet was running;
-     *         or {@link #NOT_ASSIGNED} if it hasn't finished yet
+     * @return
      */
     double getActualCpuTime();
 
