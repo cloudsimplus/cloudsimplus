@@ -419,7 +419,7 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
      * It then removes the registered listeners to avoid a Listener to be notified
      * multiple times about a Cloudlet termination.
      */
-    void notifyListenersIfCloudletIsFinished() {
+    void notifyOnFinishListeners() {
         if (isFinished()) {
             onFinishListeners.forEach(listener -> listener.update(CloudletVmEventInfo.of(listener, this)));
             onFinishListeners.clear();

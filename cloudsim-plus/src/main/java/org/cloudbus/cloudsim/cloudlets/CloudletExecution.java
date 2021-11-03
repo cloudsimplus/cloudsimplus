@@ -321,7 +321,7 @@ public class CloudletExecution {
         }
 
         finishedTime = time;
-        ((CloudletAbstract)this.cloudlet).notifyListenersIfCloudletIsFinished();
+        ((CloudletAbstract)this.cloudlet).notifyOnFinishListeners();
     }
 
     /**
