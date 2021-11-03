@@ -129,21 +129,26 @@ public class CloudletSimpleTest {
     }
 
     @Test
-    public void testGetActualCPUTime() {
-        final double submissionTime = 0;
-        final double execStartTime = 10;
+    public void testGetActualCpuTimeSimulationNotFinished() {
         final double simulationClock = 100;
+
+        final CloudSim cloudsim = CloudSimMocker.createMock(mocker -> mocker.clock(simulationClock));
+        final CloudletSimple cloudlet = CloudletTestUtil.createCloudlet();
+
+        cloudlet.setBroker(MocksHelper.createMockBroker(cloudsim));
+        assertEquals(simulationClock, cloudlet.getActualCpuTime());
+    }
+
+    @Test
+    public void testGetActualCpuTimeSimulationFinished() {
+        final double execStartTime = 10;
+        final double simulationClock = 200;
         final double actualCpuTime = simulationClock - execStartTime;
 
-        final CloudSim cloudsim = CloudSimMocker.createMock(mocker -> {
-            mocker.clock(submissionTime);
-            mocker.clock(simulationClock);
-        });
-
+        final CloudSim cloudsim = CloudSimMocker.createMock(mocker -> mocker.clock(simulationClock));
         final CloudletSimple cloudlet = CloudletTestUtil.createCloudlet();
-        cloudlet.setBroker(MocksHelper.createMockBroker(cloudsim));
-        assertEquals(Cloudlet.NOT_ASSIGNED, cloudlet.getActualCpuTime());
 
+        cloudlet.setBroker(MocksHelper.createMockBroker(cloudsim));
         cloudlet.assignToDatacenter(Datacenter.NULL);
         cloudlet.registerArrivalInDatacenter();
         cloudlet.setExecStartTime(execStartTime);
