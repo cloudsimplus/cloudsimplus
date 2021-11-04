@@ -240,7 +240,7 @@ public final class InterDatacenterMigration1 {
         simulation.start();
 
         printResults();
-        System.out.println(getClass().getSimpleName() + " finished!");
+        System.out.printf("%n%s finished!%n", getClass().getSimpleName());
     }
 
     private void validateConfiguration() {
@@ -295,15 +295,15 @@ public final class InterDatacenterMigration1 {
                     .thenComparingLong(c -> c.getVm().getId());
             cloudletFinishedList.sort(cloudletComparator);
             new CloudletsTableBuilder(cloudletFinishedList).setTitle(broker.toString()).build();
-            System.out.printf("Number of VM migrations: %d%n", migrationsNumber);
         }
 
+        System.out.printf("%nNumber of VM migrations: %d%n", migrationsNumber);
         printHostStateHistory();
     }
 
     private void printHostStateHistory() {
         System.out.printf(
-            "%nHosts CPU usage History (when the allocated MIPS is lower than the requested, it is due to VM migration overhead)%n");
+            "Hosts CPU usage History (when the allocated MIPS is lower than the requested, it is due to VM migration overhead)%n");
         datacenterList.stream()
                       .map(Datacenter::getHostList).flatMap(List::stream)
                       .filter(h -> !h.getStateHistory().isEmpty())
