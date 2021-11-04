@@ -313,8 +313,6 @@ A Google Group forum is available at <https://groups.google.com/group/cloudsim-p
 
 <p align="right"><a href="#top">:arrow_up:</a></p>
 
-<p align="right"><a href="#top">:arrow_up:</a></p>
-
 <a id="consulting"></a>
 
 # 7. 👨🏽‍🏫 Consulting
