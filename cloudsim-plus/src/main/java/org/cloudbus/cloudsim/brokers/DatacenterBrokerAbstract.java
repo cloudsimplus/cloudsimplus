@@ -440,7 +440,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
 
     @Override
     public boolean bindCloudletToVm(final Cloudlet cloudlet, final Vm vm) {
-        if (!this.equals(cloudlet.getBroker())) {
+        if (!this.equals(cloudlet.getBroker()) && !DatacenterBroker.NULL.equals(cloudlet.getBroker())) {
             return false;
         }
 
