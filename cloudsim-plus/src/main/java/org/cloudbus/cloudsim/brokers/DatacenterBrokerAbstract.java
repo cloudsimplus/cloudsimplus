@@ -358,14 +358,6 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     }
 
     /**
-     * Checks if there are non-delayed VMs waiting to be created.
-     * @return
-     */
-    private boolean isAnyNonDelayedVmWaiting() {
-        return vmWaitingList.stream().anyMatch(vm -> vm.getSubmissionDelay() > 0);
-    }
-
-    /**
      * Binds a list of Cloudlets to a given {@link Vm}.
      * If the {@link Vm} is {@link Vm#NULL}, the Cloudlets will not be bound.
      *
@@ -644,7 +636,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         //Decreases to indicate an ack for the request was received (either if the VM was created or not)
         vmCreationRequests--;
 
-        if(vmCreationRequests == 0 && isAnyNonDelayedVmWaiting()) {
+        if(vmCreationRequests == 0 && !vmWaitingList.isEmpty()) {
             requestCreationOfWaitingVmsToFallbackDatacenter();
         }
         requestDatacentersToCreateWaitingCloudlets();
