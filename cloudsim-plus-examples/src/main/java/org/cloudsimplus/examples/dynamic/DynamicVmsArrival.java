@@ -77,7 +77,7 @@ public class DynamicVmsArrival {
 
     /** Number of Cloudlets to create simultaneously. */
     private static final int CLOUDLETS = VMS;
-    /** The length of each Cloudlet in number of Million Instructions (MI)*/
+    /** The length of each Cloudlet in number of Million Instructions (MI) */
     private static final int CLOUDLET_LENGTH = 10000;
     private static final int CLOUDLET_PES = 1;
 
@@ -91,7 +91,7 @@ public class DynamicVmsArrival {
      * when the creation of new VMs will be requested (in seconds).
      * After at that time, there will be suitable Hosts available.
      */
-    private static final double EXPECTED_CLOUDLET_FINISH_TIME = CLOUDLET_LENGTH/HOST_MIPS + IDLE_VM_DESTRUCTION_DELAY + 1;
+    private static final double EXPECTED_CLOUDLET_FINISH_TIME = CLOUDLET_LENGTH / HOST_MIPS + IDLE_VM_DESTRUCTION_DELAY + 1;
 
     private final List<Host> hostList;
     private final List<Vm> vmList;
@@ -141,6 +141,7 @@ public class DynamicVmsArrival {
      * Creates a broker defining that idle VMs will be destructed after some delay,
      * instead of waiting the broker to shutdown to destroy them.
      * This enables freeing Hosts to place new VMs.
+     *
      * @return
      */
     private DatacenterBroker createBroker() {
@@ -158,6 +159,7 @@ public class DynamicVmsArrival {
 
     /**
      * Creates and submits a list of VMs and Cloudlets.
+     *
      * @param submissionDelay the time to wait before requesting the VM creation
      */
     private void createdAndSubmitVmsAndCloudlets(final double submissionDelay) {
@@ -165,7 +167,7 @@ public class DynamicVmsArrival {
         this.vmList.addAll(vms);
         this.cloudletList.addAll(createAndSubmitCloudlets(vms));
 
-        if(submissionDelay == 0) {
+        if (submissionDelay == 0) {
             System.out.printf("# Submitting %d VMs at the beginning of the simulation.%n", VMS);
             System.out.printf("# Submitting %d Cloudlets at the beginning of the simulation.%n", CLOUDLETS);
         } else {
@@ -177,6 +179,7 @@ public class DynamicVmsArrival {
 
     /**
      * Creates and submits a list of VMs.
+     *
      * @param submissionDelay the time to wait before requesting the VM creation
      * @return
      */
@@ -204,14 +207,15 @@ public class DynamicVmsArrival {
 
         Vm vm = new VmSimple(mips, VM_PES);
         vm.setRam(ram)
-            .setBw(bw)
-            .setSize(size)
-            .setSubmissionDelay(submissionDelay);
+          .setBw(bw)
+          .setSize(size)
+          .setSubmissionDelay(submissionDelay);
         return vm;
     }
 
     /**
      * Creates one Cloudlet for each VM in the given List.
+     *
      * @param vms the List fo VMs to create Cloudlets to
      * @return the List of Cloudlets
      */
@@ -265,16 +269,16 @@ public class DynamicVmsArrival {
      */
     private Host createHost(int id) {
         List<Pe> peList = new ArrayList<>();
-        for(int i = 0; i < HOST_PES; i++){
+        for (int i = 0; i < HOST_PES; i++) {
             peList.add(new PeSimple(HOST_MIPS, new PeProvisionerSimple()));
         }
         long ram = 2048; // host memory (Megabyte)
         long storage = 1000000; // host storage (Megabyte)
         long bw = 10000; //Megabits/s
 
-       return new HostSimple(ram, bw, storage, peList)
-           .setRamProvisioner(new ResourceProvisionerSimple())
-           .setBwProvisioner(new ResourceProvisionerSimple())
+        return new HostSimple(ram, bw, storage, peList)
+            .setRamProvisioner(new ResourceProvisionerSimple())
+            .setBwProvisioner(new ResourceProvisionerSimple())
             .setVmScheduler(new VmSchedulerSpaceShared());
 
     }
