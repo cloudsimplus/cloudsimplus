@@ -146,7 +146,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
 
     /**
      * Creates a DatacenterBroker giving a specific name.
-     * Subclasses usually should provide this constructor and
+     * Subclasses usually should provide this constructor
      * and overloaded version that just requires the {@link CloudSim} parameter.
      *
      * @param simulation the CloudSim instance that represents the simulation the Entity is related to
