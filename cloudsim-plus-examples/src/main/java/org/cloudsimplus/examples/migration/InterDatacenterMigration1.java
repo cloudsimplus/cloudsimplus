@@ -303,7 +303,7 @@ public final class InterDatacenterMigration1 {
 
     private void printHostStateHistory() {
         System.out.printf(
-            "Hosts CPU usage History (when the allocated MIPS is lower than the requested, it is due to VM migration overhead)%n");
+            "%nHosts CPU usage History (when allocated MIPS is lower than requested one, it is due to VM migration overhead)");
         datacenterList.stream()
                       .map(Datacenter::getHostList).flatMap(List::stream)
                       .filter(h -> !h.getStateHistory().isEmpty())
