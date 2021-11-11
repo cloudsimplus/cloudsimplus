@@ -120,9 +120,7 @@ import static java.util.stream.Collectors.joining;
  * @since CloudSim Plus 7.2.0
  */
 public final class InterDatacenterMigration1 {
-    /**
-     * @see Datacenter#getSchedulingInterval()
-     */
+    /** @see Datacenter#getSchedulingInterval() */
     private static final int  SCHEDULING_INTERVAL = 2;
 
     /**
