@@ -39,7 +39,7 @@ import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
-import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
+import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelDynamic;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
@@ -213,12 +213,18 @@ public class ParallelSimulationsExample implements Runnable {
 
         // Defines how CPU, RAM and Bandwidth resources are used.
         // Sets the same utilization model for all these resources.
-        final UtilizationModel utilization = new UtilizationModelFull();
+        final var utilizationModelFull = new UtilizationModelFull();
+
+        /* A utilization model for RAM and BW that uses only a fraction of the resource capacity all the time.
+        * If there are 10 cloudlets for a VM, each Cloudlet will use 10% (0.1) of the VM resource capacity. */
+        final var utilizationModelDynamic = new UtilizationModelDynamic(1.0/cloudletsNumber);
 
         return new CloudletSimple(id, length, pesNumber)
                 .setFileSize(fileSize)
                 .setOutputSize(outputSize)
-                .setUtilizationModel(utilization);
+                .setUtilizationModelCpu(utilizationModelFull)
+                .setUtilizationModelBw(utilizationModelDynamic)
+                .setUtilizationModelRam(utilizationModelDynamic);
     }
 
     /**
