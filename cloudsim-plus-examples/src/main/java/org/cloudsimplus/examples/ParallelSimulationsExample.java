@@ -51,7 +51,8 @@ import java.util.List;
 
 /**
  * An example showing how to run two simulation scenarios with different configurations
- * in parallel, using the CloudSim Plus exclusive features and Java 8 Lambda Expressions and Parallel Streams.
+ * in parallel, using the CloudSim Plus exclusive features and
+ * <a href="https://www.oracle.com/technical-resources/articles/java/ma14-java-se-8-streams.html">Java 8 Lambda Expressions and Parallel Streams</a>.
  * The parallel execution of simulations doesn't ensure that the overall execution time will be reduced.
  * It depends on diverse factors such as the number of simulations, the tasks that each simulation
  * executes, the  number of available physical CPUs at your machine, etc.
@@ -77,7 +78,6 @@ public class ParallelSimulationsExample implements Runnable {
     private DatacenterBroker broker;
     private List<Cloudlet> cloudletList;
     private List<Vm> vmList;
-    private List<Cloudlet> finishedCloudletList;
     private int hostsNumber;
     private int vmsNumber;
     private int cloudletsNumber;
@@ -91,7 +91,7 @@ public class ParallelSimulationsExample implements Runnable {
         /*IT IS MANDATORY TO DISABLE THE LOG WHEN EXECUTING PARALLEL SIMULATIONS TO AVOID RUNTIME EXCEPTIONS.*/
         Log.setLevel(Level.OFF);
 
-        List<ParallelSimulationsExample> simulationList = new ArrayList<>(2);
+        final var simulationList = new ArrayList<ParallelSimulationsExample>(2);
 
         //Creates the first simulation scenario
         simulationList.add(
@@ -125,7 +125,7 @@ public class ParallelSimulationsExample implements Runnable {
     }
 
     private void printResults(){
-        new CloudletsTableBuilder(getFinishedCloudletList())
+        new CloudletsTableBuilder(broker.getCloudletFinishedList())
             .setTitle(this.title)
             .build();
     }
@@ -138,7 +138,6 @@ public class ParallelSimulationsExample implements Runnable {
     private ParallelSimulationsExample(final String title) {
         this.title = title;
         this.cloudletList = new ArrayList<>();
-        this.finishedCloudletList = new ArrayList<>();
         this.vmList = new ArrayList<>();
         this.simulation = new CloudSim();
     }
@@ -240,8 +239,6 @@ public class ParallelSimulationsExample implements Runnable {
 
         // Starts the simulation and waits all cloudlets to be executed
         simulation.start();
-
-        this.finishedCloudletList = broker.getCloudletFinishedList();
     }
 
     public ParallelSimulationsExample setCloudletsNumber(final int cloudletsNumber) {
@@ -257,13 +254,5 @@ public class ParallelSimulationsExample implements Runnable {
     public ParallelSimulationsExample setHostsNumber(final int hostsNumber) {
         this.hostsNumber = hostsNumber;
         return this;
-    }
-
-    public List<Cloudlet> getFinishedCloudletList() {
-        return finishedCloudletList;
-    }
-
-    public String getTitle() {
-        return title;
     }
 }
