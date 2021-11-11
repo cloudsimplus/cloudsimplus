@@ -292,11 +292,7 @@ new CloudletsTableBuilder(broker0.getCloudletFinishedList()).build();
 The presented results are structured and clear to allow better understanding. 
 For example, the image below shows the output for a simulation with two cloudlets (applications).
 
-|Cloudlet|Status |DC|Host|Host PEs |VM|VM PEs   |CloudletLen|CloudletPEs|StartTime|FinishTime|ExecTime|
-|--------|-------|--|----|---------|--|---------|-----------|-----------|---------|----------|--------|
-|      ID|       |ID|  ID|CPU cores|ID|CPU cores|         MI|  CPU cores|  Seconds|   Seconds| Seconds|
-|       0|SUCCESS| 2|   0|        1| 0|        1|      10000|          1|        0|        40|      40|
-|       1|SUCCESS| 2|   0|        1| 0|        1|      10000|          1|        0|        40|      40|
+![Simulation Results](https://github.com/manoelcampos/cloudsim-plus/raw/master/docs/images/simulation-results.png)
 
 <p align="right"><a href="#top">:arrow_up:</a></p>
 
