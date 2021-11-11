@@ -238,14 +238,14 @@ new exclusive features and advanced scenarios, can be found [here](/cloudsim-plu
 //Log.setLevel(ch.qos.logback.classic.Level.WARN);
 
 //Creates a CloudSim object to initialize the simulation.
-CloudSim cloudsim = new CloudSim();
+var cloudsim = new CloudSim();
 
 /*Creates a Broker that will act on behalf of a cloud user (customer).*/
-DatacenterBroker broker0 = new DatacenterBrokerSimple(cloudsim);
+var broker0 = new DatacenterBrokerSimple(cloudsim);
 
 //Creates a list of Hosts, each host with a specific list of CPU cores (PEs).
-List<Host> hostList = new ArrayList<>(1);
-List<Pe> hostPes = new ArrayList<>(1);
+var hostList = new ArrayList<Host>(1);
+var hostPes = new ArrayList<Pe>(1);
 //Uses a PeProvisionerSimple by default to provision PEs for VMs
 hostPes.add(new PeSimple(20000));
 long ram = 10000; //in Megabytes
@@ -254,26 +254,26 @@ long bw = 100000; //in Megabits/s
 
 //Uses ResourceProvisionerSimple by default for RAM and BW provisioning
 //Uses VmSchedulerSpaceShared by default for VM scheduling
-Host host0 = new HostSimple(ram, bw, storage, hostPes);
+var host0 = new HostSimple(ram, bw, storage, hostPes);
 hostList.add(host0);
 
 //Creates a Datacenter with a list of Hosts.
 //Uses a VmAllocationPolicySimple by default to allocate VMs
-Datacenter dc0 = new DatacenterSimple(cloudsim, hostList);
+var dc0 = new DatacenterSimple(cloudsim, hostList);
 
 //Creates VMs to run applications.
-List<Vm> vmList = new ArrayList<>(1);
+var vmList = new ArrayList<Vm>(1);
 //Uses a CloudletSchedulerTimeShared by default to schedule Cloudlets
-Vm vm0 = new VmSimple(1000, 1);
+var vm0 = new VmSimple(1000, 1);
 vm0.setRam(1000).setBw(1000).setSize(1000);
 vmList.add(vm0);
 
 //Creates Cloudlets that represent applications to be run inside a VM.
-List<Cloudlet> cloudletList = new ArrayList<>();
+var cloudletList = new ArrayList<Cloudlet>();
 //UtilizationModel defining the Cloudlets use only 50% of any resource all the time
-UtilizationModelDynamic utilizationModel = new UtilizationModelDynamic(0.5);
-Cloudlet cloudlet0 = new CloudletSimple(10000, 1, utilizationModel);
-Cloudlet cloudlet1 = new CloudletSimple(10000, 1, utilizationModel);
+var utilizationModel = new UtilizationModelDynamic(0.5);
+var cloudlet0 = new CloudletSimple(10000, 1, utilizationModel);
+var cloudlet1 = new CloudletSimple(10000, 1, utilizationModel);
 cloudletList.add(cloudlet0);
 cloudletList.add(cloudlet1);
 
