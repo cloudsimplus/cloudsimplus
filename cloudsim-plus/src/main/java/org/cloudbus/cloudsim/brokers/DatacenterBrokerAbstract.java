@@ -639,9 +639,23 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         if(vmCreationRequests == 0 && !vmWaitingList.isEmpty()) {
             requestCreationOfWaitingVmsToFallbackDatacenter();
         }
-        requestDatacentersToCreateWaitingCloudlets();
+
+        if(allNonDelayedVmsCreated()) {
+            requestDatacentersToCreateWaitingCloudlets();
+        }
 
         return vm.isCreated();
+    }
+
+    /**
+     * Checks if all VMs submitted with no delay were created.
+     * Only after that, cloudlets creation is requested.
+     * Otherwise, all waiting cloudlets would be sent to the
+     * first created VM.
+     * @return
+     */
+    private boolean allNonDelayedVmsCreated() {
+        return vmWaitingList.stream().noneMatch(vm -> vm.getSubmissionDelay() == 0);
     }
 
     @SuppressWarnings("ForLoopReplaceableByForEach")
