@@ -34,14 +34,11 @@ import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.HostSimple;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
-import org.cloudbus.cloudsim.provisioners.ResourceProvisioner;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerSpaceShared;
-import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
-import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
@@ -58,7 +55,7 @@ import java.util.List;
  * waits their finalization.
  * This way, the execution time of all cloudlets is the same,
  * but the start time of the second half is equal to
- * finish time of the first half.
+ * the finish time of the first half.
  *
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.2.1
@@ -75,10 +72,10 @@ public class CloudletSchedulerSpaceSharedExample1 {
     private static final int CLOUDLET_LENGTH = 10000;
 
     private final CloudSim simulation;
-    private DatacenterBroker broker0;
-    private List<Vm> vmList;
-    private List<Cloudlet> cloudletList;
-    private Datacenter datacenter0;
+    private final DatacenterBroker broker0;
+    private final List<Vm> vmList;
+    private final List<Cloudlet> cloudletList;
+    private final Datacenter datacenter0;
 
     public static void main(String[] args) {
         new CloudletSchedulerSpaceSharedExample1();
@@ -102,26 +99,27 @@ public class CloudletSchedulerSpaceSharedExample1 {
 
         simulation.start();
 
-        final List<Cloudlet> finishedCloudlets = broker0.getCloudletFinishedList();
-        new CloudletsTableBuilder(finishedCloudlets).build();
+        final var finishedCloudletsList = broker0.getCloudletFinishedList();
+        new CloudletsTableBuilder(finishedCloudletsList).build();
     }
 
     /**
-     * Creates a Datacenter and its Hosts.
+     * Creates a Datacenter that uses a {@link VmAllocationPolicySimple} by default.
      */
     private Datacenter createDatacenter() {
-        final List<Host> hostList = new ArrayList<>(HOSTS);
+        final var hostList = new ArrayList<Host>(HOSTS);
         for(int h = 0; h < HOSTS; h++) {
-            Host host = createHost();
+            final var host = createHost();
             hostList.add(host);
         }
 
-        final Datacenter dc = new DatacenterSimple(simulation, hostList, new VmAllocationPolicySimple());
-        return dc;
+        return new DatacenterSimple(simulation, hostList);
     }
 
+    /** Creates a Host that uses a {@link ResourceProvisionerSimple} by default
+     * for RAM and BW. */
     private Host createHost() {
-        List<Pe> peList = new ArrayList<>(HOST_PES);
+        final var peList = new ArrayList<Pe>(HOST_PES);
         //List of Host's CPUs (Processing Elements, PEs)
         for (int i = 0; i < HOST_PES; i++) {
             peList.add(new PeSimple(1000, new PeProvisionerSimple()));
@@ -130,14 +128,8 @@ public class CloudletSchedulerSpaceSharedExample1 {
         final long ram = 2048; //in Megabytes
         final long bw = 10000; //in Megabits/s
         final long storage = 1000000; //in Megabytes
-        ResourceProvisioner ramProvisioner = new ResourceProvisionerSimple();
-        ResourceProvisioner bwProvisioner = new ResourceProvisionerSimple();
-        VmScheduler vmScheduler = new VmSchedulerTimeShared();
-        Host host = new HostSimple(ram, bw, storage, peList);
-        host
-            .setRamProvisioner(ramProvisioner)
-            .setBwProvisioner(bwProvisioner)
-            .setVmScheduler(vmScheduler);
+        final var host = new HostSimple(ram, bw, storage, peList);
+        host.setVmScheduler(new VmSchedulerTimeShared());
         return host;
     }
 
@@ -145,34 +137,35 @@ public class CloudletSchedulerSpaceSharedExample1 {
      * Creates a list of VMs.
      */
     private List<Vm> createVms() {
-        final List<Vm> list = new ArrayList<>(VMS);
-        for (int v = 0; v < VMS; v++) {
-            Vm vm =
-                new VmSimple(v, 1000, VM_PES)
-                    .setRam(512).setBw(1000).setSize(10000)
-                    .setCloudletScheduler(new CloudletSchedulerSpaceShared());
+        final var vmList = new ArrayList<Vm>(VMS);
+        final int mips = 1000;
+        for (int id = 0; id < VMS; id++) {
+            final var vm = new VmSimple(id, mips, VM_PES);
+            vm
+              .setRam(512).setBw(1000).setSize(10000)
+              .setCloudletScheduler(new CloudletSchedulerSpaceShared());
 
-            list.add(vm);
+            vmList.add(vm);
         }
 
-        return list;
+        return vmList;
     }
 
     /**
      * Creates a list of Cloudlets.
      */
     private List<Cloudlet> createCloudlets() {
-        final List<Cloudlet> list = new ArrayList<>(CLOUDLETS);
-        UtilizationModel utilization = new UtilizationModelFull();
-        for (int c = 0; c < CLOUDLETS; c++) {
-            Cloudlet cloudlet =
-                new CloudletSimple(c, CLOUDLET_LENGTH, CLOUDLET_PES)
+        final var cloudletList = new ArrayList<Cloudlet>(CLOUDLETS);
+        final var utilizationModelFull = new UtilizationModelFull();
+        for (int id = 0; id < CLOUDLETS; id++) {
+            final var cloudlet = new CloudletSimple(id, CLOUDLET_LENGTH, CLOUDLET_PES);
+            cloudlet
                     .setFileSize(1024)
                     .setOutputSize(1024)
-                    .setUtilizationModel(utilization);
-            list.add(cloudlet);
+                    .setUtilizationModel(utilizationModelFull);
+            cloudletList.add(cloudlet);
         }
 
-        return list;
+        return cloudletList;
     }
 }
