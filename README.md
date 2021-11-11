@@ -294,6 +294,13 @@ For example, the image below shows the output for a simulation with two cloudlet
 
 ![Simulation Results](https://github.com/manoelcampos/cloudsim-plus/raw/master/docs/images/simulation-results.png)
 
+## 5.1 Comparison with CloudSim
+
+A complete, side-by-side [comparison between CloudSim and CloudSim
+Plus Java simulation scenarios
+is available
+here](http://cloudsimplus.org/docs/CloudSim-and-CloudSimPlus-Comparison.html).
+
 <p align="right"><a href="#top">:arrow_up:</a></p>
 
 <a id="docs-help"></a>
