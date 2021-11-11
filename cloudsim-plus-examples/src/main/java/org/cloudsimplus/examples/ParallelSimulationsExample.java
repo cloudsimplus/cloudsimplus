@@ -24,7 +24,6 @@
 package org.cloudsimplus.examples;
 
 import ch.qos.logback.classic.Level;
-import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
@@ -74,14 +73,14 @@ import java.util.List;
  */
 public class ParallelSimulationsExample implements Runnable {
     private final String title;
-    private CloudSim simulation;
+    private final CloudSim simulation;
     private DatacenterBroker broker;
     private List<Cloudlet> cloudletList;
     private List<Vm> vmList;
     private List<Cloudlet> finishedCloudletList;
-    private int hostsToCreate;
-    private int vmsToCreate;
-    private int cloudletsToCreate;
+    private int hostsNumber;
+    private int vmsNumber;
+    private int cloudletsNumber;
 
     /**
      * Creates the simulation scenarios with different configurations and execute them,
@@ -97,17 +96,17 @@ public class ParallelSimulationsExample implements Runnable {
         //Creates the first simulation scenario
         simulationList.add(
             new ParallelSimulationsExample("Simulation 1")
-                .setHostsToCreate(4)
-                .setVmsToCreate(4)
-                .setCloudletsToCreate(8)
+                .setHostsNumber(4)
+                .setVmsNumber(4)
+                .setCloudletsNumber(8)
         );
 
         //Creates the second simulation scenario
        simulationList.add(
             new ParallelSimulationsExample("Simulation 2")
-                .setHostsToCreate(4)
-                .setVmsToCreate(4)
-                .setCloudletsToCreate(16)
+                .setHostsNumber(4)
+                .setVmsNumber(4)
+                .setCloudletsNumber(16)
         );
 
         final long startTimeMilliSec = System.currentTimeMillis();
@@ -136,9 +135,7 @@ public class ParallelSimulationsExample implements Runnable {
      * @param title a title for the simulation scenario (just for log purposes)
      * @see #run()
      */
-    private ParallelSimulationsExample(String title) {
-        //Number of cloud customers
-        int numberOfCloudUsers = 1;
+    private ParallelSimulationsExample(final String title) {
         this.title = title;
         this.cloudletList = new ArrayList<>();
         this.finishedCloudletList = new ArrayList<>();
@@ -146,81 +143,80 @@ public class ParallelSimulationsExample implements Runnable {
         this.simulation = new CloudSim();
     }
 
-    private DatacenterSimple createDatacenter() {
-        List<Host> hostList = createHosts();
-
-        return new DatacenterSimple(simulation, hostList, new VmAllocationPolicySimple());
-    }
-
     private List<Host> createHosts() {
-        List<Host> hostList = new ArrayList<>(hostsToCreate);
-        for(int i = 0; i  < hostsToCreate; i++) {
-            Host host = createHost(i);
-            hostList.add(host);
+        final var hostList = new ArrayList<Host>(hostsNumber);
+        for(int i = 0; i  < hostsNumber; i++) {
+            hostList.add(createHost());
         }
+
         return hostList;
     }
 
-    private Host createHost(int hostId) {
-        long  mips = 1000; // capacity of each CPU core (in Million Instructions per Second)
-        long  ram = 2048; // host memory (Megabyte)
-        long storage = 1000000; // host storage (Megabyte)
-        long bw = 10000; //in Megabits/s
-        final int numberOfPes = 4;
+    /**
+     * Creates a Hosts using a {@link ResourceProvisionerSimple}
+     * for RAM and BW.
+     * @return
+     */
+    private Host createHost() {
+        final long  mips = 1000; // capacity of each CPU core (in Million Instructions per Second)
+        final long  ram = 2048; // host memory (Megabyte)
+        final long  storage = 1000000; // host storage (Megabyte)
+        final long  bw = 10000; // in Megabits/s
+        final int   pesNumber = 4;
 
-        List<Pe> peList = new ArrayList<>(numberOfPes); //List of CPU cores
-        for(int i = 0; i < numberOfPes; i++) {
+        final var peList = new ArrayList<Pe>(pesNumber); // List of CPU cores
+        for(int i = 0; i < pesNumber; i++) {
             peList.add(new PeSimple(mips, new PeProvisionerSimple()));
         }
 
-        return new HostSimple(ram, bw, storage, peList)
-            .setRamProvisioner(new ResourceProvisionerSimple())
-            .setBwProvisioner(new ResourceProvisionerSimple())
-            .setVmScheduler(new VmSchedulerTimeShared());
+        return new HostSimple(ram, bw, storage, peList).setVmScheduler(new VmSchedulerTimeShared());
     }
 
     private void createVms() {
-        this.vmList = new ArrayList<>(vmsToCreate);
-        for(int i = 0; i < vmsToCreate; i++) {
-            Vm vm0 = createVm(broker, i);
-            this.vmList.add(vm0);
+        this.vmList = new ArrayList<>(vmsNumber);
+        for(int i = 0; i < vmsNumber; i++) {
+            this.vmList.add(createVm(i));
         }
+
         broker.submitVmList(vmList);
     }
 
-    private Vm createVm(DatacenterBroker broker, int vmId) {
-        long   mips = 1000;
-        long   storage = 10000; // vm image size (Megabyte)
-        int    ram = 512; // vm memory (Megabyte)
-        long   bw = 1000; // vm bandwidth (Megabits/s)
-        int    pesNumber = 2; // number of CPU cores
+    /**
+     * Creates a VM using a {@link CloudletSchedulerTimeShared} by default.
+     * @param id
+     * @return
+     */
+    private Vm createVm(final int id) {
+        final long   mips = 1000;
+        final long   storage = 10000; // vm image size (Megabyte)
+        final int    ram = 512; // vm memory (Megabyte)
+        final long   bw = 1000; // vm bandwidth (Megabits/s)
+        final int    pesNumber = 2; // number of CPU cores
 
-        return new VmSimple(vmId, mips, pesNumber)
+        return new VmSimple(id, mips, pesNumber)
             .setRam(ram)
             .setBw(bw)
-            .setSize(storage)
-            .setCloudletScheduler(new CloudletSchedulerTimeShared());
+            .setSize(storage);
     }
 
     private void createCloudlets() {
-        this.cloudletList = new ArrayList<>(cloudletsToCreate);
-        for(int i = 0; i < cloudletsToCreate; i++) {
-            Cloudlet cloudlet = createCloudlet(broker, i);
-            this.cloudletList.add(cloudlet);
+        this.cloudletList = new ArrayList<>(cloudletsNumber);
+        for(int i = 0; i < cloudletsNumber; i++) {
+            this.cloudletList.add(createCloudlet(i));
         }
     }
 
-    private Cloudlet createCloudlet(DatacenterBroker broker, int cloudletId) {
-        long length = 10000; //in Million Instructions (MI)
-        long fileSize = 300; //Size (in bytes) before execution
-        long outputSize = 300; //Size (in bytes) after execution
-        int  numberOfCpuCores = 1;
+    private Cloudlet createCloudlet(final int id) {
+        final long length = 10000; //in Million Instructions (MI)
+        final long fileSize = 300; //Size (in bytes) before execution
+        final long outputSize = 300; //Size (in bytes) after execution
+        final int  pesNumber = 1;
 
-        //Defines how CPU, RAM and Bandwidth resources are used
-        //Sets the same utilization model for all these resources.
-        UtilizationModel utilization = new UtilizationModelFull();
+        // Defines how CPU, RAM and Bandwidth resources are used.
+        // Sets the same utilization model for all these resources.
+        final UtilizationModel utilization = new UtilizationModelFull();
 
-        return new CloudletSimple(cloudletId, length, numberOfCpuCores)
+        return new CloudletSimple(id, length, pesNumber)
                 .setFileSize(fileSize)
                 .setOutputSize(outputSize)
                 .setUtilizationModel(utilization);
@@ -231,46 +227,35 @@ public class ParallelSimulationsExample implements Runnable {
      */
     @Override
     public void run() {
-        Datacenter datacenter0 = createDatacenter();
+        final Datacenter datacenter0 = new DatacenterSimple(simulation, createHosts());
 
-        /*Creates a Broker accountable for submission of VMs and Cloudlets
-        on behalf of a given cloud user (customer).*/
+        /* Creates a Broker accountable for submission of VMs and Cloudlets
+        on behalf of a given cloud user (customer). */
         broker = new DatacenterBrokerSimple(simulation);
 
         createVms();
         createCloudlets();
 
         broker.submitCloudletList(cloudletList);
-        /*Starts the simulation and waits all cloudlets to be executed*/
+
+        // Starts the simulation and waits all cloudlets to be executed
         simulation.start();
 
         this.finishedCloudletList = broker.getCloudletFinishedList();
     }
 
-    public int getCloudletsToCreate() {
-        return cloudletsToCreate;
-    }
-
-    public ParallelSimulationsExample setCloudletsToCreate(int cloudletsToCreate) {
-        this.cloudletsToCreate = cloudletsToCreate;
+    public ParallelSimulationsExample setCloudletsNumber(final int cloudletsNumber) {
+        this.cloudletsNumber = cloudletsNumber;
         return this;
     }
 
-    public int getVmsToCreate() {
-        return vmsToCreate;
-    }
-
-    public ParallelSimulationsExample setVmsToCreate(int vmsToCreate) {
-        this.vmsToCreate = vmsToCreate;
+    public ParallelSimulationsExample setVmsNumber(final int vmsNumber) {
+        this.vmsNumber = vmsNumber;
         return this;
     }
 
-    public int getHostsToCreate() {
-        return hostsToCreate;
-    }
-
-    public ParallelSimulationsExample setHostsToCreate(int hostsToCreate) {
-        this.hostsToCreate = hostsToCreate;
+    public ParallelSimulationsExample setHostsNumber(final int hostsNumber) {
+        this.hostsNumber = hostsNumber;
         return this;
     }
 
