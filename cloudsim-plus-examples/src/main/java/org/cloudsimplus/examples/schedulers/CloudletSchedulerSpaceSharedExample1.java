@@ -39,6 +39,7 @@ import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerSpaceShared;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
+import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelDynamic;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
@@ -157,12 +158,16 @@ public class CloudletSchedulerSpaceSharedExample1 {
     private List<Cloudlet> createCloudlets() {
         final var cloudletList = new ArrayList<Cloudlet>(CLOUDLETS);
         final var utilizationModelFull = new UtilizationModelFull();
+        /* A utilization model for RAM and BW that uses only 50% of the resource capacity all the time. */
+        final var utilizationModelDynamic = new UtilizationModelDynamic(0.5);
         for (int id = 0; id < CLOUDLETS; id++) {
             final var cloudlet = new CloudletSimple(id, CLOUDLET_LENGTH, CLOUDLET_PES);
             cloudlet
                     .setFileSize(1024)
                     .setOutputSize(1024)
-                    .setUtilizationModel(utilizationModelFull);
+                    .setUtilizationModelCpu(utilizationModelFull)
+                    .setUtilizationModelRam(utilizationModelDynamic)
+                    .setUtilizationModelBw(utilizationModelDynamic);
             cloudletList.add(cloudlet);
         }
 
