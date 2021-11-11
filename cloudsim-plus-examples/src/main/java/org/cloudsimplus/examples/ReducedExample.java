@@ -23,12 +23,10 @@
  */
 package org.cloudsimplus.examples;
 
-import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
 import org.cloudbus.cloudsim.core.CloudSim;
-import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.HostSimple;
@@ -40,7 +38,6 @@ import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * An example showing a very minimal code required to create
@@ -67,48 +64,48 @@ class ReducedExample {
         //Log.setLevel(ch.qos.logback.classic.Level.WARN);
 
         //Creates a CloudSim object to initialize the simulation.
-        CloudSim cloudsim = new CloudSim();
+        final var cloudsim = new CloudSim();
 
         //Creates a Broker that will act on behalf of a cloud user (customer).
-        DatacenterBroker broker0 = new DatacenterBrokerSimple(cloudsim);
+        final var broker0 = new DatacenterBrokerSimple(cloudsim);
 
         //Creates one Hosts with a specific list of CPU cores (PEs).
-        List<Host> hostList = new ArrayList<>(1);
-        List<Pe> hostPes = new ArrayList<>(1);
+        final var hostList = new ArrayList<Host>(1);
+        final var pesList = new ArrayList<Pe>(1);
         //Uses a PeProvisionerSimple by default to provision PEs for VMs
-        hostPes.add(new PeSimple(20000));
+        pesList.add(new PeSimple(20000));
         final long ram = 10000; //in Megabytes
         final long storage = 100000; //in Megabytes
         final long bw = 100000; //in Megabits/s
         //Uses ResourceProvisionerSimple by default for RAM and BW provisioning
         //Uses VmSchedulerSpaceShared by default for VM scheduling
-        Host host0 = new HostSimple(ram, bw, storage, hostPes);
+        final var host0 = new HostSimple(ram, bw, storage, pesList);
         hostList.add(host0);
 
         //Creates one Datacenter with a list of Hosts
         //Uses a VmAllocationPolicySimple by default to allocate VMs
-        Datacenter dc0 = new DatacenterSimple(cloudsim, hostList);
+        final var dc0 = new DatacenterSimple(cloudsim, hostList);
 
         //Creates one Vm to run applications (Cloudlets).
-        List<Vm> vmList = new ArrayList<>(1);
+        final var vmList = new ArrayList<Vm>(1);
         //Uses a CloudletSchedulerTimeShared by default to schedule Cloudlets
-        Vm vm0 = new VmSimple(1000, 1);
+        final var vm0 = new VmSimple(1000, 1);
         vm0.setRam(1000).setBw(1000).setSize(1000);
         vmList.add(vm0);
 
         //Creates two Cloudlets that represent applications to be run inside a Vm.
-        List<Cloudlet> cloudlets = new ArrayList<>(1);
+        final var cloudletList = new ArrayList<Cloudlet>(1);
         //UtilizationModel defining the Cloudlets use only 50% of any resource all the time
-        UtilizationModelDynamic utilizationModel = new UtilizationModelDynamic(0.5);
-        Cloudlet cloudlet0 = new CloudletSimple(10000, 1, utilizationModel);
-        Cloudlet cloudlet1 = new CloudletSimple(10000, 1, utilizationModel);
-        cloudlets.add(cloudlet0);
-        cloudlets.add(cloudlet1);
+        final var utilizationModel = new UtilizationModelDynamic(0.5);
+        final var cloudlet0 = new CloudletSimple(10000, 1, utilizationModel);
+        final var cloudlet1 = new CloudletSimple(10000, 1, utilizationModel);
+        cloudletList.add(cloudlet0);
+        cloudletList.add(cloudlet1);
 
         /*Requests the broker to create the Vms and Cloudlets.
         It selects the Host to place each Vm and a Vm to run each Cloudlet.*/
         broker0.submitVmList(vmList);
-        broker0.submitCloudletList(cloudlets);
+        broker0.submitCloudletList(cloudletList);
 
         /*Starts the simulation and waits all cloudlets to be executed, automatically
         stopping when there is no more events to process.*/
