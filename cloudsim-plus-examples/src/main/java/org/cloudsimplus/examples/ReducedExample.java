@@ -28,16 +28,14 @@ import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
-import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.HostSimple;
-import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelDynamic;
-import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * An example showing a very minimal code required to create
@@ -64,34 +62,30 @@ class ReducedExample {
         //Log.setLevel(ch.qos.logback.classic.Level.WARN);
 
         //Creates a CloudSim object to initialize the simulation.
-        final var cloudsim = new CloudSim();
+        final var simulation = new CloudSim();
 
         //Creates a Broker that will act on behalf of a cloud user (customer).
-        final var broker0 = new DatacenterBrokerSimple(cloudsim);
+        final var broker0 = new DatacenterBrokerSimple(simulation);
 
-        //Creates one Hosts with a specific list of CPU cores (PEs).
-        final var hostList = new ArrayList<Host>(1);
-        final var pesList = new ArrayList<Pe>(1);
-        //Uses a PeProvisionerSimple by default to provision PEs for VMs
-        pesList.add(new PeSimple(20000));
+        //Host configuration
         final long ram = 10000; //in Megabytes
         final long storage = 100000; //in Megabytes
         final long bw = 100000; //in Megabits/s
+
+        //Creates one Hosts with a specific list of CPU cores (PEs).
+        //Uses a PeProvisionerSimple by default to provision PEs for VMs.
         //Uses ResourceProvisionerSimple by default for RAM and BW provisioning
         //Uses VmSchedulerSpaceShared by default for VM scheduling
-        final var host0 = new HostSimple(ram, bw, storage, pesList);
-        hostList.add(host0);
+        final var host0 = new HostSimple(ram, bw, storage, List.of(new PeSimple(20000)));
 
         //Creates one Datacenter with a list of Hosts
         //Uses a VmAllocationPolicySimple by default to allocate VMs
-        final var dc0 = new DatacenterSimple(cloudsim, hostList);
+        final var dc0 = new DatacenterSimple(simulation, List.of(host0));
 
         //Creates one Vm to run applications (Cloudlets).
-        final var vmList = new ArrayList<Vm>(1);
-        //Uses a CloudletSchedulerTimeShared by default to schedule Cloudlets
+        //Uses a CloudletSchedulerTimeShared by default to schedule Cloudlets.
         final var vm0 = new VmSimple(1000, 1);
         vm0.setRam(1000).setBw(1000).setSize(1000);
-        vmList.add(vm0);
 
         //Creates two Cloudlets that represent applications to be run inside a Vm.
         final var cloudletList = new ArrayList<Cloudlet>(1);
@@ -104,15 +98,15 @@ class ReducedExample {
 
         /*Requests the broker to create the Vms and Cloudlets.
         It selects the Host to place each Vm and a Vm to run each Cloudlet.*/
-        broker0.submitVmList(vmList);
+        broker0.submitVmList(List.of(vm0));
         broker0.submitCloudletList(cloudletList);
 
         /*Starts the simulation and waits all cloudlets to be executed, automatically
         stopping when there is no more events to process.*/
-        cloudsim.start();
+        simulation.start();
 
-        /*Prints results when the simulation is over (one can use his/her own code
-        here to print what he/she wants from this cloudlet list)*/
+        /*Prints the results when the simulation is over (one can use his/her own code
+        here to print what he/she wants from this cloudlet list). */
         new CloudletsTableBuilder(broker0.getCloudletFinishedList()).build();
         //end::cloudsim-plus-reduced-example[]
     }
