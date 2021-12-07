@@ -24,7 +24,6 @@
 package org.cloudsimplus.examples;
 
 import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
-import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
@@ -34,7 +33,6 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelDynamic;
 import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -86,19 +84,18 @@ class ReducedExample {
         //Uses a CloudletSchedulerTimeShared by default to schedule Cloudlets.
         final var vm0 = new VmSimple(1000, 1);
         vm0.setRam(1000).setBw(1000).setSize(1000);
+        final var vmList = List.of(vm0);
 
         //Creates two Cloudlets that represent applications to be run inside a Vm.
-        final var cloudletList = new ArrayList<Cloudlet>(1);
         //UtilizationModel defining the Cloudlets use only 50% of any resource all the time
         final var utilizationModel = new UtilizationModelDynamic(0.5);
         final var cloudlet0 = new CloudletSimple(10000, 1, utilizationModel);
         final var cloudlet1 = new CloudletSimple(10000, 1, utilizationModel);
-        cloudletList.add(cloudlet0);
-        cloudletList.add(cloudlet1);
+        final var cloudletList = List.of(cloudlet0, cloudlet1);
 
         /*Requests the broker to create the Vms and Cloudlets.
         It selects the Host to place each Vm and a Vm to run each Cloudlet.*/
-        broker0.submitVmList(List.of(vm0));
+        broker0.submitVmList(vmList);
         broker0.submitCloudletList(cloudletList);
 
         /*Starts the simulation and waits all cloudlets to be executed, automatically
