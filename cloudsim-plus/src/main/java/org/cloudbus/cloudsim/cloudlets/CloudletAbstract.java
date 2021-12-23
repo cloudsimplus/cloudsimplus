@@ -111,7 +111,6 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
     /** @see #getLifeTime() */
     private double lifeTime;
 
-
     /**
      * Creates a Cloudlet with no priority or id. The id is defined when the Cloudlet is
      * submitted to a {@link DatacenterBroker}. The file size and output size is defined as 1.
@@ -893,7 +892,6 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
 
     @Override
 	public boolean setTimeSinceStart(final double timeSinceStart) {
-
 		if (timeSinceStart < 0.0 || datacenterExecutionList.isEmpty()) {
 			return false;
 		}
