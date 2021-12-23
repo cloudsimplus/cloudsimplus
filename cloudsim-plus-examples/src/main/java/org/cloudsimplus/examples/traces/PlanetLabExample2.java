@@ -58,7 +58,7 @@ import java.util.stream.IntStream;
  * Check the {@link #createCloudlets()} method.
  *
  * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 4.0.0
+ * @since CloudSim Plus 7.2.1
  */
 public class PlanetLabExample2 {
     private static final int HOSTS = 3;
