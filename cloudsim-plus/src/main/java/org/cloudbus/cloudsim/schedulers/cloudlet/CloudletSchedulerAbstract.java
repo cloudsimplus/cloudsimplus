@@ -988,11 +988,13 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
         final double remainingLifeTime = cle.getRemainingLifeTime();
         final long remainingCloudletLength = cle.getRemainingCloudletLength();
 
+        final double expectedFinishTime = remainingCloudletLength / cle.getLastAllocatedMips();
+
         // Check if Cloudlet lifeTime is enabled or not
         final double estimatedFinishTime =
             remainingLifeTime > -1 ?
-                Math.min(remainingLifeTime, remainingCloudletLength / cle.getLastAllocatedMips()) :
-                remainingCloudletLength / cle.getLastAllocatedMips();
+                Math.min(remainingLifeTime, expectedFinishTime) :
+                expectedFinishTime;
 
         return Math.max(estimatedFinishTime, vm.getSimulation().getMinTimeBetweenEvents());
     }
