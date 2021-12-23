@@ -47,7 +47,6 @@ import java.util.stream.IntStream;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
- *
  * An Integration Test (IT) running a simulation scenario with 1 PM, 1 VM
  * and 1 cloudlet with a list of required files.
  * The test checks if the end of cloudlet execution was
@@ -69,62 +68,62 @@ public final class CheckCloudletLifetimeTest {
     private static final int VM_MIPS = HOST_MIPS;
     private static final int VM_PES = 1;
     private static final int CLOUDLET_PES = 1;
-    private static final int CLOUDLET_LENGTH = 100*900;
+    private static final int CLOUDLET_LENGTH = 100 * 900;
     private static final int SCHEDULING_INTERVAL = 300;
 
     private DatacenterBroker broker;
-	private List<File> files;
-	private SanStorage storage;
+    private List<File> files;
+    private SanStorage storage;
     private CloudSim simulation;
 
-	@BeforeEach
+    @BeforeEach
     public void setUp() {
 
-        this.simulation = new  CloudSim();
+        this.simulation = new CloudSim();
         final SimulationScenarioBuilder scenario = new SimulationScenarioBuilder(simulation);
         scenario.getDatacenterBuilder()
-	        .setSchedulingInterval(SCHEDULING_INTERVAL)
-	        .create(
-	            new HostBuilder()
-	                .setVmSchedulerSupplier(VmSchedulerSpaceShared::new)
-	                .setPes(HOST_PES).setMips(HOST_MIPS)
-	                .create()
-	                .getHosts()
-	        );
+                .setSchedulingInterval(SCHEDULING_INTERVAL)
+                .create(
+                    new HostBuilder()
+                        .setVmSchedulerSupplier(VmSchedulerSpaceShared::new)
+                        .setPes(HOST_PES).setMips(HOST_MIPS)
+                        .create()
+                        .getHosts()
+                );
 
 
         final BrokerBuilderDecorator brokerBuilder = scenario.getBrokerBuilder().create();
-	    this.broker = brokerBuilder.getBroker();
+        this.broker = brokerBuilder.getBroker();
         brokerBuilder.getVmBuilder()
-                .setPes(VM_PES).setMips(VM_MIPS)
-                 .setCloudletSchedulerSupplier(CloudletSchedulerTimeShared::new)
-                .createAndSubmit();
+                     .setPes(VM_PES).setMips(VM_MIPS)
+                     .setCloudletSchedulerSupplier(CloudletSchedulerTimeShared::new)
+                     .createAndSubmit();
 
-        double[] utilization= {1, 0.5};
+        double[] utilization = {1, 0.5};
         brokerBuilder.getCloudletBuilder()
-                .setLength(CLOUDLET_LENGTH)
-                .setUtilizationModelCpu(new UtilizationModelPlanetLab(utilization, SCHEDULING_INTERVAL, UnaryOperator.identity()) )
-                .setPEs(CLOUDLET_PES)
-                .setLifeTime(400)
-                .createAndSubmit(1);
+                     .setLength(CLOUDLET_LENGTH)
+                     .setUtilizationModelCpu(new UtilizationModelPlanetLab(utilization, SCHEDULING_INTERVAL, UnaryOperator.identity()))
+                     .setPEs(CLOUDLET_PES)
+                     .setLifeTime(400)
+                     .createAndSubmit(1);
     }
 
-	@Test
+    @Test
     public void integrationTest() {
         simulation.start();
-		final List<Cloudlet> cloudlets = broker.getCloudletFinishedList();
-		/* The expected finish time considers the delay to transfer the Cloudlet
-		 * required files and the actual execution time.
-		 */
-		final double expectedFinishTime = 400;
-		final long expectedFinishedLength = 22500; // (300*0.5+100*0.75) * HOST_MIPS
+        final List<Cloudlet> cloudlets = broker.getCloudletFinishedList();
+        /* The expected finish time considers the delay to transfer the Cloudlet
+         * required files and the actual execution time.
+         */
+        final double expectedFinishTime = 400;
+        final long expectedFinishedLength = 22500; // (300*0.5+100*0.75) * HOST_MIPS
         new CloudletsTableBuilder(broker.getCloudletFinishedList()).setTitle(broker.getName()).build();
 
-		for(final Cloudlet c: cloudlets) {
-			//Checks if each cloudlet finished at the expected time.
-			assertEquals(expectedFinishTime, c.getFinishTime(), 0.13, c + " expected finish time");
-			assertEquals(expectedFinishedLength, c.getFinishedLengthSoFar(), c + " expected finished length");
-		}	
+        for (final Cloudlet c : cloudlets) {
+            //Checks if each cloudlet finished at the expected time.
+            assertEquals(expectedFinishTime, c.getFinishTime(), 0.13, c + " expected finish time");
+            assertEquals(expectedFinishedLength, c.getFinishedLengthSoFar(), c + " expected finished length");
+        }
     }
 
 }
