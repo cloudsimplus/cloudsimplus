@@ -980,21 +980,21 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     protected double cloudletEstimatedFinishTime(final CloudletExecution cle, final double currentTime) {
         final double cloudletAllocatedMips = getAllocatedMipsForCloudlet(cle, currentTime);
         cle.setLastAllocatedMips(cloudletAllocatedMips);
-        /*If no MIPS were currently allocated for the Cloudlet,
-        * it would cause a division by zero when trying to compute the estimated finish time.
-        * In such a case, gets the last allocated MIPS to compute that.
-        * That value will be the current allocated MIPS if some MIPS were
-        * actually allocated or the previous allocated MIPS otherwise.*/
+        /* If no MIPS were currently allocated for the Cloudlet,
+         * it would cause a division by zero when trying to compute the estimated finish time.
+         * In such a case, gets the last allocated MIPS to compute that.
+         * That value will be the current allocated MIPS if some MIPS were
+         * actually allocated or the previous allocated MIPS otherwise.*/
         final double estimatedFinishTime;
-		double remainingLifeTime = cle.getRemainingLifeTime();
-		long remainingCloudletLength = cle.getRemainingCloudletLength();
-		
-		if(remainingLifeTime==-1) {
-			// lifeTime not enabled
-			estimatedFinishTime = remainingCloudletLength / cle.getLastAllocatedMips();
-		}else {
-			estimatedFinishTime = Math.min(remainingLifeTime, remainingCloudletLength / cle.getLastAllocatedMips());
-		}
+        double remainingLifeTime = cle.getRemainingLifeTime();
+        long remainingCloudletLength = cle.getRemainingCloudletLength();
+
+        if (remainingLifeTime == -1) {
+            // lifeTime not enabled
+            estimatedFinishTime = remainingCloudletLength / cle.getLastAllocatedMips();
+        } else {
+            estimatedFinishTime = Math.min(remainingLifeTime, remainingCloudletLength / cle.getLastAllocatedMips());
+        }
 
         return Math.max(estimatedFinishTime, vm.getSimulation().getMinTimeBetweenEvents());
     }
