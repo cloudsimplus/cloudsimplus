@@ -233,8 +233,8 @@ public class CloudletBuilder implements Builder {
     public void setCloudletCreationFunction(final BiFunction<Long, Integer, Cloudlet> cloudletCreationFunction) {
         this.cloudletCreationFunction = Objects.requireNonNull(cloudletCreationFunction);
     }
-    
-    public CloudletBuilder setLifeTime(double lifeTime) {
+
+    public CloudletBuilder setLifeTime(final double lifeTime) {
     	this.lifeTime = lifeTime;
     	return this;
     }
