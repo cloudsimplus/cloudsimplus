@@ -859,7 +859,7 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
      * the cloudlet will be terminated, as soon as possible, regardless of its length (in MI).
      * @param timeSinceStart Time passed since this cloudlet started(in seconds)
      */
-	boolean setTimeSinceStart(final double timeSinceStart);
+	boolean setTimeSinceStart(double timeSinceStart);
 
     /**
      * Gets the time passed since this cloudlet started.
@@ -880,7 +880,7 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
      * <b>IMPORTANT</b>: Currently lifeTime must be larger than {@link Datacenter#getSchedulingInterval()}.
      * @param lifeTime lifeTime of this Cloudlet (in seconds)
      */
-	Cloudlet setLifeTime(final double lifeTime);
+	Cloudlet setLifeTime(double lifeTime);
 
     /**
      * Gets the lifeTime of this cloudlet,
