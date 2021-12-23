@@ -56,6 +56,9 @@ import java.util.stream.IntStream;
  * An example showing how to use the {@link UtilizationModelPlanetLab} class
  * to define Cloudlets' CPU utilization based on <a href="https://www.planet-lab.org">PlanetLab's</a> trace files.
  * Check the {@link #createCloudlets()} method.
+ * <p>It uses the new {@link Cloudlet#setLifeTime()} to 
+ * define the maximum time the Cloudlet is allowed to execute.
+ * After this time is reached, the Cloudlet is finished as soon as possible.</p>
  *
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 7.2.1
