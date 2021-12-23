@@ -58,6 +58,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * to the Vm has to be added to cloudlet finish time.</p>
  *
  * @author Manoel Campos da Silva Filho
+ * @since CloudSim Plus 7.2.1
  */
 public final class CheckCloudletLifetimeTest {
     private static final int HOST_MIPS = 100;
