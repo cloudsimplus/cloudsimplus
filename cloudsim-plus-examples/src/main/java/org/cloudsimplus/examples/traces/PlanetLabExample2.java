@@ -56,7 +56,7 @@ import java.util.stream.IntStream;
  * An example showing how to use the {@link UtilizationModelPlanetLab} class
  * to define Cloudlets' CPU utilization based on <a href="https://www.planet-lab.org">PlanetLab's</a> trace files.
  * Check the {@link #createCloudlets()} method.
- * <p>It uses the new {@link Cloudlet#setLifeTime()} to 
+ * <p>It uses the new {@link Cloudlet#setLifeTime(double)} to
  * define the maximum time the Cloudlet is allowed to execute.
  * After this time is reached, the Cloudlet is finished as soon as possible.</p>
  *
@@ -123,7 +123,7 @@ public class PlanetLabExample2 {
         new CloudletsTableBuilder(finishedCloudlets).build();
         System.out.printf("Simulation finished at %s. Execution time: %.2f seconds%n", LocalTime.now(), TimeUtil.elapsedSeconds(startSecs));
     }
-    
+
     private double getFinishedLengthSoFar(Cloudlet cloudlet) {
     	return cloudlet.getFinishedLengthSoFar();
     }
