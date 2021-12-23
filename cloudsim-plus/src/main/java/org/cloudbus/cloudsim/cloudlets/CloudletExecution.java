@@ -252,12 +252,8 @@ public class CloudletExecution {
         final double wallClockTime = cloudlet.getSimulation().clock() - arrivalTime;
         cloudlet.setWallClockTime(wallClockTime, totalCompletionTime);
 
-        final long finishedLengthMI =
-            cloudlet.getStatus() == Cloudlet.Status.SUCCESS ?
-                cloudlet.getLength() :
-                instructionsFinishedSoFar / Conversion.MILLION;
-
-        cloudlet.addFinishedLengthSoFar(finishedLengthMI);
+        final long finishedLengthMI = instructionsFinishedSoFar / Conversion.MILLION;
+        cloudlet.addFinishedLengthSoFar(finishedLengthMI - cloudlet.getFinishedLengthSoFar());
     }
 
     /**
@@ -266,8 +262,9 @@ public class CloudletExecution {
      * @param partialFinishedInstructions the partial amount of instructions just executed, to be
      *        added to the {@link #instructionsFinishedSoFar},
      *        in <b>Number of Instructions (instead of Million Instructions)</b>
+     * @param currentTime current time of the simulation
      */
-    public void updateProcessing(final double partialFinishedInstructions) {
+    public void updateProcessing(final double partialFinishedInstructions, final double currentTime) {
         final var simulation = cloudlet.getSimulation();
         setLastProcessingTime(simulation.clock());
 
@@ -279,6 +276,7 @@ public class CloudletExecution {
         this.instructionsFinishedSoFar += partialFinishedInstructions;
         final double partialFinishedMI = partialFinishedInstructions / Conversion.MILLION;
         cloudlet.addFinishedLengthSoFar((long)partialFinishedMI);
+        cloudlet.setTimeSinceStart(currentTime - cloudlet.getExecStartTime());
 
         /* If a simulation termination time was defined and the length of the Cloudlet is negative
          * (to indicate that they must not finish before the termination time),
@@ -541,4 +539,17 @@ public class CloudletExecution {
 
         this.overSubscriptionDelay += newDelay;
     }
+
+    /**
+     * Get remaining time before the cloudlet's lifeTime expires.
+     * @return remaining time before lifeTime expires(in seconds). Non-negative if lifeTime enabled, -1 otherwise.
+     */
+    public double getRemainingLifeTime() {
+		if (cloudlet.getLifeTime() < 0) {
+			return -1;
+		}
+
+		return Math.max(cloudlet.getLifeTime() - cloudlet.getTimeSinceStart(), 0);
+	}
+
 }

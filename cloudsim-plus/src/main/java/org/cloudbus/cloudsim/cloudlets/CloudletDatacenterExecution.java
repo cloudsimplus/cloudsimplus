@@ -16,6 +16,7 @@ final class CloudletDatacenterExecution {
     private double wallClockTime;
     private double actualCpuTime;
     private double costPerSec;
+    private double timeSinceStart;
     private long finishedSoFar;
     private Datacenter datacenter;
 
@@ -113,4 +114,12 @@ final class CloudletDatacenterExecution {
     void setDatacenter(final Datacenter datacenter) {
         this.datacenter = datacenter;
     }
+
+    double getTimeSinceStart() {
+		return timeSinceStart;
+	}
+
+	void setTimeSinceStart(final double timeSinceStart) {
+		this.timeSinceStart = timeSinceStart;
+	}
 }

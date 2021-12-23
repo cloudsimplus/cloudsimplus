@@ -850,4 +850,35 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
      * @return
      */
     Cloudlet reset();
+
+    /**
+     * Set the time passed since this cloudlet started,
+     * which should be equal to difference of CurrentTime and cloudlet's ExecStartTime during simulation.
+     * When lifeTime is set and timeSinceStart is greater than or equal to lifeTime, 
+     * the cloudlet is regarded to be finished, regardless of its length(in MI).
+     * @param timeSinceStart Time passed since this cloudlet started(in seconds)
+     */
+	boolean setTimeSinceStart(final double timeSinceStart);
+
+    /**
+     * Get the time passed since this cloudlet started.
+     * @return Time passed since this cloudlet started(in seconds)
+     */
+	double getTimeSinceStart();
+
+    /**
+     * Set the lifeTime of this cloudlet.
+     * The cloudlet will finish execution 
+     * after lifeTime has passed since its ExecStartTime, 
+     * regardless of its length(in MI).
+     * IMPORTANT: Currently lifeTime must be larger than datacenter.SchedulingInterval.
+     * @param lifeTime lifeTime of this Cloudlet(in seconds)
+     */
+	Cloudlet setLifeTime(final double lifeTime);
+
+    /**
+     * Get the lifeTime of this cloudlet.
+     * @return lifeTime of this cloudlet.
+     */
+	double getLifeTime();
 }

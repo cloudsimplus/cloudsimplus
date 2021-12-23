@@ -48,6 +48,7 @@ public class CloudletBuilder implements Builder {
     private long outputSize = 300;
     private long fileSize = 300;
     private int  pes = 1;
+    private double lifeTime = -1;
     /**
      * The VM to be bind to created cloudlets.
      */
@@ -115,6 +116,7 @@ public class CloudletBuilder implements Builder {
             cloudlet.setId(cloudletId);
             cloudlet.setBroker(broker);
             cloudlet.addRequiredFiles(requiredFiles);
+            cloudlet.setLifeTime(lifeTime);
             localList.add(cloudlet);
         }
         cloudlets.addAll(localList);
@@ -230,5 +232,10 @@ public class CloudletBuilder implements Builder {
      */
     public void setCloudletCreationFunction(final BiFunction<Long, Integer, Cloudlet> cloudletCreationFunction) {
         this.cloudletCreationFunction = Objects.requireNonNull(cloudletCreationFunction);
+    }
+    
+    public CloudletBuilder setLifeTime(double lifeTime) {
+    	this.lifeTime = lifeTime;
+    	return this;
     }
 }

@@ -108,6 +108,10 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
     /** @see #getSubmissionDelay() */
     private double submissionDelay;
 
+    /** @see #getLifeTime() */
+    private double lifeTime;
+
+
     /**
      * Creates a Cloudlet with no priority or id. The id is defined when the Cloudlet is
      * submitted to a {@link DatacenterBroker}. The file size and output size is defined as 1.
@@ -217,6 +221,7 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
         setExecStartTime(0.0);
         setArrivedTime(0);
         setCreationTime(0);
+        setLifeTime(-1);
 
         datacenterExecutionList.clear();
 
@@ -374,10 +379,11 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
         }
 
         /**
-         * If length is negative, it means it is undefined.
+         * If length or lifetime is negative, it means it is undefined.
          * Check {@link CloudSimTag#CLOUDLET_FINISH} for details.
          */
-        return getLength() > 0 && getLastExecutionInDatacenterInfo().getFinishedSoFar() >= getLength();
+        return (getLifeTime() > 0 && getLastExecutionInDatacenterInfo().getTimeSinceStart() >= getLifeTime())
+				|| (getLength() > 0 && getLastExecutionInDatacenterInfo().getFinishedSoFar() >= getLength());
     }
 
     @Override
@@ -884,4 +890,36 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
     public double getLastDatacenterArrivalTime() {
         return getLastExecutionInDatacenterInfo().getArrivalTime();
     }
+
+    @Override
+	public boolean setTimeSinceStart(final double timeSinceStart) {
+
+		if (timeSinceStart < 0.0 || datacenterExecutionList.isEmpty()) {
+			return false;
+		}
+
+		getLastExecutionInDatacenterInfo().setTimeSinceStart(timeSinceStart);
+		returnToBrokerIfFinished();
+		return true;
+	}
+
+	@Override
+	public double getTimeSinceStart() {
+		return getLastExecutionInDatacenterInfo().getTimeSinceStart();
+	}
+
+	@Override
+	public Cloudlet setLifeTime(final double lifeTime) {
+		if (lifeTime == 0) {
+			throw new IllegalArgumentException("Cloudlet lifeTime cannot be zero.");
+		}
+
+		this.lifeTime = lifeTime;
+		return this;
+	}
+
+	@Override
+	public double getLifeTime() {
+		return this.lifeTime;
+	}
 }

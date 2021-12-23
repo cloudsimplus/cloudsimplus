@@ -596,7 +596,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      */
     protected long updateCloudletProcessing(final CloudletExecution cle, final double currentTime) {
         final double partialFinishedInstructions = cloudletExecutedInstructionsForTimeSpan(cle, currentTime);
-        cle.updateProcessing(partialFinishedInstructions);
+        cle.updateProcessing(partialFinishedInstructions, currentTime);
         updateVmResourceAbsoluteUtilization(cle, ((VmSimple)vm).getRam());
         updateVmResourceAbsoluteUtilization(cle, ((VmSimple)vm).getBw());
 
@@ -985,7 +985,16 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
         * In such a case, gets the last allocated MIPS to compute that.
         * That value will be the current allocated MIPS if some MIPS were
         * actually allocated or the previous allocated MIPS otherwise.*/
-        final double estimatedFinishTime = cle.getRemainingCloudletLength() / cle.getLastAllocatedMips();
+        final double estimatedFinishTime;
+		double remainingLifeTime = cle.getRemainingLifeTime();
+		long remainingCloudletLength = cle.getRemainingCloudletLength();
+		
+		if(remainingLifeTime==-1) {
+			// lifeTime not enabled
+			estimatedFinishTime = remainingCloudletLength / cle.getLastAllocatedMips();
+		}else {
+			estimatedFinishTime = Math.min(remainingLifeTime, remainingCloudletLength / cle.getLastAllocatedMips());
+		}
 
         return Math.max(estimatedFinishTime, vm.getSimulation().getMinTimeBetweenEvents());
     }
