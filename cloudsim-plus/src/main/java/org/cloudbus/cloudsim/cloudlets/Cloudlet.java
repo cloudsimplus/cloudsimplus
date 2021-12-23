@@ -852,33 +852,43 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
     Cloudlet reset();
 
     /**
-     * Set the time passed since this cloudlet started,
-     * which should be equal to difference of CurrentTime and cloudlet's ExecStartTime during simulation.
-     * When lifeTime is set and timeSinceStart is greater than or equal to lifeTime, 
-     * the cloudlet is regarded to be finished, regardless of its length(in MI).
+     * Sets the time passed since this cloudlet started.
+     * This should be equal to the difference between current simulation time and cloudlet's
+     * {@link #getExecStartTime() exec start time} during simulation execution.
+     * When {@link #getLifeTime() lifeTime} is set and timeSinceStart is greater than or equal to lifeTime,
+     * the cloudlet will be terminated, as soon as possible, regardless of its length (in MI).
      * @param timeSinceStart Time passed since this cloudlet started(in seconds)
      */
 	boolean setTimeSinceStart(final double timeSinceStart);
 
     /**
-     * Get the time passed since this cloudlet started.
+     * Gets the time passed since this cloudlet started.
      * @return Time passed since this cloudlet started(in seconds)
+     * @see #setTimeSinceStart(double)
      */
 	double getTimeSinceStart();
 
     /**
-     * Set the lifeTime of this cloudlet.
-     * The cloudlet will finish execution 
-     * after lifeTime has passed since its ExecStartTime, 
-     * regardless of its length(in MI).
-     * IMPORTANT: Currently lifeTime must be larger than datacenter.SchedulingInterval.
-     * @param lifeTime lifeTime of this Cloudlet(in seconds)
+     * Sets the lifeTime of this cloudlet,
+     * which indicates its maximum {@link #getTimeSinceStart() execution time},
+     * regardless of its length (in MI).
+     *
+     * <p>The cloudlet will finish execution as soon as possible, after the given lifeTime has passed,
+     * since its {@link #getExecStartTime() exec start time}.
+     * </p>
+     *
+     * <b>IMPORTANT</b>: Currently lifeTime must be larger than {@link Datacenter#getSchedulingInterval()}.
+     * @param lifeTime lifeTime of this Cloudlet (in seconds)
      */
 	Cloudlet setLifeTime(final double lifeTime);
 
     /**
-     * Get the lifeTime of this cloudlet.
-     * @return lifeTime of this cloudlet.
+     * Gets the lifeTime of this cloudlet,
+     * which indicates its maximum {@link #getTimeSinceStart() execution time},
+     * regardless of its length (in MI).
+     *
+     * @return lifeTime of this cloudlet (in seconds).
+     * @see #setLifeTime(double)
      */
 	double getLifeTime();
 }
