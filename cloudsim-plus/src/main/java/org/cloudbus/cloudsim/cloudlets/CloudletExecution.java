@@ -262,9 +262,8 @@ public class CloudletExecution {
      * @param partialFinishedInstructions the partial amount of instructions just executed, to be
      *        added to the {@link #instructionsFinishedSoFar},
      *        in <b>Number of Instructions (instead of Million Instructions)</b>
-     * @param currentTime current time of the simulation
      */
-    public void updateProcessing(final double partialFinishedInstructions, final double currentTime) {
+    public void updateProcessing(final double partialFinishedInstructions) {
         final var simulation = cloudlet.getSimulation();
         setLastProcessingTime(simulation.clock());
 

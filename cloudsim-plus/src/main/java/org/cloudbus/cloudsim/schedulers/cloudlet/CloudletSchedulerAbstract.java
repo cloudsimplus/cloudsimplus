@@ -596,7 +596,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      */
     protected long updateCloudletProcessing(final CloudletExecution cle, final double currentTime) {
         final double partialFinishedInstructions = cloudletExecutedInstructionsForTimeSpan(cle, currentTime);
-        cle.updateProcessing(partialFinishedInstructions, currentTime);
+        cle.updateProcessing(partialFinishedInstructions);
         updateVmResourceAbsoluteUtilization(cle, ((VmSimple)vm).getRam());
         updateVmResourceAbsoluteUtilization(cle, ((VmSimple)vm).getBw());
 
