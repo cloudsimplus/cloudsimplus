@@ -755,6 +755,7 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
      * @return true if the submission time is valid and
      *              the cloudlet has already being assigned to a Datacenter for execution;
      *              false otherwise
+     * @see <a href="https://en.wikipedia.org/wiki/Elapsed_real_time">Elapsed real time (wall-clock time)</a>
      */
     boolean setWallClockTime(double wallTime, double actualCpuTime);
 
