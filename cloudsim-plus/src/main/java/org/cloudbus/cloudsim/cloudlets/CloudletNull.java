@@ -60,9 +60,7 @@ final class CloudletNull implements Cloudlet {
     @Override public boolean deleteRequiredFile(String filename) {
         return false;
     }
-    @Override public double getAccumulatedBwCost() {
-        return 0.0;
-    }
+    @Override public double getArrivalTime() { return -1; }
     @Override public double getActualCpuTime() {
         return 0.0;
     }
@@ -75,9 +73,6 @@ final class CloudletNull implements Cloudlet {
     @Override public long getFinishedLengthSoFar() {
         return 0L;
     }
-    @Override public long getFinishedLengthSoFar(Datacenter datacenter) {
-        return 0L;
-    }
     @Override public long getLength() {
         return 0L;
     }
@@ -86,15 +81,6 @@ final class CloudletNull implements Cloudlet {
     }
     @Override public long getTotalLength() {
         return 0L;
-    }
-    @Override public double getCostPerBw() {
-        return 0.0;
-    }
-    @Override public double getCostPerSec() {
-        return 0.0;
-    }
-    @Override public double getCostPerSec(Datacenter datacenter) {
-        return 0.0;
     }
     @Override public double getExecStartTime() {
         return 0.0;
@@ -108,9 +94,6 @@ final class CloudletNull implements Cloudlet {
     @Override public long getNumberOfPes() {
         return 0;
     }
-    @Override public double getTotalCost() {
-        return 0.0;
-    }
     @Override public List<String> getRequiredFiles() {
         return Collections.emptyList();
     }
@@ -118,12 +101,6 @@ final class CloudletNull implements Cloudlet {
         return Status.FAILED;
     }
     @Override public boolean isReturnedToBroker() { return false; }
-    @Override public double getLastDatacenterArrivalTime() {
-        return 0.0;
-    }
-    @Override public double getArrivalTime(Datacenter datacenter) {
-        return 0.0;
-    }
     @Override public long getJobId() { return 0; }
     @Override public void setJobId(long jobId) {/**/}
     @Override public UtilizationModel getUtilizationModelBw() {
@@ -184,7 +161,6 @@ final class CloudletNull implements Cloudlet {
     @Override public Cloudlet setNumberOfPes(long numberOfPes) {
         return Cloudlet.NULL;
     }
-    @Override public void assignToDatacenter(Datacenter datacenter) {/**/}
     @Override public void setBroker(DatacenterBroker broker) {/**/}
     @Override public DatacenterBroker getBroker() {
         return DatacenterBroker.NULL;
@@ -231,9 +207,6 @@ final class CloudletNull implements Cloudlet {
     @Override public boolean addFinishedLengthSoFar(long partialFinishedMI) {
         return false;
     }
-    @Override public boolean setWallClockTime(double wallTime, double actualCpuTime) {
-        return false;
-    }
     @Override public void setExecStartTime(double clockTime) {/**/}
     @Override public Cloudlet addOnStartListener(EventListener<CloudletVmEventInfo> listener) { return this; }
     @Override public boolean removeOnStartListener(EventListener<CloudletVmEventInfo> listener) { return false; }
@@ -241,8 +214,6 @@ final class CloudletNull implements Cloudlet {
         return -1;
     }
     @Override public Cloudlet reset() { return this; }
-
     @Override public Cloudlet setLifeTime(final double lifeTime) { return this; }
     @Override public double getLifeTime() { return -1; }
-
 }

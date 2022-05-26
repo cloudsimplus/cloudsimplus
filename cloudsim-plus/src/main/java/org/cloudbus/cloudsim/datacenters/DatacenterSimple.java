@@ -425,7 +425,6 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
             return false;
         }
 
-        cloudlet.assignToDatacenter(this);
         submitCloudletToVm(cloudlet, ack);
         return true;
     }

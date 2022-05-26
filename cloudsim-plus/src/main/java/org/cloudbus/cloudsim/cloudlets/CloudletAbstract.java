@@ -19,7 +19,10 @@ import org.cloudbus.cloudsim.vms.VmGroup;
 import org.cloudsimplus.listeners.CloudletVmEventInfo;
 import org.cloudsimplus.listeners.EventListener;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
 
 import static java.util.Objects.requireNonNull;
 
@@ -35,16 +38,11 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
     /** @see #getJobId() */
     private long jobId;
 
-    /**
-     * The list of every {@link Datacenter} where the cloudlet has been executed.
-     * In case it starts and finishes executing in a single Datacenter, without
-     * being migrated, this list will have only one item.
-     * TODO: Check CloudletDatacenterExecution TODO
-     */
-    private final List<CloudletDatacenterExecution> datacenterExecutionList;
-
     /** @see #getLength() */
     private long length;
+
+    /** @see #getFinishedLengthSoFar() */
+    private long finishedLengthSoFar;
 
     /** @see #getNumberOfPes() */
     private long numberOfPes;
@@ -70,13 +68,6 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
     /** @see #getRequiredFiles() */
     private List<String> requiredFiles;
 
-    /**
-     * The index of the last Datacenter where the cloudlet was executed. If the
-     * cloudlet is migrated during its execution, this index is updated. The
-     * value {@link #NOT_ASSIGNED} indicates the cloudlet has not been executed yet.
-     */
-    private int lastExecutedDatacenterIdx;
-
     /** @see #getFileSize() */
     private long fileSize;
 
@@ -85,12 +76,6 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
 
     /** @see #getFinishTime() */
     private double finishTime;
-
-    /** @see #getCostPerBw() */
-    private double costPerBw;
-
-    /** @see #getAccumulatedBwCost() */
-    private double accumulatedBwCost;
 
     /** @see #getUtilizationModelCpu() */
     private UtilizationModel utilizationModelCpu;
@@ -110,6 +95,9 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
 
     /** @see #getLifeTime() */
     private double lifeTime;
+
+    /** @see #getArrivalTime() */
+    private double arrivalTime;
 
     /**
      * Creates a Cloudlet with no priority or id. The id is defined when the Cloudlet is
@@ -179,12 +167,6 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
     public CloudletAbstract(final long id, final long length, final long pesNumber) {
         super();
 
-        /*
-        Normally, a Cloudlet is only executed on a Datacenter without being
-        migrated to others. Hence, to reduce memory consumption, set the
-        size of this ArrayList to be less than the default one.
-        */
-        this.datacenterExecutionList = new ArrayList<>(2);
         this.requiredFiles = new LinkedList<>();
         this.setId(id);
         this.setJobId(NOT_ASSIGNED);
@@ -193,8 +175,7 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
         this.setFileSize(1);
         this.setOutputSize(1);
         this.setSubmissionDelay(0.0);
-        this.setAccumulatedBwCost(0.0);
-        this.setCostPerBw(0.0);
+        this.setArrivalTime(-1);
 
         this.reset();
 
@@ -212,8 +193,6 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
         this.execStartTime = 0.0;
         this.status = Status.INSTANTIATED;
         this.priority = 0;
-        getLastExecutionInDatacenterInfo().clearFinishedSoFar();
-        this.lastExecutedDatacenterIdx = NOT_ASSIGNED;
         setBroker(DatacenterBroker.NULL);
         setFinishTime(NOT_ASSIGNED); // meaning this Cloudlet hasn't finished yet
         this.vm = Vm.NULL;
@@ -222,18 +201,8 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
         setCreationTime(0);
         setLifeTime(-1);
 
-        datacenterExecutionList.clear();
-
         this.setLastTriedDatacenter(Datacenter.NULL);
         return this;
-    }
-
-    protected int getLastExecutedDatacenterIdx() {
-        return lastExecutedDatacenterIdx;
-    }
-
-    protected void setLastExecutedDatacenterIdx(final int lastExecutedDatacenterIdx) {
-        this.lastExecutedDatacenterIdx = lastExecutedDatacenterIdx;
     }
 
     @Override
@@ -312,13 +281,7 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
 
     @Override
     public double getWaitingTime() {
-        if (datacenterExecutionList.isEmpty()) {
-            return 0;
-        }
-
-        // use the latest resource submission time
-        final double subTime = getLastExecutionInDatacenterInfo().getArrivalTime();
-        return execStartTime - subTime;
+        return arrivalTime == -1 ? -1 : execStartTime - arrivalTime;
     }
 
     @Override
@@ -348,19 +311,9 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
     }
 
     @Override
-    public long getFinishedLengthSoFar(final Datacenter datacenter) {
-        Objects.requireNonNull(datacenter);
-        return getDatacenterInfo(datacenter).getFinishedSoFar();
-    }
-
-    @Override
     public long getFinishedLengthSoFar() {
-        if (datacenterExecutionList.isEmpty()) {
-            return 0;
-        }
-
         if(getLength() > 0) {
-            return Math.min(getLastExecutionInDatacenterInfo().getFinishedSoFar(), absLength());
+            return Math.min(finishedLengthSoFar, absLength());
         }
 
         /**
@@ -368,26 +321,18 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
          * This way, it keeps running and increasing the executed length
          * until a {@link CloudSimTag#CLOUDLET_FINISH} message is sent to the broker
          * or the simulation is terminated under request (by setting a termination time).*/
-        return getLastExecutionInDatacenterInfo().getFinishedSoFar();
+        return finishedLengthSoFar;
     }
 
     @Override
     public boolean isFinished() {
-        if (datacenterExecutionList.isEmpty()) {
-            return false;
-        }
-
-        /**
-         * If length or lifetime is negative, it means it is undefined.
-         * Check {@link CloudSimTag#CLOUDLET_FINISH} for details.
-         */
-        return (getLifeTime() > 0 && getLastExecutionInDatacenterInfo().getActualCpuTime() >= getLifeTime()) ||
-               (getLength() > 0 && getLastExecutionInDatacenterInfo().getFinishedSoFar() >= getLength());
+        return (getLifeTime() > 0 && getActualCpuTime() >= getLifeTime()) ||
+               (getLength() > 0 && getFinishedLengthSoFar() >= getLength());
     }
 
     @Override
     public boolean addFinishedLengthSoFar(final long partialFinishedMI) {
-        if (partialFinishedMI < 0.0 || datacenterExecutionList.isEmpty()) {
+        if (partialFinishedMI < 0.0 || arrivalTime == -1) {
             return false;
         }
 
@@ -400,7 +345,7 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
         final long maxLengthToAdd = getLength() < 0 ?
                                     partialFinishedMI :
                                     Math.min(partialFinishedMI, absLength()-getFinishedLengthSoFar());
-        getLastExecutionInDatacenterInfo().addFinishedSoFar(maxLengthToAdd);
+        finishedLengthSoFar += maxLengthToAdd;
         returnToBrokerIfFinished();
         return true;
     }
@@ -431,14 +376,6 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
         }
     }
 
-    private CloudletDatacenterExecution getLastExecutionInDatacenterInfo() {
-        if (datacenterExecutionList.isEmpty()) {
-            return CloudletDatacenterExecution.NULL;
-        }
-
-        return datacenterExecutionList.get(datacenterExecutionList.size() - 1);
-    }
-
     @Override
     public long getFileSize() {
         return fileSize;
@@ -461,19 +398,6 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
         if(isStartingInSomeVm){
             onStartListeners.forEach(listener -> listener.update(CloudletVmEventInfo.of(listener, clockTime, this)));
         }
-    }
-
-    @Override
-    public boolean setWallClockTime(final double wallTime, final double actualCpuTime) {
-        if (wallTime < 0.0 || actualCpuTime < 0.0 || datacenterExecutionList.isEmpty()) {
-            return false;
-        }
-
-        final CloudletDatacenterExecution execution = getLastExecutionInDatacenterInfo();
-        execution.setWallClockTime(wallTime);
-        execution.setActualCpuTime(actualCpuTime);
-
-        return true;
     }
 
     @Override
@@ -512,73 +436,25 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
     }
 
     @Override
-    public double getCostPerSec() {
-        return getLastExecutionInDatacenterInfo().getCostPerSec();
-    }
-
-    @Override
-    public double getCostPerSec(final Datacenter datacenter) {
-        return getDatacenterInfo(datacenter).getCostPerSec();
-    }
-
-    /**
-     * Gets the total execution time of this Cloudlet in a given Datacenter ID.
-     *
-     * @param datacenter the Datacenter entity
-     * @return the total execution time of this Cloudlet in the given Datacenter
-     * or 0 if the Cloudlet was not executed there
-     */
-    protected double getActualCpuTime(final Datacenter datacenter) {
-        return getDatacenterInfo(datacenter).getActualCpuTime();
-    }
-
-    @Override
     public double getActualCpuTime() {
         final double time = getFinishTime() == NOT_ASSIGNED ? getSimulation().clock() : finishTime;
         return time - execStartTime;
     }
 
     @Override
-    public double getArrivalTime(final Datacenter datacenter) {
-        return getDatacenterInfo(datacenter).getArrivalTime();
+    public double getArrivalTime() {
+        return arrivalTime;
     }
 
     /**
-     * Gets the time of this Cloudlet resides in a given Datacenter
-     * (from arrival time until departure time).
-     *
-     * @param datacenter a Datacenter entity
-     * @return the wall-clock time or 0 if the Cloudlet has never been executed there
-     * @see <a href="https://en.wikipedia.org/wiki/Elapsed_real_time">Elapsed real time (wall-clock time)</a>
+     * Sets the time the Cloudlet arrived at a Datacenter to be executed.
+     * @param arrivalTime the arrival time to set (in seconds)
      */
-    protected double getWallClockTime(final Datacenter datacenter) {
-        return getDatacenterInfo(datacenter).getWallClockTime();
-    }
-
-    /**
-     * Gets information about the cloudlet execution on a given Datacenter.
-     *
-     * @param datacenterId the Datacenter entity ID
-     * @return the Cloudlet execution information on the given Datacenter
-     * or {@link CloudletDatacenterExecution#NULL} if the Cloudlet has never been executed there
-     */
-    private CloudletDatacenterExecution getDatacenterInfo(final long datacenterId) {
-        return datacenterExecutionList
-                .stream()
-                .filter(info -> info.getDatacenter().getId() == datacenterId)
-                .findFirst()
-                .orElse(CloudletDatacenterExecution.NULL);
-    }
-
-    /**
-     * Gets information about the cloudlet execution on a given Datacenter.
-     *
-     * @param datacenter the Datacenter entity
-     * @return the Cloudlet execution information on the given Datacenter
-     * or {@link CloudletDatacenterExecution#NULL} if the Cloudlet has never been executed there
-     */
-    private CloudletDatacenterExecution getDatacenterInfo(final Datacenter datacenter) {
-        return getDatacenterInfo(datacenter.getId());
+    protected final void setArrivalTime(final double arrivalTime) {
+        //The only negative value accepted is -1, to indicate not arrival time is set
+        if(arrivalTime < 0)
+            this.arrivalTime = -1;
+        else this.arrivalTime = arrivalTime;
     }
 
     @Override
@@ -624,22 +500,6 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
     public Cloudlet setVm(final Vm vm) {
         this.vm = vm;
         return this;
-    }
-
-    @Override
-    public double getTotalCost() {
-        return getTotalCpuCostForAllDatacenters() + accumulatedBwCost + costPerBw * outputSize;
-    }
-
-    /**
-     * Gets the total cost for using CPU on every Datacenter where the Cloudlet has executed.
-     * @return
-     */
-    private double getTotalCpuCostForAllDatacenters() {
-        return datacenterExecutionList
-                .stream()
-                .mapToDouble(dcInfo -> dcInfo.getActualCpuTime() * dcInfo.getCostPerSec())
-                .sum();
     }
 
     @Override
@@ -776,34 +636,6 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
     }
 
     @Override
-    public double getCostPerBw() {
-        return costPerBw;
-    }
-
-    /**
-     * Sets {@link #getCostPerBw() the cost ($) of each byte of bandwidth (bw)} consumed.
-     *
-     * @param costPerBw the new cost per bw to set
-     */
-    protected final void setCostPerBw(final double costPerBw) {
-        this.costPerBw = costPerBw;
-    }
-
-    @Override
-    public double getAccumulatedBwCost() {
-        return accumulatedBwCost;
-    }
-
-    /**
-     * Sets the {@link #getAccumulatedBwCost() accumulated bw cost ($)}.
-     *
-     * @param accumulatedBwCost the accumulated bw cost ($) to set
-     */
-    protected final void setAccumulatedBwCost(final double accumulatedBwCost) {
-        this.accumulatedBwCost = accumulatedBwCost;
-    }
-
-    @Override
     public double getSubmissionDelay() {
         return this.submissionDelay;
     }
@@ -855,39 +687,9 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
     }
 
     @Override
-    public void assignToDatacenter(final Datacenter datacenter) {
-        final var dcInfo = new CloudletDatacenterExecution();
-        dcInfo.setDatacenter(datacenter);
-        dcInfo.setCostPerSec(datacenter.getCharacteristics().getCostPerSecond());
-        datacenterExecutionList.add(dcInfo);
-        setLastExecutedDatacenterIdx(getLastExecutedDatacenterIdx() + 1);
-        this.setCostPerBw(datacenter.getCharacteristics().getCostPerBw());
-        setAccumulatedBwCost(this.costPerBw * fileSize);
-    }
-
-    @Override
     public double registerArrivalInDatacenter() {
-        if (!isAssignedToDatacenter()) {
-            return NOT_ASSIGNED;
-        }
-
-        final CloudletDatacenterExecution dcInfo = datacenterExecutionList.get(lastExecutedDatacenterIdx);
-        dcInfo.setArrivalTime(getSimulation().clock());
-
-        return dcInfo.getArrivalTime();
-    }
-
-    /**
-     * @return true if the cloudlet has even been assigned to a Datacenter in order to run;
-     *         false otherwise.
-     */
-    private boolean isAssignedToDatacenter() {
-        return !datacenterExecutionList.isEmpty();
-    }
-
-    @Override
-    public double getLastDatacenterArrivalTime() {
-        return getLastExecutionInDatacenterInfo().getArrivalTime();
+        setArrivalTime(getSimulation().clock());
+        return arrivalTime;
     }
 
     @Override

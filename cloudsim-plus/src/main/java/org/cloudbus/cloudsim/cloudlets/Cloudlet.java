@@ -11,7 +11,6 @@ import org.cloudbus.cloudsim.core.CloudSimTag;
 import org.cloudbus.cloudsim.core.CustomerEntity;
 import org.cloudbus.cloudsim.core.UniquelyIdentifiable;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
-import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristics;
 import org.cloudbus.cloudsim.resources.ResourceManageable;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
@@ -164,12 +163,10 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
     List<String> getRequiredFiles();
 
     /**
-     * The total bandwidth (bw) cost ($) for transferring the cloudlet
-     * by the network, according to the {@link #getFileSize()}.
-     *
-     * @return the accumulated bw cost ($)
+     * Gets the time the Cloudlet arrived at a Datacenter to be executed.
+     * @return the arrival time in seconds.
      */
-    double getAccumulatedBwCost();
+    double getArrivalTime();
 
     /**
      * Gets the total execution time of the Cloudlet so far (in seconds),
@@ -224,17 +221,6 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
     boolean isReturnedToBroker();
 
     /**
-     * Sets the parameters of the Datacenter where the Cloudlet is going to be
-     * executed. From the second time this method is called, every call makes the
-     * cloudlet to be migrated to the indicated Datacenter.
-     *
-     * <p><b>NOTE</b>: This method <b>should</b> be called only by a {@link Datacenter} entity.</p>
-     *
-     * @param datacenter the Datacenter where the cloudlet will be executed
-     */
-    void assignToDatacenter(Datacenter datacenter);
-
-    /**
      * Register the arrival time of this Cloudlet into a Datacenter to the
      * current simulation time and returns this time.
      *
@@ -242,57 +228,6 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
      *         or {@link #NOT_ASSIGNED} if the cloudlet is not assigned to a Datacenter
      */
     double registerArrivalInDatacenter();
-
-    /**
-     * Gets the cost ($) of each byte of bandwidth (bw) consumed.
-     * <p>Realize costs must be defined for Datacenters by accessing the
-     * {@link DatacenterCharacteristics} object from each {@link Datacenter}
-     * instance and setting the bandwidth cost.</p>
-     *
-     * @return the cost ($) per bw
-     * @see DatacenterCharacteristics#setCostPerBw(double)
-     */
-    double getCostPerBw();
-
-    /**
-     * Gets the cost/sec ($) of running the Cloudlet in the latest Datacenter.
-     * <p>Realize costs must be defined for Datacenters by accessing the
-     * {@link DatacenterCharacteristics} object from each {@link Datacenter}
-     * instance and setting the CPU cost.</p>
-     *
-     * @return the cost ($) associated with running this Cloudlet;
-     *         or 0.0 if was not assigned to any Datacenter yet
-     * @see DatacenterCharacteristics#setCostPerSecond(double)
-     */
-    double getCostPerSec();
-
-    /**
-     * Gets the cost ($) running this Cloudlet in a given Datacenter.
-     * <p>Realize costs must be defined for Datacenters by accessing the
-     * {@link DatacenterCharacteristics} object from each {@link Datacenter}
-     * instance and setting the CPU cost.</p>
-     *
-     * @param datacenter the Datacenter entity
-     * @return the cost ($) associated with running this Cloudlet in the given Datacenter;
-     *         or 0 if the Cloudlet was not executed there not found
-     * @see DatacenterCharacteristics#setCostPerSecond(double)
-     */
-    double getCostPerSec(Datacenter datacenter);
-
-    /**
-     * Gets the total cost ($) of executing this Cloudlet.
-     * <p>{@code Total Cost = input data transfer + processing cost + output transfer cost}.</p>
-     *
-     * <p>
-     * Realize costs must be defined for Datacenters by accessing the
-     * {@link DatacenterCharacteristics} object from each {@link Datacenter}
-     * instance and setting costs for each resource.</p>
-     *
-     * @return the total cost ($) of executing the Cloudlet
-     * @see DatacenterCharacteristics#setCostPerSecond(double)
-     * @see DatacenterCharacteristics#setCostPerBw(double)
-     */
-    double getTotalCost();
 
     /**
      * Gets the latest execution start time of this Cloudlet (in seconds).
@@ -312,24 +247,6 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
      *         or {@link #NOT_ASSIGNED} if not finished yet.
      */
     double getFinishTime();
-
-    /**
-     * Gets the arrival time of this Cloudlet from the latest
-     * Datacenter where it has executed (in seconds).
-     *
-     * @return the arrival time (in seconds);
-     *         or {@link #NOT_ASSIGNED} if the cloudlet has never been assigned to a Datacenter
-     */
-    double getLastDatacenterArrivalTime();
-
-    /**
-     * Gets the arrival time of this Cloudlet in the given Datacenter (in seconds).
-     *
-     * @param datacenter the Datacenter entity
-     * @return the arrival time (in seconds);
-     *         or {@link #NOT_ASSIGNED} if the cloudlet has never been assigned to a Datacenter
-     */
-    double getArrivalTime(Datacenter datacenter);
 
     /**
      * Gets the id of the job that this Cloudlet belongs to, if any.
@@ -717,19 +634,6 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
     long getFinishedLengthSoFar();
 
     /**
-     * Gets the length of this Cloudlet that has been executed so far (in MI),
-     * according to the {@link #getLength()}.
-     * This method is useful when trying to move this Cloudlet
-     * into different Datacenters or to cancel it.
-     *
-     * @param datacenter the Datacenter entity
-     * @return the length of a partially executed Cloudlet; the full Cloudlet
-     * length if it is completed; or 0 if the Cloudlet has never been executed
-     * in the given Datacenter
-     */
-    long getFinishedLengthSoFar(Datacenter datacenter);
-
-    /**
      * Adds the partial length of this Cloudlet that has executed so far (in MI).
      *
      * @param partialFinishedMI the partial executed length of this Cloudlet (in MI) from the
@@ -739,25 +643,6 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
      * @see CloudletExecution
      */
     boolean addFinishedLengthSoFar(long partialFinishedMI);
-
-    /**
-     * Sets the wall clock time the cloudlet spent
-     * executing on the current Datacenter.
-     * The wall clock time is the total time the Cloudlet resides in a Datacenter
-     * (from arrival time until departure time, that may include waiting time).
-     * This value is set by the Datacenter before departure or sending back to
-     * the original Cloudlet's owner.
-     *
-     * @param wallTime      the time of this Cloudlet resides in a Datacenter
-     *                      (from arrival time until departure time).
-     * @param actualCpuTime the total execution time of this Cloudlet in a
-     *                      Datacenter.
-     * @return true if the submission time is valid and
-     *              the cloudlet has already being assigned to a Datacenter for execution;
-     *              false otherwise
-     * @see <a href="https://en.wikipedia.org/wiki/Elapsed_real_time">Elapsed real time (wall-clock time)</a>
-     */
-    boolean setWallClockTime(double wallTime, double actualCpuTime);
 
     /**
      * Sets the {@link #getExecStartTime() latest execution start time} of this Cloudlet.
