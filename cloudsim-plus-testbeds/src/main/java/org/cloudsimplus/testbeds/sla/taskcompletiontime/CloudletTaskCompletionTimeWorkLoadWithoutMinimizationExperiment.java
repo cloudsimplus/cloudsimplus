@@ -108,7 +108,7 @@ class CloudletTaskCompletionTimeWorkLoadWithoutMinimizationExperiment extends Ab
             .orElse(DatacenterBroker.NULL);
 
         final double totalOfcloudletSlaSatisfied = broker.getCloudletFinishedList().stream()
-            .map(c -> c.getFinishTime() - c.getLastDatacenterArrivalTime())
+            .map(c -> c.getFinishTime() - c.getArrivalTime())
             .filter(rt -> rt <= getCustomerMaxTaskCompletionTime())
             .count();
         return (totalOfcloudletSlaSatisfied * 100) / broker.getCloudletFinishedList().size();

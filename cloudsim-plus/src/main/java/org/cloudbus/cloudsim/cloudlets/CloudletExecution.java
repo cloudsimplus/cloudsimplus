@@ -102,6 +102,9 @@ public class CloudletExecution {
     /** @see #getLastAllocatedMips() */
     private double lastAllocatedMips;
 
+    /** @see #getWallClockTime() */
+    private double wallClockTime;
+
     /**
      * Instantiates a CloudletExecutionInfo object upon the arrival of a Cloudlet inside a Datacenter.
      * The arriving time is determined by {@link CloudSim#clock()}.
@@ -249,15 +252,10 @@ public class CloudletExecution {
      */
     public void finalizeCloudlet() {
         // Sets the wall clock time and actual CPU time
-        final double wallClockTime = cloudlet.getSimulation().clock() - arrivalTime;
-        cloudlet.setWallClockTime(wallClockTime, totalCompletionTime);
+        this.wallClockTime = cloudlet.getSimulation().clock() - arrivalTime;
 
-        final long finishedLengthMI =
-            cloudlet.getStatus() == Cloudlet.Status.SUCCESS ?
-                cloudlet.getLength() :
-                instructionsFinishedSoFar / Conversion.MILLION;
-
-        cloudlet.addFinishedLengthSoFar(finishedLengthMI);
+        final long finishedLengthMI = instructionsFinishedSoFar / Conversion.MILLION;
+        cloudlet.addFinishedLengthSoFar(finishedLengthMI - cloudlet.getFinishedLengthSoFar());
     }
 
     /**
@@ -540,5 +538,33 @@ public class CloudletExecution {
             throw new IllegalArgumentException("Over-subscription delay cannot be negative");
 
         this.overSubscriptionDelay += newDelay;
+    }
+
+    /**
+     * Gets the remaining lifetime of the Cloudlet (in seconds), if a lifeTime is set.
+     * @return the remaining execution time if a lifeTime is set,
+     *         or {@link Double#MAX_VALUE} otherwise to indicate no lifeTime is set,
+     *         and it isn't known how much longer the Cloudlet will execute.
+     * @see Cloudlet#getLifeTime()
+     */
+    public double getRemainingLifeTime() {
+		if (cloudlet.getLifeTime() < 0) {
+			return Double.MAX_VALUE;
+		}
+
+		return Math.max(cloudlet.getLifeTime() - cloudlet.getActualCpuTime(), 0);
+	}
+
+    /**
+     * Gets the wall clock time the cloudlet spent executing.
+     * The wall clock time is the total time the Cloudlet resides in a Datacenter
+     * (from arrival time until departure time, that may include waiting time).
+     * This value is set by the Datacenter before departure or sending back to
+     * the original Cloudlet's owner.
+     *
+     * @see <a href="https://en.wikipedia.org/wiki/Elapsed_real_time">Elapsed real time (wall-clock time)</a>
+     */
+    public double getWallClockTime() {
+        return wallClockTime;
     }
 }

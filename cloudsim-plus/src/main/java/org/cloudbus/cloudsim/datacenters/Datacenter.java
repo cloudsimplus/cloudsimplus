@@ -9,7 +9,6 @@ package org.cloudbus.cloudsim.datacenters;
 
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicy;
 import org.cloudbus.cloudsim.allocationpolicies.migration.VmAllocationPolicyMigration;
-import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.core.SimEntity;
 import org.cloudbus.cloudsim.core.Sizeable;
 import org.cloudbus.cloudsim.hosts.Host;
@@ -179,14 +178,6 @@ public interface Datacenter extends SimEntity, PowerAware<PowerModelDatacenter>,
      * processing of such cloudlets, it only defines in which interval the processing
      * will be updated. For instance, if it is set an interval of 10 seconds, the
      * processing of cloudlets will be updated at every 10 seconds.
-     *
-     * <p>
-     * Trying to get the amount of instructions the cloudlet has executed after
-     * 5 seconds, by means of {@link Cloudlet#getFinishedLengthSoFar(Datacenter)},
-     * won't return an updated value. This way, one should set the
-     * scheduling interval to 5 to get updated data.
-     * As longer is the interval, faster will be the simulation execution.
-     * </p>
      *
      * <p>The default value is zero, which indicates no scheduling interval
      * is set and the simulation state is updated only when a cloudlet is finished.

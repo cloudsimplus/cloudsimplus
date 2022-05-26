@@ -2,7 +2,6 @@ package org.cloudbus.cloudsim.schedulers.cloudlet;
 
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.CloudletTestUtil;
-import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.schedulers.MipsShare;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
@@ -53,7 +52,7 @@ final class CloudletSchedulerSpaceSharedTestUtil {
 
         for(int i = 0; i < numberOfCloudlets; i++) {
             final Cloudlet cloudlet = CloudletTestUtil.createCloudlet(i, mips, numberOfCloudletPes);
-            cloudlet.assignToDatacenter(Datacenter.NULL);
+            cloudlet.registerArrivalInDatacenter();
             instance.cloudletSubmit(cloudlet);
         }
 

@@ -370,7 +370,7 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
 
     @Override
     protected double getUtilizationInternal(final double time) {
-        //If the time requested is multiple of the scheduling interval, gets a precise value from the trace file
+    	//If the time requested is multiple of the scheduling interval, gets a precise value from the trace file
         if (Math.round(time) % getSchedulingInterval() == 0) {
             return utilization[(int) getUtilizationIndex(time)];
         }

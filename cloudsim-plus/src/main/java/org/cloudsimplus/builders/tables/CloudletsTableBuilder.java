@@ -78,6 +78,7 @@ public class CloudletsTableBuilder extends TableBuilderAbstract<Cloudlet> {
         addColumnDataFunction(getTable().addColumn("VM", ID), cloudlet -> cloudlet.getVm().getId());
         addColumnDataFunction(getTable().addColumn("VM PEs   ", CPU_CORES), cloudlet -> cloudlet.getVm().getNumberOfPes());
         addColumnDataFunction(getTable().addColumn("CloudletLen", "MI"), Cloudlet::getLength);
+        addColumnDataFunction(getTable().addColumn("FinishedLen", "MI"), Cloudlet::getFinishedLengthSoFar);
         addColumnDataFunction(getTable().addColumn("CloudletPEs", CPU_CORES), Cloudlet::getNumberOfPes);
 
         TableColumn col = getTable().addColumn("StartTime", SECONDS).setFormat(TIME_FORMAT);

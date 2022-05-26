@@ -263,7 +263,7 @@ final class CloudletTaskCompletionTimeMinimizationExperiment extends AbstractClo
 
         final double taskCompletionTimeSlaContract = getTaskCompletionTimeFromContract(broker);
         double totalOfCloudletSlaSatisfied = broker.getCloudletFinishedList().stream()
-                .map(c -> c.getFinishTime() - c.getLastDatacenterArrivalTime())
+                .map(c -> c.getFinishTime() - c.getArrivalTime())
                 .filter(rt -> rt <= taskCompletionTimeSlaContract)
                 .count();
         return (totalOfCloudletSlaSatisfied * 100) / broker.getCloudletFinishedList().size();
