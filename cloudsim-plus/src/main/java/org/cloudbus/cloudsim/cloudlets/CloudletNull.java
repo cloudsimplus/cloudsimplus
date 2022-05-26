@@ -242,8 +242,6 @@ final class CloudletNull implements Cloudlet {
     }
     @Override public Cloudlet reset() { return this; }
 
-    @Override public boolean setTimeSinceStart(double timeSinceStart) { return false; }
-    @Override public double getTimeSinceStart() { return 0.0; }
     @Override public Cloudlet setLifeTime(final double lifeTime) { return this; }
     @Override public double getLifeTime() { return 0; }
 

@@ -852,25 +852,8 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
     Cloudlet reset();
 
     /**
-     * Sets the time passed since this cloudlet started.
-     * This should be equal to the difference between current simulation time and cloudlet's
-     * {@link #getExecStartTime() exec start time} during simulation execution.
-     * When {@link #getLifeTime() lifeTime} is set and timeSinceStart is greater than or equal to lifeTime,
-     * the cloudlet will be terminated, as soon as possible, regardless of its length (in MI).
-     * @param timeSinceStart Time passed since this cloudlet started(in seconds)
-     */
-	boolean setTimeSinceStart(double timeSinceStart);
-
-    /**
-     * Gets the time passed since this cloudlet started.
-     * @return Time passed since this cloudlet started(in seconds)
-     * @see #setTimeSinceStart(double)
-     */
-	double getTimeSinceStart();
-
-    /**
      * Sets the lifeTime of this cloudlet,
-     * which indicates its maximum {@link #getTimeSinceStart() execution time},
+     * which indicates its maximum {@link #getActualCpuTime() execution time},
      * regardless of its length (in MI).
      *
      * <p>The cloudlet will finish execution as soon as possible, after the given lifeTime has passed,
@@ -884,7 +867,7 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
 
     /**
      * Gets the lifeTime of this cloudlet,
-     * which indicates its maximum {@link #getTimeSinceStart() execution time},
+     * which indicates its maximum {@link #getActualCpuTime()} execution time},
      * regardless of its length (in MI).
      *
      * @return lifeTime of this cloudlet (in seconds).

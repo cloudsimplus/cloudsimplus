@@ -276,7 +276,6 @@ public class CloudletExecution {
         this.instructionsFinishedSoFar += partialFinishedInstructions;
         final double partialFinishedMI = partialFinishedInstructions / Conversion.MILLION;
         cloudlet.addFinishedLengthSoFar((long)partialFinishedMI);
-        cloudlet.setTimeSinceStart(currentTime - cloudlet.getExecStartTime());
 
         /* If a simulation termination time was defined and the length of the Cloudlet is negative
          * (to indicate that they must not finish before the termination time),
@@ -549,7 +548,7 @@ public class CloudletExecution {
 			return -1;
 		}
 
-		return Math.max(cloudlet.getLifeTime() - cloudlet.getTimeSinceStart(), 0);
+		return Math.max(cloudlet.getLifeTime() - cloudlet.getActualCpuTime(), 0);
 	}
 
 }
