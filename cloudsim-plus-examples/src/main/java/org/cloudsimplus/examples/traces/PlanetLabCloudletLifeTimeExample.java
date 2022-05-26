@@ -67,7 +67,7 @@ import static org.cloudbus.cloudsim.utilizationmodels.UtilizationModelPlanetLab.
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 7.2.1
  */
-public class PlanetLabExample2 {
+public class PlanetLabCloudletLifeTimeExample {
     private static final int HOSTS = 3;
     private static final int HOST_PES = 10;
 
@@ -100,10 +100,10 @@ public class PlanetLabExample2 {
     private Datacenter datacenter0;
 
     public static void main(String[] args) {
-        new PlanetLabExample2();
+        new PlanetLabCloudletLifeTimeExample();
     }
 
-    private PlanetLabExample2() {
+    private PlanetLabCloudletLifeTimeExample() {
         /*Enables just some level of log messages.
           Make sure to import org.cloudsimplus.util.Log;*/
         //Log.setLevel(ch.qos.logback.classic.Level.WARN);
