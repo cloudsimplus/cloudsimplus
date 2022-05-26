@@ -985,15 +985,15 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
          * In such a case, gets the last allocated MIPS to compute that.
          * That value will be the current allocated MIPS if some MIPS were
          * actually allocated or the previous allocated MIPS otherwise.*/
-        final double remainingLifeTime = cle.getRemainingExecutionTime();
+        final double remainingExecTime = cle.getRemainingExecutionTime();
         final long remainingCloudletLength = cle.getRemainingCloudletLength();
 
         final double finishTimeForRemainingLen = remainingCloudletLength / cle.getLastAllocatedMips();
 
         // Check if Cloudlet lifeTime is enabled or not
         final double estimatedFinishTime =
-            remainingLifeTime > -1 ?
-                Math.min(remainingLifeTime, finishTimeForRemainingLen) :
+            remainingExecTime > -1 ?
+                Math.min(remainingExecTime, finishTimeForRemainingLen) :
                 finishTimeForRemainingLen;
 
         return Math.max(estimatedFinishTime, vm.getSimulation().getMinTimeBetweenEvents());
