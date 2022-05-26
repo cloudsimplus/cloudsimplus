@@ -243,6 +243,6 @@ final class CloudletNull implements Cloudlet {
     @Override public Cloudlet reset() { return this; }
 
     @Override public Cloudlet setLifeTime(final double lifeTime) { return this; }
-    @Override public double getLifeTime() { return 0; }
+    @Override public double getLifeTime() { return -1; }
 
 }
