@@ -539,16 +539,15 @@ public class CloudletExecution {
     }
 
     /**
-     * Gets the remaining execution time (in seconds) before the cloudlet's lifeTime expires,
-     * if a lifeTime is set.
+     * Gets the remaining lifetime of the Cloudlet (in seconds), if a lifeTime is set.
      * @return the remaining execution time if a lifeTime is set,
-     *         or -1 otherwise to indicate no lifeTime is set (this way, there is no way to
-     *         provide an exact time when the Cloudlet will finish).
+     *         or {@link Double#MAX_VALUE} otherwise to indicate no lifeTime is set,
+     *         and it isn't known how much longer the Cloudlet will execute.
      * @see Cloudlet#getLifeTime()
      */
-    public double getRemainingExecutionTime() {
+    public double getRemainingLifeTime() {
 		if (cloudlet.getLifeTime() < 0) {
-			return -1;
+			return Double.MAX_VALUE;
 		}
 
 		return Math.max(cloudlet.getLifeTime() - cloudlet.getActualCpuTime(), 0);
