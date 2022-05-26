@@ -381,8 +381,8 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
          * If length or lifetime is negative, it means it is undefined.
          * Check {@link CloudSimTag#CLOUDLET_FINISH} for details.
          */
-        return (getLifeTime() > 0 && getLastExecutionInDatacenterInfo().getActualCpuTime() >= getLifeTime())
-				|| (getLength() > 0 && getLastExecutionInDatacenterInfo().getFinishedSoFar() >= getLength());
+        return (getLifeTime() > 0 && getLastExecutionInDatacenterInfo().getActualCpuTime() >= getLifeTime()) ||
+               (getLength() > 0 && getLastExecutionInDatacenterInfo().getFinishedSoFar() >= getLength());
     }
 
     @Override
