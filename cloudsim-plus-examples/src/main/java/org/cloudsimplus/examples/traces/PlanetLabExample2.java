@@ -52,6 +52,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
 
+import static org.cloudbus.cloudsim.utilizationmodels.UtilizationModelPlanetLab.DEF_DATA_SAMPLES;
+import static org.cloudbus.cloudsim.utilizationmodels.UtilizationModelPlanetLab.DEF_SCHEDULING_INTERVAL;
+
 /**
  * An example showing how to use the {@link UtilizationModelPlanetLab} class
  * to define Cloudlets' CPU utilization based on <a href="https://www.planet-lab.org">PlanetLab's</a> trace files.
@@ -192,7 +195,7 @@ public class PlanetLabExample2 {
                     .setUtilizationModelCpu(utilizationCpu)
                     .setUtilizationModelBw(new UtilizationModelDynamic(0.2))
                     .setUtilizationModelRam(new UtilizationModelDynamic(0.4))
-            		.setLifeTime(288*300);
+            		.setLifeTime(DEF_DATA_SAMPLES * DEF_SCHEDULING_INTERVAL);
             list.add(cloudlet);
         }
 
