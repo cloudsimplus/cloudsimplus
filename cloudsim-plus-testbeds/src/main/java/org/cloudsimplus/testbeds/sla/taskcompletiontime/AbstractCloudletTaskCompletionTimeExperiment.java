@@ -108,7 +108,7 @@ abstract class AbstractCloudletTaskCompletionTimeExperiment extends Experiment {
             .orElse(DatacenterBroker.NULL);
 
         broker.getCloudletFinishedList().stream()
-            .map(c -> c.getFinishTime() - c.getLastDatacenterArrivalTime())
+            .map(c -> c.getFinishTime() - c.getArrivalTime())
             .forEach(cloudletTaskCompletionTime::addValue);
 
         return cloudletTaskCompletionTime.getMean();

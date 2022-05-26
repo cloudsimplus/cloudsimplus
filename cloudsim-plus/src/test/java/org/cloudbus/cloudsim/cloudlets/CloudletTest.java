@@ -1,7 +1,6 @@
 package org.cloudbus.cloudsim.cloudlets;
 
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
-import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmTestUtil;
@@ -70,7 +69,6 @@ public class CloudletTest {
         assertEquals(Cloudlet.Status.FAILED, Cloudlet.NULL.getStatus());
         assertTrue(Cloudlet.NULL.getRequiredFiles().isEmpty());
         assertEquals(0, Cloudlet.NULL.getFinishedLengthSoFar());
-        assertEquals(0, Cloudlet.NULL.getLastDatacenterArrivalTime());
         assertFalse(Cloudlet.NULL.isFinished());
 
     }
@@ -78,7 +76,7 @@ public class CloudletTest {
     @Test
     public void testNullObjectTimes(){
         assertAll(
-            () -> assertEquals(0, Cloudlet.NULL.getArrivalTime(Datacenter.NULL)),
+            () -> assertEquals(-1, Cloudlet.NULL.getArrivalTime()),
             () -> assertEquals(0, Cloudlet.NULL.getActualCpuTime()),
             () -> assertEquals(0, Cloudlet.NULL.getExecStartTime()),
             () -> assertEquals(0, Cloudlet.NULL.getWaitingTime()),
@@ -111,17 +109,4 @@ public class CloudletTest {
         Cloudlet.NULL.setUtilizationModelRam(model);
         assertSame(UtilizationModel.NULL, Cloudlet.NULL.getUtilizationModelRam());
     }
-
-    @Test
-    public void testNullObjectCost(){
-        assertAll(
-            () -> assertEquals(0, Cloudlet.NULL.getAccumulatedBwCost()),
-            () -> assertEquals(0, Cloudlet.NULL.getCostPerBw()),
-            () -> assertEquals(0, Cloudlet.NULL.getCostPerSec()),
-            () -> assertEquals(0, Cloudlet.NULL.getCostPerSec(Datacenter.NULL)),
-            () -> assertEquals(0, Cloudlet.NULL.getTotalCost())
-        );
-    }
-
-
 }

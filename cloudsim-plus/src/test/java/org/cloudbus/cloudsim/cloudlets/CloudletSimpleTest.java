@@ -8,8 +8,6 @@
 package org.cloudbus.cloudsim.cloudlets;
 
 import org.cloudbus.cloudsim.core.CloudSim;
-import org.cloudbus.cloudsim.datacenters.Datacenter;
-import org.cloudbus.cloudsim.datacenters.DatacenterMocker;
 import org.cloudbus.cloudsim.mocks.CloudSimMocker;
 import org.cloudbus.cloudsim.mocks.MocksHelper;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
@@ -92,8 +90,7 @@ public class CloudletSimpleTest {
 
         final CloudletSimple cloudlet = CloudletTestUtil.createCloudlet();
         cloudlet.setBroker(MocksHelper.createMockBroker(cloudsim));
-        assertEquals(0, cloudlet.getWaitingTime());
-        cloudlet.assignToDatacenter(Datacenter.NULL);
+        assertEquals(-1, cloudlet.getWaitingTime());
         final double expectedWaitingTime = execStartTime - arrivalTime;
         cloudlet.registerArrivalInDatacenter();
         cloudlet.setExecStartTime(execStartTime);
@@ -105,27 +102,10 @@ public class CloudletSimpleTest {
         final CloudletSimple cloudlet = CloudletTestUtil.createCloudlet();
         assertEquals(0, cloudlet.getExecStartTime());
 
-        cloudlet.assignToDatacenter(Datacenter.NULL);
         final int execStartTime = 10;
         cloudlet.registerArrivalInDatacenter();
         cloudlet.setExecStartTime(execStartTime);
         assertEquals(execStartTime, cloudlet.getExecStartTime());
-    }
-
-    @Test
-    public void testGetDatacenterArrivalTime() {
-        final double submissionTime = 1;
-        final CloudSim cloudsim = CloudSimMocker.createMock(mocker -> {
-            mocker.clock(submissionTime);
-        });
-
-        final CloudletSimple cloudlet = CloudletTestUtil.createCloudlet();
-        cloudlet.setBroker(MocksHelper.createMockBroker(cloudsim));
-        assertEquals(Cloudlet.NOT_ASSIGNED, cloudlet.getLastDatacenterArrivalTime());
-
-        cloudlet.assignToDatacenter(Datacenter.NULL);
-        cloudlet.registerArrivalInDatacenter();
-        assertEquals(submissionTime, cloudlet.getLastDatacenterArrivalTime());
     }
 
     @Test
@@ -149,32 +129,10 @@ public class CloudletSimpleTest {
         final CloudletSimple cloudlet = CloudletTestUtil.createCloudlet();
 
         cloudlet.setBroker(MocksHelper.createMockBroker(cloudsim));
-        cloudlet.assignToDatacenter(Datacenter.NULL);
         cloudlet.registerArrivalInDatacenter();
         cloudlet.setExecStartTime(execStartTime);
         cloudlet.setStatus(Cloudlet.Status.SUCCESS);
         assertEquals(actualCpuTime, cloudlet.getActualCpuTime());
-    }
-
-    @Test
-    public void testGetProcessingCost() {
-        final double costPerCpuSec = 4;
-        final double costPerByteOfBw = 2;
-        final Datacenter dc = DatacenterMocker.createMock(mocker -> {
-            mocker.getCharacteristics();
-            mocker.getCostPerSecond(costPerCpuSec);
-            mocker.getCostPerBw(costPerByteOfBw);
-        });
-
-        final Cloudlet cloudlet = CloudletTestUtil.createCloudlet(0, 10000, 2);
-        final double inputTransferCost = CloudletTestUtil.CLOUDLET_FILE_SIZE * costPerByteOfBw;
-        final double outputTransferCost = CloudletTestUtil.CLOUDLET_OUTPUT_SIZE * costPerByteOfBw;
-
-        final double cpuCost = 40;
-        final double totalCost = inputTransferCost + cpuCost + outputTransferCost;
-        cloudlet.assignToDatacenter(dc);
-        cloudlet.setWallClockTime(10, 10);
-        assertEquals(totalCost, cloudlet.getTotalCost());
     }
 
     @Test
@@ -189,7 +147,7 @@ public class CloudletSimpleTest {
         final CloudletSimple cloudlet = CloudletTestUtil.createCloudlet();
         assertEquals(0, cloudlet.getFinishedLengthSoFar());
 
-        cloudlet.assignToDatacenter(Datacenter.NULL);
+        cloudlet.registerArrivalInDatacenter();
         final long cloudletFinishedSoFar = cloudlet.getLength() / 2;
         assertTrue(cloudlet.addFinishedLengthSoFar(cloudletFinishedSoFar));
         assertEquals(cloudletFinishedSoFar, cloudlet.getFinishedLengthSoFar());
@@ -200,7 +158,7 @@ public class CloudletSimpleTest {
     @Test
     public void testAddCloudletFinishedSoFarWhenValueIsLowerThanLen() {
         final CloudletSimple cloudlet = CloudletTestUtil.createCloudlet();
-        cloudlet.assignToDatacenter(Datacenter.NULL);
+        cloudlet.registerArrivalInDatacenter();
         final long cloudletFinishedSoFar = cloudlet.getLength() / 2;
         assertTrue(cloudlet.addFinishedLengthSoFar(cloudletFinishedSoFar));
         assertEquals(cloudletFinishedSoFar, cloudlet.getFinishedLengthSoFar());
@@ -209,7 +167,7 @@ public class CloudletSimpleTest {
     @Test
     public void testAddCloudletFinishedSoFarWhenValueIsHigherThanLen() {
         final CloudletSimple cloudlet = CloudletTestUtil.createCloudlet();
-        cloudlet.assignToDatacenter(Datacenter.NULL);
+        cloudlet.registerArrivalInDatacenter();
         final long cloudletFinishedSoFar = cloudlet.getLength() / 2;
         cloudlet.addFinishedLengthSoFar(cloudletFinishedSoFar);
         cloudlet.addFinishedLengthSoFar(cloudletFinishedSoFar*3);
@@ -222,15 +180,6 @@ public class CloudletSimpleTest {
         final long expected = cloudlet.getLength();
         cloudlet.addFinishedLengthSoFar(expected*2);
         assertEquals(expected, cloudlet.getLength());
-    }
-
-    @Test
-    public void testGetCostPerSec() {
-        final CloudletSimple cloudlet = CloudletTestUtil.createCloudlet();
-        assertEquals(0, cloudlet.getCostPerSec());
-
-        cloudlet.assignToDatacenter(Datacenter.NULL);
-        assertEquals(0, cloudlet.getCostPerSec());
     }
 
     @Test
@@ -316,17 +265,6 @@ public class CloudletSimpleTest {
     }
 
     @Test
-    public void testSetExecParam() {
-        final CloudletSimple cloudlet = CloudletTestUtil.createCloudlet();
-        //Cloudlet has not assigned to a datacenter yet
-        assertFalse(cloudlet.setWallClockTime(1, 2));
-
-        //Assign cloudlet to a datacenter
-        cloudlet.assignToDatacenter(Datacenter.NULL);
-        assertTrue(cloudlet.setWallClockTime(1, 2));
-    }
-
-    @Test
     public void testSetCloudletStatus() {
         final CloudletSimple cloudlet = CloudletTestUtil.createCloudlet();
         cloudlet.setStatus(CloudletSimple.Status.INSTANTIATED);
@@ -352,7 +290,7 @@ public class CloudletSimpleTest {
 
         assertEquals(0, cloudlet.getFinishedLengthSoFar());
 
-        cloudlet.assignToDatacenter(Datacenter.NULL);
+        cloudlet.registerArrivalInDatacenter();
         final long finishedSoFar = length / 10;
         cloudlet.addFinishedLengthSoFar(finishedSoFar);
         assertEquals(finishedSoFar, cloudlet.getFinishedLengthSoFar());
@@ -368,7 +306,7 @@ public class CloudletSimpleTest {
 
         assertFalse(cloudlet.isFinished());
 
-        cloudlet.assignToDatacenter(Datacenter.NULL);
+        cloudlet.registerArrivalInDatacenter();
         final long finishedSoFar = length / 10;
         cloudlet.addFinishedLengthSoFar(finishedSoFar);
         assertFalse(cloudlet.isFinished());
