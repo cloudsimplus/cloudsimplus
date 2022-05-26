@@ -540,10 +540,10 @@ public class CloudletExecution {
     }
 
     /**
-     * Get remaining time before the cloudlet's lifeTime expires.
-     * @return remaining time before lifeTime expires(in seconds). Non-negative if lifeTime enabled, -1 otherwise.
+     * Gets the remaining time before the cloudlet's lifeTime expires (in seconds)..
+     * @return the remaining execution time if a lifeTime is set, -1 otherwise.
      */
-    public double getRemainingLifeTime() {
+    public double getRemainingExecutionTime() {
 		if (cloudlet.getLifeTime() < 0) {
 			return -1;
 		}
