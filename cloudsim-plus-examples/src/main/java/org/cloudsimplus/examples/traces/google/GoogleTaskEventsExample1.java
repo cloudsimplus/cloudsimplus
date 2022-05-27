@@ -126,6 +126,7 @@ public class GoogleTaskEventsExample1 {
     private List<DatacenterBroker> brokers;
     private Datacenter datacenter;
     private Collection<Cloudlet> cloudlets;
+    private GoogleTaskEventsTraceReader taskEventsReader;
 
     public static void main(String[] args) {
         new GoogleTaskEventsExample1();
@@ -182,14 +183,14 @@ public class GoogleTaskEventsExample1 {
      * @see GoogleTaskEventsTraceReader#getBrokerManager()
      */
     private void createCloudletsAndBrokersFromTraceFile() {
-        final var reader =
+        taskEventsReader =
             GoogleTaskEventsTraceReader
                 .getInstance(simulation, TASK_EVENTS_FILE, this::createCloudlet)
                 .setMaxCloudletsToCreate(MAX_CLOUDLETS);
 
         // By default, created Cloudlets are automatically submitted to their respective brokers.
-        cloudlets = reader.process();
-        brokers = reader.getBrokerManager().getBrokers();
+        cloudlets = taskEventsReader.process();
+        brokers = taskEventsReader.getBrokerManager().getBrokers();
         System.out.printf(
             "%d Cloudlets and %d Brokers created from the %s trace file.%n",
             cloudlets.size(), brokers.size(), TASK_EVENTS_FILE);
@@ -238,7 +239,7 @@ public class GoogleTaskEventsExample1 {
      * </p>
      */
     private void readTaskUsageTraceFile() {
-        final var reader = GoogleTaskUsageTraceReader.getInstance(brokers, TASK_USAGE_FILE);
+        final var reader = GoogleTaskUsageTraceReader.getInstance(taskEventsReader, TASK_USAGE_FILE);
         final var cloudletsCollection = reader.process();
         System.out.printf("%d Cloudlets processed from the %s trace file.%n", cloudletsCollection.size(), TASK_USAGE_FILE);
         System.out.println();

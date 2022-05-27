@@ -36,11 +36,8 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelDynamic;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudsimplus.listeners.EventInfo;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -69,7 +66,11 @@ import static java.util.Objects.requireNonNull;
  */
 public final class GoogleTaskUsageTraceReader extends GoogleTraceReaderAbstract<Cloudlet> {
     private final List<CloudSimEvent> cloudletUsageChangeEvents;
-    private final List<DatacenterBroker> brokers;
+
+    /**
+     * A {@link GoogleTaskEventsTraceReader} used to create Cloudlets from a task events trace file.
+     */
+    private final GoogleTaskEventsTraceReader taskEventsReader;
 
     /**
      * The index of each field in the trace file.
@@ -262,44 +263,47 @@ public final class GoogleTaskUsageTraceReader extends GoogleTraceReaderAbstract<
      * Gets a {@link GoogleTaskUsageTraceReader} instance to read a "task usage" trace file
      * inside the <b>application's resource directory</b>.
      *
-     * @param brokers a list of {@link DatacenterBroker}s that own running Cloudlets for which
-     *                resource usage will be read from the trace.
+     * @param taskEventsReader a {@link GoogleTaskEventsTraceReader} used to create Cloudlets from a task events trace file
      * @param filePath the workload trace <b>relative file name</b> in one of the following formats: <i>ASCII text, zip, gz.</i>
      * @throws IllegalArgumentException when the trace file name is null or empty
      * @throws UncheckedIOException     when the file cannot be accessed (such as when it doesn't exist)
      * @see #process()
      */
     public static GoogleTaskUsageTraceReader getInstance(
-        final List<DatacenterBroker> brokers,
+        final GoogleTaskEventsTraceReader taskEventsReader,
         final String filePath)
     {
         final InputStream reader = ResourceLoader.newInputStream(filePath, GoogleTaskUsageTraceReader.class);
-        return new GoogleTaskUsageTraceReader(brokers, filePath, reader);
+        return new GoogleTaskUsageTraceReader(taskEventsReader, filePath, reader);
     }
 
     /**
      * Instantiates a {@link GoogleTaskUsageTraceReader} to read a "task usage" from a given InputStream.
      *
-     * @param brokers a list of {@link DatacenterBroker}s that own running Cloudlets for which
-     *                resource usage will be read from the trace.
-     * @param filePath   the workload trace <b>relative file name</b> in one of the following formats: <i>ASCII text, zip, gz.</i>
-     * @param reader     a {@link InputStream} object to read the file
+     * @param taskEventsReader a {@link GoogleTaskEventsTraceReader} used to create Cloudlets from a task events trace file
+     * @param filePath         the workload trace <b>relative file name</b> in one of the following formats: <i>ASCII text, zip, gz.</i>
+     * @param reader           a {@link InputStream} object to read the file
      * @throws IllegalArgumentException when the trace file name is null or empty
      * @throws UncheckedIOException     when the file cannot be accessed (such as when it doesn't exist)
      * @see #process()
      */
     private GoogleTaskUsageTraceReader(
-        final List<DatacenterBroker> brokers,
+        final GoogleTaskEventsTraceReader taskEventsReader,
         final String filePath,
         final InputStream reader)
     {
         super(filePath, reader);
-        this.brokers = requireNonNull(brokers);
-        if(brokers.isEmpty()){
-            throw new IllegalArgumentException("The broker list cannot be empty");
+        this.taskEventsReader = requireNonNull(taskEventsReader);
+        final var brokerList = getBrokers();
+        if(brokerList.isEmpty()){
+            throw new IllegalArgumentException("The broker list in your GoogleTaskEventsTraceReader is empty");
         }
-        this.simulation = brokers.get(0).getSimulation();
+        this.simulation = brokerList.get(0).getSimulation();
         cloudletUsageChangeEvents = new ArrayList<>();
+    }
+
+    private List<DatacenterBroker> getBrokers() {
+        return taskEventsReader.getBrokerManager().getBrokers();
     }
 
     /**
@@ -357,11 +361,10 @@ public final class GoogleTaskUsageTraceReader extends GoogleTraceReaderAbstract<
     @Override
     protected boolean processParsedLineInternal() {
         final TaskUsage taskUsage = new TaskUsage(this);
-        return brokers.stream()
-               .flatMap(broker -> getAvailableObjects().stream())
-               .filter(cloudlet -> cloudlet.getId() == taskUsage.getUniqueTaskId())
-               .findFirst()
-               .map(cloudlet -> requestCloudletUsageChange(cloudlet, taskUsage)).isPresent();
+        return taskEventsReader
+                .findObject(taskUsage.getUniqueTaskId())
+                .map(cloudlet -> requestCloudletUsageChange(cloudlet, taskUsage))
+                .isPresent();
     }
 
     /**
