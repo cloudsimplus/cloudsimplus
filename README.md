@@ -111,13 +111,13 @@ CloudSim Plus has a simpler structure to make it ease to use and understand. It 
 
 ![CloudSim Plus Modules](https://github.com/manoelcampos/cloudsim-plus/raw/master/docs/images/modules.png)
 
-- [cloudsim-plus](/cloudsim-plus): the CloudSim Plus cloud simulation framework API, which is used by all other modules. 
+- [cloudsimplus](/cloudsimplus): the CloudSim Plus cloud simulation framework API, which is used by all other modules. 
   It is the main and only required module you need to write cloud simulations. 
-- [cloudsim-plus-examples](/cloudsim-plus-examples): includes a series of different examples, since minimal simulation scenarios using basic 
+- [cloudsimplus-examples](/cloudsimplus-examples): includes a series of different examples, since minimal simulation scenarios using basic 
   CloudSim Plus features, to complex scenarios using workloads from trace files or Vm migration examples. This is an excellent starting point for learning how to build cloud simulations using CloudSim Plus.
-- [cloudsim-plus-testbeds](/cloudsim-plus-testbeds): enables implementation of simulation testbeds in a repeatable manner, 
+- [cloudsimplus-testbeds](/cloudsimplus-testbeds): enables implementation of simulation testbeds in a repeatable manner, 
   allowing a researcher to execute several simulation runs for a given experiment and collect statistical data using a scientific approach. 
-- [cloudsim-plus-benchmarks](/cloudsim-plus-benchmarks): a new module used just internally to implement micro benchmarks to assess framework performance.
+- [cloudsimplus-benchmarks](/cloudsimplus-benchmarks): a new module used just internally to implement micro benchmarks to assess framework performance.
 
 It also has a better package organization, 
 improving [Separation of Concerns (SoC)](https://en.wikipedia.org/wiki/Separation_of_concerns) 
@@ -161,7 +161,7 @@ Add the following dependency into the pom.xml file of your own Maven project.
 ```xml
 <dependency>
     <groupId>org.cloudsimplus</groupId>
-    <artifactId>cloudsim-plus</artifactId>
+    <artifactId>cloudsimplus</artifactId>
     <!-- Set a specific version or use the latest one -->
     <version>LATEST</version>
 </dependency>
@@ -174,7 +174,7 @@ Add the following dependency into the build.gradle file of your own Gradle proje
 ```groovy
 dependencies {
     //Set a specific version or use the latest one
-    implementation 'org.cloudsimplus:cloudsim-plus:LATEST'
+    implementation 'org.cloudsimplus:cloudsimplus:LATEST'
 }
 ```
 
@@ -191,7 +191,7 @@ To run some example, type the following command at a terminal inside the project
 For instance, to run the `BasicFirstExample` you can type: `bash script/bootstrap.sh org.cloudsimplus.examples.BasicFirstExample`. 
 
 The script checks if it is required to build the project, using maven in this case, making sure to download all dependencies. 
-To see which examples are available, just navigate through the [examples directory](/cloudsim-plus-examples/src/main/java/).
+To see which examples are available, just navigate through the [examples directory](/cloudsimplus-examples/src/main/java/).
 To check more script options, run it without any parameter.  
  
 ## 4.3 By Means of an IDE
@@ -206,10 +206,10 @@ Below are the steps to start using the project:
     - For Eclipse or IntelliJ IDEA, 
       you have to import the project selecting the folder where the project was cloned. 
       **Check an Eclipse tutorial [here](https://youtu.be/oO-a5-cZBps)**.
-- Inside the opened/imported project you will have the cloudsim-plus and cloudsim-plus-examples modules. 
-  The cloudsim-plus module is where the simulator source code is, that usually you don't have to change, unless you want to contribute to the project. 
-  The cloudsim-plus-examples is where you can start.
-- Open the cloudsim-plus-examples module. The most basic examples are in the root of the org.cloudbus.cloudsim.examples package. 
+- Inside the opened/imported project you will have the cloudsimplus and cloudsimplus-examples modules. 
+  The cloudsimplus module is where the simulator source code is, that usually you don't have to change, unless you want to contribute to the project. 
+  The cloudsimplus-examples is where you can start.
+- Open the cloudsimplus-examples module. The most basic examples are in the root of the org.cloudbus.cloudsim.examples package. 
   You can run any one of the classes in this package to get a specific example. 
 - If you want to build your own simulations, the easiest way is to create another class inside this module.
 
@@ -228,9 +228,9 @@ In order to build a simulation scenario, you have to create at least:
 
 Due to the simplicity provided by CloudSim Plus, all the code to create a minimal simulation scenario can be as simple as presented below.
 A more adequate and reusable example is available
-[here](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/BasicFirstExample.java),
-together with [other examples](/cloudsim-plus-examples). Specific examples of CloudSim Plus, showing several
-new exclusive features and advanced scenarios, can be found [here](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/). 
+[here](/cloudsimplus-examples/src/main/java/org/cloudsimplus/examples/BasicFirstExample.java),
+together with [other examples](/cloudsimplus-examples). Specific examples of CloudSim Plus, showing several
+new exclusive features and advanced scenarios, can be found [here](/cloudsimplus-examples/src/main/java/org/cloudsimplus/examples/). 
 
 ```java
 //Enables just some level of logging.
