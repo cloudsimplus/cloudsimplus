@@ -278,23 +278,6 @@ public final class GoogleTaskUsageTraceReader extends GoogleTraceReaderAbstract<
     }
 
     /**
-     * Instantiates a {@link GoogleTaskUsageTraceReader} to read a "task usage" trace file.
-     *
-     * @param brokers a list of {@link DatacenterBroker}s that own running Cloudlets for which
-     *                resource usage will be read from the trace.
-     * @param filePath               the workload trace <b>relative file name</b> in one of the following formats: <i>ASCII text, zip, gz.</i>
-     * @throws IllegalArgumentException when the trace file name is null or empty
-     * @throws UncheckedIOException     when the file cannot be accessed (such as when it doesn't exist)
-     * @see #process()
-     */
-    public GoogleTaskUsageTraceReader(
-        final List<DatacenterBroker> brokers,
-        final String filePath) throws IOException
-    {
-        this(brokers, filePath, Files.newInputStream(Paths.get(filePath)));
-    }
-
-    /**
      * Instantiates a {@link GoogleTaskUsageTraceReader} to read a "task usage" from a given InputStream.
      *
      * @param brokers a list of {@link DatacenterBroker}s that own running Cloudlets for which
