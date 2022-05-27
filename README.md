@@ -309,7 +309,7 @@ CloudSim Plus has extended documentation of classes and interfaces and also incl
 package documentation that can be viewed directly on your IDE or at the link provided above.
 Such a package documentation gives a general overview of the classes used to build a cloud simulation. Also, check the [publications](#publications) section to access published CloudSim Plus papers.
 
-A Google Group forum is available at <https://groups.google.com/group/cloudsim-plus> and you can also use the [Discussions page here](https://github.com/cloudsimplus/cloudsimplus/discussions). Do not open an issue to post a question, they will be just deleted.
+A Google Group forum is available at <https://groups.google.com/group/cloudsimplus> and you can also use the [Discussions page here](https://github.com/cloudsimplus/cloudsimplus/discussions). Do not open an issue to post a question, they will be just deleted.
 
 <p align="right"><a href="#top">:arrow_up:</a></p>
 
