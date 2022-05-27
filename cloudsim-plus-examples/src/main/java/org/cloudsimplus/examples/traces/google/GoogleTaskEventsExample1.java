@@ -66,13 +66,14 @@ import static org.cloudbus.cloudsim.util.BytesConversion.megaBytesToBytes;
 import static org.cloudbus.cloudsim.util.MathUtil.positive;
 
 /**
- * An example showing how to create Cloudlets (tasks) from a Google Task Events
+ * An example showing how to use <a href="https://github.com/google/cluster-data">Google Cluster Data</a> trace files.
+ * The example creates Cloudlets (tasks) from a Google Task Events
  * Trace using a {@link GoogleTaskEventsTraceReader}. Then it uses a
  * {@link GoogleTaskUsageTraceReader} to read "task usage" trace files that
- * define how the created Cloudlets will use resources along the time.
+ * define how created Cloudlets will use resources along the time.
  *
  * <p>
- * The trace are located in resources/workload/google-traces/. Each line in the
+ * The traces are located in resources/workload/google-traces/. Each line in the
  * "task events" trace defines the scheduling of tasks (Cloudlets) inside a
  * Datacenter.
  * </p>
@@ -87,10 +88,9 @@ import static org.cloudbus.cloudsim.util.MathUtil.positive;
  * @since CloudSim Plus 4.0.0
  *
  * TODO A joint example that creates Hosts and Cloudlets from trace files will be useful.
- * TODO See https://github.com/manoelcampos/cloudsim-plus/issues/151
+ * TODO See https://github.com/manoelcampos/cloudsimplus/issues/151
  * TODO {@link CloudSimTag#CLOUDLET_FAIL} events aren't been processed.
- * TODO It has to be checked how to make the Cloudlet to be executed in the
- *      Host specified in the trace file.
+ * TODO It has to be checked how to make the Cloudlet to be executed in the Host specified in the trace file.
  */
 public class GoogleTaskEventsExample1 {
     private static final String TASK_EVENTS_FILE = "workload/google-traces/task-events-sample-1.csv";
@@ -105,7 +105,7 @@ public class GoogleTaskEventsExample1 {
     private static final double HOST_MIPS = 1000;
 
     /**
-     * Defines a negative length for Cloudlets created from the Google Task Events Trace file
+     * Defines a negative length for Cloudlets created from the Google Task Events Trace file,
      * so that they can run indefinitely until a {@link CloudSimTag#CLOUDLET_FINISH}
      * event is received by the {@link DatacenterBroker}.
      * Check out {@link Cloudlet#setLength(long)} for details.
@@ -187,8 +187,7 @@ public class GoogleTaskEventsExample1 {
                 .getInstance(simulation, TASK_EVENTS_FILE, this::createCloudlet)
                 .setMaxCloudletsToCreate(MAX_CLOUDLETS);
 
-        /* Created Cloudlets are automatically submitted by default to their respective brokers,
-        so you don't have to submit them manually.*/
+        // By default, created Cloudlets are automatically submitted to their respective brokers.
         cloudlets = reader.process();
         brokers = reader.getBrokerManager().getBrokers();
         System.out.printf(
@@ -197,10 +196,10 @@ public class GoogleTaskEventsExample1 {
     }
 
     /**
-     * A method that is used to actually create each Cloudlet defined as a task in the
-     * trace file.
-     * The researcher can write his/her own code inside this method to define
-     * how he/she wants to create the Cloudlet based on the trace data.
+     * A method called by a {@link GoogleTaskEventsTraceReader} to actually create each Cloudlet
+     * defined as a task in the trace file.
+     * You can write your own code inside this method to define
+     * how you want to create the Cloudlet based on the trace data.
      *
      * @param event an object containing the trace line read, used to create the Cloudlet.
      * @return
