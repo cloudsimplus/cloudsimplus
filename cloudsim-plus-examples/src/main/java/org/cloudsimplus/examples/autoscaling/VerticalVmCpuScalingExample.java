@@ -70,14 +70,13 @@ import static java.util.Comparator.comparingDouble;
  * Every VM will check at {@link #SCHEDULING_INTERVAL specific time intervals}
  * if its PEs {@link #upperCpuUtilizationThreshold(Vm) are over or underloaded},
  * according to a <b>static computed utilization threshold</b>.
- * Then it requests such PEs to be up or down scaled.
+ * Then it requests such PEs to be up or down scaled, increasing or decreasing
+ * the number of PEs.
  *
  * <p>The example uses the CloudSim Plus {@link EventListener} feature
  * to enable monitoring the simulation and dynamically create objects such as Cloudlets and VMs at runtime.
- * It relies on
- * <a href="https://docs.oracle.com/javase/tutorial/java/javaOO/methodreferences.html">Java 8 Method References</a>
- * to set a method to be called for {@link Simulation#addOnClockTickListener(EventListener) onClockTick events}.
- * It enables getting notifications when the simulation clock advances, then creating and submitting new cloudlets.
+ * The {@link Simulation#addOnClockTickListener(EventListener) onClockTick listener}.
+ * enables getting notifications when the simulation clock changes, then creating and submitting new cloudlets.
  * </p>
  *
  * @author Manoel Campos da Silva Filho
@@ -87,19 +86,17 @@ import static java.util.Comparator.comparingDouble;
  */
 public class VerticalVmCpuScalingExample {
     /**
-     * The interval in which the Datacenter will schedule events.
-     * As lower is this interval, sooner the processing of VMs and Cloudlets
-     * is updated and you will get more notifications about the simulation execution.
+     * The interval in which the Datacenter will schedule events (in seconds).
+     * As lower is this interval, sooner the processing of VMs and Cloudlets is updated,
+     * resulting in more notifications about the simulation execution.
      * However, it can affect the simulation performance.
      *
-     * <p>For this example, a large schedule interval such as 15 will make that just
-     * at every 15 seconds the processing of VMs is updated. If a VM is overloaded, just
-     * after this time the creation of a new one will be requested
+     * <p>A larger schedule interval makes processing of VMs to be updated less frequently.
+     * If a VM is overloaded, just after that interval the creation of a new one will be requested
      * by the VM's {@link HorizontalVmScaling Horizontal Scaling} mechanism.</p>
      *
      * <p>If this interval is defined using a small value, you may get
-     * more dynamically created VMs than expected. Accordingly, this value
-     * has to be trade-off.
+     * more dynamically created VMs than expected. Accordingly, this value has to be trade-off.
      * For more details, see {@link Datacenter#getSchedulingInterval()}.</p>
     */
     private static final int SCHEDULING_INTERVAL = 1;
@@ -154,7 +151,7 @@ public class VerticalVmCpuScalingExample {
     }
 
     /**
-     * Shows updates every time the simulation clock advances.
+     * Shows updates every time the simulation clock changes.
      * @param evt information about the event happened (that for this Listener is just the simulation time)
      */
     private void onClockTickListener(EventInfo evt) {
@@ -176,9 +173,6 @@ public class VerticalVmCpuScalingExample {
         new CloudletsTableBuilder(finishedCloudlets).build();
     }
 
-    /**
-     * Creates a Datacenter and its Hosts.
-     */
     private void createDatacenter() {
         for (int i = 0; i < HOSTS; i++) {
             hostList.add(createHost());
@@ -223,11 +217,6 @@ public class VerticalVmCpuScalingExample {
         return newList;
     }
 
-    /**
-     * Creates a Vm object.
-     *
-     * @return the created Vm
-     */
     private Vm createVm() {
         final int id = createsVms++;
 
@@ -237,20 +226,20 @@ public class VerticalVmCpuScalingExample {
     }
 
     /**
-     * Creates a {@link VerticalVmScaling} for scaling VM's CPU when it's under or overloaded.
+     * Creates a {@link VerticalVmScaling} for scaling VM's CPU when it is under or overloaded.
      *
      * <p>Realize the lower and upper thresholds are defined inside this method by using
      * references to the methods {@link #lowerCpuUtilizationThreshold(Vm)}
      * and {@link #upperCpuUtilizationThreshold(Vm)}.
-     * These methods enable defining thresholds in a dynamic way
-     * and even different thresholds for distinct VMs.
-     * Therefore, it's a powerful mechanism.
+     * These methods enable defining thresholds in a dynamic way,
+     * setting different thresholds for distinct VMs.
      * </p>
      *
      * <p>
      * However, if you are defining thresholds in a static way,
      * and they are the same for all VMs, you can use a Lambda Expression
-     * like below, for instance, instead of creating a new method that just returns a constant value:<br>
+     * like below, instead of creating a new method that just returns a constant value:<br>
+     *
      * {@code verticalCpuScaling.setLowerThresholdFunction(vm -> 0.4);}
      * </p>
      *
@@ -264,17 +253,16 @@ public class VerticalVmCpuScalingExample {
         /* By uncommenting the line below, you will see that, instead of gradually
          * increasing or decreasing the number of PEs, when the scaling object detects
          * the CPU usage is above or below the defined thresholds,
-         * it will automatically calculate the number of PEs to add/remove to
-         * move the VM from the over or underload condition.
+         * it will automatically calculate the number of PEs to add/remove,
+         * moving the VM from the over or underload state.
         */
         //verticalCpuScaling.setResourceScaling(new ResourceScalingInstantaneous());
 
         /** Different from the commented line above, the line below implements a ResourceScaling using a Lambda Expression.
-         * It is just an example which scales the resource twice the amount defined by the scaling factor
-         * defined in the constructor.
+         * It is just an example which scales the resource twice the amount defined by the scaling factor.
          *
-         * Realize that if the setResourceScaling method is not called, a ResourceScalingGradual will be used,
-         * which scales the resource according to the scaling factor.
+         * Realize that if the setResourceScaling method isn't called, a ResourceScalingGradual will be used,
+         * scaling the resource according to the scaling factor.
          * The lower and upper thresholds after this line can also be defined using a Lambda Expression.
          *
          * So, here we are defining our own {@link ResourceScaling} instead of
@@ -292,8 +280,8 @@ public class VerticalVmCpuScalingExample {
     /**
      * Defines the minimum CPU utilization percentage that indicates a Vm is underloaded.
      * This function is using a statically defined threshold, but it would be defined
-     * a dynamic threshold based on any condition you want.
-     * A reference to this method is assigned to each Vertical VM Scaling created.
+     * a dynamic one based on any condition you want.
+     * A reference to this method is assigned to each {@link VerticalVmScaling} created.
      *
      * @param vm the VM to check if its CPU is underloaded.
      *        <b>The parameter is not being used internally, which means the same
@@ -308,12 +296,12 @@ public class VerticalVmCpuScalingExample {
     /**
      * Defines the maximum CPU utilization percentage that indicates a Vm is overloaded.
      * This function is using a statically defined threshold, but it would be defined
-     * a dynamic threshold based on any condition you want.
-     * A reference to this method is assigned to each Vertical VM Scaling created.
+     * a dynamic one based on any condition you want.
+     * A reference to this method is assigned to each {@link VerticalVmScaling} created.
      *
      * @param vm the VM to check if its CPU is overloaded.
-     *        The parameter is not being used internally, that means the same
-     *        threshold is used for any Vm.
+     *        <b>The parameter is not being used internally, that means the same
+     *        threshold is used for any Vm.</b>
      * @return the upper CPU utilization threshold
      * @see #createVerticalPeScaling()
      */
@@ -335,12 +323,11 @@ public class VerticalVmCpuScalingExample {
         }
 
         /*
-         * Creates several Cloudlets, increasing the arrival delay and decreasing
-         * the length of each one.
-         * The progressing delay enables CPU usage to increase gradually along the arrival of
+         * Creates several Cloudlets, increasing the arrival delay and decreasing the length of each one.
+         * The progressing delay enables CPU usage to increase gradually, along the arrival of
          * new Cloudlets (triggering CPU up scaling at some point in time).
          *
-         * The decreasing length enables Cloudlets to finish in different times,
+         * The decreasing length enables Cloudlets to finish in different paces,
          * to gradually reduce CPU usage (triggering CPU down scaling at some point in time).
          *
          * Check the logs to understand how the scaling is working.
@@ -351,7 +338,7 @@ public class VerticalVmCpuScalingExample {
     }
 
     /**
-     * Creates a single Cloudlet with no delay, which means the Cloudlet arrival time will
+     * Creates a single Cloudlet with no delay, meaning the Cloudlet arrival time will
      * be zero (exactly when the simulation starts).
      *
      * @param length the Cloudlet length
@@ -373,11 +360,11 @@ public class VerticalVmCpuScalingExample {
     private Cloudlet createCloudlet(final long length, final int numberOfPes, final double delay) {
         /*
         Since a VM PE isn't used by two Cloudlets at the same time,
-        the Cloudlet can used 100% of that CPU capacity at the time
+        the Cloudlet can use 100% of that CPU capacity at the time
         it is running. Even if a CloudletSchedulerTimeShared is used
-        to share the same VM PE among multiple Cloudlets,
+        to share the same VM PE (vPE) between multiple Cloudlets,
         just one Cloudlet uses the PE at a time.
-        Then it is preempted to enable other Cloudlets to use such a VM PE.
+        Then it is preempted to enable other Cloudlets to use such a vPE.
          */
         final UtilizationModel utilizationCpu = new UtilizationModelFull();
 
