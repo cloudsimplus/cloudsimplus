@@ -35,7 +35,6 @@ import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.HostSimple;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
-import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.util.BytesConversion;
 import org.cloudbus.cloudsim.util.Conversion;
@@ -59,7 +58,6 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static org.cloudbus.cloudsim.util.BytesConversion.megaBytesToBytes;
@@ -154,7 +152,9 @@ public class GoogleTaskEventsExample1 {
 
         System.out.printf("Total number of created Cloudlets: %d%n", getTotalCreatedCloudletsNumber());
         brokers.stream().sorted().forEach(this::printCloudlets);
-        System.out.printf("Simulation finished at %s. Execution time: %.2f seconds%n", LocalTime.now(), TimeUtil.elapsedSeconds(startSecs));
+        System.out.printf(
+            "Simulation finished at %s. Execution time: %.2f seconds%n",
+            LocalTime.now(), TimeUtil.elapsedSeconds(startSecs));
     }
 
     private int getTotalCreatedCloudletsNumber() {
@@ -182,7 +182,7 @@ public class GoogleTaskEventsExample1 {
      * @see GoogleTaskEventsTraceReader#getBrokerManager()
      */
     private void createCloudletsAndBrokersFromTraceFile() {
-        final GoogleTaskEventsTraceReader reader =
+        final var reader =
             GoogleTaskEventsTraceReader
                 .getInstance(simulation, TASK_EVENTS_FILE, this::createCloudlet)
                 .setMaxCloudletsToCreate(MAX_CLOUDLETS);
@@ -215,7 +215,7 @@ public class GoogleTaskEventsExample1 {
         final long pesNumber = positive(event.actualCpuCores(VM_PES), VM_PES);
 
         final double maxRamUsagePercent = positive(event.getResourceRequestForRam(), Conversion.HUNDRED_PERCENT);
-        final UtilizationModelDynamic utilizationRam = new UtilizationModelDynamic(0, maxRamUsagePercent);
+        final var utilizationRam = new UtilizationModelDynamic(0, maxRamUsagePercent);
 
         final double sizeInMB    = event.getResourceRequestForLocalDiskSpace() * VM_SIZE_MB + 1;
         final long   sizeInBytes = (long) Math.ceil(megaBytesToBytes(sizeInMB));
@@ -238,15 +238,14 @@ public class GoogleTaskEventsExample1 {
      * </p>
      */
     private void readTaskUsageTraceFile() {
-        final GoogleTaskUsageTraceReader reader =
-            GoogleTaskUsageTraceReader.getInstance(brokers, TASK_USAGE_FILE);
-        final Collection<Cloudlet> processedCloudlets = reader.process();
-        System.out.printf("%d Cloudlets processed from the %s trace file.%n", processedCloudlets.size(), TASK_USAGE_FILE);
+        final var reader = GoogleTaskUsageTraceReader.getInstance(brokers, TASK_USAGE_FILE);
+        final var cloudletsCollection = reader.process();
+        System.out.printf("%d Cloudlets processed from the %s trace file.%n", cloudletsCollection.size(), TASK_USAGE_FILE);
         System.out.println();
     }
 
     private Datacenter createDatacenter() {
-        final List<Host> hostList = new ArrayList<>(HOSTS);
+        final var hostList = new ArrayList<Host>(HOSTS);
         for(int i = 0; i < HOSTS; i++) {
             hostList.add(createHost());
         }
@@ -264,38 +263,37 @@ public class GoogleTaskEventsExample1 {
     }
 
     private Host createHost() {
-        final List<Pe> peList = createPesList(HOST_PES);
-        final VmScheduler vmScheduler = new VmSchedulerTimeShared();
+        final var peList = createPesList(HOST_PES);
         //Uses a ResourceProvisionerSimple for RAM and BW
         final Host host = new HostSimple(HOST_RAM, HOST_BW, HOST_STORAGE, peList);
-        host.setVmScheduler(vmScheduler);
+        host.setVmScheduler(new VmSchedulerTimeShared());
         return host;
     }
 
     private List<Pe> createPesList(final int count) {
-        final List<Pe> cpuCoresList = new ArrayList<>(count);
+        final var peList = new ArrayList<Pe>(count);
         for(int i = 0; i < count; i++){
             //Uses a PeProvisionerSimple by default
-            cpuCoresList.add(new PeSimple(HOST_MIPS));
+            peList.add(new PeSimple(HOST_MIPS));
         }
 
-        return cpuCoresList;
+        return peList;
     }
 
     private List<Vm> createVms() {
-        return IntStream.range(0, VMS).mapToObj(this::createVm).collect(Collectors.toList());
+        return IntStream.range(0, VMS).mapToObj(i -> createVm()).toList();
     }
 
-    private Vm createVm(final int id) {
+    private Vm createVm() {
         //Uses a CloudletSchedulerTimeShared by default
         return new VmSimple(VM_MIPS, VM_PES).setRam(VM_RAM).setBw(VM_BW).setSize(VM_SIZE_MB);
     }
 
     private void printCloudlets(final DatacenterBroker broker) {
         final String username = broker.getName().replace("Broker_", "");
-        final List<Cloudlet> list = broker.getCloudletFinishedList();
-        list.sort(Comparator.comparingLong(Cloudlet::getId));
-        new CloudletsTableBuilder(list)
+        final var cloudletList = broker.getCloudletFinishedList();
+        cloudletList.sort(Comparator.comparingLong(Cloudlet::getId));
+        new CloudletsTableBuilder(cloudletList)
             .addColumn(0, new TextTableColumn("Job", "ID"), Cloudlet::getJobId)
             .addColumn(7, new TextTableColumn("VM Size", "MB"), this::getVmSize)
             .addColumn(8, new TextTableColumn("Cloudlet Size", "MB"), this::getCloudletSizeInMB)
