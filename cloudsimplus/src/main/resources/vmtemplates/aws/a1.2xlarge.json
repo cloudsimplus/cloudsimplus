@@ -1,0 +1,7 @@
+{
+  "name": "a1.2xlarge",
+  "cpus": 8,
+  "memoryInMB": 16384,
+  "pricePerHour": 0.204,
+  "region": "US East (Ohio)"
+}

@@ -1,0 +1,7 @@
+{
+  "name": "t2.nano",
+  "cpus": 1,
+  "memoryInMB": 512,
+  "pricePerHour": 0.0058,
+  "region": "US East (Ohio)"
+}

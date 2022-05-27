@@ -22,5 +22,5 @@ jobs:
           CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}
         run: |
           mvn clean verify -B -V -Pintegration-tests
-          cd cloudsim-plus && mvn jacoco:report
+          cd cloudsimplus && mvn jacoco:report
           test -z $CODACY_PROJECT_TOKEN || bash <(curl -Ls https://coverage.codacy.com/get.sh) report -r target/site/jacoco/jacoco.xml

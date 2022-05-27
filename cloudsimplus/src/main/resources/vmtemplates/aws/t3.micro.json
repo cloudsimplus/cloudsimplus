@@ -1,0 +1,7 @@
+{
+  "name": "t3.micro",
+  "cpus": 2,
+  "memoryInMB": 1024,
+  "pricePerHour": 0.0104,
+  "region": "US East (Ohio)"
+}

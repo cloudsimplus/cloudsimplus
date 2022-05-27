@@ -1,0 +1,100 @@
+{
+  "comment": "A sample SLA contract in JSON format",
+  "metrics": [
+    {
+      "name": "TaskCompletionTime",
+      "dimensions": [
+        {
+          "name": "minValue",
+          "value": 0,
+          "unit": "Milliseconds"
+        },
+        {
+          "name": "maxValue",
+          "value": 100,
+          "unit": "Milliseconds"
+        }
+      ]
+    },
+    {
+      "name": "CpuUtilization",
+      "dimensions": [
+        {
+          "name": "minValue",
+          "value": 30,
+          "unit": "Percent"
+        },
+        {
+          "name": "maxValue",
+          "value": 90,
+          "unit": "Percent"
+        }
+      ]
+    },
+    {
+      "name": "Availability",
+      "dimensions": [
+        {
+          "name": "minValue",
+          "value": 99.90,
+          "unit": "%"
+        },
+        {
+          "name": "maxValue",
+          "value": 100.00,
+          "unit": "%"
+        }
+      ]
+    },
+    {
+      "name": "WaitTime",
+      "dimensions": [
+        {
+          "name": "minValue",
+          "value": 0,
+          "unit": "Milliseconds"
+        },
+        {
+          "name": "maxValue",
+          "value": 10,
+          "unit": "Milliseconds"
+        }
+      ]
+    },
+    {
+      "name": "Throughput",
+      "dimensions": [
+        {
+          "name": "minValue",
+          "value": 10,
+          "unit": "Bits/Second"
+        },
+        {
+          "name": "maxValue",
+          "value": 500,
+          "unit": "Bits/Second"
+        }
+      ]
+    },
+    {
+      "name": "Price",
+      "dimensions": [
+        {
+          "name": "maxValue",
+          "value": 0.017
+        }
+      ]
+    },
+    {
+      "name": "FaultToleranceLevel",
+      "dimensions": [
+        {
+          "name": "minValue",
+          "value": 3
+        }
+      ]
+    }
+  ]
+}
+
+  

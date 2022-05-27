@@ -1,0 +1,554 @@
+<?xml version="1.0"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.cloudsimplus</groupId>
+    <artifactId>cloudsimplus</artifactId>
+    <version>7.3.0</version>
+
+    <name>CloudSim Plus API</name>
+    <description>CloudSim Plus: A modern, highly extensible and easier-to-use Java 8+ Framework for Modeling and Simulation of Cloud Computing Infrastructures and Services</description>
+    <url>https://cloudsimplus.org</url>
+
+    <organization>
+        <name>Instituto de Telecomunicações (IT) - Universidade da Beira Interior (UBI) - Instituto Federal de Educação Ciência e Tecnologia do Tocantins (IFTO)</name>
+        <url>https://www.it.pt https://www.ubi.pt http://www.ifto.edu.br</url>
+    </organization>
+
+    <inceptionYear>2015</inceptionYear>
+
+    <licenses>
+        <license>
+            <name>GPLv3</name>
+            <url>http://www.gnu.org/licenses/gpl-3.0.txt</url>
+        </license>
+    </licenses>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <license-maven-plugin.version>3.0</license-maven-plugin.version>
+        <!-- License file to be used by the com.mycila.license-maven-plugin -->
+        <copyrightfile>../COPYRIGHT</copyrightfile>
+    </properties>
+
+    <developers>
+        <developer>
+            <name>Manoel Campos da Silva Filho</name>
+            <email>manoelcampos@gmail.com</email>
+            <organization>Instituto Federal de Educação Ciência e Tecnologia do Tocantins (IFTO)</organization>
+            <organizationUrl>http://www.ifto.edu.br</organizationUrl>
+        </developer>
+        <developer>
+            <name>Raysa Oliveira</name>
+            <email>oliveira.raysa@gmail.com</email>
+            <organization>Universidade da Beira Interior (UBI)</organization>
+            <organizationUrl>http://www.ubi.pt</organizationUrl>
+        </developer>
+    </developers>
+
+    <scm>
+        <connection>scm:git:git@github.com:manoelcampos/cloudsim-plus.git</connection>
+        <developerConnection>scm:git:git@github.com:manoelcampos/cloudsim-plus.git</developerConnection>
+        <url>git@github.com:manoelcampos/cloudsim-plus.git</url>
+    </scm>
+
+    <issueManagement>
+        <url>http://github.com/manoelcampos/cloudsim-plus/issues</url>
+        <system>GitHub Issues</system>
+    </issueManagement>
+
+    <profiles>
+        <!-- The profiles 'default' and 'integration-tests' are specified to allow
+        using the maven-surefire-plugin instead of the maven-failsafe-plugin to run
+        Integration/Functional tests. By this way, it is possible to see the
+        Integration/Functional tests results directly at the NetBeans JUnit graphical
+        test results interface.
+        -->
+        <profile>
+            <!-- This is the default profile that runs just the Unit Tests,
+            ignoring the Integration/Functional tests.
+            -->
+            <id>default</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <excludes>
+                                <exclude>**/integrationtests/*.java</exclude>
+                            </excludes>
+                        </configuration>
+                    </plugin>
+
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <version>3.2.1</version>
+                        <executions>
+                            <execution>
+                                <id>attach-sources</id>
+                                <goals>
+                                    <goal>jar-no-fork</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <configuration>
+                            <additionalOptions>-Xdoclint:none</additionalOptions>
+                            <tags>
+                                <tag>
+                                    <name>TODO</name>
+                                    <!-- TODO tag for all places -->
+                                    <placement>a</placement>
+                                    <head>To do something:</head>
+                                </tag>
+                            </tags>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>attach-javadocs</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <!--
+            This is the profile that runs all the Unit and Integration/Functional Tests.
+            -->
+            <id>integration-tests</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                    </plugin>
+
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <configuration>
+                            <tags>
+                                <tag>
+                                    <name>TODO</name>
+                                    <!-- TODO tag for all places -->
+                                    <placement>a</placement>
+                                    <head>To do something:</head>
+                                </tag>
+                            </tags>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <!--
+             A profile used to execute all goals required to deploy
+             the project to the Maven Central.
+             To execute use: mvn clean deploy -P sonatype
+
+             To check the deployed artifact and probably release it to maven central
+             you should visit https://oss.sonatype.org.
+             MAKE SURE YOU ARE LOGGED IN TO SEE YOUR DEPLOYMENTS.
+             -->
+            <id>sonatype</id>
+
+            <!--
+            URLs to deploy the project at the Maven Central (http://mvnrepository.com)
+            using a Sonatype account (http://central.sonatype.org)
+            See the "all" profile in this pom for deployment information.
+            -->
+            <distributionManagement>
+                <snapshotRepository>
+                    <id>ossrh</id>
+                    <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+                </snapshotRepository>
+                <repository>
+                    <id>ossrh</id>
+                    <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+                </repository>
+            </distributionManagement>
+
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <!-- Forking the process was causing runtime exceptions
+                             when running tests with Java 10+ -->
+                            <forkCount>0</forkCount>
+                        </configuration>
+                    </plugin>
+
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <version>3.2.1</version>
+                        <executions>
+                            <execution>
+                                <id>attach-sources</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>jar-no-fork</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>attach-javadocs</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+
+                        <configuration>
+                            <tags>
+                                <tag>
+                                    <name>TODO</name>
+                                    <!-- TODO tag for all places -->
+                                    <placement>a</placement>
+                                    <head>To do something:</head>
+                                </tag>
+                            </tags>
+                        </configuration>
+                    </plugin>
+
+                    <!--
+                     Signs the generated jar using GPG, as required for deploying at the Maven Central.
+                     Configurations are defined into the local repo settings.xml
+                    -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>1.6</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                                <configuration>
+                                    <!-- Prevent `gpg` from using pinentry programs
+                                    and avoid "gpg: signing failed: Inappropriate ioctl for device" error. -->
+                                    <gpgArguments>
+                                        <arg>--pinentry-mode</arg>
+                                        <arg>loopback</arg>
+                                    </gpgArguments>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <!--
+                    Plugin to deploy to the maven central using a Sonatype account.
+                    Credentials are defined into the local repo settings.xml
+                    -->
+                    <plugin>
+                        <groupId>org.sonatype.plugins</groupId>
+                        <artifactId>nexus-staging-maven-plugin</artifactId>
+                        <version>1.6.8</version>
+                        <extensions>true</extensions>
+                        <configuration>
+                            <serverId>ossrh</serverId>
+                            <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                            <!--If the artifact will be automatically released to maven central after the upload to sonatype.-->
+                            <autoReleaseAfterClose>false</autoReleaseAfterClose>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+    <build>
+        <pluginManagement>
+            <!-- Plugins to be reused for different <profile>'s -->
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <!-- There is some problem with the version 2.19.1 or with
+                    Netbeans 8.0.2 that the JUnit GUI is not shown at the IDE-->
+                    <version>3.0.0-M5</version>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <version>3.2.0</version>
+                    <configuration>
+                        <failOnError>false</failOnError>
+                        <tags>
+                            <tag>
+                                <name>TODO</name>
+                                <!-- TODO tag for all places -->
+                                <placement>a</placement>
+                                <head>To do something:</head>
+                            </tag>
+                        </tags>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+
+        <plugins>
+            <plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>3.2.0</version>
+				<configuration>
+					<archive>
+						<manifest>
+							<!-- Adds dependencies to classpath into the manifest file inside the jar !-->
+							<addClasspath>true</addClasspath>
+
+							<!-- Defines that the dependencies will follow the same
+							 hierarchical directory structure of a maven repository !-->
+							<classpathLayoutType>repository</classpathLayoutType>
+
+							<!-- Defines the root folder where the dependencies are. In this case
+							 is the the root of the local maven repository. !-->
+							<classpathPrefix>${user.home}/.m2/repository/</classpathPrefix>
+						</manifest>
+					</archive>
+				</configuration>
+			</plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
+                <configuration>
+                    <release>17</release>
+                </configuration>
+            </plugin>
+
+            <!--
+             Plugin for code coverage, enabling
+             generation of reports on IDE to see percentage
+             of the project's code that is being covered by unit tests.
+            -->
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.8.7</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!--
+            Adds License Information to project source and binaries using com.mycila.maven-license-plugin.
+            https://dzone.com/articles/adding-license-information.
+
+            To add missing license information for source files run:
+            mvn license:format
+            -->
+            <plugin>
+                <groupId>com.mycila</groupId>
+                <artifactId>license-maven-plugin</artifactId>
+                <version>${license-maven-plugin.version}</version>
+                <configuration>
+                    <header>${copyrightfile}</header>
+
+                    <mapping>
+                        <java>SLASHSTAR_STYLE</java>
+                    </mapping>
+
+                    <strictCheck>true</strictCheck>
+                    <failIfMissing>false</failIfMissing>
+
+                    <includes>
+                        <include>**/src/main/java/org/cloudsimplus/**</include>
+                        <include>**/src/test/java/org/cloudsimplus/**</include>
+
+                        <!--
+                        CloudSim Plus exclusive files that are inside CloudSim packages.
+                        The original copyright note was kept for files that were introduced in CloudSim Plus
+                        but were derived from existing classes.
+                        Such files accordingly have a "@since CloudSim Plus XXXX" tag to indicate
+                        when they were introduced.
+                        -->
+                        <include>**/src/main/java/**/Processor.java</include>
+                        <include>**/src/main/java/**/Identifiable.java</include>
+                        <include>**/src/main/java/**/ResourceCapacity.java</include>
+                        <include>**/src/main/java/**/RawStorage.java</include>
+                        <include>**/src/main/java/**/Bandwidth.java</include>
+                        <include>**/src/main/java/**/Ram.java</include>
+                        <include>**/src/main/java/**/RawStorageManageable.java</include>
+                        <include>**/src/main/java/**/BandwidthManageable.java</include>
+                        <include>**/src/main/java/**/RamManageable.java</include>
+                        <include>**/src/main/java/**/Nameable.java</include>
+                        <include>**/src/main/java/**/CloudletSchedulerCompletelyFair.java</include>
+                        <include>**/src/main/java/**/UtilizationModelArithmeticProgression.java</include>
+                        <include>**/src/main/java/**/Resourceful.java</include>
+                        <include>**/src/main/java/**/PoissonDistr.java</include>
+                        <include>**/src/main/java/**/ResourceAbstract.java</include>
+                        <include>**/src/main/java/**/VmAllocationPolicyBestFit.java</include>
+                    </includes>
+
+                    <excludes>
+                        <exclude>**/package-info.java</exclude>
+                        <exclude>**/src/test/resources/**</exclude>
+                        <exclude>**/src/main/resources/**</exclude>
+                        <exclude>**/*.md</exclude>
+                        <exclude>**/*.swf</exclude>
+                        <exclude>**/*.brite</exclude>
+                        <exclude>**/*.json</exclude>
+                        <exclude>**/*.properties</exclude>
+                        <exclude>**/*.uml</exclude>
+                        <exclude>**/*.iml</exclude>
+                        <exclude>**/*.xml</exclude>
+                        <exclude>**/src/main/resources/**</exclude>
+                        <exclude>**/package-info.java</exclude>
+                    </excludes>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <!--
+                            Automatically checks for missing license header in source files.
+                            You can use "format" to add missing headers or
+                            call manually using: mvn license:format
+                            -->
+                            <goal>check</goal>
+                        </goals>
+                        <phase>process-sources</phase>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-math3</artifactId>
+            <version>3.6.1</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.12.0</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-collections4</artifactId>
+            <version>4.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>5.7.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>5.7.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.platform</groupId>
+            <artifactId>junit-platform-launcher</artifactId>
+            <version>1.7.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>3.12.4</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.8.9</version>
+        </dependency>
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-module-junit4</artifactId>
+            <version>1.7.3</version>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>junit</groupId>
+                    <artifactId>junit</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-core</artifactId>
+            <version>1.3.0-alpha10</version>
+        </dependency>
+        <dependency>
+            <!-- Automatically includes slf4j-api 2.0 -->
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.3.0-alpha10</version>
+        </dependency>
+    </dependencies>
+
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.2.0</version>
+                <reportSets>
+                    <!-- https://maven.apache.org/plugins/maven-javadoc-plugin/examples/javadoc-nofork.html -->
+                    <reportSet>
+                        <reports>
+                            <report>javadoc-no-fork</report>
+                            <report>test-javadoc-no-fork</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+
+                <configuration>
+                    <tags>
+                        <tag>
+                            <name>TODO</name>
+                            <!-- TODO tag for all places -->
+                            <placement>a</placement>
+                            <head>To do something:</head>
+                        </tag>
+                    </tags>
+                </configuration>
+            </plugin>
+        </plugins>
+    </reporting>
+</project>

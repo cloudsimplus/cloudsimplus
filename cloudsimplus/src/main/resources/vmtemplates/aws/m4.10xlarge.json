@@ -1,0 +1,7 @@
+{
+  "name": "m4.10xlarge",
+  "cpus": 40,
+  "memoryInMB": 163840,
+  "pricePerHour": 2,
+  "region": "US East (Ohio)"
+}

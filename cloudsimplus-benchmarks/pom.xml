@@ -1,0 +1,196 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.cloudsimplus</groupId>
+    <artifactId>cloudsimplus-benchmarks</artifactId>
+    <version>7.3.0</version>
+    <name>CloudSim Plus Benchmarks</name>
+    <description>A module containing benchmarks created using JMH (Java Microbenchmark Harness framework) to assess CloudSim Plus performance</description>
+    <url>http://cloudsimplus.org</url>
+
+    <inceptionYear>2016</inceptionYear>
+
+    <licenses>
+        <license>
+            <name>GPLv3</name>
+            <url>http://www.gnu.org/licenses/gpl-3.0.txt</url>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>Manoel Campos da Silva Filho</name>
+            <email>manoelcampos@gmail.com</email>
+            <organization>Instituto Federal de Educação Ciência e Tecnologia do Tocantins (IFTO)</organization>
+            <organizationUrl>http://www.ifto.edu.br</organizationUrl>
+        </developer>
+        <developer>
+            <name>Raysa Oliveira</name>
+            <email>oliveira.raysa@gmail.com</email>
+            <organization>Universidade da Beira Interior (UBI)</organization>
+            <organizationUrl>http://www.ubi.pt</organizationUrl>
+        </developer>
+    </developers>
+
+    <scm>
+        <connection>scm:git:git@github.com:manoelcampos/cloudsim-plus.git</connection>
+        <developerConnection>scm:git:git@github.com:manoelcampos/cloudsim-plus.git</developerConnection>
+        <url>git@github.com:manoelcampos/cloudsim-plus.git</url>
+    </scm>
+
+    <issueManagement>
+        <url>http://github.com/manoelcampos/cloudsim-plus/issues</url>
+        <system>GitHub Issues</system>
+    </issueManagement>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.openjdk.jmh</groupId>
+            <artifactId>jmh-core</artifactId>
+            <version>1.17.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openjdk.jmh</groupId>
+            <artifactId>jmh-generator-annprocess</artifactId>
+            <version>1.17.2</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.cloudsimplus</groupId>
+            <artifactId>cloudsimplus</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <!-- Automatically includes slf4j-api 2.0 -->
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.3.0-alpha10</version>
+        </dependency>
+    </dependencies>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <!--
+            Name of the benchmark Uber-JAR to generate.
+          -->
+        <uberjar.name>${project.build.finalName}-uber</uberjar.name>
+
+        <license-maven-plugin.version>3.0</license-maven-plugin.version>
+        <!-- License file to be used by the com.mycila.license-maven-plugin -->
+        <copyrightfile>../COPYRIGHT</copyrightfile>
+    </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
+                <configuration>
+                    <release>17</release>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.2.4</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <finalName>${uberjar.name}</finalName>
+                            <transformers>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>org.openjdk.jmh.Main</mainClass>
+                                </transformer>
+                            </transformers>
+                            <filters>
+                                <filter>
+                                    <!--
+                                    Shading signed JARs will fail without this.
+                                    http://stackoverflow.com/questions/999489/invalid-signature-file-when-attempting-to-run-a-jar
+                                    -->
+                                    <artifact>*:*</artifact>
+                                    <excludes>
+                                        <exclude>META-INF/*.SF</exclude>
+                                        <exclude>META-INF/*.DSA</exclude>
+                                        <exclude>META-INF/*.RSA</exclude>
+                                    </excludes>
+                                </filter>
+                            </filters>
+
+                            <shadedArtifactAttached>true</shadedArtifactAttached>
+                            <!-- https://maven.apache.org/plugins/maven-shade-plugin/examples/attached-artifact.html -->
+                            <!-- Can be any name that makes sense -->
+                            <shadedClassifierName>jhm</shadedClassifierName>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Inherited from the parent pom. See the plugin there for more details. -->
+            <plugin>
+                <groupId>com.mycila</groupId>
+                <artifactId>license-maven-plugin</artifactId>
+                <version>${license-maven-plugin.version}</version>
+                <configuration>
+                    <header>${copyrightfile}</header>
+                    <mapping>
+                        <java>SLASHSTAR_STYLE</java>
+                    </mapping>
+                    <strictCheck>true</strictCheck>
+                    <failIfMissing>false</failIfMissing>
+                    <excludes>
+                        <exclude>**/src/main/resources/**</exclude>
+                        <exclude>**/*.md</exclude>
+                        <exclude>**/*.xml</exclude>
+                        <exclude>**/package-info.java</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <version>3.0.0-M1</version>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <!-- Checks if a required Maven version is being used to build the project -->
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <version>3.0.0-M3</version>
+                <executions>
+                    <execution>
+                        <id>enforce-versions</id>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <requireMavenVersion>
+                                    <version>3.0.0</version>
+                                </requireMavenVersion>
+                                <requireJavaVersion>
+                                    <version>17</version>
+                                </requireJavaVersion>
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>

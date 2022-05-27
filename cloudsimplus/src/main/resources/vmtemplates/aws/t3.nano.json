@@ -1,0 +1,7 @@
+{
+  "name": "t3.nano",
+  "cpus": 2,
+  "memoryInMB": 512,
+  "pricePerHour": 0.0052,
+  "region": "US East (Ohio)"
+}

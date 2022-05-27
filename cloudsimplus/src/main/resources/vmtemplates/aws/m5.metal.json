@@ -1,0 +1,7 @@
+{
+  "name": "m5.metal",
+  "cpus": 96,
+  "memoryInMB": 393216,
+  "pricePerHour": 4.608,
+  "region": "US East (Ohio)"
+}

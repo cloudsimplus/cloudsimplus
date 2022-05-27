@@ -1,0 +1,14 @@
+#Constains a list of files representing SLA Contracts in JSON format
+#These files are used by an experiment to assess if the metrics in those contracts are being met.
+#The lines starting with # are ignored.
+
+SlaCustomer0.json
+
+#SlaCustomer1.json
+#SlaCustomer2.json
+#SlaCustomer3.json
+#SlaCustomer4.json
+#SlaCustomer5.json
+#SlaCustomer6.json
+#SlaCustomer7.json
+#SlaCustomer8.json

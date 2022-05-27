@@ -1,7 +1,0 @@
-{
-  "name": "t2.small",
-  "cpus": 1,
-  "memoryInMB": 2048,
-  "pricePerHour": 0.023,
-  "region": "US East (Ohio)"
-}

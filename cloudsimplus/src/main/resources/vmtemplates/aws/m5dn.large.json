@@ -1,0 +1,7 @@
+{
+  "name": "m5dn.large",
+  "cpus": 2,
+  "memoryInMB": 8192,
+  "pricePerHour": 0.136,
+  "region": "US East (Ohio)"
+}

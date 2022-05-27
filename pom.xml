@@ -9,7 +9,7 @@
     </properties>
 
     <groupId>org.cloudsimplus</groupId>
-    <artifactId>cloudsim-plus-modules</artifactId>
+    <artifactId>cloudsimplus-modules</artifactId>
     <version>7.2.0</version>
     <packaging>pom</packaging>
 
@@ -56,10 +56,10 @@
     </issueManagement>
 
     <modules>
-        <module>cloudsim-plus</module>
-        <module>cloudsim-plus-examples</module>
-		<module>cloudsim-plus-benchmarks</module>
-		<module>cloudsim-plus-testbeds</module>
+        <module>cloudsimplus</module>
+        <module>cloudsimplus-examples</module>
+		<module>cloudsimplus-benchmarks</module>
+		<module>cloudsimplus-testbeds</module>
     </modules>
 
     <build>

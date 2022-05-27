@@ -1,7 +1,0 @@
-{
-  "name": "m5.8xlarge",
-  "cpus": 32,
-  "memoryInMB": 131072,
-  "pricePerHour": 1.536,
-  "region": "US East (Ohio)"
-}

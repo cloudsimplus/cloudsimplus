@@ -1,0 +1,7 @@
+{
+  "name": "t2.micro",
+  "cpus": 1,
+  "memoryInMB": 1024,
+  "pricePerHour": 0.0116,
+  "region": "US East (Ohio)"
+}
