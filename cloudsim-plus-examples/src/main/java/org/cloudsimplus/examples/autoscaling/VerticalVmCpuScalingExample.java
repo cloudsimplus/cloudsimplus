@@ -23,7 +23,6 @@
  */
 package org.cloudsimplus.examples.autoscaling;
 
-import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
@@ -34,12 +33,9 @@ import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.HostSimple;
-import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
-import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.resources.Processor;
-import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelDynamic;
@@ -106,6 +102,7 @@ public class VerticalVmCpuScalingExample {
     private static final int VMS = 1;
     private static final int VM_PES = 14;
     private static final int VM_RAM = 1200;
+    private static final int VM_MIPS = 1000;
     private final CloudSim simulation;
     private DatacenterBroker broker0;
     private List<Host> hostList;
@@ -113,7 +110,11 @@ public class VerticalVmCpuScalingExample {
     private List<Cloudlet> cloudletList;
 
     private static final int CLOUDLETS = 10;
-    private static final int CLOUDLETS_INITIAL_LENGTH = 20_000;
+
+    /**
+     * A base length used to define Cloudlets' length (in MI)
+     */
+    private static final int CLOUDLETS_BASE_LENGTH = 20_000;
 
     private int createsVms;
 
@@ -165,12 +166,12 @@ public class VerticalVmCpuScalingExample {
     }
 
     private void printSimulationResults() {
-        final List<Cloudlet> finishedCloudlets = broker0.getCloudletFinishedList();
+        final var finishedCloudletList = broker0.getCloudletFinishedList();
         final Comparator<Cloudlet> sortByVmId = comparingDouble(c -> c.getVm().getId());
         final Comparator<Cloudlet> sortByStartTime = comparingDouble(Cloudlet::getExecStartTime);
-        finishedCloudlets.sort(sortByVmId.thenComparing(sortByStartTime));
+        finishedCloudletList.sort(sortByVmId.thenComparing(sortByStartTime));
 
-        new CloudletsTableBuilder(finishedCloudlets).build();
+        new CloudletsTableBuilder(finishedCloudletList).build();
     }
 
     private void createDatacenter() {
@@ -178,51 +179,45 @@ public class VerticalVmCpuScalingExample {
             hostList.add(createHost());
         }
 
-        Datacenter dc0 = new DatacenterSimple(simulation, hostList, new VmAllocationPolicySimple());
+        final var dc0 = new DatacenterSimple(simulation, hostList);
         dc0.setSchedulingInterval(SCHEDULING_INTERVAL);
     }
 
     private Host createHost() {
-        List<Pe> peList = new ArrayList<>(HOST_PES);
+        final var peList = new ArrayList<Pe>(HOST_PES);
         for (int i = 0; i < HOST_PES; i++) {
-            peList.add(new PeSimple(1000, new PeProvisionerSimple()));
+            peList.add(new PeSimple(1000));
         }
 
         final long ram = 20000; //in Megabytes
         final long bw = 100000; //in Megabytes
         final long storage = 10000000; //in Megabites/s
-        final int id = hostList.size();
-        return new HostSimple(ram, bw, storage, peList)
-            .setRamProvisioner(new ResourceProvisionerSimple())
-            .setBwProvisioner(new ResourceProvisionerSimple())
-            .setVmScheduler(new VmSchedulerTimeShared());
+        return new HostSimple(ram, bw, storage, peList).setVmScheduler(new VmSchedulerTimeShared());
     }
 
     /**
      * Creates a list of initial VMs in which each VM is able to scale vertically
      * when it is over or underloaded.
      *
-     * @param numberOfVms number of VMs to create
+     * @param vmsNumber number of VMs to create
      * @return the list of scalable VMs
      * @see #createVerticalPeScaling()
      */
-    private List<Vm> createListOfScalableVms(final int numberOfVms) {
-        List<Vm> newList = new ArrayList<>(numberOfVms);
-        for (int i = 0; i < numberOfVms; i++) {
-            Vm vm = createVm();
+    private List<Vm> createListOfScalableVms(final int vmsNumber) {
+        final var newVmList = new ArrayList<Vm>(vmsNumber);
+        for (int i = 0; i < vmsNumber; i++) {
+            final var vm = createVm();
             vm.setPeVerticalScaling(createVerticalPeScaling());
-            newList.add(vm);
+            newVmList.add(vm);
         }
 
-        return newList;
+        return newVmList;
     }
 
     private Vm createVm() {
         final int id = createsVms++;
 
-        return new VmSimple(id, 1000, VM_PES)
-            .setRam(VM_RAM).setBw(1000).setSize(10000)
-            .setCloudletScheduler(new CloudletSchedulerTimeShared());
+        return new VmSimple(id, VM_MIPS, VM_PES).setRam(VM_RAM).setBw(1000).setSize(10000);
     }
 
     /**
@@ -248,7 +243,7 @@ public class VerticalVmCpuScalingExample {
     private VerticalVmScaling createVerticalPeScaling() {
         //The percentage in which the number of PEs has to be scaled
         final double scalingFactor = 0.1;
-        VerticalVmScalingSimple verticalCpuScaling = new VerticalVmScalingSimple(Processor.class, scalingFactor);
+        final var verticalCpuScaling = new VerticalVmScalingSimple(Processor.class, scalingFactor);
 
         /* By uncommenting the line below, you will see that, instead of gradually
          * increasing or decreasing the number of PEs, when the scaling object detects
@@ -269,7 +264,7 @@ public class VerticalVmCpuScalingExample {
          * using the available ones such as the {@link ResourceScalingGradual}
          * or {@link ResourceScalingInstantaneous}.
          */
-        verticalCpuScaling.setResourceScaling(vs -> 2*vs.getScalingFactor()*vs.getAllocatedResource());
+        verticalCpuScaling.setResourceScaling(vs -> 2 * vs.getScalingFactor() * vs.getAllocatedResource());
 
         verticalCpuScaling.setLowerThresholdFunction(this::lowerCpuUtilizationThreshold);
         verticalCpuScaling.setUpperThresholdFunction(this::upperCpuUtilizationThreshold);
@@ -319,7 +314,7 @@ public class VerticalVmCpuScalingExample {
         final int remainingCloudletsNumber = CLOUDLETS-initialCloudletsNumber;
         //Creates a List of Cloudlets that will start running immediately when the simulation starts
         for (int i = 0; i < initialCloudletsNumber; i++) {
-            cloudletList.add(createCloudlet(CLOUDLETS_INITIAL_LENGTH+(i*1000), 2));
+            cloudletList.add(createCloudlet(CLOUDLETS_BASE_LENGTH +(i*1000), 2));
         }
 
         /*
@@ -333,7 +328,7 @@ public class VerticalVmCpuScalingExample {
          * Check the logs to understand how the scaling is working.
         */
         for (int i = 1; i <= remainingCloudletsNumber; i++) {
-            cloudletList.add(createCloudlet(CLOUDLETS_INITIAL_LENGTH*2/i, 1,i*2));
+            cloudletList.add(createCloudlet(CLOUDLETS_BASE_LENGTH *2/i, 1,i*2));
         }
     }
 
@@ -342,22 +337,22 @@ public class VerticalVmCpuScalingExample {
      * be zero (exactly when the simulation starts).
      *
      * @param length the Cloudlet length
-     * @param numberOfPes the number of PEs the Cloudlets requires
+     * @param pesNumber the number of PEs the Cloudlets requires
      * @return the created Cloudlet
      */
-    private Cloudlet createCloudlet(final long length, final int numberOfPes) {
-        return createCloudlet(length, numberOfPes, 0);
+    private Cloudlet createCloudlet(final long length, final int pesNumber) {
+        return createCloudlet(length, pesNumber, 0);
     }
 
     /**
      * Creates a single Cloudlet.
      *
      * @param length the length of the cloudlet to create.
-     * @param numberOfPes the number of PEs the Cloudlets requires.
-     * @param delay the delay that defines the arrival time of the Cloudlet at the Cloud infrastructure.
+     * @param pesNumber the number of PEs the Cloudlets requires.
+     * @param delay the delay defining the arrival time of the Cloudlet at the Cloud infrastructure.
      * @return the created Cloudlet
      */
-    private Cloudlet createCloudlet(final long length, final int numberOfPes, final double delay) {
+    private Cloudlet createCloudlet(final long length, final int pesNumber, final double delay) {
         /*
         Since a VM PE isn't used by two Cloudlets at the same time,
         the Cloudlet can use 100% of that CPU capacity at the time
@@ -366,7 +361,7 @@ public class VerticalVmCpuScalingExample {
         just one Cloudlet uses the PE at a time.
         Then it is preempted to enable other Cloudlets to use such a vPE.
          */
-        final UtilizationModel utilizationCpu = new UtilizationModelFull();
+        final var utilizationCpu = new UtilizationModelFull();
 
         /**
          * Since BW e RAM are shared resources that don't enable preemption,
@@ -380,8 +375,8 @@ public class VerticalVmCpuScalingExample {
          * use a {@link UtilizationModelStochastic} to define resource usage randomly,
          * or use any other {@link UtilizationModel} implementation.
         */
-        final UtilizationModel utilizationModelDynamic = new UtilizationModelDynamic(1.0/CLOUDLETS);
-        Cloudlet cl = new CloudletSimple(length, numberOfPes);
+        final var utilizationModelDynamic = new UtilizationModelDynamic(1.0/CLOUDLETS);
+        final var cl = new CloudletSimple(length, pesNumber);
         cl.setFileSize(1024)
             .setOutputSize(1024)
             .setUtilizationModelBw(utilizationModelDynamic)
