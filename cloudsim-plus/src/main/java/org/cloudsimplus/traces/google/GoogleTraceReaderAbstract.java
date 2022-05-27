@@ -46,7 +46,8 @@ abstract class GoogleTraceReaderAbstract<T extends Identifiable> extends TraceRe
     /* default */ static final String VAL_SEPARATOR = " -> ";
     /* default */ static final String COL_SEPARATOR = " | ";
 
-    /** A Set of objects immediately created from the trace file.
+    /**
+     * A collection of objects immediately created from the trace file.
      * The type <T> of the objects depends on each concrete class.
      * For instance, the {@link GoogleMachineEventsTraceReader}
      * creates {@link org.cloudbus.cloudsim.hosts.Host}s.
