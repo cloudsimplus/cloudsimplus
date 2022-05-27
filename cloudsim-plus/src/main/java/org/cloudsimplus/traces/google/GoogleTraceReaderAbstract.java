@@ -47,7 +47,8 @@ abstract class GoogleTraceReaderAbstract<T extends Identifiable> extends TraceRe
     /* default */ static final String COL_SEPARATOR = " | ";
 
     /**
-     * A collection of objects immediately created from the trace file.
+     * A map of objects immediately created from the trace file,
+     * where the key is the object ID and the value is the object itself.
      * The type <T> of the objects depends on each concrete class.
      * For instance, the {@link GoogleMachineEventsTraceReader}
      * creates {@link org.cloudbus.cloudsim.hosts.Host}s.
@@ -151,6 +152,12 @@ abstract class GoogleTraceReaderAbstract<T extends Identifiable> extends TraceRe
         return availableObjectsMap.values();
     }
 
+    /**
+     * Find a object created from the trace file.
+     * @param id id of the object to find
+     * @return an Optional containing the object if found;
+     *         an empty Optional otherwise.
+     */
     protected final Optional<T> findObject(final long id) {
         return Optional.ofNullable(availableObjectsMap.get(id));
     }
