@@ -71,4 +71,5 @@ final class VerticalVmScalingNull implements VerticalVmScaling {
     @Override public long getAllocatedResource() { return 0; }
     @Override public boolean allocateResourceForVm() { return false; }
     @Override public void logResourceUnavailable() {/**/}
+    @Override public void logDownscaleToZeroNotAllowed() {/**/}
 }

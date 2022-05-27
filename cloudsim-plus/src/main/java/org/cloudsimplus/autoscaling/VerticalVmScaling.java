@@ -308,4 +308,6 @@ public interface VerticalVmScaling extends VmScaling {
     boolean allocateResourceForVm();
 
     void logResourceUnavailable();
+
+    void logDownscaleToZeroNotAllowed();
 }

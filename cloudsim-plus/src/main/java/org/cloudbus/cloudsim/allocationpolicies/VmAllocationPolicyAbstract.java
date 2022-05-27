@@ -139,6 +139,13 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
             return false;
         }
 
+        final boolean isVmUnderloaded = scaling.isVmUnderloaded();
+        //Avoids trying to downscale the number of vPEs to zero
+        if(isVmUnderloaded && scaling.getVm().getNumberOfPes() == pesNumberForScaling) {
+            scaling.logDownscaleToZeroNotAllowed();
+            return false;
+        }
+
         if (scaling.isVmOverloaded() && isNotHostPesSuitableToUpScaleVm(scaling)) {
             scaling.logResourceUnavailable();
             return false;
@@ -146,7 +153,7 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
 
         final Vm vm = scaling.getVm();
         vm.getHost().getVmScheduler().deallocatePesFromVm(vm);
-        final int signal = scaling.isVmUnderloaded() ? -1 : 1;
+        final int signal = isVmUnderloaded ? -1 : 1;
         //Removes or adds some capacity from/to the resource, respectively if the VM is under or overloaded
         vm.getProcessor().sumCapacity((long) pesNumberForScaling * signal);
 

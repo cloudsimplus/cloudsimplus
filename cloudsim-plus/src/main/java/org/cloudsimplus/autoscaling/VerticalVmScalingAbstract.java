@@ -274,6 +274,16 @@ public abstract class VerticalVmScalingAbstract extends VmScalingAbstract implem
             getHostResource().getAvailableResource(), resourceClassToScale.getSimpleName());
     }
 
+    @Override
+    public void logDownscaleToZeroNotAllowed() {
+        final Vm vm = getVm();
+        LOGGER.warn(
+            "{}: {}: {} {} is underloaded but cannot be downscaled to zero.",
+            vm.getSimulation().clockStr(),
+            getClass().getSimpleName(), vm,
+            resourceClassToScale.getSimpleName());
+    }
+
     private void logResourceAllocated(){
         final Vm vm = getVm();
         LOGGER.info(
