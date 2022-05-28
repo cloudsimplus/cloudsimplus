@@ -138,20 +138,14 @@ The light yellow ones were introduced just to better organize existing CloudSim 
 ---
 - Before trying to use this project, make sure you have JDK 17 installed.
 
-There are 2 ways to use CloudSim Plus. You can: 
-(i) create your own project and add it as a dependency. This way, it will be downloaded directly from [Maven Central](https://maven-badges.herokuapp.com/maven-central/org.cloudsimplus/cloudsimplus).
-(ii) download the [cloudsimplus-examples](https://github.com/cloudsimplus/cloudsimplus-examples) project and follow the instructions there.
+There are 2 ways to use CloudSim Plus:
 
-You can check [this video](https://youtu.be/k2enNoxTYVw) or follow the instructions in one of the next subsections.
+- creating your own project and add it as a dependency. This way, it will be downloaded directly from [Maven Central](https://maven-badges.herokuapp.com/maven-central/org.cloudsimplus/cloudsimplus).
+- downloading the [cloudsimplus-examples](https://github.com/cloudsimplus/cloudsimplus-examples) project and follow the instructions there.
 
-<a id="maven"></a>
+Check sections below if you want to add CloudSim Plus as a dependency into your own Maven or Gradle project. This way you can start building your simulations from scratch.
 
-## 4.1 Adding it as a Dependency into Your Own Project
-
-You can add CloudSim Plus API module (which is the only one required to build simulations) as a dependency inside your own Maven or Gradle project.
-This way you can start building your simulations from scratch.
-
-### 4.1.1 Maven
+## 4.1 Maven
 
 Add the following dependency into the pom.xml file of your own Maven project. 
 
@@ -164,7 +158,7 @@ Add the following dependency into the pom.xml file of your own Maven project.
 </dependency>
 ```
 
-### 4.1.2 Gradle
+## 4.2 Gradle
 
 Add the following dependency into the build.gradle file of your own Gradle project. 
 
