@@ -134,9 +134,8 @@ The light yellow ones were introduced just to better organize existing CloudSim 
 
 # 4. 👩🏽‍💻 How to Use CloudSim Plus 
 
-**:warning: IMPORTANT**
----
-- Before trying to use this project, make sure you have JDK 17 installed.
+> **Warning**
+> Before trying to use this project, make sure you have JDK 17 installed.
 
 There are 2 ways to use CloudSim Plus:
 
