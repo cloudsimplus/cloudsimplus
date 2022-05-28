@@ -182,17 +182,7 @@ dependencies {
 
 Considering that you have [git](https://git-scm.com) and [maven](http://maven.apache.org) installed on your operating system, 
 download the project source by cloning the repository issuing the command `git clone https://github.com/cloudsimplus/cloudsimplus.git` 
-at a terminal. 
-
-The project has a [bash script](script/bootstrap.sh) you can use to build and run CloudSim Plus examples. 
-This is a script for Unix-like systems such as Linux, FreeBSD and macOS.
-
-To run some example, type the following command at a terminal inside the project's root directory: `bash script/bootstrap.sh package.ExampleClassName`.
-For instance, to run the `BasicFirstExample` you can type: `bash script/bootstrap.sh org.cloudsimplus.examples.BasicFirstExample`. 
-
-The script checks if it is required to build the project, using maven in this case, making sure to download all dependencies. 
-To see which examples are available, just navigate through the [cloudsimplus-examples](https://github.com/cloudsimplus/cloudsimplus-examples) repository.
-To check more script options, run it without any parameter.  
+at a terminal.
  
 ## 4.3 By Means of an IDE
 
