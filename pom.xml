@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.cloudsimplus</groupId>
-    <artifactId>cloudsimplus</artifactId>
+    <artifactId>cloudsim-plus</artifactId>
     <version>7.3.0</version>
 
     <name>CloudSim Plus API</name>
