@@ -29,10 +29,10 @@ FirstFit*         |13.6                                 |&nbsp;&nbsp;1.3        
 | Framework          |Simulation Time (min)|VmAllocationPolicy|DCs|Hosts|VMs   |Cloudlets|
 |--------------------|---------------------|------------------|---|-----|------|---------|
 | CloudSim 4.0.0     |21.7                 |Simple (WorstFit) |1  |20000|40000 |50000    |
-| CloudSim 4.0.0     |18.6                 |BestFit**         |1  |20000|40000 |50000    |
-| CloudSim 4.0.0     |13.3                 |FirstFit**        |1  |20000|40000 |50000    |
+| CloudSim 4.0.0     |18.6                 |BestFit*         |1  |20000|40000 |50000    |
+| CloudSim 4.0.0     |13.3                 |FirstFit*        |1  |20000|40000 |50000    |
 | CloudSim Plus 4.3.5|14.8                 |Simple (WorstFit) |1  |20000|40000 |50000    |
-| CloudSim Plus 4.3.5|15.2                 |BestFit**         |1  |20000|40000 |50000    |
-| CloudSim Plus 4.3.5|&nbsp;&nbsp;2.4      |FirstFit**        |1  |20000|40000 |50000    |
+| CloudSim Plus 4.3.5|15.2                 |BestFit*         |1  |20000|40000 |50000    |
+| CloudSim Plus 4.3.5|&nbsp;&nbsp;2.4      |FirstFit*        |1  |20000|40000 |50000    |
 
-\** *Only officially available in CloudSim Plus.*
+\* *Only officially available in CloudSim Plus.*
