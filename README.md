@@ -139,7 +139,7 @@ The light yellow ones were introduced just to better organize existing CloudSim 
 - Before trying to use this project, make sure you have JDK 17 installed.
 
 There are 2 ways to use CloudSim Plus. You can: 
-(i) create your own projecgt and add it as a dependency. This way, it will be downloaded directly from [Maven Central](https://maven-badges.herokuapp.com/maven-central/org.cloudsimplus/cloudsimplus).
+(i) create your own project and add it as a dependency. This way, it will be downloaded directly from [Maven Central](https://maven-badges.herokuapp.com/maven-central/org.cloudsimplus/cloudsimplus).
 (ii) download the [cloudsimplus-examples](https://github.com/cloudsimplus/cloudsimplus-examples) project and follow the instructions there.
 
 You can check [this video](https://youtu.be/k2enNoxTYVw) or follow the instructions in one of the next subsections.
