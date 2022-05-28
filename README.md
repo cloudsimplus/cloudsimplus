@@ -138,12 +138,9 @@ The light yellow ones were introduced just to better organize existing CloudSim 
 ---
 - Before trying to use this project, make sure you have JDK 17 installed.
 
-
-There are 4 ways to use CloudSim Plus. It can be downloaded and executed: 
-(i) from [Maven Central](https://maven-badges.herokuapp.com/maven-central/org.cloudsimplus/cloudsimplus) since you include it as a dependency inside your own project.
-(ii) downloading a zip file using the button at the top of this page;
-(iii) from the command line; 
-(iv) directly from some IDE; 
+There are 2 ways to use CloudSim Plus. You can: 
+(i) create your own projecgt and add it as a dependency. This way, it will be downloaded directly from [Maven Central](https://maven-badges.herokuapp.com/maven-central/org.cloudsimplus/cloudsimplus).
+(ii) download the [cloudsimplus-examples](https://github.com/cloudsimplus/cloudsimplus-examples) project and follow the instructions there.
 
 You can check [this video](https://youtu.be/k2enNoxTYVw) or follow the instructions in one of the next subsections.
 
@@ -177,31 +174,6 @@ dependencies {
     implementation 'org.cloudsimplus:cloudsimplus:LATEST'
 }
 ```
-
-## 4.2 Downloading sources via Command Line
-
-Considering that you have [git](https://git-scm.com) and [maven](http://maven.apache.org) installed on your operating system, 
-download the project source by cloning the repository issuing the command `git clone https://github.com/cloudsimplus/cloudsimplus.git` 
-at a terminal.
- 
-## 4.3 By Means of an IDE
-
-The easiest way to use the project is relying on some IDE such as [NetBeans](http://netbeans.org), [Eclipse](http://eclipse.org) 
-or [IntelliJ IDEA](http://jetbrains.com/idea/).
-Below are the steps to start using the project:
-
-- Download the project sources by using: the download button on top of this page; your own IDE for it; or the command line as described above.
-- Open/import the project in your IDE:
-    - For NetBeans, just use the "Open project" menu and select the directory where the project was downloaded/cloned.
-    - For Eclipse or IntelliJ IDEA, 
-      you have to import the project selecting the folder where the project was cloned. 
-      **Check an Eclipse tutorial [here](https://youtu.be/oO-a5-cZBps)**.
-- Inside the opened/imported project you will have the cloudsimplus and cloudsimplus-examples modules. 
-  The cloudsimplus module is where the simulator source code is, that usually you don't have to change, unless you want to contribute to the project. 
-  The cloudsimplus-examples is where you can start.
-- Open the cloudsimplus-examples module. The most basic examples are in the root of the org.cloudbus.cloudsim.examples package. 
-  You can run any one of the classes in this package to get a specific example. 
-- If you want to build your own simulations, the easiest way is to create another class inside this module.
 
 <p align="right"><a href="#top">:arrow_up:</a></p>
 
