@@ -17,10 +17,11 @@ jobs:
           distribution: 'adopt'
           java-version: 17
           cache: 'maven'
+      - name: Maven Build
+        run: mvn clean verify -B -V -Pintegration-tests
       - name: Codacy coverage report upload
         env:
           CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}
         run: |
-          mvn clean verify -B -V -Pintegration-tests
-          cd cloudsimplus && mvn jacoco:report
+          mvn jacoco:report
           test -z $CODACY_PROJECT_TOKEN || bash <(curl -Ls https://coverage.codacy.com/get.sh) report -r target/site/jacoco/jacoco.xml
