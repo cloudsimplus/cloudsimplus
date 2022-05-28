@@ -91,15 +91,7 @@ to advanced features for simulating more realistic cloud scenarios:
 22. [Enables running the simulation synchronously, making it easier to interact with it and collect data inside a loop, as the simulation goes on](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/synchronous/SynchronousSimulationExample1.java). This brings freedom to implement your simulations ([#205](https://github.com/cloudsimplus/cloudsimplus/issues/205)).
 23. [Allows placing a group of VMs into the same Host.](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/VmGroupPlacementExample1.java) ([#90](https://github.com/cloudsimplus/cloudsimplus/issues/90)).
 24. [Enables Broker to try selecting the closest Datacenter to place VMs, according to their time zone.](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/brokers/DatacenterSelectionByTimeZoneExample.java) ([#212](https://github.com/cloudsimplus/cloudsimplus/issues/212)).
-25. It outperforms CloudSim 4, as can be seen in the table below*.
-
-VmAllocationPolicy|CloudSim 4.0.0 Simulation Time (min) |CloudSim Plus 4.3.4 Simulation Time (min) |DCs|Hosts|VMs  |Cloudlets
-------------------|-------------------------------------|------------------------------------------|---|-----|-----|---------
-Simple (WorstFit) |23.9                                 |15.7                                      |1  |20000|40000|50000
-BestFit**         |19.6                                 |15.7                                      |1  |20000|40000|50000
-FirstFit**        |13.6                                 |&nbsp;&nbsp;1.3                           |1  |20000|40000|50000
-
-\* *More details and results [here](docs/performance.md).*   \** *Only officially available in CloudSim Plus.*
+25. It outperforms CloudSim 4, as can be seen [here](docs/performance.md).
 
 <a id="structure"></a>
 

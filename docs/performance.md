@@ -11,6 +11,16 @@ which relies on [CloudSim Plus Automation](http://github.com/manoelcampos/clouds
 The experiments were executed in a personal computer powered by a dual-core 2.8 GHz Hyper-Threading Intel i7-4558U processor with 8GB of RAM.
 Each result was generated from a simulation scenario defined in a YML file.
 
+## Datacenter's VmAllocationPolicy
+
+VmAllocationPolicy|CloudSim 4.0.0 Simulation Time (min) |CloudSim Plus 4.3.4 Simulation Time (min) |DCs|Hosts|VMs  |Cloudlets
+------------------|-------------------------------------|------------------------------------------|---|-----|-----|---------
+Simple (WorstFit) |23.9                                 |15.7                                      |1  |20000|40000|50000
+BestFit*          |19.6                                 |15.7                                      |1  |20000|40000|50000
+FirstFit*         |13.6                                 |&nbsp;&nbsp;1.3                           |1  |20000|40000|50000
+
+\* *Only officially available in CloudSim Plus.*
+
 ## Cloudlet's UtilizationModel
 
 - Cloudlet's UtilizationModel for CPU: UtilizationModelStochastic (1 instance for each Cloudlet, history enabled)
