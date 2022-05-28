@@ -4,17 +4,6 @@ Contains an HTML presentation using the [reveal.js](https://github.com/hakimel/r
 
 If you cloned the repository at your computer, to launch the presentation you have to just open the [index.html](index.html) at a web browser.
 
-## Changing the style sheets
-
-If you change some [scss](css) files ([SaaS files](http://sass-lang.com)), you have to re-generate the css files using [grunt](https://gruntjs.com): 
-
-```bash
-npm install -g grunt
-npm install -g grunt-cli
-npm install
-grunt
-```
-
 # Exporting to PDF
 To generate a PDF file, just open the presentation in Google Chrome locally 
 (you don't need to run it with a local server) and include the parameter `?print-pdf` at the URL.
