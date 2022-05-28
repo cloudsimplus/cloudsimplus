@@ -141,7 +141,7 @@ Add the following dependency into the pom.xml file of your own Maven project.
 ```xml
 <dependency>
     <groupId>org.cloudsimplus</groupId>
-    <artifactId>cloudsimplus</artifactId>
+    <artifactId>cloudsim-plus</artifactId>
     <!-- Set a specific version or use the latest one -->
     <version>LATEST</version>
 </dependency>
@@ -154,7 +154,7 @@ Add the following dependency into the build.gradle file of your own Gradle proje
 ```groovy
 dependencies {
     //Set a specific version or use the latest one
-    implementation 'org.cloudsimplus:cloudsimplus:LATEST'
+    implementation 'org.cloudsimplus:cloudsim-plus:LATEST'
 }
 ```
 
