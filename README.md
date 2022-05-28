@@ -191,7 +191,7 @@ To run some example, type the following command at a terminal inside the project
 For instance, to run the `BasicFirstExample` you can type: `bash script/bootstrap.sh org.cloudsimplus.examples.BasicFirstExample`. 
 
 The script checks if it is required to build the project, using maven in this case, making sure to download all dependencies. 
-To see which examples are available, just navigate through the [examples project](https://github.com/cloudsimplus/cloudsimplus-examples/src/main/java/).
+To see which examples are available, just navigate through the [cloudsimplus-examples](https://github.com/cloudsimplus/cloudsimplus-examples) repository.
 To check more script options, run it without any parameter.  
  
 ## 4.3 By Means of an IDE
