@@ -72,15 +72,15 @@ to advanced features for simulating more realistic cloud scenarios:
 2. Multi-cloud simulations with inter-datacenter VM migrations ([#361](https://github.com/cloudsimplus/cloudsimplus/issues/361)).
 3. Creation of joint power- and network-aware simulations ([#45](https://github.com/cloudsimplus/cloudsimplus/issues/45)).
 4. Vertical ([#7](https://github.com/cloudsimplus/cloudsimplus/issues/7)) and Horizontal VM scaling ([#41](https://github.com/cloudsimplus/cloudsimplus/issues/41)).
-5. [Highly accurate power usage computation](https://github.com/cloudsimplus/cloudsimplus/blob/master/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/power/PowerExampleSchedulingInterval.java) ([#153](https://github.com/cloudsimplus/cloudsimplus/issues/153)).
-6. [Built-in computation of CPU utilization history and energy consumption for VMs (and Hosts)](https://github.com/cloudsimplus/cloudsimplus/blob/master/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/power/PowerExample.java) ([#168](https://github.com/cloudsimplus/cloudsimplus/issues/168)).
-7. [Virtual Memory and Reduced bandwidth allocation](https://github.com/cloudsimplus/cloudsimplus/blob/master/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/resourceusage/VirtualMemoryForRequestedRamHigherThanAvailableExample.java) when RAM and BW are oversubscribed. ([#170](https://github.com/cloudsimplus/cloudsimplus/issues/170)). 
-8. [Automatically power Hosts on and off according to demand](https://github.com/cloudsimplus/cloudsimplus/blob/master/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/power/HostActivationExample.java) ([#128](https://github.com/cloudsimplus/cloudsimplus/issues/128)) and support defining a startup and shutdown delay/power consumption ([#238](https://github.com/cloudsimplus/cloudsimplus/issues/238)).
-9. [Parallel execution of simulations in multi-core computers](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/ParallelSimulationsExample.java), allowing multiple simulations to be run simultaneously in an isolated way ([#38](https://github.com/cloudsimplus/cloudsimplus/issues/38)).
-10. Delay creation of submitted VMs and [Cloudlets](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/dynamic/DynamicCloudletsArrival1.java), enabling simulation of dynamic arrival of tasks ([#11](https://github.com/cloudsimplus/cloudsimplus/issues/11), [#23](https://github.com/cloudsimplus/cloudsimplus/issues/23)). 
-11. [Allow dynamic creation of VMs and Cloudlets in runtime](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/dynamic/DynamicCreationOfVmsAndCloudletsExample.java), enabling VMs to be created on-demand ([#43](https://github.com/cloudsimplus/cloudsimplus/issues/43)).
-12. [Listeners](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/listeners) to enable simulation configuration, monitoring and data collection.
-13. Create [simulations](https://github.com/cloudsimplus/cloudsimplus/tree/master/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/traces/google) from [Google Cluster Data](https://github.com/google/cluster-data/blob/master/ClusterData2011_2.md) 
+5. [Highly accurate power usage computation](https://github.com/cloudsimplus/cloudsimplus-examples/blob/master/src/main/java/org/cloudsimplus/examples/power/PowerExampleSchedulingInterval.java) ([#153](https://github.com/cloudsimplus/cloudsimplus/issues/153)).
+6. [Built-in computation of CPU utilization history and energy consumption for VMs (and Hosts)](https://github.com/cloudsimplus/cloudsimplus-examples/blob/master/src/main/java/org/cloudsimplus/examples/power/PowerExample.java) ([#168](https://github.com/cloudsimplus/cloudsimplus/issues/168)).
+7. [Virtual Memory and Reduced bandwidth allocation](https://github.com/cloudsimplus/cloudsimplus-examples/blob/master/src/main/java/org/cloudsimplus/examples/resourceusage/VirtualMemoryForRequestedRamHigherThanAvailableExample.java) when RAM and BW are oversubscribed. ([#170](https://github.com/cloudsimplus/cloudsimplus/issues/170)). 
+8. [Automatically power Hosts on and off according to demand](https://github.com/cloudsimplus/cloudsimplus-examples/blob/master/src/main/java/org/cloudsimplus/examples/power/HostActivationExample.java) ([#128](https://github.com/cloudsimplus/cloudsimplus/issues/128)) and support defining a startup and shutdown delay/power consumption ([#238](https://github.com/cloudsimplus/cloudsimplus/issues/238)).
+9. [Parallel execution of simulations in multi-core computers](https://github.com/cloudsimplus/cloudsimplus-examples/blob/master/src/main/java/org/cloudsimplus/examples/ParallelSimulationsExample.java), allowing multiple simulations to be run simultaneously in an isolated way ([#38](https://github.com/cloudsimplus/cloudsimplus/issues/38)).
+10. Delay creation of submitted VMs and [Cloudlets](https://github.com/cloudsimplus/cloudsimplus-examples/blob/master/src/main/java/org/cloudsimplus/examples/dynamic/DynamicCloudletsArrival1.java), enabling simulation of dynamic arrival of tasks ([#11](https://github.com/cloudsimplus/cloudsimplus/issues/11), [#23](https://github.com/cloudsimplus/cloudsimplus/issues/23)). 
+11. [Allow dynamic creation of VMs and Cloudlets in runtime](https://github.com/cloudsimplus/cloudsimplus-examples/blob/master/src/main/java/org/cloudsimplus/examples/dynamic/DynamicCreationOfVmsAndCloudletsExample.java), enabling VMs to be created on-demand ([#43](https://github.com/cloudsimplus/cloudsimplus/issues/43)).
+12. [Listeners](https://github.com/cloudsimplus/cloudsimplus-examples/blob/master/src/main/java/org/cloudsimplus/examples/listeners) to enable simulation configuration, monitoring and data collection.
+13. Create [simulations](https://github.com/cloudsimplus/cloudsimplus-examples/tree/master/src/main/java/org/cloudsimplus/examples/traces/google) from [Google Cluster Data](https://github.com/google/cluster-data/blob/master/ClusterData2011_2.md) 
     trace files. ([#149](https://github.com/cloudsimplus/cloudsimplus/issues/149)).
 14. Strongly object-oriented, allowing chained calls such as `cloudlet.getVm().getHost().getDatacenter()` without even worrying about `NullPointerException` ([#10](https://github.com/cloudsimplus/cloudsimplus/issues/10)).
 15. Classes and interfaces for implementing [heuristics](http://en.wikipedia.org/wiki/Heuristic) such as [Tabu Search](http://en.wikipedia.org/wiki/Tabu_search), [Simulated Annealing](http://en.wikipedia.org/wiki/Simulated_annealing), [Ant Colony Systems](http://en.wikipedia.org/wiki/Ant_colony_optimization_algorithms) and so on ([example here](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/brokers/DatacenterBrokerHeuristicExample.java)).
@@ -113,7 +113,7 @@ CloudSim Plus has a simpler structure to make it ease to use and understand. It 
 
 - [cloudsimplus](/cloudsimplus): the CloudSim Plus cloud simulation framework API, which is used by all other modules. 
   It is the main and only required module you need to write cloud simulations. 
-- [cloudsimplus-examples](/cloudsimplus-examples): includes a series of different examples, since minimal simulation scenarios using basic 
+- [cloudsimplus-examples](https://github.com/cloudsimplus/cloudsimplus-examples): includes a series of different examples, since minimal simulation scenarios using basic 
   CloudSim Plus features, to complex scenarios using workloads from trace files or Vm migration examples. This is an excellent starting point for learning how to build cloud simulations using CloudSim Plus.
 - [cloudsimplus-testbeds](/cloudsimplus-testbeds): enables implementation of simulation testbeds in a repeatable manner, 
   allowing a researcher to execute several simulation runs for a given experiment and collect statistical data using a scientific approach. 
@@ -191,7 +191,7 @@ To run some example, type the following command at a terminal inside the project
 For instance, to run the `BasicFirstExample` you can type: `bash script/bootstrap.sh org.cloudsimplus.examples.BasicFirstExample`. 
 
 The script checks if it is required to build the project, using maven in this case, making sure to download all dependencies. 
-To see which examples are available, just navigate through the [examples directory](/cloudsimplus-examples/src/main/java/).
+To see which examples are available, just navigate through the [examples project](https://github.com/cloudsimplus/cloudsimplus-examples/src/main/java/).
 To check more script options, run it without any parameter.  
  
 ## 4.3 By Means of an IDE
@@ -228,9 +228,9 @@ In order to build a simulation scenario, you have to create at least:
 
 Due to the simplicity provided by CloudSim Plus, all the code to create a minimal simulation scenario can be as simple as presented below.
 A more adequate and reusable example is available
-[here](/cloudsimplus-examples/src/main/java/org/cloudsimplus/examples/BasicFirstExample.java),
-together with [other examples](/cloudsimplus-examples). Specific examples of CloudSim Plus, showing several
-new exclusive features and advanced scenarios, can be found [here](/cloudsimplus-examples/src/main/java/org/cloudsimplus/examples/). 
+[here](https://github.com/cloudsimplus/cloudsimplus-examples/src/main/java/org/cloudsimplus/examples/BasicFirstExample.java),
+together with [other examples](https://github.com/cloudsimplus/cloudsimplus-examples). Specific examples of CloudSim Plus, showing several
+new exclusive features and advanced scenarios, can be found [here](https://github.com/cloudsimplus/cloudsimplus-examples/src/main/java/org/cloudsimplus/examples/). 
 
 ```java
 //Enables just some level of logging.
