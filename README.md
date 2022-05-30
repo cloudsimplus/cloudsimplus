@@ -101,13 +101,13 @@ CloudSim Plus has a simpler structure to make it ease to use and understand. It 
 
 ![CloudSim Plus Modules](https://github.com/cloudsimplus/cloudsimplus/raw/master/docs/images/modules.png)
 
-- [cloudsimplus](/cloudsimplus): the CloudSim Plus cloud simulation framework API, which is used by all other modules. 
+- cloudsimplus (this module): the CloudSim Plus cloud simulation framework API, which is used by all other modules. 
   It is the main and only required module you need to write cloud simulations. 
 - [cloudsimplus-examples](https://github.com/cloudsimplus/cloudsimplus-examples): includes a series of different examples, since minimal simulation scenarios using basic 
   CloudSim Plus features, to complex scenarios using workloads from trace files or Vm migration examples. This is an excellent starting point for learning how to build cloud simulations using CloudSim Plus.
-- [cloudsimplus-testbeds](/cloudsimplus-testbeds): enables implementation of simulation testbeds in a repeatable manner, 
+- [cloudsimplus-testbeds](https://github.com/cloudsimplus/cloudsimplus-testbeds): enables implementation of simulation testbeds in a repeatable manner, 
   allowing a researcher to execute several simulation runs for a given experiment and collect statistical data using a scientific approach. 
-- [cloudsimplus-benchmarks](/cloudsimplus-benchmarks): a new module used just internally to implement micro benchmarks to assess framework performance.
+- [cloudsimplus-benchmarks](https://github.com/cloudsimplus/cloudsimplus-benchmarks): a new module used just internally to implement micro benchmarks to assess framework performance.
 
 It also has a better package organization, 
 improving [Separation of Concerns (SoC)](https://en.wikipedia.org/wiki/Separation_of_concerns) 
