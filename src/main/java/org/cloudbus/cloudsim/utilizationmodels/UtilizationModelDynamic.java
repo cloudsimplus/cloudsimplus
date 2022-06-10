@@ -262,10 +262,10 @@ public class UtilizationModelDynamic extends UtilizationModelAbstract {
     /**
      * Gets the maximum amount of resource that will be used.
      *
-     * <p>Such a value can be a percentage in scale from [0 to 1] or an absolute value,
+     * <p><b>WARNING:</b> Such a value can be a percentage in scale from [0 to 1] or an absolute value,
      * depending on the {@link #getUnit()}.</p>
      *
-     * @return the maximum resource utilization
+     * @return the maximum resource utilization (in percentage or absolut value)
      */
     public double getMaxResourceUtilization() {
         return maxResourceUtilization;
