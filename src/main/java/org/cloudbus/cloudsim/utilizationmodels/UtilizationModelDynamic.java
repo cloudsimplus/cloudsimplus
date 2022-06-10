@@ -274,15 +274,15 @@ public class UtilizationModelDynamic extends UtilizationModelAbstract {
     /**
      * Sets the maximum amount of resource that will be used.
      *
-     * <p>Such a value can be a percentage in scale from [0 to 1] or an absolute value,
+     * <p><b>WARNING:</b> Such a value can be a percentage in scale from [0 to 1] or an absolute value,
      * depending on the {@link #getUnit()}.</p>
      *
-     * @param maxResourceUsagePercentage the maximum resource usage
+     * @param maxResourceUsage the maximum resource usage (in percentage or absolut value)
      * @return
      */
-    public final UtilizationModelDynamic setMaxResourceUtilization(final double maxResourceUsagePercentage) {
-        validateUtilizationField("maxResourceUtilization", maxResourceUsagePercentage, ALMOST_ZERO);
-        this.maxResourceUtilization = maxResourceUsagePercentage;
+    public final UtilizationModelDynamic setMaxResourceUtilization(final double maxResourceUsage) {
+        validateUtilizationField("maxResourceUtilization", maxResourceUsage, ALMOST_ZERO);
+        this.maxResourceUtilization = maxResourceUsage;
         return this;
     }
 
