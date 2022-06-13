@@ -102,5 +102,4 @@ The last step before you start coding is to follow the guidelines below, so that
 * Wait for your contribution to be assessed and thanks in advance for contributing.
 
 > **Note**
-> This Contribution Guide was based on [Puppet guide](https://github.com/puppetlabs/puppet/blob/master/CONTRIBUTING.md), 
-> recommend by the [Friction tool](https://github.com/rafalchmiel/friction). It was adapted and improved to follow CloudSim Plus required standards.
+> This Contribution Guide was based on [Puppet guide](https://github.com/puppetlabs/puppet/blob/master/CONTRIBUTING.md). It was adapted and improved to follow CloudSim Plus required standards.
