@@ -323,7 +323,7 @@ This project is licensed under [GNU GPLv3](http://www.gnu.org/licenses/gpl-3.0),
 # 11. 🤝 Contributing
 
 You are welcome to contribute to the project. 
-However, make sure you read the [contribution guide](.github/CONTRIBUTING.md) before starting. 
+However, make sure you read the [contribution guide](https://github.com/cloudsimplus/.github/blob/main/CONTRIBUTING.md) before starting. 
 The guide provides information on the different ways you can contribute, 
 such as by requesting a feature, reporting an issue, fixing a bug or providing some new feature.
 
