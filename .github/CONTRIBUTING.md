@@ -80,18 +80,19 @@ The last step before you start coding is to follow the guidelines below, so that
 * Spend a little time to write good, informative and structured commit messages, describing clearly what you have done. Take the template below as an example:
 
 ````
-    Commit title that summarizes the work you have done.
+Commit title that summarizes the work you have done.
 
-    Explain clearly the changes performed, using formal and well-written English.
-    Try to use list of items to describe each relevant change, as below:
-    - Changed ABC.
-    - Added XYZ.
-    - Removed 123.
+Explain clearly the changes performed, using formal and well-written English.
+Try to use list of items to describe each relevant change, as below:
+- Changed ABC.
+- Added XYZ.
+- Removed 123.
 ````
 
-* Make sure you have added the necessary unit tests for your changes. 
-* Run _all_ the tests to assure nothing else was accidentally broken.
-* Changes that don't have a set of unit tests or that break existing tests **will not** be accepted.
+> **Note** 
+> When sending code contributions to https://github.com/cloudsimplus/cloudsimplus make sure you have added the necessary unit tests for your changes. 
+> Run _all_ the tests to check nothing was accidentally broken.
+> Changes that don't have a set of unit tests or that break existing tests **will not** be accepted.
 
 ### 2.2.4. Submit Your Changes
 
