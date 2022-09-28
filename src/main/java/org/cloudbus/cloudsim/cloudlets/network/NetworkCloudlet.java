@@ -49,9 +49,6 @@ public class NetworkCloudlet extends CloudletSimple {
     /** @see #getTasks() */
     private final List<CloudletTask> tasks;
 
-    /** @see #getMemory() */
-    private long memory;
-
     /**
      * Creates a NetworkCloudlet with no priority and file size and output size equal to 1.
      *
@@ -72,7 +69,6 @@ public class NetworkCloudlet extends CloudletSimple {
     public NetworkCloudlet(final int id,  final long length, final int pesNumber) {
         super(id, length, pesNumber);
         this.currentTaskNum = -1;
-        this.memory = 0;
         this.tasks = new ArrayList<>();
     }
 
@@ -85,30 +81,6 @@ public class NetworkCloudlet extends CloudletSimple {
      */
     public List<CloudletTask> getTasks() {
         return Collections.unmodifiableList(tasks);
-    }
-
-    /**
-     * Gets the Cloudlet's RAM memory (in Megabytes).
-     * TODO Required, allocated, used memory? It doesn't appear to be used.
-     */
-    public long getMemory() {
-        return memory;
-    }
-
-    /**
-     * Sets the Cloudlet's RAM memory.
-     * @param memory amount of RAM to set (in Megabytes)
-     * TODO Cloudlet has the {@link #getUtilizationModelRam()} that defines
-     *       how RAM is used. This way, this attribute doesn't make sense
-     *       since usage of RAM is dynamic.
-     *       The attribute would be used to know what is the maximum
-     *       memory the cloudlet can use, but that will be the
-     *       maximum VM RAM capacity or a different value
-     *       defined by a UtilizationModel.
-     */
-    public NetworkCloudlet setMemory(final long memory) {
-        this.memory = memory;
-        return this;
     }
 
     /**
