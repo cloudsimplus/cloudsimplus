@@ -78,6 +78,11 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     private double failedVmsRetryDelay;
 
     /** @see #getVmFailedList() */
+
+    private int maxVmCreationRetries;
+
+    private int currentVmCreationRetries;
+
     private final List<Vm> vmFailedList;
 
     /** @see #getVmWaitingList() */
@@ -160,6 +165,8 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
 
         this.vmCreationRequests = 0;
         this.failedVmsRetryDelay = 5;
+        this.currentVmCreationRetries = 1;
+        this.maxVmCreationRetries = (int) failedVmsRetryDelay;
         this.vmFailedList = new ArrayList<>();
         this.vmWaitingList = new ArrayList<>();
         this.vmExecList = new ArrayList<>();
@@ -669,6 +676,10 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
             final var listener = onVmsCreatedListeners.get(i);
             listener.update(DatacenterBrokerEventInfo.of(listener, this));
         }
+
+        if (vmWaitingList.isEmpty()) {
+            setCurrentVmCreationRetries(DEF_CURRENT_VM_CREATION_RETRIES);
+        }
     }
 
     /**
@@ -703,6 +714,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
             lastSelectedDc = datacenterList.get(0);
             this.vmCreationRetrySent = true;
             schedule(failedVmsRetryDelay, CloudSimTag.VM_CREATE_RETRY);
+            incrementCurrentVmCreationRetries();
         } else shutdown();
     }
 
@@ -1313,6 +1325,24 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     @Override
     public void setFailedVmsRetryDelay(final double failedVmsRetryDelay) {
         this.failedVmsRetryDelay = failedVmsRetryDelay;
+    }
+
+    @Override
+    public void incrementCurrentVmCreationRetries() {
+        this.currentVmCreationRetries++;
+        if (this.currentVmCreationRetries >= this.maxVmCreationRetries) {
+            setFailedVmsRetryDelay(-1);
+        }
+    }
+
+    @Override
+    public int getCurrentVmCreationRetries() {
+        return this.currentVmCreationRetries;
+    }
+
+    @Override
+    public void setCurrentVmCreationRetries(int currentVmCreationRetries) {
+        this.currentVmCreationRetries = currentVmCreationRetries;
     }
 
     @Override

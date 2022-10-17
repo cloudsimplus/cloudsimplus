@@ -57,6 +57,8 @@ public interface DatacenterBroker extends SimEntity {
      */
     double DEF_VM_DESTRUCTION_DELAY = -1.0;
 
+    int DEF_CURRENT_VM_CREATION_RETRIES = 1;
+
     /**
      * Specifies that an already submitted cloudlet, which is in the
      * {@link #getCloudletWaitingList() waiting list}, must run in a specific virtual machine.
@@ -493,6 +495,12 @@ public interface DatacenterBroker extends SimEntity {
      * @param failedVmsRetryDelay
      */
     void setFailedVmsRetryDelay(double failedVmsRetryDelay);
+
+    void incrementCurrentVmCreationRetries();
+
+    void setCurrentVmCreationRetries(int currentVmCreationRetries);
+
+    int getCurrentVmCreationRetries();
 
     /**
      * Checks if the broker must be shut down after becoming idle.
