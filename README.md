@@ -173,7 +173,7 @@ In order to build a simulation scenario, you have to create at least:
 
 Due to the simplicity provided by CloudSim Plus, all the code to create a minimal simulation scenario can be as simple as presented below.
 A more adequate and reusable example is available
-[here](https://github.com/cloudsimplus/cloudsimplus-examples/src/main/java/org/cloudsimplus/examples/BasicFirstExample.java),
+[here](https://github.com/cloudsimplus/cloudsimplus-examples/blob/master/src/main/java/org/cloudsimplus/examples/BasicFirstExample.java),
 together with other ones available in the [cloudsimplus-examples](https://github.com/cloudsimplus/cloudsimplus-examples) repository. 
 
 ```java
