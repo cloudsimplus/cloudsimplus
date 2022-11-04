@@ -1017,11 +1017,14 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
             "%s: %s: Postponing execution of Cloudlet %d because {}.",
             getSimulation().clockStr(), getName(), cloudlet.getId());
 
-        if(vm.getSubmissionDelay() > 0) {
-            final String secs = vm.getSubmissionDelay() > 1 ? "seconds" : "second";
-            final var reason = String.format("bind Vm %d was requested to be created with %.2f %s delay", vm.getId(), vm.getSubmissionDelay(), secs);
-            LOGGER.info(msg, reason);
-        } else LOGGER.warn(msg, vmMsg);
+        if (vm.getSubmissionDelay() <= 0) {
+            LOGGER.warn(msg, vmMsg);
+            return;
+        }
+
+        final String secs = vm.getSubmissionDelay() > 1 ? "seconds" : "second";
+        final var reason = String.format("bind Vm %d was requested to be created with %.2f %s delay", vm.getId(), vm.getSubmissionDelay(), secs);
+        LOGGER.info(msg, reason);
     }
 
     private void logCloudletCreationRequest(final Cloudlet cloudlet) {
