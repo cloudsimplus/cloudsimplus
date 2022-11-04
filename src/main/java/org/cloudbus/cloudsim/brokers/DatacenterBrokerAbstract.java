@@ -664,7 +664,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
             return;
         }
 
-        //Uses indexed for to avoid ConcurrentModificationException
+        // TODO: Workaround - Uses indexed for to avoid ConcurrentModificationException
         for (int i = 0; i < onVmsCreatedListeners.size(); i++) {
             final var listener = onVmsCreatedListeners.get(i);
             listener.update(DatacenterBrokerEventInfo.of(listener, this));

@@ -664,7 +664,7 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
      * @param targetHost the Host the VM is migrating to
      */
     public void updateMigrationStartListeners(final Host targetHost){
-        //Uses indexed for to avoid ConcurrentModificationException
+        // TODO: Workaround - Uses indexed for to avoid ConcurrentModificationException
         for (int i = 0; i < onMigrationStartListeners.size(); i++) {
             final var listener = onMigrationStartListeners.get(i);
             listener.update(VmHostEventInfo.of(listener, this, targetHost));
@@ -676,7 +676,7 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
      * @param targetHost the Host the VM has just migrated to
      */
     public void updateMigrationFinishListeners(final Host targetHost){
-        //Uses indexed for to avoid ConcurrentModificationException
+        // TODO: Workaround - Uses indexed for to avoid ConcurrentModificationException
         for (int i = 0; i < onMigrationFinishListeners.size(); i++) {
             final var listener = onMigrationFinishListeners.get(i);
             listener.update(VmHostEventInfo.of(listener, this, targetHost));
@@ -884,7 +884,7 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
 
     @Override
     public void notifyOnHostAllocationListeners() {
-        //Uses indexed for to avoid ConcurrentModificationException
+        // TODO: Workaround - Uses indexed for to avoid ConcurrentModificationException
         for (int i = 0; i < onHostAllocationListeners.size(); i++) {
             final var listener = onHostAllocationListeners.get(i);
             listener.update(VmHostEventInfo.of(listener, this));
@@ -894,7 +894,7 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
     @Override
     public void notifyOnHostDeallocationListeners(final Host deallocatedHost) {
         requireNonNull(deallocatedHost);
-        //Uses indexed for to avoid ConcurrentModificationException
+        // TODO: Workaround - Uses indexed for to avoid ConcurrentModificationException
         for (int i = 0; i < onHostDeallocationListeners.size(); i++) {
             final var listener = onHostDeallocationListeners.get(i);
             listener.update(VmHostEventInfo.of(listener, this, deallocatedHost));
@@ -905,7 +905,7 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
      * Notifies all registered listeners when the processing of the Vm is updated in its {@link Host}.
      */
     public void notifyOnUpdateProcessingListeners() {
-        //Uses indexed for to avoid ConcurrentModificationException
+        // TODO: Workaround - Uses indexed for to avoid ConcurrentModificationException
         for (int i = 0; i < onUpdateProcessingListeners.size(); i++) {
             final var listener = onUpdateProcessingListeners.get(i);
             listener.update(VmHostEventInfo.of(listener, this));
@@ -915,7 +915,7 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
     @Override
     public void notifyOnCreationFailureListeners(final Datacenter failedDatacenter) {
         requireNonNull(failedDatacenter);
-        //Uses indexed for to avoid ConcurrentModificationException
+        // TODO: Workaround - Uses indexed for to avoid ConcurrentModificationException
         for (int i = 0; i < onCreationFailureListeners.size(); i++) {
             final var listener = onCreationFailureListeners.get(i);
             listener.update(VmDatacenterEventInfo.of(listener, this, failedDatacenter));
