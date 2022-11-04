@@ -1030,7 +1030,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     private void logCloudletCreationRequest(final Cloudlet cloudlet) {
         final String delayMsg =
             cloudlet.getSubmissionDelay() > 0 ?
-                String.format(" with a requested delay of %.0f seconds", cloudlet.getSubmissionDelay()) :
+                " with a requested delay of %.0f seconds".formatted(cloudlet.getSubmissionDelay()) :
                 "";
 
         LOGGER.info(
