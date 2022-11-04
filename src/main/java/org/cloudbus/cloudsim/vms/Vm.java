@@ -187,7 +187,7 @@ public interface Vm extends AbstractMachine<Resource>, UniquelyIdentifiable, Com
 
     /**
      * Adds a listener object that will be notified when the Vm fail in
-     * being placed for lack of a {@link Host} with enough resources in a specific {@link Datacenter}.
+     * being placed, due to lack of a {@link Host} with enough resources in a specific {@link Datacenter}.
      * <p>The {@link DatacenterBroker} is accountable for receiving the notification from the
      * Datacenter and notifying the Listeners.</p>
      *
