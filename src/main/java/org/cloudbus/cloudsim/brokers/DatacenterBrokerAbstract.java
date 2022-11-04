@@ -141,8 +141,6 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
 
     /**
      * Creates a DatacenterBroker giving a specific name.
-     * Subclasses usually should provide this constructor
-     * and overloaded version that just requires the {@link CloudSim} parameter.
      *
      * @param simulation the CloudSim instance that represents the simulation the Entity is related to
      * @param name the DatacenterBroker name
@@ -201,16 +199,16 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     /**
      * {@inheritDoc}
      *
-     * <p>The individual submission delay of VMs inside the group will be ignored.
-     * Only the submission delay set for the {@link VmGroup} will be considered.</p>
+     * <p>The individual submission delay of VMs inside a group will be ignored.
+     * Only the submission delay directly set for the {@link VmGroup} will be considered.</p>
      *
      * <p>If the entity already started (the simulation is running),
      * the creation of previously submitted VMs already was requested
      * by the {@link #start()} method that is called just once.
-     * By this way, this method will immediately request the creation of these
-     * just submitted VMs in order to allow VM creation after
+     * This way, this method will immediately request the creation of these
+     * submitted VMs in order to allow VM creation after
      * the simulation has started. This avoid the developer to
-     * dynamically create brokers just to create VMs or Cloudlets during
+     * dynamically create brokers just to submit VMs or Cloudlets during
      * simulation execution.</p>
      *
      * @param list {@inheritDoc}
@@ -318,11 +316,11 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      * <p>If the entity already started (the simulation is running),
      * the creation of previously submitted Cloudlets already was requested
      * by the {@link #start()} method that is called just once.
-     * By this way, this method will immediately request the creation of these
-     * just submitted Cloudlets if all submitted VMs were already created,
+     * This way, this method will immediately request the creation of these
+     * submitted Cloudlets if all submitted VMs were already created,
      * in order to allow Cloudlet creation after
      * the simulation has started. This avoid the developer to
-     * dynamically create brokers just to create VMs or Cloudlets during
+     * dynamically create brokers just to submit VMs or Cloudlets during
      * simulation execution.</p>
      *
      * @param list {@inheritDoc}
