@@ -407,8 +407,8 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         }
 
         entities.stream()
-            .filter(entity -> entity.getSubmissionDelay() <= 0)
-            .forEach(entity -> entity.setSubmissionDelay(submissionDelay));
+                .filter(entity -> entity.getSubmissionDelay() <= 0)
+                .forEach(entity -> entity.setSubmissionDelay(submissionDelay));
     }
 
     @Override
@@ -625,7 +625,9 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
             if(!isRetryFailedVms()){
                 vmWaitingList.remove(vm);
                 vmFailedList.add(vm);
-                LOGGER.warn("{}: {}: {} has been moved to the failed list because creation retry is not enabled.", getSimulation().clockStr(), getName(), vm);
+                LOGGER.warn(
+                    "{}: {}: {} has been moved to the failed list because creation retry is not enabled.",
+                    getSimulation().clockStr(), getName(), vm);
             }
 
             vm.notifyOnCreationFailureListeners(lastSelectedDc);
