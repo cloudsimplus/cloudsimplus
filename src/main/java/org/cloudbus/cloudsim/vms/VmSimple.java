@@ -353,11 +353,8 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
      *
      * @param expectedFreePes the expected free PEs number to set
      */
-    private Vm setExpectedFreePesNumber(long expectedFreePes) {
-        if (expectedFreePes < 0) {
-            expectedFreePes = 0;
-        }
-        this.expectedFreePesNumber = expectedFreePes;
+    private Vm setExpectedFreePesNumber(final long expectedFreePes) {
+        this.expectedFreePesNumber = Math.max(expectedFreePes, 0);
         return this;
     }
 
