@@ -132,8 +132,8 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
      */
     private void logMipsUnavailable(final Vm vm, final double requestedMipsForVmPe, final double allocatedMipsForVmPe) {
         final String msg = allocatedMipsForVmPe > 0 ?
-                String.format("Only %.0f MIPS were allocated.", allocatedMipsForVmPe)
-                : "No MIPS were allocated.";
+                "Only %.0f MIPS were allocated.".formatted(allocatedMipsForVmPe) :
+                "No MIPS were allocated.";
         LOGGER.warn(
                 "{}: {}: {} is requiring a total of {} MIPS but the PEs of {} currently don't have such an available MIPS amount. {}",
                 getHost().getSimulation().clockStr(),

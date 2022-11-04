@@ -169,6 +169,6 @@ public abstract class ResourceManageableAbstract extends ResourceAbstract implem
 
     @Override
     public String toString() {
-        return String.format("%s: used %d of %d", getClass().getSimpleName(), getAllocatedResource(), getCapacity());
+        return "%s: used %d of %d".formatted(getClass().getSimpleName(), getAllocatedResource(), getCapacity());
     }
 }

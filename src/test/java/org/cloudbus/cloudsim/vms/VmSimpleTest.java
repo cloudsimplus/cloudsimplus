@@ -97,7 +97,7 @@ public class VmSimpleTest {
 
     @Test
     public void testToString() {
-        assertEquals(String.format("Vm %d", vm.getId()), vm.toString());
+        assertEquals("Vm %d".formatted(vm.getId()), vm.toString());
     }
 
     @Test

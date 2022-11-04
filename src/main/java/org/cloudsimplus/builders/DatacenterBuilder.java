@@ -71,7 +71,7 @@ public class DatacenterBuilder implements Builder {
             throw new IllegalArgumentException("The hosts parameter has to have at least 1 host.");
         }
 
-        final String name = String.format(DC_NAME_FORMAT, createdDatacenters++);
+        final String name = DC_NAME_FORMAT.formatted(createdDatacenters++);
         final Datacenter datacenter = datacenterCreationFunction.apply(hosts);
 
         datacenter.getCharacteristics()

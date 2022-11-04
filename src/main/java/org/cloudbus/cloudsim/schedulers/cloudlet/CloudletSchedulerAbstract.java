@@ -622,10 +622,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
 
         final long available = vmResource.getAvailableResource();
         if(requested > available){
-            final String msg1 =
-                    available > 0 ?
-                    String.format("just %d was available", available):
-                    "no amount is available.";
+            final String msg1 = available > 0 ? "just %d was available".formatted(available): "no amount is available.";
             final String msg2 = vmResource.getClass() == Ram.class ? ". Using Virtual Memory," : ",";
             LOGGER.warn(
                 "{}: {}: {} requested {} {} of {} but {}{} which delays Cloudlet processing.",

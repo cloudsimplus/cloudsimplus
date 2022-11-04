@@ -129,7 +129,7 @@ public final class CheckCloudletStartDelayForTransferRequiredFilesTest {
 	 */
 	private void createListOfFiles() {
 		files = IntStream.range(0, NUMBER_OF_FILES_TO_CREATE)
-                         .mapToObj(id -> new File(String.format("file%d", id), FILE_SIZE_MB))
+                         .mapToObj(id -> new File("file%d".formatted(id), FILE_SIZE_MB))
                          .collect(Collectors.toList());
 	}
 

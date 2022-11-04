@@ -75,7 +75,7 @@ public final class TimeUtil {
      */
     private static String convertSeconds(final double seconds, final double conversionFactor, final String unit){
         final double convertedTime = seconds/conversionFactor;
-        return String.format("%.2f %s", convertedTime, convertedTime >= 2 ? unit+"s" : unit);
+        return "%.2f %s".formatted(convertedTime, convertedTime >= 2 ? unit+"s" : unit);
     }
 
     /**

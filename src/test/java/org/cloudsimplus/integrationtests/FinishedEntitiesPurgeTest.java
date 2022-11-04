@@ -125,11 +125,8 @@ class FinishedEntitiesPurgeTest {
     }
 
     private void assertExecTimeEqualsToFinishTime(final Cloudlet cl) {
-        assertEquals(
-            cl.getFinishTime(),
-            cl.getActualCpuTime(),
-            MAX_TIME_DELTA,
-            String.format("Statically created %s on %s exec time must be equal to finish time", cl, cl.getBroker()));
+        final var msg = "Statically created %s on %s exec time must be equal to finish time".formatted(cl, cl.getBroker());
+        assertEquals(cl.getFinishTime(), cl.getActualCpuTime(), MAX_TIME_DELTA, msg);
     }
 
     /**
@@ -148,11 +145,8 @@ class FinishedEntitiesPurgeTest {
     }
 
     private void assertExecTimeEqualsToStartTime(final Cloudlet cl) {
-        assertEquals(
-            cl.getExecStartTime(),
-            cl.getActualCpuTime(),
-            MAX_TIME_DELTA,
-            String.format("Dynamically created %s on %s exec time must be equal to start time", cl, cl.getBroker()));
+        final var msg = "Dynamically created %s on %s exec time must be equal to start time".formatted(cl, cl.getBroker());
+        assertEquals(cl.getExecStartTime(), cl.getActualCpuTime(), MAX_TIME_DELTA, msg);
     }
 
     @Test
@@ -171,10 +165,8 @@ class FinishedEntitiesPurgeTest {
     private void assertCloudletFinishTime(final Cloudlet cl) {
         final long brokerOrder = getBrokerOrder(cl);
         final double expectedCloudletFinishTime = brokerOrder + (cl.getId() < STATIC_CLOUDLETS_TO_FINISH ? 0 : brokerOrder);
-        assertEquals(
-            expectedCloudletFinishTime,
-            cl.getFinishTime(), 0.7,
-            String.format("%s on %s finish time", cl, cl.getBroker()));
+        final var msg = "%s on %s finish time".formatted(cl, cl.getBroker());
+        assertEquals(expectedCloudletFinishTime, cl.getFinishTime(), 0.7, msg);
     }
 
     /**
@@ -193,10 +185,8 @@ class FinishedEntitiesPurgeTest {
 
     private void assertCloudletStartTime(final Cloudlet cl) {
         final double expectedCloudletStartTime = cl.getId() < STATIC_CLOUDLETS_TO_FINISH ? 0 : getBrokerOrder(cl);
-        assertEquals(
-            expectedCloudletStartTime,
-            cl.getExecStartTime(), MAX_TIME_DELTA,
-            String.format("%s on %s start time", cl, cl.getBroker()));
+        final var msg = "%s on %s start time".formatted(cl, cl.getBroker());
+        assertEquals(expectedCloudletStartTime, cl.getExecStartTime(), MAX_TIME_DELTA, msg);
     }
 
     @Test
@@ -206,10 +196,8 @@ class FinishedEntitiesPurgeTest {
 
     private void assertExpectedFinishedCloudletList(final DatacenterBroker broker) {
         final int expectedCloudletsByBroker = CLOUDLETS_BY_BROKER * (broker == brokerList.get(0) ? 2 : 1);
-        assertEquals(
-                expectedCloudletsByBroker,
-                broker.getCloudletFinishedList().size(),
-                String.format("%s finished Cloudlets", broker));
+        final var msg = "%s finished Cloudlets".formatted(broker);
+        assertEquals(expectedCloudletsByBroker, broker.getCloudletFinishedList().size(), msg);
     }
 
     private Stream<Cloudlet> getAllBrokersCloudletStream() {
@@ -233,7 +221,8 @@ class FinishedEntitiesPurgeTest {
      */
     private void assertBrokerShutDownTime(final DatacenterBroker broker) {
         final long expectedShutdownTime = broker.getId() == 2 ? broker.getId() : broker.getId() - 1;
-        assertEquals(expectedShutdownTime, broker.getShutdownTime(), 0.9, String.format("%s shutdown time", broker));
+        final var msg = "%s shutdown time".formatted(broker);
+        assertEquals(expectedShutdownTime, broker.getShutdownTime(), 0.9, msg);
     }
 
     private void buildAndStartSimulation() {

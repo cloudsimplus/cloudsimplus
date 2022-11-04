@@ -568,7 +568,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     }
 
     private void logCloudletStatusChange(final Cloudlet cloudlet, final String status) {
-        final String msg = cloudlet.getJobId() > 0 ? String.format("(job %d) ", cloudlet.getJobId()) : "";
+        final String msg = cloudlet.getJobId() > 0 ? "(job %d) ".formatted(cloudlet.getJobId()) : "";
         LOGGER.info("{}: {}: Request to {} {} {}received.", getSimulation().clockStr(), getName(), status, cloudlet, msg);
     }
 
@@ -1011,11 +1011,11 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         final Vm vm = cloudlet.getVm();
         final String vmMsg = Vm.NULL.equals(vm) ?
                                 "it couldn't be mapped to any VM" :
-                                String.format("bind Vm %d is not available", vm.getId());
+                                "bind Vm %d is not available".formatted(vm.getId());
 
-        final String msg = String.format(
-            "%s: %s: Postponing execution of Cloudlet %d because {}.",
-            getSimulation().clockStr(), getName(), cloudlet.getId());
+        final String msg =
+            "%s: %s: Postponing execution of Cloudlet %d because {}."
+            .formatted(getSimulation().clockStr(), getName(), cloudlet.getId());
 
         if (vm.getSubmissionDelay() <= 0) {
             LOGGER.warn(msg, vmMsg);
@@ -1023,7 +1023,9 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         }
 
         final String secs = vm.getSubmissionDelay() > 1 ? "seconds" : "second";
-        final var reason = String.format("bind Vm %d was requested to be created with %.2f %s delay", vm.getId(), vm.getSubmissionDelay(), secs);
+        final var reason =
+            "bind Vm %d was requested to be created with %.2f %s delay"
+            .formatted(vm.getId(), vm.getSubmissionDelay(), secs);
         LOGGER.info(msg, reason);
     }
 

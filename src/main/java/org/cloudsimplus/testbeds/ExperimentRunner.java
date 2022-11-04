@@ -594,7 +594,7 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractRun
      * @see #createExperimentInternal(int)
      */
     private Experiment createExperiment(final int index) {
-        print((index + 1) % 100 == 0 ? String.format(". Run #%d%n", index + 1) : ".");
+        print((index + 1) % 100 == 0 ? ". Run #%d%n".formatted(index + 1) : ".");
         setFirstExperimentCreated(index);
         return createExperimentInternal(index);
     }

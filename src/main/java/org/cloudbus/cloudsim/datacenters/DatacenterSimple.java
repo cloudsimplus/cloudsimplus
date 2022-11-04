@@ -584,9 +584,9 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         }
 
         final String warningMsg = generateNotFinishedCloudletsWarning(vm);
-        final String msg = String.format(
-                "%s: %s: %s destroyed on %s. %s",
-                getSimulation().clockStr(), getClass().getSimpleName(), vm, vm.getHost(), warningMsg);
+        final String msg =
+                "%s: %s: %s destroyed on %s. %s"
+                .formatted(getSimulation().clockStr(), getClass().getSimpleName(), vm, vm.getHost(), warningMsg);
         if(warningMsg.isEmpty() || getSimulation().isTerminationTimeSet())
             LOGGER.info(msg);
         else LOGGER.warn(msg);
@@ -599,12 +599,15 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
             return "";
         }
 
-        return String.format(
-                "It had a total of %d cloudlets (running + waiting). %s", cloudletsNoFinished,
-                "Some events may have been missed. You can try: " +
-                "(a) decreasing CloudSim's minTimeBetweenEvents and/or Datacenter's schedulingInterval attribute; " +
-                "(b) increasing broker's Vm destruction delay for idle VMs if you set it to zero; " +
-                "(c) defining Cloudlets with smaller length (your Datacenter's scheduling interval may be smaller than the time to finish some Cloudlets).");
+        final var options =
+            """
+            Some events may have been missed. You can try:
+            (a) decreasing CloudSim's minTimeBetweenEvents and/or Datacenter's schedulingInterval attribute;
+            (b) increasing broker's Vm destruction delay for idle VMs if you set it to zero;
+            (c) defining Cloudlets with smaller length (your Datacenter's scheduling interval may be smaller than the time to finish some Cloudlets).
+            """;
+
+        return "It had a total of %d cloudlets (running + waiting). %s".formatted(cloudletsNoFinished, options);
     }
 
     /**
@@ -832,12 +835,12 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         final double delay = timeToMigrateVm(sourceVm, targetHost);
         final String msg1 =
             Host.NULL.equals(sourceHost) ?
-                String.format("%s to %s", sourceVm, targetHost) :
-                String.format("%s from %s to %s", sourceVm, sourceHost, targetHost);
+                "%s to %s".formatted(sourceVm, targetHost) :
+                "%s from %s to %s".formatted(sourceVm, sourceHost, targetHost);
 
         final String currentTime = getSimulation().clockStr();
         final var fmt = "It's expected to finish in %.2f seconds, considering the %.0f%% of bandwidth allowed for migration and the VM RAM size.";
-        final String msg2 = String.format(fmt, delay, getBandwidthPercentForMigration()*100);
+        final String msg2 = fmt.formatted(delay, getBandwidthPercentForMigration()*100);
         LOGGER.info("{}: {}: Migration of {} is started. {}", currentTime, getName(), msg1, msg2);
 
         if(targetHost.addMigratingInVm(sourceVm)) {
@@ -1037,7 +1040,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
 
     @Override
     public String toString() {
-        return String.format("Datacenter %d", getId());
+        return "Datacenter %d".formatted(getId());
     }
 
     @Override

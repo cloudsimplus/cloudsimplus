@@ -62,7 +62,7 @@ public class UtilizationModelPlanetLabTest {
         final Executable[] executables = new Executable[linesToRead];
         IntStream.range(0, linesToRead).forEach(i -> {
             final double utilizationPercent = Math.min(i / 100.0, 1);
-            final String msg = String.format("Value read from the file %s at line %d is not as expected", TEMP_TRACE, i);
+            final String msg = "Value read from the file %s at line %d is not as expected".formatted(TEMP_TRACE, i);
             assertEquals(utilizationPercent, planetlab.getUtilization(i * SCHEDULING_INTERVAL), 0.0001, msg);
         });
     }

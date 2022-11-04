@@ -75,7 +75,7 @@ public class BrokerBuilder implements BrokerBuilderInterface {
         return brokers.stream()
             .filter(broker -> broker.getId() == id)
             .findFirst()
-            .orElseThrow(() -> new NoSuchElementException(String.format("There isn't a broker with id %d", id)));
+            .orElseThrow(() -> new NoSuchElementException("There isn't a broker with id %d".formatted(id)));
     }
 }
 

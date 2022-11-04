@@ -58,7 +58,7 @@ public class CsvTableColumn extends AbstractTableColumn {
             return str;
         }
 
-        return String.format(DATA_COL_SEPARATOR_FORMAT, str, getTable().getColumnSeparator());
+        return DATA_COL_SEPARATOR_FORMAT.formatted(str, getTable().getColumnSeparator());
     }
 
     @Override
@@ -67,7 +67,7 @@ public class CsvTableColumn extends AbstractTableColumn {
             return super.generateData(data);
         }
 
-        return String.format(DATA_COL_SEPARATOR_FORMAT, super.generateData(data), getTable().getColumnSeparator());
+        return DATA_COL_SEPARATOR_FORMAT.formatted(super.generateData(data), getTable().getColumnSeparator());
     }
 
     /**
@@ -81,7 +81,7 @@ public class CsvTableColumn extends AbstractTableColumn {
     }
 
     public static String alignStringRight(final String str, final int size) {
-        final String fmt = String.format("%%%ds", size);
-        return String.format(fmt, str);
+        final String fmt = "%%%ds".formatted(size);
+        return fmt.formatted(str);
     }
 }

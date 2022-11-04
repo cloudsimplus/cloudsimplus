@@ -97,17 +97,15 @@ public class TopologicalGraph {
         builder.append("topological-node-information: ").append(System.lineSeparator());
 
         for (final TopologicalNode node : nodeList) {
-            builder.append(
-                String.format("%d | %s%n",
-                node.getId(), node.getWorldCoordinates()));
+            builder.append("%d | %s%n".formatted(node.getId(), node.getWorldCoordinates()));
         }
 
-        builder.append(String.format("%n%n node-link-information:%n"));
+        builder.append("%n%n node-link-information:%n".formatted());
 
         for (final TopologicalLink link : linksList) {
             builder.append(
-                String.format("from: %d to: %d delay: %.2f%n",
-                link.getSrcNodeID(), link.getDestNodeID(), link.getLinkDelay()));
+                "from: %d to: %d delay: %.2f%n"
+                .formatted(link.getSrcNodeID(), link.getDestNodeID(), link.getLinkDelay()));
         }
 
         return builder.toString();

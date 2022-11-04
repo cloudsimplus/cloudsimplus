@@ -47,7 +47,7 @@ class UtilTest {
         final var msg = "There is trash at position %d,%d instead of zero: %.2f";
         for (int i = 0; i < matrix.length; i++) {
             for (int j = 0; j < matrix[i].length; j++) {
-                assertEquals(0.0, matrix[i][j], String.format(msg, i, j, matrix[i][j]));
+                assertEquals(0.0, matrix[i][j], msg.formatted(i, j, matrix[i][j]));
             }
         }
     }
@@ -60,7 +60,7 @@ class UtilTest {
         final var msg = "Value at position %d,%d is not as expected";
         for (int i = 0; i < matrix.length; i++) {
             for (int j = 0; j < matrix[i].length; j++) {
-                assertEquals(defaultVal, matrix[i][j], String.format(msg, i, j));
+                assertEquals(defaultVal, matrix[i][j], msg.formatted(i, j));
             }
         }
     }

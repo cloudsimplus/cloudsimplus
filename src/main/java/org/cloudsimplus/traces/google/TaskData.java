@@ -64,7 +64,7 @@ class TaskData extends MachineDataBase {
      * @return
      */
     public long getUniqueTaskId(){
-        final String uniqueId = String.format("%d%d", getJobId(), getTaskIndex());
+        final String uniqueId = "%d%d".formatted(getJobId(), getTaskIndex());
         return Long.parseLong(uniqueId);
     }
 }

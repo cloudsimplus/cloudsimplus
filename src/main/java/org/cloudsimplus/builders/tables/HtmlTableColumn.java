@@ -54,13 +54,13 @@ public class HtmlTableColumn extends AbstractTableColumn {
     @Override
     protected String generateHeader(final String str) {
         final int index = getTable().getColumns().indexOf(this);
-        return String.format("%s<th>%s</th>", indentLine(index), str);
+        return "%s<th>%s</th>".formatted(indentLine(index), str);
     }
 
     @Override
     public String generateData(final Object data) {
         final int index = getTable().getColumns().indexOf(this);
-        return String.format("%s<td>%s</td>", indentLine(index), super.generateData(data));
+        return "%s<td>%s</td>".formatted(indentLine(index), super.generateData(data));
     }
 
 }

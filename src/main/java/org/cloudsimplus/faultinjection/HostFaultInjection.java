@@ -398,7 +398,7 @@ public class HostFaultInjection extends CloudSimEntity {
      */
     private void setAllVmsToFailed() {
         final int vms = lastFailedHost.getVmList().size();
-        final String msg = vms > 0 ? String.format("affecting all its %d VMs", vms) : "but there was no running VM";
+        final String msg = vms > 0 ? "affecting all its %d VMs".formatted(vms) : "but there was no running VM";
         LOGGER.error(
                 "{}: {}: All {} PEs from {} failed at {}, {}.",
                 getSimulation().clockStr(), getClass().getSimpleName(),
@@ -557,7 +557,7 @@ public class HostFaultInjection extends CloudSimEntity {
 
         registerFaultOfAllVms(broker);
         final double recoveryTimeSecs = getRandomRecoveryTimeForVmInSecs();
-        final String time = String.format("%.2f", recoveryTimeSecs / 60.0);
+        final String time = "%.2f".formatted(recoveryTimeSecs / 60.0);
         LOGGER.info(
             "{}: {}: Time to recovery from fault by cloning the last failed VM on {}: {} minutes.",
             getSimulation().clockStr(), getClass().getSimpleName(),

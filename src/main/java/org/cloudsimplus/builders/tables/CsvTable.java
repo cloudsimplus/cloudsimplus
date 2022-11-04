@@ -125,7 +125,7 @@ public class CsvTable extends AbstractTable {
      */
     protected String getCentralizedString(final String str) {
         final int indentationLength = (getLengthOfColumnHeadersRow() - str.length())/2;
-        return String.format("%n%s%s%n", StringUtils.repeat(" ", indentationLength), str);
+        return "%n%s%s%n".formatted(StringUtils.repeat(" ", indentationLength), str);
     }
 
     public String getLineSeparator() {

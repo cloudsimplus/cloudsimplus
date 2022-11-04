@@ -97,18 +97,18 @@ public final class BytesConversion {
      */
     public static String bytesToStr(final double bytes){
         if(bytes < KILO) {
-            return String.format("%.0f bytes", bytes);
+            return "%.0f bytes".formatted(bytes);
         }
 
         if(bytes < MEGA) {
-            return String.format("%.1f KB", bytesToKiloBytes(bytes));
+            return "%.1f KB".formatted(bytesToKiloBytes(bytes));
         }
 
         if(bytes < GIGA) {
-            return String.format("%.1f MB", bytesToMegaBytes(bytes));
+            return "%.1f MB".formatted(bytesToMegaBytes(bytes));
         }
 
-        return String.format("%.1f GB", bytesToGigaBytes(bytes));
+        return "%.1f GB".formatted(bytesToGigaBytes(bytes));
     }
 
     /**

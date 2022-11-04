@@ -80,7 +80,7 @@ public class SlaMetric {
 
     @Override
     public String toString() {
-        return String.format("Metric{name = %s,  dimensions = %s}", name, dimensions);
+        return "Metric{name = %s,  dimensions = %s}".formatted(name, dimensions);
     }
 
     /**

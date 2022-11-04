@@ -15,9 +15,8 @@ public class UtilizationModelFullTest {
     public void testGetUtilizationForDifferentTimes() {
         final UtilizationModelFull instance = new UtilizationModelFull();
         final String msg =
-            String.format(
-                "For any time (even a randomly defined one), the utilization has to be equals to %d",
-                EXPECTED_UTILIZATION);
+                "For any time (even a randomly defined one), the utilization has to be equals to %d"
+                .formatted(EXPECTED_UTILIZATION);
         for (int time = 0; time < 10000; time++) {
             assertEquals(EXPECTED_UTILIZATION, instance.getUtilization(time), msg);
         }

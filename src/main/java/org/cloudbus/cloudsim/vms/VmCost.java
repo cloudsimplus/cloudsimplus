@@ -114,8 +114,8 @@ public class VmCost {
 
     @Override
     public String toString() {
-        return String.format(
-            "%s costs ($) for %8.2f execution seconds - CPU: %8.2f$ RAM: %8.2f$ Storage: %8.2f$ BW: %8.2f$ Total: %8.2f$",
-            vm, getVm().getTotalExecutionTime(), getProcessingCost(), getMemoryCost(), getStorageCost(), getBwCost(), getTotalCost());
+        return
+            "%s costs ($) for %8.2f execution seconds - CPU: %8.2f$ RAM: %8.2f$ Storage: %8.2f$ BW: %8.2f$ Total: %8.2f$"
+            .formatted(vm, getVm().getTotalExecutionTime(), getProcessingCost(), getMemoryCost(), getStorageCost(), getBwCost(), getTotalCost());
     }
 }

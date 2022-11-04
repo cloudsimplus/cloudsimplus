@@ -489,7 +489,7 @@ public abstract class Experiment extends AbstractRunnable {
 
     @Override
     public String toString() {
-        return String.format("Experiment %d", index);
+        return "Experiment %d".formatted(index);
     }
 
     /**

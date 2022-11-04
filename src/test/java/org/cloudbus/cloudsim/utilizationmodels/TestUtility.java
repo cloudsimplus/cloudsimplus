@@ -94,7 +94,7 @@ final class TestUtility {
                 computeExpectedUtilization(
                     time, initUsage,usagePercentInc, maxUsagePercent);
             final double result = instance.getUtilization(time);
-            final String msg = String.format("The utilization at time %d", time);
+            final String msg = "The utilization at time %d".formatted(time);
             assertEquals(expResult, result, 0.001, msg);
         }
     }

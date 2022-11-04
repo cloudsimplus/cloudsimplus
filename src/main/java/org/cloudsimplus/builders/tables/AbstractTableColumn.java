@@ -159,7 +159,7 @@ public abstract class AbstractTableColumn implements TableColumn {
             return String.valueOf(data);
         }
 
-        return String.format(format, data);
+        return format.formatted(data);
     }
 
     /**

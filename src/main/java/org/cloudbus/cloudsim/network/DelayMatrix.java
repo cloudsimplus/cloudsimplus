@@ -101,7 +101,7 @@ public class DelayMatrix {
 	@Override
 	public String toString() {
 		final var builder = new StringBuilder(100);
-		builder.append(String.format("DelayMatrix: %n"));
+		builder.append("DelayMatrix: %n".formatted());
 
 		for (int column = 0; column < mTotalNodeNum; ++column) {
 			builder.append('\t').append(column);

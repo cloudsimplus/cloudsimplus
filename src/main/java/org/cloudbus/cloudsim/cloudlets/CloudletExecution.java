@@ -455,7 +455,7 @@ public class CloudletExecution {
 
     @Override
     public String toString() {
-        return String.format("Cloudlet %d", cloudlet.getId());
+        return "Cloudlet %d".formatted(cloudlet.getId());
     }
 
     @Override

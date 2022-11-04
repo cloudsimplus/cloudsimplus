@@ -96,7 +96,7 @@ public class CloudletSimple extends CloudletAbstract {
 
     @Override
     public String toString() {
-        return String.format("Cloudlet %d", getId());
+        return "Cloudlet %d".formatted(getId());
     }
 
     /**

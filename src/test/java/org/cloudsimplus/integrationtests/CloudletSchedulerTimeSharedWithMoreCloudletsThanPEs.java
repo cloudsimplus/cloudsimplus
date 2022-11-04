@@ -101,10 +101,10 @@ public final class CloudletSchedulerTimeSharedWithMoreCloudletsThanPEs {
 
         final double time = 20;
         for(final Cloudlet c: broker.getCloudletFinishedList()){
-            final String msg1 = String.format("Cloudlet %d doesn't have the expected finish time.", c.getId());
+            final String msg1 = "Cloudlet %d doesn't have the expected finish time.".formatted(c.getId());
             assertEquals(time, c.getFinishTime(), 0.3, msg1);
 
-            final String msg2 = String.format("Cloudlet %d doesn't have the expected exec time.", c.getId());
+            final String msg2 = "Cloudlet %d doesn't have the expected exec time.".formatted(c.getId());
             assertEquals(time, c.getActualCpuTime(), 0.3, msg2);
         }
     }

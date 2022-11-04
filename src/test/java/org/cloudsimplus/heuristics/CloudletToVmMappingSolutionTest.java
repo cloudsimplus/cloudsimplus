@@ -50,7 +50,7 @@ public class CloudletToVmMappingSolutionTest {
         final double result = solution.getFitness();
         assertEquals(
             expResult, result, 0.01,
-            String.format("Fitness is not as expected for the cost %.2f", solution.getCost()));
+            "Fitness is not as expected for the cost %.2f".formatted(solution.getCost()));
     }
 
     private CloudletToVmMappingSolution createSolutionWithOneVmForEachCloudlet(final int cloudlets, final int cloudletAndVmPes) {
@@ -91,9 +91,9 @@ public class CloudletToVmMappingSolutionTest {
         final var otherSolution = createSolutionWithOneVmForEachCloudlet(CLOUDLETS, PES, PES/2);
         final int expResult = 1;
         final int result = oneSolution.compareTo(otherSolution);
-        final String msg = String.format(
-            "The instance was expected to be greater than the compared object. Instance fitness: %f Compared object fitness: %f",
-            oneSolution.getFitness(), otherSolution.getFitness());
+        final String msg =
+            "The instance was expected to be greater than the compared object. Instance fitness: %f Compared object fitness: %f"
+            .formatted(oneSolution.getFitness(), otherSolution.getFitness());
         assertEquals(expResult, result, msg);
     }
 
@@ -105,9 +105,9 @@ public class CloudletToVmMappingSolutionTest {
         final var otherSolution = createSolutionWithOneVmForEachCloudlet(CLOUDLETS, PES, PES+1);
         final int expResult = 0;
         final int result = oneSolution.compareTo(otherSolution);
-        final String msg = String.format(
-            "The instances should be equals. Instance fitness: %f Compared object fitness: %f",
-            oneSolution.getFitness(), otherSolution.getFitness());
+        final String msg =
+            "The instances should be equals. Instance fitness: %f Compared object fitness: %f"
+            .formatted(oneSolution.getFitness(), otherSolution.getFitness());
         assertEquals(expResult, result, msg);
     }
 
@@ -119,9 +119,9 @@ public class CloudletToVmMappingSolutionTest {
         final var otherSolution = createSolutionWithOneVmForEachCloudlet(CLOUDLETS, PES);
         final int expResult = -1;
         final int result = oneSolution.compareTo(otherSolution);
-        final String msg = String.format(
-            "The instance was expected to be lower than the compared object. Instance fitness: %.2f Compared object fitness: %.2f",
-            oneSolution.getFitness(), otherSolution.getFitness());
+        final String msg =
+            "The instance was expected to be lower than the compared object. Instance fitness: %.2f Compared object fitness: %.2f"
+            .formatted(oneSolution.getFitness(), otherSolution.getFitness());
         assertEquals(expResult, result, msg);
     }
 
@@ -166,12 +166,13 @@ public class CloudletToVmMappingSolutionTest {
         final var solution = new CloudletToVmMappingSolution(Heuristic.NULL);
         solution.swapVmsOfTwoMapEntries(originalEntries);
 
-        final String msg = String.format(
-            "The VMs of the given cloudlets were not swapped. It was expected the cloudlet %d to move to VM %d and cloudlet %d to move to VM %d.",
-            swappedVmsEntries.get(0).getKey().getId(),
-            swappedVmsEntries.get(0).getValue().getId(),
-            swappedVmsEntries.get(1).getKey().getId(),
-            swappedVmsEntries.get(1).getValue().getId());
+        final String msg =
+            "The VMs of the given cloudlets were not swapped. It was expected the cloudlet %d to move to VM %d and cloudlet %d to move to VM %d."
+            .formatted(
+                swappedVmsEntries.get(0).getKey().getId(),
+                swappedVmsEntries.get(0).getValue().getId(),
+                swappedVmsEntries.get(1).getKey().getId(),
+                swappedVmsEntries.get(1).getValue().getId());
         assertEquals(swappedVmsEntries, originalEntries, msg);
     }
 }

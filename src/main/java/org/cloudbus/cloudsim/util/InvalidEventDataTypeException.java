@@ -53,7 +53,7 @@ public class InvalidEventDataTypeException extends IllegalStateException {
     private static String formatMsg(final SimEvent evt, final String tagName, final String requiredClassName) {
         final var fmt = "%s: %s event data must be a %s but it was %s";
         final var clock = evt.getSimulation().clockStr();
-        return String.format(fmt, clock, tagName, requiredClassName, evt.getData().getClass().getSimpleName());
+        return fmt.formatted(clock, tagName, requiredClassName, evt.getData().getClass().getSimpleName());
     }
 
 

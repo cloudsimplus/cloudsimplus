@@ -344,7 +344,7 @@ public class CloudSim implements Simulation {
     }
 
     private void printSimulationFinished() {
-        final String msg1 = String.format("Simulation finished at time %.2f", clock);
+        final String msg1 = "Simulation finished at time %.2f".formatted(clock);
         final String extra = future.isEmpty() ? "" : ", before completing,";
         final String msg2 = isTimeToTerminateSimulationUnderRequest()
                                 ? extra + " in reason of an explicit request to terminate() or terminateAt()"
@@ -416,7 +416,7 @@ public class CloudSim implements Simulation {
 
     @Override
     public String clockStr() {
-        return String.format("%.2f", clock);
+        return "%.2f".formatted(clock);
     }
 
     @Override
@@ -470,7 +470,7 @@ public class CloudSim implements Simulation {
     protected void removeFinishedEntity(final CloudSimEntity entity){
         if(entity.isAlive()){
             final var msg = "Alive entity %s cannot be removed from the simulation entity list.";
-            throw new IllegalStateException(String.format(msg, entity));
+            throw new IllegalStateException(msg.formatted(entity));
         }
 
         entities.remove(entity);
@@ -677,7 +677,7 @@ public class CloudSim implements Simulation {
     private void processEvent(final SimEvent evt) {
         if (evt.getTime() < clock) {
             final var msg = "Past event detected. Event time: %.2f Simulation clock: %.2f";
-            throw new IllegalArgumentException(String.format(msg, evt.getTime(), clock));
+            throw new IllegalArgumentException(msg.formatted(evt.getTime(), clock));
         }
 
         setClock(evt.getTime());

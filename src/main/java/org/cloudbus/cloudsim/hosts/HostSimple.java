@@ -812,7 +812,7 @@ public class HostSimple implements Host {
     private void checkSimulationIsRunningAndAttemptedToChangeHost(final String resourceName) {
         if(simulation.isRunning()){
             final var msg = "It is not allowed to change a Host's %s after the simulation started.";
-            throw new IllegalStateException(String.format(msg, resourceName));
+            throw new IllegalStateException(msg.formatted(resourceName));
         }
     }
 
@@ -1125,8 +1125,8 @@ public class HostSimple implements Host {
     public String toString() {
         final String dc =
                 datacenter == null || Datacenter.NULL.equals(datacenter) ? "" :
-                String.format("/DC %d", datacenter.getId());
-        return String.format("Host %d%s", getId(), dc);
+                "/DC %d".formatted(datacenter.getId());
+        return "Host %d%s".formatted(getId(), dc);
     }
 
     @Override

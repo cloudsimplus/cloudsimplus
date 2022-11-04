@@ -63,7 +63,7 @@ public interface TimeZoned {
     default double validateTimeZone(final double timeZone) {
         if(timeZone < MIN_TIME_ZONE_OFFSET || timeZone > MAX_TIME_ZONE_OFFSET){
             final var msg = "Timezone offset must be between [%d and %d].";
-            throw new IllegalArgumentException(String.format(msg, MIN_TIME_ZONE_OFFSET, MAX_TIME_ZONE_OFFSET));
+            throw new IllegalArgumentException(msg.formatted(MIN_TIME_ZONE_OFFSET, MAX_TIME_ZONE_OFFSET));
         }
 
         return timeZone;
@@ -120,10 +120,10 @@ public interface TimeZoned {
 
     static String format(final double timeZone){
         final double decimals = timeZone - (int) timeZone;
-        final String formatted = decimals == 0 ?
-                                    String.format("GMT%+.0f", timeZone) :
-                                    String.format("GMT%+d:%2.0f", (int)timeZone, hoursToMinutes(decimals));
-        return String.format("%-8s", formatted);
+        final String timezoneStr = decimals == 0 ?
+                                    "GMT%+.0f".formatted(timeZone) :
+                                    "GMT%+d:%2.0f".formatted((int)timeZone, hoursToMinutes(decimals));
+        return "%-8s".formatted(timezoneStr);
     }
 
 }

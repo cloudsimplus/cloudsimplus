@@ -147,7 +147,7 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
             "as soon as possible";
 
         final boolean singleDc = dcList.size() == 1;
-        final var targetDcName = singleDc || getDatacenter().equals(targetMigrationDc) ? "" : String.format("on %s ", targetMigrationDc);
+        final var targetDcName = singleDc || getDatacenter().equals(targetMigrationDc) ? "" : "on %s ".formatted(targetMigrationDc);
         LOGGER.warn(
             "{}: {}: An under or overload situation was detected on {}, however there aren't suitable Hosts {}to manage that. Trying again {}.",
             getDatacenter().getSimulation().clock(), getClass().getSimpleName(), getDatacenter(), targetDcName, msg);
@@ -253,9 +253,9 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
     }
 
     private String overloadedHostToString(final Host host) {
-        return String.format(
-            "      Host %d (upper CPU threshold %.2f, current utilization: %.2f)",
-            host.getId(), getOverUtilizationThreshold(host), host.getCpuPercentUtilization());
+        return
+            "      Host %d (upper CPU threshold %.2f, current utilization: %.2f)"
+            .formatted(host.getId(), getOverUtilizationThreshold(host), host.getCpuPercentUtilization());
     }
 
     /**

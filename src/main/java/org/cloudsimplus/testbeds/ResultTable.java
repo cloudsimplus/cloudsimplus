@@ -58,7 +58,7 @@ final class ResultTable<T extends Experiment> {
         final String values =
             confidenceIntervals
                 .stream()
-                .map(ci -> alignStringRight(String.format(format, ci.getValue()), ci.getMetricName().length()))
+                .map(ci -> alignStringRight(format.formatted(ci.getValue()), ci.getMetricName().length()))
                 .collect(joining("; "));
         final String valueType = runner.getSimulationRuns() > 1 ? "CI           " : "Mean         ";
         System.out.printf("%s;%s%n", valueType, values);
@@ -66,7 +66,7 @@ final class ResultTable<T extends Experiment> {
         final String errorMargins =
             confidenceIntervals
                 .stream()
-                .map(ci -> alignStringRight(String.format(format, ci.getErrorMargin()), ci.getMetricName().length()))
+                .map(ci -> alignStringRight(format.formatted(ci.getErrorMargin()), ci.getMetricName().length()))
                 .collect(joining("; "));
         System.out.printf("Error Margin ;%s%n", errorMargins);
     }
@@ -104,7 +104,7 @@ final class ResultTable<T extends Experiment> {
                 \\hline
             """;
 
-        final var str = String.format(fmt, runner.getDescription(), runner.getResultsTableId());
+        final var str = fmt.formatted(runner.getDescription(), runner.getResultsTableId());
         return new StringBuilder(str);
     }
 
@@ -116,16 +116,16 @@ final class ResultTable<T extends Experiment> {
     private void latexRow(final StringBuilder latex, final ConfidenceInterval ci) {
         final var COL_SEPARATOR = " & ";
         //if there is only one metric sample, it doesn't show the ± symbol (latex \pm), since there is no error margin
-        final var errorMargin = ci.isComputed() ? String.format(" & $\\pm$ %.2f", ci.getErrorMargin()) : COL_SEPARATOR;
+        final var errorMargin = ci.isComputed() ? " & $\\pm$ %.2f".formatted(ci.getErrorMargin()) : COL_SEPARATOR;
 
         //If there is a % in the metric name, that needs to be escaped to show on Latex, since % starts a Latex comment
         final var escapedMetricName = StringUtils.replace(ci.getMetricName(),"%", "\\%");
         latex.append(escapedMetricName)
              .append(COL_SEPARATOR)
-             .append(String.format("%.2f", ci.getValue()))
+             .append("%.2f".formatted(ci.getValue()))
              .append(errorMargin)
              .append(COL_SEPARATOR)
-             .append(String.format("%.2f", ci.getStdDev()))
+             .append("%.2f".formatted(ci.getStdDev()))
              .append("\\\\ \\hline\n");
     }
 }

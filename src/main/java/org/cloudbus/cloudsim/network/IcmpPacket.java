@@ -159,7 +159,7 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
         final int SIZE = 1000;   // number of chars
         final StringBuilder sb = new StringBuilder(SIZE);
         sb.append("Ping information for ").append(name)
-          .append(String.format("%nEntity Name\tEntry TiOme\tExit Time\t Bandwidth%n"))
+          .append("%nEntity Name\tEntry Time\tExit Time\t Bandwidth%n".formatted())
           .append("----------------------------------------------------------")
           .append(System.lineSeparator());
 
@@ -171,13 +171,13 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
             final String bandwidth = getData(baudRateList, i);
 
             sb.append("Entity ").append(resID).append("\t\t")
-              .append(String.format("%s%s%s%s%s%s%s%n", entry, tab, tab, exit, tab, tab, bandwidth));
+              .append("%s%s%s%s%s%s%s%n".formatted(entry, tab, tab, exit, tab, tab, bandwidth));
         }
 
         sb.append(System.lineSeparator())
           .append("Round Trip Time : ")
           .append(num.format(getTotalResponseTime()))
-          .append(String.format(" seconds%nNumber of Hops  : "))
+          .append(" seconds%nNumber of Hops  : ".formatted())
           .append(getNumberOfHops())
           .append(System.lineSeparator())
           .append("Bottleneck Bandwidth : ")
@@ -452,7 +452,7 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
         }
         else {
             final var fmt = "Tag must be between %s and %s";
-            final var msg = String.format(fmt, CloudSimTag.ICMP_PKT_SUBMIT, CloudSimTag.ICMP_PKT_RETURN);
+            final var msg = fmt.formatted(CloudSimTag.ICMP_PKT_SUBMIT, CloudSimTag.ICMP_PKT_RETURN);
             throw new IllegalArgumentException(msg);
         }
     }

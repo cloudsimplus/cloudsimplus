@@ -101,9 +101,8 @@ public final class SlaMetricDimension {
 
     @Override
     public String toString() {
-        return String.format(
-                    "Dimension{name = %s, value = %s}", name,
-                    value == Double.MAX_VALUE ? "Double.MAX_VALUE" : String.format("%.4f", value));
+        final var valStr = value == Double.MAX_VALUE ? "Double.MAX_VALUE" : "%.4f".formatted(value);
+        return "Dimension{name = %s, value = %s}".formatted(name, valStr);
     }
 
     /**

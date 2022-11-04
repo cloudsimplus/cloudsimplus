@@ -15,6 +15,6 @@ public record Point2D(int x, int y) {
 
     @Override
     public String toString() {
-        return String.format("x: %d y: %d", x, y);
+        return "x: %d y: %d".formatted(x, y);
     }
 }

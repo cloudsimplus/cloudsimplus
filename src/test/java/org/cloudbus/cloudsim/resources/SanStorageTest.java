@@ -232,7 +232,8 @@ public class SanStorageTest {
      * @throws IllegalArgumentException
      */
     private static File createNumberedFile(final int fileNumber, final int fileSize) {
-        return new File(String.format("file%d.txt", fileNumber), fileSize);
+        final var fileName = "file%d.txt".formatted(fileNumber);
+        return new File(fileName, fileSize);
     }
 
     @Test
@@ -533,7 +534,7 @@ public class SanStorageTest {
         final var fileList = createListOfFilesAndAddToHardDrive(san);
         for(final File file: fileList){
             final String oldName = file.getName();
-            final String newName = String.format("renamed-%s", oldName);
+            final String newName = "renamed-%s".formatted(oldName);
             assertTrue(san.contains(oldName));
             assertTrue(san.renameFile(file, newName));
             assertFalse(san.contains(oldName));

@@ -815,9 +815,9 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
 
     @Override
     public String toString() {
-        final String desc = StringUtils.isBlank(description) ? "" : String.format(" (%s)", description);
+        final String desc = StringUtils.isBlank(description) ? "" : " (%s)".formatted(description);
         final String type = this instanceof VmGroup ? "VmGroup" : "Vm";
-        return String.format("%s %d%s", type, getId(), desc);
+        return "%s %d%s".formatted(type, getId(), desc);
     }
 
     /**

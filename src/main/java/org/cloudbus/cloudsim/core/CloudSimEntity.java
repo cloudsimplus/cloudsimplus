@@ -428,7 +428,7 @@ public abstract class CloudSimEntity implements SimEntity, Cloneable {
      */
     private void setAutomaticName() {
         final long id = this.id >= 0 ? this.id : this.simulation.getNumEntities();
-        this.name = String.format("%s%d", getClass().getSimpleName(), id);
+        this.name = "%s%d".formatted(getClass().getSimpleName(), id);
     }
 
     /**

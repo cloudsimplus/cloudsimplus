@@ -145,9 +145,9 @@ public final class VmCreationFailureIntegrationTest {
         numberOfVmCreationFailures++;
         final int expectedFailedVms = 1;
 
-        final String msg = String.format(
-                "Only %d VMs should had failed to be created due to lack of resources but %d failed",
-                expectedFailedVms, numberOfVmCreationFailures);
+        final var msg =
+                "Only %d VMs should had failed to be created due to lack of resources but %d failed"
+                .formatted(expectedFailedVms, numberOfVmCreationFailures);
         assertEquals(expectedFailedVms, numberOfVmCreationFailures, msg);
     }
 

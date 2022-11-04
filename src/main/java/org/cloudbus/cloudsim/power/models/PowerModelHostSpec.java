@@ -82,8 +82,8 @@ public class PowerModelHostSpec extends PowerModelHost {
         }
 
         final var msg =
-            String.format("powerSpec has to contain at least %d elements (representing utilization at 0%% and 100%% load, respectively)",
-                MIN_POWER_CONSUMPTION_DATA_SIZE);
+            "powerSpec has to contain at least %d elements (representing utilization at 0%% and 100%% load, respectively)"
+            .formatted(MIN_POWER_CONSUMPTION_DATA_SIZE);
         throw new IllegalArgumentException(msg);
     }
 

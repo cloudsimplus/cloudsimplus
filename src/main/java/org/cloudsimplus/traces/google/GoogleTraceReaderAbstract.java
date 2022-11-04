@@ -127,7 +127,7 @@ abstract class GoogleTraceReaderAbstract<T extends Identifiable> extends TraceRe
     protected abstract boolean processParsedLineInternal();
 
     /* default */ String formatPercentValue(final double percent){
-        return String.format("%.1f", percent*100);
+        return "%.1f".formatted(percent*100);
     }
 
     /**
