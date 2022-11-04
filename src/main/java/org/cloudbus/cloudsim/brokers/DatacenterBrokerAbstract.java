@@ -725,9 +725,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      */
     private boolean requestDatacenterToCreateWaitingVms(final boolean isFallbackDatacenter, final boolean creationRetry) {
         for (final Vm vm : vmWaitingList) {
-            this.lastSelectedDc = isFallbackDatacenter && selectClosestDatacenter ?
-                                        defaultDatacenterMapper(lastSelectedDc, vm) :
-                                        datacenterMapper.apply(lastSelectedDc, vm);
+            this.lastSelectedDc = getLastSelectedDc(isFallbackDatacenter, vm);
             if(creationRetry) {
                 vm.setLastTriedDatacenter(Datacenter.NULL);
             }
@@ -735,6 +733,12 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         }
 
         return lastSelectedDc != Datacenter.NULL;
+    }
+
+    private Datacenter getLastSelectedDc(final boolean isFallbackDatacenter, final Vm vm) {
+        return isFallbackDatacenter && selectClosestDatacenter ?
+                    defaultDatacenterMapper(lastSelectedDc, vm) :
+                    datacenterMapper.apply(lastSelectedDc, vm);
     }
 
     @Override
