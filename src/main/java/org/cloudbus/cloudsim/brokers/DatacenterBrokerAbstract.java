@@ -859,25 +859,24 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
 
     @Override
     public List<Cloudlet> destroyVm(final Vm vm) {
-        if(vm.isCreated()) {
-            final var cloudletsAffectedList = new ArrayList<Cloudlet>();
-
-            for (final var iterator = cloudletSubmittedList.iterator(); iterator.hasNext(); ) {
-                final Cloudlet cloudlet = iterator.next();
-                if(cloudlet.getVm().equals(vm) && !cloudlet.isFinished()) {
-                    cloudlet.setVm(Vm.NULL);
-                    cloudletsAffectedList.add(cloudlet.reset());
-                    iterator.remove();
-                }
-            }
-
-            vm.getHost().destroyVm(vm);
-            vm.getCloudletScheduler().clear();
-            return cloudletsAffectedList;
+        if (!vm.isCreated()) {
+            LOGGER.warn("Vm: " + vm.getId() + " does not belong to this broker! Broker: " + this);
+            return new ArrayList<>();
         }
 
-        LOGGER.warn("Vm: " + vm.getId() + " does not belong to this broker! Broker: " + this);
-        return new ArrayList<>();
+        final var cloudletsAffectedList = new ArrayList<Cloudlet>();
+        for (final var iterator = cloudletSubmittedList.iterator(); iterator.hasNext(); ) {
+            final Cloudlet cloudlet = iterator.next();
+            if (cloudlet.getVm().equals(vm) && !cloudlet.isFinished()) {
+                cloudlet.setVm(Vm.NULL);
+                cloudletsAffectedList.add(cloudlet.reset());
+                iterator.remove();
+            }
+        }
+
+        vm.getHost().destroyVm(vm);
+        vm.getCloudletScheduler().clear();
+        return cloudletsAffectedList;
     }
 
     /**
