@@ -438,11 +438,12 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
 
     @Override
     public long getCurrentRequestedRam() {
-        if (!isCreated()) {
-            return ram.getCapacity();
+        if (isCreated()) {
+            return (long) (cloudletScheduler.getCurrentRequestedRamPercentUtilization() * ram.getCapacity());
         }
 
-        return (long) (cloudletScheduler.getCurrentRequestedRamPercentUtilization() * ram.getCapacity());
+        return ram.getCapacity();
+
     }
 
     @Override
