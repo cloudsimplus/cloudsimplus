@@ -32,7 +32,7 @@ import java.util.function.Predicate;
 
 /**
  * An interface to be implemented by each class that provides basic
- * features of Virtual Machines (VMs).
+ * features for Virtual Machines (VMs).
  * The interface implements the Null Object
  * Design Pattern in order to start avoiding {@link NullPointerException} when
  * using the {@link Vm#NULL} object instead of attributing {@code null} to
@@ -53,15 +53,15 @@ public interface Vm extends AbstractMachine<Resource>, UniquelyIdentifiable, Com
     Vm NULL = new VmNull();
 
     /**
-     * Gets the Vm description, which is an optional text
-     * which one can use to provide details about this of this VM.
+     * Gets the Vm description, an optional text
+     * which can be used to provide details about this VM.
      * @return
      */
     String getDescription();
 
     /**
-     * Sets the VM description, which is an optional text
-     * which one can use to provide details about this of this VM.
+     * Sets the Vm description, an optional text
+     * which can be used to provide details about this VM.
      * @param description the Vm description to set
      * @return
      */
