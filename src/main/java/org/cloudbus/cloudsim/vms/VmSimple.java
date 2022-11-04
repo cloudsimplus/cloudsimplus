@@ -29,10 +29,10 @@ import java.util.*;
 import static java.util.Objects.requireNonNull;
 
 /**
- * Implements the basic features of a Virtual Machine (VM) that runs inside a
+ * Implements the basic features of a Virtual Machine (VM), which runs inside a
  * {@link Host} that may be shared among other VMs. It processes
  * {@link Cloudlet cloudlets}. This processing happens according to a policy,
- * defined by the {@link CloudletScheduler}. Each VM has a owner (user), which
+ * defined by the {@link CloudletScheduler}. Each VM has an owner (user), which
  * can submit cloudlets to the VM to execute them.
  *
  * @author Rodrigo N. Calheiros
@@ -298,6 +298,8 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
          * But since the next update would be only at time 50.1, the utilization
          * at time 50.0 wouldn't be collected to enable knowing the exact time
          * before the utilization drop.
+         * Condition and computation below is used to ensure VM processing occurs
+         * at time 50 and 50.1.
          */
         final double decimals = currentTime - (int) currentTime;
         return nextSimulationDelay - decimals < 0 ? nextSimulationDelay : nextSimulationDelay - decimals;
