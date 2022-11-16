@@ -204,6 +204,7 @@ public abstract class TableBuilderAbstract<T> {
      * @param col column to add a data function
      * @param dataFunction a function that receives an object T and returns the data to be printed from that object.
      * @return
+     * @see #colsDataFunctions
      */
     protected TableBuilderAbstract<T> addColDataFunction(final TableColumn col, final Function<T, Object> dataFunction){
         colsDataFunctions.put(requireNonNull(col), requireNonNull(dataFunction));
