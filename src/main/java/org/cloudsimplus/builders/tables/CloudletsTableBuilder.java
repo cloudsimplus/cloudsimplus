@@ -81,14 +81,14 @@ public class CloudletsTableBuilder extends TableBuilderAbstract<Cloudlet> {
         addColumnDataFunction(getTable().addColumn("FinishedLen", "MI"), Cloudlet::getFinishedLengthSoFar);
         addColumnDataFunction(getTable().addColumn("CloudletPEs", CPU_CORES), Cloudlet::getNumberOfPes);
 
-        TableColumn col = getTable().addColumn("StartTime", SECONDS).setFormat(TIME_FORMAT);
-        addColumnDataFunction(col, Cloudlet::getExecStartTime);
+        final var col1 = getTable().addColumn("StartTime", SECONDS).setFormat(TIME_FORMAT);
+        addColumnDataFunction(col1, Cloudlet::getExecStartTime);
 
-        col = getTable().addColumn("FinishTime", SECONDS).setFormat(TIME_FORMAT);
-        addColumnDataFunction(col, cl -> roundTime(cl, cl.getFinishTime()));
+        final var col2 = getTable().addColumn("FinishTime", SECONDS).setFormat(TIME_FORMAT);
+        addColumnDataFunction(col2, cl -> roundTime(cl, cl.getFinishTime()));
 
-        col = getTable().addColumn("ExecTime", SECONDS).setFormat(TIME_FORMAT);
-        addColumnDataFunction(col, cl -> roundTime(cl, cl.getActualCpuTime()));
+        final var col3 = getTable().addColumn("ExecTime", SECONDS).setFormat(TIME_FORMAT);
+        addColumnDataFunction(col3, cl -> roundTime(cl, cl.getActualCpuTime()));
     }
 
     /**
