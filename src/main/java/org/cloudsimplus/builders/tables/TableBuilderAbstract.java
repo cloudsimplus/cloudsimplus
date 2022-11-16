@@ -47,7 +47,7 @@ public abstract class TableBuilderAbstract<T> {
      * That data is the value for the associated column
      * of the table being generated.
      */
-    private final Map<TableColumn, Function<T, Object>> columnsDataFunctions;
+    private final Map<TableColumn, Function<T, Object>> colsDataFunctions;
 
     private Table table;
 
@@ -72,7 +72,7 @@ public abstract class TableBuilderAbstract<T> {
     public TableBuilderAbstract(final List<? extends T> list, final Table table){
         setTable(table);
         setObjectList(list);
-        columnsDataFunctions = new HashMap<>();
+        colsDataFunctions = new HashMap<>();
         createTableColumns();
     }
 
@@ -142,7 +142,7 @@ public abstract class TableBuilderAbstract<T> {
 
         col.setTable(getTable());
         getTable().addColumn(index, col);
-        columnsDataFunctions.put(col, dataFunction);
+        colsDataFunctions.put(col, dataFunction);
         return this;
     }
 
@@ -196,17 +196,17 @@ public abstract class TableBuilderAbstract<T> {
     protected void addDataToRow(final T object, final List<Object> row) {
         getTable()
             .getColumns()
-            .forEach(col -> row.add(columnsDataFunctions.get(col).apply(object)));
+            .forEach(col -> row.add(colsDataFunctions.get(col).apply(object)));
     }
 
     /**
      * Adds a data function for a given column.
      * @param col column to add a data function
-     * @param function a function that receives an object T and returns the data to be printed from that object.
+     * @param dataFunction a function that receives an object T and returns the data to be printed from that object.
      * @return
      */
-    protected TableBuilderAbstract<T> addColDataFunction(final TableColumn col, final Function<T, Object> function){
-        columnsDataFunctions.put(requireNonNull(col), requireNonNull(function));
+    protected TableBuilderAbstract<T> addColDataFunction(final TableColumn col, final Function<T, Object> dataFunction){
+        colsDataFunctions.put(requireNonNull(col), requireNonNull(dataFunction));
         return this;
     }
 }
