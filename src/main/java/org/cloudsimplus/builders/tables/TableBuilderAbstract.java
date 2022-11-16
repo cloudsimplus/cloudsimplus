@@ -198,7 +198,7 @@ public abstract class TableBuilderAbstract<T> {
             .forEach(col -> row.add(columnsDataFunctions.get(col).apply(object)));
     }
 
-    protected TableBuilderAbstract<T> addColumnDataFunction(final TableColumn col, final Function<T, Object> function){
+    protected TableBuilderAbstract<T> addColDataFunction(final TableColumn col, final Function<T, Object> function){
         columnsDataFunctions.put(requireNonNull(col), requireNonNull(function));
         return this;
     }

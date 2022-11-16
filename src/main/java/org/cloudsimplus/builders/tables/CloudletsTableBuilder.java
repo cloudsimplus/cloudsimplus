@@ -70,25 +70,25 @@ public class CloudletsTableBuilder extends TableBuilderAbstract<Cloudlet> {
     @Override
     protected void createTableColumns() {
         final String ID = "ID";
-        addColumnDataFunction(getTable().addColumn("Cloudlet", ID), Identifiable::getId);
-        addColumnDataFunction(getTable().addColumn("Status "), cloudlet -> cloudlet.getStatus().name());
-        addColumnDataFunction(getTable().addColumn("DC", ID), cloudlet -> cloudlet.getVm().getHost().getDatacenter().getId());
-        addColumnDataFunction(getTable().addColumn("Host", ID), cloudlet -> cloudlet.getVm().getHost().getId());
-        addColumnDataFunction(getTable().addColumn("Host PEs ", CPU_CORES), cloudlet -> cloudlet.getVm().getHost().getWorkingPesNumber());
-        addColumnDataFunction(getTable().addColumn("VM", ID), cloudlet -> cloudlet.getVm().getId());
-        addColumnDataFunction(getTable().addColumn("VM PEs   ", CPU_CORES), cloudlet -> cloudlet.getVm().getNumberOfPes());
-        addColumnDataFunction(getTable().addColumn("CloudletLen", "MI"), Cloudlet::getLength);
-        addColumnDataFunction(getTable().addColumn("FinishedLen", "MI"), Cloudlet::getFinishedLengthSoFar);
-        addColumnDataFunction(getTable().addColumn("CloudletPEs", CPU_CORES), Cloudlet::getNumberOfPes);
+        addColDataFunction(getTable().addColumn("Cloudlet", ID), Identifiable::getId);
+        addColDataFunction(getTable().addColumn("Status "), cloudlet -> cloudlet.getStatus().name());
+        addColDataFunction(getTable().addColumn("DC", ID), cloudlet -> cloudlet.getVm().getHost().getDatacenter().getId());
+        addColDataFunction(getTable().addColumn("Host", ID), cloudlet -> cloudlet.getVm().getHost().getId());
+        addColDataFunction(getTable().addColumn("Host PEs ", CPU_CORES), cloudlet -> cloudlet.getVm().getHost().getWorkingPesNumber());
+        addColDataFunction(getTable().addColumn("VM", ID), cloudlet -> cloudlet.getVm().getId());
+        addColDataFunction(getTable().addColumn("VM PEs   ", CPU_CORES), cloudlet -> cloudlet.getVm().getNumberOfPes());
+        addColDataFunction(getTable().addColumn("CloudletLen", "MI"), Cloudlet::getLength);
+        addColDataFunction(getTable().addColumn("FinishedLen", "MI"), Cloudlet::getFinishedLengthSoFar);
+        addColDataFunction(getTable().addColumn("CloudletPEs", CPU_CORES), Cloudlet::getNumberOfPes);
 
         final var col1 = getTable().addColumn("StartTime", SECONDS).setFormat(TIME_FORMAT);
-        addColumnDataFunction(col1, Cloudlet::getExecStartTime);
+        addColDataFunction(col1, Cloudlet::getExecStartTime);
 
         final var col2 = getTable().addColumn("FinishTime", SECONDS).setFormat(TIME_FORMAT);
-        addColumnDataFunction(col2, cl -> roundTime(cl, cl.getFinishTime()));
+        addColDataFunction(col2, cl -> roundTime(cl, cl.getFinishTime()));
 
         final var col3 = getTable().addColumn("ExecTime", SECONDS).setFormat(TIME_FORMAT);
-        addColumnDataFunction(col3, cl -> roundTime(cl, cl.getActualCpuTime()));
+        addColDataFunction(col3, cl -> roundTime(cl, cl.getActualCpuTime()));
     }
 
     /**
