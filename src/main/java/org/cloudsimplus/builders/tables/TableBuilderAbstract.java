@@ -43,8 +43,9 @@ public abstract class TableBuilderAbstract<T> {
 
     /**
      * A Map containing a function that receives an object T and returns
-     * the data to be printed from that object to the associated column
-     * of the table to be printed.
+     * the data to be printed from that object.
+     * That data is the value for the associated column
+     * of the table being generated.
      */
     private final Map<TableColumn, Function<T, Object>> columnsDataFunctions;
 
@@ -198,6 +199,12 @@ public abstract class TableBuilderAbstract<T> {
             .forEach(col -> row.add(columnsDataFunctions.get(col).apply(object)));
     }
 
+    /**
+     * Adds a data function for a given column.
+     * @param col column to add a data function
+     * @param function a function that receives an object T and returns the data to be printed from that object.
+     * @return
+     */
     protected TableBuilderAbstract<T> addColDataFunction(final TableColumn col, final Function<T, Object> function){
         columnsDataFunctions.put(requireNonNull(col), requireNonNull(function));
         return this;
