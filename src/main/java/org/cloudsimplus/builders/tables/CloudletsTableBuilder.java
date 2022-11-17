@@ -114,7 +114,7 @@ public class CloudletsTableBuilder extends TableBuilderAbstract<Cloudlet> {
     	
     	timeFormat = "%.0f";
         lengthFormat = "%d";
-        idFormat = "%02d";
+        idFormat = "%d";
         peFormat = "%d";
         
         // Set up all table fields
@@ -164,7 +164,7 @@ public class CloudletsTableBuilder extends TableBuilderAbstract<Cloudlet> {
         addColDataFunction(finishedLenCol, Cloudlet::getFinishedLengthSoFar);
         
         // CloudletPEs
-        final var cloudletPEsCol = getTable().addColumn("CloudletPEs", CPU_CORES).setFormat(getIDFormat());
+        final var cloudletPEsCol = getTable().addColumn("CloudletPEs", CPU_CORES).setFormat(getPEFormat());
         lengthColumnList.add(cloudletPEsCol);
         addColDataFunction(cloudletPEsCol, Cloudlet::getNumberOfPes);
 
