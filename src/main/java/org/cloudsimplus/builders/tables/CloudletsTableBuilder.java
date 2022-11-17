@@ -184,20 +184,24 @@ public class CloudletsTableBuilder extends TableBuilderAbstract<Cloudlet> {
         addColDataFunction(execTimeCol, cl -> roundTime(cl, cl.getActualCpuTime()));
     }
     
-    public void setTimeFormat(String format) {
+    public CloudletsTableBuilder setTimeFormat(String format) {
     	this.timeFormat = format;
+    	return this;
     }
     
-    public void setLengthFormat(String format) {
+    public CloudletsTableBuilder setLengthFormat(String format) {
     	this.lengthFormat = format;
+    	return this;
     }
     
-    public void setPEFormat(String format) {
+    public CloudletsTableBuilder setPEFormat(String format) {
     	this.peFormat = format;
+    	return this;
     }
     
-    public void setIDFormat(String format) {
+    public CloudletsTableBuilder setIDFormat(String format) {
     	this.idFormat = format;
+    	return this;
     }
     
     public String getTimeFormat() {
