@@ -78,6 +78,11 @@ public interface TableColumn {
      */
     String getTitle();
 
+    /**
+     * Sets the format to print the column data
+     * @param format the format to set
+     * @return
+     */
     TableColumn setFormat(String format);
 
     TableColumn setSubTitle(String subTitle);
