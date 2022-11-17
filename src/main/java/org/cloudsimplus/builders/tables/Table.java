@@ -46,6 +46,7 @@ public interface Table {
      * @return The created column.
      * @see #addColumn(int, String)
      * @see #addColumn(int, TableColumn)
+     * @see #addColumn(String, String, String)
      */
     TableColumn addColumn(String columnTitle);
 
@@ -57,6 +58,7 @@ public interface Table {
      * @return the created column
      * @see #addColumn(String)
      * @see #addColumn(int, TableColumn)
+     * @see #addColumn(String, String, String)
      */
     TableColumn addColumn(int index, String columnTitle);
 
@@ -68,8 +70,22 @@ public interface Table {
      * @return the created column
      * @see #addColumn(String)
      * @see #addColumn(int, String)
+     * @see #addColumn(String, String, String)
      */
     TableColumn addColumn(String columnTitle, String columnSubTitle);
+
+    /**
+     * Adds a column with a given title and sub-title to the end of the table's columns to be printed.
+     *
+     * @param columnTitle The title of the column to be added.
+     * @param columnSubTitle The sub-title of the column to be added.
+     * @param format format to print the column data
+     * @return the created column
+     * @see #addColumn(String)
+     * @see #addColumn(int, String)
+     * @see #addColumn(int, TableColumn)
+     */
+    TableColumn addColumn(String columnTitle, String columnSubTitle, String format);
 
     /**
      * Adds a column object to a specific position of the table's columns to be printed.
