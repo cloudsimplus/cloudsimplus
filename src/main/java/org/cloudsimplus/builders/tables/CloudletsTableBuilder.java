@@ -97,15 +97,15 @@ public class CloudletsTableBuilder extends TableBuilderAbstract<Cloudlet> {
      */
     private List<TableColumn> peColumnList;
     
-    
-    
-
-    @Override
-    protected void createTableColumns() {
+    /**
+     *  Initialize lists and default formats.
+     *  This has to be done here because the createTableColumns() function gets executed by the superclass before these class
+     *  variables would normally get initialized if they were assigned the normal way (which is after the constructor of the superclass has finished).
+     *  This function ensures that they are already present for createTableColumns().
+     */
+    private void initializeFormattingSettings() {
     	
-    	// Initialize lists and default formats.
-    	// This has to be done here because this function gets executed by the superclass
-    	// before these class variables would normally get initialized (which is after the constructor of the superclass has finished).
+    	
     	
     	timeColumnList = new ArrayList<TableColumn>();
     	lengthColumnList = new ArrayList<TableColumn>();
@@ -116,6 +116,12 @@ public class CloudletsTableBuilder extends TableBuilderAbstract<Cloudlet> {
         lengthFormat = "%d";
         idFormat = "%d";
         peFormat = "%d";
+    }
+
+    @Override
+    protected void createTableColumns() {
+    	
+    	initializeFormattingSettings();
         
         // Set up all table fields
         
@@ -239,11 +245,12 @@ public class CloudletsTableBuilder extends TableBuilderAbstract<Cloudlet> {
         /*If the given time minus the start time is less than 1,
         * it means the execution time was less than 1 second.
         * This way, it can't be round.*/
-        if(time - cloudlet.getExecStartTime() < 1){
+        /*if(time - cloudlet.getExecStartTime() < 1){
             return time;
         }
 
         final double startFraction = cloudlet.getExecStartTime() - (int) cloudlet.getExecStartTime();
-        return Math.round(time - startFraction);
+        return Math.round(time - startFraction);*/
+    	return time;
     }
 }
