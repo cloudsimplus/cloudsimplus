@@ -104,9 +104,7 @@ public class CloudletsTableBuilder extends TableBuilderAbstract<Cloudlet> {
      *  This function ensures that they are already present for createTableColumns().
      */
     private void initializeFormattingSettings() {
-    	
-    	
-    	
+
     	timeColumnList = new ArrayList<TableColumn>();
     	lengthColumnList = new ArrayList<TableColumn>();
     	idColumnList = new ArrayList<TableColumn>();
@@ -182,12 +180,12 @@ public class CloudletsTableBuilder extends TableBuilderAbstract<Cloudlet> {
         // FinishTime
         final var finishTimeCol = getTable().addColumn("FinishTime", SECONDS).setFormat(getTimeFormat());
         timeColumnList.add(finishTimeCol);
-        addColDataFunction(finishTimeCol, cl -> roundTime(cl, cl.getFinishTime()));
+        addColDataFunction(finishTimeCol, cl -> cl.getFinishTime());
 
         // ExecTime
         final var execTimeCol = getTable().addColumn("ExecTime", SECONDS).setFormat(getTimeFormat());
         timeColumnList.add(execTimeCol);
-        addColDataFunction(execTimeCol, cl -> roundTime(cl, cl.getActualCpuTime()));
+        addColDataFunction(execTimeCol, cl ->  cl.getActualCpuTime());
     }
     
     // TODO: Just setting the variables is not enough.
@@ -229,28 +227,4 @@ public class CloudletsTableBuilder extends TableBuilderAbstract<Cloudlet> {
     	return this.idFormat;
     }
 
-    /**
-     * Rounds a given time so that decimal places are ignored.
-     * Sometimes a Cloudlet start at time 0.1 and finish at time 10.1.
-     * Previously, in such a situation, the finish time was rounded to 11 (Math.ceil),
-     * giving the wrong idea that the Cloudlet took 11 seconds to finish.
-     * This method makes some little adjustments to avoid such a precision issue.
-     *
-     * @param cloudlet the Cloudlet being printed
-     * @param time the time to round
-     * @return
-     */
-    private double roundTime(final Cloudlet cloudlet, final double time) {
-
-        /*If the given time minus the start time is less than 1,
-        * it means the execution time was less than 1 second.
-        * This way, it can't be round.*/
-        /*if(time - cloudlet.getExecStartTime() < 1){
-            return time;
-        }
-
-        final double startFraction = cloudlet.getExecStartTime() - (int) cloudlet.getExecStartTime();
-        return Math.round(time - startFraction);*/
-    	return time;
-    }
 }
