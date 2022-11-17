@@ -184,6 +184,9 @@ public class CloudletsTableBuilder extends TableBuilderAbstract<Cloudlet> {
         addColDataFunction(execTimeCol, cl -> roundTime(cl, cl.getActualCpuTime()));
     }
     
+    // TODO: Just setting the variables is not enough.
+    // The setters need to iterate through their respective lists to actually adjust the formatting on the individual columns.
+    
     public CloudletsTableBuilder setTimeFormat(String format) {
     	this.timeFormat = format;
     	return this;
