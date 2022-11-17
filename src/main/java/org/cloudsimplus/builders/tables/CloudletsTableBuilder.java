@@ -112,7 +112,7 @@ public class CloudletsTableBuilder extends TableBuilderAbstract<Cloudlet> {
     	idColumnList = new ArrayList<TableColumn>();
     	peColumnList = new ArrayList<TableColumn>();
     	
-    	timeFormat = "%.0f";
+    	timeFormat = "%.1f";
         lengthFormat = "%d";
         idFormat = "%d";
         peFormat = "%d";
