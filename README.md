@@ -53,7 +53,7 @@ and by the [Brazilian foundation Coordenação de Aperfeiçoamento de Pessoal de
 **IMPORTANT**
 ---
 - Developing and maintaining this project takes a huge effort. This way, any kind of [contribution](#contributing) is encouraged. Show your support by giving it a star :star: using the button at the top of the GitHub page. It takes no time, helps promoting the project and keeps it evolving. Thanks in advance :clap:.
-- If you aren't intending to make changes and contribute back to the project, you shouldn't fork it. Your fork tends to become obsolete as the project is updated. 
+- If you are not intending to make changes and contribute back to the project, you shouldn't fork it. Your fork become obsolete as the project is updated. 
 - If you're willing to use the framework to develop your own project on top of it, creating a fork is the worst way. You aren't supposed to change the framework code to implement your project, but to extend it by creating some subclasses. Unless you are planning to contribute your changes back, you'll end up with an incompatible and obsolete version of the framework. The project is constantly evolving and bugfixes are a priority. Your fork with personal changes will miss those updates and high performance improvements.
 ---
 
@@ -61,7 +61,7 @@ and by the [Brazilian foundation Coordenação de Aperfeiçoamento de Pessoal de
 
 <a id="exclusive-features"></a>
 
-# 2. 🧰 Main Exclusive Features
+# 2. Main Exclusive Features 🧰
 
 CloudSim Plus provides lots of exclusive features, from the most basic ones to build simple simulations, 
 to advanced features for simulating more realistic cloud scenarios: 
@@ -95,7 +95,7 @@ to advanced features for simulating more realistic cloud scenarios:
 
 <a id="structure"></a>
 
-# 3. 🏗 Project's Structure
+# 3. Project's Structure 🏗
 
 CloudSim Plus has a simpler structure to make it ease to use and understand. It consists of 4 modules, 2 of which are new, as presented below.
 
@@ -122,7 +122,7 @@ The light yellow ones were introduced just to better organize existing CloudSim 
 
 <a id="usage"></a>
 
-# 4. 👩🏽‍💻 How to Use CloudSim Plus 
+# 4. How to Use CloudSim Plus 👩🏽‍💻 
 
 > **Warning**
 > Before trying to use this project, make sure you have JDK 17 installed.
@@ -162,7 +162,7 @@ dependencies {
 
 <a id="example"></a>
 
-# 5. ⚙️ A Minimal but Complete Simulation Example
+# 5. A Minimal but Complete Simulation Example ⚙️
 
 In order to build a simulation scenario, you have to create at least:
  
@@ -242,7 +242,7 @@ here](http://cloudsimplus.org/docs/CloudSim-and-CloudSimPlus-Comparison.html).
 
 <a id="docs-help"></a>
 
-# 6. 📘❓ Documentation and Help
+# 6. Documentation and Help 📘🆘
 
 The project documentation originated from CloudSim was entirely updated and extended. 
 You can see the javadoc documentation for classes and their elements directly on your IDE.
@@ -259,7 +259,7 @@ A Google Group forum is available at <https://groups.google.com/group/cloudsimpl
 
 <a id="consulting"></a>
 
-# 7. 👨🏽‍🏫 Consulting
+# 7. Consulting 👨🏽‍🏫
 
 If you are doing research on cloud computing simulation and facing challenging issues, I've started to offer my consulting services.
 
@@ -271,7 +271,7 @@ If you have a CloudSim project and want to migrate to CloudSim Plus to benefit f
 
 <a id="general-features"></a>
 
-# 8. 🛠 General Features of the Framework
+# 8. General Features of the Framework 🛠
 
 CloudSim Plus supports modeling and simulation of:
 
@@ -285,7 +285,7 @@ CloudSim Plus supports modeling and simulation of:
 
 <a id="publications"></a>
 
-# 8. 📝 CloudSim Plus Publications
+# 8. CloudSim Plus Publications 📝
 
 1. M. C. Silva Filho, R. L. Oliveira, C. C. Monteiro, P. R. M. Inácio, and M. M. Freire. [CloudSim Plus: a Cloud Computing Simulation Framework Pursuing Software Engineering Principles for Improved Modularity, Extensibility and Correctness,](https://doi.org/10.23919/INM.2017.7987304) in IFIP/IEEE International Symposium on Integrated Network Management, 2017, p. 7. If you are using CloudSim Plus in your research, please make sure you cite that paper. You can check the paper presentation [here](http://cloudsimplus.org/docs/presentation/).
 2. White Paper. [CloudSim Plus: A Modern Java 8 Framework for Modeling and Simulation of Cloud Computing Infrastructures and Services](https://cloudsimplus.github.io/cloudsimplus-whitepaper). 2016.
@@ -295,7 +295,7 @@ CloudSim Plus supports modeling and simulation of:
 
 <a id="projects"></a>
 
-# 9. 🧩 Related Projects
+# 9. Related Projects 🧩
 
 Here, it's presented a list of some projects based on CloudSim Plus, which trust in its accuracy, performance, maintainability and extensibility.
 If you want your project to be listed here, send us a Pull Request. Make sure your project has a descriptive README.
@@ -312,7 +312,7 @@ If you want your project to be listed here, send us a Pull Request. Make sure yo
 
 <a id="license"></a>
 
-# 10. ⚖️ License
+# 10. License ⚖️
 
 This project is licensed under [GNU GPLv3](http://www.gnu.org/licenses/gpl-3.0), as defined inside CloudSim 3 source files.
 
@@ -320,7 +320,7 @@ This project is licensed under [GNU GPLv3](http://www.gnu.org/licenses/gpl-3.0),
 
 <a id="contributing"></a>
 
-# 11. 🤝 Contributing
+# 11. Contributing 🤝
 
 You are welcome to contribute to the project. 
 However, make sure you read the [contribution guide](https://github.com/cloudsimplus/.github/blob/main/CONTRIBUTING.md) before starting. 
