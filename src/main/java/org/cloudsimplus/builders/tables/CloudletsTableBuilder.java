@@ -45,11 +45,11 @@ public class CloudletsTableBuilder extends TableBuilderAbstract<Cloudlet> {
     private static final String SECONDS = "Seconds";
     private static final String CPU_CORES = "CPU cores";
     private static final String ID = "ID";
-    
-    private String timeFormat;
-    private String lengthFormat;
-    private String idFormat;
-    private String peFormat;
+	
+	private String timeFormat = "%.1f";
+	private String lengthFormat = "%d";
+	private String idFormat = "%d";
+	private String peFormat = "%d";
 
     /**
      * Instantiates a builder to print the list of Cloudlets using the a
@@ -77,49 +77,28 @@ public class CloudletsTableBuilder extends TableBuilderAbstract<Cloudlet> {
      * Contains all columns that represent a time value
      * which may need to be formatted accordingly.
      */
-    private List<TableColumn> timeColumnList;
+    private List<TableColumn> timeColumnList = new ArrayList<TableColumn>();
     
     /**
      * Contains all columns that represent length values (MIs)
      * which may need to be formatted accordingly.
      */
-    private List<TableColumn> lengthColumnList;
+    private List<TableColumn> lengthColumnList = new ArrayList<TableColumn>();
     
     /**
      * Contains all columns that represent ID values
      * which may need to be formatted accordingly.
      */
-    private List<TableColumn> idColumnList;
+    private List<TableColumn> idColumnList = new ArrayList<TableColumn>();
     
     /**
      * Contains all columns that represent PE counts
      * which may need to be formatted accordingly.
      */
-    private List<TableColumn> peColumnList;
-    
-    /**
-     *  Initialize lists and default formats.
-     *  This has to be done here because the createTableColumns() function gets executed by the superclass before these class
-     *  variables would normally get initialized if they were assigned the normal way (which is after the constructor of the superclass has finished).
-     *  This function ensures that they are already present for createTableColumns().
-     */
-    private void initializeFormattingSettings() {
-
-    	timeColumnList = new ArrayList<TableColumn>();
-    	lengthColumnList = new ArrayList<TableColumn>();
-    	idColumnList = new ArrayList<TableColumn>();
-    	peColumnList = new ArrayList<TableColumn>();
-    	
-    	timeFormat = "%.1f";
-        lengthFormat = "%d";
-        idFormat = "%d";
-        peFormat = "%d";
-    }
+    private List<TableColumn> peColumnList = new ArrayList<TableColumn>();
 
     @Override
     protected void createTableColumns() {
-    	
-    	initializeFormattingSettings();
         
         // Set up all table fields
         
@@ -187,9 +166,6 @@ public class CloudletsTableBuilder extends TableBuilderAbstract<Cloudlet> {
         timeColumnList.add(execTimeCol);
         addColDataFunction(execTimeCol, cl ->  cl.getActualCpuTime());
     }
-    
-    // TODO: Just setting the variables is not enough.
-    // The setters need to iterate through their respective lists to actually adjust the formatting on the individual columns.
     
     public CloudletsTableBuilder setTimeFormat(String format) {
     	this.timeFormat = format;

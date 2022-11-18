@@ -73,7 +73,6 @@ public abstract class TableBuilderAbstract<T> {
         setTable(table);
         setObjectList(list);
         colsDataFunctions = new HashMap<>();
-        createTableColumns();
     }
 
     /**
@@ -180,6 +179,11 @@ public abstract class TableBuilderAbstract<T> {
      * Builds the table with the data from the list of objects and shows the results.
      */
     public void build(){
+    	
+    	// TODO: Building table columns here instead of in the constructor solves the issues with variables not
+    	// being initialized but creates problems when trying to expand the table using addColumn() before building.
+    	createTableColumns();
+    	
         if(getTable().getTitle().isEmpty()){
             getTable().setTitle("SIMULATION RESULTS");
         }
