@@ -124,7 +124,7 @@ public class CloudletsTableBuilder extends TableBuilderAbstract<Cloudlet> {
         // Set up all table fields
         
         // Cloudlet
-        final var cloudletCol = getTable().addColumn("Cloudlet", ID).setFormat(getIDFormat());
+        final var cloudletCol = getTable().addColumn("Cloudlet", ID,getIDFormat());
         idColumnList.add(cloudletCol);
         addColDataFunction(cloudletCol, Identifiable::getId);
         
@@ -133,57 +133,57 @@ public class CloudletsTableBuilder extends TableBuilderAbstract<Cloudlet> {
         addColDataFunction(statusCol , cloudlet -> cloudlet.getStatus().name());
         
         // DC
-        final var dcCol = getTable().addColumn("DC", ID).setFormat(getIDFormat());
+        final var dcCol = getTable().addColumn("DC", ID,getIDFormat());
         idColumnList.add(dcCol);
         addColDataFunction(dcCol, cloudlet -> cloudlet.getVm().getHost().getDatacenter().getId());
         
         // Host
-        final var hostCol = getTable().addColumn("Host", ID).setFormat(getIDFormat());
+        final var hostCol = getTable().addColumn("Host", ID,getIDFormat());
         idColumnList.add(hostCol);
         addColDataFunction(hostCol, cloudlet -> cloudlet.getVm().getHost().getId());
         
         // Host PEs
-        final var hostPEsCol = getTable().addColumn("Host PEs ", CPU_CORES).setFormat(getPEFormat());
+        final var hostPEsCol = getTable().addColumn("Host PEs ", CPU_CORES,getPEFormat());
         peColumnList.add(hostPEsCol);
         addColDataFunction(hostPEsCol, cloudlet -> cloudlet.getVm().getHost().getWorkingPesNumber());
         
         // VM
-        final var vmCol = getTable().addColumn("VM", ID).setFormat(getIDFormat());
+        final var vmCol = getTable().addColumn("VM", ID,getIDFormat());
         idColumnList.add(vmCol);
         addColDataFunction(vmCol, cloudlet -> cloudlet.getVm().getId());
         
         // VM PEs
-        final var vmPEsCol = getTable().addColumn("VM PEs   ", CPU_CORES).setFormat(getPEFormat()); // 3 extra spaces to ensure proper formatting
+        final var vmPEsCol = getTable().addColumn("VM PEs   ", CPU_CORES,getPEFormat()); // 3 extra spaces to ensure proper formatting
         peColumnList.add(vmPEsCol);
         addColDataFunction(vmPEsCol, cloudlet -> cloudlet.getVm().getNumberOfPes());
         
         // CloudletLen
-        final var cloudletLenCol = getTable().addColumn("CloudletLen", "MI").setFormat(getLengthFormat());
+        final var cloudletLenCol = getTable().addColumn("CloudletLen", "MI",getLengthFormat());
         lengthColumnList.add(cloudletLenCol);
         addColDataFunction(cloudletLenCol, Cloudlet::getLength);
         
         // FinishedLen
-        final var finishedLenCol = getTable().addColumn("FinishedLen", "MI").setFormat(getLengthFormat());
+        final var finishedLenCol = getTable().addColumn("FinishedLen", "MI",getLengthFormat());
         lengthColumnList.add(finishedLenCol);
         addColDataFunction(finishedLenCol, Cloudlet::getFinishedLengthSoFar);
         
         // CloudletPEs
-        final var cloudletPEsCol = getTable().addColumn("CloudletPEs", CPU_CORES).setFormat(getPEFormat());
+        final var cloudletPEsCol = getTable().addColumn("CloudletPEs", CPU_CORES,getPEFormat());
         lengthColumnList.add(cloudletPEsCol);
         addColDataFunction(cloudletPEsCol, Cloudlet::getNumberOfPes);
 
         // StartTime
-        final var startTimeCol = getTable().addColumn("StartTime", SECONDS).setFormat(getTimeFormat());
+        final var startTimeCol = getTable().addColumn("StartTime", SECONDS,getTimeFormat());
         timeColumnList.add(startTimeCol);
         addColDataFunction(startTimeCol, Cloudlet::getExecStartTime);
 
         // FinishTime
-        final var finishTimeCol = getTable().addColumn("FinishTime", SECONDS).setFormat(getTimeFormat());
+        final var finishTimeCol = getTable().addColumn("FinishTime", SECONDS,getTimeFormat());
         timeColumnList.add(finishTimeCol);
         addColDataFunction(finishTimeCol, cl -> cl.getFinishTime());
 
         // ExecTime
-        final var execTimeCol = getTable().addColumn("ExecTime", SECONDS).setFormat(getTimeFormat());
+        final var execTimeCol = getTable().addColumn("ExecTime", SECONDS,getTimeFormat());
         timeColumnList.add(execTimeCol);
         addColDataFunction(execTimeCol, cl ->  cl.getActualCpuTime());
     }
