@@ -102,7 +102,7 @@ public abstract class TableBuilderAbstract<T> {
      *                 The consumer should provide the code you want to be performed over that column.
      * @return this TableBuilder object
      */
-    public final TableBuilderAbstract<T> column(final int index, Consumer<TableColumn> consumer){
+    public final TableBuilderAbstract<T> column(final int index, final Consumer<TableColumn> consumer){
         requireNonNull(consumer);
         consumer.accept(table.getColumns().get(index));
         return this;

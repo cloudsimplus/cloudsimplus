@@ -214,6 +214,11 @@ public abstract class AbstractTable implements Table {
     }
 
     @Override
+    public TableColumn addColumn(final String columnTitle, final String columnSubTitle, final String format) {
+        return addColumn(columnTitle, columnSubTitle).setFormat(format);
+    }
+
+    @Override
     public final TableColumn addColumn(final int index, final TableColumn column) {
         columns.add(index, column);
         return column;

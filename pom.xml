@@ -401,7 +401,6 @@
                         <include>**/src/main/java/**/RamManageable.java</include>
                         <include>**/src/main/java/**/Nameable.java</include>
                         <include>**/src/main/java/**/CloudletSchedulerCompletelyFair.java</include>
-                        <include>**/src/main/java/**/UtilizationModelArithmeticProgression.java</include>
                         <include>**/src/main/java/**/Resourceful.java</include>
                         <include>**/src/main/java/**/PoissonDistr.java</include>
                         <include>**/src/main/java/**/ResourceAbstract.java</include>
@@ -413,6 +412,7 @@
                         <exclude>**/src/test/resources/**</exclude>
                         <exclude>**/src/main/resources/**</exclude>
                         <exclude>**/*.md</exclude>
+                        <exclude>**/*.adoc</exclude>
                         <exclude>**/*.swf</exclude>
                         <exclude>**/*.brite</exclude>
                         <exclude>**/*.json</exclude>
