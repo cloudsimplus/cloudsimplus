@@ -147,9 +147,9 @@ public abstract class TableBuilderAbstract<T> {
     }
     
     /**
-     * TODO: Docs
-     * @param index
-     * @param format
+     * Sets the formatting for one column.
+     * @param index The index of the target column.
+     * @param format The new formatting string.
      * @return
      */
     public TableBuilderAbstract<T> setFormatByIndex(int index, String format) {
@@ -158,9 +158,9 @@ public abstract class TableBuilderAbstract<T> {
     }
     
     /**
-     * TODO: Docs
-     * @param index
-     * @param format
+     * Sets the formatting for multiple columns.
+     * @param index The list of indices for all target columns.
+     * @param format The new formatting string.
      * @return
      */
     public TableBuilderAbstract<T> setFormatByIndex(int[] indices, String format) {
@@ -171,9 +171,10 @@ public abstract class TableBuilderAbstract<T> {
     }
     
     /**
-     * 
-     * @param title
-     * @param format
+     * Sets the formatting for the column with a specific title.
+     * If multiple columns have the same title then all columns will be changed.
+     * @param title The title of the target column(s).
+     * @param format The new formatting string.
      * @return
      */
     public TableBuilderAbstract<T> setFormatByTitle(String title, String format){
@@ -186,9 +187,9 @@ public abstract class TableBuilderAbstract<T> {
     }
     
     /**
-     * 
-     * @param title
-     * @param format
+     * Sets the formatting for all columns with a specific subtitle.
+     * @param title The subtitle of the target column(s)
+     * @param format The new formatting string.
      * @return
      */
     public TableBuilderAbstract<T> setFormatBySubTitle(String subTitle, String format){
