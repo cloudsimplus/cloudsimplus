@@ -179,7 +179,7 @@ public abstract class TableBuilderAbstract<T> {
      */
     public TableBuilderAbstract<T> setFormatByTitle(String title, String format){
     	for(TableColumn col : getTable().getColumns()) {
-    		if(col.getTitle() == title) {
+    		if(col.getTitle().trim() == title.trim()) {
     			col.setFormat(format);
     		}
     	}
@@ -194,7 +194,7 @@ public abstract class TableBuilderAbstract<T> {
      */
     public TableBuilderAbstract<T> setFormatBySubTitle(String subTitle, String format){
     	for(TableColumn col : getTable().getColumns()) {
-    		if(col.getSubTitle() == subTitle) {
+    		if(col.getSubTitle().trim() == subTitle.trim()) {
     			col.setFormat(format);
     		}
     	}
