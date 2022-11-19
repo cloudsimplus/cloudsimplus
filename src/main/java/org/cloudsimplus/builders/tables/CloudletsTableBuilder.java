@@ -46,10 +46,10 @@ public class CloudletsTableBuilder extends TableBuilderAbstract<Cloudlet> {
     private static final String CPU_CORES = "CPU cores";
     private static final String ID = "ID";
 	
-	private String timeFormat = "%.1f";
-	private String lengthFormat = "%d";
-	private String idFormat = "%d";
-	private String peFormat = "%d";
+	private static final String DEFAULT_TIME_FORMAT = "%.1f";
+	private static final String DEFAULT_LENGTH_FORMAT = "%d";
+	private static final String DEFAULT_ID_FORMAT = "%d";
+	private static final String DEFAULT_PE_FORMAT = "%d";
 
     /**
      * Instantiates a builder to print the list of Cloudlets using the a
@@ -72,30 +72,6 @@ public class CloudletsTableBuilder extends TableBuilderAbstract<Cloudlet> {
     public CloudletsTableBuilder(final List<? extends Cloudlet> list, final Table table) {
         super(list, table);
     }
-    
-    /**
-     * Contains all columns that represent a time value
-     * which may need to be formatted accordingly.
-     */
-    private List<TableColumn> timeColumnList = new ArrayList<TableColumn>();
-    
-    /**
-     * Contains all columns that represent length values (MIs)
-     * which may need to be formatted accordingly.
-     */
-    private List<TableColumn> lengthColumnList = new ArrayList<TableColumn>();
-    
-    /**
-     * Contains all columns that represent ID values
-     * which may need to be formatted accordingly.
-     */
-    private List<TableColumn> idColumnList = new ArrayList<TableColumn>();
-    
-    /**
-     * Contains all columns that represent PE counts
-     * which may need to be formatted accordingly.
-     */
-    private List<TableColumn> peColumnList = new ArrayList<TableColumn>();
 
     @Override
     protected void createTableColumns() {
@@ -103,104 +79,45 @@ public class CloudletsTableBuilder extends TableBuilderAbstract<Cloudlet> {
         // Set up all table fields
         
         // Cloudlet
-        final var cloudletCol = getTable().addColumn("Cloudlet", ID,getIDFormat());
-        idColumnList.add(cloudletCol);
-        addColDataFunction(cloudletCol, Identifiable::getId);
+        addColDataFunction(getTable().addColumn("Cloudlet", ID), Identifiable::getId);
         
         // Status
-        final var statusCol = getTable().addColumn("Status "); // 1 extra space to ensure proper formatting
-        addColDataFunction(statusCol , cloudlet -> cloudlet.getStatus().name());
+        // 1 extra space to ensure proper formatting
+        addColDataFunction(getTable().addColumn("Status ") , cloudlet -> cloudlet.getStatus().name());
         
-        // DC
-        final var dcCol = getTable().addColumn("DC", ID,getIDFormat());
-        idColumnList.add(dcCol);
-        addColDataFunction(dcCol, cloudlet -> cloudlet.getVm().getHost().getDatacenter().getId());
+        // DC (Datacenter)
+        addColDataFunction(getTable().addColumn("DC", ID,DEFAULT_ID_FORMAT), cloudlet -> cloudlet.getVm().getHost().getDatacenter().getId());
         
         // Host
-        final var hostCol = getTable().addColumn("Host", ID,getIDFormat());
-        idColumnList.add(hostCol);
-        addColDataFunction(hostCol, cloudlet -> cloudlet.getVm().getHost().getId());
+        addColDataFunction(getTable().addColumn("Host", ID,DEFAULT_ID_FORMAT), cloudlet -> cloudlet.getVm().getHost().getId());
         
         // Host PEs
-        final var hostPEsCol = getTable().addColumn("Host PEs ", CPU_CORES,getPEFormat());
-        peColumnList.add(hostPEsCol);
-        addColDataFunction(hostPEsCol, cloudlet -> cloudlet.getVm().getHost().getWorkingPesNumber());
+        addColDataFunction(getTable().addColumn("Host PEs ", CPU_CORES,DEFAULT_PE_FORMAT), cloudlet -> cloudlet.getVm().getHost().getWorkingPesNumber());
         
         // VM
-        final var vmCol = getTable().addColumn("VM", ID,getIDFormat());
-        idColumnList.add(vmCol);
-        addColDataFunction(vmCol, cloudlet -> cloudlet.getVm().getId());
+        addColDataFunction(getTable().addColumn("VM", ID,DEFAULT_ID_FORMAT), cloudlet -> cloudlet.getVm().getId());
         
         // VM PEs
-        final var vmPEsCol = getTable().addColumn("VM PEs   ", CPU_CORES,getPEFormat()); // 3 extra spaces to ensure proper formatting
-        peColumnList.add(vmPEsCol);
-        addColDataFunction(vmPEsCol, cloudlet -> cloudlet.getVm().getNumberOfPes());
+        // 3 extra spaces to ensure proper formatting
+        addColDataFunction(getTable().addColumn("VM PEs   ", CPU_CORES,DEFAULT_PE_FORMAT), cloudlet -> cloudlet.getVm().getNumberOfPes());
         
         // CloudletLen
-        final var cloudletLenCol = getTable().addColumn("CloudletLen", "MI",getLengthFormat());
-        lengthColumnList.add(cloudletLenCol);
-        addColDataFunction(cloudletLenCol, Cloudlet::getLength);
+        addColDataFunction(getTable().addColumn("CloudletLen", "MI",DEFAULT_LENGTH_FORMAT), Cloudlet::getLength);
         
         // FinishedLen
-        final var finishedLenCol = getTable().addColumn("FinishedLen", "MI",getLengthFormat());
-        lengthColumnList.add(finishedLenCol);
-        addColDataFunction(finishedLenCol, Cloudlet::getFinishedLengthSoFar);
+        addColDataFunction(getTable().addColumn("FinishedLen", "MI",DEFAULT_LENGTH_FORMAT), Cloudlet::getFinishedLengthSoFar);
         
         // CloudletPEs
-        final var cloudletPEsCol = getTable().addColumn("CloudletPEs", CPU_CORES,getPEFormat());
-        lengthColumnList.add(cloudletPEsCol);
-        addColDataFunction(cloudletPEsCol, Cloudlet::getNumberOfPes);
+        addColDataFunction(getTable().addColumn("CloudletPEs", CPU_CORES,DEFAULT_PE_FORMAT), Cloudlet::getNumberOfPes);
 
         // StartTime
-        final var startTimeCol = getTable().addColumn("StartTime", SECONDS,getTimeFormat());
-        timeColumnList.add(startTimeCol);
-        addColDataFunction(startTimeCol, Cloudlet::getExecStartTime);
+        addColDataFunction(getTable().addColumn("StartTime", SECONDS,DEFAULT_TIME_FORMAT), Cloudlet::getExecStartTime);
 
         // FinishTime
-        final var finishTimeCol = getTable().addColumn("FinishTime", SECONDS,getTimeFormat());
-        timeColumnList.add(finishTimeCol);
-        addColDataFunction(finishTimeCol, cl -> cl.getFinishTime());
+        addColDataFunction(getTable().addColumn("FinishTime", SECONDS,DEFAULT_TIME_FORMAT), cl -> cl.getFinishTime());
 
         // ExecTime
-        final var execTimeCol = getTable().addColumn("ExecTime", SECONDS,getTimeFormat());
-        timeColumnList.add(execTimeCol);
-        addColDataFunction(execTimeCol, cl ->  cl.getActualCpuTime());
-    }
-    
-    public CloudletsTableBuilder setTimeFormat(String format) {
-    	this.timeFormat = format;
-    	return this;
-    }
-    
-    public CloudletsTableBuilder setLengthFormat(String format) {
-    	this.lengthFormat = format;
-    	return this;
-    }
-    
-    public CloudletsTableBuilder setPEFormat(String format) {
-    	this.peFormat = format;
-    	return this;
-    }
-    
-    public CloudletsTableBuilder setIDFormat(String format) {
-    	this.idFormat = format;
-    	return this;
-    }
-    
-    public String getTimeFormat() {
-    	return this.timeFormat;
-    }
-    
-    public String getLengthFormat() {
-    	return this.lengthFormat;
-    }
-    
-    public String getPEFormat() {
-    	return this.peFormat;
-    }
-    
-    public String getIDFormat() {
-    	return this.idFormat;
+        addColDataFunction(getTable().addColumn("ExecTime", SECONDS,DEFAULT_TIME_FORMAT), cl ->  cl.getActualCpuTime());
     }
 
 }
