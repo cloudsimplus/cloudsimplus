@@ -44,6 +44,7 @@ public class CloudletsTableBuilder extends TableBuilderAbstract<Cloudlet> {
     private static final String SECONDS = "Seconds";
     private static final String CPU_CORES = "CPU cores";
     private static final String ID = "ID";
+    private static final String MI = "MI";
 	
 	private static final String DEFAULT_TIME_FORMAT = "%.1f";
 	private static final String DEFAULT_LENGTH_FORMAT = "%d";
@@ -99,10 +100,10 @@ public class CloudletsTableBuilder extends TableBuilderAbstract<Cloudlet> {
         addColDataFunction(getTable().addColumn("   VM PEs", CPU_CORES,DEFAULT_PE_FORMAT), cloudlet -> cloudlet.getVm().getNumberOfPes());
         
         // CloudletLen
-        addColDataFunction(getTable().addColumn("CloudletLen", "MI",DEFAULT_LENGTH_FORMAT), Cloudlet::getLength);
+        addColDataFunction(getTable().addColumn("CloudletLen", MI,DEFAULT_LENGTH_FORMAT), Cloudlet::getLength);
         
         // FinishedLen
-        addColDataFunction(getTable().addColumn("FinishedLen", "MI",DEFAULT_LENGTH_FORMAT), Cloudlet::getFinishedLengthSoFar);
+        addColDataFunction(getTable().addColumn("FinishedLen", MI,DEFAULT_LENGTH_FORMAT), Cloudlet::getFinishedLengthSoFar);
         
         // CloudletPEs
         addColDataFunction(getTable().addColumn("CloudletPEs", CPU_CORES,DEFAULT_PE_FORMAT), Cloudlet::getNumberOfPes);
