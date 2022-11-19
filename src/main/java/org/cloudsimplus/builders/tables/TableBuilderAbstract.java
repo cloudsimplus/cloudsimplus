@@ -234,7 +234,6 @@ public abstract class TableBuilderAbstract<T> {
      * Builds the table with the data from the list of objects and shows the results.
      */
     public void build(){
-    	
         if(getTable().getTitle().isEmpty()){
             getTable().setTitle("SIMULATION RESULTS");
         }
