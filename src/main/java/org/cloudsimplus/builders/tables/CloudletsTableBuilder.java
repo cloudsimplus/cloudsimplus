@@ -26,7 +26,6 @@ package org.cloudsimplus.builders.tables;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.core.Identifiable;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
