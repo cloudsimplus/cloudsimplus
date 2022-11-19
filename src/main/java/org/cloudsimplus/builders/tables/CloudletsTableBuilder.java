@@ -83,7 +83,7 @@ public class CloudletsTableBuilder extends TableBuilderAbstract<Cloudlet> {
         
         // Status
         // 1 extra space to ensure proper formatting
-        addColDataFunction(getTable().addColumn("Status ") , cloudlet -> cloudlet.getStatus().name());
+        addColDataFunction(getTable().addColumn(" Status") , cloudlet -> cloudlet.getStatus().name());
         
         // DC (Datacenter)
         addColDataFunction(getTable().addColumn("DC", ID,DEFAULT_ID_FORMAT), cloudlet -> cloudlet.getVm().getHost().getDatacenter().getId());
@@ -99,7 +99,7 @@ public class CloudletsTableBuilder extends TableBuilderAbstract<Cloudlet> {
         
         // VM PEs
         // 3 extra spaces to ensure proper formatting
-        addColDataFunction(getTable().addColumn("VM PEs   ", CPU_CORES,DEFAULT_PE_FORMAT), cloudlet -> cloudlet.getVm().getNumberOfPes());
+        addColDataFunction(getTable().addColumn("   VM PEs", CPU_CORES,DEFAULT_PE_FORMAT), cloudlet -> cloudlet.getVm().getNumberOfPes());
         
         // CloudletLen
         addColDataFunction(getTable().addColumn("CloudletLen", "MI",DEFAULT_LENGTH_FORMAT), Cloudlet::getLength);
