@@ -76,8 +76,6 @@ public class CloudletsTableBuilder extends TableBuilderAbstract<Cloudlet> {
     @Override
     protected void createTableColumns() {
         
-        // Set up all table fields
-        
         // Cloudlet
         addColDataFunction(getTable().addColumn("Cloudlet", ID), Identifiable::getId);
         
