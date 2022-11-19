@@ -152,7 +152,7 @@ public abstract class TableBuilderAbstract<T> {
      * @param format
      * @return
      */
-    public TableBuilderAbstract<T> setFormatForColumn(int index, String format) {
+    public TableBuilderAbstract<T> setFormatByIndex(int index, String format) {
     	getTable().getColumns().get(index).setFormat(format);
     	return this;
     }
@@ -163,9 +163,39 @@ public abstract class TableBuilderAbstract<T> {
      * @param format
      * @return
      */
-    public TableBuilderAbstract<T> setFormatForColumns(int[] indices, String format) {
+    public TableBuilderAbstract<T> setFormatByIndex(int[] indices, String format) {
     	for(int index : indices) {
     		getTable().getColumns().get(index).setFormat(format);
+    	}
+    	return this;
+    }
+    
+    /**
+     * 
+     * @param title
+     * @param format
+     * @return
+     */
+    public TableBuilderAbstract<T> setFormatByTitle(String title, String format){
+    	for(TableColumn col : getTable().getColumns()) {
+    		if(col.getTitle() == title) {
+    			col.setFormat(format);
+    		}
+    	}
+    	return this;
+    }
+    
+    /**
+     * 
+     * @param title
+     * @param format
+     * @return
+     */
+    public TableBuilderAbstract<T> setFormatBySubTitle(String subTitle, String format){
+    	for(TableColumn col : getTable().getColumns()) {
+    		if(col.getSubTitle() == subTitle) {
+    			col.setFormat(format);
+    		}
     	}
     	return this;
     }
