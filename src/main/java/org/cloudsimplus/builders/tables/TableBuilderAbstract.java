@@ -152,7 +152,7 @@ public abstract class TableBuilderAbstract<T> {
      * @param format the new formatting string.
      * @return
      */
-    public TableBuilderAbstract<T> setFormatByIndex(int index, String format) {
+    public TableBuilderAbstract<T> setFormatByIndex(final int index, final String format) {
     	getTable().getColumns().get(index).setFormat(format);
     	return this;
     }
@@ -163,7 +163,7 @@ public abstract class TableBuilderAbstract<T> {
      * @param format the new formatting string.
      * @return
      */
-    public TableBuilderAbstract<T> setFormatByIndex(int[] indices, String format) {
+    public TableBuilderAbstract<T> setFormatByIndex(final int[] indices, final String format) {
     	for(int index : indices) {
     		getTable().getColumns().get(index).setFormat(format);
     	}
@@ -177,7 +177,7 @@ public abstract class TableBuilderAbstract<T> {
      * @param format the new formatting string.
      * @return
      */
-    public TableBuilderAbstract<T> setFormatByTitle(String title, String format){
+    public TableBuilderAbstract<T> setFormatByTitle(final String title, final String format){
     	for(TableColumn col : getTable().getColumns()) {
     		if(col.getTitle().trim() == title.trim()) {
     			col.setFormat(format);
@@ -192,7 +192,7 @@ public abstract class TableBuilderAbstract<T> {
      * @param format the new formatting string.
      * @return
      */
-    public TableBuilderAbstract<T> setFormatBySubTitle(String subTitle, String format){
+    public TableBuilderAbstract<T> setFormatBySubTitle(final String subTitle, final String format){
     	for(TableColumn col : getTable().getColumns()) {
     		if(col.getSubTitle().trim() == subTitle.trim()) {
     			col.setFormat(format);
