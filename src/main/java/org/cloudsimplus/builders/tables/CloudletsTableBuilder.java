@@ -75,46 +75,25 @@ public class CloudletsTableBuilder extends TableBuilderAbstract<Cloudlet> {
 
     @Override
     protected void createTableColumns() {
-        
-        // Cloudlet
         addColDataFunction(getTable().addColumn("Cloudlet", ID), Identifiable::getId);
-        
-        // Status
+
         // 1 extra space to ensure proper formatting
         addColDataFunction(getTable().addColumn(" Status") , cloudlet -> cloudlet.getStatus().name());
-        
-        // DC (Datacenter)
+
         addColDataFunction(getTable().addColumn("DC", ID,DEFAULT_ID_FORMAT), cloudlet -> cloudlet.getVm().getHost().getDatacenter().getId());
-        
-        // Host
+
         addColDataFunction(getTable().addColumn("Host", ID,DEFAULT_ID_FORMAT), cloudlet -> cloudlet.getVm().getHost().getId());
-        
-        // Host PEs
         addColDataFunction(getTable().addColumn("Host PEs ", CPU_CORES,DEFAULT_PE_FORMAT), cloudlet -> cloudlet.getVm().getHost().getWorkingPesNumber());
-        
-        // VM
+
         addColDataFunction(getTable().addColumn("VM", ID,DEFAULT_ID_FORMAT), cloudlet -> cloudlet.getVm().getId());
-        
-        // VM PEs
+
         // 3 extra spaces to ensure proper formatting
         addColDataFunction(getTable().addColumn("   VM PEs", CPU_CORES,DEFAULT_PE_FORMAT), cloudlet -> cloudlet.getVm().getNumberOfPes());
-        
-        // CloudletLen
         addColDataFunction(getTable().addColumn("CloudletLen", MI,DEFAULT_LENGTH_FORMAT), Cloudlet::getLength);
-        
-        // FinishedLen
         addColDataFunction(getTable().addColumn("FinishedLen", MI,DEFAULT_LENGTH_FORMAT), Cloudlet::getFinishedLengthSoFar);
-        
-        // CloudletPEs
         addColDataFunction(getTable().addColumn("CloudletPEs", CPU_CORES,DEFAULT_PE_FORMAT), Cloudlet::getNumberOfPes);
-
-        // StartTime
         addColDataFunction(getTable().addColumn("StartTime", SECONDS,DEFAULT_TIME_FORMAT), Cloudlet::getExecStartTime);
-
-        // FinishTime
         addColDataFunction(getTable().addColumn("FinishTime", SECONDS,DEFAULT_TIME_FORMAT), cl -> cl.getFinishTime());
-
-        // ExecTime
         addColDataFunction(getTable().addColumn("ExecTime", SECONDS,DEFAULT_TIME_FORMAT), cl ->  cl.getActualCpuTime());
     }
 
