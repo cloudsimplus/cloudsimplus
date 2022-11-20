@@ -126,7 +126,7 @@ public abstract class TableBuilderAbstract<T> {
      * @return
      */
     public TableBuilderAbstract<T> addColumn(final TableColumn col, final Function<T, Object> dataFunction){
-        return addColumn(getTable().getColumns().size(), col, dataFunction);
+        return addColumn(getTable().colCount(), col, dataFunction);
     }
 
     /**

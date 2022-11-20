@@ -134,6 +134,13 @@ public interface Table {
     List<TableColumn> getColumns();
 
     /**
+     * Gets the number of columns.
+     *
+     * @return
+     */
+    int colCount();
+
+    /**
      * Gets the string used to separate one column from another (optional).
      * @return
      */

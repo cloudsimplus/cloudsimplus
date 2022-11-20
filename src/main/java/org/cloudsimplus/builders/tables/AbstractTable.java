@@ -78,6 +78,11 @@ public abstract class AbstractTable implements Table {
     }
 
     @Override
+    public int colCount() {
+        return columns.size();
+    }
+
+    @Override
     public String getTitle() {
         return title;
     }
