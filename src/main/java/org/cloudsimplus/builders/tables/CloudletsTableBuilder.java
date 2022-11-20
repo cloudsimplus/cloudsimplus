@@ -98,7 +98,7 @@ public class CloudletsTableBuilder extends TableBuilderAbstract<Cloudlet> {
     }
 
     private TableColumn addColumn(final String title, final String subtitle) {
-        return getTable().addColumn(title, subtitle, "");
+        return addColumn(title, subtitle, "");
     }
 
     private TableColumn addColumn(final String title, final String subtitle, final String format) {
