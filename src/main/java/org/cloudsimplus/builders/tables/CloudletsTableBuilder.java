@@ -97,6 +97,7 @@ public class CloudletsTableBuilder extends TableBuilderAbstract<Cloudlet> {
         addColDataFunction(addColumn("ExecTime", SECONDS, DEFAULT_TIME_FORMAT), Cloudlet::getActualCpuTime);
     }
 
+    //TODO: those methods need to be moved to TableBuilderAbstract (there are similar methods there)
     private TableColumn addColumn(final String title, final String subtitle) {
         return addColumn(title, subtitle, "");
     }
