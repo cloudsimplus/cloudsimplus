@@ -206,11 +206,7 @@ public abstract class TableBuilderAbstract<T> {
      * @return
      */
     public TableBuilderAbstract<T> setFormatByTitle(final String title, final String format){
-        columnsForEach(
-            col -> col.matchTitle(title),
-            col -> col.setFormat(format)
-        );
-
+        setColumnsFormat(col -> col.matchTitle(title), format);
     	return this;
     }
 
@@ -221,24 +217,21 @@ public abstract class TableBuilderAbstract<T> {
      * @return
      */
     public TableBuilderAbstract<T> setFormatBySubTitle(final String subTitle, final String format){
-        columnsForEach(
-            col -> col.matchSubTitle(subTitle),
-            col -> col.setFormat(format)
-        );
-
+        setColumnsFormat(col -> col.matchSubTitle(subTitle), format);
     	return this;
     }
 
     /**
      * Iterate over the columns of the table that match
-     * a given {@link Predicate} and execute the operations defined
-     * by a given {@link Consumer}.
+     * a given {@link Predicate} and sets their format to a given value.
+     * @param predicate the {@link Predicate} to filter columns to apply format
+     * @param format the format to set for matching columns
      */
-    protected void columnsForEach(final Predicate<TableColumn> predicate, final Consumer<TableColumn> consumer){
+    protected void setColumnsFormat(final Predicate<TableColumn> predicate, final String format){
         table.getColumns()
              .stream()
              .filter(predicate)
-             .forEach(consumer);
+             .forEach(col -> col.setFormat(format));
     }
 
     /**
