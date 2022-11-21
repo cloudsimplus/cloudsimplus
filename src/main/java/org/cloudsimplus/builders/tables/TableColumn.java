@@ -80,9 +80,9 @@ public interface TableColumn {
 
     /**
      * Checks if the column title matches with a given title,
-     * regardless of left and right spaces.
+     * ignoring left and right spaces (padding).
      * @param title the title to compare the column to
-     * @return true if the column title matches, false otherwise.
+     * @return true if the column title matches ignoring padding, false otherwise.
      */
     boolean matchTitle(String title);
 
