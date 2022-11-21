@@ -31,6 +31,11 @@ package org.cloudsimplus.builders.tables;
  * @since CloudSim Plus 1.0
  */
 public interface TableColumn {
+    /**
+     * Gets the index of the column into the table.
+     * @return
+     */
+    int getIndex();
 
     /**
      * Generates the string that represents the data of the column,

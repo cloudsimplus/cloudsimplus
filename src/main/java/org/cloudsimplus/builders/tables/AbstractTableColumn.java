@@ -62,24 +62,24 @@ public abstract class AbstractTableColumn implements TableColumn {
     }
 
     /**
-     * Creates a column with a specific title and subtitle.
-     * @param title The column title.
-     * @param subTitle The column subtitle.
-     */
-    public AbstractTableColumn(final String title, final String subTitle) {
-        this(null, title, subTitle);
-    }
-
-    /**
      * Creates a column with a specific title and subtitle for a given table.
      * @param title The column title.
      * @param subTitle The column subtitle.
      */
     public AbstractTableColumn(final Table table, final String title, final String subTitle) {
+        this(title, subTitle);
         this.table = table;
+    }
+
+    /**
+     * Creates a column with a specific title and subtitle.
+     * @param title The column title.
+     * @param subTitle The column subtitle.
+     */
+    public AbstractTableColumn(final String title, final String subTitle) {
         this.title = title;
-        this.setFormat("");
         this.subTitle = subTitle;
+        this.setFormat("");
     }
 
     /**
@@ -202,12 +202,8 @@ public abstract class AbstractTableColumn implements TableColumn {
         return generateHeader(subTitle);
     }
 
-    /**
-     *
-     * @return The index of the current column into the
-     * column list of the {@link #getTable() Table}.
-     */
-    protected int getIndex() {
+    @Override
+    public int getIndex() {
         return table.getColumns().indexOf(this);
     }
 
