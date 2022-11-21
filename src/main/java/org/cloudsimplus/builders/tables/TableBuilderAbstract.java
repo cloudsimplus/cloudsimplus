@@ -191,7 +191,7 @@ public abstract class TableBuilderAbstract<T> {
      * @return
      */
     public TableBuilderAbstract<T> setFormatByIndex(final String format, final int ...indices) {
-    	for(int index : indices) {
+    	for(final int index : indices) {
     		getColumn(index).setFormat(format);
     	}
     	return this;
