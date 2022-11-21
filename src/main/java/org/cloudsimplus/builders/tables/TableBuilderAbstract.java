@@ -187,10 +187,10 @@ public abstract class TableBuilderAbstract<T> {
      * Sets the formatting for multiple columns.
      *
      * @param format  the new formatting string.
-     * @param indices the list of indices for all target columns.
+     * @param indices indices for all target columns.
      * @return
      */
-    public TableBuilderAbstract<T> setFormatByIndex(final String format, final int[] indices) {
+    public TableBuilderAbstract<T> setFormatByIndex(final String format, final int ...indices) {
     	for(int index : indices) {
     		getColumn(index).setFormat(format);
     	}
