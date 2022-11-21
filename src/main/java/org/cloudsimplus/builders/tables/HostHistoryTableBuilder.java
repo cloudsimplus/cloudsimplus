@@ -30,7 +30,7 @@ import org.cloudbus.cloudsim.hosts.HostStateHistoryEntry;
  * Builds a table for printing {@link HostStateHistoryEntry} entries from the
  * {@link Host#getStateHistory()}.
  * It defines a set of default columns but new ones can be added
- * dynamically using the {@code addColumn()} methods.
+ * dynamically using the {@code newColumn()} methods.
  *
  * <p>The basic usage of the class is by calling its constructor,
  * giving a Host to print its history, and then

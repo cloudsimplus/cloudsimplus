@@ -130,7 +130,28 @@ public abstract class TableBuilderAbstract<T> {
     }
 
     /**
-     * Dynamically adds a column to a specific position into the table to be built.
+     * Creates a column at the end of the table to be built.
+     * @param title The title of the column to be added.
+     * @param subtitle The subtitle of the column to be added.
+     * @return the created column
+     */
+    protected TableColumn newColumn(final String title, final String subtitle) {
+        return newColumn(title, subtitle, "");
+    }
+
+    /**
+     * Creates a column at the end of the table to be built.
+     * @param title The title of the column to be added.
+     * @param subtitle The subtitle of the column to be added.
+     * @param format format to print the column data
+     * @return the created column
+     */
+    protected TableColumn newColumn(final String title, final String subtitle, final String format) {
+        return getTable().addColumn(title, subtitle, format);
+    }
+
+    /**
+     * Adds a column to a specific position into the table to be built.
      * @param index the position to insert the column.
      * @param col the column to add
      * @param dataFunction a function that receives a Cloudlet and returns the data to be printed for the added column
