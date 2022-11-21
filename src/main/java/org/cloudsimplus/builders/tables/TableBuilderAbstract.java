@@ -244,7 +244,7 @@ public abstract class TableBuilderAbstract<T> {
     }
 
     private void createAndAddTableColumns() {
-        colsMappings.clear();
+        colsMappings = new ArrayList<>();
         createTableColumns();
 
         final var tb = (AbstractTable)table;
