@@ -16,7 +16,7 @@ import static java.util.Objects.requireNonNull;
  * @since CloudSim Plus 7.3.1
  */
 record ColumnMapping<T>(TableColumn col, Function<T, Object> dataFunction, int index) {
-    public ColumnMapping(TableColumn col, Function<T, Object> dataFunction) {
+    ColumnMapping(TableColumn col, Function<T, Object> dataFunction) {
         this(col, dataFunction, Integer.MAX_VALUE);
     }
 

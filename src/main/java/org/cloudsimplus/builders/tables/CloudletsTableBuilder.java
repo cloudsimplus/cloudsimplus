@@ -50,12 +50,13 @@ public class CloudletsTableBuilder extends TableBuilderAbstract<Cloudlet> {
 
     /** @see #setTimeFormat(String) */
     private String timeFormat = "%.1f";
-    /** @see #setLengthFormat(String) */
-    private String lengthFormat = "%d";
+
     /** @see #setIdFormat(String) */
     private String idFormat = "%d";
+    /** @see #setLengthFormat(String) */
+    private String lengthFormat = idFormat;
     /** @see #setPeFormat(String) */
-    private String peFormat = "%d";
+    private String peFormat = idFormat;
 
     /**
      * Instantiates a builder to print the list of Cloudlets using the

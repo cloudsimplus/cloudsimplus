@@ -40,6 +40,7 @@ import org.cloudbus.cloudsim.hosts.HostStateHistoryEntry;
  * @since CloudSim Plus 2.3.2
  */
 public class HostHistoryTableBuilder extends TableBuilderAbstract<HostStateHistoryEntry>{
+    private static final String MIPS = "MIPS";
     private final Host host;
 
     /**
@@ -60,10 +61,10 @@ public class HostHistoryTableBuilder extends TableBuilderAbstract<HostStateHisto
         addColumn(col1, HostStateHistoryEntry::time);
 
         final String format = "%9.0f";
-        final var col2 = getTable().newColumn("Total Requested", "MIPS", format);
+        final var col2 = getTable().newColumn("Total Requested", MIPS, format);
         addColumn(col2, HostStateHistoryEntry::requestedMips);
 
-        final var col3 = getTable().newColumn("Total Allocated", "MIPS", format);
+        final var col3 = getTable().newColumn("Total Allocated", MIPS, format);
         addColumn(col3, HostStateHistoryEntry::allocatedMips);
 
         final var col4 = getTable().newColumn("Used ", "", "%3.0f%%");
