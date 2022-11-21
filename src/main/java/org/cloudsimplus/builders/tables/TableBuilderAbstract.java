@@ -64,7 +64,7 @@ public abstract class TableBuilderAbstract<T> {
     }
 
     /**
-     * Instantiates a builder to print the list of objects T using the a
+     * Instantiates a builder to print the list of objects T using a
      * given {@link Table}.
      *
      * @param list the list of objects T to print
