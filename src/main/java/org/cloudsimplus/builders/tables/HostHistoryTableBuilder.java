@@ -30,7 +30,7 @@ import org.cloudbus.cloudsim.hosts.HostStateHistoryEntry;
  * Builds a table for printing {@link HostStateHistoryEntry} entries from the
  * {@link Host#getStateHistory()}.
  * It defines a set of default columns but new ones can be added
- * dynamically using the {@code newColumn()} methods.
+ * dynamically using the {@code addColumn()} methods.
  *
  * <p>The basic usage of the class is by calling its constructor,
  * giving a Host to print its history, and then
@@ -56,25 +56,25 @@ public class HostHistoryTableBuilder extends TableBuilderAbstract<HostStateHisto
 
     @Override
     protected void createTableColumns() {
-        TableColumn col = getTable().newColumn("Time ").setFormat("%5.0f");
-        mapColDataFunction(col, HostStateHistoryEntry::time);
+        final var col1 = getTable().newColumn("Time ", "Secs", "%5.0f");
+        addColumn(col1, HostStateHistoryEntry::time);
 
         final String format = "%9.0f";
-        col = getTable().newColumn("Requested").setFormat(format);
-        mapColDataFunction(col, HostStateHistoryEntry::requestedMips);
+        final var col2 = getTable().newColumn("Total Requested", "MIPS", format);
+        addColumn(col2, HostStateHistoryEntry::requestedMips);
 
-        col = getTable().newColumn("Allocated").setFormat(format);
-        mapColDataFunction(col, HostStateHistoryEntry::allocatedMips);
+        final var col3 = getTable().newColumn("Total Allocated", "MIPS", format);
+        addColumn(col3, HostStateHistoryEntry::allocatedMips);
 
-        col = getTable().newColumn("Used").setFormat("%3.0f%%");
-        mapColDataFunction(col, history -> history.percentUsage()*100);
+        final var col4 = getTable().newColumn("Used ", "", "%3.0f%%");
+        addColumn(col4, history -> history.percentUsage()*100);
 
-        mapColDataFunction(getTable().newColumn("Host Active"), HostStateHistoryEntry::active);
+        addColumn(getTable().newColumn("Host Active"), HostStateHistoryEntry::active);
 
-        col = getTable().newColumn("Host Total MIPS").setFormat(format);
-        mapColDataFunction(col, history -> host.getTotalMipsCapacity());
+        final var col5 = getTable().newColumn("Host Total MIPS", "", format);
+        addColumn(col5, history -> host.getTotalMipsCapacity());
 
-        col = getTable().newColumn("Host Total Usage").setFormat("%5.1f%%");
-        mapColDataFunction(col, history -> history.allocatedMips()/host.getTotalMipsCapacity()*100);
+        final var col6 = getTable().newColumn("Host Total Usage", "", "%5.1f%%");
+        addColumn(col6, history -> history.allocatedMips()/host.getTotalMipsCapacity()*100);
     }
 }

@@ -209,32 +209,37 @@ public abstract class AbstractTable implements Table {
     }
 
     @Override
-    public final TableColumn newColumn(final String columnTitle) {
-        return addColumn(getColumns().size(), columnTitle);
+    public final TableColumn newColumn(final String title, final String subTitle) {
+        return newColumn(title).setSubTitle(subTitle);
     }
 
     @Override
-    public final TableColumn addColumn(final String columnTitle, final String columnSubTitle) {
-        return newColumn(columnTitle).setSubTitle(columnSubTitle);
+    public final TableColumn newColumn(final String title) {
+        return newColumn(title, "", "");
     }
 
-    @Override
-    public TableColumn addColumn(final String columnTitle, final String columnSubTitle, final String format) {
-        return addColumn(columnTitle, columnSubTitle).setFormat(format);
+    /**
+     * Adds a column to the end of the table.
+     * @param column the column to add
+     * @return
+     */
+    protected final TableColumn addColumn(final TableColumn column) {
+        return addColumn(column, columns.size());
     }
 
-    @Override
-    public final TableColumn addColumn(final int index, final TableColumn column) {
+    /**
+     * Adds a column at a given position of the table.
+     *
+     * @param column the column to add
+     * @param index  the position in the table to add the column
+     * @return
+     */
+    protected final TableColumn addColumn(final TableColumn column, final int index) {
         column.setTable(this);
         if(index > colCount())
             columns.add(column);
         else columns.add(index, column);
         return column;
-    }
-
-    @Override
-    public final TableColumn addColumn(final TableColumn column) {
-        return addColumn(columns.size(), column);
     }
 
     /**

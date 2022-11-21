@@ -32,11 +32,11 @@ package org.cloudsimplus.builders.tables;
  */
 public class TextTableColumn extends CsvTableColumn {
     public TextTableColumn(final String title, final String subTitle) {
-        this(null, title, subTitle);
+        this(title, subTitle, "");
     }
 
     public TextTableColumn(final String title) {
-        this(null, title, "");
+        this(title, "", "");
     }
 
     public TextTableColumn(final Table table, final String title, final String subTitle) {
@@ -45,6 +45,10 @@ public class TextTableColumn extends CsvTableColumn {
 
     public TextTableColumn(final Table table, final String title) {
         super(table, title);
+    }
+
+    public TextTableColumn(final String title, final String subTitle, final String format) {
+        super(title, subTitle, format);
     }
 
     @Override

@@ -73,7 +73,7 @@ public class TextTable extends CsvTable {
     }
 
     @Override
-    public TableColumn addColumn(final int index, final String columnTitle) {
-        return addColumn(new TextTableColumn(this, columnTitle));
+    public TableColumn newColumn(final String title, final String subtitle, final String format) {
+        return new TextTableColumn(title, subtitle, format);
     }
 }

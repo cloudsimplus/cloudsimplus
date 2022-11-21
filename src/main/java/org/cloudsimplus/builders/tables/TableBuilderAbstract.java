@@ -71,7 +71,6 @@ public abstract class TableBuilderAbstract<T> {
         setTable(table);
         setObjectList(list);
         colsMappings = new ArrayList<>();
-        createTableColumns();
     }
 
     /**
@@ -231,15 +230,11 @@ public abstract class TableBuilderAbstract<T> {
     }
 
     /**
-     * Creates the columns of the table and define how the data for those columns
-     * will be got from an object inside the {@link #list} of objects to be printed.
-     */
-    protected abstract void createTableColumns();
-
-    /**
      * Builds the table with the data from the list of objects and shows the results.
      */
     public void build(){
+        createAndAddTableColumns();
+
         if(table.getTitle().isEmpty()){
             table.setTitle("SIMULATION RESULTS");
         }
@@ -247,6 +242,25 @@ public abstract class TableBuilderAbstract<T> {
         list.forEach(cloudlet -> addDataToRow(cloudlet, table.newRow()));
         table.print();
     }
+
+    private void createAndAddTableColumns() {
+        if(!colsMappings.isEmpty()) {
+            return;
+        }
+
+        createTableColumns();
+
+        final var tb = (AbstractTable)table;
+        colsMappings.forEach(mapping -> tb.addColumn(mapping.col(), mapping.index()));
+    }
+
+    /**
+     * Creates the columns of the table and define how the data for those columns
+     * will be got from an object inside the {@link #list} of objects to be printed.
+     * It doesn't add such columns into a table yet.
+     * @see #createAndAddTableColumns()
+     */
+    protected abstract void createTableColumns();
 
     /**
      * Add data to a row of the table being generated.

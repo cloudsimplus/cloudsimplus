@@ -73,9 +73,7 @@ public class HtmlTable extends AbstractTable {
     }
 
     @Override
-    public TableColumn addColumn(int index, String columnTitle) {
-        final TableColumn col = new HtmlTableColumn(this, columnTitle);
-        getColumns().add(index, col);
-        return col;
+    public TableColumn newColumn(final String title, final String subtitle, final String format) {
+        return new HtmlTableColumn(title, subtitle, format);
     }
 }

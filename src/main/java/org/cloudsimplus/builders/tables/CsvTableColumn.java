@@ -36,12 +36,12 @@ public class CsvTableColumn extends AbstractTableColumn {
      */
     public static final String DATA_COL_SEPARATOR_FORMAT = "%s%s";
 
-    public CsvTableColumn(final String title, final String subTitle) {
-        this(null, title, subTitle);
+    public CsvTableColumn(final String title) {
+        this(title, "");
     }
 
-    public CsvTableColumn(final String title) {
-        this(null, title, "");
+    public CsvTableColumn(final String title, final String subTitle) {
+        this(title, subTitle, "");
     }
 
     public CsvTableColumn(final Table table, final String title, final String subTitle) {
@@ -50,6 +50,10 @@ public class CsvTableColumn extends AbstractTableColumn {
 
     public CsvTableColumn(final Table table, final String title) {
         super(table, title);
+    }
+
+    public CsvTableColumn(final String title, final String subTitle, final String format) {
+        super(title, subTitle, format);
     }
 
     @Override

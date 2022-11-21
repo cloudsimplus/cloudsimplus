@@ -32,11 +32,11 @@ package org.cloudsimplus.builders.tables;
  */
 public class MarkdownTableColumn extends CsvTableColumn {
     public MarkdownTableColumn(final String title, final String subTitle) {
-        this(null, title, subTitle);
+        this(title, subTitle, "");
     }
 
     public MarkdownTableColumn(final String title) {
-        this(null, title, "");
+        this(title, "", "");
     }
 
     public MarkdownTableColumn(final Table table, final String title, final String subTitle) {
@@ -45,6 +45,10 @@ public class MarkdownTableColumn extends CsvTableColumn {
 
     public MarkdownTableColumn(final Table table, final String title) {
         super(table, title);
+    }
+
+    public MarkdownTableColumn(final String title, final String subTitle, final String format) {
+        super(title, subTitle, format);
     }
 
     @Override
