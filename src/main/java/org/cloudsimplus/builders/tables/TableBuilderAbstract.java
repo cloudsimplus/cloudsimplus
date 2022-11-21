@@ -206,7 +206,7 @@ public abstract class TableBuilderAbstract<T> {
      */
     public TableBuilderAbstract<T> setFormatByTitle(final String title, final String format){
     	for(TableColumn col : getTable().getColumns()) {
-    		if(col.getTitle().trim() == title.trim()) {
+    		if(col.getTitle().trim().equals(title.trim())) {
     			col.setFormat(format);
     		}
     	}
