@@ -98,6 +98,11 @@ public abstract class AbstractTableColumn implements TableColumn {
     }
 
     @Override
+    public boolean matchSubTitle(final String subtitle) {
+        return matchString(this.subTitle, subtitle);
+    }
+
+    @Override
     public boolean matchTitle(final String title) {
         return matchString(this.title, title);
     }

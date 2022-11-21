@@ -87,6 +87,14 @@ public interface TableColumn {
     boolean matchTitle(String title);
 
     /**
+     * Checks if the column subtitle matches with a given subtitle,
+     * ignoring left and right spaces (padding).
+     * @param subtitle the subtitle to compare the column to
+     * @return true if the column subtitle matches ignoring padding, false otherwise.
+     */
+    boolean matchSubTitle(String subtitle);
+
+    /**
      * Sets the format to print the column data
      * @param format the format to set
      * @return
