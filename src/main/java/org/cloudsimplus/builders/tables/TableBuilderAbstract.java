@@ -127,7 +127,7 @@ public abstract class TableBuilderAbstract<T> {
      * @return
      */
     public TableBuilderAbstract<T> addColumn(final TableColumn col, final Function<T, Object> dataFunction){
-        return addColumn(getTable().colCount(), col, dataFunction);
+        return addColumn(table.colCount(), col, dataFunction);
     }
 
     /**
@@ -164,7 +164,7 @@ public abstract class TableBuilderAbstract<T> {
      * @return the created column
      */
     protected TableColumn newColumn(final String title, final String subtitle, final String format) {
-        return getTable().addColumn(title, subtitle, format);
+        return table.addColumn(title, subtitle, format);
     }
 
     private TableColumn getColumn(final int index) {
@@ -281,7 +281,7 @@ public abstract class TableBuilderAbstract<T> {
      * @param row The row that the data from the object T will be added to
      */
     protected void addDataToRow(final T object, final List<Object> row) {
-        getTable()
+        table
             .getColumns()
             .forEach(col -> row.add(colsDataFunctions.get(col).apply(object)));
     }
