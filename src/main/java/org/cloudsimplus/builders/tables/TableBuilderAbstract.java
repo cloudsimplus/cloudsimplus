@@ -173,22 +173,24 @@ public abstract class TableBuilderAbstract<T> {
 
     /**
      * Sets the formatting for one column.
-     * @param index the index of the target column.
+     *
      * @param format the new formatting string.
+     * @param index  the index of the target column.
      * @return
      */
-    public TableBuilderAbstract<T> setFormatByIndex(final int index, final String format) {
+    public TableBuilderAbstract<T> setFormatByIndex(final String format, final int index) {
     	getColumn(index).setFormat(format);
     	return this;
     }
 
     /**
      * Sets the formatting for multiple columns.
+     *
+     * @param format  the new formatting string.
      * @param indices the list of indices for all target columns.
-     * @param format the new formatting string.
      * @return
      */
-    public TableBuilderAbstract<T> setFormatByIndex(final int[] indices, final String format) {
+    public TableBuilderAbstract<T> setFormatByIndex(final String format, final int[] indices) {
     	for(int index : indices) {
     		getColumn(index).setFormat(format);
     	}
