@@ -162,7 +162,6 @@ public abstract class TableBuilderAbstract<T> {
         requireNonNull(col);
         requireNonNull(dataFunction);
 
-        col.setTable(getTable());
         getTable().addColumn(index, col);
         colsDataFunctions.put(col, dataFunction);
         return this;
