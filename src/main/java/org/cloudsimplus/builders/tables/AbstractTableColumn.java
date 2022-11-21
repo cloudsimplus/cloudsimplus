@@ -60,18 +60,18 @@ public abstract class AbstractTableColumn implements TableColumn {
     }
 
     /**
-     * Creates a column with a specific title and sub-title.
+     * Creates a column with a specific title and subtitle.
      * @param title The column title.
-     * @param subTitle The column sub-title.
+     * @param subTitle The column subtitle.
      */
     public AbstractTableColumn(final String title, final String subTitle) {
         this(null, title, subTitle);
     }
 
     /**
-     * Creates a column with a specific title and sub-title for a given table.
+     * Creates a column with a specific title and subtitle for a given table.
      * @param title The column title.
-     * @param subTitle The column sub-title.
+     * @param subTitle The column subtitle.
      */
     public AbstractTableColumn(final Table table, final String title, final String subTitle) {
         this.table = table;

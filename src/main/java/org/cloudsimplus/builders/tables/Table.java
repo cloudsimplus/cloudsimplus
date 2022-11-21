@@ -63,10 +63,10 @@ public interface Table {
     TableColumn addColumn(int index, String columnTitle);
 
     /**
-     * Adds a column with a given title and sub-title to the end of the table's columns to be printed.
+     * Adds a column with a given title and subtitle to the end of the table's columns to be printed.
      *
      * @param columnTitle The title of the column to be added.
-     * @param columnSubTitle The sub-title of the column to be added.
+     * @param columnSubTitle The subtitle of the column to be added.
      * @return the created column
      * @see #addColumn(String)
      * @see #addColumn(int, String)
@@ -75,10 +75,10 @@ public interface Table {
     TableColumn addColumn(String columnTitle, String columnSubTitle);
 
     /**
-     * Adds a column with a given title and sub-title to the end of the table's columns to be printed.
+     * Adds a column with a given title and subtitle to the end of the table's columns to be printed.
      *
      * @param columnTitle The title of the column to be added.
-     * @param columnSubTitle The sub-title of the column to be added.
+     * @param columnSubTitle The subtitle of the column to be added.
      * @param format format to print the column data
      * @return the created column
      * @see #addColumn(String)

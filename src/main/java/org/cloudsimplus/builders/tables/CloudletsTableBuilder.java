@@ -52,7 +52,7 @@ public class CloudletsTableBuilder extends TableBuilderAbstract<Cloudlet> {
 	private static final String DEFAULT_PE_FORMAT = "%d";
 
     /**
-     * Instantiates a builder to print the list of Cloudlets using the a
+     * Instantiates a builder to print the list of Cloudlets using the
      * default {@link MarkdownTable}.
      * To use a different {@link Table}, check the alternative constructors.
      *
