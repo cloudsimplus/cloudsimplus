@@ -167,6 +167,10 @@ public abstract class TableBuilderAbstract<T> {
         return this;
     }
 
+    private TableColumn getColumn(final int index) {
+        return getTable().getColumns().get(index);
+    }
+
     /**
      * Sets the formatting for one column.
      * @param index the index of the target column.
@@ -176,10 +180,6 @@ public abstract class TableBuilderAbstract<T> {
     public TableBuilderAbstract<T> setFormatByIndex(final int index, final String format) {
     	getColumn(index).setFormat(format);
     	return this;
-    }
-
-    private TableColumn getColumn(final int index) {
-        return getTable().getColumns().get(index);
     }
 
     /**
