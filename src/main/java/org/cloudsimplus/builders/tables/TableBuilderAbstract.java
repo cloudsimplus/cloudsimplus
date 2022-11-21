@@ -45,7 +45,7 @@ public abstract class TableBuilderAbstract<T> {
     /**
      * A list containing information about columns to be added to a table latter on.
      */
-    private final List<ColumnMapping<T>> colsMappings;
+    private List<ColumnMapping<T>> colsMappings;
 
     private Table table;
 
@@ -244,10 +244,7 @@ public abstract class TableBuilderAbstract<T> {
     }
 
     private void createAndAddTableColumns() {
-        if(!colsMappings.isEmpty()) {
-            return;
-        }
-
+        colsMappings.clear();
         createTableColumns();
 
         final var tb = (AbstractTable)table;
