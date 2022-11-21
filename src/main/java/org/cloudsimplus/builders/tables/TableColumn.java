@@ -79,6 +79,14 @@ public interface TableColumn {
     String getTitle();
 
     /**
+     * Checks if the column title matches with a given title,
+     * regardless of left and right spaces.
+     * @param title the title to compare the column to
+     * @return true if the column title matches, false otherwise.
+     */
+    boolean matchTitle(String title);
+
+    /**
      * Sets the format to print the column data
      * @param format the format to set
      * @return

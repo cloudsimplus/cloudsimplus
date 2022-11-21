@@ -97,6 +97,11 @@ public abstract class AbstractTableColumn implements TableColumn {
         return this;
     }
 
+    @Override
+    public boolean matchTitle(final String title) {
+        return this.title.trim().equals(requireNonNullElse(title, ""));
+    }
+
     /**
      *
      * @return The subtitle to be displayed below the title of the column (optional).
