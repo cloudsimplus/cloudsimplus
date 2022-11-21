@@ -152,8 +152,8 @@ public abstract class TableBuilderAbstract<T> {
      * @param subtitle The subtitle of the column to be added.
      * @return the created column
      */
-    protected TableColumn newColumn(final String title, final String subtitle) {
-        return newColumn(title, subtitle, "");
+    protected TableColumn addColumn(final String title, final String subtitle) {
+        return addColumn(title, subtitle, "");
     }
 
     /**
@@ -163,7 +163,7 @@ public abstract class TableBuilderAbstract<T> {
      * @param format format to print the column data
      * @return the created column
      */
-    protected TableColumn newColumn(final String title, final String subtitle, final String format) {
+    protected TableColumn addColumn(final String title, final String subtitle, final String format) {
         return table.addColumn(title, subtitle, format);
     }
 

@@ -31,7 +31,7 @@ import java.util.List;
 /**
  * Builds a table for printing simulation results from a list of Cloudlets.
  * It defines a set of default columns but new ones can be added
- * dynamically using the {@code newColumn()} methods.
+ * dynamically using the {@code addColumn()} methods.
  *
  * <p>The basic usage of the class is by calling its constructor,
  * giving a list of Cloudlets to be printed, and then
@@ -75,26 +75,26 @@ public class CloudletsTableBuilder extends TableBuilderAbstract<Cloudlet> {
 
     @Override
     protected void createTableColumns() {
-        addColDataFunction(newColumn("Cloudlet", ID), Identifiable::getId);
+        addColDataFunction(addColumn("Cloudlet", ID), Identifiable::getId);
 
         // 1 extra space to ensure proper formatting
         addColDataFunction(getTable().addColumn(" Status") , cloudlet -> cloudlet.getStatus().name());
 
-        addColDataFunction(newColumn("DC", ID, DEFAULT_ID_FORMAT), cloudlet -> cloudlet.getVm().getHost().getDatacenter().getId());
+        addColDataFunction(addColumn("DC", ID, DEFAULT_ID_FORMAT), cloudlet -> cloudlet.getVm().getHost().getDatacenter().getId());
 
-        addColDataFunction(newColumn("Host", ID, DEFAULT_ID_FORMAT), cloudlet -> cloudlet.getVm().getHost().getId());
-        addColDataFunction(newColumn("Host PEs ", CPU_CORES, DEFAULT_PE_FORMAT), cloudlet -> cloudlet.getVm().getHost().getWorkingPesNumber());
+        addColDataFunction(addColumn("Host", ID, DEFAULT_ID_FORMAT), cloudlet -> cloudlet.getVm().getHost().getId());
+        addColDataFunction(addColumn("Host PEs ", CPU_CORES, DEFAULT_PE_FORMAT), cloudlet -> cloudlet.getVm().getHost().getWorkingPesNumber());
 
-        addColDataFunction(newColumn("VM", ID, DEFAULT_ID_FORMAT), cloudlet -> cloudlet.getVm().getId());
+        addColDataFunction(addColumn("VM", ID, DEFAULT_ID_FORMAT), cloudlet -> cloudlet.getVm().getId());
 
         // 3 extra spaces to ensure proper formatting
-        addColDataFunction(newColumn("   VM PEs", CPU_CORES, DEFAULT_PE_FORMAT), cloudlet -> cloudlet.getVm().getNumberOfPes());
-        addColDataFunction(newColumn("CloudletLen", MI, DEFAULT_LENGTH_FORMAT), Cloudlet::getLength);
-        addColDataFunction(newColumn("FinishedLen", MI, DEFAULT_LENGTH_FORMAT), Cloudlet::getFinishedLengthSoFar);
-        addColDataFunction(newColumn("CloudletPEs", CPU_CORES, DEFAULT_PE_FORMAT), Cloudlet::getNumberOfPes);
-        addColDataFunction(newColumn("StartTime", SECONDS, DEFAULT_TIME_FORMAT), Cloudlet::getExecStartTime);
-        addColDataFunction(newColumn("FinishTime", SECONDS, DEFAULT_TIME_FORMAT), Cloudlet::getFinishTime);
-        addColDataFunction(newColumn("ExecTime", SECONDS, DEFAULT_TIME_FORMAT), Cloudlet::getActualCpuTime);
+        addColDataFunction(addColumn("   VM PEs", CPU_CORES, DEFAULT_PE_FORMAT), cloudlet -> cloudlet.getVm().getNumberOfPes());
+        addColDataFunction(addColumn("CloudletLen", MI, DEFAULT_LENGTH_FORMAT), Cloudlet::getLength);
+        addColDataFunction(addColumn("FinishedLen", MI, DEFAULT_LENGTH_FORMAT), Cloudlet::getFinishedLengthSoFar);
+        addColDataFunction(addColumn("CloudletPEs", CPU_CORES, DEFAULT_PE_FORMAT), Cloudlet::getNumberOfPes);
+        addColDataFunction(addColumn("StartTime", SECONDS, DEFAULT_TIME_FORMAT), Cloudlet::getExecStartTime);
+        addColDataFunction(addColumn("FinishTime", SECONDS, DEFAULT_TIME_FORMAT), Cloudlet::getFinishTime);
+        addColDataFunction(addColumn("ExecTime", SECONDS, DEFAULT_TIME_FORMAT), Cloudlet::getActualCpuTime);
     }
 
 }
