@@ -147,7 +147,7 @@ public abstract class TableBuilderAbstract<T> {
     }
 
     /**
-     * Creates a column at the end of the table to be built.
+     * Adds a column at the end of the table to be built.
      * @param title The title of the column to be added.
      * @param subtitle The subtitle of the column to be added.
      * @return the created column
@@ -157,7 +157,7 @@ public abstract class TableBuilderAbstract<T> {
     }
 
     /**
-     * Creates a column at the end of the table to be built.
+     * Adds a column at the end of the table to be built.
      * @param title The title of the column to be added.
      * @param subtitle The subtitle of the column to be added.
      * @param format format to print the column data
