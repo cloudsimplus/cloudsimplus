@@ -131,6 +131,22 @@ public abstract class TableBuilderAbstract<T> {
     }
 
     /**
+     * Adds a column to a specific position into the table to be built.
+     * @param index the position to insert the column.
+     * @param col the column to add
+     * @param dataFunction a function that receives a Cloudlet and returns the data to be printed for the added column
+     * @return
+     */
+    public TableBuilderAbstract<T> addColumn(final int index, final TableColumn col, final Function<T, Object> dataFunction){
+        requireNonNull(col);
+        requireNonNull(dataFunction);
+
+        table.addColumn(index, col);
+        colsDataFunctions.put(col, dataFunction);
+        return this;
+    }
+
+    /**
      * Creates a column at the end of the table to be built.
      * @param title The title of the column to be added.
      * @param subtitle The subtitle of the column to be added.
@@ -149,22 +165,6 @@ public abstract class TableBuilderAbstract<T> {
      */
     protected TableColumn newColumn(final String title, final String subtitle, final String format) {
         return getTable().addColumn(title, subtitle, format);
-    }
-
-    /**
-     * Adds a column to a specific position into the table to be built.
-     * @param index the position to insert the column.
-     * @param col the column to add
-     * @param dataFunction a function that receives a Cloudlet and returns the data to be printed for the added column
-     * @return
-     */
-    public TableBuilderAbstract<T> addColumn(final int index, final TableColumn col, final Function<T, Object> dataFunction){
-        requireNonNull(col);
-        requireNonNull(dataFunction);
-
-        table.addColumn(index, col);
-        colsDataFunctions.put(col, dataFunction);
-        return this;
     }
 
     private TableColumn getColumn(final int index) {
