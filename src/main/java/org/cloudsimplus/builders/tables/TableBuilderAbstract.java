@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 import static java.util.Objects.requireNonNull;
 
@@ -205,11 +206,11 @@ public abstract class TableBuilderAbstract<T> {
      * @return
      */
     public TableBuilderAbstract<T> setFormatByTitle(final String title, final String format){
-    	for(final var col : getTable().getColumns()) {
-    		if(col.getTitle().trim().equals(title.trim())) {
-    			col.setFormat(format);
-    		}
-    	}
+        columnsForEach(
+            col -> col.matchTitle(title),
+            col -> col.setFormat(format)
+        );
+
     	return this;
     }
 
@@ -220,12 +221,24 @@ public abstract class TableBuilderAbstract<T> {
      * @return
      */
     public TableBuilderAbstract<T> setFormatBySubTitle(final String subTitle, final String format){
-    	for(TableColumn col : getTable().getColumns()) {
-    		if(col.getSubTitle().trim() == subTitle.trim()) {
-    			col.setFormat(format);
-    		}
-    	}
+        columnsForEach(
+            col -> col.matchSubTitle(subTitle),
+            col -> col.setFormat(format)
+        );
+
     	return this;
+    }
+
+    /**
+     * Iterate over the columns of the table that match
+     * a given {@link Predicate} and execute the operations defined
+     * by a given {@link Consumer}.
+     */
+    protected void columnsForEach(final Predicate<TableColumn> predicate, final Consumer<TableColumn> consumer){
+        table.getColumns()
+             .stream()
+             .filter(predicate)
+             .forEach(consumer);
     }
 
     /**
