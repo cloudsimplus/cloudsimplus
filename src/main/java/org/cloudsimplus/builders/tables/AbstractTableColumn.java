@@ -25,6 +25,8 @@ package org.cloudsimplus.builders.tables;
 
 import org.apache.commons.lang3.StringUtils;
 
+import static java.util.Objects.requireNonNullElse;
+
 /**
  * A column of a table to be generated using a {@link Table} class.
  * @author Manoel Campos da Silva Filho
@@ -90,8 +92,8 @@ public abstract class AbstractTableColumn implements TableColumn {
     }
 
     @Override
-    public AbstractTableColumn setTitle(String title) {
-        this.title = title;
+    public AbstractTableColumn setTitle(final String title) {
+        this.title = requireNonNullElse(title, "");
         return this;
     }
 
