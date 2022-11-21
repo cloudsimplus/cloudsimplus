@@ -203,19 +203,19 @@ public abstract class AbstractTable implements Table {
     @Override
     public final Table addColumnList(final String... columnTitles) {
         for(final String column: columnTitles){
-            addColumn(column);
+            newColumn(column);
         }
         return this;
     }
 
     @Override
-    public final TableColumn addColumn(final String columnTitle) {
+    public final TableColumn newColumn(final String columnTitle) {
         return addColumn(getColumns().size(), columnTitle);
     }
 
     @Override
     public final TableColumn addColumn(final String columnTitle, final String columnSubTitle) {
-        return addColumn(columnTitle).setSubTitle(columnSubTitle);
+        return newColumn(columnTitle).setSubTitle(columnSubTitle);
     }
 
     @Override
@@ -226,7 +226,9 @@ public abstract class AbstractTable implements Table {
     @Override
     public final TableColumn addColumn(final int index, final TableColumn column) {
         column.setTable(this);
-        columns.add(index, column);
+        if(index > colCount())
+            columns.add(column);
+        else columns.add(index, column);
         return column;
     }
 

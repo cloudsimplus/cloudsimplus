@@ -31,7 +31,7 @@ import java.util.List;
 /**
  * Builds a table for printing simulation results from a list of Cloudlets.
  * It defines a set of default columns but new ones can be added
- * dynamically using the {@code addColumn()} methods.
+ * dynamically using the {@code newColumn()} methods.
  *
  * <p>The basic usage of the class is by calling its constructor,
  * giving a list of Cloudlets to be printed, and then
@@ -75,10 +75,10 @@ public class CloudletsTableBuilder extends TableBuilderAbstract<Cloudlet> {
 
     @Override
     protected void createTableColumns() {
-        mapColDataFunction(addColumn("Cloudlet", ID), Identifiable::getId);
+        addColumn(newColumn("Cloudlet", ID), Identifiable::getId);
 
         // 1 extra space to ensure proper formatting
-        mapColDataFunction(getTable().addColumn(" Status") , cloudlet -> cloudlet.getStatus().name());
+        mapColDataFunction(getTable().newColumn(" Status") , cloudlet -> cloudlet.getStatus().name());
 
         mapColDataFunction(addColumn("DC", ID, DEFAULT_ID_FORMAT), cloudlet -> cloudlet.getVm().getHost().getDatacenter().getId());
 

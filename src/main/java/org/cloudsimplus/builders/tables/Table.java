@@ -48,7 +48,7 @@ public interface Table {
      * @see #addColumn(int, TableColumn)
      * @see #addColumn(String, String, String)
      */
-    TableColumn addColumn(String columnTitle);
+    TableColumn newColumn(String columnTitle);
 
     /**
      * Adds a column with a given title to the end of the table's columns to be printed.
@@ -56,7 +56,7 @@ public interface Table {
      * @param index the position to insert the column into the column's list
      * @param columnTitle The title of the column to be added.
      * @return the created column
-     * @see #addColumn(String)
+     * @see #newColumn(String)
      * @see #addColumn(int, TableColumn)
      * @see #addColumn(String, String, String)
      */
@@ -68,7 +68,7 @@ public interface Table {
      * @param columnTitle The title of the column to be added.
      * @param columnSubTitle The subtitle of the column to be added.
      * @return the created column
-     * @see #addColumn(String)
+     * @see #newColumn(String)
      * @see #addColumn(int, String)
      * @see #addColumn(String, String, String)
      */
@@ -81,7 +81,7 @@ public interface Table {
      * @param columnSubTitle The subtitle of the column to be added.
      * @param format format to print the column data
      * @return the created column
-     * @see #addColumn(String)
+     * @see #newColumn(String)
      * @see #addColumn(int, String)
      * @see #addColumn(int, TableColumn)
      */
@@ -111,7 +111,7 @@ public interface Table {
      *
      * @param columnTitles The titles of the columns
      * @return the {@link Table} instance.
-     * @see #addColumn(String)
+     * @see #newColumn(String)
      */
     Table addColumnList(String... columnTitles);
 
