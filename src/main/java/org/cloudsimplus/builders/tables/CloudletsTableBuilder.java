@@ -43,6 +43,8 @@ import static java.util.Objects.requireNonNull;
  * @since CloudSim Plus 1.0
  */
 public class CloudletsTableBuilder extends TableBuilderAbstract<Cloudlet> {
+    public static final String DEF_FORMAT = "%d";
+
     private static final String SECONDS = "Seconds";
     private static final String CPU_CORES = "CPU cores";
     private static final String ID = "ID";
@@ -52,11 +54,11 @@ public class CloudletsTableBuilder extends TableBuilderAbstract<Cloudlet> {
     private String timeFormat = "%.1f";
 
     /** @see #setIdFormat(String) */
-    private String idFormat = "%d";
+    private String idFormat = DEF_FORMAT;
     /** @see #setLengthFormat(String) */
-    private String lengthFormat = idFormat;
+    private String lengthFormat = DEF_FORMAT;
     /** @see #setPeFormat(String) */
-    private String peFormat = idFormat;
+    private String peFormat = DEF_FORMAT;
 
     /**
      * Instantiates a builder to print the list of Cloudlets using the
