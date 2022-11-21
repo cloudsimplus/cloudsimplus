@@ -144,7 +144,7 @@ public abstract class AbstractTableColumn implements TableColumn {
 
     @Override
     public final AbstractTableColumn setFormat(String format) {
-        this.format = format;
+        this.format = requireNonNullElse(format, "");
         return this;
     }
 
