@@ -99,7 +99,17 @@ public abstract class AbstractTableColumn implements TableColumn {
 
     @Override
     public boolean matchTitle(final String title) {
-        return this.title.trim().equals(requireNonNullElse(title, ""));
+        return matchString(this.title, title);
+    }
+
+    /**
+     * Checks if two Strings match, ignoring whitespaces at left and right (padding).
+     * @param text1 one String to compare
+     * @param text2 other String to compare
+     * @return true if the two strings are equals, ignoring padding
+     */
+    private boolean matchString(final String text1, final String text2){
+        return text1.trim().equals(requireNonNullElse(text2, ""));
     }
 
     /**
