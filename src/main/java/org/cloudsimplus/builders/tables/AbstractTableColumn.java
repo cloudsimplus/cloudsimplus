@@ -112,8 +112,8 @@ public abstract class AbstractTableColumn implements TableColumn {
     }
 
     @Override
-    public AbstractTableColumn setSubTitle(String subTitle) {
-        this.subTitle = subTitle;
+    public AbstractTableColumn setSubTitle(final String subTitle) {
+        this.subTitle = requireNonNullElse(subTitle, "");
         return this;
     }
 
