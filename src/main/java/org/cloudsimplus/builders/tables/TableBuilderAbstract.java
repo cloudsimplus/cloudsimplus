@@ -287,13 +287,13 @@ public abstract class TableBuilderAbstract<T> {
     }
 
     /**
-     * Adds a data function for a given column.
-     * @param col column to add a data function
+     * Creates a mapping between a column and a function to display the column data.
+     * @param col column to map a data function to
      * @param dataFunction a function that receives an object T and returns the data to be printed from that object.
      * @return
      * @see #colsDataFunctions
      */
-    protected TableBuilderAbstract<T> addColDataFunction(final TableColumn col, final Function<T, Object> dataFunction){
+    protected TableBuilderAbstract<T> mapColDataFunction(final TableColumn col, final Function<T, Object> dataFunction){
         colsDataFunctions.put(requireNonNull(col), requireNonNull(dataFunction));
         return this;
     }
