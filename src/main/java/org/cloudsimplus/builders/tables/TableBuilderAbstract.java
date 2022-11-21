@@ -162,13 +162,13 @@ public abstract class TableBuilderAbstract<T> {
         requireNonNull(col);
         requireNonNull(dataFunction);
 
-        getTable().addColumn(index, col);
+        table.addColumn(index, col);
         colsDataFunctions.put(col, dataFunction);
         return this;
     }
 
     private TableColumn getColumn(final int index) {
-        return getTable().getColumns().get(index);
+        return table.getColumns().get(index);
     }
 
     /**
@@ -253,7 +253,7 @@ public abstract class TableBuilderAbstract<T> {
      * @see #removeColumn(int...)
      */
     public final TableBuilderAbstract<T> removeColumn(final int index){
-        getTable().getColumns().remove(index);
+        table.getColumns().remove(index);
         return this;
     }
 
@@ -267,12 +267,12 @@ public abstract class TableBuilderAbstract<T> {
      * Builds the table with the data from the list of objects and shows the results.
      */
     public void build(){
-        if(getTable().getTitle().isEmpty()){
-            getTable().setTitle("SIMULATION RESULTS");
+        if(table.getTitle().isEmpty()){
+            table.setTitle("SIMULATION RESULTS");
         }
 
-        list.forEach(cloudlet -> addDataToRow(cloudlet, getTable().newRow()));
-        getTable().print();
+        list.forEach(cloudlet -> addDataToRow(cloudlet, table.newRow()));
+        table.print();
     }
 
     /**
