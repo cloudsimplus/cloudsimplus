@@ -5,7 +5,7 @@ import org.cloudsimplus.listeners.EventListener;
 
 public class VmCreationRetry {
 
-    public static int DEF_CURRENT_VM_CREATION_RETRIES = 1;
+    public static final int DEF_CURRENT_VM_CREATION_RETRIES = 1;
 
     private double failedVmsRetryDelay;
 
