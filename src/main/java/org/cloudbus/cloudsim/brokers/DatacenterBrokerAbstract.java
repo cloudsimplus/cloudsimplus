@@ -76,6 +76,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
 
     private VmCreationRetry vmCreationRetry;
 
+    /** @see #getVmFailedList() */
     private final List<Vm> vmFailedList;
 
     /** @see #getVmWaitingList() */
