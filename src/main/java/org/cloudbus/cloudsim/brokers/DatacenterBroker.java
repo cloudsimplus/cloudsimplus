@@ -57,8 +57,6 @@ public interface DatacenterBroker extends SimEntity {
      */
     double DEF_VM_DESTRUCTION_DELAY = -1.0;
 
-    int DEF_CURRENT_VM_CREATION_RETRIES = 1;
-
     /**
      * Specifies that an already submitted cloudlet, which is in the
      * {@link #getCloudletWaitingList() waiting list}, must run in a specific virtual machine.
@@ -451,56 +449,9 @@ public interface DatacenterBroker extends SimEntity {
      *
      * @param <T> the class of VMs inside the list
      * @return the list of failed VMs
-     * @see #setFailedVmsRetryDelay(double)
+     * @see VmCreationRetry#setFailedVmsRetryDelay(double)
      */
     <T extends Vm> List<T> getVmFailedList();
-
-    /**
-     * Checks if the broker has to retry allocating VMs
-     * that couldn't be placed due to lack of suitable Hosts.
-     * @return
-     */
-    boolean isRetryFailedVms();
-
-    /**
-     * Gets a delay (in seconds) for the broker to retry allocating VMs
-     * that couldn't be placed due to lack of suitable active Hosts.
-     *
-     * @return
-     * <ul>
-     *  <li>a value larger than zero to indicate the broker will retry
-     *  to place failed VM as soon as new VMs or Cloudlets
-     *  are submitted or after the given delay.</li>
-     *  <li>otherwise, to indicate failed VMs will be just added to the
-     *  {@link #getVmFailedList()} and the user simulation have to deal with it.
-     *  If the VM has an {@link Vm#addOnCreationFailureListener(EventListener) OnCreationFailureListener},
-     *  it will be notified about the failure.</li>
-     * </ul>
-     */
-    double getFailedVmsRetryDelay();
-
-    /**
-     * Sets a delay (in seconds) for the broker to retry allocating VMs
-     * that couldn't be placed due to lack of suitable active Hosts.
-     *
-     * Setting the attribute as:
-     * <ul>
-     *  <li>larger than zero, the broker will retry to place failed VM as soon as new VMs or Cloudlets
-     *  are submitted or after the given delay.</li>
-     *  <li>otherwise, failed VMs will be just added to the {@link #getVmFailedList()}
-     *  and the user simulation have to deal with it.
-     *  If the VM has an {@link Vm#addOnCreationFailureListener(EventListener) OnCreationFailureListener},
-     *  it will be notified about the failure.</li>
-     * </ul>
-     * @param failedVmsRetryDelay
-     */
-    void setFailedVmsRetryDelay(double failedVmsRetryDelay);
-
-    void incrementCurrentVmCreationRetries();
-
-    void setCurrentVmCreationRetries(int currentVmCreationRetries);
-
-    int getCurrentVmCreationRetries();
 
     /**
      * Checks if the broker must be shut down after becoming idle.
@@ -513,4 +464,8 @@ public interface DatacenterBroker extends SimEntity {
      * @return
      */
     DatacenterBroker setShutdownWhenIdle(boolean shutdownWhenIdle);
+
+    VmCreationRetry getVmCreationRetry();
+
+    void setVmCreationRetry(VmCreationRetry vmCreationRetry);
 }
