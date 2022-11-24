@@ -1303,7 +1303,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     }
 
     @Override
-    public VmCreation getVmCreationRetry() {
+    public VmCreation getVmCreation() {
         return vmCreation;
     }
 }

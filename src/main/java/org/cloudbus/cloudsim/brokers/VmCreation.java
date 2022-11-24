@@ -27,7 +27,8 @@ import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudsimplus.listeners.EventListener;
 
 /**
- * Keeps track of number of VM creation requests and retries sent by a {@link DatacenterBroker}.
+ * Keeps track of number of VM creation requests and retries sent by a {@link DatacenterBroker}
+ * and enables configuring creation retries.
  * VM creation fails when the broker can't find a suitable Host for placement.
  *
  * @author Manoel Campos da Silva Filho

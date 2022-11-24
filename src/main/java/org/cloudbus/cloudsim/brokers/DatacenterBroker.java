@@ -466,8 +466,9 @@ public interface DatacenterBroker extends SimEntity {
     DatacenterBroker setShutdownWhenIdle(boolean shutdownWhenIdle);
 
     /**
-     * Gets the object that keeps track of number of VM creation retries sent by the broker.
+     * Gets the object that keeps track of number of VM creation retries sent by the broker
+     * and enables configuring creation retries.
      * @return
      */
-    VmCreation getVmCreationRetry();
+    VmCreation getVmCreation();
 }
