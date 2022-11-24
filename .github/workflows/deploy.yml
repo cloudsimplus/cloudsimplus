@@ -23,11 +23,7 @@ jobs:
           cat <(echo -e "${{ secrets.OSSRH_GPG_SECRET_KEY }}") | gpg --batch --import
           gpg --list-keys
       - name: Publish package
-        run: |
-          # Set some environment variables needed by Nexus Staging Maven plugin on JDK 17,
-          # until https://issues.sonatype.org/browse/OSSRH-66257 is resolved
-          export MAVEN_OPTS="--add-opens=java.base/java.util=ALL-UNNAMED --add-opens=java.base/java.lang.reflect=ALL-UNNAMED --add-opens=java.base/java.text=ALL-UNNAMED --add-opens=java.desktop/java.awt.font=ALL-UNNAMED"
-          mvn --no-transfer-progress -Dgpg.passphrase=${{ secrets.OSSRH_GPG_SECRET_KEY_PASSWORD }} --batch-mode -Psonatype deploy
+        run: mvn --no-transfer-progress -Dgpg.passphrase=${{ secrets.OSSRH_GPG_SECRET_KEY_PASSWORD }} --batch-mode -Psonatype deploy
         env:
           MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
