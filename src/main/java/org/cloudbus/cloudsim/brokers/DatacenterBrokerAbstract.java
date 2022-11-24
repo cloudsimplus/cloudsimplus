@@ -74,7 +74,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      */
     private Datacenter lastSelectedDc;
 
-    private VmCreationRetry vmCreationRetry;
+    private VmCreation vmCreation;
 
     /** @see #getVmFailedList() */
     private final List<Vm> vmFailedList;
@@ -154,7 +154,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         this.lastSelectedDc = Datacenter.NULL;
         this.shutdownWhenIdle = true;
 
-        this.vmCreationRetry = new VmCreationRetry();
+        this.vmCreation = new VmCreation();
         this.vmFailedList = new ArrayList<>();
         this.vmWaitingList = new ArrayList<>();
         this.vmExecList = new ArrayList<>();
@@ -617,7 +617,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
             vm.notifyOnHostAllocationListeners();
         } else {
             vm.setFailed(true);
-            if(!vmCreationRetry.isRetryFailedVms()){
+            if(!vmCreation.isRetryFailedVms()){
                 vmWaitingList.remove(vm);
                 vmFailedList.add(vm);
                 LOGGER.warn(
@@ -629,9 +629,9 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         }
 
         //Decreases to indicate an ack for the request was received (either if the VM was created or not)
-        vmCreationRetry.incVmCreationRequests(-1);
+        vmCreation.incCreationRequests(-1);
 
-        if(vmCreationRetry.getCreationRequests() == 0 && !vmWaitingList.isEmpty()) {
+        if(vmCreation.getCreationRequests() == 0 && !vmWaitingList.isEmpty()) {
             requestCreationOfWaitingVmsToFallbackDatacenter();
         }
 
@@ -666,7 +666,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         }
 
         if (vmWaitingList.isEmpty()) {
-            vmCreationRetry.resetCurrentVmCreationRetries();
+            vmCreation.resetCurrentRetries();
         }
     }
 
@@ -685,7 +685,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
 
         final var msg =
             "{}: {}: {} of the requested {} VMs couldn't be created because suitable Hosts weren't found in any available Datacenter."
-            + (vmExecList.isEmpty() && !vmCreationRetry.isRetryFailedVms() ? " Shutting broker down..." : "");
+            + (vmExecList.isEmpty() && !vmCreation.isRetryFailedVms() ? " Shutting broker down..." : "");
         LOGGER.error(msg, getSimulation().clockStr(), getName(), vmWaitingList.size(), getVmsNumber());
 
         /* If it gets here, it means that all datacenters were already queried and not all VMs could be created. */
@@ -698,11 +698,11 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     }
 
     private void processVmCreationFailure() {
-        if (vmCreationRetry.isRetryFailedVms()) {
+        if (vmCreation.isRetryFailedVms()) {
             lastSelectedDc = datacenterList.get(0);
             this.vmCreationRetrySent = true;
-            schedule(vmCreationRetry.getDelay(), CloudSimTag.VM_CREATE_RETRY);
-            vmCreationRetry.incCurrentVmCreationRetries();
+            schedule(vmCreation.getRetryDelay(), CloudSimTag.VM_CREATE_RETRY);
+            vmCreation.incCurrentRetries();
         } else shutdown();
     }
 
@@ -729,7 +729,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
             if(creationRetry) {
                 vm.setLastTriedDatacenter(Datacenter.NULL);
             }
-            vmCreationRetry.incVmCreationRequests(requestVmCreation(lastSelectedDc, isFallbackDatacenter, vm));
+            vmCreation.incCreationRequests(requestVmCreation(lastSelectedDc, isFallbackDatacenter, vm));
         }
 
         return lastSelectedDc != Datacenter.NULL;
@@ -1303,7 +1303,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     }
 
     @Override
-    public VmCreationRetry getVmCreationRetry() {
-        return vmCreationRetry;
+    public VmCreation getVmCreationRetry() {
+        return vmCreation;
     }
 }

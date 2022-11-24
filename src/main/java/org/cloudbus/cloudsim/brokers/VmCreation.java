@@ -12,15 +12,15 @@ import org.cloudsimplus.listeners.EventListener;
  * @author sohamchari
  * @since CloudSim Plus 7.3.1
  */
-public class VmCreationRetry {
+public class VmCreation {
 
     /**
      * Default number of times the broker will try to recreated failed VMs.
      */
     public static final int DEF_CURRENT_VM_CREATION_RETRIES = 5;
 
-    /** @see #getDelay() */
-    private double delay;
+    /** @see #getRetryDelay() */
+    private double retryDelay;
 
     /** @see #getMaxRetries() */
     private int maxRetries;
@@ -34,19 +34,19 @@ public class VmCreationRetry {
     /**
      * Creates an object with default values.
      */
-    public VmCreationRetry() {
-        this.delay = 5;
+    public VmCreation() {
+        this.retryDelay = 5;
         this.maxRetries = DEF_CURRENT_VM_CREATION_RETRIES;
     }
 
     /**
      * Creates an object with the given values for the attributes.
-     * @param delay a delay (in seconds) for the broker to retry allocating VMs
+     * @param retryDelay a delay (in seconds) for the broker to retry allocating VMs
      *                            that couldn't be placed due to lack of suitable active Hosts.
      * @param maxRetries the maximum number of times the broker will try to find a host to create (place) the VM.
      */
-    public VmCreationRetry(final double delay, final int maxRetries) {
-        this.delay = delay;
+    public VmCreation(final double retryDelay, final int maxRetries) {
+        this.retryDelay = retryDelay;
         this.maxRetries = maxRetries;
     }
 
@@ -54,8 +54,8 @@ public class VmCreationRetry {
      * Creates an object with all attributes equal to zero.
      * @return
      */
-    public static VmCreationRetry ofZero(){
-        return new VmCreationRetry(0, 0);
+    public static VmCreation ofZero(){
+        return new VmCreation(0, 0);
     }
 
     /**
@@ -73,8 +73,8 @@ public class VmCreationRetry {
      *  it will be notified about the failure.</li>
      * </ul>
      */
-    public double getDelay() {
-        return delay;
+    public double getRetryDelay() {
+        return retryDelay;
     }
 
     /**
@@ -90,10 +90,10 @@ public class VmCreationRetry {
      *  If the VM has an {@link Vm#addOnCreationFailureListener(EventListener) OnCreationFailureListener},
      *  it will be notified about the failure.</li>
      * </ul>
-     * @param delay the value to set
+     * @param retryDelay the value to set
      */
-    public void setDelay(final double delay) {
-        this.delay = delay;
+    public void setRetryDelay(final double retryDelay) {
+        this.retryDelay = retryDelay;
     }
 
     /**
@@ -118,13 +118,13 @@ public class VmCreationRetry {
      * @return
      */
     public boolean isRetryFailedVms() {
-        return delay > 0 && currentRetries < maxRetries;
+        return retryDelay > 0 && currentRetries < maxRetries;
     }
 
     /**
      * Increments the current number of times failed VMs were tried to be recreated.
      */
-    public void incCurrentVmCreationRetries() {
+    public void incCurrentRetries() {
         this.currentRetries++;
     }
 
@@ -147,18 +147,18 @@ public class VmCreationRetry {
     /**
      * Resets the number of VM creation requests to the {@link #DEF_CURRENT_VM_CREATION_RETRIES default number}.
      *
-     * @see #incCurrentVmCreationRetries()
+     * @see #incCurrentRetries()
      */
-    public void resetCurrentVmCreationRetries() {
+    public void resetCurrentRetries() {
         this.currentRetries = DEF_CURRENT_VM_CREATION_RETRIES;
     }
 
     /**
      * Increments/decrements the number of VM creation requests.
      * @param value the value to increment/decrement
-     * @see #resetCurrentVmCreationRetries()
+     * @see #resetCurrentRetries()
      */
-    public void incVmCreationRequests(final int value) {
+    public void incCreationRequests(final int value) {
         this.creationRequests += value;
     }
 }
