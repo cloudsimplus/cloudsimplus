@@ -19,7 +19,9 @@ jobs:
           cache: 'maven'
       - id: install-secret-key
         name: Install gpg secret key
-        run: cat <(echo -e "${{ secrets.OSSRH_GPG_SECRET_KEY }}") | gpg --batch --import
+        run: | 
+          cat <(echo -e "${{ secrets.OSSRH_GPG_SECRET_KEY }}") | gpg --batch --import
+          gpg --list-keys
       - name: Publish package
         run: |
           # Set some environment variables needed by Nexus Staging Maven plugin on JDK 17,
