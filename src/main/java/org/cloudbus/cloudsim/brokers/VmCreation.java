@@ -47,8 +47,8 @@ public class VmCreation {
     /** @see #getMaxRetries() */
     private int maxRetries;
 
-    /** @see #getCurrentRetries() */
-    private int currentRetries;
+    /** @see #getRetries() */
+    private int retries;
 
     /** @see #getCreationRequests() */
     private int creationRequests;
@@ -140,22 +140,22 @@ public class VmCreation {
      * @return
      */
     public boolean isRetryFailedVms() {
-        return retryDelay > 0 && currentRetries < maxRetries;
+        return retryDelay > 0 && retries < maxRetries;
     }
 
     /**
      * Increments the current number of times failed VMs were tried to be recreated.
      */
     public void incCurrentRetries() {
-        this.currentRetries++;
+        this.retries++;
     }
 
     /**
      * Gets the current number of times failed VMs were tried to be recreated.
      * @return
      */
-    public int getCurrentRetries() {
-        return currentRetries;
+    public int getRetries() {
+        return retries;
     }
 
     /**
@@ -172,7 +172,7 @@ public class VmCreation {
      * @see #incCurrentRetries()
      */
     public void resetCurrentRetries() {
-        this.currentRetries = DEF_CURRENT_VM_CREATION_RETRIES;
+        this.retries = DEF_CURRENT_VM_CREATION_RETRIES;
     }
 
     /**
