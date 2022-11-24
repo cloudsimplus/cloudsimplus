@@ -32,11 +32,11 @@ package org.cloudsimplus.builders.tables;
  */
 public class HtmlTableColumn extends AbstractTableColumn {
     public HtmlTableColumn(final String title, final String subTitle) {
-        this(null, title, subTitle);
+        this(title, subTitle, "");
     }
 
     public HtmlTableColumn(final String title) {
-        this(null, title, "");
+        this(title, "", "");
     }
 
     public HtmlTableColumn(final Table table, final String title) {
@@ -45,6 +45,10 @@ public class HtmlTableColumn extends AbstractTableColumn {
 
     public HtmlTableColumn(final Table table, final String title, final String subTitle) {
         super(table, title, subTitle);
+    }
+
+    public HtmlTableColumn(final String title, final String subTitle, final String format) {
+        super(title, subTitle, format);
     }
 
     private String indentLine(final int columnIndex) {

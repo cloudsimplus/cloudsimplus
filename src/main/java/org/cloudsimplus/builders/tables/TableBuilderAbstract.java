@@ -23,9 +23,8 @@
  */
 package org.cloudsimplus.builders.tables;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -37,17 +36,15 @@ import static java.util.Objects.requireNonNull;
  *
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 2.3.2
+ * @param <T> The type of objects printed into the table
  */
 public abstract class TableBuilderAbstract<T> {
     private List<? extends T> list;
 
     /**
-     * A Map containing a function that receives an object T and returns
-     * the data to be printed from that object.
-     * That data is the value for the associated column
-     * of the table being generated.
+     * A list containing information about columns to be added to a table latter on.
      */
-    private final Map<TableColumn, Function<T, Object>> colsDataFunctions;
+    private List<ColumnMapping<T>> colsMappings;
 
     private Table table;
 
@@ -63,7 +60,7 @@ public abstract class TableBuilderAbstract<T> {
     }
 
     /**
-     * Instantiates a builder to print the list of objects T using the a
+     * Instantiates a builder to print the list of objects T using a
      * given {@link Table}.
      *
      * @param list the list of objects T to print
@@ -72,8 +69,7 @@ public abstract class TableBuilderAbstract<T> {
     public TableBuilderAbstract(final List<? extends T> list, final Table table){
         setTable(table);
         setObjectList(list);
-        colsDataFunctions = new HashMap<>();
-        createTableColumns();
+        colsMappings = new ArrayList<>();
     }
 
     /**
@@ -120,35 +116,31 @@ public abstract class TableBuilderAbstract<T> {
     }
 
     /**
-     * Dynamically adds a column to the end of the table to be built.
+     * Adds a column to the end of the table to be built.
      * @param col the column to add
      * @param dataFunction a function that receives a Cloudlet and returns the data to be printed for the added column
      * @return
      */
     public TableBuilderAbstract<T> addColumn(final TableColumn col, final Function<T, Object> dataFunction){
-        return addColumn(getTable().getColumns().size(), col, dataFunction);
+        return addColumn(col, dataFunction, Integer.MAX_VALUE);
     }
 
     /**
-     * Dynamically adds a column to a specific position into the table to be built.
-     * @param index the position to insert the column.
-     * @param col the column to add
+     * Adds a column to a specific position into the table to be built.
+     *
+     * @param col          the column to add
      * @param dataFunction a function that receives a Cloudlet and returns the data to be printed for the added column
+     * @param index        the position to insert the column.
      * @return
      */
-    public TableBuilderAbstract<T> addColumn(final int index, final TableColumn col, final Function<T, Object> dataFunction){
-        requireNonNull(col);
-        requireNonNull(dataFunction);
-
-        col.setTable(getTable());
-        getTable().addColumn(index, col);
-        colsDataFunctions.put(col, dataFunction);
+    public TableBuilderAbstract<T> addColumn(final TableColumn col, final Function<T, Object> dataFunction, final int index){
+        colsMappings.add(new ColumnMapping<>(col, dataFunction, index));
         return this;
     }
 
     /**
      * Removes columns from given positions.
-     * @param indexes the indexes of the columns to remove
+     * @param indexes the indexes of the columns to remove.
      * @return
      * @see #removeColumn(int)
      */
@@ -161,32 +153,44 @@ public abstract class TableBuilderAbstract<T> {
 
     /**
      * Removes a column from a given position.
-     * @param index the index of the column to remove
+     * @param index the index of the column to remove.
      * @return
      * @see #removeColumn(int...)
      */
     public final TableBuilderAbstract<T> removeColumn(final int index){
-        getTable().getColumns().remove(index);
+        table.getColumns().remove(index);
         return this;
     }
-
-    /**
-     * Creates the columns of the table and define how the data for those columns
-     * will be got from an object inside the {@link #list} of objects to be printed.
-     */
-    protected abstract void createTableColumns();
 
     /**
      * Builds the table with the data from the list of objects and shows the results.
      */
     public void build(){
-        if(getTable().getTitle().isEmpty()){
-            getTable().setTitle("SIMULATION RESULTS");
+        createAndAddTableColumns();
+
+        if(table.getTitle().isEmpty()){
+            table.setTitle("SIMULATION RESULTS");
         }
 
-        list.forEach(cloudlet -> addDataToRow(cloudlet, getTable().newRow()));
-        getTable().print();
+        list.forEach(cloudlet -> addDataToRow(cloudlet, table.newRow()));
+        table.print();
     }
+
+    private void createAndAddTableColumns() {
+        colsMappings = new ArrayList<>();
+        createTableColumns();
+
+        final var tb = (AbstractTable)table;
+        colsMappings.forEach(mapping -> tb.addColumn(mapping.col(), mapping.index()));
+    }
+
+    /**
+     * Creates the columns of the table and define how the data for those columns
+     * will be got from an object inside the {@link #list} of objects to be printed.
+     * It doesn't add such columns into a table yet.
+     * @see #createAndAddTableColumns()
+     */
+    protected abstract void createTableColumns();
 
     /**
      * Add data to a row of the table being generated.
@@ -194,20 +198,6 @@ public abstract class TableBuilderAbstract<T> {
      * @param row The row that the data from the object T will be added to
      */
     protected void addDataToRow(final T object, final List<Object> row) {
-        getTable()
-            .getColumns()
-            .forEach(col -> row.add(colsDataFunctions.get(col).apply(object)));
-    }
-
-    /**
-     * Adds a data function for a given column.
-     * @param col column to add a data function
-     * @param dataFunction a function that receives an object T and returns the data to be printed from that object.
-     * @return
-     * @see #colsDataFunctions
-     */
-    protected TableBuilderAbstract<T> addColDataFunction(final TableColumn col, final Function<T, Object> dataFunction){
-        colsDataFunctions.put(requireNonNull(col), requireNonNull(dataFunction));
-        return this;
+        colsMappings.forEach(mapping ->  row.add(mapping.getColData(object)));
     }
 }

@@ -25,6 +25,8 @@ package org.cloudsimplus.builders.tables;
 
 import org.apache.commons.lang3.StringUtils;
 
+import static java.util.Objects.requireNonNullElse;
+
 /**
  * A column of a table to be generated using a {@link Table} class.
  * @author Manoel Campos da Silva Filho
@@ -60,24 +62,34 @@ public abstract class AbstractTableColumn implements TableColumn {
     }
 
     /**
-     * Creates a column with a specific title and sub-title.
+     * Creates a column with a specific title, subtitle and format.
      * @param title The column title.
-     * @param subTitle The column sub-title.
+     * @param subTitle The column subtitle.
+     * @param format The column format.
      */
-    public AbstractTableColumn(final String title, final String subTitle) {
-        this(null, title, subTitle);
+    public AbstractTableColumn(final String title, final String subTitle, final String format) {
+        this.title = title;
+        this.subTitle = subTitle;
+        this.setFormat(format);
     }
 
     /**
-     * Creates a column with a specific title and sub-title for a given table.
+     * Creates a column with a specific title and subtitle for a given table.
      * @param title The column title.
-     * @param subTitle The column sub-title.
+     * @param subTitle The column subtitle.
      */
     public AbstractTableColumn(final Table table, final String title, final String subTitle) {
+        this(title, subTitle);
         this.table = table;
-        this.title = title;
-        this.setFormat("");
-        this.subTitle = subTitle;
+    }
+
+    /**
+     * Creates a column with a specific title and subtitle.
+     * @param title The column title.
+     * @param subTitle The column subtitle.
+     */
+    public AbstractTableColumn(final String title, final String subTitle) {
+        this(title, subTitle, "");
     }
 
     /**
@@ -90,8 +102,8 @@ public abstract class AbstractTableColumn implements TableColumn {
     }
 
     @Override
-    public AbstractTableColumn setTitle(String title) {
-        this.title = title;
+    public AbstractTableColumn setTitle(final String title) {
+        this.title = requireNonNullElse(title, "");
         return this;
     }
 
@@ -105,8 +117,8 @@ public abstract class AbstractTableColumn implements TableColumn {
     }
 
     @Override
-    public AbstractTableColumn setSubTitle(String subTitle) {
-        this.subTitle = subTitle;
+    public AbstractTableColumn setSubTitle(final String subTitle) {
+        this.subTitle = requireNonNullElse(subTitle, "");
         return this;
     }
 
@@ -122,7 +134,7 @@ public abstract class AbstractTableColumn implements TableColumn {
 
     @Override
     public final AbstractTableColumn setFormat(String format) {
-        this.format = format;
+        this.format = requireNonNullElse(format, "");
         return this;
     }
 
@@ -180,12 +192,8 @@ public abstract class AbstractTableColumn implements TableColumn {
         return generateHeader(subTitle);
     }
 
-    /**
-     *
-     * @return The index of the current column into the
-     * column list of the {@link #getTable() Table}.
-     */
-    protected int getIndex() {
+    @Override
+    public int getIndex() {
         return table.getColumns().indexOf(this);
     }
 

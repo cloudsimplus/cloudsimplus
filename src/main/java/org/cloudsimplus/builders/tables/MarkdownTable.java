@@ -75,7 +75,7 @@ public class MarkdownTable extends CsvTable {
     }
 
     @Override
-    public TableColumn addColumn(final int index, final String columnTitle) {
-        return addColumn(new MarkdownTableColumn(this, columnTitle));
+    public TableColumn newColumn(final String title, final String subtitle, final String format) {
+        return new MarkdownTableColumn(title, subtitle, format);
     }
 }

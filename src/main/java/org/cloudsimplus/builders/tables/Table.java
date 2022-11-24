@@ -40,69 +40,40 @@ public interface Table {
     List<Object> newRow();
 
     /**
-     * Adds a column with a given to the end of the table's columns to be printed.
+     * Creates a column with a given title.
+     * The created column is not added to the table.
      *
-     * @param columnTitle The title of the column to be added.
+     * @param title The title of the column to create.
      * @return The created column.
-     * @see #addColumn(int, String)
-     * @see #addColumn(int, TableColumn)
-     * @see #addColumn(String, String, String)
+     * @see #newColumn(String, String)
+     * @see #newColumn(String, String, String)
      */
-    TableColumn addColumn(String columnTitle);
+    TableColumn newColumn(String title);
 
     /**
-     * Adds a column with a given title to the end of the table's columns to be printed.
+     * Creates a column with a given title and subtitle.
+     * The created column is not added to the table.
      *
-     * @param index the position to insert the column into the column's list
-     * @param columnTitle The title of the column to be added.
+     * @param title The title of the column to be added.
+     * @param subTitle The subtitle of the column to be added.
      * @return the created column
-     * @see #addColumn(String)
-     * @see #addColumn(int, TableColumn)
-     * @see #addColumn(String, String, String)
+     * @see #newColumn(String)
+     * @see #newColumn(String, String, String)
      */
-    TableColumn addColumn(int index, String columnTitle);
+    TableColumn newColumn(String title, String subTitle);
 
     /**
-     * Adds a column with a given title and sub-title to the end of the table's columns to be printed.
+     * Cretes a column with a given title, subtitle and format.
+     * The created column is not added to the table.
      *
-     * @param columnTitle The title of the column to be added.
-     * @param columnSubTitle The sub-title of the column to be added.
-     * @return the created column
-     * @see #addColumn(String)
-     * @see #addColumn(int, String)
-     * @see #addColumn(String, String, String)
-     */
-    TableColumn addColumn(String columnTitle, String columnSubTitle);
-
-    /**
-     * Adds a column with a given title and sub-title to the end of the table's columns to be printed.
-     *
-     * @param columnTitle The title of the column to be added.
-     * @param columnSubTitle The sub-title of the column to be added.
+     * @param title The title of the column to be added.
+     * @param subtitle The subtitle of the column to be added.
      * @param format format to print the column data
      * @return the created column
-     * @see #addColumn(String)
-     * @see #addColumn(int, String)
-     * @see #addColumn(int, TableColumn)
+     * @see #newColumn(String)
+     * @see #newColumn(String, String)
      */
-    TableColumn addColumn(String columnTitle, String columnSubTitle, String format);
-
-    /**
-     * Adds a column object to a specific position of the table's columns to be printed.
-     *
-     * @param index the position to insert the column into the column's list
-     * @param column The column to be added.
-     * @return the created column
-     */
-    TableColumn addColumn(int index, TableColumn column);
-
-    /**
-     * Adds a column object to the end of the table's columns to be printed.
-     *
-     * @param column The column to be added.
-     * @return the created column
-     */
-    TableColumn addColumn(TableColumn column);
+    TableColumn newColumn(String title, String subtitle, String format);
 
     /**
      * Adds a list of columns (with given titles) to the end of the
@@ -111,7 +82,7 @@ public interface Table {
      *
      * @param columnTitles The titles of the columns
      * @return the {@link Table} instance.
-     * @see #addColumn(String)
+     * @see #newColumn(String)
      */
     Table addColumnList(String... columnTitles);
 
@@ -132,6 +103,13 @@ public interface Table {
      * @return the list of columns of the table
      */
     List<TableColumn> getColumns();
+
+    /**
+     * Gets the number of columns.
+     *
+     * @return
+     */
+    int colCount();
 
     /**
      * Gets the string used to separate one column from another (optional).

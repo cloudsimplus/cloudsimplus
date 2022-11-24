@@ -28,6 +28,8 @@ import org.cloudbus.cloudsim.core.Identifiable;
 
 import java.util.List;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * Builds a table for printing simulation results from a list of Cloudlets.
  * It defines a set of default columns but new ones can be added
@@ -41,12 +43,25 @@ import java.util.List;
  * @since CloudSim Plus 1.0
  */
 public class CloudletsTableBuilder extends TableBuilderAbstract<Cloudlet> {
-    private static final String TIME_FORMAT = "%.0f";
+    public static final String DEF_FORMAT = "%d";
+
     private static final String SECONDS = "Seconds";
     private static final String CPU_CORES = "CPU cores";
+    private static final String ID = "ID";
+    private static final String MI = "MI";
+
+    /** @see #setTimeFormat(String) */
+    private String timeFormat = "%.1f";
+
+    /** @see #setIdFormat(String) */
+    private String idFormat = DEF_FORMAT;
+    /** @see #setLengthFormat(String) */
+    private String lengthFormat = DEF_FORMAT;
+    /** @see #setPeFormat(String) */
+    private String peFormat = DEF_FORMAT;
 
     /**
-     * Instantiates a builder to print the list of Cloudlets using the a
+     * Instantiates a builder to print the list of Cloudlets using the
      * default {@link MarkdownTable}.
      * To use a different {@link Table}, check the alternative constructors.
      *
@@ -69,49 +84,85 @@ public class CloudletsTableBuilder extends TableBuilderAbstract<Cloudlet> {
 
     @Override
     protected void createTableColumns() {
-        final String ID = "ID";
-        addColDataFunction(getTable().addColumn("Cloudlet", ID), Identifiable::getId);
-        addColDataFunction(getTable().addColumn("Status "), cloudlet -> cloudlet.getStatus().name());
-        addColDataFunction(getTable().addColumn("DC", ID), cloudlet -> cloudlet.getVm().getHost().getDatacenter().getId());
-        addColDataFunction(getTable().addColumn("Host", ID), cloudlet -> cloudlet.getVm().getHost().getId());
-        addColDataFunction(getTable().addColumn("Host PEs ", CPU_CORES), cloudlet -> cloudlet.getVm().getHost().getWorkingPesNumber());
-        addColDataFunction(getTable().addColumn("VM", ID), cloudlet -> cloudlet.getVm().getId());
-        addColDataFunction(getTable().addColumn("VM PEs   ", CPU_CORES), cloudlet -> cloudlet.getVm().getNumberOfPes());
-        addColDataFunction(getTable().addColumn("CloudletLen", "MI"), Cloudlet::getLength);
-        addColDataFunction(getTable().addColumn("FinishedLen", "MI"), Cloudlet::getFinishedLengthSoFar);
-        addColDataFunction(getTable().addColumn("CloudletPEs", CPU_CORES), Cloudlet::getNumberOfPes);
+        addColumn(getTable().newColumn("Cloudlet", ID), Identifiable::getId);
 
-        final var col1 = getTable().addColumn("StartTime", SECONDS).setFormat(TIME_FORMAT);
-        addColDataFunction(col1, Cloudlet::getExecStartTime);
+        // 1 extra space to ensure proper formatting
+        addColumn(getTable().newColumn(" Status") , cloudlet -> cloudlet.getStatus().name());
 
-        final var col2 = getTable().addColumn("FinishTime", SECONDS).setFormat(TIME_FORMAT);
-        addColDataFunction(col2, cl -> roundTime(cl, cl.getFinishTime()));
+        addColumn(getTable().newColumn("DC", ID, idFormat), cloudlet -> cloudlet.getVm().getHost().getDatacenter().getId());
 
-        final var col3 = getTable().addColumn("ExecTime", SECONDS).setFormat(TIME_FORMAT);
-        addColDataFunction(col3, cl -> roundTime(cl, cl.getActualCpuTime()));
+        addColumn(getTable().newColumn("Host", ID, idFormat), cloudlet -> cloudlet.getVm().getHost().getId());
+        addColumn(getTable().newColumn("Host PEs ", CPU_CORES, peFormat), cloudlet -> cloudlet.getVm().getHost().getWorkingPesNumber());
+
+        addColumn(getTable().newColumn("VM", ID, idFormat), cloudlet -> cloudlet.getVm().getId());
+
+        // 3 extra spaces to ensure proper formatting
+        addColumn(getTable().newColumn("   VM PEs", CPU_CORES, peFormat), cloudlet -> cloudlet.getVm().getNumberOfPes());
+        addColumn(getTable().newColumn("CloudletLen", MI, lengthFormat), Cloudlet::getLength);
+        addColumn(getTable().newColumn("FinishedLen", MI, lengthFormat), Cloudlet::getFinishedLengthSoFar);
+        addColumn(getTable().newColumn("CloudletPEs", CPU_CORES, peFormat), Cloudlet::getNumberOfPes);
+        addColumn(getTable().newColumn("StartTime", SECONDS, timeFormat), Cloudlet::getExecStartTime);
+        addColumn(getTable().newColumn("FinishTime", SECONDS, timeFormat), Cloudlet::getFinishTime);
+        addColumn(getTable().newColumn("ExecTime", SECONDS, timeFormat), Cloudlet::getActualCpuTime);
     }
 
     /**
-     * Rounds a given time so that decimal places are ignored.
-     * Sometimes a Cloudlet start at time 0.1 and finish at time 10.1.
-     * Previously, in such a situation, the finish time was rounded to 11 (Math.ceil),
-     * giving the wrong idea that the Cloudlet took 11 seconds to finish.
-     * This method makes some little adjustments to avoid such a precision issue.
-     *
-     * @param cloudlet the Cloudlet being printed
-     * @param time the time to round
-     * @return
+     * Gets the format for time columns.
      */
-    private double roundTime(final Cloudlet cloudlet, final double time) {
+    public String getTimeFormat() {
+        return timeFormat;
+    }
 
-        /*If the given time minus the start time is less than 1,
-        * it means the execution time was less than 1 second.
-        * This way, it can't be round.*/
-        if(time - cloudlet.getExecStartTime() < 1){
-            return time;
-        }
+    /**
+     * Sets the format for time columns.
+     */
+    public CloudletsTableBuilder setTimeFormat(final String timeFormat) {
+        this.timeFormat = requireNonNull(timeFormat);
+        return this;
+    }
 
-        final double startFraction = cloudlet.getExecStartTime() - (int) cloudlet.getExecStartTime();
-        return Math.round(time - startFraction);
+    /**
+     * Gets the format for cloudlet length columns.
+     */
+    public String getLengthFormat() {
+        return lengthFormat;
+    }
+
+    /**
+     * Sets the format for cloudlet length columns.
+     */
+    public CloudletsTableBuilder setLengthFormat(final String lengthFormat) {
+        this.lengthFormat = requireNonNull(lengthFormat);
+        return this;
+    }
+
+    /**
+     * Gets the format for ID columns.
+     */
+    public String getIdFormat() {
+        return idFormat;
+    }
+
+    /**
+     * Sets the format for ID columns.
+     */
+    public CloudletsTableBuilder setIdFormat(final String idFormat) {
+        this.idFormat = requireNonNull(idFormat);
+        return this;
+    }
+
+    /**
+     * Gets the format for columns indicating number of PEs.
+     */
+    public String getPeFormat() {
+        return peFormat;
+    }
+
+    /**
+     * Sets the format for columns indicating number of PEs.
+     */
+    public CloudletsTableBuilder setPeFormat(final String peFormat) {
+        this.peFormat = requireNonNull(peFormat);
+        return this;
     }
 }
