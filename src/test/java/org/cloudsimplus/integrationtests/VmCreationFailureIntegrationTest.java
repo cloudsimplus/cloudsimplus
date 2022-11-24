@@ -198,7 +198,7 @@ public final class VmCreationFailureIntegrationTest {
 
         final BrokerBuilderDecorator brokerBuilder =
             scenario.getBrokerBuilder()
-                    .create(b -> b.setFailedVmsRetryDelay(-1));
+                    .create(b -> b.getVmCreation().setRetryDelay(-1));
 
         brokerBuilder.getVmBuilder()
                 .setPes(1)
