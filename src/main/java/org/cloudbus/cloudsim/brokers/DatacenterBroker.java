@@ -449,7 +449,7 @@ public interface DatacenterBroker extends SimEntity {
      *
      * @param <T> the class of VMs inside the list
      * @return the list of failed VMs
-     * @see VmCreationRetry#setFailedVmsRetryDelay(double)
+     * @see VmCreationRetry#setDelay(double)
      */
     <T extends Vm> List<T> getVmFailedList();
 
@@ -465,7 +465,9 @@ public interface DatacenterBroker extends SimEntity {
      */
     DatacenterBroker setShutdownWhenIdle(boolean shutdownWhenIdle);
 
+    /**
+     * Gets the object that keeps track of number of VM creation retries sent by the broker.
+     * @return
+     */
     VmCreationRetry getVmCreationRetry();
-
-    void setVmCreationRetry(VmCreationRetry vmCreationRetry);
 }

@@ -629,10 +629,9 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         }
 
         //Decreases to indicate an ack for the request was received (either if the VM was created or not)
-        int currentVmCreationRequests = vmCreationRetry.getVmCreationRequests();
-        vmCreationRetry.setVmCreationRequests(currentVmCreationRequests - 1);
+        vmCreationRetry.incVmCreationRequests(-1);
 
-        if(vmCreationRetry.getVmCreationRequests() == 0 && !vmWaitingList.isEmpty()) {
+        if(vmCreationRetry.getCreationRequests() == 0 && !vmWaitingList.isEmpty()) {
             requestCreationOfWaitingVmsToFallbackDatacenter();
         }
 
@@ -667,7 +666,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         }
 
         if (vmWaitingList.isEmpty()) {
-            vmCreationRetry.setCurrentVmCreationRetries(VmCreationRetry.DEF_CURRENT_VM_CREATION_RETRIES);
+            vmCreationRetry.resetCurrentVmCreationRetries();
         }
     }
 
@@ -702,8 +701,8 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         if (vmCreationRetry.isRetryFailedVms()) {
             lastSelectedDc = datacenterList.get(0);
             this.vmCreationRetrySent = true;
-            schedule(vmCreationRetry.getFailedVmsRetryDelay(), CloudSimTag.VM_CREATE_RETRY);
-            vmCreationRetry.incrementCurrentVmCreationRetries();
+            schedule(vmCreationRetry.getDelay(), CloudSimTag.VM_CREATE_RETRY);
+            vmCreationRetry.incCurrentVmCreationRetries();
         } else shutdown();
     }
 
@@ -730,9 +729,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
             if(creationRetry) {
                 vm.setLastTriedDatacenter(Datacenter.NULL);
             }
-            int currentVmCreationRequests = vmCreationRetry.getVmCreationRequests();
-            vmCreationRetry.setVmCreationRequests(currentVmCreationRequests +
-                requestVmCreation(lastSelectedDc, isFallbackDatacenter, vm));
+            vmCreationRetry.incVmCreationRequests(requestVmCreation(lastSelectedDc, isFallbackDatacenter, vm));
         }
 
         return lastSelectedDc != Datacenter.NULL;
@@ -1305,11 +1302,8 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         return this;
     }
 
+    @Override
     public VmCreationRetry getVmCreationRetry() {
         return vmCreationRetry;
-    }
-
-    public void setVmCreationRetry(VmCreationRetry vmCreationRetry) {
-        this.vmCreationRetry = vmCreationRetry;
     }
 }
