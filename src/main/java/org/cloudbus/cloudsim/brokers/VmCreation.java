@@ -121,6 +121,7 @@ public class VmCreation {
     /**
      * Gets the maximum number of times the broker will try to find a host to create (place) the VM.
      * @return
+     * @see #getRetries()
      */
     public int getMaxRetries() {
         return maxRetries;
@@ -153,6 +154,7 @@ public class VmCreation {
     /**
      * Gets the current number of times failed VMs were tried to be recreated.
      * @return
+     * @see #getMaxRetries()
      */
     public int getRetries() {
         return retries;
