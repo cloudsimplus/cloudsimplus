@@ -107,26 +107,6 @@ public abstract class AbstractTableColumn implements TableColumn {
         return this;
     }
 
-    @Override
-    public boolean matchSubTitle(final String subtitle) {
-        return matchString(this.subTitle, subtitle);
-    }
-
-    @Override
-    public boolean matchTitle(final String title) {
-        return matchString(this.title, title);
-    }
-
-    /**
-     * Checks if two Strings match, ignoring whitespaces at left and right (padding).
-     * @param text1 one String to compare
-     * @param text2 other String to compare
-     * @return true if the two strings are equals, ignoring padding
-     */
-    private boolean matchString(final String text1, final String text2){
-        return text1.trim().equals(requireNonNullElse(text2, ""));
-    }
-
     /**
      *
      * @return The subtitle to be displayed below the title of the column (optional).
