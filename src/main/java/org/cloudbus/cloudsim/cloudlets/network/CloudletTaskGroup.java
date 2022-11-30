@@ -56,6 +56,10 @@ public class CloudletTaskGroup {
 	public int getCurrentTaskNum(){
 		return currentTaskNum;
 	}
+	
+	public boolean isEmpty() {
+		return tasks.size() < 1;
+	}
 
 	public boolean isActive() {
 		return currentTaskNum > -1;
