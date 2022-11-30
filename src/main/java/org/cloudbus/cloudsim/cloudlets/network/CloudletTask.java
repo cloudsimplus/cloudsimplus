@@ -50,6 +50,8 @@ public abstract class CloudletTask implements Identifiable {
 
     /** @see #getCloudlet() */
     private NetworkCloudlet cloudlet;
+    
+    private CloudletTaskGroup taskGroup;
 
     /**
      * Creates a new task.
@@ -61,6 +63,20 @@ public abstract class CloudletTask implements Identifiable {
         this.startTime = -1;
         this.finishTime = -1;
         this.memory = 0;
+    }
+    
+    public void removeTaskGroup() {
+    	this.taskGroup.removeTask(this);
+    	this.taskGroup = null;
+    }
+
+    public void setTaskGroup(CloudletTaskGroup taskGroup) {
+    	this.taskGroup = taskGroup;
+    	//taskGroup.addTask(this);
+    }
+
+    public CloudletTaskGroup getTaskGroup() {
+    	return taskGroup;
     }
 
     /**
