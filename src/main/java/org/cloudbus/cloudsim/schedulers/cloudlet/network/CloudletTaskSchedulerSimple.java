@@ -65,7 +65,7 @@ public class CloudletTaskSchedulerSimple implements CloudletTaskScheduler {
 
         final var netCloudlet = (NetworkCloudlet) cloudlet;
         if (!netCloudlet.isTasksStarted()) {
-            scheduleNextTaskIfCurrentIsFinished(netCloudlet);
+            scheduleNextTaskForAllGroupsWhereCurrentIsFinished(netCloudlet);
             return;
         }
 
@@ -87,7 +87,7 @@ public class CloudletTaskSchedulerSimple implements CloudletTaskScheduler {
         final Optional<CloudletExecutionTask> optional = getCloudletCurrentTask(cloudlet);
         optional.ifPresent(task -> {
             task.process(partialFinishedMI);
-            scheduleNextTaskIfCurrentIsFinished(cloudlet);
+            scheduleNextTaskForAllGroupsWhereCurrentIsFinished(cloudlet);
         });
     }
 
@@ -135,7 +135,7 @@ public class CloudletTaskSchedulerSimple implements CloudletTaskScheduler {
             sourceCloudlet.getVm());
 
         vmPacketsToSend.addAll(task.getPacketsToSend(sourceCloudlet.getSimulation().clock()));
-        scheduleNextTaskIfCurrentIsFinished(sourceCloudlet);
+        scheduleNextTaskForAllGroupsWhereCurrentIsFinished(sourceCloudlet);
     }
 
     /**
@@ -161,7 +161,7 @@ public class CloudletTaskSchedulerSimple implements CloudletTaskScheduler {
          *       of the expected packets up to a given timeout.
          *       After that, the task has to stop waiting and fail.
          */
-        scheduleNextTaskIfCurrentIsFinished(destinationCloudlet);
+        scheduleNextTaskForAllGroupsWhereCurrentIsFinished(destinationCloudlet);
     }
 
     private void logReceivedPacket(final NetworkCloudlet destinationCloudlet, final VmPacket pkt) {
@@ -204,8 +204,8 @@ public class CloudletTaskSchedulerSimple implements CloudletTaskScheduler {
     /**
      * Schedules the execution of the next task of a given cloudlet.
      */
-    private void scheduleNextTaskIfCurrentIsFinished(final NetworkCloudlet cloudlet) {
-        if(!cloudlet.startNextTaskIfCurrentIsFinished(cloudlet.getSimulation().clock())){
+    private void scheduleNextTaskForAllGroupsWhereCurrentIsFinished(final NetworkCloudlet cloudlet) {
+        if(!cloudlet.startNextTaskForAllGroupsWhereCurrentIsFinished(cloudlet.getSimulation().clock())){
             return;
         }
 

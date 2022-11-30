@@ -40,9 +40,17 @@ public class CloudletTaskGroup {
 	public List<CloudletTask> getTasks(){
 		return Collections.unmodifiableList(tasks);
 	}
+	
+	public int getNumberOfTasks() {
+		return tasks.size();
+	}
 
-	public CloudletTask getCurrentTask() {
-		return tasks.get(currentTaskNum);
+	public Optional<CloudletTask> getCurrentTask() {
+		if (getCurrentTaskNum() < 0 || getCurrentTaskNum() >= getNumberOfTasks()) {
+            return Optional.empty();
+        }
+
+        return Optional.of(tasks.get(getCurrentTaskNum()));
 	}
 
 	public int getCurrentTaskNum(){
@@ -80,15 +88,18 @@ public class CloudletTaskGroup {
      */
     Optional<CloudletTask> getNextTaskIfCurrentIsFinished(){
 
-        if(getCurrentTask().isActive()) {
-            return Optional.empty();
-        }
+    	if(getCurrentTask().isPresent()) {
+    		if(getCurrentTask().get().isActive()) {
+                return Optional.empty();
+            }
+    	}
+        
 
         if(this.currentTaskNum <= tasks.size()-1) {
             this.currentTaskNum++;
         }
 
-        return Optional.of(getCurrentTask());
+        return getCurrentTask();
     }
 
     /**
