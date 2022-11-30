@@ -74,11 +74,11 @@ public class CloudletTaskSchedulerSimple implements CloudletTaskScheduler {
          *       including these if's for each type of task.
          */
         if (isTimeToUpdateCloudletProcessing(netCloudlet))
-            updateAllExecutionTasks(netCloudlet, partialFinishedMI);
+            updateExecutionTasks(netCloudlet, partialFinishedMI);
         else updateNetworkTasks(netCloudlet);
     }
 
-    private void updateAllExecutionTasks(final NetworkCloudlet cloudlet, final long partialFinishedMI) {
+    private void updateExecutionTasks(final NetworkCloudlet cloudlet, final long partialFinishedMI) {
         /*
          * @TODO autor: manoelcampos It has to be checked if the task execution
          *       is considering only one cloudlet PE or all PEs.
