@@ -115,12 +115,19 @@ public class CloudletTaskSchedulerSimple implements CloudletTaskScheduler {
 
     private void updateNetworkTasks(final NetworkCloudlet cloudlet) {
         //TODO Needs to use polymorphism to avoid these ifs
-        cloudlet.getCurrentTask().ifPresent(task -> {
-            if (task instanceof CloudletSendTask sendTask)
-               addPacketsToBeSentFromVm(cloudlet, sendTask);
+    	
+    	List<CloudletTask> allCurrentNetworkingTasks = cloudlet.getAllCurrentTasks().stream().filter(CloudletTask::isNetworkingTask).collect(Collectors.toList());
+    	
+    	for(CloudletTask task : allCurrentNetworkingTasks) {
+    		
+    		if (task instanceof CloudletSendTask sendTask)
+                addPacketsToBeSentFromVm(cloudlet, sendTask);
+    		
             else if (task instanceof CloudletReceiveTask receiveTask)
-                receivePackets(cloudlet, receiveTask);
-        });
+                 receivePackets(cloudlet, receiveTask);
+    		
+    	}
+
     }
 
     @Override
