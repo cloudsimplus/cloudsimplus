@@ -74,21 +74,43 @@ public class CloudletTaskSchedulerSimple implements CloudletTaskScheduler {
          *       including these if's for each type of task.
          */
         if (isTimeToUpdateCloudletProcessing(netCloudlet))
-            updateExecutionTask(netCloudlet, partialFinishedMI);
+            updateAllExecutionTasks(netCloudlet, partialFinishedMI);
         else updateNetworkTasks(netCloudlet);
     }
 
-    private void updateExecutionTask(final NetworkCloudlet cloudlet, final long partialFinishedMI) {
+    private void updateAllExecutionTasks(final NetworkCloudlet cloudlet, final long partialFinishedMI) {
         /*
          * @TODO autor: manoelcampos It has to be checked if the task execution
          *       is considering only one cloudlet PE or all PEs.
          *       Each execution task is supposed to use just one PE.
          */
-        final Optional<CloudletExecutionTask> optional = getCloudletCurrentTask(cloudlet);
-        optional.ifPresent(task -> {
-            task.process(partialFinishedMI);
-            scheduleNextTaskForAllGroupsWhereCurrentIsFinished(cloudlet);
-        });
+    	
+    	List<CloudletTask> allCurrentExecutionTasks = cloudlet.getAllCurrentTasks().stream().filter(CloudletTask::isExecutionTask).collect(Collectors.toList());
+    	
+    	/**
+    	 * The MIs get distributed using the round-robin principle to all exec cloudlets.
+    	 * This is HORRIBLY inefficient but avoids any rounding errors that would appear when using 
+    	 * division to determine the number of MIs for each task.
+    	 */
+    	
+    	int numberOfCurrentExecutionTasks = allCurrentExecutionTasks.size();
+    	long[] receivedMI = new long[numberOfCurrentExecutionTasks];
+    	long remainingMI = partialFinishedMI;
+    	int i = 0;
+    	
+    	while(remainingMI > 0) {
+    		receivedMI[i]++;
+    		remainingMI--;
+    		i = (i + 1) % numberOfCurrentExecutionTasks;
+    	}
+    	
+    	for(i = 0 ; i < numberOfCurrentExecutionTasks ; i++) {
+    		((CloudletExecutionTask) allCurrentExecutionTasks.get(i)).process(receivedMI[i]);
+    	}
+    	
+    	
+    	scheduleNextTaskForAllGroupsWhereCurrentIsFinished(cloudlet);
+
     }
 
     private void updateNetworkTasks(final NetworkCloudlet cloudlet) {
