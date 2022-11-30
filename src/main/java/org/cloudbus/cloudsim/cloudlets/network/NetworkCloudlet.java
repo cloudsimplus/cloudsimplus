@@ -179,6 +179,15 @@ public class NetworkCloudlet extends CloudletSimple {
     	
     	return taskWasStarted;
     }
+    
+    public NetworkCloudlet addTaskGroup(final CloudletTaskGroup taskGroup) {
+    	
+    	Objects.requireNonNull(taskGroup);
+    	taskGroups.add(taskGroup);
+    	taskGroup.setCloudlet(this);
+    	
+		return this;
+    }
 
     @Override
     public NetworkVm getVm() {
