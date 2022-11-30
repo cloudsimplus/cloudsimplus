@@ -198,6 +198,10 @@ public abstract class CloudletTask implements Identifiable {
     public boolean isExecutionTask(){
         return this instanceof CloudletExecutionTask;
     }
+    
+    public boolean isNetworkingTask() {
+    	return isSendTask() || isReceiveTask() ;
+    }
 
     public boolean isSendTask(){
         return this instanceof CloudletSendTask;
