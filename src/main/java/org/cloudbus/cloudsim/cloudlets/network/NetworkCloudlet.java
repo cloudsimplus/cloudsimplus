@@ -123,6 +123,16 @@ public class NetworkCloudlet extends CloudletSimple {
     public Optional<CloudletTask> getCurrentTask() {
         return defaultTaskGroup.getCurrentTask();
     }
+    
+    public List<CloudletTask> getAllCurrentTasks(){
+    	ArrayList<CloudletTask> allCurrentTasks = new ArrayList<CloudletTask>();
+    	
+    	for(CloudletTaskGroup g : getTaskGroups()) {
+    		g.getCurrentTask().ifPresent(task -> allCurrentTasks.add(task));
+    	}
+    	
+    	return allCurrentTasks;
+    }
 
 
     @Override
