@@ -139,6 +139,9 @@ public abstract class CloudletTask implements Identifiable {
     }
 
     public CloudletTask setCloudlet(final NetworkCloudlet cloudlet) {
+    	if(cloudlet == null) {
+    		throw new IllegalStateException("Cloudlet is null.");
+    	}
         this.cloudlet = cloudlet;
         return this;
     }
