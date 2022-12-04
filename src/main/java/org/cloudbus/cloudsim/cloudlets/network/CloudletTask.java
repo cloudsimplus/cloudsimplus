@@ -10,6 +10,9 @@ package org.cloudbus.cloudsim.cloudlets.network;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.CloudletExecution;
 import org.cloudbus.cloudsim.core.Identifiable;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
+
 
 /**
  * An abstract class to be implemented by tasks that can be executed by a {@link NetworkCloudlet}.
@@ -34,6 +37,9 @@ import org.cloudbus.cloudsim.core.Identifiable;
  * and {@link CloudletExecution} share a common set of attributes that would be defined by a common interface.
  */
 public abstract class CloudletTask implements Identifiable {
+	
+	Logger LOGGER = LoggerFactory.getLogger(CloudletTask.class.getSimpleName());
+	
     private boolean finished;
 
     /** @see #getId() */
@@ -179,6 +185,7 @@ public abstract class CloudletTask implements Identifiable {
         //If the task wasn't finished before and try to set it to finished, stores the finishTime
         if(!this.finished && finished) {
             finishTime = cloudlet.getSimulation().clock();
+            LOGGER.trace("Task {} of type {} finished on cloudlet {}",getId(),this.getClass().getSimpleName(),getCloudlet().getId());
         }
 
         this.finished = finished;
