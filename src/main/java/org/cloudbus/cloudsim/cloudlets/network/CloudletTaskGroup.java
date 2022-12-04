@@ -28,6 +28,7 @@ public class CloudletTaskGroup {
 	}
 
 	public void addTask(CloudletTask task) {
+		task.setCloudlet(this.cloudlet);
 		task.setTaskGroup(this);
 		tasks.add(task);
 	}
