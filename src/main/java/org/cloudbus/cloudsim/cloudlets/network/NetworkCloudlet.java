@@ -65,6 +65,7 @@ public class NetworkCloudlet extends CloudletSimple {
     public NetworkCloudlet(final int id,  final long length, final int pesNumber) {
         super(id, length, pesNumber);
         this.defaultTaskGroup = new CloudletTaskGroup();
+        this.defaultTaskGroup.setCloudlet(this);
         this.taskGroups = new ArrayList<>();
         this.taskGroups.add(defaultTaskGroup);
     }
