@@ -6,8 +6,9 @@ import java.util.List;
 import java.util.Optional;
 
 import org.cloudbus.cloudsim.core.CloudSimTag;
+import org.cloudbus.cloudsim.core.Identifiable;
 
-public class CloudletTaskGroup {
+public class CloudletTaskGroup implements Identifiable {
 
 	private List<CloudletTask> tasks;
 
@@ -16,10 +17,13 @@ public class CloudletTaskGroup {
      */
 	private int currentTaskNum;
 	private NetworkCloudlet cloudlet;
+	
+	private long id;
 
 	public CloudletTaskGroup() {
 		tasks = new ArrayList<CloudletTask>();
 		currentTaskNum = -1;
+		id = -1;
 	}
 
 	public CloudletTaskGroup(List<CloudletTask> taskList) {
@@ -128,5 +132,14 @@ public class CloudletTaskGroup {
                 .mapToLong(CloudletExecutionTask::getLength)
                 .sum();
     }
+
+    public void setId(long id) {
+    	this.id = id;
+    }
+    
+	@Override
+	public long getId() {
+		return this.id;
+	}
 
 }
