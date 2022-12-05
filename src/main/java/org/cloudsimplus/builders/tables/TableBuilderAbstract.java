@@ -177,7 +177,6 @@ public abstract class TableBuilderAbstract<T> {
     }
 
     private void createAndAddTableColumns() {
-        colsMappings = new ArrayList<>();
         createTableColumns();
 
         final var tb = (AbstractTable)table;
