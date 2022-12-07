@@ -287,7 +287,7 @@ public interface DatacenterBroker extends SimEntity {
      * will be called. If it receives {@link Datacenter#NULL} it indicates
      * that a Datacenter was never selected to place VMs or the previous selected
      * Datacenter has not enough resources for all the waiting VMs.
-     * The Function you provide here should consider that when returning
+     * The Function you provide here should consider it when returning
      * the Datacenter where the creation of waiting VMs will be tried.
      * </p>
      *
