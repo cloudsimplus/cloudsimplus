@@ -389,10 +389,6 @@ public abstract class CloudSimEntity implements SimEntity, Cloneable {
             throw new IllegalArgumentException("Entity names cannot be empty.");
         }
 
-        if (name.contains(" ")) {
-            throw new IllegalArgumentException("Entity names cannot contain spaces.");
-        }
-
         this.name = name;
         return this;
     }
