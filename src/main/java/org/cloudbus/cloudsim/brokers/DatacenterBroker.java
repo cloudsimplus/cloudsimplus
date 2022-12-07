@@ -471,4 +471,17 @@ public interface DatacenterBroker extends SimEntity {
      * @return
      */
     VmCreation getVmCreation();
+
+    /**
+     * Changes the last selected datacenter so that
+     * new VMs will be attempted to be placed in the given Datacenter
+     * instead of the previous one.
+     * @param lastSelectedDc the new Datacenter to try to place next arriving VMs
+     */
+    void setLastSelectedDc(Datacenter lastSelectedDc);
+
+    /**
+     * Gets the last selected datacenter attempted to place arriving VMs.
+     */
+    Datacenter getLastSelectedDc();
 }

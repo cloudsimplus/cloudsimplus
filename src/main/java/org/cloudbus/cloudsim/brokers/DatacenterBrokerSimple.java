@@ -49,6 +49,11 @@ public class DatacenterBrokerSimple extends DatacenterBrokerAbstract {
     private int lastSelectedDcIndex;
 
     /**
+     * Number of datacenters tried to place VMs.
+     */
+    private int triedDatacenters;
+
+    /**
      * Creates a new DatacenterBroker.
      *
      * @param simulation the CloudSim instance that represents the simulation the Entity is related to
@@ -93,16 +98,25 @@ public class DatacenterBrokerSimple extends DatacenterBrokerAbstract {
         }
 
         if (lastDatacenter != Datacenter.NULL) {
-            return getDatacenterList().get(lastSelectedDcIndex);
+            return nextDatacenter(lastDatacenter);
         }
 
         /*If all Datacenter were tried already, return Datacenter.NULL to indicate
         * there isn't a suitable Datacenter to place waiting VMs.*/
-        if(lastSelectedDcIndex == getDatacenterList().size()-1){
+        if(triedDatacenters >= getDatacenterList().size()){
             return Datacenter.NULL;
         }
 
-        return getDatacenterList().get(++lastSelectedDcIndex);
+        triedDatacenters++;
+        //Selects the next datacenter in a circular (round-robin) way.
+        return getDatacenterList().get(++lastSelectedDcIndex % getDatacenterList().size());
+    }
+
+    private Datacenter nextDatacenter(final Datacenter lastDatacenter) {
+        if(lastSelectedDcIndex == -1)
+            lastSelectedDcIndex = getDatacenterList().indexOf(lastDatacenter);
+
+        return lastDatacenter;
     }
 
     /**

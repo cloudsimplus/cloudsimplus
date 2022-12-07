@@ -29,6 +29,7 @@ import org.cloudsimplus.traces.google.GoogleTaskEventsTraceReader;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -69,9 +70,6 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      */
     private Vm lastSelectedVm;
 
-    /**
-     * The last datacenter where a VM was created or tried to be created.
-     */
     private Datacenter lastSelectedDc;
 
     private VmCreation vmCreation;
@@ -1305,5 +1303,15 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     @Override
     public VmCreation getVmCreation() {
         return vmCreation;
+    }
+
+    @Override
+    public void setLastSelectedDc(final Datacenter lastSelectedDc) {
+        this.lastSelectedDc = Objects.requireNonNull(lastSelectedDc);
+    }
+
+    @Override
+    public Datacenter getLastSelectedDc() {
+        return lastSelectedDc;
     }
 }
