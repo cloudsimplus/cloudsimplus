@@ -415,6 +415,11 @@ public class HostSimple implements Host {
             vm.setHost(this);
             vm.setCreated(true);
             vm.setStartTime(getSimulation().clock());
+            vm.notifyOnHostAllocationListeners(); 
+            /* FIXME: Notify listeners here instead of notifying them 
+             * in the broker in the processVmCreateResponseFromDatacenter
+             * function. Otherwise CloudLets are not created in the VMs.
+             * This was the original behavior but at some point changed. */
         }
 
         return suitability;

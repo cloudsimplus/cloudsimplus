@@ -49,7 +49,7 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
      *
      * @see #setFindHostForVmFunction(BiFunction)
      */
-    private BiFunction<VmAllocationPolicy, Vm, Optional<Host>> findHostForVmFunction;
+    protected BiFunction<VmAllocationPolicy, Vm, Optional<Host>> findHostForVmFunction;
 
     /** @see #getDatacenter() */
     @NonNull

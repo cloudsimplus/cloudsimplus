@@ -17,6 +17,7 @@ import org.cloudsimplus.network.HostPacket;
 import org.cloudsimplus.power.PowerMeter;
 import org.cloudsimplus.power.models.PowerModel;
 import org.cloudsimplus.schedulers.cloudlet.CloudletScheduler;
+import org.cloudsimplus.traces.azure.TracesBatchesManager;
 import org.cloudsimplus.traces.google.GoogleTaskEventsTraceReader;
 import org.cloudsimplus.vms.Vm;
 
@@ -368,6 +369,12 @@ public class CloudSimTag{
      * must be a {@link Host} object.
      */
     public static final int HOST_POWER_OFF = BASE + 72;
+
+    /**
+     * Denotes a tag for submitting the next batch of VM requests to the
+     * {@link DatacenterBroker}. See {@link TracesBatchesManager} for more details.
+     */
+    public static final int BATCH_TAG = BASE + 73;
 
     /**
      * Checks if this tag is between a given range of tags,
