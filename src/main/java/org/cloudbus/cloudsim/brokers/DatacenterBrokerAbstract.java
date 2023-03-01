@@ -221,7 +221,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
                 getSimulation().clockStr(), getName(), list.size());
             requestDatacentersToCreateWaitingCloudlets();
             if(!vmCreationRetrySent) {
-                lastSelectedDc = null;
+                lastSelectedDc = Datacenter.NULL;
                 requestDatacenterToCreateWaitingVms(false, false);
             }
         }
