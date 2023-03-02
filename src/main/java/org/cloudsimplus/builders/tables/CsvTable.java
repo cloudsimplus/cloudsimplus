@@ -40,7 +40,7 @@ public class CsvTable extends AbstractTable {
 
     public CsvTable(final String title) {
         super(title);
-        this.setColumnSeparator(";");
+        this.setColumnSeparator(",");
     }
 
     /**
