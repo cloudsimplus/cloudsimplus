@@ -72,7 +72,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
 
     private Datacenter lastSelectedDc;
 
-    private VmCreation vmCreation;
+    private final VmCreation vmCreation;
 
     /** @see #getVmFailedList() */
     private final List<Vm> vmFailedList;
