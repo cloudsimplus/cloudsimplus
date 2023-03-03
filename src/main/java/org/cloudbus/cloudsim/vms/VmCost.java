@@ -25,6 +25,8 @@ package org.cloudbus.cloudsim.vms;
 
 import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristics;
 
+import java.util.Objects;
+
 /**
  * Computes the monetary ($) cost to run a given VM,
  * including the {@link #getTotalCost() total cost}
@@ -42,8 +44,8 @@ public class VmCost {
      * Creates an instance to compute the monetary cost ($) to run a given VM.
      * @param vm the VM to compute its monetary cost
      */
-    public VmCost(Vm vm) {
-        this.vm = vm;
+    public VmCost(final Vm vm) {
+        this.vm = Objects.requireNonNull(vm);
     }
 
     /**
