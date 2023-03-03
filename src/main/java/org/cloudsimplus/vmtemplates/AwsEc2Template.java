@@ -57,8 +57,7 @@ public class AwsEc2Template implements Comparable<AwsEc2Template> {
     /**
      * Default constructor used to create an {@link AwsEc2Template} instance.
      * If you want to get a template from a JSON file,
-     * you shouldn't call the constructor directly.
-     * Instead, use some methods such as the {@link #getInstance(String)}.
+     * use some methods such as the {@link #getInstance(String)}.
      *
      * <p>This constructor is just provided to enable the {@link Gson} object
      * to use reflection to instantiate a AwsEc2Template.</p>
