@@ -701,7 +701,8 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
             this.vmCreationRetrySent = true;
             schedule(vmCreation.getRetryDelay(), CloudSimTag.VM_CREATE_RETRY);
             vmCreation.incCurrentRetries();
-        } else shutdown();
+        }
+        else shutdown();
     }
 
     /**
