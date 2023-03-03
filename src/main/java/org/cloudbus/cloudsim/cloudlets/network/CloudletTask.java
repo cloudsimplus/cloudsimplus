@@ -31,7 +31,7 @@ import org.cloudbus.cloudsim.core.Identifiable;
  * @since CloudSim Toolkit 1.0
  *
  * TODO Classes {@link CloudletTask}, {@link Cloudlet}
- * and {@link CloudletExecution} share a common set of attributes that would be defined by a common interface.
+ * and {@link CloudletExecution} share a common set of attributes that should be defined by a common interface.
  */
 public abstract class CloudletTask implements Identifiable {
     private boolean finished;
