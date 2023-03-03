@@ -95,12 +95,6 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
         this(vmSelectionPolicy, null);
     }
 
-    @Override
-    public void setDatacenter(final Datacenter datacenter) {
-        super.setDatacenter(datacenter);
-        this.targetMigrationDc = datacenter;
-    }
-
     /**
      * Creates a new VmAllocationPolicy, changing the {@link Function} to select a Host for a Vm.
      * It uses a {@link #DEF_UNDERLOAD_THRESHOLD default under utilization threshold}.
@@ -119,6 +113,12 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
         this.underUtilizationThreshold = DEF_UNDERLOAD_THRESHOLD;
         this.savedAllocation = new HashMap<>();
         setVmSelectionPolicy(vmSelectionPolicy);
+    }
+
+    @Override
+    public void setDatacenter(final Datacenter datacenter) {
+        super.setDatacenter(datacenter);
+        this.targetMigrationDc = datacenter;
     }
 
     @Override
