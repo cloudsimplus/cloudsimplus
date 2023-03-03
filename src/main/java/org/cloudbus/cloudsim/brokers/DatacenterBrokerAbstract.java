@@ -141,7 +141,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      */
     public DatacenterBrokerAbstract(final CloudSim simulation, final String name) {
         super(simulation);
-        if(!name.isEmpty()) {
+        if(name != null && !name.isEmpty()) {
             setName(name);
         }
 
