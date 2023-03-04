@@ -90,9 +90,8 @@ public abstract class CloudSimEntity implements SimEntity, Cloneable {
     /**
      * {@inheritDoc}.
      * It performs general initialization tasks that are common for every entity
-     * and executes the specific entity startup code by calling {@link #startInternal()}.
+     * and executes the specific entity startup code.
      *
-     * @see #startInternal()
      * @return {@inheritDoc}
      */
     @Override
@@ -177,7 +176,6 @@ public abstract class CloudSimEntity implements SimEntity, Cloneable {
             "{}: {}: Cannot send events before simulation starts or after it finishes. Trying to send message {} to {}",
             getSimulation().clockStr(), this, evt.getTag(), evt.getDestination());
         return false;
-
     }
 
     /**
@@ -257,11 +255,9 @@ public abstract class CloudSimEntity implements SimEntity, Cloneable {
             throw new IllegalArgumentException("Negative delay supplied.");
         }
 
-        if (!simulation.isRunning()) {
-            return;
+        if (simulation.isRunning()) {
+            simulation.pauseEntity(this, delay);
         }
-
-        simulation.pauseEntity(this, delay);
     }
 
     /**
@@ -273,11 +269,11 @@ public abstract class CloudSimEntity implements SimEntity, Cloneable {
      *         or {@link SimEvent#NULL} if not found or the simulation is not running
      */
     public SimEvent selectEvent(final Predicate<SimEvent> predicate) {
-        if (!simulation.isRunning()) {
-            return SimEvent.NULL;
+        if (simulation.isRunning()) {
+            return simulation.select(this, predicate);
         }
 
-        return simulation.select(this, predicate);
+        return SimEvent.NULL;
     }
 
     /**
@@ -300,11 +296,11 @@ public abstract class CloudSimEntity implements SimEntity, Cloneable {
      *         or {@link SimEvent#NULL} if not found or the simulation is not running
      */
     public SimEvent getNextEvent(final Predicate<SimEvent> predicate) {
-        if (!simulation.isRunning()) {
-            return SimEvent.NULL;
+        if (simulation.isRunning()) {
+            return selectEvent(predicate);
         }
 
-        return selectEvent(predicate);
+        return SimEvent.NULL;
     }
 
     /**
@@ -325,12 +321,10 @@ public abstract class CloudSimEntity implements SimEntity, Cloneable {
      * @param predicate the predicate to match
      */
     public void waitForEvent(final Predicate<SimEvent> predicate) {
-        if (!simulation.isRunning()) {
-            return;
+        if (simulation.isRunning()) {
+            simulation.wait(this, predicate);
+            state = State.WAITING;
         }
-
-        simulation.wait(this, predicate);
-        state = State.WAITING;
     }
 
     @Override
