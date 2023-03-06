@@ -30,5 +30,8 @@ package org.cloudbus.cloudsim.core;
  * @since CloudSim Plus 1.0
  */
 public interface Identifiable {
+    /**
+     * {@return the id number} assigned to this entity.
+     */
     long getId();
 }

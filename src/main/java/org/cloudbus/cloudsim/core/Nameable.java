@@ -31,5 +31,8 @@ package org.cloudbus.cloudsim.core;
  * @since CloudSim Plus 1.0
  */
 public interface Nameable extends Identifiable {
+    /**
+     * {@return the name} of this entity
+     */
     String getName();
 }
