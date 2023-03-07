@@ -50,8 +50,11 @@ public class DatacenterCharacteristicsSimple implements DatacenterCharacteristic
     /**
      * Creates a DatacenterCharacteristics with default values
      * for {@link #getArchitecture() architecture}, {@link #getOs() OS} and
-     * {@link #getVmm() VMM}. The costs for {@link #getCostPerBw() BW},
+     * {@link #getVmm() VMM}.
+     *
+     * <p>The costs for {@link #getCostPerBw() BW},
      * {@link #getCostPerMem()} () RAM} and {@link #getCostPerStorage()} () Storage} are set to zero.
+     * </p>
      */
     public DatacenterCharacteristicsSimple(final Datacenter datacenter){
         setArchitecture(DEFAULT_ARCH);
