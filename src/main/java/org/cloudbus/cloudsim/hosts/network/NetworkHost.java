@@ -74,7 +74,7 @@ public class NetworkHost extends HostSimple {
     private EdgeSwitch edgeSwitch;
 
     /**
-     * Creates and powers on a NetworkHost using a {@link VmSchedulerSpaceShared} as default.
+     * Creates and starts up a NetworkHost using a {@link VmSchedulerSpaceShared} as default.
      *
      * @param ram the RAM capacity in Megabytes
      * @param bw the Bandwidth (BW) capacity in Megabits/s
@@ -89,7 +89,7 @@ public class NetworkHost extends HostSimple {
     }
 
     /**
-     * Creates an empty host.
+     * Creates a host with no resources.
      */
     private NetworkHost() {
         this(0, 0, 0, List.of(Pe.NULL));
@@ -118,7 +118,6 @@ public class NetworkHost extends HostSimple {
 
     private void receivePacket(final VmPacket vmPacket) {
         final Vm destinationVm = receiveVmPacket(vmPacket);
-        //Checks if the destinationVm is inside this host
         if(getVmList().contains(destinationVm)){
             final CloudletTaskScheduler taskScheduler = getVmPacketScheduler(destinationVm);
             taskScheduler.addPacketToListOfPacketsSentFromVm(vmPacket);
