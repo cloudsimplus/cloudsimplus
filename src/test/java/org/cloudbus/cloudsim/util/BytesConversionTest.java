@@ -56,7 +56,7 @@ public class BytesConversionTest {
     @Test
     public void bitesToBytes(){
         final double expectedBytes = 128;
-        assertEquals(expectedBytes, BytesConversion.bitesToBytes(1024));
+        assertEquals(expectedBytes, BytesConversion.bitsToBytes(1024));
     }
 
     @Test
