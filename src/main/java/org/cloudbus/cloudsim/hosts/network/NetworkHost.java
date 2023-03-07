@@ -149,7 +149,7 @@ public class NetworkHost extends HostSimple {
      * It checks whether a packet belongs to a local VM or to a VM hosted on other machine.
      */
     private void sendAllPacketListsOfAllVms() {
-        getVmList().forEach(this::collectListOfPacketsToSendFromVm);
+        getVmList().forEach(this::collectAllPacketsToSendFromVm);
         sendPacketsToLocalVms();
         sendPacketsToExternalVms();
     }
@@ -223,7 +223,7 @@ public class NetworkHost extends HostSimple {
      *
      * @param sourceVm the VM from where the packets will be sent
      */
-    private void collectListOfPacketsToSendFromVm(final Vm sourceVm) {
+    private void collectAllPacketsToSendFromVm(final Vm sourceVm) {
         final CloudletTaskScheduler taskScheduler = getVmPacketScheduler(sourceVm);
         for (final VmPacket vmPkt : taskScheduler.getVmPacketsToSend()) {
             collectPacketToSendFromVm(vmPkt);
@@ -237,7 +237,7 @@ public class NetworkHost extends HostSimple {
      * in order to get it together with other packets to be sent.
      *
      * @param vmPkt a packet to be sent from a Vm to another one
-     * @see #collectListOfPacketsToSendFromVm(Vm)
+     * @see #collectAllPacketsToSendFromVm(Vm)
      */
     private void collectPacketToSendFromVm(final VmPacket vmPkt) {
         final var hostPkt = new HostPacket(this, vmPkt);
@@ -279,5 +279,4 @@ public class NetworkHost extends HostSimple {
     public void setEdgeSwitch(final EdgeSwitch edgeSwitch) {
         this.edgeSwitch = edgeSwitch;
     }
-
 }
