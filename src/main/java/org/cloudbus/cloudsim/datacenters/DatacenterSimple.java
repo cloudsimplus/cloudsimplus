@@ -253,7 +253,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
 
     /**
      * Process a Host addition request received during simulation runtime.
-     * @param evt
+     * @param evt the event to process
      */
     private void processHostAdditionRequest(final SimEvent evt) {
         getHostFromHostEvent(evt).ifPresent(host -> {
@@ -268,7 +268,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
 
     /**
      * Process a Host removal request received during simulation runtime.
-     * @param srcEvt the received event
+     * @param srcEvt the event to process
      */
     private void processHostRemovalRequest(final SimEvent srcEvt) {
         final long hostId = (long)srcEvt.getData();
@@ -386,7 +386,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      * Processes a Cloudlet based on the event type.
      * @param evt information about the event just happened
      * @param tag event tag
-     * @return
+     * @return true if the event was processed, false otherwise
      */
     protected boolean processCloudlet(final SimEvent evt, final CloudSimTag tag) {
         final Cloudlet cloudlet;
@@ -416,7 +416,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      * Processes the submission of a Cloudlet by a DatacenterBroker.
      * @param evt information about the event just happened
      * @param ack indicates if the event's sender expects to receive an acknowledgement
-     * @return
+     * @return true if the event was processed, false otherwise
      */
     protected boolean processCloudletSubmit(final SimEvent evt, final boolean ack) {
         final var cloudlet = (Cloudlet) evt.getData();
@@ -437,7 +437,6 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      * receives the cloudlet submission
      */
     private void submitCloudletToVm(final Cloudlet cloudlet, final boolean ack) {
-        // time to transfer cloudlet's files
         final double fileTransferTime = getDatacenterStorage().predictFileTransferTime(cloudlet.getRequiredFiles());
 
         final var scheduler = cloudlet.getVm().getCloudletScheduler();
@@ -457,7 +456,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     /**
      * Gets the time when the next update of cloudlets has to be performed.
      * This is the minimum value between the {@link #getSchedulingInterval()} and the given time
-     * (if the scheduling interval is enable, i.e. if it's greater than 0),
+     * (if the scheduling interval is enabled, i.e. if it's greater than 0),
      * which represents when the next update of Cloudlets processing
      * has to be performed.
      *
@@ -792,8 +791,6 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
             lastUnderOrOverloadedDetection = clock();
         }
     }
-
-
 
     /**
      * Indicates if it's time to check if suitable Hosts are available to migrate VMs
