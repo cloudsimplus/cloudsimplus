@@ -138,7 +138,7 @@ public final class BytesConversion {
      * @param bits the value in bites, Kb, Mb, Gb, etc
      * @return the value in bites, Kbytes, Mbytes, Gbytes and so on, according to the given value
      */
-    public static double bitesToBytes(final double bits){
+    public static double bitsToBytes(final double bits){
         return bits / 8.0;
     }
 
