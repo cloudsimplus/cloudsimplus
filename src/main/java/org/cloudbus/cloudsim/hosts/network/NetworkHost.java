@@ -98,11 +98,11 @@ public class NetworkHost extends HostSimple {
 
     @Override
     public double updateProcessing(final double currentTime) {
-        final double timeOfNextFinishingCloudlet = super.updateProcessing(currentTime);
+        final double nextFinishingCloudletTime = super.updateProcessing(currentTime);
         receivePackets();
         sendAllPacketListsOfAllVms();
 
-        return  timeOfNextFinishingCloudlet;
+        return  nextFinishingCloudletTime;
     }
 
     /**
