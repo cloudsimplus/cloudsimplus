@@ -61,12 +61,12 @@ public abstract class VmAllocationPolicyMigrationDynamicUpperThresholdFirstFit e
      * @return {@inheritDoc}
      */
     @Override
-    public boolean isHostOverloaded(final Host host) {
+    public boolean isOverloaded(final Host host) {
         if(getOverUtilizationThreshold(host) == Double.MAX_VALUE) {
-            return getFallbackVmAllocationPolicy().isHostOverloaded(host);
+            return getFallbackVmAllocationPolicy().isOverloaded(host);
         }
 
-        return super.isHostOverloaded(host);
+        return super.isOverloaded(host);
     }
 
     /**

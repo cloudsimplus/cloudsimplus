@@ -27,13 +27,25 @@ public interface VmAllocationPolicyMigration extends VmAllocationPolicy {
     VmAllocationPolicyMigration NULL = new VmAllocationPolicyMigrationNull();
 
     /**
+     * Checks if there is any underloaded Host.
+     * @return
+     */
+    boolean isUnderloaded();
+
+    /**
+     * Checks if there is any overloaded Host.
+     * @return
+     */
+    boolean isOverloaded();
+
+    /**
      * Checks if host is currently under utilized, according the
      * conditions defined by the Allocation Policy.
      *
      * @param host the host
      * @return true, if the host is under utilized; false otherwise
      */
-    boolean isHostUnderloaded(Host host);
+    boolean isUnderloaded(Host host);
 
     /**
      * Checks if host is currently over utilized, according the
@@ -42,7 +54,7 @@ public interface VmAllocationPolicyMigration extends VmAllocationPolicy {
      * @param host the host to check
      * @return true, if the host is over utilized; false otherwise
      */
-    boolean isHostOverloaded(Host host);
+    boolean isOverloaded(Host host);
 
     /**
      * Gets the host CPU utilization threshold to detect over utilization.
@@ -85,22 +97,10 @@ public interface VmAllocationPolicyMigration extends VmAllocationPolicy {
     void setUnderUtilizationThreshold(double underUtilizationThreshold);
 
     /**
-     * Checks if there are some Hosts underloaded.
+     * Checks if there is any under or overloaded Host.
      * @return
      */
-    boolean areHostsUnderloaded();
-
-    /**
-     * Checks if there are some Hosts overloaded.
-     * @return
-     */
-    boolean areHostsOverloaded();
-
-    /**
-     * Checks if there are some Hosts either under or overloaded.
-     * @return
-     */
-    default boolean areHostsUnderOrOverloaded() {
-        return areHostsUnderloaded() || areHostsOverloaded();
+    default boolean isUnderOrOverloaded() {
+        return isUnderloaded() || isOverloaded();
     }
 }
