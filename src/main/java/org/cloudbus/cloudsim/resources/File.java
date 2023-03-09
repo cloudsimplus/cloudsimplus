@@ -39,7 +39,10 @@ public class File {
     private String name;
 
     /**
-     * @see #getDatacenter()
+     * The Datacenter that will store the file.
+     * When the file is added to a {@link FileStorage}
+     * and such a storage is attached to a Datacenter,
+     * the Datacenter sets itself for all files of that storage.
      */
     private Datacenter datacenter;
 
@@ -49,14 +52,14 @@ public class File {
     private FileAttribute attribute;
 
     /**
-     * A transaction time for adding, deleting or getting the file.
-     *
-     * @see #setTransactionTime(double)
+     * The last time (in second) operations were performed over this file.
+     * This transaction time can be
+     * related to the operation of adding, deleting, renaming or getting the file on a Datacenter's storage.
      */
     private double transactionTime;
 
     /**
-     * @see #isDeleted()
+     * Indicates if the file was deleted or not.
      */
     private boolean deleted;
 
