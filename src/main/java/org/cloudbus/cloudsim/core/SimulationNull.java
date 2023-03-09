@@ -36,7 +36,7 @@ final class SimulationNull implements Simulation {
     @Override public Calendar getCalendar() {
         return Calendar.getInstance();
     }
-    @Override public CloudInformationService getCloudInfoService() {
+    @Override public CloudInformationService getCis() {
         return null;
     }
     @Override public List<SimEntity> getEntityList() { return Collections.emptyList(); }

@@ -1069,7 +1069,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     @Override
     public void startInternal() {
         LOGGER.info("{} is starting...", getName());
-        schedule(getSimulation().getCloudInfoService(), 0, CloudSimTag.DC_LIST_REQUEST);
+        schedule(getSimulation().getCis(), 0, CloudSimTag.DC_LIST_REQUEST);
     }
 
     @Override

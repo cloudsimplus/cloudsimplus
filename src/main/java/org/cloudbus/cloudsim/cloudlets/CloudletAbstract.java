@@ -357,7 +357,7 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
     private void returnToBrokerIfFinished() {
         if(isFinished() && !isReturnedToBroker()){
             returnedToBroker = true;
-            final var targetEntity = getSimulation().getCloudInfoService();
+            final var targetEntity = getSimulation().getCis();
             getSimulation().sendNow(targetEntity, getBroker(), CloudSimTag.CLOUDLET_RETURN, this);
             vm.getCloudletScheduler().addCloudletToReturnedList(this);
         }

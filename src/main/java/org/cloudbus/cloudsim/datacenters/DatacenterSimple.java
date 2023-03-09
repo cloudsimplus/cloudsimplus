@@ -293,7 +293,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         /*If the Host was found in this Datacenter, cancel the message sent to others
         * Datacenters to try to find the Host for removal.*/
         getSimulation().cancelAll(
-            getSimulation().getCloudInfoService(),
+            getSimulation().getCis(),
             evt -> MathUtil.same(evt.getTime(), srcEvt.getTime()) &&
                    evt.getTag() == CloudSimTag.HOST_REMOVE &&
                    (long)evt.getData() == host.getId());
