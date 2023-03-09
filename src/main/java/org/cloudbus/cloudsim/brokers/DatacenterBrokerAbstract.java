@@ -589,9 +589,9 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      * @param evt a CloudSimEvent object
      */
     private void processDatacenterListRequest(final SimEvent evt) {
-        if(evt.getData() instanceof List datacenterSet) {
-            setDatacenterList(datacenterSet);
-            LOGGER.info("{}: {}: List of {} datacenters(s) received.", getSimulation().clockStr(), getName(), datacenterList.size());
+        if(evt.getData() instanceof List dcList) {
+            setDatacenterList(dcList);
+            LOGGER.info("{}: {}: List of {} datacenters(s) received.", getSimulation().clockStr(), getName(), this.datacenterList.size());
             requestDatacenterToCreateWaitingVms(false, false);
             return;
         }
