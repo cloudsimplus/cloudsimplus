@@ -72,6 +72,7 @@ public class PowerModelHostSimple extends PowerModelHost {
      */
     @Override
     public double getPower(final double utilizationFraction) throws IllegalArgumentException {
+        MathUtil.percentage(utilizationFraction, "utilizationFraction");
         return staticPower + dynamicPower(utilizationFraction);
     }
 
@@ -81,7 +82,7 @@ public class PowerModelHostSimple extends PowerModelHost {
      * @return the dynamic power supply in Watts (W)
      */
     private double dynamicPower(final double utilizationFraction) {
-        return (maxPower - staticPower) * MathUtil.percentage(utilizationFraction, "utilizationFraction");
+        return (maxPower - staticPower) * utilizationFraction;
     }
 
     /**
