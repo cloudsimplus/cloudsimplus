@@ -54,9 +54,7 @@ import org.cloudbus.cloudsim.vms.Vm;
 public interface EventInfo {
 
     /**
-     * Gets the time the event happened.
-     *
-     * @return
+     * Gets the simulation time this event was scheduled to (at which it should occur).
      */
     double getTime();
 
