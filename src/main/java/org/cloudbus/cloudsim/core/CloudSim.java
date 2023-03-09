@@ -78,8 +78,7 @@ public class CloudSim implements Simulation {
     /** @see #getMinTimeBetweenEvents() */
     private final double minTimeBetweenEvents;
 
-    /** @see #getEntityList() */
-    private final List<CloudSimEntity> entities;
+    private final List<CloudSimEntity> entityList;
 
     /**
      * The queue of events that will be sent in a future simulation time.
@@ -155,7 +154,7 @@ public class CloudSim implements Simulation {
      * @see CloudInformationService
      */
     public CloudSim(final double minTimeBetweenEvents) {
-        this.entities = new ArrayList<>();
+        this.entityList = new ArrayList<>();
         this.future = new FutureQueue();
         this.deferred = new DeferredQueue();
         this.waitPredicates = new HashMap<>();
@@ -198,8 +197,8 @@ public class CloudSim implements Simulation {
         // Allow all entities to exit their body method
         if (!abortRequested) {
             //Uses indexed loop to avoid ConcurrentModificationException
-            for (int i = 0; i < entities.size(); i++) {
-                entities.get(i).run();
+            for (int i = 0; i < entityList.size(); i++) {
+                entityList.get(i).run();
             }
         }
 
@@ -215,8 +214,8 @@ public class CloudSim implements Simulation {
     @SuppressWarnings("ForLoopReplaceableByForEach")
     private void shutdownEntities() {
         //Uses indexed loop to avoid ConcurrentModificationException
-        for (int i = 0; i < entities.size(); i++) {
-            entities.get(i).shutdown();
+        for (int i = 0; i < entityList.size(); i++) {
+            entityList.get(i).shutdown();
         }
     }
 
@@ -331,9 +330,9 @@ public class CloudSim implements Simulation {
      * Then, waits such events to be received and processed.
      */
     private void notifyEndOfSimulationToEntities() {
-        entities.stream()
-            .filter(CloudSimEntity::isAlive)
-            .forEach(e -> sendNow(e, CloudSimTag.SIMULATION_END));
+        entityList.stream()
+                  .filter(CloudSimEntity::isAlive)
+                  .forEach(e -> sendNow(e, CloudSimTag.SIMULATION_END));
         LOGGER.info("{}: Processing last events before simulation shutdown.", clockStr());
 
         while (true) {
@@ -445,12 +444,12 @@ public class CloudSim implements Simulation {
 
     @Override
     public int getNumEntities() {
-        return entities.size();
+        return entityList.size();
     }
 
     @Override
     public List<SimEntity> getEntityList() {
-        return Collections.unmodifiableList(entities);
+        return Collections.unmodifiableList(entityList);
     }
 
     @Override
@@ -462,8 +461,8 @@ public class CloudSim implements Simulation {
         }
 
         if (entity.getId() == -1) { // Only add once!
-            entity.setId(entities.size());
-            entities.add(entity);
+            entity.setId(entityList.size());
+            entityList.add(entity);
         }
     }
 
@@ -473,7 +472,7 @@ public class CloudSim implements Simulation {
             throw new IllegalStateException(msg.formatted(entity));
         }
 
-        entities.remove(entity);
+        entityList.remove(entity);
     }
 
     /**
@@ -558,8 +557,8 @@ public class CloudSim implements Simulation {
     private void executeRunnableEntities(final double until) {
         /* Uses an indexed loop instead of anything else to avoid
         ConcurrencyModificationException when a HostFaultInjection is created inside a DC. */
-        for (int i = 0; i < entities.size(); i++) {
-            final CloudSimEntity ent = entities.get(i);
+        for (int i = 0; i < entityList.size(); i++) {
+            final CloudSimEntity ent = entityList.get(i);
             if (ent.getState() == SimEntity.State.RUNNABLE) {
                 ent.run(until);
             }
@@ -770,7 +769,7 @@ public class CloudSim implements Simulation {
         }
 
         running = true;
-        entities.forEach(SimEntity::start);
+        entityList.forEach(SimEntity::start);
         LOGGER.info("Entities started.");
     }
 
