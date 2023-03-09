@@ -9,6 +9,7 @@
 package org.cloudbus.cloudsim.resources;
 
 import org.cloudbus.cloudsim.datacenters.Datacenter;
+import org.cloudbus.cloudsim.util.MathUtil;
 
 import static java.util.Objects.requireNonNull;
 
@@ -31,7 +32,7 @@ public class File {
     public static final int TYPE_UNKNOWN = 0;
 
     /**
-     * Logical file name.
+     * The file name.
      */
     private String name;
 
@@ -41,7 +42,7 @@ public class File {
     private Datacenter datacenter;
 
     /**
-     * A file attribute.
+     * The file attributes.
      */
     private FileAttribute attribute;
 
@@ -70,13 +71,9 @@ public class File {
      *                                  </ul>
      */
     public File(final String fileName, final int fileSize) {
-    	if (fileSize <= 0) {
-            throw new IllegalArgumentException("File(): Error - size <= 0.");
-        }
-
         datacenter = Datacenter.NULL;
         setName(fileName);
-        transactionTime = 0;
+        setTransactionTime(0);
         createAttribute(fileSize);
     }
 
@@ -88,7 +85,7 @@ public class File {
      * @throws IllegalArgumentException when the source file is null
      */
     public File(final File file) throws IllegalArgumentException {
-        this(requireNonNull(file), false);
+        this(file, false);
     }
 
     /**
@@ -117,8 +114,7 @@ public class File {
      * @throws IllegalArgumentException if the name of the file is blank or null
      */
     public static void validate(final File file) {
-        requireNonNull(file, "Given file cannot be null.");
-        validateFileName(file.getName());
+        validate(file.getName());
     }
 
     /**
@@ -129,7 +125,7 @@ public class File {
      * @throws NullPointerException if the file name is null
      * @throws IllegalArgumentException if the file name is blank
      */
-    public static String validateFileName(final String fileName) {
+    public static String validate(final String fileName) {
         requireNonNull(fileName, "File name cannot be null.");
         if(fileName.isBlank()) {
             throw new IllegalArgumentException("File name cannot be blank");
@@ -218,7 +214,7 @@ public class File {
      * @param name the file name
      */
     public final void setName(final String name) {
-        this.name = validateFileName(name);
+        this.name = validate(name);
     }
 
     /**
@@ -262,10 +258,9 @@ public class File {
      * Sets the file size (in MBytes).
      *
      * @param fileSize the file size (in MBytes)
-     * @return true if successful, false otherwise
      */
-    public boolean setSize(final int fileSize) {
-        return attribute.setFileSize(fileSize);
+    public void setSize(final int fileSize) {
+        attribute.setFileSize(fileSize);
     }
 
     /**
@@ -422,19 +417,14 @@ public class File {
     }
 
     /**
-     * Sets the current transaction time (in second) of this file. This transaction time can be
-     * related to the operation of adding, deleting or getting the file on a Datacenter's storage.
+     * Sets the last time (in second) operations were performed over this file.
+     * This transaction time can be
+     * related to the operation of adding, deleting, renaming or getting the file on a Datacenter's storage.
      *
      * @param time the transaction time (in second)
-     * @return true if successful, false otherwise
      */
-    public boolean setTransactionTime(final double time) {
-        if (time < 0) {
-            return false;
-        }
-
-        transactionTime = time;
-        return true;
+    public final void setTransactionTime(final double time) {
+        this.transactionTime = MathUtil.nonNegative(time, "transactionTime");
     }
 
     /**
@@ -448,7 +438,7 @@ public class File {
 
     @Override
     public String toString() {
-        return getName();
+        return name;
     }
 
     /**

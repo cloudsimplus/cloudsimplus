@@ -10,6 +10,7 @@ package org.cloudbus.cloudsim.resources;
 import org.apache.commons.lang3.StringUtils;
 import org.cloudbus.cloudsim.util.Conversion;
 import org.cloudbus.cloudsim.util.DataCloudTags;
+import org.cloudbus.cloudsim.util.MathUtil;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -194,15 +195,9 @@ public class FileAttribute {
      * Sets the file size (in MBytes).
      *
      * @param fileSize the file size (in MBytes)
-     * @return true if successful, false otherwise
      */
-    public final boolean setFileSize(final int fileSize) {
-        if (fileSize < 0) {
-            return false;
-        }
-
-        this.fileSize = fileSize;
-        return true;
+    public final void setFileSize(final int fileSize) {
+        this.fileSize = MathUtil.nonNegative(fileSize, "fileSize");
     }
 
     /**

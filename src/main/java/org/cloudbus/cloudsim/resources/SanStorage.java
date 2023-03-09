@@ -278,7 +278,7 @@ public class SanStorage extends HarddriveStorage {
      * @return an {@link Optional} containing the file if it was found; an empty Optional otherwise
      */
     public Optional<File> getFile(final String fileName) {
-        File.validateFileName(fileName);
+        File.validate(fileName);
 
         int size = 0;
 
@@ -375,7 +375,7 @@ public class SanStorage extends HarddriveStorage {
      * @return an {@link Optional} containing the deleted file if it is found; an empty Optional otherwise.
      */
     public Optional<File> deleteFile(final String fileName) {
-        File.validateFileName(fileName);
+        File.validate(fileName);
 
         final int index = fileNameList.indexOf(fileName);
         if (index != -1) {
