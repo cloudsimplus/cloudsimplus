@@ -106,9 +106,6 @@ public class PowerMeasurement {
      * @return the new instance with the multiplied values
      */
     public PowerMeasurement multiply(final double factor) {
-        return new PowerMeasurement(
-            staticPower * factor,
-            dynamicPower * factor
-        );
+        return new PowerMeasurement(staticPower * factor, dynamicPower * factor);
     }
 }
