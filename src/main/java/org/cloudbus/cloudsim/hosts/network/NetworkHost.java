@@ -89,7 +89,7 @@ public class NetworkHost extends HostSimple {
     }
 
     /**
-     * Creates a host with no resources.
+     * Creates a NetworkHost with no resources.
      */
     private NetworkHost() {
         this(0, 0, 0, List.of(Pe.NULL));
