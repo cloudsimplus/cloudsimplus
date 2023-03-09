@@ -11,6 +11,9 @@ package org.cloudbus.cloudsim.resources;
 import org.apache.commons.lang3.StringUtils;
 import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
 import org.cloudbus.cloudsim.util.BytesConversion;
+import org.cloudbus.cloudsim.util.MathUtil;
+
+import static java.util.Objects.requireNonNullElse;
 
 /**
  * An implementation of a Hard Drive (HD) storage device with a specific capacity (in Megabytes).
@@ -18,6 +21,7 @@ import org.cloudbus.cloudsim.util.BytesConversion;
  * The default values for this storage are those of a
  * "<a href='https://www.seagate.com/files/staticfiles/maxtor/en_us/documentation/data_sheets/diamondmax_10_data_sheet.pdf'>Maxtor DiamondMax 10 ATA</a>"
  * hard disk with the following parameters:
+ *
  * <ul>
  *   <li>latency = 4.17 ms</li>
  *   <li>avg seek time = 9 m/s</li>
@@ -39,9 +43,9 @@ public class HarddriveStorage implements FileStorage {
     private final String name;
 
     /**
-     * A number generator required to randomize the seek time.
+     * An optional pseudo number generator to randomize the seek time.
      */
-    private ContinuousDistribution gen;
+    private ContinuousDistribution prng;
 
     /**
      * @see #getMaxTransferRate()
@@ -59,11 +63,12 @@ public class HarddriveStorage implements FileStorage {
     private double avgSeekTime;
 
     /**
-     * Creates a new hard drive storage with a given name and capacity.
+     * Creates a hard drive storage with a given name and capacity.
      *
      * @param name     the name of the new hard drive storage
      * @param capacity the capacity in MByte
      * @throws IllegalArgumentException when the name and the capacity are not valid
+     * @see #setPrng(ContinuousDistribution)
      */
     public HarddriveStorage(final String name, final long capacity) throws IllegalArgumentException {
         if (StringUtils.isBlank(name)) {
@@ -72,12 +77,13 @@ public class HarddriveStorage implements FileStorage {
 
         this.name = name;
         this.storage = new SimpleStorage(capacity);
+        this.prng = ContinuousDistribution.NULL;
 
         init();
     }
 
     /**
-     * Creates a new hard drive storage with a given capacity. In this case the name of the storage
+     * Creates a hard drive storage with a given capacity. In this case the name of the storage
      * is a default name.
      *
      * @param capacity the capacity in MByte
@@ -99,7 +105,7 @@ public class HarddriveStorage implements FileStorage {
     }
 
     /**
-     * @return the name of the storage device
+     * {@return the name} of the storage device
      */
     public String getName() {
         return name;
@@ -139,28 +145,20 @@ public class HarddriveStorage implements FileStorage {
      * Sets the average seek time of the storage in seconds.
      *
      * @param seekTime the average seek time in seconds
-     * @return
      */
-    public FileStorage setAvgSeekTime(final double seekTime) {
-        return setAvgSeekTime(seekTime, null);
+    public void setAvgSeekTime(final double seekTime) {
+        this.avgSeekTime = MathUtil.nonNegative(seekTime, "seekTime");
     }
 
     /**
-     * Sets the average seek time and a new generator of seek times in seconds. The generator
-     * determines a randomized seek time.
+     * Sets the Pseudo Random Generator (PRNG) following a {@link ContinuousDistribution}
+     * to generate random delays for file seek time.
+     * Pass {@link ContinuousDistribution#NULL} to stop random delays.
      *
-     * @param seekTime the average seek time in seconds
-     * @param gen      the ContinuousGenerator which generates seek times
-     * @return
+     * @param prng the ContinuousDistribution which generates seek times
      */
-    public FileStorage setAvgSeekTime(final double seekTime, final ContinuousDistribution gen) {
-        if (seekTime < 0) {
-            throw new IllegalArgumentException("Seek time cannot be negative.");
-        }
-
-        avgSeekTime = seekTime;
-        this.gen = gen;
-        return this;
+    public void setPrng(final ContinuousDistribution prng) {
+        this.prng = requireNonNullElse(prng, ContinuousDistribution.NULL);
     }
 
     /**
@@ -173,24 +171,20 @@ public class HarddriveStorage implements FileStorage {
     }
 
     /**
-     * Get the seek time for a file with the defined size. Given a file size in MByte, this method
-     * returns a seek time for the file in seconds.
+     * Get the seek time for a file with the defined size.
+     * Given a file size in MByte, this method returns a seek time for the file in seconds.
+     * If a {@link #setPrng(ContinuousDistribution) prng} is set,
+     * it generates random delays for file seek time.
      *
      * @param fileSize the size of a file in MByte
      * @return the seek time in seconds
      */
     public double getSeekTime(final int fileSize) {
-        double result = 0;
-
-        if (gen != null) {
-            result += gen.sample();
-        }
-
         if (fileSize > 0 && storage.getCapacity() != 0) {
-            result += fileSize / (double) storage.getCapacity();
+            return prng.sample() + (fileSize / (double) storage.getCapacity());
         }
 
-        return result;
+        return 0;
     }
 
     @Override
@@ -244,7 +238,7 @@ public class HarddriveStorage implements FileStorage {
     /**
      * The internal storage that just manages
      * the HD capacity and used space.
-     * The {@link HarddriveStorage} (HD) does not extends such class
+     * The {@link HarddriveStorage} (HD) does not extend such class
      * to avoid its capacity and available amount of space
      * to be changed indiscriminately.
      * The available space is update according to files added or removed
