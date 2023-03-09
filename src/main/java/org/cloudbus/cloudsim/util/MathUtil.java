@@ -275,6 +275,20 @@ public final class MathUtil {
     }
 
     /**
+     * Checks if the given number is a percentage between [0 and 1].
+     * @param value the value to check
+     * @param fieldName the name of the field to validate (used in a possible validation error message)
+     * @return the given value
+     * @throws IllegalArgumentException if the value is not between [0 and 1]
+     */
+    public static double percentage(final double value, final String fieldName) {
+        if(value < 0 || value > 1)
+            throw new IllegalArgumentException(fieldName + "  must be between [0 and 1].");
+
+        return value;
+    }
+
+    /**
      * Returns the first positive long value given.
      * @param first the first value to check
      * @param second the first value to check
