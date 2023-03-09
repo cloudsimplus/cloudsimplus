@@ -100,7 +100,15 @@ public abstract class PowerModelHost implements PowerModel {
      * @return the power supply in Watts (W)
      * @throws IllegalArgumentException if utilizationFraction is not between [0 and 1]
      */
-    public abstract double getPower(double utilizationFraction) throws IllegalArgumentException;
+    public final double getPower(final double utilizationFraction) {
+        MathUtil.percentage(utilizationFraction, "utilizationFraction");
+        return getPowerInternal(utilizationFraction);
+    }
+
+    /**
+     * @see #getPower(double)
+     */
+    protected abstract double getPowerInternal(double utilizationFraction);
 
     /**
      * Get the delay (in seconds) for starting up the {@link Host}.
