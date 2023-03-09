@@ -227,7 +227,7 @@ public final class GoogleMachineEventsTraceReader extends GoogleTraceReaderAbstr
      * Process addition and removal of Hosts occurring for a timestamp greater than zero.
      */
     private void sendLaterHostsAdditionAndRemovalRequests() {
-        final CloudInformationService cis = datacenterForLaterHosts.getSimulation().getCloudInfoService();
+        final CloudInformationService cis = datacenterForLaterHosts.getSimulation().getCis();
         laterAvailableHosts.forEach(host -> cis.schedule(datacenterForLaterHosts, host.getStartTime(), CloudSimTag.HOST_ADD, host));
 
         //Sends a request to every Datacenter to try remove the Hosts (since we don't have how to know which Datacenter each Host is)

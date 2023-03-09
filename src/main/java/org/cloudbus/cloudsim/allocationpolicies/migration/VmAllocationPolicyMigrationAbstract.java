@@ -139,7 +139,7 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
     }
 
     private void hostSearchRetry() {
-        final var dcList = getDatacenter().getSimulation().getCloudInfoService().getDatacenterList();
+        final var dcList = getDatacenter().getSimulation().getCis().getDatacenterList();
 
         final double hostSearchRetryDelay = getDatacenter().getHostSearchRetryDelay();
         final var msg = hostSearchRetryDelay > 0 ?

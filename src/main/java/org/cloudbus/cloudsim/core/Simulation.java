@@ -190,7 +190,7 @@ public interface Simulation {
      *
      * @return the Entity
      */
-    CloudInformationService getCloudInfoService();
+    CloudInformationService getCis();
 
     /**
      * Returns a <b>read-only</b> list of entities created for the simulation.
