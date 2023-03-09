@@ -91,6 +91,13 @@ public class TopologicalGraph {
         return Collections.unmodifiableList(linksList);
     }
 
+    /**
+     * Gets a <b>read-only</b> list of nodes of the network graph.
+     */
+    public List<TopologicalNode> getNodeList() {
+        return Collections.unmodifiableList(nodeList);
+    }
+
     @Override
     public String toString() {
         final var builder = new StringBuilder(61);
@@ -109,12 +116,5 @@ public class TopologicalGraph {
         }
 
         return builder.toString();
-    }
-
-    /**
-     * Gets a <b>read-only</b> list of nodes of the network graph.
-     */
-    public List<TopologicalNode> getNodeList() {
-        return Collections.unmodifiableList(nodeList);
     }
 }
