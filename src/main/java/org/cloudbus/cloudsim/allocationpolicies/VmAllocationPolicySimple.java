@@ -38,14 +38,14 @@ import static java.util.Comparator.comparing;
  */
 public class VmAllocationPolicySimple extends VmAllocationPolicyAbstract {
     /**
-     * Instantiates a VmAllocationPolicySimple.
+     * Creates a VmAllocationPolicySimple.
      */
     public VmAllocationPolicySimple() {
         super();
     }
 
     /**
-     * Instantiates a VmAllocationPolicySimple, changing the {@link Function} to select a Host for a Vm
+     * Creates a VmAllocationPolicySimple, changing the {@link Function} to select a Host for a Vm
      * in order to define a different policy.
      *
      * @param findHostForVmFunction a {@link Function} to select a Host for a given Vm.
@@ -66,5 +66,4 @@ public class VmAllocationPolicySimple extends VmAllocationPolicyAbstract {
         final var hostStream = isParallelHostSearchEnabled() ? getHostList().stream().parallel() : getHostList().stream();
         return hostStream.filter(host -> host.isSuitableForVm(vm)).max(comparator);
     }
-
 }
