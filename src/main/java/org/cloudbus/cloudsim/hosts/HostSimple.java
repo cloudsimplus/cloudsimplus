@@ -503,6 +503,7 @@ public class HostSimple implements Host {
      * @param showFailureLog indicates if a error log must be shown when the Host is not suitable
      * @return a {@link HostSuitability} object that indicate for which resources the Host
      *         is suitable or not for the given VM
+     * @see #isLazySuitabilityEvaluation()
      */
     private HostSuitability isSuitableForVm(final Vm vm, final boolean inMigration, final boolean showFailureLog) {
         final var suitability = new HostSuitability();
@@ -667,7 +668,7 @@ public class HostSimple implements Host {
     /**
      * Deallocate all resources that a VM was using.
      *
-     * @param vm the VM
+     * @param vm the VM to deallocate resources from
      */
     protected void deallocateResourcesOfVm(final Vm vm) {
         vm.setCreated(false);
