@@ -17,6 +17,7 @@ package org.cloudbus.cloudsim.network;
 
 import org.cloudbus.cloudsim.core.CloudSimTag;
 import org.cloudbus.cloudsim.core.SimEntity;
+import org.cloudbus.cloudsim.util.MathUtil;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -213,13 +214,8 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
      * @param size the size to set (in bytes)
      * @return true if a positive value was given, false otherwise
      */
-    public boolean setSize(final long size) {
-        if (size < 0) {
-            return false;
-        }
-
-        this.size = size;
-        return true;
+    public void setSize(final long size) {
+        this.size = MathUtil.nonNegative(size, "size");
     }
 
     @Override
