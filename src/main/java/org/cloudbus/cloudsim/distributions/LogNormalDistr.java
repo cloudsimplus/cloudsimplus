@@ -9,6 +9,7 @@ package org.cloudbus.cloudsim.distributions;
 
 import org.apache.commons.math3.distribution.LogNormalDistribution;
 import org.apache.commons.math3.random.RandomGenerator;
+import org.cloudbus.cloudsim.util.MathUtil;
 
 import java.io.Serial;
 
@@ -57,10 +58,7 @@ public class LogNormalDistr extends LogNormalDistribution implements ContinuousD
      */
     public LogNormalDistr(final double shape, final double scale, final long seed, final RandomGenerator rng) {
         super(rng, scale, shape);
-        if(seed < 0){
-            throw new IllegalArgumentException("Seed cannot be negative");
-        }
-        this.seed = seed;
+        this.seed = MathUtil.nonNegative(seed, "Seed");
     }
 
     @Override

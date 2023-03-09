@@ -1,6 +1,7 @@
 package org.cloudbus.cloudsim.power.models;
 
 import org.cloudbus.cloudsim.hosts.Host;
+import org.cloudbus.cloudsim.util.MathUtil;
 
 import java.util.Objects;
 
@@ -62,7 +63,7 @@ public abstract class PowerModelHost implements PowerModel {
      * @throws IllegalArgumentException when the value is smaller than 1
      */
     protected static double validatePower(final double power, final String fieldName) {
-        positive(power, fieldName);
+        MathUtil.nonNegative(power, fieldName);
 
         if(power < 1){
             throw new IllegalArgumentException(
@@ -71,13 +72,6 @@ public abstract class PowerModelHost implements PowerModel {
         }
 
         return power;
-    }
-
-    protected static double positive(final double value, final String fieldName) {
-        if (value < 0)
-            throw new IllegalArgumentException(fieldName + " cannot be negative.");
-
-        return value;
     }
 
     /**
@@ -120,7 +114,7 @@ public abstract class PowerModelHost implements PowerModel {
      * Set the delay (in seconds) for starting up the {@link Host}.
      */
     public PowerModelHost setStartupDelay(final double delay) {
-        this.startupDelay = positive(delay, "Delay");
+        this.startupDelay = MathUtil.nonNegative(delay, "Delay");
         return this;
     }
 
@@ -135,7 +129,7 @@ public abstract class PowerModelHost implements PowerModel {
      * Set the delay (in seconds) for shutting down the {@link Host}.
      */
     public PowerModelHost setShutDownDelay(final double delay) {
-        this.shutDownDelay = positive(delay, "Delay");
+        this.shutDownDelay = MathUtil.nonNegative(delay, "Delay");
         return this;
     }
 

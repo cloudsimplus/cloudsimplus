@@ -8,6 +8,7 @@
 package org.cloudbus.cloudsim.distributions;
 
 import org.apache.commons.math3.random.RandomGenerator;
+import org.cloudbus.cloudsim.util.MathUtil;
 
 /**
  * A Pseudo-Random Number Generator following the
@@ -70,13 +71,9 @@ public class ZipfDistr implements DiscreteDistribution {
             throw new IllegalArgumentException("Mean must be greater than 0.0 and population greater than 0");
         }
 
-        if(seed < 0){
-            throw new IllegalArgumentException("Seed cannot be negative");
-        }
-
+        this.seed = MathUtil.nonNegative(seed, "Seed");
         this.rng = rng;
         this.shape = shape;
-        this.seed = seed;
         computeDen(shape, population);
     }
 

@@ -11,6 +11,7 @@ import org.apache.commons.lang3.Range;
 import org.apache.commons.math3.distribution.UniformRealDistribution;
 import org.apache.commons.math3.random.JDKRandomGenerator;
 import org.apache.commons.math3.random.RandomGenerator;
+import org.cloudbus.cloudsim.util.MathUtil;
 
 import java.io.Serial;
 
@@ -165,11 +166,7 @@ public class UniformDistr extends UniformRealDistribution implements ContinuousD
      */
     public UniformDistr(final double minInclusive, final double maxExclusive, final long seed, final RandomGenerator rng) {
         super(rng, minInclusive, maxExclusive);
-        if(seed < 0){
-            throw new IllegalArgumentException("Seed cannot be negative");
-        }
-
-        this.seed = seed;
+        this.seed = MathUtil.nonNegative(seed, "Seed");
         applyAntitheticVariates = false;
     }
 

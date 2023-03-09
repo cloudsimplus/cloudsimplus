@@ -8,6 +8,7 @@
 package org.cloudbus.cloudsim.distributions;
 
 import org.apache.commons.math3.random.RandomGenerator;
+import org.cloudbus.cloudsim.util.MathUtil;
 
 import java.io.Serial;
 
@@ -73,12 +74,9 @@ public class LomaxDistr extends ParetoDistr implements ContinuousDistribution {
         if (shift > location) {
             throw new IllegalArgumentException("Shift must be smaller or equal than location");
         }
-        if(seed < 0){
-            throw new IllegalArgumentException("Seed cannot be negative");
-        }
 
+        this.seed = MathUtil.nonNegative(seed, "Seed");
         this.shift = shift;
-        this.seed = seed;
     }
 
     @Override

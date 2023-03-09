@@ -9,6 +9,7 @@ package org.cloudbus.cloudsim.distributions;
 
 import org.apache.commons.math3.distribution.ExponentialDistribution;
 import org.apache.commons.math3.random.RandomGenerator;
+import org.cloudbus.cloudsim.util.MathUtil;
 
 import java.io.Serial;
 
@@ -60,10 +61,7 @@ public class ExponentialDistr extends ExponentialDistribution implements Continu
      */
     public ExponentialDistr(final double mean, final long seed, final RandomGenerator rng) {
         super(rng, mean);
-        if(seed < 0){
-            throw new IllegalArgumentException("Seed cannot be negative");
-        }
-        this.seed = seed;
+        this.seed = MathUtil.nonNegative(seed, "Seed");
     }
 
     @Override
