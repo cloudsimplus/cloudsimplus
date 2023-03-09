@@ -46,7 +46,7 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
      */
     private static final int UNSET_BAUD_RATE = -1;
 
-    /* @see #getTag() */
+    /** @see #getTag() */
     private CloudSimTag tag;
 
     /**
@@ -449,12 +449,11 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
     public void setTag(final CloudSimTag tag) {
         if (tag.between(CloudSimTag.ICMP_PKT_SUBMIT, CloudSimTag.ICMP_PKT_RETURN)) {
             this.tag = tag;
+            return;
         }
-        else {
-            final var fmt = "Tag must be between %s and %s";
-            final var msg = fmt.formatted(CloudSimTag.ICMP_PKT_SUBMIT, CloudSimTag.ICMP_PKT_RETURN);
-            throw new IllegalArgumentException(msg);
-        }
-    }
 
+        final var fmt = "Tag must be between %s and %s";
+        final var msg = fmt.formatted(CloudSimTag.ICMP_PKT_SUBMIT, CloudSimTag.ICMP_PKT_RETURN);
+        throw new IllegalArgumentException(msg);
+    }
 }
