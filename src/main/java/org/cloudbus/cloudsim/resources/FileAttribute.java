@@ -18,7 +18,7 @@ import java.util.Objects;
 
 
 /**
- * Stores related information regarding to a
+ * Stores related information related to a
  * {@link org.cloudbus.cloudsim.resources.File} entity.
  *
  * @author Uros Cibej
