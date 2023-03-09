@@ -25,7 +25,7 @@ package org.cloudbus.cloudsim.util;
 
 import org.apache.commons.lang3.StringUtils;
 
-import static org.cloudbus.cloudsim.util.MathUtil.percent;
+import static org.cloudbus.cloudsim.util.MathUtil.percentValue;
 
 /**
  * A class with general purpose utilities.
@@ -94,7 +94,7 @@ public final class Util {
 
         final String end = progressBarInNewLine ? "%n" : "\r";
         final String format = "%120s[%-"+total+"s] %3.0f%% (%d/%d)" + end;
-        System.out.printf(format, " ", progress, percent(current, total), current, total);
+        System.out.printf(format, " ", progress, percentValue(current, total), current, total);
     }
 
     /**
