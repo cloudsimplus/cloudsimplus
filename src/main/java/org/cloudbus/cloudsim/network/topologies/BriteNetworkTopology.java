@@ -37,6 +37,7 @@ import java.util.Map;
  *
  * @author Rodrigo N. Calheiros
  * @author Anton Beloglazov
+ * @author Manoel Campos da Silva Filho
  * @since CloudSim Toolkit 1.0
  * @see #getInstance(String)
  * @see <a href="http://www.cs.bu.edu/brite/">Brite Oficial Website (shut down)</a>
@@ -60,7 +61,7 @@ public final class BriteNetworkTopology implements NetworkTopology {
     /** @see #getBwMatrix() */
     private double[][] bwMatrix;
 
-    /** @see #getTopologicalGraph() */
+    /** @see #getGraph() */
     private TopologicalGraph graph;
 
     /**
@@ -257,7 +258,7 @@ public final class BriteNetworkTopology implements NetworkTopology {
      * Gets the Topological Graph of the network.
      * @return
      */
-    public TopologicalGraph getTopologicalGraph() {
+    public TopologicalGraph getGraph() {
         return graph;
     }
 
