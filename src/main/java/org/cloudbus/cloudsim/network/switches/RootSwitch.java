@@ -41,6 +41,7 @@ import java.util.Optional;
  * @since CloudSim Toolkit 3.0
  */
 public class RootSwitch extends AbstractSwitch {
+    private static final Logger LOGGER = LoggerFactory.getLogger(RootSwitch.class.getSimpleName());
 
     /**
      * The level (layer) of the switch in the network topology.
@@ -63,8 +64,6 @@ public class RootSwitch extends AbstractSwitch {
      * It also represents the uplink bandwidth of connected aggregation Datacenter.
      */
     public static final long DOWNLINK_BW = (long) BytesConversion.gigaToMega(40 * 8); // 40000 Megabits (40 Gigabits)
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(RootSwitch.class.getSimpleName());
 
     /**
      * Instantiates a Root Switch specifying what other Datacenter are connected
