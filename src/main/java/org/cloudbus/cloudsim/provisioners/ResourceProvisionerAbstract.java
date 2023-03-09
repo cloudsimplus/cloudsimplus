@@ -35,7 +35,7 @@ public abstract class ResourceProvisionerAbstract implements ResourceProvisioner
     private Function<Vm, ResourceManageable> vmResourceFunction;
 
     /**
-     * Creates a new ResourceManageable Provisioner for which the {@link #getPmResource() resource}
+     * Creates a ResourceManageable Provisioner for which the {@link #getPmResource() resource}
      * must be set further.
      * @see ResourceProvisioner#setResources(ResourceManageable, Function)
      */
@@ -44,7 +44,7 @@ public abstract class ResourceProvisionerAbstract implements ResourceProvisioner
     }
 
     /**
-     * Creates a new ResourceManageable Provisioner.
+     * Creates a ResourceManageable Provisioner.
      *
      * @param pmResource The physical resource to be managed by the provisioner
      * @param vmResourceFunction a {@link Function} that receives a {@link Vm} and returns
