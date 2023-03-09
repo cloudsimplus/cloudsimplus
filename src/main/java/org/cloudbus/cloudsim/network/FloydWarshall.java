@@ -24,7 +24,6 @@ import static java.util.stream.Collectors.toList;
  *
  * @author Rahul Simha
  * @author Weishuai Yang
- * @version 1.2, 6/20/2005
  * @since CloudSim Toolkit 1.0
  */
 public class FloydWarshall {
@@ -146,7 +145,6 @@ public class FloydWarshall {
         for(final int j: vertices) {
             pk[i][j] = -1;
             if (i != j) {
-                // D_k[i][j] = min ( D_k-1[i][j], D_k-1[i][k] + D_k-1[k][j].
                 if (dk_minus_one[i][j] <= dk_minus_one[i][k] + dk_minus_one[k][j]) {
                     dk[i][j] = dk_minus_one[i][j];
                     pk[i][j] = pk_minus_one[i][j];
