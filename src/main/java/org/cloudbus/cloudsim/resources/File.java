@@ -11,6 +11,8 @@ package org.cloudbus.cloudsim.resources;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.util.MathUtil;
 
+import java.time.LocalDateTime;
+
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -221,10 +223,9 @@ public class File {
      * Sets the owner name of this file.
      *
      * @param name the owner name
-     * @return true if successful, false otherwise
      */
-    public boolean setOwnerName(final String name) {
-        return attribute.setOwnerName(name);
+    public void setOwnerName(final String name) {
+        attribute.setOwnerName(name);
     }
 
     /**
@@ -272,7 +273,7 @@ public class File {
      * @return true if successful, false otherwise
      */
     public boolean setUpdateTime(final double time) {
-        return attribute.setUpdateTime(time);
+        return attribute.setLastUpdateTime(time);
     }
 
     /**
@@ -307,10 +308,9 @@ public class File {
      * Sets the file type (for instance, raw, tag, etc).
      *
      * @param type a file type
-     * @return true if successful, false otherwise
      */
-    public boolean setType(final int type) {
-        return attribute.setType(type);
+    public void setType(final int type) {
+        attribute.setType(type);
     }
 
     /**
@@ -326,10 +326,9 @@ public class File {
      * Sets the checksum of the file.
      *
      * @param checksum the checksum of this file
-     * @return true if successful, false otherwise
      */
-    public boolean setChecksum(final int checksum) {
-        return attribute.setChecksum(checksum);
+    public void setChecksum(final int checksum) {
+        attribute.setChecksum(checksum);
     }
 
     /**
@@ -345,10 +344,9 @@ public class File {
      * Sets the cost associated with the file.
      *
      * @param cost cost of this file
-     * @return true if successful, false otherwise
      */
-    public boolean setCost(final double cost) {
-        return attribute.setCost(cost);
+    public void setCost(final double cost) {
+        attribute.setCost(cost);
     }
 
     /**
@@ -361,11 +359,9 @@ public class File {
     }
 
     /**
-     * Gets the file creation time (in millisecond).
-     *
-     * @return the file creation time (in millisecond)
+     * {@return the real file creation time} according to the current computer time.
      */
-    public long getCreationTime() {
+    public LocalDateTime getCreationTime() {
         return attribute.getCreationTime();
     }
 

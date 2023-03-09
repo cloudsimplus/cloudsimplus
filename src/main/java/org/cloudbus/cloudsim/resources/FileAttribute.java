@@ -12,8 +12,7 @@ import org.cloudbus.cloudsim.util.Conversion;
 import org.cloudbus.cloudsim.util.DataCloudTags;
 import org.cloudbus.cloudsim.util.MathUtil;
 
-import java.util.Calendar;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 
@@ -58,9 +57,10 @@ public class FileAttribute {
     private double lastUpdateTime;
 
     /**
-     * Creation time (ms) - absolute/relative.
+     * Gets real the file creation time,
+     * according to the current computer time.
      */
-    private long creationTime;
+    private LocalDateTime creationTime;
 
     /**
      * Price of the file.
@@ -87,14 +87,7 @@ public class FileAttribute {
     public FileAttribute(final File file, final int fileSize) {
         this.file = file;
 
-        // set the file creation time. This is absolute time
-        final Calendar cal =
-            file.getDatacenter().getSimulation() == null ?
-                Calendar.getInstance() :
-                file.getDatacenter().getSimulation().getCalendar();
-
-        final Date date = cal.getTime();
-        creationTime = date.getTime();
+        creationTime = LocalDateTime.now();
 
         ownerName = "";
         id = File.NOT_REGISTERED;
@@ -116,61 +109,13 @@ public class FileAttribute {
         Objects.requireNonNull(destinationAttr);
         destinationAttr.setFileSize(fileSize);
         destinationAttr.setOwnerName(ownerName);
-        destinationAttr.setUpdateTime(lastUpdateTime);
+        destinationAttr.setLastUpdateTime(lastUpdateTime);
         destinationAttr.setRegistrationId(id);
         destinationAttr.setType(type);
         destinationAttr.setChecksum(checksum);
         destinationAttr.setCost(cost);
         destinationAttr.setMasterCopy(masterCopy);
         destinationAttr.setCreationTime(creationTime);
-    }
-
-    /**
-     * Sets the file creation time (in millisecond).
-     *
-     * @param creationTime the file creation time (in millisecond)
-     * @return true if successful, false otherwise
-     */
-    public boolean setCreationTime(final long creationTime) {
-        if (creationTime <= 0) {
-            return false;
-        }
-
-        this.creationTime = creationTime;
-        return true;
-    }
-
-    /**
-     * Gets the file creation time (in millisecond).
-     *
-     * @return the file creation time (in millisecond)
-     */
-    public long getCreationTime() {
-        return creationTime;
-    }
-
-    /**
-     * Sets the owner name of the file.
-     *
-     * @param name the owner name
-     * @return true if successful, false otherwise
-     */
-    public boolean setOwnerName(final String name) {
-        if (StringUtils.isBlank(name)) {
-            return false;
-        }
-
-        this.ownerName = name;
-        return true;
-    }
-
-    /**
-     * Gets the owner name of the file.
-     *
-     * @return the owner name or null if empty
-     */
-    public String getOwnerName() {
-        return ownerName;
     }
 
     /**
@@ -227,8 +172,9 @@ public class FileAttribute {
      * @param time the last update time (in seconds)
      * @return true if successful, false otherwise
      */
-    public boolean setUpdateTime(final double time) {
-        if (time <= 0 || time < lastUpdateTime) {
+    public boolean setLastUpdateTime(final double time) {
+        MathUtil.nonNegative(time, "lastUpdateTime");
+        if (time < lastUpdateTime) {
             return false;
         }
 
