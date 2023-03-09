@@ -452,7 +452,7 @@ public interface Host extends Machine, Comparable<Host>, PowerAware<PowerModelHo
     double getIdleShutdownDeadline();
 
     /**
-     * Sets the deadline to shutdown the Host when it becomes idle.
+     * Sets the deadline to shut down the Host when it becomes idle.
      * This is the time interval after the Host becoming idle that
      * it will be shutdown.
      *
@@ -496,6 +496,7 @@ public interface Host extends Machine, Comparable<Host>, PowerAware<PowerModelHo
      * @param vm Vm being started
      * @return a {@link HostSuitability} to indicate if the Vm was placed into the host or not
      * (if the Host doesn't have enough resources to allocate the Vm)
+     * @see #isLazySuitabilityEvaluation()
      */
     HostSuitability createVm(Vm vm);
 
