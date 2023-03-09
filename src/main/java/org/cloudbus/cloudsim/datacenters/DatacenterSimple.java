@@ -300,11 +300,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     }
 
     private Optional<Host> getHostFromHostEvent(final SimEvent evt) {
-        if(evt.getData() instanceof Host host){
-            return Optional.of(host);
-        }
-
-        return Optional.empty();
+        return evt.getData() instanceof Host h ? Optional.of(h) : Optional.empty();
     }
 
     private boolean processNetworkEvents(final SimEvent evt) {
@@ -374,12 +370,15 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      * @param evt information about the event just happened
      */
     protected void processPingRequest(final SimEvent evt) {
-        final IcmpPacket pkt = (IcmpPacket) evt.getData();
-        pkt.setTag(CloudSimTag.ICMP_PKT_RETURN);
-        pkt.setDestination(pkt.getSource());
+        if(evt.getData() instanceof IcmpPacket pkt){
+            pkt.setTag(CloudSimTag.ICMP_PKT_RETURN);
+            pkt.setDestination(pkt.getSource());
 
-        // returns the packet to the sender
-        sendNow(pkt.getSource(), CloudSimTag.ICMP_PKT_RETURN, pkt);
+            // returns the packet to the sender
+            sendNow(pkt.getSource(), CloudSimTag.ICMP_PKT_RETURN, pkt);
+        }
+
+        throw new InvalidEventDataTypeException(evt, "ICMP_PKT_SUBMIT", IcmpPacket.class.getName());
     }
 
     /**
@@ -389,27 +388,23 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      * @return true if the event was processed, false otherwise
      */
     protected boolean processCloudlet(final SimEvent evt, final CloudSimTag tag) {
-        final Cloudlet cloudlet;
-        try {
-            cloudlet = (Cloudlet) evt.getData();
-        } catch (ClassCastException e) {
-            LOGGER.error("{}: Error in processing Cloudlet: {}", super.getName(), e.getMessage());
-            return false;
+        if (evt.getData() instanceof Cloudlet cloudlet){
+            return switch (tag) {
+                case CLOUDLET_CANCEL -> processCloudletCancel(cloudlet);
+                case CLOUDLET_PAUSE -> processCloudletPause(cloudlet, false);
+                case CLOUDLET_PAUSE_ACK -> processCloudletPause(cloudlet, true);
+                case CLOUDLET_RESUME -> processCloudletResume(cloudlet, false);
+                case CLOUDLET_RESUME_ACK -> processCloudletResume(cloudlet, true);
+                default -> {
+                    LOGGER.trace(
+                        "{}: Unable to handle a request from {} with event tag = {}",
+                        this, evt.getSource().getName(), evt.getTag());
+                    yield false;
+                }
+            };
         }
 
-        return switch (tag) {
-            case CLOUDLET_CANCEL -> processCloudletCancel(cloudlet);
-            case CLOUDLET_PAUSE -> processCloudletPause(cloudlet, false);
-            case CLOUDLET_PAUSE_ACK -> processCloudletPause(cloudlet, true);
-            case CLOUDLET_RESUME -> processCloudletResume(cloudlet, false);
-            case CLOUDLET_RESUME_ACK -> processCloudletResume(cloudlet, true);
-            default -> {
-                LOGGER.trace(
-                    "{}: Unable to handle a request from {} with event tag = {}",
-                    this, evt.getSource().getName(), evt.getTag());
-                yield false;
-            }
-        };
+        throw new InvalidEventDataTypeException(evt, "CLOUDLET Tags", Cloudlet.class.getName());
     }
 
     /**
@@ -419,14 +414,17 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      * @return true if the event was processed, false otherwise
      */
     protected boolean processCloudletSubmit(final SimEvent evt, final boolean ack) {
-        final var cloudlet = (Cloudlet) evt.getData();
-        if (cloudlet.isFinished()) {
-            notifyBrokerAboutAlreadyFinishedCloudlet(cloudlet, ack);
-            return false;
+        if (evt.getData() instanceof Cloudlet cloudlet){
+            if (cloudlet.isFinished()) {
+                notifyBrokerAboutAlreadyFinishedCloudlet(cloudlet, ack);
+                return false;
+            }
+
+            submitCloudletToVm(cloudlet, ack);
+            return true;
         }
 
-        submitCloudletToVm(cloudlet, ack);
-        return true;
+        throw new InvalidEventDataTypeException(evt, "CLOUDLET_SUBMIT Tags", Cloudlet.class.getName());
     }
 
     /**
@@ -546,18 +544,20 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      * @return true if a host was allocated to the VM; false otherwise
      */
     private boolean processVmCreate(final SimEvent evt) {
-        final var vm = (Vm) evt.getData();
+        if(evt.getData() instanceof Vm vm){
+            final boolean hostAllocatedForVm = vmAllocationPolicy.allocateHostForVm(vm).fully();
+            if (hostAllocatedForVm) {
+                vm.updateProcessing(vm.getHost().getVmScheduler().getAllocatedMips(vm));
+            }
 
-        final boolean hostAllocatedForVm = vmAllocationPolicy.allocateHostForVm(vm).fully();
-        if (hostAllocatedForVm) {
-            vm.updateProcessing(vm.getHost().getVmScheduler().getAllocatedMips(vm));
+            /* Acknowledges that the request was received by the Datacenter,
+            (the broker is expecting that if the Vm was created or not). */
+            send(vm.getBroker(), getSimulation().getMinTimeBetweenEvents(), CloudSimTag.VM_CREATE_ACK, vm);
+
+            return hostAllocatedForVm;
         }
 
-        /* Acknowledges that the request was received by the Datacenter,
-          (the broker is expecting that if the Vm was created or not). */
-        send(vm.getBroker(), getSimulation().getMinTimeBetweenEvents(), CloudSimTag.VM_CREATE_ACK, vm);
-
-        return hostAllocatedForVm;
+        throw new InvalidEventDataTypeException(evt, "VM_CREATE Tags", Vm.class.getName());
     }
 
     /**
@@ -570,26 +570,29 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      * @return
      */
     protected boolean processVmDestroy(final SimEvent evt, final boolean ack) {
-        final var vm = (Vm) evt.getData();
-        vmAllocationPolicy.deallocateHostForVm(vm);
+        if(evt.getData() instanceof Vm vm){
+            vmAllocationPolicy.deallocateHostForVm(vm);
 
-        if (ack) {
-            sendNow(vm.getBroker(), CloudSimTag.VM_DESTROY_ACK, vm);
-        }
+            if (ack) {
+                sendNow(vm.getBroker(), CloudSimTag.VM_DESTROY_ACK, vm);
+            }
 
-        vm.getBroker().requestShutdownWhenIdle();
-        if(getSimulation().isAborted() || getSimulation().isAbortRequested()) {
+            vm.getBroker().requestShutdownWhenIdle();
+            if(getSimulation().isAborted() || getSimulation().isAbortRequested()) {
+                return true;
+            }
+
+            final String warningMsg = generateNotFinishedCloudletsWarning(vm);
+            final String msg =
+                "%s: %s: %s destroyed on %s. %s"
+                    .formatted(getSimulation().clockStr(), getClass().getSimpleName(), vm, vm.getHost(), warningMsg);
+            if(warningMsg.isEmpty() || getSimulation().isTerminationTimeSet())
+                LOGGER.info(msg);
+            else LOGGER.warn(msg);
             return true;
         }
 
-        final String warningMsg = generateNotFinishedCloudletsWarning(vm);
-        final String msg =
-                "%s: %s: %s destroyed on %s. %s"
-                .formatted(getSimulation().clockStr(), getClass().getSimpleName(), vm, vm.getHost(), warningMsg);
-        if(warningMsg.isEmpty() || getSimulation().isTerminationTimeSet())
-            LOGGER.info(msg);
-        else LOGGER.warn(msg);
-        return true;
+        throw new InvalidEventDataTypeException(evt, "VM_DESTROY Tags", Vm.class.getName());
     }
 
     private String generateNotFinishedCloudletsWarning(final Vm vm) {
@@ -648,7 +651,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
             }
         }
 
-        final SimEvent event = getSimulation().findFirstDeferred(this, new PredicateType(CloudSimTag.VM_MIGRATE));
+        final var event = getSimulation().findFirstDeferred(this, new PredicateType(CloudSimTag.VM_MIGRATE));
         if (event == null || event.getTime() > clock()) {
             //Updates processing of all Hosts again to get their latest state after the VMs migrations
             updateHostsProcessing();
@@ -703,11 +706,9 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      * receives the cloudlet submission
      */
     private void sendCloudletSubmitAckToBroker(final Cloudlet cloudlet, final boolean ack) {
-        if(!ack){
-            return;
+        if (ack) {
+            sendNow(cloudlet.getBroker(), CloudSimTag.CLOUDLET_SUBMIT_ACK, cloudlet);
         }
-
-        sendNow(cloudlet.getBroker(), CloudSimTag.CLOUDLET_SUBMIT_ACK, cloudlet);
     }
 
     /**
@@ -804,7 +805,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
 
     private boolean areThereUnderOrOverloadedHostsAndMigrationIsSupported(){
         if(vmAllocationPolicy instanceof VmAllocationPolicyMigration migrationPolicy){
-            return migrationPolicy.areHostsUnderOrOverloaded();
+            return migrationPolicy.isUnderOrOverloaded();
         }
 
         return false;
@@ -828,7 +829,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
             return;
         }
 
-        final Host sourceHost = sourceVm.getHost();
+        final var sourceHost = sourceVm.getHost();
         final double delay = timeToMigrateVm(sourceVm, targetHost);
         final String msg1 =
             Host.NULL.equals(sourceHost) ?
@@ -871,7 +872,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
                 .filter(not(Host::isActive))
                 .map(host -> (HostSimple)host)
                 .forEach(host -> host.setActive(host.isActivateOnDatacenterStartup()));
-        sendNow(getSimulation().getCloudInfoService(), CloudSimTag.DC_REGISTRATION_REQUEST, this);
+        sendNow(getSimulation().getCis(), CloudSimTag.DC_REGISTRATION_REQUEST, this);
     }
 
     @Override
