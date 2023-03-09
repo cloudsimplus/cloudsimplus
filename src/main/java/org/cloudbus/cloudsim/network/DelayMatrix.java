@@ -70,8 +70,8 @@ public class DelayMatrix {
 
 	/**
 	 * Creates all internal necessary network-distance structures from the given graph.
-         * For similarity, we assume all communication-distances are symmetrical,
-         * thus leading to an undirected network.
+     * For similarity, we assume all communication-distances are symmetrical,
+     * thus leading to an undirected network.
 	 *
 	 * @param graph the network topological graph
 	 * @param directed indicates if an directed matrix should be computed (true) or not (false)
