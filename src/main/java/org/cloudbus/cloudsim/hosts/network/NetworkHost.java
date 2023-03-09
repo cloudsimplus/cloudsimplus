@@ -126,8 +126,10 @@ public class NetworkHost extends HostSimple {
                 getSimulation().clockStr(), getClass().getSimpleName(), this,
                 vmPacket.getSize(), vmPacket.getSenderCloudlet(), vmPacket.getSource(),
                 vmPacket.getReceiverCloudlet(), vmPacket.getDestination());
+            return;
         }
-        else LOGGER.warn(
+
+        LOGGER.warn(
                 "{}: {}: Destination {} was not found inside {}",
                 getSimulation().clockStr(), getClass(), vmPacket.getDestination(), this);
     }
@@ -241,7 +243,7 @@ public class NetworkHost extends HostSimple {
      */
     private void collectPacketToSendFromVm(final VmPacket vmPkt) {
         final var hostPkt = new HostPacket(this, vmPkt);
-        final Vm receiverVm = vmPkt.getDestination();
+        final var receiverVm = vmPkt.getDestination();
 
         //If the VM is inside this Host, the packet doesn't travel through the network
         final var pktsToSendList = getVmList().contains(receiverVm) ? pktsToSendForLocalVms : pktsToSendForExternalVms;
