@@ -83,7 +83,7 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
     private double baudRate;
 
     /**
-     * The list with entities where the packet
+     * The list of entities where the packet
      * traverses, such as Routers or Datacenters.
      */
     private final List<SimEntity> entities;
@@ -130,11 +130,12 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
         this.entities = new ArrayList<>();
         this.entryTimes = new ArrayList<>();
         this.exitTimes = new ArrayList<>();
+
         this.baudRateList = new ArrayList<>();
+        this.baudRate = UNSET_BAUD_RATE;
 
         this.lastHop = this.source;
         this.tag = CloudSimTag.ICMP_PKT_SUBMIT;
-        this.baudRate = UNSET_BAUD_RATE;
         this.num = new DecimalFormat("#0.000#");
     }
 
