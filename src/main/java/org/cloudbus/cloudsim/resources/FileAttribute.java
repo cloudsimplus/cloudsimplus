@@ -42,17 +42,17 @@ public class FileAttribute {
     private int type;
 
     /**
-     * File size in byte.
+     * The file size (in MBytes).
      */
     private int fileSize;
 
     /**
-     * Check sum.
+     * The file checksum.
      */
     private int checksum;
 
     /**
-     * Last updated time (sec) - relative.
+     * The last time the file was updated (in seconds)
      */
     private double lastUpdateTime;
 
@@ -63,13 +63,12 @@ public class FileAttribute {
     private LocalDateTime creationTime;
 
     /**
-     * Price of the file.
+     * The cost ($) of this file.
      */
     private double cost;
 
     /**
-     * Indicates if the file is a master copy or not. If the attribute is false,
-     * it means the file is a replica.
+     * Checks whether the file is a master copy or replica.
      */
     private boolean masterCopy;
 
