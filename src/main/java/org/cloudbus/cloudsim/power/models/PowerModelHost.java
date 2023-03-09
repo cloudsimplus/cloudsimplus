@@ -65,10 +65,9 @@ public abstract class PowerModelHost implements PowerModel {
     protected static double validatePower(final double power, final String fieldName) {
         MathUtil.nonNegative(power, fieldName);
 
+        final var s = "%s must be in watts. A value smaller than 1 may indicate you're trying to give a percentage value instead.";
         if(power < 1){
-            throw new IllegalArgumentException(
-                fieldName +
-                    " must be in watts. A value smaller than 1 may indicate you're trying to give a percentage value instead.");
+            throw new IllegalArgumentException(s.formatted(fieldName));
         }
 
         return power;
