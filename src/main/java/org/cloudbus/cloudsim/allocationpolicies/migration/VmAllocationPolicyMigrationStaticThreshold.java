@@ -37,9 +37,7 @@ import java.util.function.Function;
 public class VmAllocationPolicyMigrationStaticThreshold extends VmAllocationPolicyMigrationAbstract {
     public static final double DEF_OVER_UTILIZATION_THRESHOLD = 0.9;
 
-    /**
-     * @see #getOverUtilizationThreshold(Host)
-     */
+    /** @see #getOverUtilizationThreshold(Host) */
     private double overUtilizationThreshold;
 
     /**
