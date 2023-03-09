@@ -24,6 +24,7 @@
 package org.cloudbus.cloudsim.resources;
 
 import org.apache.commons.lang3.StringUtils;
+import org.cloudbus.cloudsim.util.MathUtil;
 
 /**
  * An abstract implementation of a {@link Resource}.
@@ -38,21 +39,13 @@ public abstract class ResourceAbstract implements Resource {
     private final String unit;
 
     public ResourceAbstract(final long capacity, final String unit){
-        this.capacity = validateCapacity(capacity);
+        this.capacity = MathUtil.nonNegative(capacity, "Capacity");
 
         if(unit == null || StringUtils.isBlank(unit)) {
             throw new IllegalArgumentException("Resource measurement unit cannot be null or empty");
         }
 
         this.unit = unit;
-    }
-
-    private long validateCapacity(final long capacity) {
-        if(capacity < 0){
-            throw new IllegalArgumentException("Capacity cannot be negative");
-        }
-
-        return capacity;
     }
 
     @Override

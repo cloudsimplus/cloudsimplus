@@ -18,6 +18,7 @@ import org.cloudbus.cloudsim.schedulers.MipsShare;
 import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerSpaceShared;
 import org.cloudbus.cloudsim.util.BytesConversion;
+import org.cloudbus.cloudsim.util.MathUtil;
 import org.cloudbus.cloudsim.util.TimeUtil;
 import org.cloudbus.cloudsim.vms.*;
 import org.cloudsimplus.listeners.EventListener;
@@ -854,11 +855,7 @@ public class HostSimple implements Host {
 
     @Override
     public Host setStartTime(final double startTime) {
-        if(startTime < 0){
-            throw new IllegalArgumentException("Host start time cannot be negative");
-        }
-
-        this.startTime = Math.floor(startTime);
+        this.startTime = MathUtil.nonNegative(Math.floor(startTime), "startTime");
         if(firstStartTime == -1){
             firstStartTime = this.startTime;
         }
@@ -877,11 +874,7 @@ public class HostSimple implements Host {
 
     @Override
     public void setShutdownTime(final double shutdownTime) {
-        if(shutdownTime < 0){
-            throw new IllegalArgumentException("Host shutdown time cannot be negative");
-        }
-
-        this.shutdownTime = Math.floor(shutdownTime);
+        this.shutdownTime = MathUtil.nonNegative(Math.floor(shutdownTime), "shutdownTime");
         this.totalUpTime += getUpTime();
     }
 

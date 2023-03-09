@@ -10,6 +10,7 @@ package org.cloudbus.cloudsim.distributions;
 import org.apache.commons.math3.distribution.WeibullDistribution;
 import org.apache.commons.math3.random.JDKRandomGenerator;
 import org.apache.commons.math3.random.RandomGenerator;
+import org.cloudbus.cloudsim.util.MathUtil;
 
 import java.io.Serial;
 
@@ -76,10 +77,7 @@ public class WeibullDistr extends WeibullDistribution implements ContinuousDistr
      */
     public WeibullDistr(final double alpha, final double beta, final long seed, final RandomGenerator rng) {
         super(rng, alpha, beta);
-        if(seed < 0){
-            throw new IllegalArgumentException("Seed cannot be negative");
-        }
-        this.seed = seed;
+        this.seed = MathUtil.nonNegative(seed, "Seed");
     }
 
     @Override

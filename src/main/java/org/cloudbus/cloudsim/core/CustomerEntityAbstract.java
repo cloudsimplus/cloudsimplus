@@ -2,9 +2,7 @@ package org.cloudbus.cloudsim.core;
 
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
-import org.cloudbus.cloudsim.util.TimeUtil;
-
-import static java.util.Objects.requireNonNull;
+import org.cloudbus.cloudsim.util.MathUtil;
 
 /**
  * A base class for {@link CustomerEntity} implementations.
@@ -67,7 +65,7 @@ public abstract class CustomerEntityAbstract implements CustomerEntity {
 
     @Override
     public CustomerEntity setArrivedTime(final double time) {
-        this.arrivedTime = TimeUtil.validateTime("Arrived time", time);
+        this.arrivedTime = MathUtil.nonNegative(time, "Arrived time");
         return this;
     }
 
@@ -82,7 +80,7 @@ public abstract class CustomerEntityAbstract implements CustomerEntity {
     }
 
     public CustomerEntity setCreationTime(final double time) {
-        this.creationTime = TimeUtil.validateTime("Creation time", time);
+        this.creationTime = MathUtil.nonNegative(time, "Creation time");
         return this;
     }
 

@@ -296,4 +296,41 @@ public final class MathUtil {
         return first > 0 ? first : second;
     }
 
+    /**
+     * Checks if the given int value is not negative.
+     * @param value the value to check
+     * @param fieldName the name of the field to validate (used in a possible validation error message)
+     * @return the given value
+     * @throws IllegalArgumentException if the value is negative
+     */
+    public static int nonNegative(final int value, final String fieldName) {
+        nonNegative((double)value, fieldName);
+        return value;
+    }
+
+    /**
+     * Checks if the given long value is not negative.
+     * @param value the value to check
+     * @param fieldName the name of the field to validate (used in a possible validation error message)
+     * @return the given value
+     * @throws IllegalArgumentException if the value is negative
+     */
+    public static long nonNegative(final long value, final String fieldName) {
+        nonNegative((double)value, fieldName);
+        return value;
+    }
+
+    /**
+     * Checks if the given double value is not negative.
+     * @param value the value to check
+     * @param fieldName the name of the field to validate (used in a possible validation error message)
+     * @return the given value
+     * @throws IllegalArgumentException if the value is negative
+     */
+    public static double nonNegative(final double value, final String fieldName) {
+        if (value < 0)
+            throw new IllegalArgumentException(fieldName + " cannot be negative.");
+
+        return value;
+    }
 }

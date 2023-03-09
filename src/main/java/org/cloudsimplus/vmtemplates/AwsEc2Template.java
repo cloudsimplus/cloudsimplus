@@ -24,6 +24,8 @@
 package org.cloudsimplus.vmtemplates;
 
 import com.google.gson.Gson;
+import lombok.*;
+import org.cloudbus.cloudsim.util.MathUtil;
 import org.cloudbus.cloudsim.util.ResourceLoader;
 import org.cloudbus.cloudsim.vms.Vm;
 
@@ -176,11 +178,7 @@ public class AwsEc2Template implements Comparable<AwsEc2Template> {
      * @param pricePerHour the price to set
      */
     public void setPricePerHour(final double pricePerHour) {
-        if(pricePerHour < 0) {
-            throw new IllegalArgumentException("Price cannot be negative");
-        }
-
-        this.pricePerHour = pricePerHour;
+        this.pricePerHour = MathUtil.nonNegative(pricePerHour, "pricePerHour");
     }
 
     /**

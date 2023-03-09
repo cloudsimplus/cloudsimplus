@@ -7,7 +7,9 @@
  */
 package org.cloudbus.cloudsim.network.switches;
 
-import org.cloudbus.cloudsim.core.CloudSim;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.Setter;
 import org.cloudbus.cloudsim.core.CloudSimEntity;
 import org.cloudbus.cloudsim.core.CloudSimTag;
 import org.cloudbus.cloudsim.core.events.PredicateType;
@@ -15,6 +17,7 @@ import org.cloudbus.cloudsim.core.events.SimEvent;
 import org.cloudbus.cloudsim.datacenters.network.NetworkDatacenter;
 import org.cloudbus.cloudsim.hosts.network.NetworkHost;
 import org.cloudbus.cloudsim.network.HostPacket;
+import org.cloudbus.cloudsim.util.MathUtil;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,6 +34,27 @@ import static org.cloudbus.cloudsim.util.BytesConversion.bytesToMegaBits;
  */
 public abstract class AbstractSwitch extends CloudSimEntity implements Switch {
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractSwitch.class.getSimpleName());
+
+    @Getter @Setter @NonNull
+    private NetworkDatacenter datacenter;
+
+    @Getter
+    private double uplinkBandwidth;
+
+    @Getter
+    private double downlinkBandwidth;
+
+    @Getter
+    private int ports;
+
+    @Getter
+    private double switchingDelay;
+
+    @Getter
+    private final List<Switch> uplinkSwitches;
+
+    @Getter
+    private final List<Switch> downlinkSwitches;
 
     /**
      * Map of packets sent to Datacenter on the uplink, where each key is a switch
@@ -49,31 +73,6 @@ public abstract class AbstractSwitch extends CloudSimEntity implements Switch {
      * host and the corresponding value is the list of packets to sent to that host.
      */
     private final Map<NetworkHost, List<HostPacket>> packetToHostMap;
-
-    /**
-     * List of uplink Datacenter.
-     */
-    private final List<Switch> uplinkSwitches;
-
-    /**
-     * List of downlink Datacenter.
-     */
-    private final List<Switch> downlinkSwitches;
-
-    /** @see #getUplinkBandwidth() */
-    private double uplinkBandwidth;
-
-    /** @see #getDownlinkBandwidth() */
-    private double downlinkBandwidth;
-
-    /** @see #getPorts() */
-    private int ports;
-
-    /** @see #getDatacenter() */
-    private NetworkDatacenter datacenter;
-
-    /** @see #getSwitchingDelay() */
-    private double switchingDelay;
 
     public AbstractSwitch(final CloudSim simulation, final NetworkDatacenter dc) {
         super(simulation);
@@ -111,7 +110,8 @@ public abstract class AbstractSwitch extends CloudSimEntity implements Switch {
         if(evt.getData() instanceof HostPacket pkt) {
             final NetworkHost host = pkt.getDestination();
             host.addReceivedNetworkPacket(pkt);
-        } else throw new IllegalStateException("NETWORK_EVENT_HOST SimEvent data must be a HostPacket");
+        }
+        else throw new IllegalStateException("NETWORK_EVENT_HOST SimEvent data must be a HostPacket");
     }
 
     /**
@@ -260,7 +260,7 @@ public abstract class AbstractSwitch extends CloudSimEntity implements Switch {
 
     @Override
     public final void setUplinkBandwidth(double uplinkBandwidth) {
-        this.uplinkBandwidth = uplinkBandwidth;
+        this.uplinkBandwidth = MathUtil.nonNegative(uplinkBandwidth, "uplinkBandwidth");
     }
 
     @Override
@@ -270,7 +270,7 @@ public abstract class AbstractSwitch extends CloudSimEntity implements Switch {
 
     @Override
     public final void setDownlinkBandwidth(double downlinkBandwidth) {
-        this.downlinkBandwidth = downlinkBandwidth;
+        this.downlinkBandwidth = MathUtil.nonNegative(downlinkBandwidth, "downlinkBandwidth");
     }
 
     @Override
@@ -280,7 +280,7 @@ public abstract class AbstractSwitch extends CloudSimEntity implements Switch {
 
     @Override
     public final void setPorts(final int ports) {
-        this.ports = ports;
+        this.ports = MathUtil.nonNegative(ports, "ports");
     }
 
     @Override
@@ -290,17 +290,7 @@ public abstract class AbstractSwitch extends CloudSimEntity implements Switch {
 
     @Override
     public final void setSwitchingDelay(final double switchingDelay) {
-        this.switchingDelay = switchingDelay;
-    }
-
-    @Override
-    public List<Switch> getUplinkSwitches() {
-        return uplinkSwitches;
-    }
-
-    @Override
-    public List<Switch> getDownlinkSwitches() {
-        return downlinkSwitches;
+        this.switchingDelay = MathUtil.nonNegative(switchingDelay, "switchingDelay");
     }
 
     /**
@@ -373,15 +363,4 @@ public abstract class AbstractSwitch extends CloudSimEntity implements Switch {
     private <K, V> void computeMapValue(final Map<K, List<V>> map, final K key, final V valueToAdd) {
         map.compute(key, (k, list) -> list == null ? new ArrayList<>() : list).add(valueToAdd);
     }
-
-    @Override
-    public NetworkDatacenter getDatacenter() {
-        return datacenter;
-    }
-
-    @Override
-    public void setDatacenter(final NetworkDatacenter datacenter) {
-        this.datacenter = datacenter;
-    }
-
 }

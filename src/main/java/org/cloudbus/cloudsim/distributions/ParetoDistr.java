@@ -9,6 +9,7 @@ package org.cloudbus.cloudsim.distributions;
 
 import org.apache.commons.math3.distribution.ParetoDistribution;
 import org.apache.commons.math3.random.RandomGenerator;
+import org.cloudbus.cloudsim.util.MathUtil;
 
 import java.io.Serial;
 
@@ -66,10 +67,7 @@ public class ParetoDistr extends ParetoDistribution implements ContinuousDistrib
      */
     public ParetoDistr(final double shape, final double location, final long seed, final RandomGenerator rng) {
         super(rng, location, shape);
-        if(seed < 0){
-            throw new IllegalArgumentException("Seed cannot be negative");
-        }
-        this.seed = seed;
+        this.seed = MathUtil.nonNegative(seed, "Seed");
     }
 
     @Override
