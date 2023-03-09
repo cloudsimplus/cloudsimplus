@@ -129,8 +129,8 @@ public final class BriteNetworkTopology implements NetworkTopology {
      * between elements.
      */
     private void generateMatrices() {
-        delayMatrix = new DelayMatrix(getTopologicalGraph(), false);
-        bwMatrix = createBwMatrix(getTopologicalGraph(), false);
+        delayMatrix = new DelayMatrix(graph, false);
+        bwMatrix = createBwMatrix(graph, false);
         networkEnabled = true;
     }
 
@@ -169,7 +169,8 @@ public final class BriteNetworkTopology implements NetworkTopology {
         addNodeMapping(src);
         addNodeMapping(dest);
 
-        graph.addLink(new TopologicalLink(entitiesMap.get(src), entitiesMap.get(dest), latency, bandwidth));
+        final var link = new TopologicalLink(entitiesMap.get(src), entitiesMap.get(dest), latency, bandwidth);
+        graph.addLink(link);
         generateMatrices();
     }
 
