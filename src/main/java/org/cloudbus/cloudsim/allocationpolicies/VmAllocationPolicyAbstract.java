@@ -50,13 +50,14 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
     /** @see #getDatacenter() */
     private Datacenter datacenter;
 
-    /**@see #getHostCountForParallelSearch() */
+    /** @see #getHostCountForParallelSearch() */
     private int hostCountForParallelSearch;
 
     /**
      * Creates a VmAllocationPolicy.
      */
     public VmAllocationPolicyAbstract() {
+        //Passing null makes the class to use the default function to find a host for a VM.
         this(null);
     }
 
