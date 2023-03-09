@@ -71,10 +71,10 @@ public final class HostSuitability {
      * @see org.cloudbus.cloudsim.vms.VmGroup
      */
     public void setSuitability(final HostSuitability other){
-        forPes = forPes && other.forPes;
-        forRam = forRam && other.forRam;
-        forBw = forBw && other.forBw;
-        forStorage = forStorage && other.forStorage;
+        this.forPes     &= other.forPes;
+        this.forRam     &= other.forRam;
+        this.forBw      &= other.forBw;
+        this.forStorage &= other.forStorage;
     }
 
     /** Checks if the Host has storage suitability for the size of the VM.
