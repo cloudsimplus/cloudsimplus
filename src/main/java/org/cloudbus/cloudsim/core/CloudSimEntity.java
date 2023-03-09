@@ -435,11 +435,11 @@ public abstract class CloudSimEntity implements SimEntity, Cloneable {
      * Sends an event/message to another entity by <b>delaying</b> the
      * simulation time from the current time, with a tag representing the event
      * type.
-     *  @param dest the destination entity
-     * @param delay       How many seconds after the current simulation time the event should be sent.
-     *                    If delay is a negative number, then it will be changed to 0
-     * @param tag a user-defined number representing the type of an event/message
-     * @param data        A reference to data to be sent with the event
+     * @param dest the destination entity
+     * @param delay How many seconds after the current simulation time the event should be sent.
+     *              If delay is a negative number, then it will be changed to 0
+     * @param tag a user-defined number representing the type of event/message
+     * @param data A reference to data to be sent with the event
      */
     protected void send(final SimEntity dest, double delay, final CloudSimTag tag, final Object data) {
         requireNonNull(dest);
