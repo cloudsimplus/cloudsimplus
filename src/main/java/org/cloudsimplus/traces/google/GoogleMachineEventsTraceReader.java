@@ -241,7 +241,7 @@ public final class GoogleMachineEventsTraceReader extends GoogleTraceReaderAbstr
      *           since we don't have how to know from the trace in which Datacenter the Host is
      */
     private void sendHostsRemovalRequests(final Datacenter dc) {
-        final CloudInformationService cis = dc.getSimulation().getCloudInfoService();
+        final CloudInformationService cis = dc.getSimulation().getCis();
 
         /* The shutdown time is increased by a small fraction
          * to ensure that for each Datacenter, a request to find and remove
