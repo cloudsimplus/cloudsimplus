@@ -13,6 +13,7 @@ import org.cloudbus.cloudsim.core.events.CloudSimEvent;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
 import org.cloudbus.cloudsim.util.Conversion;
+import org.cloudbus.cloudsim.util.MathUtil;
 
 import java.util.Objects;
 
@@ -534,10 +535,7 @@ public class CloudletExecution {
      * @param newDelay the new delay to add (in seconds)
      */
     public void incOverSubscriptionDelay(final double newDelay) {
-        if(newDelay < 0)
-            throw new IllegalArgumentException("Over-subscription delay cannot be negative");
-
-        this.overSubscriptionDelay += newDelay;
+        this.overSubscriptionDelay += MathUtil.nonNegative(newDelay, "Over-subscription delay");
     }
 
     /**

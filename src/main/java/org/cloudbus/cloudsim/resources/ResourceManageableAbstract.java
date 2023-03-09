@@ -7,6 +7,8 @@
  */
 package org.cloudbus.cloudsim.resources;
 
+import org.cloudbus.cloudsim.util.MathUtil;
+
 /**
  * A class that represents simple resources such as RAM, CPU, Bandwidth or Pe.
  * It stores, for instance, the resource capacity and amount of free available resource.
@@ -56,18 +58,14 @@ public abstract class ResourceManageableAbstract extends ResourceAbstract implem
 
     @Override
     public boolean addCapacity(final long capacityToAdd) {
-        if(capacityToAdd < 0){
-            throw new IllegalArgumentException("The number of PEs to add cannot be negative.");
-        }
-
+        MathUtil.nonNegative(capacityToAdd, "Number of PEs to add");
         return setCapacity(getCapacity()+capacityToAdd);
     }
 
     @Override
     public boolean removeCapacity(final long capacityToRemove) {
-        if(capacityToRemove < 0){
-            throw new IllegalArgumentException("The number of PEs to remove cannot be negative.");
-        }
+        MathUtil.nonNegative(capacityToRemove, "Number of PEs to remove");
+
         if(capacityToRemove > this.getCapacity()){
             throw new IllegalStateException(
                 "The number of PEs to remove cannot be higher than the number of existing PEs. "+

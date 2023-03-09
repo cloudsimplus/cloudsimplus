@@ -7,6 +7,8 @@
  */
 package org.cloudbus.cloudsim.network;
 
+import org.cloudbus.cloudsim.util.MathUtil;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.BiConsumer;
@@ -59,11 +61,7 @@ public class FloydWarshall {
      * @param numVertices number of network nodes
      */
     public FloydWarshall(final int numVertices) {
-        if(numVertices < 0) {
-            throw new IllegalArgumentException("Number of vertices cannot be negative.");
-        }
-
-        this.numVertices = numVertices;
+        this.numVertices = MathUtil.nonNegative(numVertices, "Number of vertices");
         this.vertices = IntStream.range(0, numVertices).boxed().collect(toList());
         this.dk_minus_one = new double[numVertices][numVertices];
         this.pk = new int[numVertices][numVertices];

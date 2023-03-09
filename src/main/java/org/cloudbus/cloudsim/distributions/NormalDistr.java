@@ -2,6 +2,7 @@ package org.cloudbus.cloudsim.distributions;
 
 import org.apache.commons.math3.distribution.NormalDistribution;
 import org.apache.commons.math3.random.RandomGenerator;
+import org.cloudbus.cloudsim.util.MathUtil;
 
 import java.io.Serial;
 
@@ -55,10 +56,7 @@ public class NormalDistr extends NormalDistribution implements ContinuousDistrib
      */
     public NormalDistr(final double mean, final double standardDeviation, final long seed, final RandomGenerator rng) {
         super(rng, mean, standardDeviation);
-        if(seed < 0){
-            throw new IllegalArgumentException("Seed cannot be negative");
-        }
-        this.seed = seed;
+        this.seed = MathUtil.nonNegative(seed, "Seed");
     }
 
     @Override

@@ -23,6 +23,7 @@
  */
 package org.cloudbus.cloudsim.resources;
 
+import org.cloudbus.cloudsim.util.MathUtil;
 import org.cloudbus.cloudsim.vms.Vm;
 
 /**
@@ -77,11 +78,7 @@ public final class Processor extends ResourceManageableAbstract {
      * @param newMips the new MIPS of each PE
      */
     public void setMips(final double newMips) {
-        if(newMips < 0) {
-            throw new IllegalArgumentException("MIPS cannot be negative");
-        }
-
-        this.mips = newMips;
+        this.mips = MathUtil.nonNegative(newMips, "MIPS");
     }
 
     /**

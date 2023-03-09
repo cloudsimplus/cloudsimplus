@@ -25,6 +25,7 @@ package org.cloudbus.cloudsim.schedulers;
 
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.Processor;
+import org.cloudbus.cloudsim.util.MathUtil;
 
 /**
  * Represents the requested or allocated MIPS capacity for a given number of {@link Pe}s from a VM.
@@ -66,10 +67,7 @@ public class MipsShare {
      * @param mips the allocated or requested MIPS capacity for every {@link Pe}
      */
     public MipsShare(final long pes, final double mips){
-        if(pes < 0)
-            throw new IllegalArgumentException("PEs number cannot be negative.");
-
-        this.pes = pes;
+        this.pes = MathUtil.nonNegative(pes, "PEs number");
         this.setMips(mips);
     }
 
@@ -86,9 +84,7 @@ public class MipsShare {
     }
 
     public final void setMips(final double mips) {
-        if(mips < 0)
-            throw new IllegalArgumentException("MIPS cannot be negative.");
-        this.mips = mips;
+        this.mips = MathUtil.nonNegative(mips, "MIPS");
     }
 
     /**
@@ -123,9 +119,7 @@ public class MipsShare {
      * @return the number of actual removed PEs
      */
     public long remove(final long count) {
-        if(count < 0)
-            throw new IllegalArgumentException("The number of PEs to remove cannot be negative.");
-
+        MathUtil.nonNegative(count, "Number of PEs to remove");
         final long removedPes = Math.min(count, this.pes);
         this.pes -= removedPes;
         return count;
