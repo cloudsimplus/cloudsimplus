@@ -34,8 +34,6 @@ import org.cloudbus.cloudsim.core.Identifiable;
  * and {@link CloudletExecution} share a common set of attributes that should be defined by a common interface.
  */
 public abstract class CloudletTask implements Identifiable {
-    private boolean finished;
-
     /** @see #getId() */
     private long id;
 
@@ -134,7 +132,7 @@ public abstract class CloudletTask implements Identifiable {
      * @see #isActive()
      */
     public boolean isFinished(){
-        return finished;
+        return finishTime > -1;
     }
 
     /**
@@ -153,23 +151,21 @@ public abstract class CloudletTask implements Identifiable {
      * @throws RuntimeException when the task is already finished and you try to set it as unfinished
      */
     protected void setFinished(final boolean finished){
-        if(this.finished && !finished) {
+        if(isFinished() && !finished) {
             throw new IllegalStateException("The task is already finished. You cannot set it as unfinished.");
         }
 
         //If the task wasn't finished before and try to set it to finished, stores the finishTime
-        if(!this.finished && finished) {
+        if(isActive() && finished) {
             finishTime = cloudlet.getSimulation().clock();
         }
-
-        this.finished = finished;
     }
 
     /**
      * @return the time the task spent executing (in seconds), or -1 if not finished yet
      */
     public double getExecutionTime(){
-        return finished ? finishTime - startTime : -1;
+        return isFinished() ? finishTime - startTime : -1;
     }
 
     /**
