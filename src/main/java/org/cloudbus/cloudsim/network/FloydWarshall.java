@@ -42,7 +42,7 @@ public class FloydWarshall {
      * Weights when k is equal to -1.
      * (used for dynamic programming).
      */
-    private final double[][] dk_minus_one;
+    private final double[][] dkMinusOne;
 
     /**
      * The predecessor matrix (used for dynamic programming).
@@ -52,7 +52,7 @@ public class FloydWarshall {
     /**
      * Used for dynamic programming.
      */
-    private final int[][] pk_minus_one;
+    private final int[][] pkMinusOne;
 
     /**
      * Creates a matrix of network nodes.
@@ -62,9 +62,9 @@ public class FloydWarshall {
     public FloydWarshall(final int numVertices) {
         this.numVertices = MathUtil.nonNegative(numVertices, "Number of vertices");
         this.vertices = IntStream.range(0, numVertices).boxed().collect(toList());
-        this.dk_minus_one = new double[numVertices][numVertices];
+        this.dkMinusOne = new double[numVertices][numVertices];
         this.pk = new int[numVertices][numVertices];
-        this.pk_minus_one = new int[numVertices][numVertices];
+        this.pkMinusOne = new int[numVertices][numVertices];
     }
 
     /**
@@ -111,8 +111,8 @@ public class FloydWarshall {
         }
 
         updateMatrices((i,j) -> {
-            dk_minus_one[i][j] = dk[i][j];
-            pk_minus_one[i][j] = pk[i][j];
+            dkMinusOne[i][j] = dk[i][j];
+            pkMinusOne[i][j] = pk[i][j];
         });
     }
 
@@ -145,12 +145,12 @@ public class FloydWarshall {
         for(final int j: vertices) {
             pk[i][j] = -1;
             if (i != j) {
-                if (dk_minus_one[i][j] <= dk_minus_one[i][k] + dk_minus_one[k][j]) {
-                    dk[i][j] = dk_minus_one[i][j];
-                    pk[i][j] = pk_minus_one[i][j];
+                if (dkMinusOne[i][j] <= dkMinusOne[i][k] + dkMinusOne[k][j]) {
+                    dk[i][j] = dkMinusOne[i][j];
+                    pk[i][j] = pkMinusOne[i][j];
                 } else {
-                    dk[i][j] = dk_minus_one[i][k] + dk_minus_one[k][j];
-                    pk[i][j] = pk_minus_one[k][j];
+                    dk[i][j] = dkMinusOne[i][k] + dkMinusOne[k][j];
+                    pk[i][j] = pkMinusOne[k][j];
                 }
             }
         }
@@ -164,11 +164,11 @@ public class FloydWarshall {
     private void savePreviousDelays(final double[][] originalDelayMatrix) {
         for(final int i: vertices) {
             for(final int j: vertices) {
-                dk_minus_one[i][j] = Double.MAX_VALUE;
-                pk_minus_one[i][j] = -1;
+                dkMinusOne[i][j] = Double.MAX_VALUE;
+                pkMinusOne[i][j] = -1;
                 if (originalDelayMatrix[i][j] != 0) {
-                    dk_minus_one[i][j] = originalDelayMatrix[i][j];
-                    pk_minus_one[i][j] = i;
+                    dkMinusOne[i][j] = originalDelayMatrix[i][j];
+                    pkMinusOne[i][j] = i;
                 }
                 // NOTE: we have set the value to infinity and will exploit this to avoid a comparison.
             }
