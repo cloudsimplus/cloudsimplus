@@ -14,14 +14,10 @@ import java.util.Objects;
 public abstract class VmAllocationPolicyMigrationDynamicUpperThresholdFirstFit extends VmAllocationPolicyMigrationAbstract
     implements VmAllocationPolicyMigrationDynamicUpperThreshold {
 
-    /**
-     * @see #getSafetyParameter()
-     */
+    /** @see #getSafetyParameter() */
     private double safetyParameter;
 
-    /**
-     * @see #getFallbackVmAllocationPolicy()
-     */
+    /** @see #getFallbackVmAllocationPolicy() */
     private VmAllocationPolicyMigration fallbackVmAllocationPolicy;
 
     /**
