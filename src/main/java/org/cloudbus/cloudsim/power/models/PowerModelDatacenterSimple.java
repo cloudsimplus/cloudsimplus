@@ -3,6 +3,7 @@ package org.cloudbus.cloudsim.power.models;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.power.PowerMeasurement;
+import org.cloudbus.cloudsim.util.MathUtil;
 
 
 /**
@@ -50,10 +51,6 @@ public class PowerModelDatacenterSimple extends PowerModelDatacenter {
      * @param powerUsageEffectiveness a percentage value between [0 and 1]
      */
     public void setPowerUsageEffectiveness(final double powerUsageEffectiveness) {
-        if(powerUsageEffectiveness < 0 || powerUsageEffectiveness > 1){
-            throw new IllegalArgumentException("powerUsageEffectiveness must be between [0 and 1].");
-        }
-
-        this.powerUsageEffectiveness = powerUsageEffectiveness;
+        this.powerUsageEffectiveness = MathUtil.percentage(powerUsageEffectiveness, "powerUsageEffectiveness");
     }
 }
