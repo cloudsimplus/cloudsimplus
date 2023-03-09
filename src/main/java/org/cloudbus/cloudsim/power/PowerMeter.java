@@ -159,7 +159,7 @@ public class PowerMeter extends CloudSimEntity {
 
     /**
      * Sets the time interval to collect power measurements.
-     * @param measurementInterval the value to set
+     * @param measurementInterval the value to set (in seconds)
      * @return
      */
     public PowerMeter setMeasurementInterval(final double measurementInterval) {
