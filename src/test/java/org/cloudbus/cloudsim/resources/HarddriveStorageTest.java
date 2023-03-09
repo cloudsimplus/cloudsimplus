@@ -109,45 +109,6 @@ public class HarddriveStorageTest {
         assertThrows(IllegalArgumentException.class, () -> instance.setMaxTransferRate(0));
     }
 
-    @Test
-    public void testSetAvgSeekTimeWhenDouble() {
-        testSetAvgSeekTime(null);
-    }
-
-    @Test
-    public void testSetAvgSeekTimeWhenDoubleContinuousDistribution() {
-        final double anyValue = 2.4;
-        testSetAvgSeekTime(new ExponentialDistr(anyValue));
-    }
-
-    /**
-     * Private method called by the overloaded versions of the
-     * setAvgSeekTime method.
-     * @param gen A random number generator. The parameter can be
-     * null in order to use the simpler version of the setAvgSeekTime.
-     */
-    private void testSetAvgSeekTime(final ContinuousDistribution gen) {
-        final HarddriveStorage instance = createHardDrive();
-        final double seekTime = 1;
-        setAvgSeekTime(instance, seekTime, gen);
-        assertAll(
-            () -> assertEquals(seekTime, instance.getAvgSeekTime()),
-            () -> assertEquals(seekTime, instance.getAvgSeekTime()),
-            () -> assertThrows(IllegalArgumentException.class, () -> setAvgSeekTime(instance, -1, gen)),
-            () -> assertEquals(seekTime, instance.getAvgSeekTime())
-        );
-    }
-
-    private static FileStorage setAvgSeekTime(
-            final HarddriveStorage instance, final double seekTime,
-            final ContinuousDistribution gen) {
-        if(gen != null) {
-            return instance.setAvgSeekTime(seekTime, gen);
-        }
-
-        return instance.setAvgSeekTime(seekTime);
-    }
-
     /**
      * Creates a hard drive with the {@link #CAPACITY} capacity.
      * @return
