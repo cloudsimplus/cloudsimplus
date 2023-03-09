@@ -270,7 +270,7 @@ public final class MathUtil {
      * @param total the total value that represents 100%
      * @return the percentage of the current value in scale from 0 to 100%
      */
-    public static double percent(final double partial, final double total){
+    public static double percentValue(final double partial, final double total){
         return (partial/total)*100.0;
     }
 
