@@ -21,7 +21,7 @@ import java.util.Objects;
  * <p>
  * <b>ASSUMPTION:</b> All PEs under the same Machine have the same MIPS rating.
  * </p>
- * @TODO This assumption is not being assured on different classes (where other TODOs were included)
+ * TODO: This assumption is not being assured on different classes (where other TODOs were included)
  *
  * @author Manzur Murshed
  * @author Rajkumar Buyya
