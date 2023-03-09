@@ -42,9 +42,9 @@ public class TopologicalLink {
      * @param bandwidth the link bandwidth (in Megabits/s)
      */
     public TopologicalLink(final int srcNode, final int destNode, final double delay, final double bandwidth) {
-        linkDelay = delay;
         srcNodeID = srcNode;
         destNodeID = destNode;
+        linkDelay = delay;
         linkBw = bandwidth;
     }
 
