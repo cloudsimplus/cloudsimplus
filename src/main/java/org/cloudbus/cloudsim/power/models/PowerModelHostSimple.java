@@ -43,7 +43,7 @@ public class PowerModelHostSimple extends PowerModelHost {
     public PowerModelHostSimple(final double maxPower, final double staticPower) {
         super();
         if (maxPower < staticPower) {
-            throw new IllegalArgumentException("maxPower has to be bigger than staticPower");
+            throw new IllegalArgumentException("maxPower has to be higher than staticPower");
         }
 
         this.maxPower = validatePower(maxPower, "maxPower");
