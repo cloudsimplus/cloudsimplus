@@ -680,7 +680,7 @@ public class HostSimple implements Host {
 
     @Override
     public void destroyAllVms() {
-        final PeProvisioner peProvisioner = getPeList().get(0).getPeProvisioner();
+        final var peProvisioner = getPeList().get(0).getPeProvisioner();
         for (final Vm vm : vmList) {
             ramProvisioner.deallocateResourceForVm(vm);
             bwProvisioner.deallocateResourceForVm(vm);
@@ -974,7 +974,7 @@ public class HostSimple implements Host {
     @Override
     public final boolean setFailed(final boolean failed) {
         this.failed = failed;
-        final Pe.Status newStatus = failed ? Pe.Status.FAILED : Pe.Status.FREE;
+        final var newStatus = failed ? Pe.Status.FAILED : Pe.Status.FREE;
         setPeStatus(peList, newStatus);
 
         /*Just changes the active state when the Host is set to active.
@@ -1065,25 +1065,20 @@ public class HostSimple implements Host {
 
     @Override
     public boolean addMigratingInVm(final Vm vm) {
-        /* TODO: Instead of keeping a list of VMs which are migrating into a Host,
-        *  which requires searching in such a list every time a VM is requested to be migrated
-        *  to that Host (to check if it isn't migrating to that same host already),
-        *  we can add a migratingHost attribute to Vm, so that the worst time complexity
-        *  will change from O(N) to a constant time O(1). */
         if (vmsMigratingIn.contains(vm)) {
             return false;
         }
 
-        if(!allocateResourcesForVm(vm, true).fully()){
-            return false;
+        if (allocateResourcesForVm(vm, true).fully()) {
+            ((VmSimple) vm).updateMigrationStartListeners(this);
+
+            updateProcessing(simulation.clock());
+            vm.getHost().updateProcessing(simulation.clock());
+
+            return true;
         }
 
-        ((VmSimple)vm).updateMigrationStartListeners(this);
-
-        updateProcessing(simulation.clock());
-        vm.getHost().updateProcessing(simulation.clock());
-
-        return true;
+        return false;
     }
 
     @Override
