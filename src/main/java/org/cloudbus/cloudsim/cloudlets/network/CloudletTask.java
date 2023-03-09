@@ -52,7 +52,7 @@ public abstract class CloudletTask implements Identifiable {
     private NetworkCloudlet cloudlet;
 
     /**
-     * Creates a new task.
+     * Creates a task.
      * @param id task id
      */
     public CloudletTask(final int id) {
