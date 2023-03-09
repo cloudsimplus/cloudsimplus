@@ -24,7 +24,6 @@
 package org.cloudbus.cloudsim.power.models;
 
 import org.cloudbus.cloudsim.power.PowerMeasurement;
-import org.cloudbus.cloudsim.util.MathUtil;
 
 /**
  * Simple power model for hosts with linear power profile.
@@ -62,17 +61,8 @@ public class PowerModelHostSimple extends PowerModelHost {
         return new PowerMeasurement(staticPower, dynamicPower(usageFraction));
     }
 
-    /**
-     * Computes the host current power usage in Watts (W) at a certain degree of utilization
-     * (mainly for backwards compatibility).
-     *
-     * @param utilizationFraction the utilization percentage (between [0 and 1]) of the host.
-     * @return the power supply in Watts (W)
-     * @throws IllegalArgumentException if utilizationFraction is not between [0 and 1]
-     */
     @Override
-    public double getPower(final double utilizationFraction) throws IllegalArgumentException {
-        MathUtil.percentage(utilizationFraction, "utilizationFraction");
+    public double getPowerInternal(final double utilizationFraction){
         return staticPower + dynamicPower(utilizationFraction);
     }
 
