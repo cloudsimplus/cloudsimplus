@@ -37,6 +37,7 @@ public class HarddriveStorage implements FileStorage {
      * @see #getName()
      */
     private final String name;
+
     /**
      * A number generator required to randomize the seek time.
      */
