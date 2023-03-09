@@ -62,7 +62,7 @@ public class DelayMatrix {
 	 */
 	public double getDelay(final int srcID, final int destID) {
 		if (srcID > mTotalNodeNum || destID > mTotalNodeNum) {
-			throw new ArrayIndexOutOfBoundsException("srcID or destID is higher than highest stored node-ID!");
+			throw new ArrayIndexOutOfBoundsException("srcID or destID is higher than highest stored nodeID!");
 		}
 
 		return mDelayMatrix[srcID][destID];
