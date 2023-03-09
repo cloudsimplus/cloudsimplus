@@ -77,7 +77,7 @@ public final class HostSuitability {
         this.forStorage &= other.forStorage;
     }
 
-    /** Checks if the Host has storage suitability for the size of the VM.
+    /** Checks if the Host has enough storage for running a VM.
      * @return true if it's suitable;
      *         false if it's unsuitable or this specific requirement
      *         was not even evaluated since other one was already not met.
@@ -87,16 +87,7 @@ public final class HostSuitability {
         return forStorage;
     }
 
-    /** Sets if the Host has disk suitability for storing the VM.
-     * @param suitable true to indicate it's suitable according to VM's size requirements;
-     *                 false otherwise
-     * */
-    HostSuitability setForStorage(final boolean suitable) {
-        this.forStorage = suitable;
-        return this;
-    }
-
-    /** Checks if the Host has RAM suitability for running the VM.
+    /** Checks if the Host has enough RAM for running a VM.
      * @return true if it's suitable;
      *         false if it's unsuitable or this specific requirement
      *         was not even evaluated since other one was already not met.
@@ -106,16 +97,7 @@ public final class HostSuitability {
         return forRam;
     }
 
-    /** Sets if the Host has RAM suitability for running the VM.
-     * @param suitable true to indicate it's suitable according to VM's RAM requirements;
-     *                 false otherwise
-     * */
-    HostSuitability setForRam(final boolean suitable) {
-        this.forRam = suitable;
-        return this;
-    }
-
-    /** Checks if the Host has bandwidth suitability for running the VM.
+    /** Checks if the Host has enough Bandwidth for running a VM.
      * @return true if it's suitable;
      *         false if it's unsuitable or this specific requirement
      *         was not even evaluated since other one was already not met.
@@ -125,16 +107,7 @@ public final class HostSuitability {
         return forBw;
     }
 
-    /** Sets if the Host has bandwidth suitability for running the VM.
-     * @param suitable true to indicate it's suitable according to VM's BW requirements;
-     *                 false otherwise
-     * */
-    HostSuitability setForBw(final boolean suitable) {
-        this.forBw = suitable;
-        return this;
-    }
-
-    /** Checks if the Host has {@link Pe} suitability for running the VM.
+    /** Checks if the Host has enough {@link Pe}s for running a VM.
      * @return true if it's suitable;
      *         false if it's unsuitable or this specific requirement
      *         was not even evaluated since other one was already not met.
