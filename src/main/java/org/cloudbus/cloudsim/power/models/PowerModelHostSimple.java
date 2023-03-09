@@ -52,12 +52,13 @@ public class PowerModelHostSimple extends PowerModelHost {
 
     @Override
     public PowerMeasurement getPowerMeasurement() {
-        if(!getHost().isActive()){
+        final var host = getHost();
+        if(!host.isActive()){
             return new PowerMeasurement();
         }
 
-        final double utilizationFraction = getHost().getCpuMipsUtilization() / getHost().getTotalMipsCapacity();
-        return new PowerMeasurement(staticPower, dynamicPower(utilizationFraction));
+        final double usageFraction = host.getCpuMipsUtilization() / host.getTotalMipsCapacity();
+        return new PowerMeasurement(staticPower, dynamicPower(usageFraction));
     }
 
     /**
