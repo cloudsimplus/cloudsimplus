@@ -53,7 +53,7 @@ public interface SimEntity extends Nameable, Runnable, Comparable<SimEntity> {
     /**
      * Sets the entity state.
      *
-     * @param state the state to set
+     * @param state the new state to set
      */
     SimEntity setState(State state);
 
