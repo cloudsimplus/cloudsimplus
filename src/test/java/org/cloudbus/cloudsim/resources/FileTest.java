@@ -109,26 +109,22 @@ public class FileTest {
     @Test
     public void testIsValidWhenParamString() {
         final String newFileName = "new-file.txt";
-        assertEquals(newFileName, File.validateFileName(newFileName));
-        assertEquals(NAME, File.validateFileName(NAME));
-        assertThrows(IllegalArgumentException.class, () -> File.validateFileName(""));
+        assertEquals(newFileName, File.validate(newFileName));
+        assertEquals(NAME, File.validate(NAME));
+        assertThrows(IllegalArgumentException.class, () -> File.validate(""));
 
-        assertThrows(NullPointerException.class, () -> File.validateFileName(null));
+        final String nullName = null;
+        assertThrows(NullPointerException.class, () -> File.validate(nullName));
         final String nameWithSpaces = "file with blank spaces.txt";
-        assertEquals(nameWithSpaces, File.validateFileName(nameWithSpaces));
-        assertThrows(IllegalArgumentException.class, () -> File.validateFileName("      "));
-    }
-
-    @Test
-    public void testIsValidWhenParamNullFile() {
-        assertThrows(NullPointerException.class, () -> File.validate(null));
+        assertEquals(nameWithSpaces, File.validate(nameWithSpaces));
+        assertThrows(IllegalArgumentException.class, () -> File.validate("      "));
     }
 
     @Test
     public void testSetOwnerName() {
         final String owner = OWNER;
         final File instance = createFile();
-        assertTrue(instance.setOwnerName(owner));
+        instance.setOwnerName(owner);
         assertEquals(owner, instance.getOwnerName());
     }
 
@@ -137,14 +133,14 @@ public class FileTest {
         final int fileSize = 512;
         final File instance = createFile(SIZE);
         assertEquals(SIZE, instance.getSize());
-        assertTrue(instance.setSize(fileSize));
+        instance.setSize(fileSize);
         assertEquals(fileSize, instance.getSize());
 
-        assertFalse(instance.setSize(-1));
+        instance.setSize(-1);
         assertEquals(fileSize, instance.getSize());
 
         final int zero = 0;
-        assertTrue(instance.setSize(zero));
+        instance.setSize(zero);
         assertEquals(zero, instance.getSize());
     }
 
@@ -183,18 +179,15 @@ public class FileTest {
         final File instance = createFile();
 
         final int type1 = 1;
-        assertTrue(instance.setType(type1));
+        instance.setType(type1);
         assertEquals(type1, instance.getType());
 
         final int type0 = 0;
-        assertTrue(instance.setType(type0));
+        instance.setType(type0);
         assertEquals(type0, instance.getType());
 
         final int type2 = 2;
-        assertTrue(instance.setType(type2));
-        assertEquals(type2, instance.getType());
-
-        assertFalse(instance.setType(-1));
+        instance.setType(type2);
         assertEquals(type2, instance.getType());
     }
 
@@ -203,18 +196,15 @@ public class FileTest {
         final File instance = createFile();
 
         final int checksum1 = 1;
-        assertTrue(instance.setChecksum(checksum1));
+        instance.setChecksum(checksum1);
         assertEquals(checksum1, instance.getChecksum());
 
         final int checksum0 = 0;
-        assertTrue(instance.setChecksum(checksum0));
+        instance.setChecksum(checksum0);
         assertEquals(checksum0, instance.getChecksum());
 
         final int checksum2 = 2;
-        assertTrue(instance.setChecksum(checksum2));
-        assertEquals(checksum2, instance.getChecksum());
-
-        assertFalse(instance.setChecksum(-1));
+        instance.setChecksum(checksum2);
         assertEquals(checksum2, instance.getChecksum());
     }
 
@@ -223,16 +213,16 @@ public class FileTest {
         final double cost = 10;
         final File instance = createFile();
 
-        assertTrue(instance.setCost(cost));
+        instance.setCost(cost);
         assertEquals(cost, instance.getCost());
-        assertFalse(instance.setCost(-1));
+        assertThrows(IllegalArgumentException.class, () -> instance.setCost(-1));
 
         final double zero = 0;
-        assertTrue(instance.setCost(zero));
+        instance.setCost(zero);
         assertEquals(zero, instance.getCost());
 
         final double newCost = 20;
-        assertTrue(instance.setCost(newCost));
+        instance.setCost(newCost);
         assertEquals(newCost, instance.getCost());
     }
 
@@ -268,17 +258,17 @@ public class FileTest {
         final File instance = createFile();
         assertEquals(zero, instance.getTransactionTime());
 
-        assertTrue(instance.setTransactionTime(time1));
+        instance.setTransactionTime(time1);
         assertEquals(time1, instance.getTransactionTime());
 
-        assertTrue(instance.setTransactionTime(zero));
+        instance.setTransactionTime(zero);
         assertEquals(zero, instance.getTransactionTime());
 
         final double time2 = 2;
-        assertTrue(instance.setTransactionTime(time2));
+        instance.setTransactionTime(time2);
         assertEquals(time2, instance.getTransactionTime());
 
-        assertFalse(instance.setTransactionTime(-1));
+        assertThrows(IllegalArgumentException.class, () -> instance.setTransactionTime(-1));
         assertEquals(time2, instance.getTransactionTime());
     }
 
