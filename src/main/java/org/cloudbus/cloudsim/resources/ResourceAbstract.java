@@ -27,7 +27,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.cloudbus.cloudsim.util.MathUtil;
 
 /**
- * An abstract implementation of a {@link Resource}.
+ * An abstract class for implementing {@link Resource}s.
  *
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.2.0
