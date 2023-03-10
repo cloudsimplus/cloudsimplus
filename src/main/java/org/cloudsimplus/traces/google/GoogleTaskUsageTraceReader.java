@@ -77,8 +77,8 @@ public final class GoogleTaskUsageTraceReader extends GoogleTraceReaderAbstract<
      */
     public enum FieldIndex implements TraceField<GoogleTaskUsageTraceReader> {
         /**
-         * 0: The index of the field containing the start time​ of the measurement period (stored in microsecond
-         * but converted to seconds when read from the file).
+         * 0: The index of the field containing the start time of the measurement period
+         * (stored in microsecond but converted to seconds when read from the file).
          */
         START_TIME{
             /**
@@ -93,8 +93,8 @@ public final class GoogleTaskUsageTraceReader extends GoogleTraceReaderAbstract<
         },
 
         /**
-         * 1: The index of the field containing the end time​ of the measurement period (stored in microsecond
-         * but converted to seconds when read from the file).
+         * 1: The index of the field containing the end time of the measurement period
+         * (stored in microsecond but converted to seconds when read from the file).
          */
         END_TIME{
             /**
@@ -223,9 +223,10 @@ public final class GoogleTaskUsageTraceReader extends GoogleTraceReaderAbstract<
         /**
          * 12: The index of the field containing the mean local disk space used.
          * Represents runtime local disk capacity usage.
-         * Disk usage required for binaries and other read-only, pre-staged runtime files is ​not​included.
-         * Additionally, most disk space used by distributed, persistent storage (e.g. GFS, Colossus)
-         * is not accounted for in this trace.
+         * Disk usage required for binaries and other read-only,
+         * pre-staged runtime files is not included.
+         * Additionally, most disk space used by distributed,
+         * persistent storage (e.g. GFS, Colossus) is not accounted for in this trace.
          */
         MEAN_LOCAL_DISK_SPACE_USED {
             @Override
@@ -263,10 +264,13 @@ public final class GoogleTaskUsageTraceReader extends GoogleTraceReaderAbstract<
      * Gets a {@link GoogleTaskUsageTraceReader} instance to read a "task usage" trace file
      * inside the <b>application's resource directory</b>.
      *
-     * @param taskEventsReader a {@link GoogleTaskEventsTraceReader} used to create Cloudlets from a task events trace file
-     * @param filePath the workload trace <b>relative file name</b> in one of the following formats: <i>ASCII text, zip, gz.</i>
+     * @param taskEventsReader a {@link GoogleTaskEventsTraceReader}
+     *                         used to create Cloudlets from a task events trace file
+     * @param filePath the workload trace <b>relative file name</b>
+     *                 in one of the following formats: <i>ASCII text, zip, gz.</i>
      * @throws IllegalArgumentException when the trace file name is null or empty
-     * @throws UncheckedIOException     when the file cannot be accessed (such as when it doesn't exist)
+     * @throws UncheckedIOException     when the file cannot be accessed
+     * (such as when it doesn't exist)
      * @see #process()
      */
     public static GoogleTaskUsageTraceReader getInstance(
@@ -278,13 +282,17 @@ public final class GoogleTaskUsageTraceReader extends GoogleTraceReaderAbstract<
     }
 
     /**
-     * Instantiates a {@link GoogleTaskUsageTraceReader} to read a "task usage" from a given InputStream.
+     * Instantiates a {@link GoogleTaskUsageTraceReader} to read
+     * a "task usage" from a given InputStream.
      *
-     * @param taskEventsReader a {@link GoogleTaskEventsTraceReader} used to create Cloudlets from a task events trace file
-     * @param filePath         the workload trace <b>relative file name</b> in one of the following formats: <i>ASCII text, zip, gz.</i>
+     * @param taskEventsReader a {@link GoogleTaskEventsTraceReader}
+     *                         used to create Cloudlets from a task events trace file
+     * @param filePath         the workload trace <b>relative file name</b>
+     *                         in one of the following formats: <i>ASCII text, zip, gz.</i>
      * @param reader           a {@link InputStream} object to read the file
      * @throws IllegalArgumentException when the trace file name is null or empty
-     * @throws UncheckedIOException     when the file cannot be accessed (such as when it doesn't exist)
+     * @throws UncheckedIOException     when the file cannot be accessed
+     *                                  (such as when it doesn't exist)
      * @see #process()
      */
     private GoogleTaskUsageTraceReader(
@@ -307,7 +315,8 @@ public final class GoogleTaskUsageTraceReader extends GoogleTraceReaderAbstract<
     }
 
     /**
-     * Process {@link #getFilePath() trace file} requests to change resource usage of {@link Cloudlet}s
+     * Process {@link #getFilePath() trace file} requests
+     * to change resource usage of {@link Cloudlet}s
      * as described in the file. It returns the List of all processed {@link Cloudlet}s.
      *
      * <p>When using a {@link GoogleTaskEventsTraceReader}
@@ -424,7 +433,8 @@ public final class GoogleTaskUsageTraceReader extends GoogleTraceReaderAbstract<
      *
      * @param source the utilization model that will be used as based to
      * @param initialUtilization a percentage value (in scale from 0 to 1)
-     *                           to define the current utilization for the created {@link UtilizationModelDynamic}
+     *                           to define the current utilization for the created
+     *                           {@link UtilizationModelDynamic}
      * @return an {@link UtilizationModelDynamic} instance with the current utilization equals
      *         to the given parameter
      */
