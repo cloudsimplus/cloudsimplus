@@ -8,6 +8,9 @@
 
 package org.cloudbus.cloudsim.resources;
 
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.Setter;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.util.MathUtil;
 
@@ -22,6 +25,7 @@ import static java.util.Objects.requireNonNull;
  * @author Anthony Sulistio
  * @since CloudSim Toolkit 1.0
  */
+@Getter @Setter
 public class File {
     /**
      * Denotes that this file has not been registered to a Replica Catalogue.
@@ -101,7 +105,7 @@ public class File {
      * @param masterCopy false to set the cloned file as a replica, true to set the cloned file as a master copy
      * @throws IllegalArgumentException
      */
-    protected File(final File file, final boolean masterCopy) throws IllegalArgumentException {
+    protected File(@NonNull final File file, final boolean masterCopy) throws IllegalArgumentException {
         this(file.getName(), file.getSize());
         this.setDatacenter(file.getDatacenter());
 
@@ -118,7 +122,7 @@ public class File {
      * @throws NullPointerException if the given file is null
      * @throws IllegalArgumentException if the name of the file is blank or null
      */
-    public static void validate(final File file) {
+    public static void validate(@NonNull final File file) {
         validate(file.getName());
     }
 
@@ -130,8 +134,7 @@ public class File {
      * @throws NullPointerException if the file name is null
      * @throws IllegalArgumentException if the file name is blank
      */
-    public static String validate(final String fileName) {
-        requireNonNull(fileName, "File name cannot be null.");
+    public static String validate(@NonNull final String fileName) {
         if(fileName.isBlank()) {
             throw new IllegalArgumentException("File name cannot be blank");
         }
@@ -176,24 +179,6 @@ public class File {
     }
 
     /**
-     * Gets an attribute of this file.
-     *
-     * @return a file attribute
-     */
-    public FileAttribute getAttribute() {
-        return attribute;
-    }
-
-    /**
-     * Sets an attribute of this file.
-     *
-     * @param attribute file attribute
-     */
-    protected void setAttribute(final FileAttribute attribute) {
-        this.attribute = attribute;
-    }
-
-    /**
      * Gets the size of this object (in byte). <br>
      * NOTE: This object size is NOT the actual file size. Moreover, this size is used for
      * transferring this object over a network.
@@ -202,15 +187,6 @@ public class File {
      */
     public int getAttributeSize() {
         return attribute.getAttributeSize();
-    }
-
-    /**
-     * Gets the file name.
-     *
-     * @return the file name
-     */
-    public String getName() {
-        return name;
     }
 
     /**
@@ -398,24 +374,6 @@ public class File {
     }
 
     /**
-     * Checks if the file was deleted or not.
-     *
-     * @return true if it was deleted, false otherwise
-     */
-    public boolean isDeleted() {
-        return deleted;
-    }
-
-    /**
-     * Sets the file as deleted or not.
-     *
-     * @param deleted true if it was deleted, false otherwise
-     */
-    public void setDeleted(final boolean deleted) {
-        this.deleted = deleted;
-    }
-
-    /**
      * Sets the last time (in second) operations were performed over this file.
      * This transaction time can be
      * related to the operation of adding, deleting, renaming or getting the file on a Datacenter's storage.
@@ -426,40 +384,8 @@ public class File {
         this.transactionTime = MathUtil.nonNegative(time, "transactionTime");
     }
 
-    /**
-     * Gets the last transaction time of the file (in second).
-     *
-     * @return the transaction time (in second)
-     */
-    public double getTransactionTime() {
-        return transactionTime;
-    }
-
     @Override
     public String toString() {
         return name;
-    }
-
-    /**
-     * Gets the Datacenter that stores the file.
-     *
-     * @return
-     */
-    public Datacenter getDatacenter() {
-        return datacenter;
-    }
-
-    /**
-     * Sets the Datacenter that will store the file.
-     * When the file is added to a {@link FileStorage}
-     * and such a storage is attached to a Datacenter,
-     * the Datacenter sets itself for all files of that storage.
-     *
-     * @param datacenter the Datacenter that will store the file
-     * @return
-     */
-    public final File setDatacenter(final Datacenter datacenter) {
-        this.datacenter = requireNonNull(datacenter);
-        return this;
     }
 }

@@ -23,6 +23,10 @@
  */
 package org.cloudsimplus.traces.google;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.Setter;
 import org.cloudbus.cloudsim.core.CloudInformationService;
 import org.cloudbus.cloudsim.core.CloudSimTag;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
@@ -43,8 +47,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
-
-import static java.util.Objects.requireNonNull;
 
 /**
  * Process "machine events" trace files from
@@ -71,26 +73,37 @@ import static java.util.Objects.requireNonNull;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 4.0.0
  */
+@Getter
 public final class GoogleMachineEventsTraceReader extends GoogleTraceReaderAbstract<Host> {
 
     /**
-     * @see #getMaxRamCapacity()
+     * The maximum RAM capacity (in MB) for created Hosts.
      */
     private long maxRamCapacity;
 
     /**
-     * @see #getMaxCpuCores()
+     * The maximum number of {@link Pe}s (CPU cores) for created Hosts.
      */
     private int maxCpuCores;
 
     /**
-     * @see #getDatacenterForLaterHosts()
+     * The Datacenter where the Hosts with timestamp greater than 0 will be created.
      */
+    @Setter @NonNull
     private Datacenter datacenterForLaterHosts;
 
     /**
-     * @see #setHostCreationFunction(Function)
+     * A {@link BiFunction} that will be called for every {@link Host} to be created
+     * from a line inside the trace file.
+     * The {@link BiFunction} will receive the number of {@link Pe}s (CPU cores)
+     * and RAM capacity for the Host to be created, returning the created Host.
+     * The provided function must instantiate the Host and defines Host's CPU cores and RAM
+     * capacity according the received parameters.
+     * For other Hosts configurations (such as storage capacity), the provided
+     * function must define the value as desired, since the trace file
+     * doesn't have any other information for such resources.
      */
+    @Getter(AccessLevel.NONE) @Setter
     private Function<MachineEvent, Host> hostCreationFunction;
 
     /**
@@ -293,23 +306,16 @@ public final class GoogleMachineEventsTraceReader extends GoogleTraceReaderAbstr
      * @return the Host instance
      */
     Host createHostFromTraceLine() {
-        final MachineEvent event = new MachineEvent();
-        event.setCpuCores(MachineEventField.CPU_CAPACITY.getValue(this))
-             .setRam(MachineEventField.RAM_CAPACITY.getValue(this))
-             .setTimestamp(MachineEventField.TIMESTAMP.getValue(this))
-             .setMachineId(MachineEventField.MACHINE_ID.getValue(this));
+        final var builder = new MachineEvent.Builder();
+        builder.cpuCores(MachineEventField.CPU_CAPACITY.getValue(this))
+               .ram(MachineEventField.RAM_CAPACITY.getValue(this))
+               .timestamp(MachineEventField.TIMESTAMP.getValue(this));
+
+        final var event = builder.build();
+        event.setMachineId(MachineEventField.MACHINE_ID.getValue(this));
         final Host host = hostCreationFunction.apply(event);
         host.setId(MachineEventField.MACHINE_ID.getValue(this));
         return host;
-    }
-
-    /**
-     * Gets the Datacenter where the Hosts with timestamp greater than 0 will be created.
-     *
-     * @return
-     */
-    public Datacenter getDatacenterForLaterHosts() {
-        return datacenterForLaterHosts;
     }
 
     /**
@@ -333,19 +339,6 @@ public final class GoogleMachineEventsTraceReader extends GoogleTraceReaderAbstr
         return laterAvailableHosts.add(host);
     }
 
-    public void setDatacenterForLaterHosts(final Datacenter datacenterForLaterHosts) {
-        this.datacenterForLaterHosts = requireNonNull(datacenterForLaterHosts);
-    }
-
-    /**
-     * Gets the maximum RAM capacity (in MB) for created Hosts.
-     *
-     * @return
-     */
-    public long getMaxRamCapacity() {
-        return maxRamCapacity;
-    }
-
     /**
      * Sets the maximum RAM capacity (in MB) for created Hosts.
      *
@@ -359,15 +352,6 @@ public final class GoogleMachineEventsTraceReader extends GoogleTraceReaderAbstr
     }
 
     /**
-     * Gets the maximum number of {@link Pe}s (CPU cores) for created Hosts.
-     *
-     * @return
-     */
-    public int getMaxCpuCores() {
-        return maxCpuCores;
-    }
-
-    /**
      * Sets the maximum number of {@link Pe}s (CPU cores) for created Hosts.
      *
      * @param maxCpuCores the maximum number of {@link Pe}s (CPU cores) to set
@@ -377,22 +361,5 @@ public final class GoogleMachineEventsTraceReader extends GoogleTraceReaderAbstr
             throw new IllegalArgumentException("Number of CPU cores must be greater than 0.");
         }
         this.maxCpuCores = maxCpuCores;
-    }
-
-    /**
-     * Sets a {@link BiFunction} that will be called for every {@link Host} to be created
-     * from a line inside the trace file.
-     * The {@link BiFunction} will receive the number of {@link Pe}s (CPU cores)
-     * and RAM capacity for the Host to be created, returning the created Host.
-     * The provided function must instantiate the Host and defines Host's CPU cores and RAM
-     * capacity according the the received parameters.
-     * For other Hosts configurations (such as storage capacity), the provided
-     * function must define the value as desired, since the trace file
-     * doesn't have any other information for such resources.
-     *
-     * @param hostCreationFunction the Host creation {@link BiFunction} to set
-     */
-    public void setHostCreationFunction(final Function<MachineEvent, Host> hostCreationFunction) {
-        this.hostCreationFunction = requireNonNull(hostCreationFunction);
     }
 }

@@ -23,6 +23,9 @@
  */
 package org.cloudsimplus.heuristics;
 
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.Setter;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
 import org.cloudbus.cloudsim.vms.Vm;
@@ -31,7 +34,7 @@ import java.util.List;
 
 /**
  * A heuristic that uses <a href="http://en.wikipedia.org/wiki/Simulated_annealing">Simulated Annealing</a>
- * to find a sub-optimal mapping among a set of Cloudlets and VMs in order to reduce
+ * to find a suboptimal mapping among a set of Cloudlets and VMs in order to reduce
  * the number of idle or overloaded Vm Pe's.
  *
  * @author Manoel Campos da Silva Filho
@@ -43,10 +46,10 @@ public class CloudletToVmMappingSimulatedAnnealing
 {
     private CloudletToVmMappingSolution initialSolution;
 
-    /** @see #getVmList() */
+    @Getter @Setter @NonNull
     private List<Vm> vmList;
 
-    /** @see #getCloudletList() */
+    @Getter @Setter @NonNull
     private List<Cloudlet> cloudletList;
 
     /**
@@ -84,26 +87,6 @@ public class CloudletToVmMappingSimulatedAnnealing
         }
 
         return initialSolution;
-    }
-
-    @Override
-    public List<Vm> getVmList() {
-        return vmList;
-    }
-
-    @Override
-    public void setVmList(final List<Vm> vmList) {
-        this.vmList = vmList;
-    }
-
-    @Override
-    public List<Cloudlet> getCloudletList() {
-        return cloudletList;
-    }
-
-    @Override
-    public void setCloudletList(final List<Cloudlet> cloudletList) {
-        this.cloudletList = cloudletList;
     }
 
     /**

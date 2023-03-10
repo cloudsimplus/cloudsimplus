@@ -7,6 +7,9 @@
  */
 package org.cloudbus.cloudsim.network;
 
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.Setter;
 import org.cloudbus.cloudsim.cloudlets.network.NetworkCloudlet;
 import org.cloudbus.cloudsim.hosts.network.NetworkHost;
 import org.cloudbus.cloudsim.vms.network.NetworkVm;
@@ -34,31 +37,40 @@ import org.cloudbus.cloudsim.vms.network.NetworkVm;
  *
  * @since CloudSim Toolkit 1.0
  */
+@Getter @Setter
 public class VmPacket implements NetworkPacket<NetworkVm> {
 
-    /** @see #getSource() */
-    private NetworkVm sourceVm;
+    /**
+     * The VM sending the packet.
+     * This is the VM where the {@link #getSenderCloudlet() sending cloudlet}
+     * is running.
+     */
+    @NonNull
+    private NetworkVm source;
 
-    /** @see #getDestination() */
-    private NetworkVm destinationVm;
+    /**
+     * The VM that has to receive the packet.
+     * This is the VM where th {@link #getReceiverCloudlet() receiver cloudlet}
+     * is running.
+     */
+    @NonNull
+    private NetworkVm destination;
 
-    /** @see #getSenderCloudlet() */
+    /**
+     * The cloudlet sending the packet.
+     */
+    @NonNull
     private final NetworkCloudlet senderCloudlet;
 
-    /** @see #getReceiverCloudlet() */
+    /**
+     * The cloudlet that has to receive the packet.
+     */
+    @NonNull
     private final NetworkCloudlet receiverCloudlet;
 
-    /** @see #getSize() */
     private final long size;
 
-    /**
-     * The time (in seconds) the packet was sent.
-     */
     private double sendTime;
-
-    /**
-     * The time (in seconds) the packet was received.
-     */
     private double receiveTime;
 
     /**
@@ -78,103 +90,14 @@ public class VmPacket implements NetworkPacket<NetworkVm> {
         final NetworkCloudlet receiverCloudlet)
     {
         super();
-        this.sourceVm = sourceVm;
-        this.destinationVm = destinationVm;
+        this.source = sourceVm;
+        this.destination = destinationVm;
         this.size = size;
         this.receiverCloudlet = receiverCloudlet;
         this.senderCloudlet = senderCloudlet;
     }
 
-    @Override
-    public double getSendTime() {
-        return sendTime;
-    }
-
-    @Override
-    public void setSendTime(double sendTime) {
-        this.sendTime = sendTime;
-    }
-
-    @Override
-    public double getReceiveTime() {
-        return receiveTime;
-    }
-
-    @Override
-    public void setReceiveTime(double receiveTime) {
-        this.receiveTime = receiveTime;
-    }
-
-    /**
-     * Gets the VM sending the packet.
-     * This is the VM where the {@link #getSenderCloudlet() sending cloudlet}
-     * is running.
-     *
-     * @return
-     */
-    @Override
-    public NetworkVm getSource() {
-        return sourceVm;
-    }
-
-    /**
-     * Sets the VM sending the packet.
-     * This is the VM where the {@link #getSenderCloudlet() sending cloudlet}
-     * is running.
-     *
-     * @param sourceVm the source VM to set
-     */
-    @Override
-    public void setSource(final NetworkVm sourceVm) {
-        this.sourceVm = sourceVm;
-    }
-
-    /**
-     * Gets the VM that has to receive the packet.
-     * This is the VM where th {@link #getReceiverCloudlet() receiver cloudlet}
-     * is running.
-     *
-     * @return
-     */
-    @Override
-    public NetworkVm getDestination() {
-        return destinationVm;
-    }
-
-    /**
-     * Sets the VM that has to receive the packet.
-     * This is the VM where th {@link #getReceiverCloudlet() receiver cloudlet}
-     * is running.
-     *
-     * @param destinationVm the destination VM to set
-     */
-    @Override
-    public void setDestination(final NetworkVm destinationVm) {
-        this.destinationVm = destinationVm;
-    }
-
     public NetworkHost getDestinationHost() {
-        return destinationVm.getHost();
-    }
-
-    /**
-     * Gets the cloudlet sending the packet.
-     * @return
-     */
-    public NetworkCloudlet getSenderCloudlet() {
-        return senderCloudlet;
-    }
-
-    /**
-     * Gets the cloudlet that has to receive the packet.
-     * @return
-     */
-    public NetworkCloudlet getReceiverCloudlet() {
-        return receiverCloudlet;
-    }
-
-    @Override
-    public long getSize() {
-        return size;
+        return destination.getHost();
     }
 }

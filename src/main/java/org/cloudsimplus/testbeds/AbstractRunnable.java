@@ -23,6 +23,9 @@
  */
 package org.cloudsimplus.testbeds;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * An abstract class to provide base features for {@link Experiment} and {@link ExperimentRunner}.
  *
@@ -30,6 +33,10 @@ package org.cloudsimplus.testbeds;
  * @since CloudSim Plus 6.1.0
  */
 public abstract class AbstractRunnable implements Runnable {
+    /**
+     * Checks if simulation results of the experiment have to be output.
+     */
+    @Getter @Setter
     protected boolean verbose;
 
     public AbstractRunnable() {
@@ -37,11 +44,12 @@ public abstract class AbstractRunnable implements Runnable {
     }
 
     /**
-     * Checks if simulation results of the experiment have to be output.
+     * Checks if simulation results of the experiment don't have to be
+     * output.
      * @return
      */
-    public boolean isVerbose() {
-        return verbose;
+    public boolean isNotVerbose() {
+        return !verbose;
     }
 
     /**
@@ -94,26 +102,6 @@ public abstract class AbstractRunnable implements Runnable {
             System.out.printf(format, args);
         }
 
-        return this;
-    }
-
-    /**
-     * Checks if simulation results of the experiment don't have to be
-     * output.
-     * @return
-     */
-    public boolean isNotVerbose() {
-        return !verbose;
-    }
-
-    /**
-     * Defines if simulation results of the experiment have to be output or not.
-     *
-     * @param verbose true if the results have to be output, false otherwise
-     * @return
-     */
-    public AbstractRunnable setVerbose(final boolean verbose) {
-        this.verbose = verbose;
         return this;
     }
 }

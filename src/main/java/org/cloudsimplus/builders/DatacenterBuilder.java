@@ -25,6 +25,8 @@ package org.cloudsimplus.builders;
 
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
+import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristics;
+import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristicsSimple;
 import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.resources.SanStorage;
@@ -74,11 +76,11 @@ public class DatacenterBuilder implements Builder {
         final String name = DC_NAME_FORMAT.formatted(createdDatacenters++);
         final Datacenter datacenter = datacenterCreationFunction.apply(hosts);
 
-        datacenter.getCharacteristics()
-            .setCostPerSecond(costPerCpuSecond)
-            .setCostPerMem(costPerMem)
-            .setCostPerStorage(costPerStorage)
-            .setCostPerBw(costPerBwMegabit);
+        final var characteristics = datacenter.getCharacteristics();
+        characteristics.setCostPerSecond(costPerCpuSecond);
+        characteristics.setCostPerMem(costPerMem);
+        characteristics.setCostPerStorage(costPerStorage);
+        characteristics.setCostPerBw(costPerBwMegabit);
 
         datacenter.getDatacenterStorage().setStorageList(storageList);
         datacenter.setName(name);

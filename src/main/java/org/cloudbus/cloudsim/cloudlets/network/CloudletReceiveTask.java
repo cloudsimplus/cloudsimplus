@@ -7,6 +7,9 @@
  */
 package org.cloudbus.cloudsim.cloudlets.network;
 
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.Setter;
 import org.cloudbus.cloudsim.network.VmPacket;
 import org.cloudbus.cloudsim.vms.Vm;
 
@@ -67,13 +70,21 @@ import java.util.List;
  * How is the network delay being computed?
  *
  */
+@Getter @Setter
 public class CloudletReceiveTask extends CloudletTask {
     private final List<VmPacket> packetsReceived;
 
-    /** @see #getExpectedPacketsToReceive() */
+    /**
+     * The number of packets that are expected to be received.
+     * After this number of packets is received, the task
+     * is marked as finished.
+     */
     private long expectedPacketsToReceive;
 
-    /** @see #getSourceVm() */
+    /**
+     * The Vm where it is expected to receive packets from.
+     */
+    @NonNull
     private final Vm sourceVm;
 
     /**
@@ -107,33 +118,5 @@ public class CloudletReceiveTask extends CloudletTask {
      */
     public List<VmPacket> getPacketsReceived() {
         return Collections.unmodifiableList(packetsReceived);
-    }
-
-    /**
-     * Gets the Vm where it is expected to receive packets from.
-     * @return
-     */
-    public Vm getSourceVm() {
-        return sourceVm;
-    }
-
-    /**
-     * Gets the number of packets that are expected to be received.
-     * After this number of packets is received, the task
-     * is marked as finished.
-     * @return
-     */
-    public long getExpectedPacketsToReceive() {
-        return expectedPacketsToReceive;
-    }
-
-    /**
-     * Sets the number of packets that are expected to be received.
-     * After this number of packets is received, the task
-     * is marked as finished.
-     * @param expectedPacketsToReceive the number of expected packets to set
-     */
-    public void setExpectedPacketsToReceive(final long expectedPacketsToReceive) {
-        this.expectedPacketsToReceive = expectedPacketsToReceive;
     }
 }

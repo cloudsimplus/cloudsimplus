@@ -23,6 +23,7 @@
  */
 package org.cloudbus.cloudsim.resources;
 
+import lombok.Getter;
 import org.cloudbus.cloudsim.util.MathUtil;
 import org.cloudbus.cloudsim.vms.Vm;
 
@@ -33,11 +34,18 @@ import org.cloudbus.cloudsim.vms.Vm;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
+@Getter
 public final class Processor extends ResourceManageableAbstract {
     public static final Processor NULL = new Processor(Vm.NULL, 0);
+
+    /**
+     * {@return the Vm} the processor belongs to.
+     */
     private final Vm vm;
 
-    /** @see #getMips() */
+    /**
+     * The individual MIPS of each {@link Pe}.
+     */
     private double mips;
 
     /**
@@ -65,14 +73,6 @@ public final class Processor extends ResourceManageableAbstract {
     }
 
     /**
-     * Gets the individual MIPS of each {@link Pe}.
-     * @return
-     */
-    public double getMips() {
-        return mips;
-    }
-
-    /**
      * Sets the individual MIPS of each {@link Pe}.
      * @param newMips the new MIPS of each PE
      */
@@ -89,22 +89,6 @@ public final class Processor extends ResourceManageableAbstract {
     }
 
     /**
-     * {@return the number of available PEs} that are free to be used
-     */
-    @Override
-    public long getAvailableResource() {
-        return super.getAvailableResource();
-    }
-
-    /**
-     * {@return the number of PEs} allocated
-     */
-    @Override
-    public long getAllocatedResource() {
-        return super.getAllocatedResource();
-    }
-
-    /**
      * Sets the number of {@link Pe}s of the Processor
      * @param numberOfPes the number of PEs to set
      * @return
@@ -118,10 +102,18 @@ public final class Processor extends ResourceManageableAbstract {
     }
 
     /**
-     * Gets the {@link Vm} the processor belongs to.
-     * @return
+     * {@return the number of available PEs} that are free to be used
      */
-    public Vm getVm() {
-        return vm;
+    @Override
+    public long getAvailableResource() {
+        return super.getAvailableResource();
+    }
+
+    /**
+     * {@return the number of PEs} allocated
+     */
+    @Override
+    public long getAllocatedResource() {
+        return super.getAllocatedResource();
     }
 }

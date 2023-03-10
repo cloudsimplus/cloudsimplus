@@ -23,6 +23,7 @@
  */
 package org.cloudsimplus.autoscaling.resources;
 
+import lombok.NonNull;
 import org.cloudbus.cloudsim.resources.Resource;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudsimplus.autoscaling.VerticalVmScaling;
@@ -59,7 +60,7 @@ public class ResourceScalingInstantaneous implements ResourceScaling {
     private static final ResourceScaling GRADUAL = new ResourceScalingGradual();
 
     @Override
-    public double getResourceAmountToScale(final VerticalVmScaling vmScaling) {
+    public double getResourceAmountToScale(@NonNull final VerticalVmScaling vmScaling) {
         final Function<Vm, Double> thresholdFunc = vmScaling.getResourceUsageThresholdFunction();
         /* Computes the size to which the resource has to be scaled to move it from the
         * under or overload state.*/

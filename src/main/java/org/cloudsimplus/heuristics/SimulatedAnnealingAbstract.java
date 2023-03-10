@@ -23,6 +23,8 @@
  */
 package org.cloudsimplus.heuristics;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
 
 /**
@@ -63,14 +65,26 @@ import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
  * pp. 19–26, 1989.</a>
  * @since CloudSim Plus 1.0
  */
+@Getter
 public abstract class SimulatedAnnealingAbstract<S extends HeuristicSolution<?>> extends HeuristicAbstract<S> {
-    /** @see #getColdTemperature() */
+    /**
+     * The temperature that defines the system is cold enough
+     * and solution search may be stopped.
+     */
+    @Setter
     private double coldTemperature;
 
-    /** @see #getCurrentTemperature() */
+    /**
+     * The current system temperature that
+     * represents the system state at the time
+     * of the method call.
+     */
     private double currentTemperature;
 
-    /** @see #getCoolingRate() */
+    /**
+     * Percentage rate in which the system will be cooled, in scale from [0 to 1[.
+     */
+    @Setter
     private double coolingRate;
 
 	/**
@@ -131,17 +145,6 @@ public abstract class SimulatedAnnealingAbstract<S extends HeuristicSolution<?>>
             System.currentTimeMillis(), getBestSolutionSoFar().getCost(), getCurrentTemperature());
     }
 
-    /**
-     * Gets the current system temperature that
-     * represents the system state at the time
-     * of the method call.
-     *
-     * @return the current system temperature
-     */
-    public double getCurrentTemperature() {
-        return currentTemperature;
-    }
-
 	/**
 	 * Sets the current system temperature.
 	 * @param currentTemperature the temperature to set
@@ -149,37 +152,4 @@ public abstract class SimulatedAnnealingAbstract<S extends HeuristicSolution<?>>
 	protected void setCurrentTemperature(final double currentTemperature) {
 		this.currentTemperature = currentTemperature;
 	}
-
-	/**
-     * @return percentage rate in which the system will be cooled, in scale from [0 to 1[.
-     */
-    public double getCoolingRate() {
-        return coolingRate;
-    }
-
-	/**
-	 * Sets the percentage rate in which the system will be cooled, in scale from [0 to 1[.
-	 * @param coolingRate the rate to set
-	 */
-	public void setCoolingRate(final double coolingRate) {
-        this.coolingRate = coolingRate;
-    }
-
-    /**
-     * @return the temperature that defines the system is cold enough
-     * and solution search may be stopped.
-     */
-    public double getColdTemperature() {
-        return coldTemperature;
-    }
-
-    /**
-     * Sets the temperature that defines the system is cold enough
-     * and solution search may be stopped.
-     *
-     * @param coldTemperature the cold temperature to set
-     */
-    public void setColdTemperature(final double coldTemperature) {
-        this.coldTemperature = coldTemperature;
-    }
 }

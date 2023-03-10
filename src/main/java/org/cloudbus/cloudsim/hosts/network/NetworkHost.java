@@ -7,6 +7,9 @@
  */
 package org.cloudbus.cloudsim.hosts.network;
 
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.Setter;
 import org.cloudbus.cloudsim.core.CloudSimTag;
 import org.cloudbus.cloudsim.hosts.HostSimple;
 import org.cloudbus.cloudsim.hosts.HostSuitability;
@@ -51,6 +54,7 @@ public class NetworkHost extends HostSimple {
     public static final NetworkHost NULL = new NetworkHost();
     private static final Logger LOGGER = LoggerFactory.getLogger(NetworkHost.class.getSimpleName());
 
+    @Getter
     private int totalDataTransferBytes;
 
     /**
@@ -69,8 +73,10 @@ public class NetworkHost extends HostSimple {
     private final List<HostPacket> hostPktsReceived;
 
     /**
-     * Edge switch in which the Host is connected.
+     * Edge Switch the Host is directly connected to.
+     * Setter is to be called only by the {@link EdgeSwitch#connectHost(NetworkHost)} method.
      */
+    @Getter @Setter @NonNull
     private EdgeSwitch edgeSwitch;
 
     /**
@@ -250,10 +256,6 @@ public class NetworkHost extends HostSimple {
         pktsToSendList.add(hostPkt);
     }
 
-    public int getTotalDataTransferBytes() {
-        return totalDataTransferBytes;
-    }
-
     /**
      * Adds a packet to the list of received packets in order
      * to further submit them to the respective target VMs and Cloudlets.
@@ -262,23 +264,5 @@ public class NetworkHost extends HostSimple {
      */
     public void addReceivedNetworkPacket(final HostPacket hostPacket){
         hostPktsReceived.add(hostPacket);
-    }
-
-    /**
-     * Gets the Switch the Host is directly connected to.
-     * @return
-     */
-    public EdgeSwitch getEdgeSwitch() {
-        return edgeSwitch;
-    }
-
-    /**
-     * Sets the Switch the Host is directly connected to.
-     * This method is to be called only by the {@link EdgeSwitch#connectHost(NetworkHost)} method.
-     * @param edgeSwitch the Switch to set
-     * @return
-     */
-    public void setEdgeSwitch(final EdgeSwitch edgeSwitch) {
-        this.edgeSwitch = edgeSwitch;
     }
 }

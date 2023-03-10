@@ -7,6 +7,7 @@
  */
 package org.cloudbus.cloudsim.network;
 
+import lombok.Getter;
 import org.cloudbus.cloudsim.util.MathUtil;
 
 import java.util.Arrays;
@@ -31,6 +32,7 @@ public class FloydWarshall {
     /**
      * Number of vertices (network nodes).
      */
+    @Getter
     private final int numVertices;
 
     /**
@@ -182,9 +184,5 @@ public class FloydWarshall {
      */
     public int[][] getPk() {
         return Arrays.copyOf(pk, pk.length);
-    }
-
-    public int getNumVertices(){
-        return numVertices;
     }
 }

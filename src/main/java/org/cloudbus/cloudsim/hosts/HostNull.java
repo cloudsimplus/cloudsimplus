@@ -162,9 +162,7 @@ final class HostNull implements Host {
     }
     @Override public double getLastBusyTime() { return 0; }
     @Override public boolean isIdle() { return true; }
-    @Override public Host setSimulation(Simulation simulation) {
-        return this;
-    }
+    @Override public void setSimulation(Simulation simulation) {/**/}
     @Override public ResourceProvisioner getProvisioner(Class<? extends ResourceManageable> clazz) { return ResourceProvisioner.NULL; }
     @Override public int getWorkingPesNumber() {
         return 0;
@@ -197,13 +195,13 @@ final class HostNull implements Host {
     @Override public List<Vm> getFinishedVms() { return Collections.emptyList(); }
     @Override public List<Vm> getMigratableVms() { return Collections.emptyList(); }
     @Override public boolean isLazySuitabilityEvaluation() { return false; }
-    @Override public Host setLazySuitabilityEvaluation(boolean lazySuitabilityEvaluation) { return this; }
+    @Override public void setLazySuitabilityEvaluation(boolean lazySuitabilityEvaluation) {/**/}
     @Override public double getTotalUpTime() { return 0; }
     @Override public double getTotalUpTimeHours() { return 0; }
     @Override public void setShutdownTime(double shutdownTime) {/**/}
     @Override public double getUpTime() { return 0; }
     @Override public double getUpTimeHours() { return 0; }
     @Override public double getIdleShutdownDeadline() { return -1; }
-    @Override public Host setIdleShutdownDeadline(double deadline) { return this; }
+    @Override public void setIdleShutdownDeadline(double deadline) {/**/}
     @Override public List<ResourceManageable> getResources() {return Collections.emptyList(); }
 }

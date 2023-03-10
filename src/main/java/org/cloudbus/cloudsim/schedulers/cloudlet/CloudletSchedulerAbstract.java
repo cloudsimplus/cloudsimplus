@@ -7,13 +7,16 @@
  */
 package org.cloudbus.cloudsim.schedulers.cloudlet;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.Setter;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet.Status;
 import org.cloudbus.cloudsim.cloudlets.CloudletExecution;
 import org.cloudbus.cloudsim.core.CloudSimTag;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.resources.Bandwidth;
-import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.Ram;
 import org.cloudbus.cloudsim.resources.ResourceManageable;
 import org.cloudbus.cloudsim.schedulers.MipsShare;
@@ -48,49 +51,47 @@ import static org.cloudsimplus.listeners.CloudletResourceAllocationFailEventInfo
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Toolkit 1.0
  */
+@Getter
 public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     @Serial
     private static final long serialVersionUID = -2314361120790372742L;
 
-    /** @see #getCloudletPausedList() */
-    private final List<CloudletExecution> cloudletPausedList;
-
-    /** @see #getCloudletFinishedList() */
-    private final List<CloudletExecution> cloudletFinishedList;
-
-    /** @see #getCloudletFailedList() */
-    private final List<CloudletExecution> cloudletFailedList;
-
-    /** @see #getTaskScheduler() */
+    private Vm vm;
     private CloudletTaskScheduler taskScheduler;
 
-    /** @see #getPreviousTime() */
+    /**
+     * The current MIPS capacity from the VM that will be
+     * made available to the scheduler. This MIPS share will be allocated
+     * to Cloudlets as requested.
+     */
+    private MipsShare currentMipsShare;
+
     private double previousTime;
 
-    /** @see #getCurrentMipsShare() */
-    private MipsShare currentMipsShare;
+    private final List<CloudletExecution> cloudletFinishedList;
+
+    /** {@return the list} of currently paused cloudlets. */
+    private final List<CloudletExecution> cloudletPausedList;
+
+    /** @return the list} of cloudlets that failed executing. */
+    private final List<CloudletExecution> cloudletFailedList;
 
     /** @see #getCloudletExecList() */
     private final List<CloudletExecution> cloudletExecList;
 
-    /** @see #enableCloudletSubmittedList() */
-    private boolean cloudletSubmittedListEnabled;
-
-    /** @see #getCloudletSubmittedList() */
-    private final List<Cloudlet> cloudletSubmittedList;
-
-    /**
-     * @see #getCloudletWaitingList()
-     */
+    /** @see #getCloudletWaitingList() */
     private final List<CloudletExecution> cloudletWaitingList;
-
-    /** @see #getVm() */
-    private Vm vm;
 
     /** @see #getCloudletReturnedList() */
     private final Set<Cloudlet> cloudletReturnedList;
 
+    /** @see #getCloudletSubmittedList() */
+    private final List<Cloudlet> cloudletSubmittedList;
+
+    private boolean cloudletSubmittedListEnabled;
+
     /** @see #addOnCloudletResourceAllocationFail(EventListener) */
+    @Getter(AccessLevel.NONE)
     private final List<EventListener<CloudletResourceAllocationFailEventInfo>> resourceAllocationFailListeners;
 
     /**
@@ -111,11 +112,6 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
         resourceAllocationFailListeners = new ArrayList<>();
     }
 
-    @Override
-    public double getPreviousTime() {
-        return previousTime;
-    }
-
     /**
      * Sets the previous time when the scheduler updated the processing of
      * cloudlets it is managing.
@@ -127,26 +123,13 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     }
 
     /**
-     * Gets current MIPS capacity from the VM that will be
-     * made available to the scheduler. This MIPS share will be allocated
-     * to Cloudlets as requested.
-     *
-     * @return the current MIPS share, where each item represents
-     * the MIPS capacity of a {@link Pe} which is available to the scheduler.
-     *
-     */
-    public MipsShare getCurrentMipsShare() {
-        return currentMipsShare;
-    }
-
-    /**
      * Sets current MIPS share available for the VM using the
      * scheduler.
      *
      * @param currentMipsShare the new current MIPS share
      * @see #getCurrentMipsShare()
      */
-    protected void setCurrentMipsShare(final MipsShare currentMipsShare) {
+    protected void setCurrentMipsShare(@NonNull final MipsShare currentMipsShare) {
         if(currentMipsShare.pes() > vm.getNumberOfPes()){
             LOGGER.warn("Requested {} PEs but {} has just {}", currentMipsShare.pes(), vm, vm.getNumberOfPes());
             this.currentMipsShare = new MipsShare(vm.getNumberOfPes(), currentMipsShare.mips());
@@ -233,29 +216,6 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
             cle.setStatus(Status.QUEUED);
         }
         cloudletWaitingList.add(cle);
-    }
-
-    /**
-     * Gets the list of paused cloudlets.
-     *
-     * @return the cloudlet paused list
-     */
-    protected List<CloudletExecution> getCloudletPausedList() {
-        return cloudletPausedList;
-    }
-
-    @Override
-    public List<CloudletExecution> getCloudletFinishedList() {
-        return cloudletFinishedList;
-    }
-
-    /**
-     * Gets the list of failed cloudlets.
-     *
-     * @return the cloudlet failed list.
-     */
-    protected List<CloudletExecution> getCloudletFailedList() {
-        return cloudletFailedList;
     }
 
     @Override
@@ -1071,13 +1031,8 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     }
 
     @Override
-    public Vm getVm() {
-        return vm;
-    }
-
-    @Override
-    public void setVm(final Vm vm) {
-        if (isOtherVmAssigned(requireNonNull(vm))) {
+    public void setVm(@NonNull final Vm vm) {
+        if (isOtherVmAssigned(vm)) {
             throw new IllegalArgumentException(
                 "CloudletScheduler already has a Vm assigned to it. Each Vm must have its own CloudletScheduler instance.");
         }
@@ -1127,11 +1082,6 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      */
     private void removeUsedPes(final long usedPesToRemove) {
         vm.getProcessor().deallocateResource(usedPesToRemove);
-    }
-
-    @Override
-    public CloudletTaskScheduler getTaskScheduler() {
-        return taskScheduler;
     }
 
     @Override

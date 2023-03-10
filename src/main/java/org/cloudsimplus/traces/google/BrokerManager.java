@@ -23,6 +23,7 @@
  */
 package org.cloudsimplus.traces.google;
 
+import lombok.NonNull;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
 
@@ -60,7 +61,7 @@ public final class BrokerManager {
 
     private final GoogleTaskEventsTraceReader reader;
 
-    BrokerManager(final GoogleTaskEventsTraceReader reader){
+    BrokerManager(@NonNull final GoogleTaskEventsTraceReader reader){
         this.reader = reader;
         this.brokersMap = new HashMap<>();
     }
@@ -79,12 +80,12 @@ public final class BrokerManager {
      * Defines a default broker to will be used for all created Cloudlets.
      * This way, the username field inside the trace file won't be used
      * to dynamically create brokers.
-     * The {@link #getBrokers()} will only return an unitary list containing this broker.
+     * The {@link #getBrokers()} will only return a unitary list containing this broker.
      *
      * @param broker the broker for all created cloudlets, representing a single username (customer)
      */
     public void setDefaultBroker(final DatacenterBroker broker) {
-        this.defaultBroker = requireNonNull(broker);
+        this.defaultBroker = broker;
         this.brokersMap.clear();
     }
 

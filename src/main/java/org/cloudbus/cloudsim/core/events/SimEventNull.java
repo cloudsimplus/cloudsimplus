@@ -37,7 +37,7 @@ import org.cloudsimplus.listeners.EventListener;
  * @see SimEvent#NULL
  */
 final class SimEventNull implements SimEvent {
-    @Override public SimEvent setSimulation(Simulation simulation) { return this; }
+    @Override public void setSimulation(Simulation simulation) { /**/ }
     @Override public Type getType() { return Type.NULL; }
     @Override public SimEntity getDestination() { return SimEntity.NULL; }
     @Override public SimEntity getSource() {
@@ -51,12 +51,8 @@ final class SimEventNull implements SimEvent {
     @Override public Object getData() {
         return 0;
     }
-    @Override public SimEvent setSource(SimEntity source) {
-        return this;
-    }
-    @Override public SimEvent setDestination(SimEntity destination) {
-        return this;
-    }
+    @Override public void setSource(SimEntity source) {/**/}
+    @Override public void setDestination(SimEntity destination) {/**/}
     @Override public double getTime() {
         return 0;
     }

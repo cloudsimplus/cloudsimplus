@@ -23,12 +23,13 @@
  */
 package org.cloudsimplus.builders.tables;
 
-import org.apache.commons.lang3.StringUtils;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.Setter;
 
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 
 /**
@@ -36,21 +37,28 @@ import java.util.Objects;
  *
  * @author Manoel Campos da Silva Filho
  */
+@Getter
 public abstract class AbstractTable implements Table {
+    /**
+     * The {@link PrintStream} used to print the generated table.
+     */
+    @Setter
     private PrintStream printStream;
 
-    /** @see #getColumns() */
+    /**
+     * {@return the list} of columns of the table
+     */
     private final List<TableColumn> columns;
 
-    /** @see #getTitle() */
+    /**
+     * {@return the list} of columns of the table
+     */
     private String title;
 
     /** @see #getRows() */
     private final List<List<Object>> rows;
 
-    /**
-     * @see #getColumnSeparator()
-     */
+    /** @see #getColumnSeparator() */
     private String columnSeparator;
 
     public AbstractTable(){
@@ -68,37 +76,19 @@ public abstract class AbstractTable implements Table {
         setTitle(title);
     }
 
-    /**
-     * @return the list of columns of the table
-     */
-    @Override
-    public List<TableColumn> getColumns() {
-        return columns;
-    }
-
     @Override
     public int colCount() {
         return columns.size();
     }
 
     @Override
-    public String getTitle() {
-        return title;
-    }
-
-    @Override
-    public final Table setTitle(final String title) {
-        this.title = Objects.requireNonNull(title);
+    public final Table setTitle(@NonNull final String title) {
+        this.title = title;
         return this;
     }
 
     @Override
-    public String getColumnSeparator(){
-        return columnSeparator;
-    }
-
-    @Override
-    public final Table setColumnSeparator(String columnSeparator) {
+    public final Table setColumnSeparator(@NonNull String columnSeparator) {
         this.columnSeparator = columnSeparator;
         return this;
     }
@@ -239,21 +229,5 @@ public abstract class AbstractTable implements Table {
             columns.add(column);
         else columns.add(index, column);
         return column;
-    }
-
-    /**
-     * Sets the {@link PrintStream} used to print the generated table.
-     * @param printStream the {@link PrintStream} to set
-     */
-    public void setPrintStream(final PrintStream printStream) {
-        this.printStream = printStream;
-    }
-
-    /**
-     * Gets the {@link PrintStream} used to print the generated table.
-     * @return the {@link PrintStream}
-     */
-    protected PrintStream getPrintStream() {
-        return printStream;
     }
 }

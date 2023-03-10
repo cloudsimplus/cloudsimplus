@@ -23,6 +23,7 @@
  */
 package org.cloudbus.cloudsim.vms;
 
+import lombok.NonNull;
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 import org.cloudbus.cloudsim.core.AbstractMachine;
 import org.cloudbus.cloudsim.resources.Resource;
@@ -51,9 +52,9 @@ public class ResourceStats<T extends AbstractMachine> {
      * @param resourceUtilizationFunction a {@link Function} that receives a Machine
      *                                    and returns the current resource utilization for that machine
      */
-    protected ResourceStats(final T machine, final Function<T, Double> resourceUtilizationFunction){
-        this.resourceUtilizationFunction = Objects.requireNonNull(resourceUtilizationFunction);
-        this.machine = Objects.requireNonNull(machine);
+    protected ResourceStats(@NonNull final T machine, @NonNull final Function<T, Double> resourceUtilizationFunction){
+        this.resourceUtilizationFunction = resourceUtilizationFunction;
+        this.machine = machine;
         this.stats = new SummaryStatistics();
     }
 

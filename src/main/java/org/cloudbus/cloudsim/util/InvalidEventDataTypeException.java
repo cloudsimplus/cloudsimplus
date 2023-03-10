@@ -55,6 +55,4 @@ public class InvalidEventDataTypeException extends IllegalStateException {
         final var clock = evt.getSimulation().clockStr();
         return fmt.formatted(clock, tagName, requiredClassName, evt.getData().getClass().getSimpleName());
     }
-
-
 }

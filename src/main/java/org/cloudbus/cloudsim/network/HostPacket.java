@@ -7,11 +7,12 @@
  */
 package org.cloudbus.cloudsim.network;
 
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.Setter;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.network.NetworkHost;
 import org.cloudbus.cloudsim.network.switches.EdgeSwitch;
-
-import java.util.Objects;
 
 /**
  * Represents a packet which travels from one {@link Host} to another.
@@ -36,21 +37,26 @@ import java.util.Objects;
  *
  * @since CloudSim Toolkit 1.0
  */
-public class HostPacket implements NetworkPacket<NetworkHost> {
+@Getter @Setter
+public final class HostPacket implements NetworkPacket<NetworkHost> {
 
-    /** @see #getVmPacket() */
+    /**
+     * Information about the virtual sender and receiver entities of the packet
+     * (the sender and receiver Cloudlet and their respective VMs).
+     */
     private final VmPacket vmPacket;
 
-    /** @see #getSource() */
-    private NetworkHost sourceHost;
+    /**
+     * The {@link Host} that this packet is coming from (the sender).
+     */
+    private NetworkHost source;
 
-    /** @see #getDestination() */
-    private NetworkHost destinationHost;
+    /**
+     * The {@link Host} that the packet is going to (the receiver).
+     */
+    private NetworkHost destination;
 
-    /** @see #getSendTime() */
     private double sendTime;
-
-    /** @see #getReceiveTime() */
     private double receiveTime;
 
     /**
@@ -59,8 +65,8 @@ public class HostPacket implements NetworkPacket<NetworkHost> {
      * @param sourceHost host sending the packet
      * @param vmPacket vm packet containing information of sender and receiver Cloudlets and their VMs.
      */
-    public HostPacket(final NetworkHost sourceHost, final VmPacket vmPacket) {
-        this.vmPacket = Objects.requireNonNull(vmPacket);
+    public HostPacket(final NetworkHost sourceHost, @NonNull final VmPacket vmPacket) {
+        this.vmPacket = vmPacket;
         this.sendTime = vmPacket.getSendTime();
         this.setSource(sourceHost);
     }
@@ -73,71 +79,6 @@ public class HostPacket implements NetworkPacket<NetworkHost> {
     @Override
     public long getSize() {
         return vmPacket.getSize();
-    }
-
-    /**
-     * Gets the {@link Host} that this packet is coming from (the sender).
-     * @return
-     */
-    @Override
-    public NetworkHost getSource() {
-        return sourceHost;
-    }
-
-    /**
-     * Sets the {@link Host} that this packet is coming from (the sender).
-     * @param sourceHost the source Host id to set
-     */
-    @Override
-    public final void setSource(final NetworkHost sourceHost) {
-        this.sourceHost = Objects.requireNonNull(sourceHost);
-    }
-
-    /**
-     * Gets the {@link Host} that the packet is going to.
-     * @return
-     */
-    @Override
-    public NetworkHost getDestination() {
-        return destinationHost;
-    }
-
-    /**
-     * Sets the {@link Host} that the packet is going to (the receiver).
-     * @param destinationHost the receiver Host id to set
-     */
-    @Override
-    public void setDestination(final NetworkHost destinationHost) {
-        this.destinationHost = Objects.requireNonNull(destinationHost);
-    }
-
-    @Override
-    public double getSendTime() {
-        return sendTime;
-    }
-
-    @Override
-    public void setSendTime(final double sendTime) {
-        this.sendTime = sendTime;
-    }
-
-    @Override
-    public double getReceiveTime() {
-        return receiveTime;
-    }
-
-    @Override
-    public void setReceiveTime(final double receiveTime) {
-        this.receiveTime = receiveTime;
-    }
-
-    /**
-     * Gets information about the virtual sender and receiver entities of the packet
-     * (the sender and receiver Cloudlet and their respective VMs).
-     * @return
-     */
-    public VmPacket getVmPacket() {
-        return vmPacket;
     }
 
     /**

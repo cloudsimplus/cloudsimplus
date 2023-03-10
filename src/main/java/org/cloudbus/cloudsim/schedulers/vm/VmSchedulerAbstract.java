@@ -6,6 +6,8 @@
  */
 package org.cloudbus.cloudsim.schedulers.vm;
 
+import lombok.Getter;
+import lombok.NonNull;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.HostSimple;
 import org.cloudbus.cloudsim.resources.Pe;
@@ -27,16 +29,10 @@ import static java.util.stream.Collectors.toList;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Toolkit 1.0
  */
+@Getter
 public abstract class VmSchedulerAbstract implements VmScheduler {
 
-    /**
-     * @see #getHost()
-     */
     private Host host;
-
-    /**
-     * @see #getVmMigrationCpuOverhead()
-     */
     private final double vmMigrationCpuOverhead;
 
     /**
@@ -59,7 +55,7 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
     }
 
     @Override
-    public final boolean isSuitableForVm(final Vm vm, final MipsShare requestedMips) {
+    public final boolean isSuitableForVm(@NonNull final Vm vm, @NonNull final MipsShare requestedMips) {
         if(requestedMips.isEmpty()){
             LOGGER.warn(
                 "{}: {}: It was requested an empty list of PEs for {} in {}",
@@ -83,7 +79,7 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
     }
 
     @Override
-    public final boolean allocatePesForVm(final Vm vm, final MipsShare requestedMips) {
+    public final boolean allocatePesForVm(@NonNull final Vm vm, @NonNull final MipsShare requestedMips) {
         if (!vm.isInMigration() && host.getVmsMigratingOut().contains(vm)) {
             host.removeVmMigratingOut(vm);
         }
@@ -162,7 +158,7 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
     protected abstract long deallocatePesFromVmInternal(Vm vm, int pesToRemove);
 
     @Override
-    public MipsShare getAllocatedMips(final Vm vm) {
+    public MipsShare getAllocatedMips(@NonNull final Vm vm) {
         final MipsShare mipsShare = ((VmSimple)vm).getAllocatedMips();
 
         /*
@@ -314,18 +310,8 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
     }
 
     @Override
-    public double getVmMigrationCpuOverhead() {
-        return vmMigrationCpuOverhead;
-    }
-
-    @Override
-    public Host getHost() {
-        return host;
-    }
-
-    @Override
-    public final VmScheduler setHost(final Host host) {
-        if(isOtherHostAssigned(requireNonNull(host))){
+    public final VmScheduler setHost(@NonNull final Host host) {
+        if(isOtherHostAssigned(host)){
             throw new IllegalStateException("VmScheduler already has a Host assigned to it. Each Host must have its own VmScheduler instance.");
         }
 
@@ -340,7 +326,7 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
      * @param host the Host to check if assigned scheduler's Host is different from
      * @return
      */
-    private boolean isOtherHostAssigned(final Host host) {
+    private boolean isOtherHostAssigned(@NonNull final Host host) {
         /*It's used != instead of !equals() because when a VmScheduler is set to a Host,
         * the Host may not have an ID yet.
         * That may happen when the Host is created without an id,

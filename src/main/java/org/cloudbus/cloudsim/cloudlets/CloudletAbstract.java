@@ -7,6 +7,10 @@
  */
 package org.cloudbus.cloudsim.cloudlets;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.Setter;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.core.CloudSimTag;
 import org.cloudbus.cloudsim.core.CustomerEntityAbstract;
@@ -33,71 +37,57 @@ import static java.util.Objects.requireNonNull;
  * @author Anton Beloglazov
  * @author Manoel Campos da Silva Filho
  */
+@Getter @Setter
 public abstract class CloudletAbstract extends CustomerEntityAbstract implements Cloudlet {
-
-    /** @see #getJobId() */
     private long jobId;
 
-    /** @see #getLength() */
-    private long length;
-
-    /** @see #getFinishedLengthSoFar() */
-    private long finishedLengthSoFar;
-
-    /** @see #getNumberOfPes() */
     private long numberOfPes;
 
-    /** @see #getStatus() */
     private Status status;
 
-    /** @see #isReturnedToBroker() */
+    private long length;
+
+    @Setter(AccessLevel.NONE)
+    private long finishedLengthSoFar;
+
+    @Setter(AccessLevel.NONE)
     private boolean returnedToBroker;
 
-    /** @see #getExecStartTime() */
     private double execStartTime;
 
-    /** @see #getPriority() */
     private int priority;
 
-    /** @see #getNetServiceLevel() */
     private int netServiceLevel;
 
-    /** @see #getVm() */
-    private Vm vm;
-
-    /** @see #getRequiredFiles() */
-    private List<String> requiredFiles;
-
-    /** @see #getFileSize() */
     private long fileSize;
 
-    /** @see #getOutputSize() */
     private long outputSize;
 
-    /** @see #getFinishTime() */
-    private double finishTime;
+    private double arrivalTime;
 
-    /** @see #getUtilizationModelCpu() */
-    private UtilizationModel utilizationModelCpu;
-
-    /** @see #getUtilizationModelRam() */
-    private UtilizationModel utilizationModelRam;
-
-    /** @see #getUtilizationModelBw() */
-    private UtilizationModel utilizationModelBw;
-
-    private final Set<EventListener<CloudletVmEventInfo>> onStartListeners;
-    private final Set<EventListener<CloudletVmEventInfo>> onFinishListeners;
-    private final Set<EventListener<CloudletVmEventInfo>> onUpdateProcessingListeners;
-
-    /** @see #getSubmissionDelay() */
-    private double submissionDelay;
-
-    /** @see #getLifeTime() */
     private double lifeTime;
 
-    /** @see #getArrivalTime() */
-    private double arrivalTime;
+    private double finishTime;
+
+    private double submissionDelay;
+
+    @NonNull
+    private Vm vm;
+
+    private List<String> requiredFiles;
+
+    private UtilizationModel utilizationModelCpu;
+
+    private UtilizationModel utilizationModelRam;
+
+    private UtilizationModel utilizationModelBw;
+
+    @Getter(AccessLevel.NONE)
+    private final Set<EventListener<CloudletVmEventInfo>> onStartListeners;
+    @Getter(AccessLevel.NONE)
+    private final Set<EventListener<CloudletVmEventInfo>> onFinishListeners;
+    @Getter(AccessLevel.NONE)
+    private final Set<EventListener<CloudletVmEventInfo>> onUpdateProcessingListeners;
 
     /**
      * Creates a Cloudlet with no priority or id. The id is defined when the Cloudlet is
@@ -256,16 +246,6 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
     }
 
     @Override
-    public final Cloudlet setLength(final long length) {
-        if (length == 0) {
-            throw new IllegalArgumentException("Cloudlet length cannot be zero.");
-        }
-
-        this.length = length;
-        return this;
-    }
-
-    @Override
     public void setNetServiceLevel(final int netServiceLevel) {
         if (netServiceLevel < 0) {
             throw new IllegalArgumentException("Net Service Level cannot be negative");
@@ -275,24 +255,8 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
     }
 
     @Override
-    public int getNetServiceLevel() {
-        return netServiceLevel;
-    }
-
-    @Override
     public double getWaitingTime() {
         return arrivalTime == -1 ? -1 : execStartTime - arrivalTime;
-    }
-
-    @Override
-    public int getPriority() {
-        return priority;
-    }
-
-    @Override
-    public Cloudlet setPriority(final int priority) {
-        this.priority = priority;
-        return this;
     }
 
     @Override
@@ -303,11 +267,6 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
 
         this.numberOfPes = numberOfPes;
         return this;
-    }
-
-    @Override
-    public long getNumberOfPes() {
-        return numberOfPes;
     }
 
     @Override
@@ -377,21 +336,6 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
     }
 
     @Override
-    public long getFileSize() {
-        return fileSize;
-    }
-
-    @Override
-    public long getOutputSize() {
-        return outputSize;
-    }
-
-    @Override
-    public double getExecStartTime() {
-        return execStartTime;
-    }
-
-    @Override
     public void setExecStartTime(final double clockTime) {
         final boolean isStartingInSomeVm = this.execStartTime <= 0 && clockTime > 0 && vm != Vm.NULL && vm != null;
         this.execStartTime = clockTime;
@@ -401,22 +345,13 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
     }
 
     @Override
-    public boolean setStatus(final Status newStatus) {
-        if (this.status == newStatus) {
-            return false;
+    public final Cloudlet setLength(final long length) {
+        if (length == 0) {
+            throw new IllegalArgumentException("Cloudlet length cannot be zero.");
         }
 
-        if (newStatus == Status.SUCCESS) {
-            setFinishTime(getSimulation().clock());
-        }
-
-        this.status = newStatus;
-        return true;
-    }
-
-    @Override
-    public long getLength() {
-        return length;
+        this.length = length;
+        return this;
     }
 
     /**
@@ -441,11 +376,6 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
         return time - execStartTime;
     }
 
-    @Override
-    public double getArrivalTime() {
-        return arrivalTime;
-    }
-
     /**
      * Sets the time the Cloudlet arrived at a Datacenter to be executed.
      * @param arrivalTime the arrival time to set (in seconds)
@@ -455,11 +385,6 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
         if(arrivalTime < 0)
             this.arrivalTime = -1;
         else this.arrivalTime = arrivalTime;
-    }
-
-    @Override
-    public double getFinishTime() {
-        return finishTime;
     }
 
     /**
@@ -472,39 +397,17 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
     }
 
     @Override
-    public Status getStatus() {
-        return status;
-    }
+    public boolean setStatus(final Status newStatus) {
+        if (this.status == newStatus) {
+            return false;
+        }
 
-    @Override
-    public boolean isReturnedToBroker() {
-        return returnedToBroker;
-    }
+        if (newStatus == Status.SUCCESS) {
+            setFinishTime(getSimulation().clock());
+        }
 
-    @Override
-    public long getJobId() {
-        return jobId;
-    }
-
-    @Override
-    public final void setJobId(final long jobId) {
-        this.jobId = jobId;
-    }
-
-    @Override
-    public Vm getVm() {
-        return vm;
-    }
-
-    @Override
-    public Cloudlet setVm(final Vm vm) {
-        this.vm = vm;
-        return this;
-    }
-
-    @Override
-    public List<String> getRequiredFiles() {
-        return requiredFiles;
+        this.status = newStatus;
+        return true;
     }
 
     /**
@@ -512,8 +415,8 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
      *
      * @param requiredFiles the new list of required files
      */
-    public final void setRequiredFiles(final List<String> requiredFiles) {
-        this.requiredFiles = requireNonNull(requiredFiles);
+    public final void setRequiredFiles(@NonNull final List<String> requiredFiles) {
+        this.requiredFiles = requiredFiles;
     }
 
     @Override
@@ -553,39 +456,6 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
     @Override
     public boolean hasRequiresFiles() {
         return !getRequiredFiles().isEmpty();
-    }
-
-    @Override
-    public UtilizationModel getUtilizationModelCpu() {
-        return utilizationModelCpu;
-    }
-
-    @Override
-    public final Cloudlet setUtilizationModelCpu(final UtilizationModel utilizationModelCpu) {
-        this.utilizationModelCpu = requireNonNull(utilizationModelCpu);
-        return this;
-    }
-
-    @Override
-    public UtilizationModel getUtilizationModelRam() {
-        return utilizationModelRam;
-    }
-
-    @Override
-    public final Cloudlet setUtilizationModelRam(final UtilizationModel utilizationModelRam) {
-        this.utilizationModelRam = requireNonNull(utilizationModelRam);
-        return this;
-    }
-
-    @Override
-    public UtilizationModel getUtilizationModelBw() {
-        return utilizationModelBw;
-    }
-
-    @Override
-    public final Cloudlet setUtilizationModelBw(final UtilizationModel utilizationModelBw) {
-        this.utilizationModelBw = requireNonNull(utilizationModelBw);
-        return this;
     }
 
     @Override
@@ -633,11 +503,6 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
     @Override
     public double getUtilizationOfRam(final double time) {
         return getUtilizationModelRam().getUtilization(time);
-    }
-
-    @Override
-    public double getSubmissionDelay() {
-        return this.submissionDelay;
     }
 
     @Override
@@ -700,10 +565,5 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
 
 		this.lifeTime = lifeTime;
 		return this;
-	}
-
-	@Override
-	public double getLifeTime() {
-		return this.lifeTime;
 	}
 }

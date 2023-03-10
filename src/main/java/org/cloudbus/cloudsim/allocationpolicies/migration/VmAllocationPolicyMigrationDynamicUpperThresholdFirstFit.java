@@ -1,5 +1,8 @@
 package org.cloudbus.cloudsim.allocationpolicies.migration;
 
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.Setter;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.selectionpolicies.VmSelectionPolicy;
 
@@ -11,6 +14,7 @@ import java.util.Objects;
  *
  * @author Manoel Campos da Silva Filho
  */
+@Getter @Setter
 public abstract class VmAllocationPolicyMigrationDynamicUpperThresholdFirstFit extends VmAllocationPolicyMigrationAbstract
     implements VmAllocationPolicyMigrationDynamicUpperThreshold {
 
@@ -18,6 +22,7 @@ public abstract class VmAllocationPolicyMigrationDynamicUpperThresholdFirstFit e
     private double safetyParameter;
 
     /** @see #getFallbackVmAllocationPolicy() */
+    @NonNull
     private VmAllocationPolicyMigration fallbackVmAllocationPolicy;
 
     /**
@@ -95,20 +100,5 @@ public abstract class VmAllocationPolicyMigrationDynamicUpperThresholdFirstFit e
         }
 
         this.safetyParameter = safetyParameter;
-    }
-
-    @Override
-    public double getSafetyParameter() {
-        return safetyParameter;
-    }
-
-    @Override
-    public final void setFallbackVmAllocationPolicy(final VmAllocationPolicyMigration fallbackPolicy) {
-        this.fallbackVmAllocationPolicy = Objects.requireNonNull(fallbackPolicy);
-    }
-
-    @Override
-    public VmAllocationPolicyMigration getFallbackVmAllocationPolicy() {
-        return fallbackVmAllocationPolicy;
     }
 }

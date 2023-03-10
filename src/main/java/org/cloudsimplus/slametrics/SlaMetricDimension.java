@@ -23,6 +23,10 @@
  */
 package org.cloudsimplus.slametrics;
 
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.Setter;
+
 /**
  * Represents a value for a specific metric of an SLA contract,
  * following the format defined by the
@@ -36,11 +40,22 @@ package org.cloudsimplus.slametrics;
  *
  * @author raysaoliveira
  */
+@Getter @Setter
 public final class SlaMetricDimension {
     private static final String MAX_VALUE_NAME ="maxValue";
     private static final String MIN_VALUE_NAME ="minValue";
 
+    @NonNull
     private String name;
+
+    /**
+     * The unit of the dimension, if "Percent" or "Absolute".
+     * When the unit is "Percent", the values are defined
+     * in scale from 0 to 100%, but they are stored in this class
+     * in scale from 0 to 1, because everywhere percentage values
+     * are defined in this scale.
+     */
+    @NonNull
     private String unit;
     private double value;
 
@@ -52,15 +67,6 @@ public final class SlaMetricDimension {
         this.name = "";
         this.unit = "";
         setValue(value);
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public SlaMetricDimension setName(final String name) {
-        this.name = name;
-        return this;
     }
 
     /**
@@ -75,11 +81,6 @@ public final class SlaMetricDimension {
      */
     public double getValue() {
         return isPercent() ? value/100.0 : value;
-    }
-
-    public SlaMetricDimension setValue(final double value) {
-        this.value = value;
-        return this;
     }
 
     public boolean isMaxValue(){
@@ -102,22 +103,5 @@ public final class SlaMetricDimension {
     public String toString() {
         final var valStr = value == Double.MAX_VALUE ? "Double.MAX_VALUE" : "%.4f".formatted(value);
         return "Dimension{name = %s, value = %s}".formatted(name, valStr);
-    }
-
-    /**
-     * Gets the unit of the dimension, if "Percent" or "Absolute".
-     * When the unit is "Percent", the values are defined
-     * in scale from 0 to 100%, but they are stored in this class
-     * in scale from 0 to 1, because everywhere percentage values
-     * are defined in this scale.
-     * @return
-     */
-    public String getUnit() {
-        return unit;
-    }
-
-    public SlaMetricDimension setUnit(final String unit) {
-        this.unit = unit;
-        return this;
     }
 }

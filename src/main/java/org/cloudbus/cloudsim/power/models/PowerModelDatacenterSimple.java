@@ -1,5 +1,6 @@
 package org.cloudbus.cloudsim.power.models;
 
+import lombok.Getter;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.power.PowerMeasurement;
@@ -13,7 +14,12 @@ import org.cloudbus.cloudsim.util.MathUtil;
  * @since CloudSim Plus 6.0.0
  */
 public class PowerModelDatacenterSimple extends PowerModelDatacenter {
-    /** @see #getPowerUsageEffectiveness() */
+    /**
+     * The Power Usage Effectiveness (PUE) for this Power Model,
+     * defining how effective power usage is.
+     * It is a percentage value between [0 and 1].
+     */
+    @Getter
     private double powerUsageEffectiveness = 1;
 
     /**
@@ -34,15 +40,6 @@ public class PowerModelDatacenterSimple extends PowerModelDatacenter {
             .reduce(PowerMeasurement::add)
             .orElse(new PowerMeasurement());
         return measurement.multiply(powerUsageEffectiveness);
-    }
-
-    /**
-     * Gets the Power Usage Effectiveness (PUE) for this Power Model,
-     * defining how effective power usage is.
-     * @return a percentage value between [0 and 1]
-     */
-    public double getPowerUsageEffectiveness() {
-        return powerUsageEffectiveness;
     }
 
     /**

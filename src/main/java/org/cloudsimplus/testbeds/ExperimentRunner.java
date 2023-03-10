@@ -23,6 +23,8 @@
  */
 package org.cloudsimplus.testbeds;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
@@ -52,37 +54,74 @@ import static java.util.stream.Collectors.toList;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
+@Getter
 public abstract class ExperimentRunner<T extends Experiment> extends AbstractRunnable {
-    /**@see #isParallel() */
+    /**
+     * If experiments are executed in parallel, each experiment verbosity is disabled,
+     * otherwise, you'll see mixed log messages from different
+     * experiment runs.
+     */
     private final boolean parallel;
 
+    /**
+     * Checks if a progress bar is to be printed to show when each experiment run finishes.
+     * It's just printed when the number of simulations is greater than 1
+     * and experiments are not set as verbose. It's shown by default if those conditions are met.
+     */
+    @Setter
     private boolean showProgress;
+
+    @Setter
     private boolean progressBarInNewLine;
 
     private int firstExperimentCreated = -1;
 
-    /** @see #getBaseSeed() */
+    /**
+     * The seed to be used for the first executed experiment.
+     * The seed for each subsequent experiment is this seed plus the index
+     * of the experiment.
+     */
     private final long baseSeed;
 
     /** List of seeds used for each experiment.
      * @see #addSeed(long)  */
     private final List<Long> seeds;
 
-    /** @see #getSimulationRuns() */
+    /**
+     * The number of times the experiment will be executed in order to get
+     * values such as means and standard deviations. It has to be an even number
+     * if the
+     * {@link #isApplyAntitheticVariates() "Antithetic Variates Technique"}
+     * is to be used.
+     */
     private int simulationRuns;
 
     private final AtomicInteger finishedRuns;
 
-    /** @see #getExperimentsStartTimeSecs() */
+    /**
+     * Time in seconds the experiments started.
+     */
     private long experimentsStartTimeSecs;
 
-    /** @see #getExperimentsExecutionTimeSecs() */
+    /**
+     * Time in seconds the experiments took to finish.
+     */
     private long experimentsExecutionTimeSecs;
 
-    /** @see #isApplyAntitheticVariates() */
+    /**
+     * Checks if the "Antithetic Variates Technique" is to be applied to reduce
+     * results variance.
+     *
+     * @see
+     * <a href="https://en.wikipedia.org/wiki/Antithetic_variates">Antithetic variates</a>
+     */
     private final boolean applyAntitheticVariates;
 
-    /** @see #getBatchesNumber() */
+    /**
+     * The number of batches in which the simulation runs will be divided.
+     * If this number is greater than 1, the "Batch Means Method" is used to
+     * reduce the correlation between experiment runs.
+     */
     private final int batchesNumber;
 
     /**
@@ -101,13 +140,26 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractRun
      */
     private final Map<String, List<Double>> metricsMap;
 
-    /** @see #setDescription(String) */
+    /**
+     * A description for this experiment which is shown when it starts.
+     * It's also used to generate a caption for the Latex table.
+     * @see #setLatexTableResultsGeneration(boolean)
+     */
+    @Setter
     private String description;
 
-    /** @see #setResultsTableId(String) */
+    /**
+     * An id used to identify the experiment results table generated in formats such as Latex
+     * for computed metrics.
+     * @see #latexTableResultsGeneration
+     */
+    @Setter
     private String resultsTableId;
 
-    /** @see #enableLatexTableResultsGeneration()*/
+    /**
+     * Checks if generation of a result table in Latex format for computed metrics is enabled.
+     */
+    @Setter
     private boolean latexTableResultsGeneration;
     private List<Experiment> experiments;
 
@@ -344,30 +396,6 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractRun
     }
 
     /**
-     * Checks if the "Antithetic Variates Technique" is to be applied to reduce
-     * results variance.
-     *
-     * @return
-     * @see
-     * <a href="https://en.wikipedia.org/wiki/Antithetic_variates">Antithetic variates</a>
-     */
-    public final boolean isApplyAntitheticVariates() {
-        return applyAntitheticVariates;
-    }
-
-    /**
-     * Gets the number of times the experiment will be executed in order to get
-     * values such as means and standard deviations. It has to be an even number
-     * if the
-     * {@link #isApplyAntitheticVariates() "Antithetic Variates Technique"}
-     * is to be used.
-     * @return
-     */
-    public final int getSimulationRuns() {
-        return simulationRuns;
-    }
-
-    /**
      * Checks if the experiment will run a single time or not.
      * @return true if the experiment will run a single time,
      *         false if there are multiple simulation runs.
@@ -385,27 +413,6 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractRun
         final double batches = getBatchesNumber();
         simulationRuns = (int)(batches * Math.ceil(simulationRuns / batches));
          return this;
-    }
-
-    /**
-     * Gets the number of batches in which the simulation runs will be divided.
-     * If this number is greater than 1, the "Batch Means Method" is used to
-     * reduce the correlation between experiment runs.
-     * @return
-     */
-    public int getBatchesNumber() {
-        return batchesNumber;
-    }
-
-    /**
-     * Gets the seed to be used for the first executed experiment.
-     * The seed for each subsequent experiment is this seed plus the index
-     * of the experiment.
-     *
-     * @return
-     */
-    public long getBaseSeed() {
-        return baseSeed;
     }
 
     public long getSeed(final int experimentIndex) {
@@ -509,22 +516,6 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractRun
      */
     public int halfSimulationRuns() {
         return simulationRuns / 2;
-    }
-
-    /**
-     * Time in seconds the experiments took to finish.
-     * @return
-     */
-    public long getExperimentsExecutionTimeSecs() {
-        return experimentsExecutionTimeSecs;
-    }
-
-    /**
-     * Time in seconds the experiments started.
-     * @return
-     */
-    public long getExperimentsStartTimeSecs() {
-        return experimentsStartTimeSecs;
     }
 
     /**
@@ -717,79 +708,6 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractRun
         }
     }
 
-    public int getFirstExperimentCreated() {
-        return firstExperimentCreated;
-    }
-
-    /**
-     * Sets a description for this experiment which is shown when it starts.
-     * It's also used to generate a caption for the Latex table.
-     * @param description the description to set
-     * @see #enableLatexTableResultsGeneration()
-     */
-    public ExperimentRunner setDescription(final String description) {
-        this.description = description;
-        return this;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    /**
-     * An id used to identify the experiment results table generated in formats such as Latex
-     * for computed metrics.
-     * @param resultsTableId the name to set
-     * @see #latexTableResultsGeneration
-     */
-    public ExperimentRunner setResultsTableId(final String resultsTableId) {
-        this.resultsTableId = resultsTableId;
-        return this;
-    }
-
-    public String getResultsTableId() {
-        return resultsTableId;
-    }
-
-    /**
-     * Enables the generation of a result table in Latex format for computed metrics.
-     * @return
-     */
-    public ExperimentRunner enableLatexTableResultsGeneration(){
-        this.latexTableResultsGeneration = true;
-        return this;
-    }
-
-    /**
-     * Checks if generation of a result table in Latex format for computed metrics is enabled.
-     * @return
-     */
-    public boolean isLatexTableResultsGeneration() {
-        return latexTableResultsGeneration;
-    }
-
-    /**
-     * Checks if a progress bar is to be printed to show when each experiment run finishes.
-     * It's just printed when the number of simulations is greater than 1
-     * and experiments are not set as verbose. It's shown by default if those conditions are met.
-     * @return
-     */
-    public boolean isShowProgress() {
-        return showProgress;
-    }
-
-    /**
-     * Enable or disables a progress bar to show when each experiment run finishes.
-     * It's just printed when the number of simulations is greater than 1
-     * and experiments are not set as verbose.
-     * @param showProgress true to enable the progress bar, false to disable
-     * @return
-     */
-    public ExperimentRunner<T> setShowProgress(final boolean showProgress) {
-        this.showProgress = showProgress;
-        return this;
-    }
-
     public int getFinishedRuns() {
         return finishedRuns.get();
     }
@@ -808,11 +726,6 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractRun
         }
     }
 
-    public ExperimentRunner<T> setProgressBarInNewLine(final boolean progressBarInNewLine) {
-        this.progressBarInNewLine = progressBarInNewLine;
-        return this;
-    }
-
     /**
      * {@inheritDoc}
      * If {@link #isParallel() parallel} execution is enabled,
@@ -825,14 +738,5 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractRun
     @Override
     public boolean isVerbose() {
         return super.isVerbose();
-    }
-
-    /**
-     * If experiments are executed in parallel, each experiment verbosity is disabled,
-     * otherwise, you'll see mixed log messages from different
-     * experiment runs.
-     */
-    public boolean isParallel() {
-        return parallel;
     }
 }

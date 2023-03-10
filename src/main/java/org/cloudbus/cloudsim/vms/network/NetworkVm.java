@@ -7,6 +7,9 @@
  */
 package org.cloudbus.cloudsim.vms.network;
 
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.Setter;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.cloudlets.network.NetworkCloudlet;
 import org.cloudbus.cloudsim.hosts.Host;
@@ -40,19 +43,36 @@ import java.util.List;
  * @author Saurabh Kumar Garg
  * @since CloudSim Toolkit 3.0
  */
+@Getter @Setter
 public class NetworkVm extends VmSimple {
     public static final NetworkVm NULL = new NetworkVm();
 
+    /**
+     * List of {@link NetworkCloudlet} of the VM.
+     */
+    @NonNull
     private List<NetworkCloudlet> cloudletList;
+
+    /**
+     * List of packets received by the VM.
+     */
+    @NonNull
     private List<VmPacket> receivedPacketList;
+
+    /** Indicates if the VM is free or not. */
     private boolean free;
+
+    /**
+     * The time when the VM finishes processing its cloudlets.
+     */
     private double finishTime;
 
     /**
-     * Creates a NetworkVm with 1024 MEGA of RAM, 1000 Megabits/s of Bandwidth and 1024 MEGA of Storage Size.
+     * Creates a NetworkVm with 1024 MEGA of RAM, 1000 Megabits/s of Bandwidth
+     * and 1024 MEGA of Storage Size.
      *
-     * To change these values, use the respective setters. While the Vm {@link #isCreated()
-     * is not created inside a Host}, such values can be changed freely.
+     * <p>To change these values, use the respective setters. While the Vm {@link #isCreated()
+     * is not created inside a Host}, such values can be changed freely.</p>
      *
      * @param id unique ID of the VM
      * @param mipsCapacity the mips capacity of each Vm {@link Pe}
@@ -64,14 +84,15 @@ public class NetworkVm extends VmSimple {
     }
 
     /**
-     * Creates an empty VM
+     * Creates a VM with no resources.
      */
     private NetworkVm(){
         this(-1, 0, 1);
     }
 
     /**
-     * Creates a NetworkVm with 1024 MEGA of RAM, 1000 Megabits/s of Bandwidth and 1024 MEGA of Storage Size.
+     * Creates a NetworkVm with 1024 MEGA of RAM, 1000 Megabits/s of Bandwidth
+     * and 1024 MEGA of Storage Size.
      * To change these values, use the respective setters. While the Vm {@link #isCreated()
      * is not created inside a Host}, such values can be changed freely.
      *
@@ -84,48 +105,6 @@ public class NetworkVm extends VmSimple {
     public NetworkVm(final long mipsCapacity, final int numberOfPes) {
         super(mipsCapacity, numberOfPes);
         cloudletList = new ArrayList<>();
-    }
-
-    /** Indicates if the VM is free or not. */
-    public boolean isFree() {
-        return free;
-    }
-
-    /**
-     * List of {@link NetworkCloudlet} of the VM.
-     */
-    public List<NetworkCloudlet> getCloudletList() {
-        return cloudletList;
-    }
-
-    public void setCloudletList(final List<NetworkCloudlet> cloudletList) {
-        this.cloudletList = cloudletList;
-    }
-
-    /**
-     * List of packets received by the VM.
-     */
-    public List<VmPacket> getReceivedPacketList() {
-        return receivedPacketList;
-    }
-
-    public void setReceivedPacketList(final List<VmPacket> receivedPacketList) {
-        this.receivedPacketList = receivedPacketList;
-    }
-
-    public void setFree(final boolean free) {
-        this.free = free;
-    }
-
-    /**
-     * The time when the VM finishes processing its cloudlets.
-     */
-    public double getFinishTime() {
-        return finishTime;
-    }
-
-    public void setFinishTime(final double finishTime) {
-        this.finishTime = finishTime;
     }
 
     @Override

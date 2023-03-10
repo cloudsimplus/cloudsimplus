@@ -6,11 +6,14 @@
  */
 package org.cloudbus.cloudsim.hosts;
 
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.Setter;
 import org.cloudbus.cloudsim.core.*;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
 import org.cloudbus.cloudsim.power.models.PowerModelHost;
-import org.cloudbus.cloudsim.provisioners.PeProvisioner;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisioner;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.*;
@@ -43,50 +46,74 @@ import static java.util.stream.Collectors.toList;
  * @author Anton Beloglazov
  * @since CloudSim Toolkit 1.0
  */
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class HostSimple implements Host {
-    private static long defaultRamCapacity = (long) BytesConversion.gigaToMega(10);
-    private static long defaultBwCapacity = 1000;
-    private static long defaultStorageCapacity = (long) BytesConversion.gigaToMega(500);
-
-    protected HostResourceStats cpuUtilizationStats;
-
-    /** @see #getStateHistory() */
-    private final List<HostStateHistoryEntry> stateHistory;
-    private boolean activateOnDatacenterStartup;
-
-    /**@see #getPowerModel() */
-    private PowerModelHost powerModel;
-
-    /** @see #getId() */
+    @Getter @Setter @EqualsAndHashCode.Include
     private long id;
 
-    /** @see #isFailed() */
+    @Getter @Setter @NonNull @EqualsAndHashCode.Include
+    private Simulation simulation;
+
+    @Getter
+    private Datacenter datacenter;
+
+    /**
+     * The Default RAM capacity (in MB) for creating Hosts.
+     * This value is used when the RAM capacity is not given in a Host constructor.
+     */
+    @Getter
+    private static long defaultRamCapacity = (long) BytesConversion.gigaToMega(10);
+
+    /**
+     * The Default Bandwidth capacity (in Mbps) for creating Hosts.
+     * This value is used when the BW capacity is not given in a Host constructor.
+     */
+    @Getter
+    private static long defaultBwCapacity = 1000;
+
+    /**
+     * The Default Storage capacity (in MB) for creating Hosts.
+     * This value is used when the Storage capacity is not given in a Host constructor.
+     */
+    @Getter
+    private static long defaultStorageCapacity = (long) BytesConversion.gigaToMega(500);
+
+    /**
+     * {@return true or false} to indicate the Host must be automatically started up when the assigned Datacenter is initialized or not.
+     */
+    @Getter
+    private boolean activateOnDatacenterStartup;
+
+    @Getter
+    private PowerModelHost powerModel;
+
+    @Getter
     private boolean failed;
 
+    @Getter
     private boolean active;
 
     /**
      * Indicates if a power on/off operation is in progress.
      */
     private boolean activationChangeInProgress;
-    private boolean stateHistoryEnabled;
 
-    /** @see #getStartTime() */
+    @Getter
     private double startTime = -1;
 
-    /** @see #getFirstStartTime() */
+    @Getter
     private double firstStartTime = -1;
 
-    /** @see #getShutdownTime() */
+    @Getter
     private double shutdownTime;
 
     /** @see #getTotalUpTime() */
     private double totalUpTime;
 
-    /** @see #getLastBusyTime() */
+    @Getter
     private double lastBusyTime;
 
-    /** @see #getIdleShutdownDeadline() */
+    @Getter @Setter
     private double idleShutdownDeadline;
 
     private final Ram ram;
@@ -95,29 +122,35 @@ public class HostSimple implements Host {
     /** @see #getStorage() */
     private final HarddriveStorage disk;
 
-    /** @see #getRamProvisioner() */
+    @Getter @NonNull
     private ResourceProvisioner ramProvisioner;
 
-    /** @see #getBwProvisioner() */
+    @Getter @NonNull
     private ResourceProvisioner bwProvisioner;
 
-    /** @see #getVmScheduler() */
+    @Getter @NonNull
     private VmScheduler vmScheduler;
+
+    @Getter @NonNull
+    private List<Pe> peList;
 
     /** @see #getVmList() */
     private final List<Vm> vmList = new ArrayList<>();
 
-    /** @see #getPeList() */
-    private List<Pe> peList;
+    @Getter
+    private HostResourceStats cpuUtilizationStats;
+
+    @Getter
+    private boolean stateHistoryEnabled;
+
+    /** @see #getStateHistory() */
+    private final List<HostStateHistoryEntry> stateHistory;
 
     /** @see #getVmsMigratingIn() */
     private final Set<Vm> vmsMigratingIn;
 
     /** @see #getVmsMigratingOut() */
     private final Set<Vm> vmsMigratingOut;
-
-    /** @see #getDatacenter() */
-    private Datacenter datacenter;
 
     /** @see #addOnUpdateProcessingListener(EventListener) */
     private final Set<EventListener<HostUpdatesVmsProcessingEventInfo>> onUpdateProcessingListeners;
@@ -128,27 +161,29 @@ public class HostSimple implements Host {
     /** @see #addOnShutdownListener(EventListener) (EventListener) */
     private final List<EventListener<HostEventInfo>> onShutdownListeners;
 
-    /** @see #getSimulation() */
-    private Simulation simulation;
-
     /** @see #getResources() */
     private List<ResourceManageable> resources;
 
     private List<ResourceProvisioner> provisioners;
     private final List<Vm> vmCreatedList;
 
-    /** @see #getFreePesNumber() */
+    @Getter
     private int freePesNumber;
 
-    /** @see #getBusyPesNumber() */
+    @Getter
     private int busyPesNumber;
 
-    /** @see #getWorkingPesNumber() */
+    @Getter
     private int workingPesNumber;
 
-    /** @see #getFailedPesNumber() */
+    @Getter
     private int failedPesNumber;
 
+    /**
+     * {@inheritDoc}
+     * <p><b>It's enabled by default.</b></p>
+     */
+    @Getter @Setter
     private boolean lazySuitabilityEvaluation;
 
     /**
@@ -310,14 +345,6 @@ public class HostSimple implements Host {
     }
 
     /**
-     * Gets the Default RAM capacity (in MB) for creating Hosts.
-     * This value is used when the RAM capacity is not given in a Host constructor.
-     */
-    public static long getDefaultRamCapacity() {
-        return defaultRamCapacity;
-    }
-
-    /**
      * Sets the Default RAM capacity (in MB) for creating Hosts.
      * This value is used when the RAM capacity is not given in a Host constructor.
      */
@@ -327,28 +354,12 @@ public class HostSimple implements Host {
     }
 
     /**
-     * Gets the Default Bandwidth capacity (in Mbps) for creating Hosts.
-     * This value is used when the BW capacity is not given in a Host constructor.
-     */
-    public static long getDefaultBwCapacity() {
-        return defaultBwCapacity;
-    }
-
-    /**
      * Sets the Default Bandwidth capacity (in Mbps) for creating Hosts.
      * This value is used when the BW capacity is not given in a Host constructor.
      */
     public static void setDefaultBwCapacity(final long defaultCapacity) {
         AbstractMachine.validateCapacity(defaultCapacity);
         defaultBwCapacity = defaultCapacity;
-    }
-
-    /**
-     * Gets the Default Storage capacity (in MB) for creating Hosts.
-     * This value is used when the Storage capacity is not given in a Host constructor.
-     */
-    public static long getDefaultStorageCapacity() {
-        return defaultStorageCapacity;
     }
 
     /**
@@ -530,17 +541,13 @@ public class HostSimple implements Host {
                 return suitability;
         }
 
-        return suitability.setForPes(vmScheduler.isSuitableForVm(vm));
+        suitability.setForPes(vmScheduler.isSuitableForVm(vm));
+        return suitability;
     }
 
     @Override
     public HostSuitability getSuitabilityFor(final Vm vm) {
         return isSuitableForVm(vm, false, false);
-    }
-
-    @Override
-    public boolean isActive() {
-        return this.active;
     }
 
     @Override
@@ -615,7 +622,7 @@ public class HostSimple implements Host {
      * @see #setActive(boolean)
      */
     private void notifyStartupOrShutdown(final boolean activate, final boolean wasActive) {
-        if(simulation == null || !simulation.isRunning() ) {
+        if(Simulation.NULL.equals(simulation) || !simulation.isRunning() ) {
             return;
         }
 
@@ -694,33 +701,48 @@ public class HostSimple implements Host {
     }
 
     @Override
-    public Host addOnStartupListener(final EventListener<HostEventInfo> listener) {
+    public Host addOnStartupListener(@NonNull final EventListener<HostEventInfo> listener) {
         if(EventListener.NULL.equals(listener)){
             return this;
         }
 
-        onStartupListeners.add(requireNonNull(listener));
+        onStartupListeners.add(listener);
         return this;
     }
 
     @Override
-    public boolean removeOnStartupListener(final EventListener<HostEventInfo> listener) {
+    public boolean removeOnStartupListener(@NonNull final EventListener<HostEventInfo> listener) {
         return onStartupListeners.remove(listener);
     }
 
     @Override
-    public Host addOnShutdownListener(final EventListener<HostEventInfo> listener) {
+    public Host addOnShutdownListener(@NonNull final EventListener<HostEventInfo> listener) {
         if(EventListener.NULL.equals(listener)){
             return this;
         }
 
-        onShutdownListeners.add(requireNonNull(listener));
+        onShutdownListeners.add(listener);
         return this;
     }
 
     @Override
-    public boolean removeOnShutdownListener(final EventListener<HostEventInfo> listener) {
+    public boolean removeOnShutdownListener(@NonNull final EventListener<HostEventInfo> listener) {
         return onShutdownListeners.remove(listener);
+    }
+
+    @Override
+    public boolean removeOnUpdateProcessingListener(@NonNull final EventListener<HostUpdatesVmsProcessingEventInfo> listener) {
+        return onUpdateProcessingListeners.remove(listener);
+    }
+
+    @Override
+    public Host addOnUpdateProcessingListener(@NonNull final EventListener<HostUpdatesVmsProcessingEventInfo> listener) {
+        if(EventListener.NULL.equals(listener)){
+            return this;
+        }
+
+        this.onUpdateProcessingListeners.add(listener);
+        return this;
     }
 
     /**
@@ -789,25 +811,18 @@ public class HostSimple implements Host {
     }
 
     @Override
-    public long getId() {
-        return id;
-    }
-
-    @Override
-    public final void setId(long id) {
-        this.id = id;
-    }
-
-    @Override
-    public ResourceProvisioner getRamProvisioner() {
-        return ramProvisioner;
-    }
-
-    @Override
     public final Host setRamProvisioner(final ResourceProvisioner ramProvisioner) {
         checkSimulationIsRunningAndAttemptedToChangeHost("RAM");
-        this.ramProvisioner = requireNonNull(ramProvisioner);
+        this.ramProvisioner = ramProvisioner;
         this.ramProvisioner.setResources(ram, vm -> ((VmSimple)vm).getRam());
+        return this;
+    }
+
+    @Override
+    public final Host setBwProvisioner(final ResourceProvisioner bwProvisioner) {
+        checkSimulationIsRunningAndAttemptedToChangeHost("BW");
+        this.bwProvisioner = bwProvisioner;
+        this.bwProvisioner.setResources(bw, vm -> ((VmSimple)vm).getBw());
         return this;
     }
 
@@ -819,38 +834,10 @@ public class HostSimple implements Host {
     }
 
     @Override
-    public ResourceProvisioner getBwProvisioner() {
-        return bwProvisioner;
-    }
-
-    @Override
-    public final Host setBwProvisioner(final ResourceProvisioner bwProvisioner) {
-        checkSimulationIsRunningAndAttemptedToChangeHost("BW");
-        this.bwProvisioner = requireNonNull(bwProvisioner);
-        this.bwProvisioner.setResources(bw, vm -> ((VmSimple)vm).getBw());
-        return this;
-    }
-
-    @Override
-    public VmScheduler getVmScheduler() {
-        return vmScheduler;
-    }
-
-    @Override
     public final Host setVmScheduler(final VmScheduler vmScheduler) {
-        this.vmScheduler = requireNonNull(vmScheduler);
+        this.vmScheduler = vmScheduler;
         vmScheduler.setHost(this);
         return this;
-    }
-
-    @Override
-    public double getStartTime() {
-        return startTime;
-    }
-
-    @Override
-    public double getFirstStartTime(){
-        return firstStartTime;
     }
 
     @Override
@@ -865,11 +852,6 @@ public class HostSimple implements Host {
         //If the Host is being activated or re-activated, the shutdown time is reset
         this.shutdownTime = -1;
         return this;
-    }
-
-    @Override
-    public double getShutdownTime() {
-        return shutdownTime;
     }
 
     @Override
@@ -898,29 +880,13 @@ public class HostSimple implements Host {
         return TimeUtil.secondsToHours(getTotalUpTime());
     }
 
-    @Override
-    public double getIdleShutdownDeadline() {
-        return idleShutdownDeadline;
-    }
-
-    @Override
-    public Host setIdleShutdownDeadline(final double deadline) {
-        this.idleShutdownDeadline = deadline;
-        return this;
-    }
-
-    @Override
-    public List<Pe> getPeList() {
-        return peList;
-    }
-
     /**
      * Sets the PE list.
      *
      * @param peList the new pe list
      */
     private void setPeList(final List<Pe> peList) {
-        if(requireNonNull(peList).isEmpty()){
+        if(peList.isEmpty()){
             throw new IllegalArgumentException("The PE list for a Host cannot be empty");
         }
 
@@ -951,17 +917,12 @@ public class HostSimple implements Host {
         return (List<T>) Collections.unmodifiableList(vmCreatedList);
     }
 
-    protected void addVmToList(final Vm vm){
-        vmList.add(requireNonNull(vm));
+    protected void addVmToList(@NonNull final Vm vm){
+        vmList.add(vm);
     }
 
-    protected void addVmToCreatedList(final Vm vm){
-        vmCreatedList.add(requireNonNull(vm));
-    }
-
-    @Override
-    public boolean isFailed() {
-        return failed;
+    protected void addVmToCreatedList(@NonNull final Vm vm){
+        vmCreatedList.add(vm);
     }
 
     @Override
@@ -1075,7 +1036,7 @@ public class HostSimple implements Host {
     }
 
     @Override
-    public void removeMigratingInVm(final Vm vm) {
+    public void removeMigratingInVm(@NonNull final Vm vm) {
         vmsMigratingIn.remove(vm);
         vmList.remove(vm);
         vm.setInMigration(false);
@@ -1087,22 +1048,17 @@ public class HostSimple implements Host {
     }
 
     @Override
-    public boolean addVmMigratingOut(final Vm vm) {
+    public boolean addVmMigratingOut(@NonNull final Vm vm) {
         return this.vmsMigratingOut.add(vm);
     }
 
     @Override
-    public boolean removeVmMigratingOut(final Vm vm) {
+    public boolean removeVmMigratingOut(@NonNull final Vm vm) {
         return this.vmsMigratingOut.remove(vm);
     }
 
     @Override
-    public Datacenter getDatacenter() {
-        return datacenter;
-    }
-
-    @Override
-    public final void setDatacenter(final Datacenter datacenter) {
+    public final void setDatacenter(@NonNull final Datacenter datacenter) {
         if(!Datacenter.NULL.equals(this.datacenter)) {
             checkSimulationIsRunningAndAttemptedToChangeHost("Datacenter");
         }
@@ -1119,38 +1075,8 @@ public class HostSimple implements Host {
     }
 
     @Override
-    public boolean removeOnUpdateProcessingListener(final EventListener<HostUpdatesVmsProcessingEventInfo> listener) {
-        return onUpdateProcessingListeners.remove(listener);
-    }
-
-    @Override
-    public Host addOnUpdateProcessingListener(final EventListener<HostUpdatesVmsProcessingEventInfo> listener) {
-        if(EventListener.NULL.equals(listener)){
-            return this;
-        }
-
-        this.onUpdateProcessingListeners.add(requireNonNull(listener));
-        return this;
-    }
-
-    @Override
     public long getAvailableStorage() {
         return disk.getAvailableResource();
-    }
-
-    @Override
-    public int getFreePesNumber() {
-        return freePesNumber;
-    }
-
-    @Override
-    public int getWorkingPesNumber() {
-        return workingPesNumber;
-    }
-
-    @Override
-    public int getBusyPesNumber() {
-        return busyPesNumber;
     }
 
     @Override
@@ -1165,48 +1091,12 @@ public class HostSimple implements Host {
     }
 
     @Override
-    public int getFailedPesNumber() {
-        return failedPesNumber;
-    }
-
-    @Override
-    public Simulation getSimulation() {
-        return this.simulation;
-    }
-
-    @Override
-    public double getLastBusyTime() {
-        return lastBusyTime;
-    }
-
-    @Override
-    public final Host setSimulation(final Simulation simulation) {
-        this.simulation = simulation;
-        return this;
-    }
-
-    @Override
     public int compareTo(final Host other) {
         if(this.equals(requireNonNull(other))) {
             return 0;
         }
 
         return Long.compare(this.id, other.getId());
-    }
-
-    @Override
-    public boolean equals(final Object obj) {
-        if (this == obj) return true;
-        if (obj == null || getClass() != obj.getClass()) return false;
-        final HostSimple that = (HostSimple) obj;
-        return this.getId() == that.getId() && this.simulation.equals(that.simulation);
-    }
-
-    @Override
-    public int hashCode() {
-        int result = Long.hashCode(id);
-        result = 31 * result + simulation.hashCode();
-        return result;
     }
 
     @Override
@@ -1290,11 +1180,6 @@ public class HostSimple implements Host {
     }
 
     @Override
-    public HostResourceStats getCpuUtilizationStats() {
-        return cpuUtilizationStats;
-    }
-
-    @Override
     public void enableUtilizationStats() {
         if (cpuUtilizationStats != null && cpuUtilizationStats != HostResourceStats.NULL) {
             return;
@@ -1306,11 +1191,6 @@ public class HostSimple implements Host {
             LOGGER.info("Automatically enabling computation of utilization statistics for VMs on {} could not be performed because it doesn't have VMs yet. You need to enable it for each VM created.", host);
         }
         else vmList.forEach(ResourceStatsComputer::enableUtilizationStats);
-    }
-
-    @Override
-    public PowerModelHost getPowerModel() {
-        return powerModel;
     }
 
     @Override
@@ -1335,11 +1215,6 @@ public class HostSimple implements Host {
     @Override
     public void disableStateHistory() {
         this.stateHistoryEnabled = false;
-    }
-
-    @Override
-    public boolean isStateHistoryEnabled() {
-        return this.stateHistoryEnabled;
     }
 
     @Override
@@ -1417,7 +1292,7 @@ public class HostSimple implements Host {
     {
         final var newState = new HostStateHistoryEntry(time, allocatedMips, requestedMips, isActive);
         if (!stateHistory.isEmpty()) {
-            final HostStateHistoryEntry previousState = stateHistory.get(stateHistory.size() - 1);
+            final var previousState = stateHistory.get(stateHistory.size() - 1);
             if (previousState.time() == time) {
                 stateHistory.set(stateHistory.size() - 1, newState);
                 return;
@@ -1435,30 +1310,5 @@ public class HostSimple implements Host {
     @Override
     public List<Vm> getMigratableVms() {
         return vmList.stream().filter(vm -> !vm.isInMigration()).collect(toList());
-    }
-
-    /**
-     * {@inheritDoc}
-     * <p><b>It's enabled by default.</b></p>
-     * @return {@inheritDoc}
-     */
-    @Override
-    public boolean isLazySuitabilityEvaluation() {
-        return lazySuitabilityEvaluation;
-    }
-
-    @Override
-    public Host setLazySuitabilityEvaluation(final boolean lazySuitabilityEvaluation) {
-        this.lazySuitabilityEvaluation = lazySuitabilityEvaluation;
-        return this;
-    }
-
-    /**
-     * Indicates if the Host must be automatically started up
-     * when the assigned Datacenter is started up.
-     * @return
-     */
-    public boolean isActivateOnDatacenterStartup() {
-        return activateOnDatacenterStartup;
     }
 }

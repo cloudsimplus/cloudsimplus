@@ -23,6 +23,7 @@
  */
 package org.cloudbus.cloudsim.schedulers;
 
+import lombok.NonNull;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.Processor;
 import org.cloudbus.cloudsim.util.MathUtil;
@@ -57,7 +58,7 @@ public class MipsShare {
      * Creates a MIPS share according to a given {@link Processor} capacity.
      * @param processor the processor to get its capacity to create the MipsShare
      */
-    public MipsShare(final Processor processor){
+    public MipsShare(@NonNull final Processor processor){
         this(processor.getCapacity(), processor.getMips());
     }
 
@@ -75,7 +76,7 @@ public class MipsShare {
      * A clone constructor.
      * @param share the MIPS share to clone
      */
-    public MipsShare(final MipsShare share) {
+    public MipsShare(@NonNull final MipsShare share) {
         this(share.pes, share.mips);
     }
 

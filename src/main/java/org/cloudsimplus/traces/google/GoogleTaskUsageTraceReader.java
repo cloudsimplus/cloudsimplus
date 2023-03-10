@@ -23,6 +23,7 @@
  */
 package org.cloudsimplus.traces.google;
 
+import lombok.NonNull;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.core.CloudSimTag;
@@ -296,12 +297,12 @@ public final class GoogleTaskUsageTraceReader extends GoogleTraceReaderAbstract<
      * @see #process()
      */
     private GoogleTaskUsageTraceReader(
-        final GoogleTaskEventsTraceReader taskEventsReader,
+        @NonNull final GoogleTaskEventsTraceReader taskEventsReader,
         final String filePath,
         final InputStream reader)
     {
         super(filePath, reader);
-        this.taskEventsReader = requireNonNull(taskEventsReader);
+        this.taskEventsReader = taskEventsReader;
         final var brokerList = getBrokers();
         if(brokerList.isEmpty()){
             throw new IllegalArgumentException("The broker list in your GoogleTaskEventsTraceReader is empty");

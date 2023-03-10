@@ -23,6 +23,9 @@
  */
 package org.cloudsimplus.autoscaling;
 
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.Setter;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.core.CloudSimTag;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisioner;
@@ -45,10 +48,17 @@ import java.util.function.Function;
  * @since CloudSim Plus 7.0.4
  */
 public abstract class VerticalVmScalingAbstract extends VmScalingAbstract implements VerticalVmScaling {
+    @Getter @NonNull
     private Function<Vm, Double> upperThresholdFunction;
+
+    @Getter @NonNull
     private Function<Vm, Double> lowerThresholdFunction;
+
+    @Setter @NonNull
     private ResourceScaling resourceScaling;
     private final Class<? extends ResourceManageable> resourceClassToScale;
+
+    @Getter @Setter
     private double scalingFactor;
     private Resource vmResource;
 
@@ -85,18 +95,12 @@ public abstract class VerticalVmScalingAbstract extends VmScalingAbstract implem
      * @param resourceClass the resource class to set
      * @return
      */
-    private Class<? extends ResourceManageable> validateResourceClass(final Class<? extends ResourceManageable> resourceClass) {
-        Objects.requireNonNull(resourceClass);
+    private Class<? extends ResourceManageable> validateResourceClass(@NonNull final Class<? extends ResourceManageable> resourceClass) {
         if(Pe.class.equals(resourceClass)){
             return Processor.class;
         }
 
         return resourceClass;
-    }
-
-    @Override
-    public Function<Vm, Double> getUpperThresholdFunction() {
-        return upperThresholdFunction;
     }
 
     @Override
@@ -124,43 +128,12 @@ public abstract class VerticalVmScalingAbstract extends VmScalingAbstract implem
      * @throws NullPointerException if any of the functions is null
      */
     private void validateFunctions(
-        final Function<Vm, Double> lowerThresholdFunction,
-        final Function<Vm, Double> upperThresholdFunction)
+        @NonNull final Function<Vm, Double> lowerThresholdFunction,
+        @NonNull final Function<Vm, Double> upperThresholdFunction)
     {
-        Objects.requireNonNull(lowerThresholdFunction);
-        Objects.requireNonNull(upperThresholdFunction);
         if(upperThresholdFunction.equals(lowerThresholdFunction)){
             throw new IllegalArgumentException("Lower and Upper utilization threshold functions cannot be equal.");
         }
-    }
-
-    @Override
-    public Function<Vm, Double> getLowerThresholdFunction() {
-        return lowerThresholdFunction;
-    }
-
-    /**
-     * {@inheritDoc}
-     * <p>This class' constructors define a {@link ResourceScalingGradual}
-     * as the default {@link ResourceScaling}.</p>
-     * @param resourceScaling {@inheritDoc}
-     * @return {@inheritDoc}
-     */
-    @Override
-    public final VerticalVmScaling setResourceScaling(final ResourceScaling resourceScaling) {
-        this.resourceScaling = Objects.requireNonNull(resourceScaling);
-        return this;
-    }
-
-    @Override
-    public double getScalingFactor() {
-        return scalingFactor;
-    }
-
-    @Override
-    public final VerticalVmScaling setScalingFactor(final double scalingFactor) {
-        this.scalingFactor = scalingFactor;
-        return this;
     }
 
     @Override
@@ -169,7 +142,7 @@ public abstract class VerticalVmScalingAbstract extends VmScalingAbstract implem
     }
 
     @Override
-    public final boolean requestUpScalingIfPredicateMatches(final VmHostEventInfo evt) {
+    public final boolean requestUpScalingIfPredicateMatches(@NonNull final VmHostEventInfo evt) {
         if(!isTimeToCheckPredicate(evt.getTime())) {
             return false;
         }

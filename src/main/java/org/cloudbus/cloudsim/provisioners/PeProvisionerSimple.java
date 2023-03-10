@@ -7,6 +7,7 @@
  */
 package org.cloudbus.cloudsim.provisioners;
 
+import lombok.NonNull;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.ResourceManageable;
@@ -71,8 +72,7 @@ public class PeProvisionerSimple extends ResourceProvisionerSimple implements Pe
      * @param pe the Pe to check
      * @return
      */
-    private boolean isOtherProvisionerAssignedToPe(final Pe pe) {
-        Objects.requireNonNull(pe);
+    private boolean isOtherProvisionerAssignedToPe(@NonNull final Pe pe) {
         return pe.getPeProvisioner() != null &&
                pe.getPeProvisioner() != PeProvisioner.NULL &&
                !pe.getPeProvisioner().equals(this);

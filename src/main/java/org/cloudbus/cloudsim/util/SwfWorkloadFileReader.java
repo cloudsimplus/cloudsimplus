@@ -7,6 +7,9 @@
  */
 package org.cloudbus.cloudsim.util;
 
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.Setter;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
@@ -108,8 +111,14 @@ public final class SwfWorkloadFileReader extends TraceReaderAbstract {
     private static final int IRRELEVANT = -1;
 
     /**
-     * @see #getMips()
+     * The MIPS capacity of the PEs from the VM where each created Cloudlet is supposed to run.
+     * Considering the workload reader provides the run time for each
+     * application registered inside the reader, the MIPS value will be used
+     * to compute the {@link Cloudlet#getLength() length of the Cloudlet (in MI)}
+     * so that it's expected to execute, inside the VM with the given MIPS capacity,
+     * for the same time as specified into the workload reader.
      */
+    @Getter
     private int mips;
 
     /**
@@ -118,8 +127,11 @@ public final class SwfWorkloadFileReader extends TraceReaderAbstract {
     private final List<Cloudlet> cloudlets;
 
     /**
-     * @see #setPredicate(Predicate)
+     * A {@link Predicate} which indicates when a {@link Cloudlet}
+     * must be created from a trace line read from the workload file.
+     * If a Predicate is not set, a Cloudlet will be created for any line read.
      */
+    @Setter
     private Predicate<Cloudlet> predicate;
 
     /**
@@ -156,7 +168,7 @@ public final class SwfWorkloadFileReader extends TraceReaderAbstract {
      * @throws FileNotFoundException    when the file is not found
      * @see #getInstance(String, int)
      */
-    public SwfWorkloadFileReader(final String filePath, final int mips) throws IOException {
+    public SwfWorkloadFileReader(@NonNull final String filePath, final int mips) throws IOException {
         this(filePath, Files.newInputStream(Paths.get(filePath)), mips);
     }
 
@@ -198,19 +210,6 @@ public final class SwfWorkloadFileReader extends TraceReaderAbstract {
         }
 
         return cloudlets;
-    }
-
-    /**
-     * Defines a {@link Predicate} which indicates when a {@link Cloudlet}
-     * must be created from a trace line read from the workload file.
-     * If a Predicate is not set, a Cloudlet will be created for any line read.
-     *
-     * @param predicate the predicate to define when a Cloudlet must be created from a line read from the workload file
-     * @return
-     */
-    public SwfWorkloadFileReader setPredicate(final Predicate<Cloudlet> predicate) {
-        this.predicate = predicate;
-        return this;
     }
 
     /**
@@ -271,18 +270,6 @@ public final class SwfWorkloadFileReader extends TraceReaderAbstract {
             .setFileSize(DataCloudTags.DEFAULT_MTU)
             .setOutputSize(DataCloudTags.DEFAULT_MTU)
             .setUtilizationModel(utilizationModel);
-    }
-
-    /**
-     * Gets the MIPS capacity of the PEs from the VM where each created Cloudlet is supposed to run.
-     * Considering the workload reader provides the run time for each
-     * application registered inside the reader, the MIPS value will be used
-     * to compute the {@link Cloudlet#getLength() length of the Cloudlet (in MI)}
-     * so that it's expected to execute, inside the VM with the given MIPS capacity,
-     * for the same time as specified into the workload reader.
-     */
-    public int getMips() {
-        return mips;
     }
 
     /**

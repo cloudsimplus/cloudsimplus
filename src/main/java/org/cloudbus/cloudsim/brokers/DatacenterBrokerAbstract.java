@@ -7,6 +7,10 @@
  */
 package org.cloudbus.cloudsim.brokers;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.Setter;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
 import org.cloudbus.cloudsim.core.*;
@@ -29,7 +33,6 @@ import org.cloudsimplus.traces.google.GoogleTaskEventsTraceReader;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -42,6 +45,7 @@ import static java.util.Objects.requireNonNull;
  * @author Anton Beloglazov
  * @author Manoel Campos da Silva Filho
  */
+@Getter @Setter
 public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements DatacenterBroker {
     /**
      * A default {@link Function} which always returns {@link #DEF_VM_DESTRUCTION_DELAY}
@@ -63,74 +67,88 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      *
      * @see #addOnVmsCreatedListener(EventListener)
      */
+    @Getter(AccessLevel.NONE)
     private final List<EventListener<DatacenterBrokerEventInfo>> onVmsCreatedListeners;
+
+    private final VmCreation vmCreation;
+
+    private final List<Vm> vmFailedList;
+
+    private final List<Vm> vmWaitingList;
+
+    private final List<Vm> vmExecList;
+
+    private final List<Vm> vmCreatedList;
+
+    private final List<Cloudlet> cloudletWaitingList;
+
+    private final List<Cloudlet> cloudletSubmittedList;
+
+    private final List<Cloudlet> cloudletFinishedList;
+
+    private final List<Cloudlet> cloudletCreatedList;
+
+    @NonNull
+    private Datacenter lastSelectedDc;
 
     /**
      * Last Vm selected to run some Cloudlets.
      */
+    @Getter(AccessLevel.NONE) @Setter(AccessLevel.NONE)
     private Vm lastSelectedVm;
 
-    private Datacenter lastSelectedDc;
+    /** @see #setDatacenterMapper(BiFunction) */
+    @NonNull
+    private BiFunction<Datacenter, Vm, Datacenter> datacenterMapper;
 
-    private final VmCreation vmCreation;
+    /** @see #setVmMapper(Function) */
+    @NonNull
+    @Getter(AccessLevel.NONE)
+    private Function<Cloudlet, Vm> vmMapper;
 
-    /** @see #getVmFailedList() */
-    private final List<Vm> vmFailedList;
+    @Getter(AccessLevel.NONE)
+    private Function<Vm, Double> vmDestructionDelayFunction;
 
-    /** @see #getVmWaitingList() */
-    private final List<Vm> vmWaitingList;
+    /**
+     * {@inheritDoc}
+     * <p>If null is given, VMs won't be sorted and follow submission order.</p>
+     * @see #setVmComparator(Comparator) */
+    @Getter(AccessLevel.NONE)
+    private Comparator<Vm> vmComparator;
 
-    /** @see #getVmExecList() */
-    private final List<Vm> vmExecList;
+    /**
+     * {@inheritDoc}
+     * <p>If null is given, Cloudlets won't be sorted and follow submission order.</p>
+     */
+    @Getter(AccessLevel.NONE)
+    private Comparator<Cloudlet> cloudletComparator;
 
-    /** @see #getVmCreatedList() */
-    private final List<Vm> vmCreatedList;
-
-    /** @see #getCloudletWaitingList() */
-    private final List<Cloudlet> cloudletWaitingList;
-
-    /** @see #getCloudletSubmittedList() */
-    private final List<Cloudlet> cloudletSubmittedList;
-
-    /** @see #getCloudletFinishedList() */
-    private final List<Cloudlet> cloudletsFinishedList;
-
-    /** @see #getCloudletCreatedList() () */
-    private final List<Cloudlet> cloudletsCreatedList;
+    /** @see #getDatacenterList() */
+    @Getter(AccessLevel.PROTECTED)
+    private List<Datacenter> datacenterList;
 
     /**
      * Checks if the last time checked, there were waiting cloudlets or not.
      */
+    @Getter(AccessLevel.NONE) @Setter(AccessLevel.NONE)
     private boolean wereThereWaitingCloudlets;
 
-    /** @see #setDatacenterMapper(BiFunction) */
-    private BiFunction<Datacenter, Vm, Datacenter> datacenterMapper;
-
-    /** @see #setVmMapper(Function) */
-    private Function<Cloudlet, Vm> vmMapper;
-
-    /** @see #setVmComparator(Comparator) */
-    private Comparator<Vm> vmComparator;
-
-    /** @see #setCloudletComparator(Comparator) */
-    private Comparator<Cloudlet> cloudletComparator;
-
-    /** @see #getDatacenterList() */
-    private List<Datacenter> datacenterList;
-
+    @Getter(AccessLevel.NONE) @Setter(AccessLevel.NONE)
     private Cloudlet lastSubmittedCloudlet;
-    private Vm lastSubmittedVm;
 
-    /** @see #getVmDestructionDelayFunction() */
-    private Function<Vm, Double> vmDestructionDelayFunction;
+    @Getter(AccessLevel.NONE) @Setter(AccessLevel.NONE)
+    private Vm lastSubmittedVm;
 
     /**
      * Indicates if a shutdown request was already sent or not.
      */
+    @Getter(AccessLevel.NONE) @Setter(AccessLevel.NONE)
     private boolean shutdownRequested;
 
     /** @see #isShutdownWhenIdle()  */
     private boolean shutdownWhenIdle;
+
+    @Getter(AccessLevel.NONE) @Setter(AccessLevel.NONE)
     private boolean vmCreationRetrySent;
 
     /**
@@ -158,8 +176,8 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         this.vmExecList = new ArrayList<>();
         this.vmCreatedList = new ArrayList<>();
         this.cloudletWaitingList = new ArrayList<>();
-        this.cloudletsFinishedList = new ArrayList<>();
-        this.cloudletsCreatedList = new ArrayList<>();
+        this.cloudletFinishedList = new ArrayList<>();
+        this.cloudletCreatedList = new ArrayList<>();
         this.cloudletSubmittedList = new ArrayList<>();
         setDatacenterList(new ArrayList<>());
 
@@ -176,11 +194,6 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         }
 
         return this;
-    }
-
-    @Override
-    public boolean isSelectClosestDatacenter() {
-        return selectClosestDatacenter;
     }
 
     @Override
@@ -781,7 +794,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      */
     private boolean processCloudletReturn(final SimEvent evt) {
         final var cloudlet = (Cloudlet) evt.getData();
-        cloudletsFinishedList.add(cloudlet);
+        cloudletFinishedList.add(cloudlet);
         ((VmSimple) cloudlet.getVm()).addExpectedFreePesNumber(cloudlet.getNumberOfPes());
         final String lifeTime = cloudlet.getLifeTime() == -1 ? "" : " (after defined lifetime expired)";
         LOGGER.info(
@@ -880,7 +893,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
 
     /**
      * Checks if an event must be sent to verify if a VM became idle.
-     * That will happen when the {@link #getVmDestructionDelayFunction() VM destruction delay}
+     * That will happen when the {@link #setVmDestructionDelayFunction(Function)} VM destruction delay}
      * is set and is not multiple of the {@link Datacenter#getSchedulingInterval()}
      *
      * <p>
@@ -995,7 +1008,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
             final Datacenter dc = getDatacenter(lastSelectedVm);
             send(dc, cloudlet.getSubmissionDelay(), CloudSimTag.CLOUDLET_SUBMIT, cloudlet);
             cloudlet.setLastTriedDatacenter(dc);
-            cloudletsCreatedList.add(cloudlet);
+            cloudletCreatedList.add(cloudlet);
             iterator.remove();
             createdCloudlets++;
         }
@@ -1088,6 +1101,11 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     }
 
     @Override
+    public <T extends Vm> List<T> getVmFailedList() {
+        return  (List<T>) vmFailedList;
+    }
+
+    @Override
     public Vm getWaitingVm(final int index) {
         if (index >= 0 && index < vmWaitingList.size()) {
             return vmWaitingList.get(index);
@@ -1097,18 +1115,13 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     }
 
     @Override
-    public List<Cloudlet> getCloudletCreatedList() {
-        return cloudletsCreatedList;
-    }
-
-    @Override
     public <T extends Cloudlet> List<T> getCloudletWaitingList() {
         return (List<T>) cloudletWaitingList;
     }
 
     @Override
     public <T extends Cloudlet> List<T> getCloudletFinishedList() {
-        return (List<T>) new ArrayList<>(cloudletsFinishedList);
+        return (List<T>) new ArrayList<>(cloudletFinishedList);
     }
 
     /**
@@ -1119,15 +1132,6 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      */
     protected Vm getVmFromCreatedList(final int vmIndex) {
         return vmIndex >= 0 && vmIndex < vmExecList.size() ? vmExecList.get(vmIndex) : Vm.NULL;
-    }
-
-    /**
-     * Gets the list of available datacenters.
-     *
-     * @return the dc list
-     */
-    protected List<Datacenter> getDatacenterList() {
-        return datacenterList;
     }
 
     /**
@@ -1153,43 +1157,6 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     }
 
     @Override
-    public final DatacenterBroker setDatacenterMapper(final BiFunction<Datacenter, Vm, Datacenter> datacenterMapper) {
-        this.datacenterMapper = requireNonNull(datacenterMapper);
-        return this;
-    }
-
-    @Override
-    public final DatacenterBroker setVmMapper(final Function<Cloudlet, Vm> vmMapper) {
-        this.vmMapper = requireNonNull(vmMapper);
-        return this;
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * <p>If null is given, VMs won't be sorted and follow submission order.</p>
-     * @param comparator {@inheritDoc}
-     * @return {@inheritDoc}
-     */
-    @Override
-    public DatacenterBroker setVmComparator(final Comparator<Vm> comparator) {
-        this.vmComparator = comparator;
-        return this;
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * <p>If null is given, Cloudlets won't be sorted and follow submission order.</p>
-     * @param comparator {@inheritDoc}
-     * @return {@inheritDoc}
-     */
-    @Override
-    public void setCloudletComparator(final Comparator<Cloudlet> comparator) {
-        this.cloudletComparator = comparator;
-    }
-
-    @Override
     public DatacenterBroker addOnVmsCreatedListener(final EventListener<DatacenterBrokerEventInfo> listener) {
         this.onVmsCreatedListeners.add(requireNonNull(listener));
         return this;
@@ -1204,11 +1171,6 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     @Override
     public String toString() {
         return "Broker " + getId();
-    }
-
-    @Override
-    public Function<Vm, Double> getVmDestructionDelayFunction() {
-        return vmDestructionDelayFunction;
     }
 
     @Override
@@ -1233,11 +1195,6 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     public DatacenterBroker setVmDestructionDelayFunction(final Function<Vm, Double> function) {
         this.vmDestructionDelayFunction = function == null ? DEF_VM_DESTRUCTION_DELAY_FUNC : function;
         return this;
-    }
-
-    @Override
-    public List<Cloudlet> getCloudletSubmittedList() {
-        return cloudletSubmittedList;
     }
 
     /**
@@ -1284,35 +1241,4 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      * @see #setVmMapper(Function)
      */
     protected abstract Vm defaultVmMapper(Cloudlet cloudlet);
-
-    @Override
-    public <T extends Vm> List<T> getVmFailedList() {
-        return  (List<T>) vmFailedList;
-    }
-
-    @Override
-    public boolean isShutdownWhenIdle() {
-        return shutdownWhenIdle;
-    }
-
-    @Override
-    public DatacenterBroker setShutdownWhenIdle(final boolean shutdownWhenIdle) {
-        this.shutdownWhenIdle = shutdownWhenIdle;
-        return this;
-    }
-
-    @Override
-    public VmCreation getVmCreation() {
-        return vmCreation;
-    }
-
-    @Override
-    public void setLastSelectedDc(final Datacenter lastSelectedDc) {
-        this.lastSelectedDc = Objects.requireNonNull(lastSelectedDc);
-    }
-
-    @Override
-    public Datacenter getLastSelectedDc() {
-        return lastSelectedDc;
-    }
 }

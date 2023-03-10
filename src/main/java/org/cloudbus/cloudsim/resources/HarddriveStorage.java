@@ -8,6 +8,9 @@
 
 package org.cloudbus.cloudsim.resources;
 
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
 import org.cloudbus.cloudsim.util.BytesConversion;
@@ -33,33 +36,44 @@ import static java.util.Objects.requireNonNullElse;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Toolkit 1.0
  */
+@Setter
 public class HarddriveStorage implements FileStorage {
-    /** @see #getStorage() */
+    /**
+     * The internal storage that just manages
+     * the HD capacity and used space.
+     * The {@link HarddriveStorage} (HD) does not extend such class
+     * to avoid its capacity and available amount of space
+     * to be changed indiscriminately.
+     * The available space is update according to files added or removed
+     * from the HD.
+     */
+    @Getter
     private final SimpleStorage storage;
 
     /**
-     * @see #getName()
+     * {@return the name} of the storage device
      */
+    @Getter
     private final String name;
 
     /**
-     * An optional pseudo number generator to randomize the seek time.
+     * An optional Pseudo Random Generator (PRNG) following a {@link ContinuousDistribution}
+     * to generate random delays for file seek time.
+     * Pass {@link ContinuousDistribution#NULL} to stop random delays.
      */
+    @NonNull
     private ContinuousDistribution prng;
 
-    /**
-     * @see #getMaxTransferRate()
-     */
+    @Getter
     private double maxTransferRate;
 
-    /**
-     * @see #getLatency()
-     */
+    @Getter
     private double latency;
 
     /**
-     * @see #getAvgSeekTime()
+     * {@return the average seek time} of the hard drive in seconds.
      */
+    @Getter
     private double avgSeekTime;
 
     /**
@@ -70,7 +84,7 @@ public class HarddriveStorage implements FileStorage {
      * @throws IllegalArgumentException when the name and the capacity are not valid
      * @see #setPrng(ContinuousDistribution)
      */
-    public HarddriveStorage(final String name, final long capacity) throws IllegalArgumentException {
+    public HarddriveStorage(@NonNull final String name, final long capacity) throws IllegalArgumentException {
         if (StringUtils.isBlank(name)) {
             throw new IllegalArgumentException("Storage name cannot be empty.");
         }
@@ -104,18 +118,6 @@ public class HarddriveStorage implements FileStorage {
         setMaxTransferRate(DEF_MAX_TRANSF_RATE_MBITS_SEC);
     }
 
-    /**
-     * {@return the name} of the storage device
-     */
-    public String getName() {
-        return name;
-    }
-
-    @Override
-    public double getLatency() {
-        return latency;
-    }
-
     @Override
     public FileStorage setLatency(final double latency) {
         if (latency < 0) {
@@ -124,11 +126,6 @@ public class HarddriveStorage implements FileStorage {
 
         this.latency = latency;
         return this;
-    }
-
-    @Override
-    public double getMaxTransferRate() {
-        return maxTransferRate;
     }
 
     @Override
@@ -148,26 +145,6 @@ public class HarddriveStorage implements FileStorage {
      */
     public void setAvgSeekTime(final double seekTime) {
         this.avgSeekTime = MathUtil.nonNegative(seekTime, "seekTime");
-    }
-
-    /**
-     * Sets the Pseudo Random Generator (PRNG) following a {@link ContinuousDistribution}
-     * to generate random delays for file seek time.
-     * Pass {@link ContinuousDistribution#NULL} to stop random delays.
-     *
-     * @param prng the ContinuousDistribution which generates seek times
-     */
-    public void setPrng(final ContinuousDistribution prng) {
-        this.prng = requireNonNullElse(prng, ContinuousDistribution.NULL);
-    }
-
-    /**
-     * Gets the average seek time of the hard drive in seconds.
-     *
-     * @return the average seek time in seconds
-     */
-    public double getAvgSeekTime() {
-        return avgSeekTime;
     }
 
     /**
@@ -233,19 +210,6 @@ public class HarddriveStorage implements FileStorage {
     @Override
     public boolean isFull() {
         return storage.isFull();
-    }
-
-    /**
-     * The internal storage that just manages
-     * the HD capacity and used space.
-     * The {@link HarddriveStorage} (HD) does not extend such class
-     * to avoid its capacity and available amount of space
-     * to be changed indiscriminately.
-     * The available space is update according to files added or removed
-     * from the HD.
-     */
-    public SimpleStorage getStorage() {
-        return storage;
     }
 
     @Override

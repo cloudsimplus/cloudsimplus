@@ -7,6 +7,10 @@
  */
 package org.cloudbus.cloudsim.core.events;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.Setter;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.core.CloudSimTag;
 import org.cloudbus.cloudsim.core.SimEntity;
@@ -23,37 +27,28 @@ import java.util.Objects;
  * @see CloudSim
  * @see SimEntity
  */
+@Getter @Setter
 public final class CloudSimEvent implements SimEvent {
-    /** @see #getSimulation() */
+    @NonNull
     private Simulation simulation;
 
     private final Type type;
 
-    /**
-     * The actual simulation time that this event was scheduled to (at which it should occur).
-     */
     private final double time;
 
-    /**
-     * Time that the event was removed from the queue to start service.
-     */
+    @Setter(AccessLevel.NONE)
     private double endWaitingTime;
 
-    /**
-     * The entity who scheduled the event.
-     */
+    @NonNull
     private SimEntity source;
 
-    /**
-     * The entity that the event will be sent to.
-     */
+    @NonNull
     private SimEntity destination;
 
     private final CloudSimTag tag;
 
     private final Object data;
 
-    /** @see #getSerial() */
     private long serial = -1;
 
     /**
@@ -178,27 +173,6 @@ public final class CloudSimEvent implements SimEvent {
     }
 
     @Override
-    public void setSerial(final long serial) {
-        this.serial = serial;
-    }
-
-    @Override
-    public double getEndWaitingTime() {
-        return endWaitingTime;
-    }
-
-    @Override
-    public SimEvent setSimulation(final Simulation simulation) {
-        this.simulation = Objects.requireNonNull(simulation);
-        return this;
-    }
-
-    @Override
-    public Type getType() {
-        return type;
-    }
-
-    @Override
     public int compareTo(final SimEvent that) {
         if (that == null || that == SimEvent.NULL) {
             return 1;
@@ -235,60 +209,13 @@ public final class CloudSimEvent implements SimEvent {
     }
 
     @Override
-    public SimEntity getDestination() {
-        return dest;
-    }
-
-    @Override
-    public SimEntity getSource() {
-        return src;
-    }
-
-    @Override
-    public CloudSimTag getTag() {
-        return tag;
-    }
-
-    @Override
     public int getPriority() {
         return tag.priority();
     }
 
     @Override
-    public Object getData() {
-        return data;
-    }
-
-    @Override
-    public SimEvent setSource(final SimEntity source) {
-        this.src = Objects.requireNonNull(source);
-        return this;
-    }
-
-    @Override
-    public SimEvent setDestination(final SimEntity destination) {
-        this.dest = Objects.requireNonNull(destination);
-        return this;
-    }
-
-    @Override
-    public double getTime() {
-        return time;
-    }
-
-    @Override
     public EventListener<? extends EventInfo> getListener() {
         return EventListener.NULL;
-    }
-
-    @Override
-    public long getSerial() {
-        return serial;
-    }
-
-    @Override
-    public Simulation getSimulation() {
-        return simulation;
     }
 
     @Override

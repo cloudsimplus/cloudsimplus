@@ -8,6 +8,10 @@
 
 package org.cloudbus.cloudsim.utilizationmodels;
 
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.Setter;
+import lombok.SneakyThrows;
 import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
 import org.cloudbus.cloudsim.distributions.StatisticalDistribution;
 import org.cloudbus.cloudsim.distributions.UniformDistr;
@@ -37,6 +41,7 @@ public class UtilizationModelStochastic extends UtilizationModelAbstract {
     /**
      * The Random Number Generator (RNG).
      */
+    @Getter @Setter @NonNull
     private ContinuousDistribution randomGenerator;
 
     /**
@@ -69,10 +74,45 @@ public class UtilizationModelStochastic extends UtilizationModelAbstract {
      */
     private double previousUtilization;
 
-    /** @see #isHistoryEnabled() */
+    /**
+     * Indicates if the resource utilization history is enabled or not,
+     * so that utilization values are stored along all the simulation execution.
+     *
+     * <p>If utilization history is disable, more pseudo-random numbers will be generated,
+     * decreasing simulation performance.
+     * Changing this attribute is a trade-off between memory and CPU utilization:
+     * <ul>
+     *     <li>enabling reduces CPU utilization but increases RAM utilization;</li>
+     *     <li>disabling reduces RAM utilization but increases CPU utilization.</li>
+     * </ul>
+     * </p>
+     */
+    @Getter @Setter
     private boolean historyEnabled;
 
-    /** @see #isAlwaysGenNewRandUtilization() */
+    /**
+     * Indicates if at every time the {@link #getUtilization()} or {@link #getUtilization(double)}
+     * methods are called, a new randomly generated utilization will be returned or not.
+     * This attribute is false by default, meaning that consecutive utilization requests
+     * for the same time may return the same previous generated utilization value.
+     * Check the documentation in the return section at the end for details.
+     *
+     * <p>Using one instance of this utilization model for every Cloudlet
+     * in a large simulation scenario may be very expensive in terms of simulation
+     * time and memory consumption. This way, the researcher may want to use a single
+     * utilization model instance for every Cloudlet.
+     * The side effect is that, if this attribute is false (the default),
+     * it will usually return the same utilization value for the same requested time
+     * for distinct Cloudlets. That commonly is not what the researcher wants.
+     * He/she usually wants that every Cloudlet has an independent resource utilization.
+     * </p>
+     *
+     * <p>To reduce simulation time and memory consumption, you can use a single utilization
+     * model instance for a given Cloudlet resource (such as CPU) and set this attribute to false.
+     * This way, it will always generate different utilization values for every time
+     * an utilization is requested (even if the same previous time is given).</p>
+     */
+    @Getter @Setter
     private boolean alwaysGenNewRandUtilization;
 
     /**
@@ -154,7 +194,7 @@ public class UtilizationModelStochastic extends UtilizationModelAbstract {
      * @see #setHistoryEnabled(boolean)
      * @see #isAlwaysGenNewRandUtilization()
      */
-    public UtilizationModelStochastic(final Unit unit, final ContinuousDistribution prng) {
+    public UtilizationModelStochastic(final Unit unit, @NonNull final ContinuousDistribution prng) {
         super(unit);
         this.previousTime = -1;
         this.previousUtilization = -1;
@@ -216,13 +256,12 @@ public class UtilizationModelStochastic extends UtilizationModelAbstract {
      * Save the utilization history to a file.
      *
      * @param filename the filename
-     * @throws UncheckedIOException when the file cannot be accessed
+     * @throws IOException when the file cannot be accessed
      */
+    @SneakyThrows(IOException.class)
     public void saveHistory(final String filename) {
         try (var oos = new ObjectOutputStream(new FileOutputStream(filename))) {
             oos.writeObject(historyMap);
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
         }
     }
 
@@ -230,115 +269,13 @@ public class UtilizationModelStochastic extends UtilizationModelAbstract {
      * Load a utilization history from a file.
      *
      * @param filename the filename
-     * @throws UncheckedIOException when the file cannot be accessed
+     * @throws IOException when the file cannot be accessed
      */
     @SuppressWarnings("unchecked")
+    @SneakyThrows({IOException.class, ClassNotFoundException.class})
     public void loadHistory(final String filename) {
         try (var ois = new ObjectInputStream(new FileInputStream(filename))) {
             historyMap = (Map<Double, Double>) ois.readObject();
-        } catch (final IOException e) {
-            throw new UncheckedIOException(e);
-        } catch (final ClassNotFoundException e) {
-            throw new RuntimeException(e);
         }
-    }
-
-    /**
-     * Gets the random number generator.
-     *
-     * @return the random number generator
-     */
-    public ContinuousDistribution getRandomGenerator() {
-        return randomGenerator;
-    }
-
-    /**
-     * Sets the random number generator.
-     *
-     * @param randomGenerator the new random number generator
-     */
-    public final void setRandomGenerator(final ContinuousDistribution randomGenerator) {
-        this.randomGenerator = Objects.requireNonNull(randomGenerator);
-    }
-
-    /**
-     * Checks if the history of resource utilization along simulation time
-     * is to be kept or not.
-     * @return true if the history is to be kept, false otherwise
-     * @see #setHistoryEnabled(boolean)
-     */
-    public boolean isHistoryEnabled() {
-        return historyEnabled;
-    }
-
-    /**
-     * Enables or disables the resource utilization history,
-     * so that utilization values are stored along all the simulation execution.
-     *
-     * <p>If utilization history is disable, more pseudo-random numbers will be generated,
-     * decreasing simulation performance.
-     * Changing this attribute is a trade-off between memory and CPU utilization:
-     * <ul>
-     *     <li>enabling reduces CPU utilization but increases RAM utilization;</li>
-     *     <li>disabling reduces RAM utilization but increases CPU utilization.</li>
-     * </ul>
-     * </p>
-     * @param enable true to enable the utilization history, false to disable
-     * @return
-     */
-    public UtilizationModelStochastic setHistoryEnabled(final boolean enable) {
-        this.historyEnabled = enable;
-        return this;
-    }
-
-    /**
-     * Checks if every time the {@link #getUtilization()} or {@link #getUtilization(double)} methods
-     * are called, a new randomly generated utilization will be returned or not.
-     * This attribute is false by default, meaning that consecutive utilization requests
-     * for the same time may return the same previous generated utilization value.
-     * Check the documentation in the return section at the end for details.
-     *
-     * <p>Using one instance of this utilization model for every Cloudlet
-     * in a large simulation scenario may be very expensive in terms of simulation
-     * time and memory consumption. This way, the researcher may want to use a single
-     * utilization model instance for every Cloudlet.
-     * The side effect is that, if this attribute is false (the default),
-     * it will usually return the same utilization value for the same requested time
-     * for distinct Cloudlets. That commonly is not what the researcher wants.
-     * He/she usually wants that every Cloudlet has an independent resource utilization.
-     * </p>
-     *
-     * <p>To reduce simulation time and memory consumption, you can use a single utilization
-     * model instance for a given Cloudlet resource (such as CPU) and set this attribute to false.
-     * This way, it will always generate different utilization values for every time
-     * an utilization is requested (even if the same previous time is given).</p>
-     *
-     * @return true if a new randomly generated utilization will always be returned;
-     *         false if for the same requested time, the same utilization must be returned.
-     *         In this last case, it's just ensured that, for a given time,
-     *         the same utilization will always be returned,
-     *         if the {@link #isHistoryEnabled() history is enabled}.
-     * @see #setAlwaysGenNewRandUtilization(boolean)
-     */
-    public boolean isAlwaysGenNewRandUtilization() {
-        return alwaysGenNewRandUtilization;
-    }
-
-    /**
-     * Allow the model to always generate a new random utilization value when
-     * {@link #getUtilization()} methods are called,
-     * even if the simulation clock hasn't changed since the last call.
-     *
-     * @param alwaysGenNewRandUtilization true to allow generating a new random value for
-     *                                    each time the resource utilization is required;
-     *                                    false to disable
-     * @return
-     * @see #isAlwaysGenNewRandUtilization()
-     * @see #getUtilization()
-     * @see #getUtilization(double)
-     */
-    public UtilizationModelStochastic setAlwaysGenNewRandUtilization(final boolean alwaysGenNewRandUtilization) {
-        this.alwaysGenNewRandUtilization = alwaysGenNewRandUtilization;
-        return this;
     }
 }

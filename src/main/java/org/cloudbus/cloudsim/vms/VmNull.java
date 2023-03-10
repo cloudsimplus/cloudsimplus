@@ -25,7 +25,6 @@ package org.cloudbus.cloudsim.vms;
 
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
-import org.cloudbus.cloudsim.core.CustomerEntity;
 import org.cloudbus.cloudsim.core.Simulation;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.hosts.Host;
@@ -199,7 +198,7 @@ class VmNull implements Vm {
     @Override public void setLastTriedDatacenter(Datacenter lastTriedDatacenter) {/**/}
     @Override public Datacenter getLastTriedDatacenter() { return Datacenter.NULL; }
     @Override public double getArrivedTime() { return 0; }
-    @Override public CustomerEntity setArrivedTime(double time) { return this; }
+    @Override public void setArrivedTime(double time) { /**/ }
     @Override public double getCreationTime() { return 0; }
     @Override public String toString() { return "Vm.NULL"; }
     @Override public HorizontalVmScaling getHorizontalScaling() { return HorizontalVmScaling.NULL; }
@@ -212,7 +211,7 @@ class VmNull implements Vm {
     @Override public VerticalVmScaling getPeVerticalScaling() { return VerticalVmScaling.NULL; }
     @Override public Processor getProcessor() { return Processor.NULL; }
     @Override public String getDescription() { return ""; }
-    @Override public Vm setDescription(String description) { return this; }
+    @Override public void setDescription(String description) { /**/ }
     @Override public VmGroup getGroup() { return null; }
     @Override public double getTimeZone() { return Integer.MAX_VALUE; }
     @Override public Vm setTimeZone(double timeZone) { return this; }

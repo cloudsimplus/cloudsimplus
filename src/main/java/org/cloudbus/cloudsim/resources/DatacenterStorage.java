@@ -1,5 +1,8 @@
 package org.cloudbus.cloudsim.resources;
 
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.util.DataCloudTags;
@@ -27,7 +30,7 @@ public class DatacenterStorage {
 	/** @see #getStorageList() */
     private List<SanStorage> storageList;
 
-    /** @see #getDatacenter() */
+    @Getter @Setter
 	private Datacenter datacenter;
 
     /**
@@ -42,7 +45,7 @@ public class DatacenterStorage {
      * @param storageList the storage list to set
      */
 	public DatacenterStorage(final List<SanStorage> storageList){
-    	this.storageList = storageList;
+    	this.setStorageList(storageList);
     }
 
     /**
@@ -51,8 +54,8 @@ public class DatacenterStorage {
      * @param file a file to be searched
      * @return true if successful, false otherwise
      */
-    public boolean contains(final File file) {
-        return contains(requireNonNull(file).getName());
+    public boolean contains(@NonNull final File file) {
+        return contains(file.getName());
     }
 
     /**
@@ -85,8 +88,8 @@ public class DatacenterStorage {
      * @param storageList the new storage list
      * @return
      */
-    public final DatacenterStorage setStorageList(final List<SanStorage> storageList) {
-        this.storageList = requireNonNull(storageList);
+    public final DatacenterStorage setStorageList(@NonNull final List<SanStorage> storageList) {
+        this.storageList = storageList;
         setAllFilesOfAllStoragesToThisDatacenter();
 
         return this;
@@ -95,20 +98,12 @@ public class DatacenterStorage {
     /**
      * Assigns all files of all storage devices to this Datacenter.
      */
-    public void setAllFilesOfAllStoragesToThisDatacenter() {
+    private void setAllFilesOfAllStoragesToThisDatacenter() {
         storageList.stream()
                 .map(SanStorage::getFileList)
                 .flatMap(List::stream)
                 .forEach(file -> file.setDatacenter(this.getDatacenter()));
     }
-
-    public Datacenter getDatacenter() {
-		return datacenter;
-	}
-
-	public void setDatacenter(final Datacenter datacenter) {
-		this.datacenter = datacenter;
-	}
 
 	/**
      * Predict the total time to transfer a list of files.
@@ -149,9 +144,7 @@ public class DatacenterStorage {
      * @param file the file to add
      * @return a tag from {@link DataCloudTags} informing the result of the operation
      */
-    public int addFile(final File file) {
-        requireNonNull(file);
-
+    public int addFile(@NonNull final File file) {
         if (contains(file.getName())) {
             return DataCloudTags.FILE_ADD_ERROR_EXIST_READ_ONLY;
         }

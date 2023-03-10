@@ -6,6 +6,7 @@
  */
 package org.cloudbus.cloudsim.datacenters;
 
+import lombok.*;
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicy;
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
 import org.cloudbus.cloudsim.allocationpolicies.migration.VmAllocationPolicyMigration;
@@ -40,7 +41,7 @@ import java.util.stream.Stream;
 import static java.util.Objects.requireNonNull;
 import static java.util.function.Predicate.not;
 import static java.util.stream.Collectors.toList;
-import static org.cloudbus.cloudsim.util.BytesConversion.bitesToBytes;
+import static org.cloudbus.cloudsim.util.BytesConversion.bitsToBytes;
 
 /**
  * Implements the basic features of a Virtualized Cloud Datacenter. It deals
@@ -51,7 +52,30 @@ import static org.cloudbus.cloudsim.util.BytesConversion.bitesToBytes;
  * @author Anton Beloglazov
  * @since CloudSim Toolkit 1.0
  */
+@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 public class DatacenterSimple extends CloudSimEntity implements Datacenter {
+    @Getter @EqualsAndHashCode.Include
+    private DatacenterCharacteristics characteristics;
+
+    @Getter
+    private double timeZone;
+
+    @Getter
+    private DatacenterStorage datacenterStorage;
+
+    private List<? extends Host> hostList;
+
+    @Getter
+    private long activeHostsNumber;
+
+    @Getter
+    private PowerModelDatacenter powerModel = PowerModelDatacenter.NULL;
+
+    @Getter
+    private VmAllocationPolicy vmAllocationPolicy;
+
+    @Getter
+    private double hostSearchRetryDelay;
 
     /**
      * The last time some Host on the Datacenter was under or overloaded.
@@ -63,43 +87,25 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      */
     private double lastUnderOrOverloadedDetection = -Double.MAX_VALUE;
 
-    /** @see #getBandwidthPercentForMigration() */
-    private double bandwidthPercentForMigration;
+    @Getter
+    private double schedulingInterval;
+
+    /** The last time some cloudlet was processed in the Datacenter. */
+    @Getter(AccessLevel.PROTECTED) @Setter(AccessLevel.PROTECTED)
+    private double lastProcessTime;
 
     /**
      * Indicates if migrations are disabled or not.
      */
     private boolean migrationsEnabled;
 
-    private List<? extends Host> hostList;
-
-    /** @see #getCharacteristics() */
-    private final DatacenterCharacteristics characteristics;
-
-    /** @see #getVmAllocationPolicy() */
-    private VmAllocationPolicy vmAllocationPolicy;
-
-    /** @see #getLastProcessTime() */
-    private double lastProcessTime;
-
-    /** @see #getSchedulingInterval() */
-    private double schedulingInterval;
-
-    /** @see #getDatacenterStorage() */
-	private DatacenterStorage datacenterStorage;
+    @Getter
+    private double bandwidthPercentForMigration;
 
     private final List<EventListener<HostEventInfo>> onHostAvailableListeners;
     private final List<EventListener<DatacenterVmMigrationEventInfo>> onVmMigrationFinishListeners;
 
-    /** @see #getTimeZone() */
-    private double timeZone;
     private Map<Vm, Host> lastMigrationMap;
-
-    /** @see #getHostSearchRetryDelay() */
-    private double hostSearchRetryDelay;
-
-    private PowerModelDatacenter powerModel = PowerModelDatacenter.NULL;
-    private long activeHostsNumber;
 
     /**
      * Creates a Datacenter with an empty {@link #getDatacenterStorage() storage}
@@ -222,7 +228,8 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
             host.setId(++nextId);
         }
 
-        host.setSimulation(getSimulation()).setDatacenter(this);
+        host.setSimulation(getSimulation());
+        host.setDatacenter(this);
         host.setActive(((HostSimple)host).isActivateOnDatacenterStartup());
         return nextId;
     }
@@ -885,16 +892,6 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         return hostList.stream().filter(Host::isActive);
     }
 
-    @Override
-    public DatacenterCharacteristics getCharacteristics() {
-        return characteristics;
-    }
-
-    @Override
-    public VmAllocationPolicy getVmAllocationPolicy() {
-        return vmAllocationPolicy;
-    }
-
     /**
      * Sets the policy to be used by the Datacenter to allocate VMs into hosts.
      *
@@ -909,29 +906,6 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         vmAllocationPolicy.setDatacenter(this);
         this.vmAllocationPolicy = vmAllocationPolicy;
         return this;
-    }
-
-    /**
-     * Gets the last time some cloudlet was processed in the Datacenter.
-     *
-     * @return the last process time
-     */
-    protected double getLastProcessTime() {
-        return lastProcessTime;
-    }
-
-    /**
-     * Sets the last time some cloudlet was processed in the Datacenter.
-     *
-     * @param lastProcessTime the new last process time
-     */
-    protected final void setLastProcessTime(final double lastProcessTime) {
-        this.lastProcessTime = lastProcessTime;
-    }
-
-    @Override
-    public DatacenterStorage getDatacenterStorage() {
-        return this.datacenterStorage;
     }
 
     @Override
@@ -956,19 +930,9 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     }
 
     @Override
-    public double getSchedulingInterval() {
-        return schedulingInterval;
-    }
-
-    @Override
     public final Datacenter setSchedulingInterval(final double schedulingInterval) {
         this.schedulingInterval = Math.max(schedulingInterval, 0);
         return this;
-    }
-
-    @Override
-    public double getTimeZone() {
-        return timeZone;
     }
 
     @Override
@@ -984,11 +948,6 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         }
 
         return Host.NULL;
-    }
-
-    @Override
-    public long getActiveHostsNumber(){
-        return activeHostsNumber;
     }
 
     /**
@@ -1042,29 +1001,6 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     }
 
     @Override
-    public boolean equals(final Object object) {
-        if (this == object) return true;
-        if (object == null || getClass() != object.getClass()) return false;
-        if (!super.equals(object)) return false;
-
-        final DatacenterSimple that = (DatacenterSimple) object;
-
-        return !characteristics.equals(that.characteristics);
-    }
-
-    @Override
-    public int hashCode() {
-        int result = super.hashCode();
-        result = 31 * result + characteristics.hashCode();
-        return result;
-    }
-
-    @Override
-    public double getBandwidthPercentForMigration() {
-        return bandwidthPercentForMigration;
-    }
-
-    @Override
     public void setBandwidthPercentForMigration(final double bandwidthPercentForMigration) {
         if(bandwidthPercentForMigration <= 0){
             throw new IllegalArgumentException("The bandwidth migration percentage must be greater than 0.");
@@ -1114,11 +1050,6 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     }
 
     @Override
-    public PowerModelDatacenter getPowerModel() {
-        return powerModel;
-    }
-
-    @Override
     public final void setPowerModel(final PowerModelDatacenter powerModel) {
         requireNonNull(powerModel,
             "powerModel cannot be null. You could provide a " +
@@ -1132,11 +1063,6 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     }
 
     @Override
-    public double getHostSearchRetryDelay() {
-        return hostSearchRetryDelay;
-    }
-
-    @Override
     public Datacenter setHostSearchRetryDelay(final double delay) {
         if(delay == 0){
             throw new IllegalArgumentException("hostSearchRetryDelay cannot be 0. Set a positive value to define an actual delay or a negative value to indicate a new Host search must be tried as soon as possible.");
@@ -1144,5 +1070,15 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
 
         this.hostSearchRetryDelay = delay;
         return this;
+    }
+
+    /**
+     * {@inheritDoc}
+     * <p>It creates a copy of the given parameter.</p>
+     * @param characteristics {@inheritDoc}
+     */
+    @Override
+    public void setCharacteristics(@NonNull DatacenterCharacteristics characteristics) {
+        this.characteristics = new DatacenterCharacteristicsSimple(characteristics, this);
     }
 }

@@ -1,5 +1,7 @@
 package org.cloudbus.cloudsim.power.models;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.util.MathUtil;
 
@@ -18,41 +20,70 @@ public abstract class PowerModelHost implements PowerModel {
      */
     public static final PowerModelHost NULL = new PowerModelHostNull();
 
+    /**
+     * The Host this PowerModel is collecting power consumption measurements from.
+     */
+    @Getter @Setter
     private Host host;
 
     /**
-     * @see #getStartupDelay()
+     * Get the delay (in seconds) for starting up the {@link Host}.
      */
+    @Getter
     private double startupDelay;
 
     /**
-     * @see #getShutDownDelay()
+     * The delay (in seconds) for shutting down the {@link Host}.
      */
+    @Getter
     private double shutDownDelay;
 
     /**
-     * @see #getStartupPower()
+     * The power consumed (in Watts) for starting up the {@link Host}.
      */
+    @Getter
     private double startupPower;
 
-    /** @see #getTotalStartupPower() */
+    /**
+     * The power consumed (in Watts) for shutting down the {@link Host}.
+     */
+    @Getter
+    private double shutDownPower;
+
+    /**
+     * The total power consumed (in Watts) during all the times the {@link Host} was powered on.
+     * If the Host has never started up, returns zero.
+     */
+    @Getter
     private double totalStartupPower;
 
     /**
-     * @see #getShutDownPower()
+     * The total power consumed (in Watts) during all the times the {@link Host} was powered off.
+     * If the Host has never started up then shutdown, returns zero.
      */
-    private double shutDownPower;
-
-    /** @see #getTotalShutDownPower() */
+    @Getter
     private double totalShutDownPower;
 
-    /** @see #getTotalStartupTime() */
+    /**
+     * The total time (in seconds) the {@link Host} spent during startup.
+     * If the Host starts up multiple times, the time spent is summed up.
+     * @see #getTotalStartups()
+     */
+    @Getter
     private double totalStartupTime;
 
-    /** @see #getTotalShutDownTime() */
+    /**
+     * The total time (in seconds) the {@link Host} spent during shut down.
+     * If the Host shuts down multiple times, the time spent is summed up.
+     */
+    @Getter
     private double totalShutDownTime;
 
-    /** @see #getTotalStartups() */
+    /**
+     * The number of times the Host has started up.
+     * @see #getTotalStartupTime()
+     */
+    @Getter
     private int totalStartups;
 
     /**
@@ -74,25 +105,6 @@ public abstract class PowerModelHost implements PowerModel {
     }
 
     /**
-     * Gets the Host this PowerModel is collecting power consumption measurements from.
-     *
-     * @return
-     */
-    public Host getHost() {
-        return host;
-    }
-
-    /**
-     * Sets the Host this PowerModel will collect power consumption measurements from.
-     *
-     * @param host the Host to set
-     * @return
-     */
-    public void setHost(final Host host) {
-        this.host = Objects.requireNonNull(host);
-    }
-
-    /**
      * Computes the hosts power usage in Watts (W) at a certain degree of utilization.
      * Mainly for backwards compatibility.
      *
@@ -111,25 +123,11 @@ public abstract class PowerModelHost implements PowerModel {
     protected abstract double getPowerInternal(double utilizationFraction);
 
     /**
-     * Get the delay (in seconds) for starting up the {@link Host}.
-     */
-    public double getStartupDelay() {
-        return startupDelay;
-    }
-
-    /**
      * Set the delay (in seconds) for starting up the {@link Host}.
      */
     public PowerModelHost setStartupDelay(final double delay) {
         this.startupDelay = MathUtil.nonNegative(delay, "Delay");
         return this;
-    }
-
-    /**
-     * Get the delay (in seconds) for shutting down the {@link Host}.
-     */
-    public double getShutDownDelay() {
-        return shutDownDelay;
     }
 
     /**
@@ -141,13 +139,6 @@ public abstract class PowerModelHost implements PowerModel {
     }
 
     /**
-     * Get the power consumed (in Watts) for starting up the {@link Host}.
-     */
-    public double getStartupPower() {
-        return startupPower;
-    }
-
-    /**
      * Set the power consumed (in Watts) for starting up the {@link Host}.
      */
     public PowerModelHost setStartupPower(final double power) {
@@ -156,26 +147,11 @@ public abstract class PowerModelHost implements PowerModel {
     }
 
     /**
-     * Get the power consumed (in Watts) for shutting down the {@link Host}.
-     */
-    public double getShutDownPower() {
-        return shutDownPower;
-    }
-
-    /**
      * Set the power consumed (in Watts) for shutting down the {@link Host}.
      */
     public PowerModelHost setShutDownPower(final double power) {
         this.shutDownPower = validatePower(power, "Power");
         return this;
-    }
-
-    /**
-     * Get the total power consumed (in Watts) during all the times the {@link Host} was powered on.
-     * If the Host has never started up, returns zero.
-     */
-    public double getTotalStartupPower() {
-        return totalStartupPower;
     }
 
     /**
@@ -189,45 +165,11 @@ public abstract class PowerModelHost implements PowerModel {
     }
 
     /**
-     * Get the total power consumed (in Watts) during all the times the {@link Host} was powered off.
-     * If the Host has never started up then shutdown, returns zero.
-     */
-    public double getTotalShutDownPower() {
-        return totalShutDownPower;
-    }
-
-    /**
      * After the Host is powered off, adds the consumed power to the total shutdown power.
      * If the Host is powered on/off multiple times, that power consumed is summed up.
      */
     public void addShutDownTotals() {
         totalShutDownPower += shutDownPower;
         totalShutDownTime += shutDownDelay;
-    }
-
-    /**
-     * Gets the number of times the Host has started up.
-     * @return
-     * @see #getTotalStartupTime()
-     */
-    public int getTotalStartups() {
-        return totalStartups;
-    }
-
-    /**
-     * Get the total time (in seconds) the {@link Host} spent during startup.
-     * If the Host starts up multiple times, the time spent is summed up.
-     * @see #getTotalStartups()
-     */
-    public double getTotalStartupTime() {
-        return totalStartupTime;
-    }
-
-    /**
-     * Get the total time (in seconds) the {@link Host} spent during shut down.
-     * If the Host shuts down multiple times, the time spent is summed up.
-     */
-    public double getTotalShutDownTime() {
-        return totalShutDownTime;
     }
 }

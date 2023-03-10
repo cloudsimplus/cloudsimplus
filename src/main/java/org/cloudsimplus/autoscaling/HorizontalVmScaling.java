@@ -28,6 +28,7 @@ import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudsimplus.listeners.VmHostEventInfo;
 
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
@@ -45,10 +46,10 @@ import java.util.function.Supplier;
  * <br>
  * <p>
  * To enable horizontal down scaling to destroy idle VMs, the {@link DatacenterBroker} has to be used
- * by setting a {@link DatacenterBroker#getVmDestructionDelayFunction()}.
+ * by setting a {@link DatacenterBroker#setVmDestructionDelayFunction(Function)}.
  * Since there is no Cloudlet migration mechanism (and it isn't intended to have),
  * if a VM becomes underloaded, there is nothing that can be done until all Cloudlets
- * finish executing. When that happens, the {@link DatacenterBroker#getVmDestructionDelayFunction()}
+ * finish executing. When that happens, the vmDestructionDelayFunction
  * will handle such a situation.
  * </p>
  *
@@ -77,9 +78,8 @@ public interface HorizontalVmScaling extends VmScaling {
      * the Load Balancer detects that Broker's VMs are overloaded.
      *
      * @param supplier the supplier to set
-     * @return
      */
-    HorizontalVmScaling setVmSupplier(Supplier<Vm> supplier);
+    void setVmSupplier(Supplier<Vm> supplier);
 
     /**
      * Requests a horizontal scale if the Vm is overloaded, according to the
@@ -126,10 +126,9 @@ public interface HorizontalVmScaling extends VmScaling {
      *                  Such a condition can be defined, for instance,
      *                  based on Vm's {@link Vm#getCpuPercentUtilization(double)} CPU usage}
      *                  and/or any other VM resource usage.
-     *                  Despite the VmScaling already is already linked to a {@link #getVm() Vm},
+     *                  Despite the VmScaling is already linked to a {@link #getVm() Vm},
      *                  the Vm parameter for the {@link Predicate} enables reusing the same predicate
      *                  to detect overload of different VMs.
-     * @return
      */
-    VmScaling setOverloadPredicate(Predicate<Vm> predicate);
+    void setOverloadPredicate(Predicate<Vm> predicate);
 }

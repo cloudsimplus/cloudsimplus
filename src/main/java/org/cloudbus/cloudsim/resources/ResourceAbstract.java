@@ -23,6 +23,8 @@
  */
 package org.cloudbus.cloudsim.resources;
 
+import lombok.Getter;
+import lombok.NonNull;
 import org.apache.commons.lang3.StringUtils;
 import org.cloudbus.cloudsim.util.MathUtil;
 
@@ -32,25 +34,19 @@ import org.cloudbus.cloudsim.util.MathUtil;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.2.0
  */
+@Getter
 public abstract class ResourceAbstract implements Resource {
-    /** @see #getCapacity() */
     protected long capacity;
-
     private final String unit;
 
-    public ResourceAbstract(final long capacity, final String unit){
+    public ResourceAbstract(final long capacity, @NonNull final String unit){
         this.capacity = MathUtil.nonNegative(capacity, "Capacity");
 
-        if(unit == null || StringUtils.isBlank(unit)) {
-            throw new IllegalArgumentException("Resource measurement unit cannot be null or empty");
+        if(StringUtils.isBlank(unit)) {
+            throw new IllegalArgumentException("Resource measurement unit cannot empty");
         }
 
         this.unit = unit;
-    }
-
-    @Override
-    public long getCapacity() {
-        return capacity;
     }
 
     @Override
@@ -79,10 +75,5 @@ public abstract class ResourceAbstract implements Resource {
 
         final long allocationDifference = newTotalAllocatedResource - getAllocatedResource();
         return isAmountAvailable(allocationDifference);
-    }
-
-    @Override
-    public String getUnit() {
-        return unit;
     }
 }

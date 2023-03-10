@@ -24,6 +24,9 @@
 package org.cloudsimplus.slametrics;
 
 import com.google.gson.Gson;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.ToString;
 import org.cloudbus.cloudsim.util.ResourceLoader;
 import org.cloudsimplus.vmtemplates.AwsEc2Template;
 
@@ -51,6 +54,7 @@ import java.util.List;
  *
  * @author raysaoliveira
  */
+@ToString(onlyExplicitlyIncluded = true)
 public class SlaContract {
     private static final String AVAILABILITY = "Availability";
     private static final String TASK_COMPLETION_TIME = "TaskCompletionTime";
@@ -59,6 +63,7 @@ public class SlaContract {
     private static final String PRICE = "Price";
     private static final String FAULT_TOLERANCE_LEVEL = "FaultToleranceLevel";
 
+    @Getter @ToString.Include
     private List<SlaMetric> metrics;
 
     /**
@@ -99,13 +104,6 @@ public class SlaContract {
     }
 
     /**
-     * @return the metrics list
-     */
-    public List<SlaMetric> getMetrics() {
-        return metrics;
-    }
-
-    /**
      * @param metrics the metrics to set
      */
     public void setMetrics(final List<SlaMetric> metrics) {
@@ -115,7 +113,7 @@ public class SlaContract {
         this.metrics = metrics == null ? new ArrayList<>() : metrics;
     }
 
-    private SlaMetric getSlaMetric(final String metricName) {
+    private SlaMetric getSlaMetric(@NonNull final String metricName) {
         return metrics
                 .stream()
                 .filter(metric -> metricName.equals(metric.getName()))
@@ -168,10 +166,5 @@ public class SlaContract {
 
     public int getMinFaultToleranceLevel() {
         return (int)Math.floor(getFaultToleranceLevel().getMinDimension().getValue());
-    }
-
-    @Override
-    public String toString() {
-        return metrics.toString();
     }
 }

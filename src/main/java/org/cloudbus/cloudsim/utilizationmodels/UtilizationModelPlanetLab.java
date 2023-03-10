@@ -7,6 +7,9 @@
  */
 package org.cloudbus.cloudsim.utilizationmodels;
 
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.SneakyThrows;
 import org.cloudbus.cloudsim.util.MathUtil;
 import org.cloudbus.cloudsim.util.ResourceLoader;
 
@@ -83,8 +86,17 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
     private final UnaryOperator<Double> mapper;
 
     /**
-     * @see #getSchedulingInterval()
+     * The time interval (in seconds) in which precise
+     * utilization can be got from the workload file.
+     *
+     * <p>That means if the {@link #getUtilization(double)} is called
+     * passing any time that is multiple of this scheduling interval,
+     * the utilization returned will be the value stored for that
+     * specific time. Otherwise, the value will be an arithmetic mean
+     * of the beginning and the ending of the interval in which
+     * the given time is.</p>
      */
+    @Getter
     private double schedulingInterval;
 
     /**
@@ -314,8 +326,8 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
      * @throws UncheckedIOException when the trace file cannot be read
      * @see #utilization
      */
-    private double[] readWorkloadFile(final InputStreamReader reader, int dataSamples) {
-        Objects.requireNonNull(reader);
+    @SneakyThrows(IOException.class)
+    private double[] readWorkloadFile(@NonNull final InputStreamReader reader, int dataSamples) {
         double[] utilization = {0};
 
         try (var buffer = new BufferedReader(reader)) {
@@ -331,8 +343,6 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
                     utilization[lineNum++] = mapper.apply(Double.parseDouble(line) / 100.0);
                 }
             }
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
         }
 
         return utilization;
@@ -476,23 +486,6 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
         final int index = endIndex - startIndex;
 
         return index >= 0 ? index : (utilization.length - startIndex) + endIndex;
-    }
-
-    /**
-     * Gets the time interval (in seconds) in which precise
-     * utilization can be got from the workload file.
-     *
-     * <p>That means if the {@link #getUtilization(double)} is called
-     * passing any time that is multiple of this scheduling interval,
-     * the utilization returned will be the value stored for that
-     * specific time. Otherwise, the value will be an arithmetic mean
-     * of the beginning and the ending of the interval in which
-     * the given time is.</p>
-     *
-     * @return the scheduling interval in seconds
-     */
-    public double getSchedulingInterval() {
-        return schedulingInterval;
     }
 
     /**

@@ -7,6 +7,10 @@
  */
 package org.cloudbus.cloudsim.allocationpolicies.migration;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.Setter;
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicy;
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicyAbstract;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
@@ -48,6 +52,7 @@ import static java.util.stream.Collectors.*;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Toolkit 3.0
  */
+@Getter @Setter
 public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPolicyAbstract implements VmAllocationPolicyMigration {
     public static final double DEF_UNDERLOAD_THRESHOLD = 0.35;
 
@@ -55,6 +60,7 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
     private double underUtilizationThreshold;
 
     /** @see #getVmSelectionPolicy() */
+    @NonNull
     private VmSelectionPolicy vmSelectionPolicy;
 
     /** @see #isUnderloaded() */
@@ -66,6 +72,7 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
     /**
      * A map between a VM and the host where it is placed.
      */
+    @Getter(AccessLevel.NONE)
     private final Map<Vm, Host> savedAllocation;
 
     /**
@@ -74,6 +81,7 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
      * policy is linked to, so that the policy tries
      * inter-datacenter VM migration before a different datacenter.
      */
+    @Getter(AccessLevel.NONE) @Setter(AccessLevel.NONE)
     private Datacenter targetMigrationDc;
 
     /**
@@ -83,6 +91,7 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
      * This is just used when the {@link #getDatacenter()} linked to this policy doesn't have suitable Hosts for
      * inter-datacenter VM migration. This way, a different datacenter is tried.
      */
+    @Getter(AccessLevel.NONE) @Setter(AccessLevel.NONE)
     private int targetMigrationDcIndex;
 
     /**
@@ -746,21 +755,6 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
     }
 
     @Override
-    public final void setVmSelectionPolicy(final VmSelectionPolicy vmSelectionPolicy) {
-        this.vmSelectionPolicy = Objects.requireNonNull(vmSelectionPolicy);
-    }
-
-    @Override
-    public VmSelectionPolicy getVmSelectionPolicy() {
-        return vmSelectionPolicy;
-    }
-
-    @Override
-    public double getUnderUtilizationThreshold() {
-        return underUtilizationThreshold;
-    }
-
-    @Override
     public void setUnderUtilizationThreshold(final double underUtilizationThreshold) {
         if(underUtilizationThreshold <= 0 || underUtilizationThreshold >= 1){
             throw new IllegalArgumentException("Under utilization threshold must be greater than 0 and lower than 1.");
@@ -772,15 +766,5 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
     @Override
     public final boolean isVmMigrationSupported() {
         return true;
-    }
-
-    @Override
-    public boolean areHostsUnderloaded() {
-        return hostsUnderloaded;
-    }
-
-    @Override
-    public boolean areHostsOverloaded() {
-        return hostsOverloaded;
     }
 }

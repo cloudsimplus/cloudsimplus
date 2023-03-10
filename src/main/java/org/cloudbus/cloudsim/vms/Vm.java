@@ -62,10 +62,10 @@ public interface Vm extends AbstractMachine<Resource>, UniquelyIdentifiable, Com
     /**
      * Sets the Vm description, an optional text
      * which can be used to provide details about this VM.
+     *
      * @param description the Vm description to set
-     * @return
      */
-    Vm setDescription(String description);
+    void setDescription(String description);
 
     /**
      * Gets the {@link VmGroup group} this Vm belongs to
