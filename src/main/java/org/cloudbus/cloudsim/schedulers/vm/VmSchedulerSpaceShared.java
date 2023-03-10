@@ -19,8 +19,8 @@ import java.util.List;
 /**
  * VmSchedulerSpaceShared is a VMM allocation policy that allocates one or more
  * PEs from a host to a Virtual Machine Monitor (VMM), and doesn't allow sharing
- * of PEs. The allocated PEs will be used until the VM finishes running. If
- * there is no enough free PEs as required by a VM, or whether the available PEs
+ * of PEs. The allocated PEs will be used until the VM finishes running.
+ * If there is no enough free PEs as required by a VM, or whether the available PEs
  * doesn't have enough capacity, the allocation fails. In the case of fail, no
  * PE is allocated to the requesting VM.
  *
@@ -51,8 +51,8 @@ public class VmSchedulerSpaceShared extends VmSchedulerAbstract {
 
     @Override
     protected boolean isSuitableForVmInternal(final Vm vm, final MipsShare requestedMips) {
-        final List<Pe> selectedPes = getTotalCapacityToBeAllocatedToVm(requestedMips);
-        return selectedPes.size() >= requestedMips.pes();
+        final var selectedPesList = getTotalCapacityToBeAllocatedToVm(requestedMips);
+        return selectedPesList.size() >= requestedMips.pes();
     }
 
     /**
@@ -67,17 +67,17 @@ public class VmSchedulerSpaceShared extends VmSchedulerAbstract {
             return getHost().getWorkingPeList();
         }
 
-        final List<Pe> freePeList = getHost().getFreePeList();
-        final List<Pe> selectedPes = new ArrayList<>();
+        final var freePeList = getHost().getFreePeList();
+        final var selectedPesList = new ArrayList<Pe>();
         if(freePeList.isEmpty()){
-            return selectedPes;
+            return selectedPesList;
         }
 
-        final Iterator<Pe> peIterator = freePeList.iterator();
+        final var peIterator = freePeList.iterator();
         Pe pe = peIterator.next();
         for (int i = 0; i < requestedMips.pes(); i++) {
             if (requestedMips.mips() <= pe.getCapacity()) {
-                selectedPes.add(pe);
+                selectedPesList.add(pe);
                 if (!peIterator.hasNext()) {
                     break;
                 }
@@ -85,13 +85,13 @@ public class VmSchedulerSpaceShared extends VmSchedulerAbstract {
             }
         }
 
-        return selectedPes;
+        return selectedPesList;
     }
 
     @Override
     public boolean allocatePesForVmInternal(final Vm vm, final MipsShare requestedMips) {
-        final List<Pe> selectedPes = getTotalCapacityToBeAllocatedToVm(requestedMips);
-        if(selectedPes.size() < requestedMips.pes()){
+        final var selectedPesList = getTotalCapacityToBeAllocatedToVm(requestedMips);
+        if(selectedPesList.size() < requestedMips.pes()){
             return false;
         }
 
