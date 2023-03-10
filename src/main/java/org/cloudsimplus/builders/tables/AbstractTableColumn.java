@@ -167,7 +167,7 @@ public abstract class AbstractTableColumn implements TableColumn {
      */
     @Override
     public String generateData(final Object data){
-        if(StringUtils.isBlank(format)) {
+        if(format.isBlank()) {
             return String.valueOf(data);
         }
 
