@@ -11,7 +11,8 @@ import java.util.zip.ZipInputStream;
 import static java.util.Objects.requireNonNull;
 
 /**
- * An abstract class providing features for subclasses implementing trace file readers for specific file formats.
+ * An abstract to implement trace file readers for specific file formats.
+ *
  * <p>
  * <b>NOTES:</b>
  * <ul>
@@ -48,7 +49,7 @@ public abstract class TraceReaderAbstract implements TraceReader {
     private int lastLineNumber;
 
     /**
-     * Create a new SwfWorkloadFileReader object.
+     * Create a SwfWorkloadFileReader object.
      *
      * @param filePath the workload trace file path in one of the following formats: <i>ASCII text, zip, gz.</i>
      * @throws IllegalArgumentException when the workload trace file name is null or empty; or the resource PE mips is less or equal to 0
@@ -60,7 +61,7 @@ public abstract class TraceReaderAbstract implements TraceReader {
     }
 
     /**
-     * Create a new SwfWorkloadFileReader object.
+     * Create a SwfWorkloadFileReader object.
      *
      * @param filePath the workload trace file path in one of the following formats: <i>ASCII text, zip, gz.</i>
      * @param inputStream   a {@link InputStreamReader} object to read the file
@@ -242,8 +243,8 @@ public abstract class TraceReaderAbstract implements TraceReader {
      *
      * @param reader     the object that is reading the workload file
      * @param lineNumber the number of the line that that will be read from the workload file (starting from 0)
-     * @return the line read; or null if there isn't any more lines to read or if
-     * the number of lines to read  was reached
+     * @return the line read; otherwise null if there isn't any more lines to read or if
+     * the number of lines to read was reached
      * @see #getMaxLinesToRead()
      */
     private String readNextLine(final BufferedReader reader, final int lineNumber) throws IOException {
