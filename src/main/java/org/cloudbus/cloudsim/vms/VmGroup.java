@@ -127,16 +127,15 @@ public class VmGroup extends VmSimple {
     }
 
     /**
-     * Gets the max MIPS capacity a VM inside the List is requiring.
+     * {@return the max MIPS capacity a VM} inside the List is requiring.
      * @param vmList the List of VMs to create the group
-     * @return
      */
     private static double getMaxMips(final List<Vm> vmList){
         return requireNonNull(vmList).stream().mapToDouble(Vm::getMips).max().orElse(0.0);
     }
 
     /**
-     * Gets the total number from all VMs inside the List.
+     * {@return the total number of PEs} from all VMs inside the List.
      */
     private static long getTotalPes(final List<Vm> vmList){
         return vmList.stream().mapToLong(Vm::getNumberOfPes).sum();
@@ -175,8 +174,7 @@ public class VmGroup extends VmSimple {
     }
 
     /**
-     * Gets the number of VMs in this group.
-     * @return
+     * {@return the number of VMs} inside this group.
      */
     public int size(){
         return vmList.size();
