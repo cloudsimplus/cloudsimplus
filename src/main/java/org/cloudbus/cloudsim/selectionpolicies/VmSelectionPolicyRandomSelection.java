@@ -21,8 +21,8 @@ import java.util.Optional;
  * A VM selection policy that randomly select VMs to migrate from a host.
  * It uses a uniform Pseudo Random Number Generator (PRNG) as default to select VMs.
  *
- * <br>If you are using any algorithms, policies or workload included in the power package please cite
- * the following paper:<br>
+ * <p>If you are using any algorithms, policies or workload included in the power package please cite
+ * the following paper:</p>
  *
  * <ul>
  * <li><a href="https://doi.org/10.1002/cpe.1867">Anton Beloglazov, and Rajkumar Buyya, "Optimal Online Deterministic Algorithms and Adaptive
@@ -58,12 +58,12 @@ public class VmSelectionPolicyRandomSelection implements VmSelectionPolicy {
 
 	@Override
 	public Optional<Vm> getVmToMigrate(final Host host) {
-		final List<Vm> migratableVms = host.getMigratableVms();
-		if (migratableVms.isEmpty()) {
+		final var migratableVmList = host.getMigratableVms();
+		if (migratableVmList.isEmpty()) {
 			return Optional.empty();
 		}
 
-		final int index = (int)(rand.sample() * migratableVms.size());
-		return Optional.of(migratableVms.get(index));
+		final int index = (int)(rand.sample() * migratableVmList.size());
+		return Optional.of(migratableVmList.get(index));
 	}
 }
