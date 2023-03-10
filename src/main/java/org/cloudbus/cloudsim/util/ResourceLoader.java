@@ -102,15 +102,15 @@ public final class ResourceLoader {
      */
     public static InputStream newInputStream(final String filePath, final Class klass) {
         //Try to load the resource from the resource directory in the filesystem
-        InputStream input = klass.getClassLoader().getResourceAsStream(File.separator+filePath);
-        if(input != null){
-            return input;
+        var inputStream = klass.getClassLoader().getResourceAsStream(File.separator+filePath);
+        if(inputStream != null){
+            return inputStream;
         }
 
         //Try to load the resource from a jar file
-        input = klass.getResourceAsStream(File.separator+filePath);
-        if(input != null){
-            return input;
+        inputStream = klass.getResourceAsStream(File.separator+filePath);
+        if(inputStream != null){
+            return inputStream;
         }
 
         //Try to load the resource from anywhere else than the resource directory
@@ -132,8 +132,8 @@ public final class ResourceLoader {
      * @return the absolute path of the resource
      */
     public static String getResourcePath(final Class klass, final String name) {
-        final URL resource = getResourceUrl(klass, name);
-        return resource == null || resource.getPath() == null ? "" : resource.getFile();
+        final URL url = getResourceUrl(klass, name);
+        return url == null || url.getPath() == null ? "" : url.getFile();
     }
 
     /**
@@ -160,35 +160,39 @@ public final class ResourceLoader {
      * @return the file name list
      */
     public static List<String> getResourceList(final Class klass, final String resourceDir){
-        final URI uri;
-        try {
-            uri = getResourceUrl(klass, resourceDir).toURI();
-        } catch (URISyntaxException e) {
-            throw new IllegalArgumentException(e);
-        }
-
-        try {
-            final Path fullPath = uriToPath(resourceDir, uri);
-            final List<String> list =
-                Files.walk(fullPath, 1)
-                     .map(path -> resourceDir + File.separator + path.getFileName().toString())
+        final var uri = getResourceUri(klass, resourceDir);
+        final Path fullPath = uriToPath(resourceDir, uri);
+        try(var pathStream = Files.walk(fullPath, 1)) {
+            final var fileNameList =
+                     pathStream.map(path -> resourceDir + File.separator + path.getFileName().toString())
                      .collect(Collectors.toList());
 
             //Removes the first element which is the name of the containing directory
-            if(!list.isEmpty()) {
-                list.remove(0);
+            if(!fileNameList.isEmpty()) {
+                fileNameList.remove(0);
             }
 
-            return list;
+            return fileNameList;
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
     }
 
-    private static Path uriToPath(final String resourceDir, final URI uri) throws IOException {
+    private static URI getResourceUri(final Class klass, final String resourceDir) {
+        try {
+            return getResourceUrl(klass, resourceDir).toURI();
+        } catch (URISyntaxException e) {
+            throw new IllegalArgumentException(e);
+        }
+    }
+
+    private static Path uriToPath(final String resourceDir, final URI uri){
         if (uri.getScheme().equals("jar")) {
-            final FileSystem fileSystem = FileSystems.newFileSystem(uri, Collections.emptyMap());
-            return fileSystem.getPath(resourceDir);
+            try (var fileSystem = FileSystems.newFileSystem(uri, Collections.emptyMap())) {
+                return fileSystem.getPath(resourceDir);
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
         }
 
         return Paths.get(uri);
