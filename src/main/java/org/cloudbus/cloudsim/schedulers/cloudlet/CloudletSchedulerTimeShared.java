@@ -115,8 +115,8 @@ public class CloudletSchedulerTimeShared extends CloudletSchedulerAbstract {
 
     /**
      * This time-shared scheduler shares the CPU time between all executing
-     * cloudlets, giving the same CPU time-slice for each Cloudlet to execute. It
-     * always allow any submitted Cloudlets to be immediately added to the
+     * cloudlets, giving the same CPU time-slice for each Cloudlet to execute.
+     * It always allows any submitted Cloudlets to be immediately added to the
      * execution list. By this way, it doesn't matter what Cloudlet is being
      * submitted, since it will always include it in the execution list.
      *
