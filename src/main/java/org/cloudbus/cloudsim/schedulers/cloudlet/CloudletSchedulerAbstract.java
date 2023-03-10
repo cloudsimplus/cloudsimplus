@@ -178,9 +178,9 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
          *       other schedulers such as the CloudletSchedulerCompletelyFair,
          *       which in fact performs task preemption.
         */
-        final long totalPesOfAllExecCloudlets = totalPesOfAllExecCloudlets();
-        if(totalPesOfAllExecCloudlets > currentMipsShare.pes()) {
-            return getTotalMipsShare() / totalPesOfAllExecCloudlets;
+        final long totalAllExecCloudletsPes = totalAllExecCloudletsPes();
+        if(totalAllExecCloudletsPes > currentMipsShare.pes()) {
+            return getTotalMipsShare() / totalAllExecCloudletsPes;
         }
 
         return getPeCapacity();
@@ -194,7 +194,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * Gets the total number of PEs of all cloudlets currently executing in this processor.
      * @return
      */
-    private long totalPesOfAllExecCloudlets() {
+    private long totalAllExecCloudletsPes() {
         return cloudletExecList.stream()
             .map(CloudletExecution::getCloudlet)
             .mapToLong(Cloudlet::getNumberOfPes).sum();
