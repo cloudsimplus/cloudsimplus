@@ -41,7 +41,7 @@ public class PeSimple extends ResourceManageableAbstract implements Pe {
     private PeProvisioner peProvisioner;
 
     /**
-     * Instantiates a PE object with the {@link #getDefaultMips() default MIPS capacity} and using a {@link PeProvisionerSimple}.
+     * Creates a PE object with the {@link #getDefaultMips() default MIPS capacity} and using a {@link PeProvisionerSimple}.
      * The id of the PE is just set when a List of PEs is assigned to a Host.
      *
      * @see #PeSimple(double, PeProvisioner)
@@ -53,7 +53,7 @@ public class PeSimple extends ResourceManageableAbstract implements Pe {
     }
 
     /**
-     * Instantiates a PE object using a {@link PeProvisionerSimple}.
+     * Creates a PE object using a {@link PeProvisionerSimple}.
      * The id of the PE is just set when a List of PEs is assigned to a Host.
      *
      * @param mipsCapacity the capacity of the PE in MIPS (Million Instructions per Second)
@@ -65,7 +65,7 @@ public class PeSimple extends ResourceManageableAbstract implements Pe {
     }
 
     /**
-     * Instantiates a PE object.
+     * Creates a PE object.
      * The id of the PE is just set when a List of PEs is assigned to a Host.
      *
      * @param mipsCapacity the capacity of the PE in MIPS (Million Instructions per Second)
@@ -77,13 +77,11 @@ public class PeSimple extends ResourceManageableAbstract implements Pe {
         super((long)mipsCapacity, "Unit");
         setId(-1);
         setPeProvisioner(peProvisioner);
-
-        // when created it should be set to FREE, i.e. available for use.
         setStatus(Status.FREE);
     }
 
     /**
-     * Instantiates a PE object defining a given id.
+     * Creates a PE object defining a given id.
      * The id of the PE is just set when a List of PEs is assigned to a Host.
      *
      * @param id the PE id
@@ -99,8 +97,7 @@ public class PeSimple extends ResourceManageableAbstract implements Pe {
     }
 
     /**
-     * Gets the default MIPS capacity to be used to create PEs when the no-args constructor is used.
-     * @return
+     * {@return the default MIPS capacity} to be used to create PEs when the no-args constructor is used.
      */
     public static double getDefaultMips() {
         return defaultMips;
@@ -109,7 +106,6 @@ public class PeSimple extends ResourceManageableAbstract implements Pe {
     /**
      * Sets the default MIPS capacity to be used to create PEs when the no-args constructor is used.
      * @param defaultMips the new default MIPS capacity to set
-     * @return
      */
     public static void setDefaultMips(final double defaultMips) {
         PeSimple.defaultMips = defaultMips;
