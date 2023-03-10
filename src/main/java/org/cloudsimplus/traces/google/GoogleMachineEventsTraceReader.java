@@ -230,7 +230,7 @@ public final class GoogleMachineEventsTraceReader extends GoogleTraceReaderAbstr
         final var cis = datacenterForLaterHosts.getSimulation().getCis();
         laterAvailableHosts.forEach(host -> cis.schedule(datacenterForLaterHosts, host.getStartTime(), CloudSimTag.HOST_ADD, host));
 
-        //Sends a request to every Datacenter to try remove the Hosts (since we don't have how to know which Datacenter each Host is)
+        //Sends a request to every Datacenter to try to remove the Hosts (since we don't have how to know which Datacenter each Host is)
         cis.getDatacenterList().forEach(this::sendHostsRemovalRequests);
     }
 
@@ -247,7 +247,7 @@ public final class GoogleMachineEventsTraceReader extends GoogleTraceReaderAbstr
          * to ensure that for each Datacenter, a request to find and remove
          * a Host will be sent in different times.
          * This way, if a DC finds a Host and removes it,
-         * it cancel the subsequent messages to the next Datacenters.
+         * it cancels the subsequent messages to the next Datacenters.
          * Since the Host was already found, the simulator doesn't need
          * to keep looking for the Host inside the other datacenters.*/
         hostsForRemoval.forEach(host -> cis.schedule(dc, host.getShutdownTime() + dc.getId() * 0.00001, CloudSimTag.HOST_REMOVE, host.getId()));
