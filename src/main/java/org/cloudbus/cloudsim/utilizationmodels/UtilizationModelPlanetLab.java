@@ -28,6 +28,11 @@ import java.util.function.UnaryOperator;
  * This value in seconds is commonly used for the {@link #getSchedulingInterval() scheduling interval}
  * attribute when instantiating an object of this class.
  * </p>
+ *
+ * Check <a href="https://github.com/cloudsimplus/planetlab-workload-traces">this repository</a>
+ * to get some trace files.
+ * The <a href="https://github.com/cloudsimplus/cloudsimplus-examples">CloudSim Plus Examples</a>
+ * repository also provides some of these files.
  */
 public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
     /**
@@ -83,7 +88,7 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
     private double schedulingInterval;
 
     /**
-     * Instantiates a new PlanetLab utilization model from a trace
+     * Creates a PlanetLab utilization model from a trace
      * file inside the <b>application's resource directory</b>,
      * considering that the interval between each data line inside a
      * PlanetLab trace file is the {@link #DEF_SCHEDULING_INTERVAL default one}.
@@ -104,7 +109,7 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
     }
 
     /**
-     * Instantiates a PlanetLab utilization model from a trace
+     * Creates a PlanetLab utilization model from a trace
      * file located <b>inside the application's resource directory</b>.
      *
      * <p>It checks if the first line of the trace has a comment representing its number of lines.
@@ -124,7 +129,7 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
     }
 
     /**
-     * Instantiates a PlanetLab utilization model from a trace
+     * Creates a PlanetLab utilization model from a trace
      * file located <b>inside the application's resource directory</b>.
      *
      * <p>It checks if the first line of the trace has a comment representing its number of lines.
@@ -153,7 +158,7 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
     }
 
     /**
-     * Instantiates a new PlanetLab resource utilization model from a trace
+     * Creates a PlanetLab resource utilization model from a trace
      * file <b>outside</b> the application's resource directory.
      *
      * <p>It checks if the first line of the trace has a comment representing its number of lines.
@@ -175,7 +180,7 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
     }
 
     /**
-     * Instantiates a new PlanetLab resource utilization model from a trace
+     * Creates a PlanetLab resource utilization model from a trace
      * file <b>outside</b> the application's resource directory.
      *
      * @param workloadFilePath the path of a PlanetLab Datacenter workload file.
@@ -207,7 +212,7 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
     }
 
     /**
-     * Instantiates a new PlanetLab resource utilization model from a trace
+     * Creates a PlanetLab resource utilization model from a trace
      * file <b>outside</b> the application's resource directory.
      *
      * <p>It checks if the first line of the trace has a comment representing its number of lines.
@@ -236,7 +241,7 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
     }
 
     /**
-     * A constructor that enables creating a PlanetLab UtilizationModel
+     * Creates a PlanetLab UtilizationModel
      * where the utilization data is provided directly utilization array parameter.
      * This can be used when you don't want to load the utilization data from a file.
      *
@@ -355,8 +360,7 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
     }
 
     /**
-     * Gets the number of data samples actually read from the trace file.
-     * @return
+     * {@return the number of data samples} actually read from the trace file.
      */
     public int getDataSamples(){
         return utilization.length;
@@ -377,7 +381,8 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
 
     @Override
     protected double getUtilizationInternal(final double time) {
-    	//If the time requested is multiple of the scheduling interval, gets a precise value from the trace file
+    	/* If the time requested is multiple of the scheduling interval,
+    	gets a precise value from the trace file */
         if (Math.round(time) % getSchedulingInterval() == 0) {
             return utilization[(int) getUtilizationIndex(time)];
         }
@@ -392,14 +397,14 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
     }
 
     /**
-     * Gets the index of the {@link #utilization} inside the trace file that corresponds to a given time.
+     * {@return the index of the utilization inside the trace file}
+     * that corresponds to a given time.
      * The trace file contains utilization according to a {@link #getSchedulingInterval()}.
      * Considering that the time given is multiple of this interval, this method
      * returns the exact index of the {@link #utilization} that contains the utilization for that time.
      *
      * @param time the time to get the index of the {@link #utilization} that contains the utilization
      *             for that time
-     * @return the index of the {@link #utilization} containing the utilization for the time given
      */
     private double getUtilizationIndex(final double time) {
         /* Since the Cloudlet that owns this utilization model instance
@@ -413,7 +418,8 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
     }
 
     /**
-     * Gets the previous index of the {@link #utilization} inside the trace file that corresponds to a given time.
+     * {@return the index of the utilization} inside the
+     * trace file that corresponds to the previuos time multiple of the scheduling interval.
      * The trace file contains utilization according to a {@link #getSchedulingInterval()}.
      * Considering that the time given isn't multiple of this interval, this method
      * returns the index of the {@link #utilization} containing the utilization for the
@@ -421,16 +427,14 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
      *
      * @param time the time to get the index of the {@link #utilization} that contains the utilization
      *             for that time
-     * @return the index of the {@link #utilization} containing the utilization for the
-     *         previous time multiple of the scheduling interval
      */
     private int getPrevUtilizationIndex(final double time) {
         return (int)Math.floor(getUtilizationIndex(time));
     }
 
     /**
-     * Gets the previous index of the {@link #utilization} inside the trace file that
-     * corresponds to a given time.
+     * {@return the index of the utilization} inside the trace file that
+     * corresponds to the next time multiple of the scheduling interval.
      * The trace file contains utilization according to a {@link #getSchedulingInterval()}.
      * Considering that the time given isn't multiple of this interval, this method
      * returns the index of the {@link #utilization} containing the utilization
@@ -438,8 +442,6 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
      *
      * @param time the time to get the index of the {@link #utilization} that contains the utilization
      *             for that time
-     * @return the index of the {@link #utilization} containing the utilization for
-     *         the next time multiple of the scheduling interval
      */
     private int getNextUtilizationIndex(final double time) {
         //Computes the modulo again since the Math.ceil may return an index higher than the size of the utilization array
@@ -447,7 +449,7 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
     }
 
     /**
-     * Gets the number of {@link #utilization} samples between two indexes.
+     * {@return the number of utilization samples between two indexes.}
      *
      * <p>
      * Since the utilization array is implemented as a circular list,
@@ -467,7 +469,6 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
      * </p>
      * @param startIndex the start index in the interval
      * @param endIndex the end index in the interval
-     * @return the number of samples inside such indexes interval
      */
     protected final int getIntervalSize(final int startIndex, final int endIndex) {
         /*TODO The interval size should add 1, but this is the original formula.
