@@ -123,7 +123,7 @@ public class VmSimpleTest {
     @Test
     public void testSetStartTimeInvalid() {
         final int invalid = -2;
-        vm.setStartTime(invalid);
+        assertThrows(IllegalArgumentException.class, () -> vm.setStartTime(invalid));
         assertNotEquals(invalid, vm.getStartTime());
     }
 

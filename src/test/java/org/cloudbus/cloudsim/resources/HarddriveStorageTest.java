@@ -1,11 +1,10 @@
 package org.cloudbus.cloudsim.resources;
 
 import org.apache.commons.lang3.StringUtils;
-import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
-import org.cloudbus.cloudsim.distributions.ExponentialDistr;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  *
@@ -26,7 +25,7 @@ public class HarddriveStorageTest {
 
     @Test()
     public void testNewHarddriveStorageWheNullName() {
-        assertThrows(IllegalArgumentException.class, () -> new HarddriveStorage(null, CAPACITY));
+        assertThrows(NullPointerException.class, () -> new HarddriveStorage(null, CAPACITY));
     }
 
     @Test()

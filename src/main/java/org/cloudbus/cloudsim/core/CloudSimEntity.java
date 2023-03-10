@@ -61,9 +61,9 @@ public abstract class CloudSimEntity implements SimEntity {
      * @throws IllegalArgumentException when the entity name is invalid
      */
     public CloudSimEntity(final Simulation simulation) {
+        this.simulation = simulation;
         setId(-1);
         state = State.RUNNABLE;
-        this.simulation = simulation;
         this.simulation.addEntity(this);
         this.startTime = -1;
         this.shutdownTime = -1;
