@@ -120,11 +120,15 @@ public enum TaskEventField implements TraceField<GoogleTaskEventsTraceReader> {
     },
 
     /**
-     * 7: All jobs and tasks have a scheduling class ​that roughly represents how latency-sensitive it is.
+     * 7: All jobs and tasks have a scheduling class that roughly represents
+     * how latency-sensitive it is.
      * The scheduling class is represented by a single number,
-     * with 3 representing a more latency-sensitive task (e.g., serving revenue-generating user requests)
-     * and 0 representing a non-production task (e.g., development, non-business-critical analyses, etc.).
-     * Note that scheduling  class is n​ot a priority, although more latency-sensitive tasks tend to have higher task priorities.
+     * with 3 representing a more latency-sensitive task
+     * (e.g., serving revenue-generating user requests)
+     * and 0 representing a non-production task
+     * (e.g., development, non-business-critical analyses, etc.).
+     * Note that scheduling  class is not a priority,
+     * although more latency-sensitive tasks tend to have higher task priorities.
      * Scheduling class affects machine-local policy for resource access.
      * Priority determines whether a task is scheduled on a machine.
      *
@@ -138,7 +142,7 @@ public enum TaskEventField implements TraceField<GoogleTaskEventsTraceReader> {
     },
 
     /**
-     * 8: Each task has a priority, a​ small integer that is mapped here into a sorted set of values,
+     * 8: Each task has a priority, a small integer that is mapped here into a sorted set of values,
      * with 0 as the lowest priority (least important).
      * Tasks with larger priority numbers generally get preference for resources
      * over tasks with smaller priority numbers.
@@ -202,7 +206,7 @@ public enum TaskEventField implements TraceField<GoogleTaskEventsTraceReader> {
     },
 
     /**
-     * 12: If the different-machine constraint​ field is present, and true (1),
+     * 12: If the different-machine constraint field is present, and true (1),
      * it indicates that a task must be scheduled to execute on a
      * different machine than any other currently running task in the job.
      * It is a special type of constraint.
