@@ -181,7 +181,7 @@ public abstract class TraceReaderAbstract implements TraceReader {
      * @throws IOException if the there was any error reading the file
      */
     protected boolean readZipFile(final InputStream inputStream, final Function<String[], Boolean> processParsedLineFunction) throws IOException {
-        try (ZipInputStream zipInputStream = new ZipInputStream(requireNonNull(inputStream))) {
+        try (var zipInputStream = new ZipInputStream(requireNonNull(inputStream))) {
             while (zipInputStream.getNextEntry() != null) {
                 readFile(zipInputStream, processParsedLineFunction);
             }
@@ -227,7 +227,7 @@ public abstract class TraceReaderAbstract implements TraceReader {
         requireNonNull(processParsedLineFunction);
 
         //The reader is safely closed by the caller
-        final BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+        final var reader = new BufferedReader(new InputStreamReader(inputStream));
         lastLineNumber = 0;
         String line;
         while ((line = readNextLine(reader, lastLineNumber)) != null) {
