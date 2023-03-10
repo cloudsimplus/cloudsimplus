@@ -160,7 +160,8 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
 
         final long priorityDiff = c1.getCloudlet().getPriority() - c2.getCloudlet().getPriority();
         final long idDiff = c1.getCloudletId() - c2.getCloudletId();
-        //Since the computed value is long but the comparator return must be int, rounds the value to the closest int
+        /* Since the computed value is long but the comparator return must be int,
+        rounds the value to the closest int. */
         return Math.round(priorityDiff == 0 ? idDiff : priorityDiff);
     }
 
