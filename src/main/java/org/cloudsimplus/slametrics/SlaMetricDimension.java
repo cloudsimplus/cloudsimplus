@@ -64,7 +64,7 @@ public final class SlaMetricDimension {
     }
 
     /**
-     * Gets the value of the dimension,
+     * {@return the value of the dimension},
      * in absolute or percentage, according to the
      * {@link #getUnit()}.
      *
@@ -72,7 +72,6 @@ public final class SlaMetricDimension {
      * in scale from 0 to 100%, but they are stored in this class
      * in scale from 0 to 1, because everywhere percentage values
      * are defined in this scale.</p>
-     * @return
      */
     public double getValue() {
         return isPercent() ? value/100.0 : value;
