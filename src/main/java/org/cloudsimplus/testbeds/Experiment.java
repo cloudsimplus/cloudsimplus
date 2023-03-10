@@ -98,7 +98,7 @@ public abstract class Experiment extends AbstractRunnable {
      * @see #setDatacentersNumber(int)
      */
     public Experiment(final int index, final ExperimentRunner runner) {
-        //the seed will be generate from the Runner base seed
+        //the seed will be generated from the Runner base seed
         this(index, runner, -1);
     }
 
@@ -180,7 +180,6 @@ public abstract class Experiment extends AbstractRunnable {
 
     /**
      * Prints the results for the experiment.
-     *
      * The method has to be implemented by subclasses in order to output the
      * experiment results.
      *
