@@ -16,11 +16,12 @@ import java.util.Comparator;
 import java.util.List;
 
 /**
- * A class containing multiple convenient math functions.
+ * An utility class containing multiple convenient math functions.
  *
  * @author Anton Beloglazov
  * @since CloudSim Toolkit 3.0
  * @see TimeUtil
+ * @see BytesConversion
  */
 public final class MathUtil {
     /**
