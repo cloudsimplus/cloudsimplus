@@ -69,10 +69,7 @@ public class CloudletTaskSchedulerSimple implements CloudletTaskScheduler {
             return;
         }
 
-        /*
-         * @TODO author: manoelcampos It should be used polymorphism to avoid
-         *       including these if's for each type of task.
-         */
+        //TODO Needs to use polymorphism to avoid these ifs
         if (isTimeToUpdateCloudletProcessing(netCloudlet))
             updateExecutionTask(netCloudlet, partialFinishedMI);
         else updateNetworkTasks(netCloudlet);
@@ -80,7 +77,7 @@ public class CloudletTaskSchedulerSimple implements CloudletTaskScheduler {
 
     private void updateExecutionTask(final NetworkCloudlet cloudlet, final long partialFinishedMI) {
         /*
-         * @TODO autor: manoelcampos It has to be checked if the task execution
+         * @TODO It has to be checked if the task execution
          *       is considering only one cloudlet PE or all PEs.
          *       Each execution task is supposed to use just one PE.
          */
