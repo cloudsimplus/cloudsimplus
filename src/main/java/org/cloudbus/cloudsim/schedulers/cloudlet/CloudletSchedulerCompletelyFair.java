@@ -422,20 +422,20 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
         can be understood as resulting in "higher negative" values, that is,
         extreme negative values.
         */
-        final double inverseOfCloudletId = Integer.MAX_VALUE/(cloudlet.getCloudletId()+1.0);
+        final double inverseCloudletId = Integer.MAX_VALUE/(cloudlet.getCloudletId()+1.0);
 
-        return -Math.abs(cloudlet.getCloudlet().getPriority() + inverseOfCloudletId);
+        return -Math.abs(cloudlet.getCloudlet().getPriority() + inverseCloudletId);
     }
 
     /**
      * Checks if a Cloudlet can be submitted to the execution list.
      *
-     * This scheduler, different from its time-shared parent, only adds
+     * <p>This scheduler, different from its time-shared parent, only adds
      * submitted Cloudlets to the execution list if there is enough free PEs.
      * Otherwise, such Cloudlets are added to the waiting list,
      * really enabling time-sharing between running Cloudlets.
      * By this way, some Cloudlets have to be preempted to allow other ones
-     * to be executed.
+     * to be executed.</p>
      *
      * @param cloudlet {@inheritDoc}
      * @return {@inheritDoc}
@@ -519,7 +519,7 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
             getCloudletExecList()
                 .stream()
                 .filter(vrtReachedTimeSlice)
-                .collect(toList());
+                .toList();
 
         expiredVrtCloudlets.forEach(cle -> addCloudletToWaitingList(removeCloudletFromExecList(cle)));
         return expiredVrtCloudlets;
