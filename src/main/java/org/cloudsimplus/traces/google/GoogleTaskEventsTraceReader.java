@@ -239,9 +239,10 @@ public class GoogleTaskEventsTraceReader extends GoogleTraceReaderAbstract<Cloud
      * @param taskEvent the task event read from the trace file, containing
      *                  the status and the attributes to change in the Cloudlet
      * @return
-     * @TODO This method is too large and confusing, thus it needs to be refactored
      */
     private Cloudlet addCloudletStatusChangeEvents(final CloudSimEvent statusChangeSimEvt, final TaskEvent taskEvent){
+        // TODO This method is too large and confusing, thus it needs to be refactored
+
         /*The actual Cloudlet that needs to have its status and/or attributes changed
          * by sending a request message to the broker.*/
         final var cloudlet = (Cloudlet)statusChangeSimEvt.getData();
@@ -409,7 +410,6 @@ public class GoogleTaskEventsTraceReader extends GoogleTraceReaderAbstract<Cloud
      * Cloudlets will be created.
      * @param maxCloudletsToCreate the maximum number of Cloudlets to create from the file.
      *                             Use {@link Integer#MAX_VALUE} to disable this configuration.
-     * @return
      * @see #setMaxLinesToRead(int)
      */
     public GoogleTaskEventsTraceReader setMaxCloudletsToCreate(final int maxCloudletsToCreate) {
