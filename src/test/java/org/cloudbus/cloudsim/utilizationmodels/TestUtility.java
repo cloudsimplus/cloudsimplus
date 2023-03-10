@@ -66,12 +66,11 @@ final class TestUtility {
             .collect(toList());
         final CloudSim simulation = CloudSimMocker.createMock(mocker -> mocker.clock(times));
 
-        final UtilizationModelDynamic utilizationModel = new UtilizationModelDynamic(initUsage);
-        utilizationModel
-            .setUtilizationUpdateFunction(model -> model.getUtilization() + model.getTimeSpan() * usagePercentInc)
-            .setSimulation(simulation);
+        final var um = new UtilizationModelDynamic(initUsage);
+        um.setUtilizationUpdateFunction(model -> model.getUtilization() + model.getTimeSpan() * usagePercentInc);
+        um.setSimulation(simulation);
 
-        return utilizationModel;
+        return um;
     }
 
     static void checkUtilization(

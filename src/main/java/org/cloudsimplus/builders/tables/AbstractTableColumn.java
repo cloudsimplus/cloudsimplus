@@ -23,6 +23,7 @@
  */
 package org.cloudsimplus.builders.tables;
 
+import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 
 import static java.util.Objects.requireNonNullElse;
@@ -31,24 +32,26 @@ import static java.util.Objects.requireNonNullElse;
  * A column of a table to be generated using a {@link Table} class.
  * @author Manoel Campos da Silva Filho
  */
+@Getter
 public abstract class AbstractTableColumn implements TableColumn {
     /**
-     * @see #getTitle()
+     * The title to be displayed at the top of the column.
      */
     private String title;
 
     /**
-     * @see #getSubTitle()
+     * The subtitle to be displayed below the title of the column (optional).
      */
     private String subTitle;
 
     /**
-     * @see #getFormat()
+     * The format to be used to display the content of the column,
+     * according to the {@link String#format(java.lang.String, java.lang.Object...)} (optional).
      */
     private String format;
 
     /**
-     * @see #getTable()
+     * The table that the column belongs to.
      */
     private Table table;
 
@@ -92,44 +95,16 @@ public abstract class AbstractTableColumn implements TableColumn {
         this(title, subTitle, "");
     }
 
-    /**
-     *
-     * @return The title to be displayed at the top of the column.
-     */
-    @Override
-    public String getTitle() {
-        return title;
-    }
-
     @Override
     public AbstractTableColumn setTitle(final String title) {
         this.title = requireNonNullElse(title, "");
         return this;
     }
 
-    /**
-     *
-     * @return The subtitle to be displayed below the title of the column (optional).
-     */
-    @Override
-    public String getSubTitle() {
-        return subTitle;
-    }
-
     @Override
     public AbstractTableColumn setSubTitle(final String subTitle) {
         this.subTitle = requireNonNullElse(subTitle, "");
         return this;
-    }
-
-    /**
-     *
-     * @return The format to be used to display the content of the column,
-     * according to the {@link String#format(java.lang.String, java.lang.Object...)} (optional).
-     */
-    @Override
-    public String getFormat() {
-        return format;
     }
 
     @Override
@@ -142,16 +117,6 @@ public abstract class AbstractTableColumn implements TableColumn {
     public String toString() {
         return getTitle();
     }
-
-    /**
-     *
-     * @return The table that the column belongs to.
-     */
-    @Override
-    public Table getTable() {
-        return table;
-    }
-
 
     @Override
     public AbstractTableColumn setTable(Table table) {

@@ -7,7 +7,9 @@
  */
 package org.cloudbus.cloudsim.resources;
 
-import org.apache.commons.lang3.StringUtils;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.Setter;
 import org.cloudbus.cloudsim.util.Conversion;
 import org.cloudbus.cloudsim.util.DataCloudTags;
 import org.cloudbus.cloudsim.util.MathUtil;
@@ -24,12 +26,8 @@ import java.util.Objects;
  * @author Anthony Sulistio
  * @since CloudSim Toolkit 1.0
  */
+@Getter
 public class FileAttribute {
-
-    /**
-     * Owner name of this file.
-     */
-    private String ownerName;
 
     /**
      * File ID given by a Replica Catalogue.
@@ -37,8 +35,15 @@ public class FileAttribute {
     private long id;
 
     /**
-     * File type, for instance raw, reconstructed, etc.
+     * The owner name of the file.
      */
+    @Setter @NonNull
+    private String ownerName;
+
+    /**
+     * The file type just for tagging purposes.
+     */
+    @Setter
     private int type;
 
     /**
@@ -49,6 +54,7 @@ public class FileAttribute {
     /**
      * The file checksum.
      */
+    @Setter
     private int checksum;
 
     /**
@@ -60,6 +66,7 @@ public class FileAttribute {
      * Gets real the file creation time,
      * according to the current computer time.
      */
+    @Setter
     private LocalDateTime creationTime;
 
     /**
@@ -70,11 +77,13 @@ public class FileAttribute {
     /**
      * Checks whether the file is a master copy or replica.
      */
+    @Setter
     private boolean masterCopy;
 
     /**
      * The file that this attribute object is related to
      */
+    @NonNull
     private final File file;
 
     /**
@@ -90,10 +99,7 @@ public class FileAttribute {
 
         ownerName = "";
         id = File.NOT_REGISTERED;
-        checksum = 0;
         type = File.TYPE_UNKNOWN;
-        lastUpdateTime = 0;
-        cost = 0;
         masterCopy = true;
         setFileSize(fileSize);
     }
@@ -145,15 +151,6 @@ public class FileAttribute {
     }
 
     /**
-     * Gets the file size (in MBytes).
-     *
-     * @return the file size (in MBytes)
-     */
-    public int getFileSize() {
-        return fileSize;
-    }
-
-    /**
      * Gets the file size (in bytes).
      *
      * @return the file size (in bytes)
@@ -182,15 +179,6 @@ public class FileAttribute {
     }
 
     /**
-     * Gets the last update time (in seconds).
-     *
-     * @return the last update time (in seconds)
-     */
-    public double getLastUpdateTime() {
-        return lastUpdateTime;
-    }
-
-    /**
      * Sets the file registration ID (published by a Replica Catalogue entity).
      *
      * @param id registration ID
@@ -215,75 +203,12 @@ public class FileAttribute {
     }
 
     /**
-     * Sets the file type (for instance raw, tag, etc).
-     *
-     * @param type a file type
-     * @return true if successful, false otherwise
-     */
-    public boolean setType(final int type) {
-        if (type < 0) {
-            return false;
-        }
-
-        this.type = type;
-        return true;
-    }
-
-    /**
-     * Gets the file type.
-     *
-     * @return file type
-     */
-    public int getType() {
-        return type;
-    }
-
-    /**
-     * Sets the checksum of the file.
-     *
-     * @param checksum the checksum of this file
-     * @return true if successful, false otherwise
-     */
-    public boolean setChecksum(final int checksum) {
-        if (checksum < 0) {
-            return false;
-        }
-
-        this.checksum = checksum;
-        return true;
-    }
-
-    /**
-     * Gets the file checksum.
-     *
-     * @return file checksum
-     */
-    public int getChecksum() {
-        return checksum;
-    }
-
-    /**
-     * Sets the cost associated with the file.
+     * Sets the cost ($) associated with the file.
      *
      * @param cost cost of this file
-     * @return true if successful, false otherwise
      */
-    public boolean setCost(final double cost) {
-        if (cost < 0) {
-            return false;
-        }
-
-        this.cost = cost;
-        return true;
-    }
-
-    /**
-     * Gets the cost associated with the file.
-     *
-     * @return the cost of this file
-     */
-    public double getCost() {
-        return cost;
+    public void setCost(final double cost) {
+        this.cost = MathUtil.nonNegative(cost, "cost");
     }
 
     /**
@@ -293,25 +218,5 @@ public class FileAttribute {
      */
     public boolean isRegistered() {
         return id != File.NOT_REGISTERED;
-    }
-
-    /**
-     * Marks the file as a master copy or replica.
-     *
-     * @param masterCopy a flag denotes true for master copy or
-     * false for a replica
-     */
-    public void setMasterCopy(final boolean masterCopy) {
-        this.masterCopy = masterCopy;
-    }
-
-    /**
-     * Checks whether the file is a master copy or replica.
-     *
-     * @return true if it is a master copy or false if it is a
-     * replica
-     */
-    public boolean isMasterCopy() {
-        return masterCopy;
     }
 }

@@ -23,6 +23,9 @@
  */
 package org.cloudsimplus.testbeds;
 
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.Setter;
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicy;
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
@@ -52,31 +55,110 @@ import static java.util.Objects.requireNonNull;
  * @since CloudSim Plus 1.0
  */
 public abstract class Experiment extends AbstractRunnable {
+    /**
+     * The object that is in charge to run the experiment.
+     */
+    @Getter
     protected final ExperimentRunner runner;
+
     protected int hostsNumber;
+
+    @Getter @Setter
     private int datacentersNumber;
+
+    /**
+     * The number of brokers to create.
+     */
+    @Getter
     private int brokersNumber;
 
+    @Getter
     private final CloudSim simulation;
+
+    @Getter
     private final List<Datacenter> datacenterList;
+
+    /**
+     * The list of created DatacenterBrokers.
+     */
+    @Getter
     private final List<DatacenterBroker> brokerList;
+
+    @Getter
     private final List<Vm> vmList;
+
+    @Getter
     private final List<Cloudlet> cloudletList;
+
+    @Getter
     private final long seed;
 
+    /**
+     * The index that identifies the current experiment run.
+     */
+    @Getter
     private final int index;
+
     private int lastVmId;
+
     private int lastCloudletId;
 
+    /**
+     * Sets a {@link Consumer} that will be called before starting the simulation.
+     *
+     * <p>Setting a Consumer object is optional.</p>
+     * @param <T> the class of the experiment
+     * @param beforeExperimentRun the beforeExperimentRun Consumer to set
+     */
+    @Setter @NonNull
     private Consumer<? extends Experiment> beforeExperimentRun;
+    /**
+     * Sets a {@link Consumer} object that will receive the experiment instance
+     * after the experiment finishes, then it performs some post-processing
+     * tasks. These tasks are defined by the developer using the current class
+     * and can include collecting data for statistical analysis.
+     * <p>Inside this Consumer, you must call {@link ExperimentRunner#addMetricValue(String, Double)}
+     * to collect values for each desired metric.</p>
+     *
+     * <p>Setting a Consumer object is optional.</p>
+     *
+     * @param <T> the class of the experiment
+     * @param afterExperimentFinishConsumer a {@link Consumer} instance to set
+     */
+    @Setter @NonNull
     private Consumer<? extends Experiment> afterExperimentFinish;
+
+    /**
+     * Sets a {@link Consumer} that will be called before the simulation scenario is built.
+     *
+     * <p>Setting a Consumer object is optional.</p>
+     * @param <T> the class of the experiment
+     * @param beforeExperimentBuild the beforeExperimentBuild Consumer to set
+     */
+    @Setter @NonNull
     private Consumer<? extends Experiment> beforeExperimentBuild;
+
+    /**
+     * Sets a {@link Consumer} that will be called after the simulation scenario is built,
+     * which is before starting the simulation.
+     *
+     * <p>Setting a Consumer object is optional.</p>
+     * @param <T> the class of the experiment
+     * @param afterExperimentBuild the afterExperimentBuild Consumer to set
+     */
+    @Setter @NonNull
     private Consumer<? extends Experiment> afterExperimentBuild;
 
-    /**@see #setVmsByBrokerFunction(Function) */
+    /**
+     * A {@link Function} that receives a {@link DatacenterBroker} and returns the
+     * number of Vms to create for that broker.
+     * If you want all brokers to have the same amount of VMs,
+     * you can give a lambda expression such as {@code broker -> NUMBER_OF_VMS_TO_CREATE}.
+     */
+    @Getter @Setter @NonNull
     private Function<DatacenterBroker, Integer> vmsByBrokerFunction;
 
-    /**@see #setVmAllocationPolicySupplier(Supplier)  */
+    @Setter @NonNull
     private Supplier<VmAllocationPolicy> vmAllocationPolicySupplier;
 
     /**
@@ -140,22 +222,6 @@ public abstract class Experiment extends AbstractRunnable {
         this.seed = validateSeed(seed);
     }
 
-    public final List<Cloudlet> getCloudletList() {
-        return Collections.unmodifiableList(cloudletList);
-    }
-
-    public List<Vm> getVmList() {
-        return Collections.unmodifiableList(vmList);
-    }
-
-    /**
-     * The index that identifies the current experiment run.
-     * @return
-     */
-    public int getIndex() {
-        return index;
-    }
-
     /**
      * Builds the simulation scenario and starts execution.
      *
@@ -186,37 +252,6 @@ public abstract class Experiment extends AbstractRunnable {
      * @see #printResultsInternal()
      */
     public abstract void printResults();
-
-    /**
-     * Gets the object that is in charge to run the experiment.
-     *
-     * @return
-     */
-    public ExperimentRunner getRunner() {
-        return runner;
-    }
-
-    /**
-     * Gets the list of created DatacenterBrokers.
-     *
-     * @return
-     */
-    public List<DatacenterBroker> getBrokerList() {
-        return brokerList;
-    }
-
-    /**
-     * Sets a {@link Consumer} that will be called before the simulation scenario is built.
-     *
-     * <p>Setting a Consumer object is optional.</p>
-     * @param <T> the class of the experiment
-     * @param beforeExperimentBuild the beforeExperimentBuild Consumer to set
-     * @return
-     */
-    public <T extends Experiment> T setBeforeExperimentBuild(final Consumer<T> beforeExperimentBuild) {
-        this.beforeExperimentBuild = Objects.requireNonNull(beforeExperimentBuild);
-        return (T)this;
-    }
 
     /**
      * Creates the simulation scenario to run the experiment.
@@ -269,6 +304,16 @@ public abstract class Experiment extends AbstractRunnable {
         return broker;
     }
 
+    private void createDatacenters() {
+        if(datacentersNumber <= 0){
+            throw new IllegalStateException("The number of Datacenters to create was not set");
+        }
+
+        for (int i = 0; i < datacentersNumber; i++) {
+            datacenterList.add(createDatacenter(i));
+        }
+    }
+
     /**
      * Creates a datacenter using a {@link VmAllocationPolicy}
      * supplied by the {@link #vmAllocationPolicySupplier}.
@@ -278,16 +323,6 @@ public abstract class Experiment extends AbstractRunnable {
      */
     protected Datacenter createDatacenter(final int index) {
         return new DatacenterSimple(simulation, createHosts(), newVmAllocationPolicy());
-    }
-
-    private void createDatacenters() {
-        if(datacentersNumber <= 0){
-            throw new IllegalStateException("The number of Datacenters to create was not set");
-        }
-
-        for (int i = 0; i < datacentersNumber; i++) {
-            datacenterList.add(createDatacenter(i));
-        }
     }
 
     private long validateSeed(long seed) {
@@ -397,74 +432,16 @@ public abstract class Experiment extends AbstractRunnable {
         ((Consumer<T>)this.beforeExperimentBuild).accept(experiment);
     }
 
-    /**
-     * Sets a {@link Consumer} that will be called after the simulation scenario is built,
-     * which is before starting the simulation.
-     *
-     * <p>Setting a Consumer object is optional.</p>
-     * @param <T> the class of the experiment
-     * @param afterExperimentBuild the afterExperimentBuild Consumer to set
-     * @return
-     */
-    public <T extends Experiment> Experiment setAfterExperimentBuild(final Consumer<T> afterExperimentBuild) {
-        this.afterExperimentBuild = Objects.requireNonNull(afterExperimentBuild);
-        return this;
-    }
-
     private <T extends Experiment> void afterExperimentBuild(final T experiment) {
         ((Consumer<T>)this.afterExperimentBuild).accept(experiment);
-    }
-
-    /**
-     * Sets a {@link Consumer} that will be called before starting the simulation.
-     *
-     * <p>Setting a Consumer object is optional.</p>
-     * @param <T> the class of the experiment
-     * @param beforeExperimentRun the beforeExperimentRun Consumer to set
-     * @return
-     */
-    public <T extends Experiment> T setBeforeExperimentRun(final Consumer<T> beforeExperimentRun) {
-        this.beforeExperimentRun = Objects.requireNonNull(beforeExperimentRun);
-        return (T)this;
     }
 
     private <T extends Experiment> void beforeExperimentRun(final T experiment) {
         ((Consumer<T>)this.beforeExperimentRun).accept(experiment);
     }
 
-    /**
-     * Sets a {@link Consumer} object that will receive the experiment instance
-     * after the experiment finishes, then it performs some post-processing
-     * tasks. These tasks are defined by the developer using the current class
-     * and can include collecting data for statistical analysis.
-     * <p>Inside this Consumer, you must call {@link ExperimentRunner#addMetricValue(String, Double)}
-     * to collect values for each desired metric.</p>
-     *
-     * <p>Setting a Consumer object is optional.</p>
-     *
-     * @param <T> the class of the experiment
-     * @param afterExperimentFinishConsumer a {@link Consumer} instance to set
-     * @return
-     */
-    public <T extends Experiment> Experiment setAfterExperimentFinish(final Consumer<T> afterExperimentFinishConsumer) {
-        this.afterExperimentFinish = Objects.requireNonNull(afterExperimentFinishConsumer);
-        return this;
-    }
-
     private <T extends Experiment> void afterExperimentFinish(final T experiment) {
         ((Consumer<T>) this.afterExperimentFinish).accept(experiment);
-    }
-
-    public final CloudSim getSimulation() {
-        return simulation;
-    }
-
-    /**
-     * Gets the number of brokers to create.
-     * @return
-     */
-    public int getBrokersNumber() {
-        return brokersNumber;
     }
 
     /**
@@ -480,38 +457,6 @@ public abstract class Experiment extends AbstractRunnable {
         return this;
     }
 
-    public List<Datacenter> getDatacenterList() {
-        return datacenterList;
-    }
-
-    public long getSeed(){
-        return seed;
-    }
-
-    @Override
-    public String toString() {
-        return "Experiment %d".formatted(index);
-    }
-
-    /**
-     * Sets a {@link Function} that receives a {@link DatacenterBroker} and returns the
-     * number of Vms to create for that broker.
-     * If you want all brokers to have the same amount of VMs,
-     * you can give a lambda expression such as {@code broker -> NUMBER_OF_VMS_TO_CREATE}.
-     * @param vmsByBrokerFunction the {@link Function} to set
-     */
-    public final void setVmsByBrokerFunction(final Function<DatacenterBroker, Integer> vmsByBrokerFunction) {
-        this.vmsByBrokerFunction = Objects.requireNonNull(vmsByBrokerFunction);
-    }
-
-    /**
-     * Gets a {@link Function} that receives a {@link DatacenterBroker} and returns the
-     * number of Vms to create for that broker.
-     */
-    protected Function<DatacenterBroker, Integer> getVmsByBrokerFunction() {
-        return vmsByBrokerFunction;
-    }
-
     protected final void setHostsNumber(final int hostsNumber) {
         if(hostsNumber <= 0){
             throw new IllegalArgumentException("Number of hosts must be greater than zero.");
@@ -520,19 +465,12 @@ public abstract class Experiment extends AbstractRunnable {
         this.hostsNumber = hostsNumber;
     }
 
-    public int getDatacentersNumber() {
-        return datacentersNumber;
-    }
-
-    public void setDatacentersNumber(final int datacentersNumber) {
-        this.datacentersNumber = datacentersNumber;
-    }
-
-    public void setVmAllocationPolicySupplier(final Supplier<VmAllocationPolicy> vmAllocationPolicySupplier) {
-        this.vmAllocationPolicySupplier = Objects.requireNonNull(vmAllocationPolicySupplier);
-    }
-
     protected final VmAllocationPolicy newVmAllocationPolicy() {
         return vmAllocationPolicySupplier == null ? new VmAllocationPolicySimple() : vmAllocationPolicySupplier.get();
+    }
+
+    @Override
+    public String toString() {
+        return "Experiment %d".formatted(index);
     }
 }

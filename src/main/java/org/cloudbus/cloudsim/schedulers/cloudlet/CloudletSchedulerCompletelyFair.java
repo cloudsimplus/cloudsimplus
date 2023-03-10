@@ -23,6 +23,7 @@
  */
 package org.cloudbus.cloudsim.schedulers.cloudlet;
 
+import lombok.Getter;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.CloudletExecution;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
@@ -126,19 +127,63 @@ import static java.util.stream.Collectors.toList;
  * @see <a href="https://www.kernel.org/doc/Documentation/scheduler/sched-design-CFS.txt">kernel.org: CFS Scheduler Design</a>
  * @see <a href="https://oakbytes.wordpress.com/linux-scheduler/">Linux Scheduler FAQ</a>
  */
+@Getter
 public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTimeShared {
     @Serial
     private static final long serialVersionUID = 9077807080812191007L;
 
     /**
-	 * @see #getMinimumGranularity()
-	 */
+     * {@return the minimum granularity}: the minimum amount of
+     * time (in seconds) that is assigned to each
+     * Cloudlet to execute.
+     *
+     * <p>This minimum value is used to reduce the frequency
+     * of CPU context Datacenter, that degrade CPU throughput.
+     * <b>However, CPU context switch overhead is not being considered.</b>
+     * By this way, it just ensures that each Cloudlet will not use the CPU
+     * for less than the minimum granularity.</p>
+     *
+     * <p>The default value for linux scheduler is 0.001s</p>
+     *
+     * @see #getLatency()
+     */
 	private int minimumGranularity = 2;
 
-	/**
-	 * @see #getLatency()
-	 */
-	private int latency = 3;
+    /**
+     * {@return  the latency}: the amount of time (in seconds)
+     * the scheduler will allow the execution of running Cloudlets
+     * in the available PEs, before checking which are the next
+     * Cloudlets to execute. The latency time is divided by the number of
+     * the number of Cloudlets that can be executed at the current time.
+     * If there are 4 Cloudlets by just 2 PEs, the latency is divided
+     * by 2, because only 2 Cloudlets can be concurrently executed
+     * at the moment. However, the minimum amount of time allocated to each
+     * Cloudlet is defined by the {@link #getMinimumGranularity()}.
+     *
+     * <p>As lower is the latency, more responsive a real operating
+     * system will be perceived by users, at the cost or more
+     * frequent CPU context Datacenter (that reduces CPU throughput).
+     * <b>However, CPU context switch overhead is not being considered.</b>
+     * </p>
+     *
+     * <b>NOTE</b>: The default value for linux scheduler is 0.02s.
+     * @see #getMinimumGranularity()
+     */
+    private int latency = 3;
+
+    /**
+     * Sets the latency time (in seconds).
+     * @param latency the latency to set
+     * @throws IllegalArgumentException when latency is lower than minimum granularity
+     * @see #getLatency()
+     */
+    public void setLatency(final int latency) {
+        if(latency < minimumGranularity){
+            throw new IllegalArgumentException("Latency cannot be lower than the mininum granularity.");
+        }
+
+        this.latency = latency;
+    }
 
     /**
      * A comparator used to increasingly sort Cloudlets into the waiting list
@@ -164,44 +209,6 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
         rounds the value to the closest int. */
         return Math.round(priorityDiff == 0 ? idDiff : priorityDiff);
     }
-
-    /**
-	 * Gets the latency, which is the amount of time (in seconds)
-	 * the scheduler will allow the execution of running Cloudlets
-	 * in the available PEs, before checking which are the next
-	 * Cloudlets to execute. The latency time is divided by the number of
-	 * the number of Cloudlets that can be executed at the current time.
-	 * If there are 4 Cloudlets by just 2 PEs, the latency is divided
-	 * by 2, because only 2 Cloudlets can be concurrently executed
-	 * at the moment. However, the minimum amount of time allocated to each
-	 * Cloudlet is defined by the {@link #getMinimumGranularity()}.
-	 *
-	 * <p>As lower is the latency, more responsive a real operating
-	 * system will be perceived by users, at the cost or more
-	 * frequent CPU context Datacenter (that reduces CPU throughput).
-	 * <b>However, CPU context switch overhead is not being considered.</b>
-	 * </p>
-     *
-     * NOTE: The default value for linux scheduler is 0.02s.
-	 * @return
-	 */
-	public int getLatency() {
-		return latency;
-	}
-
-	/**
-	 * Sets the latency time (in seconds).
-	 * @param latency the latency to set
-     * @throws IllegalArgumentException when latency is lower than minimum granularity
-     * @see #getLatency()
-	 */
-	public void setLatency(final int latency) {
-		if(latency < minimumGranularity){
-            throw new IllegalArgumentException("Latency cannot be lower than the mininum granularity.");
-        }
-
-        this.latency = latency;
-	}
 
 	/**
 	 * Computes the time-slice for a Cloudlet, which is the amount
@@ -304,26 +311,6 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
             .stream()
             .mapToDouble(this::getCloudletWeight)
             .sum();
-	}
-
-	/**
-	 * Gets the minimum granularity that is the minimum amount of
-	 * time (in seconds) that is assigned to each
-	 * Cloudlet to execute.
-	 *
-	 * <p>This minimum value is used to reduce the frequency
-	 * of CPU context Datacenter, that degrade CPU throughput.
-	 * <b>However, CPU context switch overhead is not being considered.</b>
-	 * By this way, it just ensures that each Cloudlet will not use the CPU
-	 * for less than the minimum granularity.</p>
-     *
-     * <p>The default value for linux scheduler is 0.001s</p>
-	 *
-	 * @return
-	 * @see #getLatency()
-	 */
-	public int getMinimumGranularity() {
-		return minimumGranularity;
 	}
 
 	/**

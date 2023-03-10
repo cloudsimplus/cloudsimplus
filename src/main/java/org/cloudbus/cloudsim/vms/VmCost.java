@@ -23,6 +23,7 @@
  */
 package org.cloudbus.cloudsim.vms;
 
+import lombok.Getter;
 import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristics;
 
 import java.util.Objects;
@@ -37,7 +38,10 @@ import java.util.Objects;
  * @since CloudSim Plus 1.0
  */
 public class VmCost {
-    /** @see #getVm()  */
+    /**
+     * The VM for which the total monetary cost will be computed.
+     */
+    @Getter
     private final Vm vm;
 
     /**
@@ -46,14 +50,6 @@ public class VmCost {
      */
     public VmCost(final Vm vm) {
         this.vm = Objects.requireNonNull(vm);
-    }
-
-    /**
-     * Gets the VM for which the total monetary cost will be computed.
-     * @return
-     */
-    public Vm getVm() {
-        return vm;
     }
 
     /**

@@ -23,6 +23,9 @@
  */
 package org.cloudsimplus.traces.google;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * A base class that stores data to identify a machine.
  * It has to be extended by classes that read trace files containing some machine
@@ -32,22 +35,15 @@ package org.cloudsimplus.traces.google;
  * @since CloudSim Plus 4.0.0
  */
 class MachineDataBase {
+    /**
+     * The machineID that indicates the machine onto which the task was scheduled.
+     * If the field is empty, -1 is returned instead.
+     */
+    @Getter @Setter
     private long machineId;
 
     /**
      * A protected construtor to avoid directly instantiation of this base class.
      */
     protected MachineDataBase(){/**/}
-
-    /**
-     * Gets the machineID that indicates the machine onto which the task was scheduled.
-     * If the field is empty, -1 is returned instead.
-     * @return
-     */
-    public long getMachineId(){ return machineId; }
-
-    /* default */ MachineDataBase setMachineId(final long machineId) {
-        this.machineId = machineId;
-        return this;
-    }
 }

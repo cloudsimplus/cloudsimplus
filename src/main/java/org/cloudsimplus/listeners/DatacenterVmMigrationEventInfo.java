@@ -23,6 +23,8 @@
  */
 package org.cloudsimplus.listeners;
 
+import lombok.Getter;
+import lombok.NonNull;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.hosts.HostSuitability;
 import org.cloudbus.cloudsim.vms.Vm;
@@ -35,15 +37,26 @@ import org.cloudbus.cloudsim.vms.Vm;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 6.0.3
  */
+@Getter
 public final class DatacenterVmMigrationEventInfo implements VmDatacenterEventInfo {
-    private final double time;
+    /**
+     * The VM that started a migration process.
+     */
     private final Vm vm;
+
+    private final double time;
+
+    /**
+     * Information about the suitability of the Host for the given VM.
+     */
     private final HostSuitability suitability;
+
     private final EventListener<DatacenterVmMigrationEventInfo> listener;
 
     private DatacenterVmMigrationEventInfo(
-        final Vm vm, final HostSuitability suitability,
-        final EventListener<DatacenterVmMigrationEventInfo> listener)
+        @NonNull final Vm vm,
+        @NonNull final HostSuitability suitability,
+        @NonNull final EventListener<DatacenterVmMigrationEventInfo> listener)
     {
         this.vm = vm;
         this.time = vm.getSimulation().clock();
@@ -51,22 +64,9 @@ public final class DatacenterVmMigrationEventInfo implements VmDatacenterEventIn
         this.listener = listener;
     }
 
-    /**
-     * Gets the VM that started a migration process.
-     * @return
-     */
-    public Vm getVm() {
-        return vm;
-    }
-
     @Override
     public Datacenter getDatacenter() {
         return vm.getHost().getDatacenter();
-    }
-
-    @Override
-    public double getTime() {
-        return time;
     }
 
     /**
@@ -74,19 +74,6 @@ public final class DatacenterVmMigrationEventInfo implements VmDatacenterEventIn
      */
     public boolean isMigrationSuccessful() {
         return suitability.fully();
-    }
-
-    /**
-     * Gets information about the suitability of the Host for the given VM.
-     * @return
-     */
-    public HostSuitability getHostSuitability() {
-        return suitability;
-    }
-
-    @Override
-    public EventListener<DatacenterVmMigrationEventInfo> getListener() {
-        return listener;
     }
 
     /**

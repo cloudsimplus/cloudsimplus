@@ -23,6 +23,8 @@
  */
 package org.cloudsimplus.testbeds;
 
+import lombok.Getter;
+import lombok.NonNull;
 import org.apache.commons.math3.distribution.TDistribution;
 import org.apache.commons.math3.exception.MathIllegalArgumentException;
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
@@ -37,20 +39,61 @@ import java.util.Optional;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 6.5.3
  */
+@Getter
 public final class ConfidenceInterval {
     /**
      * The confidence level for computing the CI {@link #value} (in % from 0 to 1).
      */
     public static final double CONFIDENCE_LEVEL = 0.95;
 
+    /**
+     * The name of the metric for which the Confidence Interval is computed.
+     */
     private final String metricName;
+
+    /**
+     * The Confidence Interval value,
+     * which is the mean value for an arbitrary metric
+     * from multiple simulation runs.
+     * This value is usually referred as just CI.
+     *
+     * @see #CONFIDENCE_LEVEL
+     */
     private final double value;
+
+    /**
+     * The Standard Deviation.
+     */
     private final double stdDev;
+
+    /**
+     * The number of samples used to compute the Confidence Interval.
+     */
     private final long samples;
 
+    /**
+     * The computed t-Distribution critical value.
+     * @see #computeCriticalValue(long)
+     */
     private final double criticalValue;
+
+    /**
+     * The CI error margin, which defines the size of the interval in which
+     * results may lay between.
+     * The interval is between {@link #getLowerLimit()} and {@link #getUpperLimit()}.
+     */
     private final double errorMargin;
+
+    /**
+     * The lower limit of the Confidence Interval,
+     * based on the {@link #getErrorMargin()}.
+     */
     private final double lowerLimit;
+
+    /**
+     * The upper limit of the Confidence Interval,
+     * based on the {@link #getErrorMargin()}.
+     */
     private final double upperLimit;
 
     /**
@@ -58,8 +101,8 @@ public final class ConfidenceInterval {
      * @param stats the object containing the statistics for the arbitrary metric collected
      * @param metricName the name of the metric for which the CI is computed.
      */
-    public ConfidenceInterval(final SummaryStatistics stats, final String metricName) {
-        this.metricName = Objects.requireNonNull(metricName);
+    public ConfidenceInterval(final SummaryStatistics stats, @NonNull final String metricName) {
+        this.metricName = metricName;
         final Optional<Double> optionalErrorMargin = errorMargin(stats);
         this.stdDev = stats.getStandardDeviation();
         this.samples = stats.getN();
@@ -129,7 +172,7 @@ public final class ConfidenceInterval {
      * @see <a href="http://www.springer.com/gp/book/9783319285290">Numeric
      * Computation and Statistical Data Analysis on the Java Platform</a>
      */
-    public static Optional<Double> errorMargin(final SummaryStatistics stats) {
+    public static Optional<Double> errorMargin(@NonNull final SummaryStatistics stats) {
         final long samples = stats.getN();
         if(samples <= 1) {
             return Optional.empty();
@@ -160,68 +203,6 @@ public final class ConfidenceInterval {
         final var tDist = new TDistribution(freedomDegrees);
         final double significance = 1.0 - CONFIDENCE_LEVEL;
         return tDist.inverseCumulativeProbability(1.0 - significance / 2.0);
-    }
-
-    /**
-     * Gets the Confidence Interval value,
-     * which is the mean value for an arbitrary metric
-     * from multiple simulation runs.
-     * This value is usually referred as just CI.
-     *
-     * @see #CONFIDENCE_LEVEL
-     */
-    public double getValue() {
-        return value;
-    }
-
-    public double getStdDev() {
-        return stdDev;
-    }
-
-    /**
-     * Gets the number of samples used to compute the Confidence Interval.
-     */
-    public long getSamples() {
-        return samples;
-    }
-
-    /**
-     * Gets the t-Distribution critical value.
-     */
-    public double getCriticalValue() {
-        return criticalValue;
-    }
-
-    /**
-     * Gets the CI error margin, which defines the size of the interval in which
-     * results may lay between.
-     * The interval is between {@link #getLowerLimit()} and {@link #getUpperLimit()}.
-     */
-    public double getErrorMargin() {
-        return errorMargin;
-    }
-
-    /**
-     * Gets the lower limit of the Confidence Interval,
-     * based on the {@link #getErrorMargin()}.
-     */
-    public double getLowerLimit() {
-        return lowerLimit;
-    }
-
-    /**
-     * Gets the upper limit of the Confidence Interval,
-     * based on the {@link #getErrorMargin()}.
-     */
-    public double getUpperLimit() {
-        return upperLimit;
-    }
-
-    /**
-     * Gets the name of the metric for which the Confidence Interval is computed.
-     */
-    public String getMetricName() {
-        return metricName;
     }
 
     /**

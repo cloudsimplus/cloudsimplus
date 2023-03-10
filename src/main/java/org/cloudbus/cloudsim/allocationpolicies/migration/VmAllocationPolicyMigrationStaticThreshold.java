@@ -7,6 +7,8 @@
  */
 package org.cloudbus.cloudsim.allocationpolicies.migration;
 
+import lombok.AccessLevel;
+import lombok.Getter;
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicy;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.selectionpolicies.VmSelectionPolicy;
@@ -38,6 +40,7 @@ public class VmAllocationPolicyMigrationStaticThreshold extends VmAllocationPoli
     public static final double DEF_OVER_UTILIZATION_THRESHOLD = 0.9;
 
     /** @see #getOverUtilizationThreshold(Host) */
+    @Getter(AccessLevel.NONE)
     private double overUtilizationThreshold;
 
     /**

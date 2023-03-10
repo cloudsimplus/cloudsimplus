@@ -23,6 +23,7 @@
  */
 package org.cloudbus.cloudsim.power.models;
 
+import lombok.Getter;
 import org.cloudbus.cloudsim.power.PowerMeasurement;
 
 /**
@@ -30,8 +31,16 @@ import org.cloudbus.cloudsim.power.PowerMeasurement;
  * @since CloudSim Plus 6.0.0
  * @see org.cloudbus.cloudsim.power.PowerMeter
  */
+@Getter
 public class PowerModelHostSimple extends PowerModelHost {
+    /**
+     * The maximum power (in watts) the host consumes under full load.
+     */
     private final double maxPower;
+
+    /**
+     * The static power (in watts) the host consumes when idle.
+     */
     private final double staticPower;
 
     /**
@@ -73,22 +82,5 @@ public class PowerModelHostSimple extends PowerModelHost {
      */
     private double dynamicPower(final double utilizationFraction) {
         return (maxPower - staticPower) * utilizationFraction;
-    }
-
-    /**
-     * Gets the maximum power (in watts) the host consumes under full load.
-     * @return
-     */
-    public double getMaxPower() {
-        return maxPower;
-    }
-
-    /**
-     * Gets the static power (in watts) the host consumes when idle.
-     *
-     * @return
-     */
-    public double getStaticPower() {
-        return staticPower;
     }
 }

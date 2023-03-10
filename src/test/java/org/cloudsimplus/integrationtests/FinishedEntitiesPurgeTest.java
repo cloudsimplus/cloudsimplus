@@ -333,7 +333,8 @@ class FinishedEntitiesPurgeTest {
 
     private Cloudlet createCloudlet(final Vm vm, final long length) {
         final var cloudlet = new CloudletSimple(lastCloudletId++, length, CLOUDLET_PES);
-        cloudlet.setUtilizationModelCpu(new UtilizationModelFull()).setSizes(1024).setVm(vm);
+        cloudlet.setUtilizationModelCpu(new UtilizationModelFull());
+        cloudlet.setSizes(1024).setVm(vm);
         return cloudlet;
     }
 }

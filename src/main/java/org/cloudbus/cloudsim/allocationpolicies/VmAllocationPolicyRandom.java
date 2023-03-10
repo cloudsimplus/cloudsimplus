@@ -23,6 +23,7 @@
  */
 package org.cloudbus.cloudsim.allocationpolicies;
 
+import lombok.NonNull;
 import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.vms.Vm;
@@ -63,9 +64,9 @@ public class VmAllocationPolicyRandom extends VmAllocationPolicyAbstract impleme
      * @param random a Pseudo-Random Number Generator (PRNG) used to select a Host.
      *               The PRNG must return values between 0 and 1.
      */
-    public VmAllocationPolicyRandom(final ContinuousDistribution random){
+    public VmAllocationPolicyRandom(@NonNull final ContinuousDistribution random){
         super();
-        this.random = Objects.requireNonNull(random);
+        this.random = random;
     }
 
     @Override

@@ -23,6 +23,8 @@
  */
 package org.cloudsimplus.heuristics;
 
+import lombok.Getter;
+import lombok.NonNull;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.vms.Vm;
 
@@ -72,6 +74,7 @@ public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudl
      */
     private double lastCost;
 
+    @Getter
     private final Heuristic heuristic;
 
     /**
@@ -85,8 +88,8 @@ public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudl
         this(heuristic, new HashMap<>());
     }
 
-    private CloudletToVmMappingSolution(final Heuristic heuristic, final Map<Cloudlet, Vm> cloudletVmMap){
-        this.heuristic = requireNonNull(heuristic);
+    private CloudletToVmMappingSolution(@NonNull final Heuristic heuristic, @NonNull final Map<Cloudlet, Vm> cloudletVmMap){
+        this.heuristic = heuristic;
         this.cloudletVmMap = cloudletVmMap;
     }
 
@@ -95,8 +98,8 @@ public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudl
      *
      * @param solution the solution to be cloned
      */
-    public CloudletToVmMappingSolution(final CloudletToVmMappingSolution solution){
-        this(requireNonNull(solution).heuristic, new HashMap<>(solution.cloudletVmMap));
+    public CloudletToVmMappingSolution(@NonNull final CloudletToVmMappingSolution solution){
+        this(solution.heuristic, new HashMap<>(solution.cloudletVmMap));
         this.recomputeCost = solution.recomputeCost;
         this.lastCost = solution.lastCost;
         this.cloudletVmMap.putAll(solution.cloudletVmMap);
@@ -108,14 +111,9 @@ public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudl
      * @param cloudlet the cloudlet to be added to a Vm
      * @param vm the Vm to assign a cloudlet to
      */
-    public void bindCloudletToVm(final Cloudlet cloudlet, final Vm vm){
-        cloudletVmMap.put(requireNonNull(cloudlet), requireNonNull(vm));
+    public void bindCloudletToVm(@NonNull final Cloudlet cloudlet, @NonNull final Vm vm){
+        cloudletVmMap.put(cloudlet, vm);
         recomputeCost = true;
-    }
-
-    @Override
-    public Heuristic<HeuristicSolution<Map<Cloudlet, Vm>>> getHeuristic() {
-        return heuristic;
     }
 
     private void recomputeCostIfRequested() {
@@ -228,7 +226,7 @@ public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudl
      * @return {@inheritDoc}
      */
     @Override
-    public int compareTo(final HeuristicSolution solution) {
+    public int compareTo(@NonNull final HeuristicSolution solution) {
         final double diff = this.getCost() - solution.getCost();
         if(Math.abs(diff) <= MIN_DIFF) {
             return 0;

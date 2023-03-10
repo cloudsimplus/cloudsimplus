@@ -15,6 +15,10 @@
  */
 package org.cloudbus.cloudsim.network;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.Setter;
 import org.cloudbus.cloudsim.core.CloudSimTag;
 import org.cloudbus.cloudsim.core.SimEntity;
 import org.cloudbus.cloudsim.util.MathUtil;
@@ -41,13 +45,19 @@ import java.util.List;
  * @author Chen-Khong Tham, National University of Singapore
  * @since CloudSim Toolkit 1.0
  */
+
+@Getter @Setter
 public class IcmpPacket implements NetworkPacket<SimEntity> {
     /**
      * A default value to indicate {@link #baudRate} was not set yet.
      */
     private static final int UNSET_BAUD_RATE = -1;
 
-    /** @see #getTag() */
+    /**
+     * The packet direction that indicates if it is going or returning.
+     * The direction can be {@link CloudSimTag#ICMP_PKT_SUBMIT}
+     * or {@link CloudSimTag#ICMP_PKT_RETURN}.
+     */
     private CloudSimTag tag;
 
     /**
@@ -55,7 +65,9 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
      */
     private final String name;
 
-    /** @see #getSize() */
+    /**
+     * The size of the packet  (in bytes).
+     */
     private long size;
 
     /**
@@ -63,24 +75,33 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
      */
     private final int packetId;
 
-    /**
-     * The original sender.
-     */
     private SimEntity source;
 
-    /**
-     * The destination.
-     */
     private SimEntity destination;
 
-    /** @see #getLastHop() */
+    /**
+     * The entity that was the last hop where this packet has traversed.
+     */
+    @NonNull
     private SimEntity lastHop;
 
-    /** @see #getNetServiceLevel() */
+    /**
+     * The network service type of this packet (zero by default).
+     * It depends on the packet scheduler to determine
+     * the priority of this service level.
+     */
     private int netServiceLevel;
 
-    /** @see #getBaudRate() */
+    /**
+     * The bottleneck bandwidth (baud rate in bits/s)
+     * between the source and the destination.
+     */
     private double baudRate;
+
+    /**
+     * The baud rate (in bits/s) of each output link of entities where the packet traverses.
+     */
+    private final List<Double> baudRateList;
 
     /**
      * The list of entities where the packet
@@ -94,17 +115,10 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
     /** @see #getDetailExitTimes() */
     private final List<Double> exitTimes;
 
-    /**
-     * The baud rate (in bits/s) of each output link of entities where the packet traverses.
-     */
-    private final List<Double> baudRateList;
-
+    @Getter(AccessLevel.NONE)
     private final DecimalFormat num;
 
-    /** @see #getSendTime() */
     private double sendTime;
-
-    /** @see #getReceiveTime() */
     private double receiveTime;
 
     /**
@@ -204,59 +218,13 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
         }
     }
 
-    @Override
-    public long getSize() {
-        return size;
-    }
-
     /**
      * Sets the size of the packet.
      *
      * @param size the size to set (in bytes)
-     * @return true if a positive value was given, false otherwise
      */
     public void setSize(final long size) {
         this.size = MathUtil.nonNegative(size, "size");
-    }
-
-    @Override
-    public SimEntity getSource() {
-        return source;
-    }
-
-    @Override
-    public void setSource(final SimEntity source) {
-        this.source = source;
-    }
-
-    @Override
-    public SimEntity getDestination() {
-        return destination;
-    }
-
-    @Override
-    public void setDestination(final SimEntity destination) {
-        this.destination = destination;
-    }
-
-    @Override
-    public double getSendTime() {
-        return this.sendTime;
-    }
-
-    @Override
-    public void setSendTime(final double time) {
-        this.sendTime = time;
-    }
-
-    @Override
-    public double getReceiveTime() {
-        return this.receiveTime;
-    }
-
-    @Override
-    public void setReceiveTime(final double time) {
-        this.receiveTime = time;
     }
 
     /**
@@ -286,15 +254,6 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
         } catch (Exception e) {
             return 0;
         }
-    }
-
-    /**
-     * Gets the bottleneck bandwidth (baud rate) between the source and the destination.
-     *
-     * @return the bottleneck bandwidth (in bits/s)
-     */
-    public double getBaudRate() {
-        return baudRate;
     }
 
     /**
@@ -384,56 +343,6 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
      */
     public List<Double> getDetailExitTimes() {
         return Collections.unmodifiableList(exitTimes);
-    }
-
-    /**
-     * Gets the entity that was the last hop where this packet has traversed.
-     *
-     * @return
-     */
-    public SimEntity getLastHop() {
-        return lastHop;
-    }
-
-    /**
-     * Sets the entity that was the last hop where this packet has traversed.
-     *
-     * @param entity the entity to set as the last hop
-     */
-    public void setLastHop(final SimEntity entity) {
-        this.lastHop = entity;
-    }
-
-    /**
-     * Gets the network service level of this packet
-     *
-     * @return the network service level
-     */
-    public int getNetServiceLevel() {
-        return netServiceLevel;
-    }
-
-    /**
-     * Sets the network service type of this packet.
-     * <p>
-     * By default, the service type is 0 (zero). It is depends on the packet scheduler to determine
-     * the priority of this service level.
-     *
-     * @param netServiceLevel the service level to set
-     */
-    public void setNetServiceLevel(final int netServiceLevel) {
-        this.netServiceLevel = netServiceLevel;
-    }
-
-    /**
-     * Gets the packet direction that indicates if it is going or returning.
-     * The direction can be {@link CloudSimTag#ICMP_PKT_SUBMIT}
-     * or {@link CloudSimTag#ICMP_PKT_RETURN}.
-     *
-     * @return
-     */
-    public CloudSimTag getTag() {
-        return tag;
     }
 
     /**

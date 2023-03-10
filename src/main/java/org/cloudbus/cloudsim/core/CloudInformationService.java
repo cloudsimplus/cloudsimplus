@@ -7,6 +7,7 @@
  */
 package org.cloudbus.cloudsim.core;
 
+import lombok.Getter;
 import org.cloudbus.cloudsim.core.events.SimEvent;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.slf4j.Logger;
@@ -37,6 +38,7 @@ public class CloudInformationService extends CloudSimEntity {
      * A list containing all Datacenters that are registered at the
      * Cloud Information Service (CIS).
      */
+    @Getter
     private final List<Datacenter> datacenterList;
 
     /**
@@ -86,15 +88,6 @@ public class CloudInformationService extends CloudSimEntity {
     }
 
     /**
-     * Gets the list of all registered Datacenters.
-     *
-     * @return
-     */
-    public List<Datacenter> getDatacenterList() {
-        return datacenterList;
-    }
-
-    /**
      * Sends a {@link CloudSimTag#SIMULATION_END} signal to all entity IDs
      * mentioned in the given list.
      *
@@ -107,5 +100,4 @@ public class CloudInformationService extends CloudSimEntity {
 
         list.forEach(entity -> super.send(entity, 0L, CloudSimTag.SIMULATION_END));
     }
-
 }

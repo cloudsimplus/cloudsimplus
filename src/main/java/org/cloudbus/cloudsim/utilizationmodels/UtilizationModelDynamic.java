@@ -23,9 +23,11 @@
  */
 package org.cloudbus.cloudsim.utilizationmodels;
 
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.Setter;
 import org.cloudbus.cloudsim.util.Conversion;
 
-import java.util.Objects;
 import java.util.function.Function;
 
 /**
@@ -58,10 +60,46 @@ public class UtilizationModelDynamic extends UtilizationModelAbstract {
     private boolean readOnly;
     private double currentUtilization;
 
-    /** @see #getMaxResourceUtilization() */
+    /**
+     * The maximum amount of resource that will be used.
+     *
+     * <p><b>WARNING:</b> Such a value can be a percentage in scale from [0 to 1] or an absolute value,
+     * depending on the {@link #getUnit()}.</p>
+     */
+    @Getter
     private double maxResourceUtilization;
 
-    /** @see #setUtilizationUpdateFunction(Function) */
+    /**
+     * A function defining how the resource utilization will be
+     * incremented or decremented along the time.
+     *
+     * <p>Such a function must require one {@link UtilizationModelDynamic} parameter
+     * and return the new resource utilization.
+     * When this function is called internally by this {@code UtilizationModel},
+     * it receives a read-only {@link UtilizationModelDynamic} instance and allow
+     * the developer using this {@code UtilizationModel} to
+     * define how the utilization must be updated.
+     *
+     * <p>For instance, to define an arithmetic increment, a Lambda function
+     * to be given to this setter could be defined as below:</p>
+     * </p>
+     *
+     * <p>{@code um -> um.getUtilization() + um.getTimeSpan()*0.1}</p>
+     *
+     * <p>Considering the {@code UtilizationModel} {@link Unit} was defined in {@link Unit#PERCENTAGE},
+     * such a Lambda Expression will increment the usage in 10% for each second that has passed
+     * since the last time the utilization was computed.</p>
+     *
+     * <p>The value returned by the given Lambda Expression will be automatically validated
+     * to avoid negative utilization or utilization over 100%
+     * (when the {@code UtilizationModel} {@link #getUnit() unit} is defined in percentage).
+     * The function would be defined to decrement the utilization along the time,
+     * by just changing the plus to a minus signal.</p>
+     *
+     * <p>Defining a geometric progression for the resource utilization is as simple as
+     * changing the plus signal to a multiplication signal.</p>
+     */
+    @Setter @NonNull
     private Function<UtilizationModelDynamic, Double> utilizationUpdateFunction;
 
     /**
@@ -193,7 +231,7 @@ public class UtilizationModelDynamic extends UtilizationModelAbstract {
      * @param source the source UtilizationModelDynamic to create an instance from
      * @param initialUtilization the initial resource utilization (in the same unit of the given UtilizationModelDynamic instance)
      */
-    public UtilizationModelDynamic(final UtilizationModelDynamic source, final double initialUtilization){
+    public UtilizationModelDynamic(@NonNull final UtilizationModelDynamic source, final double initialUtilization){
         this(source.getUnit(), initialUtilization);
         this.currentUtilizationTime = source.currentUtilizationTime;
         this.previousUtilizationTime = source.previousUtilizationTime;
@@ -261,69 +299,15 @@ public class UtilizationModelDynamic extends UtilizationModelAbstract {
     }
 
     /**
-     * Gets the maximum amount of resource that will be used.
-     *
-     * <p><b>WARNING:</b> Such a value can be a percentage in scale from [0 to 1] or an absolute value,
-     * depending on the {@link #getUnit()}.</p>
-     *
-     * @return the maximum resource utilization (in percentage or absolut value)
-     */
-    public double getMaxResourceUtilization() {
-        return maxResourceUtilization;
-    }
-
-    /**
      * Sets the maximum amount of resource that will be used.
      *
      * <p><b>WARNING:</b> Such a value can be a percentage in scale from [0 to 1] or an absolute value,
      * depending on the {@link #getUnit()}.</p>
      *
      * @param maxResourceUsage the maximum resource usage (in percentage or absolut value)
-     * @return
      */
-    public final UtilizationModelDynamic setMaxResourceUtilization(final double maxResourceUsage) {
+    public final void setMaxResourceUtilization(final double maxResourceUsage) {
         validateUtilizationField("maxResourceUtilization", maxResourceUsage, ALMOST_ZERO);
         this.maxResourceUtilization = maxResourceUsage;
-        return this;
-    }
-
-    /**
-     * Sets the function defining how the resource utilization will be
-     * incremented or decremented along the time.
-     *
-     * <p>Such a function must require one {@link UtilizationModelDynamic} parameter
-     * and return the new resource utilization.
-     * When this function is called internally by this {@code UtilizationModel},
-     * it receives a read-only {@link UtilizationModelDynamic} instance and allow
-     * the developer using this {@code UtilizationModel} to
-     * define how the utilization must be updated.
-     *
-     * <p>For instance, to define an arithmetic increment, a Lambda function
-     * to be given to this setter could be defined as below:</p>
-     * </p>
-     *
-     * <p>{@code um -> um.getUtilization() + um.getTimeSpan()*0.1}</p>
-     *
-     * <p>Considering the {@code UtilizationModel} {@link Unit} was defined in {@link Unit#PERCENTAGE},
-     * such a Lambda Expression will increment the usage in 10% for each second that has passed
-     * since the last time the utilization was computed.</p>
-     *
-     * <p>The value returned by the given Lambda Expression will be automatically validated
-     * to avoid negative utilization or utilization over 100%
-     * (when the {@code UtilizationModel} {@link #getUnit() unit} is defined in percentage).
-     * The function would be defined to decrement the utilization along the time,
-     * by just changing the plus to a minus signal.</p>
-     *
-     * <p>Defining a geometric progression for the resource utilization is as simple as
-     * changing the plus signal to a multiplication signal.</p>
-     *
-     * @param utilizationUpdateFunction the utilization increment function to set, that will receive the
-     *                                  UtilizationModel instance and must return the new utilization
-     *                                  value based on the previous utilization.
-     * @return
-     */
-    public final UtilizationModelDynamic setUtilizationUpdateFunction(final Function<UtilizationModelDynamic, Double> utilizationUpdateFunction) {
-        this.utilizationUpdateFunction = Objects.requireNonNull(utilizationUpdateFunction);
-        return this;
     }
 }

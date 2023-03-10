@@ -23,6 +23,8 @@
  */
 package org.cloudbus.cloudsim.power;
 
+import lombok.Getter;
+import lombok.NonNull;
 import org.cloudbus.cloudsim.power.models.PowerModel;
 
 import java.util.Objects;
@@ -36,12 +38,17 @@ import java.util.Objects;
  * such as {@link #add(PowerMeasurement)} and {@link #multiply(double)} that returns a new instance.</p>
  * @since CloudSim Plus 6.0.0
  */
+@Getter
 public class PowerMeasurement {
 
-    /** @see #getStaticPower() */
+    /**
+     * The static power the entity consumes even if it's idle (in Watts).
+     */
     private final double staticPower;
 
-    /** @see #getDynamicPower() */
+    /**
+     * The dynamic power the entity consumes according to its load (in Watts).
+     */
     private final double dynamicPower;
 
     /**
@@ -70,29 +77,12 @@ public class PowerMeasurement {
     }
 
     /**
-     * Gets the static power the entity consumes even if it's idle (in Watts).
-     * @return
-     */
-    public double getStaticPower() {
-        return staticPower;
-    }
-
-    /**
-     * Gets the dynamic power the entity consumes according to its load (in Watts).
-     * @return
-     */
-    public double getDynamicPower() {
-        return dynamicPower;
-    }
-
-    /**
      * Adds up the values from the given measurement and this one,
      * returning a new instance.
      * @param measurement another measurement to add its values with this instance
      * @return the new instance with the added up values
      */
-    public PowerMeasurement add(final PowerMeasurement measurement) {
-        Objects.requireNonNull(measurement, "measurement cannot be null");
+    public PowerMeasurement add(@NonNull final PowerMeasurement measurement) {
         return new PowerMeasurement(
             staticPower + measurement.getStaticPower(),
             dynamicPower + measurement.getDynamicPower()

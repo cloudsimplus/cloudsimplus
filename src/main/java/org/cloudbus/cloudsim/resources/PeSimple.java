@@ -8,6 +8,9 @@
 
 package org.cloudbus.cloudsim.resources;
 
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.Setter;
 import org.cloudbus.cloudsim.provisioners.PeProvisioner;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 
@@ -27,17 +30,13 @@ import java.util.Objects;
  * @author Rajkumar Buyya
  * @since CloudSim Toolkit 1.0
  */
+@Getter @Setter
 public class PeSimple extends ResourceManageableAbstract implements Pe {
     /** @see #setDefaultMips(double) */
     private static double defaultMips = 1000;
 
-    /** @see #getId()  */
     private long id;
-
-    /** @see #getStatus()  */
     private Status status;
-
-    /** @see #getPeProvisioner() */
     private PeProvisioner peProvisioner;
 
     /**
@@ -112,47 +111,15 @@ public class PeSimple extends ResourceManageableAbstract implements Pe {
     }
 
     @Override
-    public final void setId(final long id) {
-        this.id = id;
-    }
-
-    @Override
-    public long getId() {
-        return id;
-    }
-
-    @Override
-    public Status getStatus() {
-        return status;
-    }
-
-    @Override
-    public final boolean setStatus(final Status status) {
-        this.status = status;
-        return true;
-    }
-
-    @Override
     public boolean setCapacity(final double mipsCapacity) {
         return setCapacity((long)mipsCapacity);
     }
 
     @Override
-    public final Pe setPeProvisioner(final PeProvisioner peProvisioner) {
-        this.peProvisioner = Objects.requireNonNull(peProvisioner);
+    public final Pe setPeProvisioner(@NonNull final PeProvisioner peProvisioner) {
+        this.peProvisioner = peProvisioner;
         this.peProvisioner.setPe(this);
         return this;
-    }
-
-    /**
-     * Gets the PE provisioner that manages the allocation
-     * of this physical PE to virtual machines.
-     *
-     * @return the PE provisioner
-     */
-    @Override
-    public PeProvisioner getPeProvisioner() {
-        return peProvisioner;
     }
 
     @Override

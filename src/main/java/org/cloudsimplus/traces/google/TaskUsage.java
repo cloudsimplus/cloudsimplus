@@ -23,6 +23,8 @@
  */
 package org.cloudsimplus.traces.google;
 
+import lombok.Getter;
+import lombok.NonNull;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudsimplus.traces.google.GoogleTaskUsageTraceReader.FieldIndex;
 
@@ -37,21 +39,82 @@ import java.util.Objects;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 4.0.0
  */
+@Getter
 public final class TaskUsage extends TaskData {
+    /**
+     * The start time of the measurement period (converted to seconds).
+     * @see FieldIndex#START_TIME
+     */
     private double startTime;
+
+    /**
+     * The end time of the measurement period (converted to seconds).
+     * @see FieldIndex#END_TIME
+     */
     private double endTime;
+
+    /**
+     * The mean CPU usage rate (in percentage from 0 to 1).
+     * @see FieldIndex#MEAN_CPU_USAGE_RATE
+     */
     private double meanCpuUsageRate;
+
+    /**
+     * The canonical memory usage,
+     * i.e., the number of user accessible pages,
+     * including page cache but excluding some pages marked as stale.
+     * @see FieldIndex#CANONICAL_MEMORY_USAGE
+     */
     private double canonicalMemoryUsage;
+
+    /**
+     * The assigned memory usage,
+     * i.e., memory usage based on the memory actually assigned (but not necessarily used)
+     * to the container where the task was running inside the
+     * Google Cluster.
+     * @see FieldIndex#ASSIGNED_MEMORY_USAGE
+     */
     private double assignedMemoryUsage;
+
+    /**
+     * The maximum memory usage,
+     * i.e., the maximum value of the canonical memory usage
+     * measurement observed over the measurement interval.
+     * This value is not available for some tasks.
+     * @see FieldIndex#MAXIMUM_MEMORY_USAGE
+     */
     private double maximumMemoryUsage;
+
+    /**
+     * The mean disk I/O time.
+     * @see FieldIndex#MEAN_DISK_IO_TIME
+     */
     private double meanDiskIoTime;
+
+    /**
+     * The mean local disk space used.
+     * Represents runtime local disk capacity usage.
+     * Disk usage required for binaries and other read-only,
+     * pre-staged runtime files is not included.
+     * Additionally, most disk space used by distributed, persistent storage (e.g. GFS, Colossus)
+     * is not accounted for in this trace.
+     * @see FieldIndex#MEAN_LOCAL_DISK_SPACE_USED
+     */
     private double meanLocalDiskSpaceUsed;
+
+    /**
+     * The maximum CPU usage observed over the measurement interval.
+     * @see FieldIndex#MAXIMUM_CPU_USAGE
+     */
     private double maximumCpuUsage;
+
+    /**
+     * The maximum disk IO time observed over the measurement interval.
+     * @see FieldIndex#MAXIMUM_DISK_IO_TIME
+     */
     private double maximumDiskIoTime;
 
-    public TaskUsage(final GoogleTaskUsageTraceReader reader) {
-        Objects.requireNonNull(reader);
-
+    public TaskUsage(@NonNull final GoogleTaskUsageTraceReader reader) {
         this.startTime = FieldIndex.START_TIME.getValue(reader);
         this.endTime = FieldIndex.END_TIME.getValue(reader);
         this.meanCpuUsageRate = FieldIndex.MEAN_CPU_USAGE_RATE.getValue(reader);
@@ -65,107 +128,5 @@ public final class TaskUsage extends TaskData {
         setJobId(FieldIndex.JOB_ID.getValue(reader));
         setTaskIndex(FieldIndex.TASK_INDEX.getValue(reader));
         setMachineId(FieldIndex.MACHINE_ID.getValue(reader));
-    }
-
-    /**
-     * Gets the start time of the measurement period (converted to seconds).
-     * @return
-     * @see FieldIndex#START_TIME
-     */
-    public double getStartTime() {
-        return startTime;
-    }
-
-    /**
-     * Gets the end time of the measurement period (converted to seconds).
-     * @return
-     * @see FieldIndex#END_TIME
-     */
-    public double getEndTime() {
-        return endTime;
-    }
-
-    /**
-     * Gets the mean CPU usage rate (in percentage from 0 to 1).
-     * @return
-     * @see FieldIndex#MEAN_CPU_USAGE_RATE
-     */
-    public double getMeanCpuUsageRate() {
-        return meanCpuUsageRate;
-    }
-
-    /**
-     * Gets the canonical memory usage,
-     * i.e., the number of user accessible pages,
-     * including page cache but excluding some pages marked as stale.
-     * @return
-     * @see FieldIndex#CANONICAL_MEMORY_USAGE
-     */
-    public double getCanonicalMemoryUsage() {
-        return canonicalMemoryUsage;
-    }
-
-    /**
-     * Gets the assigned memory usage,
-     * i.e., memory usage based on the memory actually assigned (but not necessarily used)
-     * to the container where the task was running inside the
-     * Google Cluster.
-     * @return
-     * @see FieldIndex#ASSIGNED_MEMORY_USAGE
-     */
-    public double getAssignedMemoryUsage() {
-        return assignedMemoryUsage;
-    }
-
-    /**
-     * Gets the maximum memory usage,
-     * i.e., the maximum value of the canonical memory usage
-     * measurement observed over the measurement interval.
-     * This value is not available for some tasks.
-     * @return
-     * @see FieldIndex#MAXIMUM_MEMORY_USAGE
-     */
-    public double getMaximumMemoryUsage() {
-        return maximumMemoryUsage;
-    }
-
-    /**
-     * Gets the mean disk I/O time.
-     * @return
-     * @see FieldIndex#MEAN_DISK_IO_TIME
-     */
-    public double getMeanDiskIoTime() {
-        return meanDiskIoTime;
-    }
-
-    /**
-     * Gets the mean local disk space used.
-     * Represents runtime local disk capacity usage.
-     * Disk usage required for binaries and other read-only, pre-staged runtime files is ​not​included.
-     * Additionally, most disk space used by distributed, persistent storage (e.g. GFS, Colossus)
-     * is not accounted for in this trace.
-     * @return
-     * @see FieldIndex#MEAN_LOCAL_DISK_SPACE_USED
-     */
-    public double getMeanLocalDiskSpaceUsed() {
-        return meanLocalDiskSpaceUsed;
-    }
-
-    /**
-     * Gets the maximum CPU usage observed over the measurement interval.
-     * @return
-     * @see FieldIndex#MAXIMUM_CPU_USAGE
-     */
-    public double getMaximumCpuUsage() {
-        return maximumCpuUsage;
-    }
-
-    /**
-     * Gets the maximum disk IO time observed over the measurement interval.
-     * @return
-     * @see FieldIndex#MAXIMUM_DISK_IO_TIME
-     */
-    public double getMaximumDiskIoTime() {
-        return maximumDiskIoTime;
     }
 }

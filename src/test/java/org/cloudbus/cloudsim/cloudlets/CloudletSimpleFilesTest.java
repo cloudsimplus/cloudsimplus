@@ -28,9 +28,9 @@ public class CloudletSimpleFilesTest {
         cloudlet = new CloudletSimple(0, CloudletTestUtil.CLOUDLET_LENGTH, PES_NUMBER);
         cloudlet.setFileSize(CloudletTestUtil.CLOUDLET_FILE_SIZE)
             .setOutputSize(CloudletTestUtil.CLOUDLET_OUTPUT_SIZE)
-            .setUtilizationModelCpu(new UtilizationModelStochastic())
-            .setUtilizationModelRam(new UtilizationModelStochastic())
-            .setUtilizationModelBw(new UtilizationModelStochastic());
+            .setUtilizationModelCpu(new UtilizationModelStochastic());
+        cloudlet.setUtilizationModelRam(new UtilizationModelStochastic());
+        cloudlet.setUtilizationModelBw(new UtilizationModelStochastic());
     }
 
     @Test

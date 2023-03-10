@@ -23,6 +23,9 @@
  */
 package org.cloudsimplus.traces.google;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * A base class that stores data to identify a task.
  * It has to be extended by classes that read task's events from a trace file.
@@ -30,33 +33,17 @@ package org.cloudsimplus.traces.google;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 4.0.0
  */
+@Getter @Setter
 class TaskData extends MachineDataBase {
+    /**
+     * The id of the job this task belongs to.
+     */
     private long jobId;
+
+    /**
+     * The task index within the job.
+     */
     private long taskIndex;
-
-    /**
-     * Gets the id of the job this task belongs to.
-     * @return
-     */
-    public long getJobId(){ return jobId; }
-
-    /* default */ TaskData setJobId(final long jobId) {
-        this.jobId = jobId;
-        return this;
-    }
-
-    /**
-     * Gets the task index within the job.
-     * @return
-     */
-    public long getTaskIndex() {
-        return taskIndex;
-    }
-
-    /* default */ TaskData setTaskIndex(final long taskIndex) {
-        this.taskIndex = taskIndex;
-        return this;
-    }
 
     /**
      * A unique ID to be used to identify Cloudlets.

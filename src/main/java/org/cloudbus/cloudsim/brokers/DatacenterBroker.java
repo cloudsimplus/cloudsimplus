@@ -289,9 +289,8 @@ public interface DatacenterBroker extends SimEntity {
      * </p>
      *
      * @param datacenterMapper the datacenterMapper to set
-     * @return
      */
-    DatacenterBroker setDatacenterMapper(BiFunction<Datacenter, Vm, Datacenter> datacenterMapper);
+    void setDatacenterMapper(BiFunction<Datacenter, Vm, Datacenter> datacenterMapper);
 
     /**
      * Sets a {@link Comparator} that will be used to sort every list
@@ -300,9 +299,8 @@ public interface DatacenterBroker extends SimEntity {
      * in the order of the sorted VM list.
      *
      * @param comparator the VM Comparator to set
-     * @return
      */
-    DatacenterBroker setVmComparator(Comparator<Vm> comparator);
+    void setVmComparator(Comparator<Vm> comparator);
 
     /**
      * Sets a {@link Comparator} that will be used to sort every list
@@ -323,9 +321,8 @@ public interface DatacenterBroker extends SimEntity {
      *                 must receive a Cloudlet and return the Vm where it will be placed into.
      *                 If the Function is unable to find a VM for a Cloudlet,
      *                 it should return {@link Vm#NULL}.
-     * @return
      */
-    DatacenterBroker setVmMapper(Function<Cloudlet, Vm> vmMapper);
+    void setVmMapper(Function<Cloudlet, Vm> vmMapper);
 
     /**
      * Defines if the broker has to try selecting the closest {@link Datacenter}
@@ -392,17 +389,6 @@ public interface DatacenterBroker extends SimEntity {
     DatacenterBroker removeOnVmsCreatedListener(EventListener<? extends EventInfo> listener);
 
     /**
-     * Gets a {@link Function} which defines when an idle VM should be destroyed.
-     * The Function receives a {@link Vm} and returns the delay to wait (in seconds),
-     * after the VM becomes idle, to destroy it.
-     *
-     * @return
-     * @see #DEF_VM_DESTRUCTION_DELAY
-     * @see Vm#getIdleInterval()
-     */
-    Function<Vm, Double> getVmDestructionDelayFunction();
-
-    /**
      * Sets the delay after which an idle VM should be destroyed.
      * Using such a method, it defines the same delay for any VM that becomes idle.
      * If you need to define different delays for distinct VMs
@@ -463,9 +449,8 @@ public interface DatacenterBroker extends SimEntity {
 
     /**
      * Indicates if the broker must be shut down after becoming idle.
-     * @return
      */
-    DatacenterBroker setShutdownWhenIdle(boolean shutdownWhenIdle);
+    void setShutdownWhenIdle(boolean shutdownWhenIdle);
 
     /**
      * Gets the object that keeps track of number of VM creation retries sent by the broker

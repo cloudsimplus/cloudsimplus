@@ -68,6 +68,7 @@ final class DatacenterNull implements Datacenter, SimEntityNullBase {
     @Override public double getSchedulingInterval() { return 0; }
     @Override public Datacenter setSchedulingInterval(double schedulingInterval) { return this; }
     @Override public DatacenterCharacteristics getCharacteristics() { return DatacenterCharacteristics.NULL; }
+    @Override public void setCharacteristics(DatacenterCharacteristics characteristics) {/**/}
     @Override public DatacenterStorage getDatacenterStorage() { return STORAGE; }
     @Override public void setDatacenterStorage(DatacenterStorage datacenterStorage) {/**/}
     @Override public double getBandwidthPercentForMigration() { return 0; }

@@ -24,7 +24,6 @@
 package org.cloudbus.cloudsim.cloudlets;
 
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
-import org.cloudbus.cloudsim.core.CustomerEntity;
 import org.cloudbus.cloudsim.core.Simulation;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.resources.ResourceManageable;
@@ -143,7 +142,7 @@ final class CloudletNull implements Cloudlet {
     @Override public boolean hasRequiresFiles() {
         return false;
     }
-    @Override public Cloudlet setPriority(int priority) { return this; }
+    @Override public void setPriority(int priority) { /**/ }
     @Override public Cloudlet setLength(long length) {
         return Cloudlet.NULL;
     }
@@ -168,18 +167,10 @@ final class CloudletNull implements Cloudlet {
     @Override public Cloudlet setUtilizationModel(UtilizationModel utilizationModel) {
         return Cloudlet.NULL;
     }
-    @Override public Cloudlet setUtilizationModelBw(UtilizationModel utilizationModelBw) {
-        return Cloudlet.NULL;
-    }
-    @Override public Cloudlet setUtilizationModelCpu(UtilizationModel utilizationModelCpu) {
-        return Cloudlet.NULL;
-    }
-    @Override public Cloudlet setUtilizationModelRam(UtilizationModel utilizationModelRam) {
-        return Cloudlet.NULL;
-    }
-    @Override public Cloudlet setVm(Vm vm) {
-        return Cloudlet.NULL;
-    }
+    @Override public void setUtilizationModelBw(UtilizationModel utilizationModelBw) {/**/}
+    @Override public void setUtilizationModelCpu(UtilizationModel utilizationModelCpu) {/**/}
+    @Override public void setUtilizationModelRam(UtilizationModel utilizationModelRam) {/**/}
+    @Override public void setVm(Vm vm) {/**/}
     @Override public boolean removeOnFinishListener(EventListener<CloudletVmEventInfo> listener) { return false; }
     @Override public Cloudlet addOnFinishListener(EventListener<CloudletVmEventInfo> listener) { return Cloudlet.NULL; }
     @Override public void notifyOnUpdateProcessingListeners(double time) {/**/}
@@ -189,7 +180,7 @@ final class CloudletNull implements Cloudlet {
     @Override public void setLastTriedDatacenter(Datacenter lastTriedDatacenter) {/**/}
     @Override public Datacenter getLastTriedDatacenter() { return Datacenter.NULL; }
     @Override public double getArrivedTime() { return 0; }
-    @Override public CustomerEntity setArrivedTime(double time) { return this; }
+    @Override public void setArrivedTime(double time) { /**/ }
     @Override public double getCreationTime() { return 0; }
     @Override public double getWaitTime() { return 0; }
     @Override public boolean removeOnUpdateProcessingListener(EventListener<CloudletVmEventInfo> listener) { return false; }

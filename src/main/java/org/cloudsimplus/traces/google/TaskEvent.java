@@ -23,6 +23,10 @@
  */
 package org.cloudsimplus.traces.google;
 
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
@@ -57,27 +61,27 @@ import java.util.function.Function;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 4.0.0
  */
+@Getter @Setter @Builder
 public final class TaskEvent extends TaskData {
     private int priority;
-    private int schedulingClass;
-    private TaskEventType type;
-    private double resourceRequestForCpuCores;
-    private double resourceRequestForRam;
-    private double resourceRequestForLocalDiskSpace;
-    private String userName;
-    private double timestamp;
-
-    public int getPriority() {
-        return priority;
-    }
-
-    TaskEvent setPriority(final int priority) {
-        this.priority = priority;
-        return this;
-    }
 
     /**
-     * Gets the maximum number of CPU cores
+     * The scheduling class that roughly represents how latency-sensitive the task is.
+     * The scheduling class is represented by a single number,
+     * with 3 representing a more latency-sensitive task (e.g., serving revenue-generating user requests)
+     * and 0 representing a non-production task (e.g., development, non-business-critical analyses, etc.).
+     * @see TaskEventField#SCHEDULING_CLASS
+     */
+    private int schedulingClass;
+
+    /**
+     * The event type.
+     */
+    @Setter(AccessLevel.NONE)
+    private TaskEventType type;
+
+    /**
+     * The maximum number of CPU cores
      * the task is permitted to use (in percentage from 0 to 1).
      * This percentage value can be used to compute the number of {@link Pe}s
      * the Cloudlet will require, based on the number of PEs of the Vm where the Cloudlet will be executed.
@@ -98,32 +102,15 @@ public final class TaskEvent extends TaskData {
      * by the CPU {@link UtilizationModel#getUtilization()}.
      * Such a value is defined by a "task usage" trace.
      * </p>
-     * @return
+     *
      * @see TaskEventField#RESOURCE_REQUEST_FOR_CPU_CORES
      * @see GoogleTaskUsageTraceReader
      */
-    public double getResourceRequestForCpuCores() {
-        return resourceRequestForCpuCores;
-    }
+    @Setter
+    private double resourceRequestForCpuCores;
 
     /**
-     * Computes the actual number of CPU cores (PEs) to be assigned to
-     * a Cloudlet, according to the {@link #getResourceRequestForCpuCores() percentage of CPUs to be used}
-     * and a given maximum number of existing CPUs.
-     * @param maxCpuCores the maximum number of existing CPUs the Cloudlet can use (that can be defined as the number of VM's CPUs)
-     * @return the actual number of CPU cores the Cloudlet will require
-     */
-    public long actualCpuCores(final long maxCpuCores){
-        return (long)(resourceRequestForCpuCores*maxCpuCores);
-    }
-
-    TaskEvent setResourceRequestForCpuCores(final double resourceRequestForCpuCores) {
-        this.resourceRequestForCpuCores = resourceRequestForCpuCores;
-        return this;
-    }
-
-    /**
-     * Gets the maximum amount of RAM
+     * The maximum amount of RAM
      * the task is permitted to use (in percentage from 0 to 1).
      *
      * <p>The actual value to be assigned to a Cloudlet created from this trace field
@@ -140,21 +127,15 @@ public final class TaskEvent extends TaskData {
      * RAM UtilizationModel. Using a different class will raise a runtime exception
      * when trying to create the Cloudlets.
      * </p>
-     * @return
+     *
      * @see TaskEventField#RESOURCE_REQUEST_FOR_RAM
      * @see GoogleTaskUsageTraceReader
      */
-    public double getResourceRequestForRam() {
-        return resourceRequestForRam;
-    }
-
-    TaskEvent setResourceRequestForRam(final double resourceRequestForRam) {
-        this.resourceRequestForRam = resourceRequestForRam;
-        return this;
-    }
+    @Setter
+    private double resourceRequestForRam;
 
     /**
-     * Gets the maximum amount of local disk space
+     * The maximum amount of local disk space
      * the task is permitted to use (in percentage from 0 to 1).
      *
      * <p>The actual value to be assigned to a Cloudlet created from this trace field
@@ -166,69 +147,33 @@ public final class TaskEvent extends TaskData {
      * <p>This field can be used to define the initial Cloudlet file size and/or output size
      * when creating the Cloudlet, according to the researcher needs.
      * </p>
-     * @return
+     *
      * @see TaskEventField#RESOURCE_REQUEST_FOR_LOCAL_DISK_SPACE
      */
-    public double getResourceRequestForLocalDiskSpace() {
-        return resourceRequestForLocalDiskSpace;
-    }
-
-    TaskEvent setResourceRequestForLocalDiskSpace(final double resourceRequestForLocalDiskSpace) {
-        this.resourceRequestForLocalDiskSpace = resourceRequestForLocalDiskSpace;
-        return this;
-    }
+    @Setter
+    private double resourceRequestForLocalDiskSpace;
 
     /**
-     * Gets the hashed username provided as an opaque base64-encoded string that can be tested for equality.
-     * @return
+     * The hashed username provided as an opaque base64-encoded string that can be tested for equality.
      * @see TaskEventField#USERNAME
      */
-    public String getUserName() {
-        return userName;
-    }
-
-    TaskEvent setUserName(final String userName) {
-        this.userName = userName;
-        return this;
-    }
+    private String userName;
 
     /**
-     * Gets the time the event happened (converted to seconds).
-     * @return
+     * The time the event happened (converted to seconds).
      * @see TaskEventField#TIMESTAMP
      */
-    public double getTimestamp() {
-        return timestamp;
-    }
-
-    TaskEvent setTimestamp(final double timestamp) {
-        this.timestamp = timestamp;
-        return this;
-    }
+    private double timestamp;
 
     /**
-     * Gets the scheduling class that roughly represents how latency-sensitive the task is.
-     * The scheduling class is represented by a single number,
-     * with 3 representing a more latency-sensitive task (e.g., serving revenue-generating user requests)
-     * and 0 representing a non-production task (e.g., development, non-business-critical analyses, etc.).
-     * @return
-     * @see TaskEventField#SCHEDULING_CLASS
+     * Computes the actual number of CPU cores (PEs) to be assigned to
+     * a Cloudlet, according to the {@link #getResourceRequestForCpuCores() percentage of CPUs to be used}
+     * and a given maximum number of existing CPUs.
+     * @param maxCpuCores the maximum number of existing CPUs the Cloudlet can use (that can be defined as the number of VM's CPUs)
+     * @return the actual number of CPU cores the Cloudlet will require
      */
-    public int getSchedulingClass() {
-        return schedulingClass;
-    }
-
-    TaskEvent setSchedulingClass(final int schedulingClass) {
-        this.schedulingClass = schedulingClass;
-        return this;
-    }
-
-    /**
-     * Gets the event type.
-     * @return
-     */
-    public TaskEventType getType() {
-        return type;
+    public long actualCpuCores(final long maxCpuCores){
+        return (long)(resourceRequestForCpuCores*maxCpuCores);
     }
 
     /**
@@ -236,7 +181,7 @@ public final class TaskEvent extends TaskData {
      * @param type the int value of the task event type
      * @return
      */
-    TaskEvent setType(final int type) {
+    public TaskEvent setType(final int type) {
         this.type = TaskEventType.getValue(type);
         return this;
     }
@@ -247,24 +192,26 @@ public final class TaskEvent extends TaskData {
      * @return
      */
     public static TaskEvent of(final GoogleTaskEventsTraceReader reader) {
-        final TaskEvent event = new TaskEvent();
-        /*@TODO The tasks with the same username must run inside the same user's VM,
-         *       unless the machineID is different.
-         *       The task (cloudlet) needs to be mapped to a specific Host (according to the machineID).
-         *       The challenge here is because the task requirements are usually not known,
-         *       for instance when the task is submitted. It's just know when it starts to execute.
+        final var builder = new Builder();
+        /*TODO The tasks with the same username must run inside the same user's VM,
+         *     unless the machineID is different.
+         *     The task (cloudlet) needs to be mapped to a specific Host (according to the machineID).
+         *     The challenge here is because the task requirements are usually not known,
+         *     for instance when the task is submitted. It's just know when it starts to execute.
          */
-        event
-            .setType(TaskEventField.EVENT_TYPE.getValue(reader))
-            .setTimestamp(TaskEventField.TIMESTAMP.getValue(reader))
-            .setResourceRequestForCpuCores(TaskEventField.RESOURCE_REQUEST_FOR_CPU_CORES.getValue(reader))
-            .setResourceRequestForLocalDiskSpace(TaskEventField.RESOURCE_REQUEST_FOR_LOCAL_DISK_SPACE.getValue(reader))
-            .setResourceRequestForRam(TaskEventField.RESOURCE_REQUEST_FOR_RAM.getValue(reader))
-            .setPriority(TaskEventField.PRIORITY.getValue(reader))
-            .setSchedulingClass(TaskEventField.SCHEDULING_CLASS.getValue(reader))
-            .setUserName(TaskEventField.USERNAME.getValue(reader))
-            .setJobId(TaskEventField.JOB_ID.getValue(reader))
-            .setTaskIndex(TaskEventField.TASK_INDEX.getValue(reader));
-        return event;
+        builder
+            .type(TaskEventField.EVENT_TYPE.getValue(reader))
+            .timestamp(TaskEventField.TIMESTAMP.getValue(reader))
+            .resourceRequestForCpuCores(TaskEventField.RESOURCE_REQUEST_FOR_CPU_CORES.getValue(reader))
+            .resourceRequestForLocalDiskSpace(TaskEventField.RESOURCE_REQUEST_FOR_LOCAL_DISK_SPACE.getValue(reader))
+            .resourceRequestForRam(TaskEventField.RESOURCE_REQUEST_FOR_RAM.getValue(reader))
+            .priority(TaskEventField.PRIORITY.getValue(reader))
+            .schedulingClass(TaskEventField.SCHEDULING_CLASS.getValue(reader))
+            .userName(TaskEventField.USERNAME.getValue(reader));
+
+        final TaskEvent evt = builder.build();
+        evt.setJobId(TaskEventField.JOB_ID.getValue(reader));
+        evt.setTaskIndex(TaskEventField.TASK_INDEX.getValue(reader));
+        return evt;
     }
 }

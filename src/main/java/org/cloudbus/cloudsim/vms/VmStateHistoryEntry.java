@@ -7,28 +7,39 @@
  */
 package org.cloudbus.cloudsim.vms;
 
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+
 /**
  * Historic data about requests and allocation of MIPS for a given VM over the time.
  *
  * @author Anton Beloglazov
  * @since CloudSim Toolkit 2.1.2
  */
+@Getter @EqualsAndHashCode
 public class VmStateHistoryEntry {
-
-    /** @see #getTime() */
+    /**
+     * The time the state information is being collected (in seconds).
+     */
     private double time;
 
-    /** @see #getAllocatedMips() */
+    /**
+     * The allocated MIPS.
+     */
     private double allocatedMips;
 
-    /** @see #getRequestedMips() */
+    /**
+     * The requested MIPS.
+     */
     private double requestedMips;
 
-    /** @see #isInMigration() */
+    /**
+     * Checks if the Vm is in migration for the current history.
+     */
     private boolean inMigration;
 
     /**
-     * Instantiates a new VmStateHistoryEntry
+     * Instantiates a VmStateHistoryEntry
      *
      * @param time the time the state information is being collected.
      * @param allocatedMips the allocated mips
@@ -52,30 +63,12 @@ public class VmStateHistoryEntry {
     }
 
     /**
-     * Gets the time the state information is being collected (in seconds).
-     *
-     * @return the time (in seconds)
-     */
-    public double getTime() {
-        return time;
-    }
-
-    /**
      * Sets the allocated mips.
      *
      * @param allocatedMips the new allocated mips
      */
     protected final void setAllocatedMips(final double allocatedMips) {
         this.allocatedMips = allocatedMips;
-    }
-
-    /**
-     * Gets the allocated mips.
-     *
-     * @return the allocated mips
-     */
-    public double getAllocatedMips() {
-        return allocatedMips;
     }
 
     /**
@@ -88,56 +81,11 @@ public class VmStateHistoryEntry {
     }
 
     /**
-     * Gets the requested mips.
-     *
-     * @return the requested mips
-     */
-    public double getRequestedMips() {
-        return requestedMips;
-    }
-
-    /**
      * Defines if the Vm is in migration for the current history.
      *
      * @param inMigration true if the Vm is in migration, false otherwise
      */
     protected final void setInMigration(final boolean inMigration) {
         this.inMigration = inMigration;
-    }
-
-    /**
-     * Checks if the Vm is in migration for the current history.
-     *
-     * @return true if the Vm is in migration, false otherwise
-     */
-    public boolean isInMigration() {
-        return inMigration;
-    }
-
-    @Override
-    public boolean equals(final Object obj) {
-        return obj instanceof VmStateHistoryEntry that &&
-               that.time == this.time &&
-               that.inMigration == this.inMigration &&
-               that.allocatedMips == this.allocatedMips &&
-               that.requestedMips == this.requestedMips;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = hash(hash, toBits(this.time));
-        hash = hash(hash, toBits(this.allocatedMips));
-        hash = hash(hash, toBits(this.requestedMips));
-        hash = hash(hash, this.inMigration ? 1 : 0);
-        return hash;
-    }
-
-    private int hash(final int hash, final int value) {
-        return 89 * hash + value;
-    }
-
-    private int toBits(final double value){
-        return (int) (Double.doubleToLongBits(value) ^ (Double.doubleToLongBits(value) >>> 32));
     }
 }

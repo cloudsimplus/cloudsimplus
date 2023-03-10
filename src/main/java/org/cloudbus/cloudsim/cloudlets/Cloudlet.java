@@ -296,9 +296,8 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
      * </p>
      *
      * @param priority the priority to set
-     * @return
      */
-    Cloudlet setPriority(int priority);
+    void setPriority(int priority);
 
     /**
      * Gets the Type of Service (ToS) of IPv4 for sending Cloudlet over the network.
@@ -544,25 +543,25 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
      * Sets the {@link #getUtilizationModelBw() utilization model of bw}.
      * @param utilizationModelBw the new utilization model of bw
      */
-    Cloudlet setUtilizationModelBw(UtilizationModel utilizationModelBw);
+    void setUtilizationModelBw(UtilizationModel utilizationModelBw);
 
     /**
      * Sets the {@link #getUtilizationModelCpu() utilization model of cpu}.
      * @param utilizationModelCpu the new utilization model of cpu
      */
-    Cloudlet setUtilizationModelCpu(UtilizationModel utilizationModelCpu);
+    void setUtilizationModelCpu(UtilizationModel utilizationModelCpu);
 
     /**
      * Sets the {@link #getUtilizationModelRam() utilization model of ram}.
      * @param utilizationModelRam the new utilization model of ram
      */
-    Cloudlet setUtilizationModelRam(UtilizationModel utilizationModelRam);
+    void setUtilizationModelRam(UtilizationModel utilizationModelRam);
 
     /**
      * Sets the id of {@link Vm} that is planned to execute the cloudlet.
      * @param vm the id of vm to run the cloudlet
      */
-    Cloudlet setVm(Vm vm);
+    void setVm(Vm vm);
 
     /**
      * Gets the execution length of this Cloudlet (in Million Instructions (MI))

@@ -66,10 +66,10 @@ public final class CloudletTestUtil {
 
         cloudlet
             .setFileSize(CLOUDLET_FILE_SIZE)
-            .setOutputSize(CLOUDLET_OUTPUT_SIZE)
-            .setUtilizationModelCpu(utilizationModelCPU)
-            .setUtilizationModelRam(utilizationModelRAM)
-            .setUtilizationModelBw(utilizationModelBW);
+            .setOutputSize(CLOUDLET_OUTPUT_SIZE);
+        cloudlet.setUtilizationModelCpu(utilizationModelCPU);
+        cloudlet.setUtilizationModelRam(utilizationModelRAM);
+        cloudlet.setUtilizationModelBw(utilizationModelBW);
         return cloudlet;
     }
 

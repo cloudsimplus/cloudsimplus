@@ -23,6 +23,9 @@
  */
 package org.cloudsimplus.autoscaling;
 
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.Setter;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudsimplus.listeners.VmHostEventInfo;
@@ -56,7 +59,7 @@ import java.util.function.Supplier;
 public class HorizontalVmScalingSimple extends VmScalingAbstract implements HorizontalVmScaling {
     private static final Logger LOGGER = LoggerFactory.getLogger(HorizontalVmScalingSimple.class.getSimpleName());
 
-    /** @see #getVmSupplier() */
+    @Getter @Setter @NonNull
     private Supplier<Vm> vmSupplier;
 
     /**
@@ -66,35 +69,13 @@ public class HorizontalVmScalingSimple extends VmScalingAbstract implements Hori
      */
     private long cloudletCreationRequests;
 
-    /** @see #getOverloadPredicate() */
+    @Getter @Setter @NonNull
     private Predicate<Vm> overloadPredicate;
 
     public HorizontalVmScalingSimple(){
         super();
         this.overloadPredicate = FALSE_PREDICATE;
         this.vmSupplier = () -> Vm.NULL;
-    }
-
-    @Override
-    public Supplier<Vm> getVmSupplier() {
-        return vmSupplier;
-    }
-
-    @Override
-    public final HorizontalVmScaling setVmSupplier(final Supplier<Vm> supplier) {
-        this.vmSupplier = Objects.requireNonNull(supplier);
-        return this;
-    }
-
-    @Override
-    public Predicate<Vm> getOverloadPredicate() {
-        return overloadPredicate;
-    }
-
-    @Override
-    public VmScaling setOverloadPredicate(final Predicate<Vm> predicate) {
-        this.overloadPredicate = Objects.requireNonNull(predicate);
-        return this;
     }
 
     @Override

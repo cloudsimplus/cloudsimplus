@@ -23,6 +23,9 @@
  */
 package org.cloudbus.cloudsim.brokers;
 
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.Setter;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.vms.Vm;
@@ -43,8 +46,19 @@ import java.util.stream.Collectors;
  *
  * @author Manoel Campos da Silva Filho
  */
+@Getter @Setter
 public class DatacenterBrokerHeuristic extends DatacenterBrokerSimple {
-    /** @see #getHeuristic() */
+    /**
+     * A heuristic to be used to find a suboptimal mapping between
+     * Cloudlets and Vm's. <b>The list of Cloudlets and Vm's to be used by the heuristic
+     * will be set automatically by the DatacenterBroker. Accordingly,
+     * the developer don't have to set these lists manually,
+     * once they will be overridden.</b>
+     *
+     * <p>The time taken to find a suboptimal mapping of Cloudlets to Vm's
+     * depends on the heuristic parameters that have to be set carefully.</p>
+     */
+    @NonNull
     private CloudletToVmMappingHeuristic heuristic;
 
     /**
@@ -103,31 +117,4 @@ public class DatacenterBrokerHeuristic extends DatacenterBrokerSimple {
         //gets the Vm for the Cloudlet from the heuristic solution.
         return heuristic.getBestSolutionSoFar().getResult().getOrDefault(cloudlet, fallbackVm);
     }
-
-    /**
-     * @return the heuristic used to find a sub-optimal mapping between
-     * Cloudlets and Vm's
-     */
-    public Heuristic<CloudletToVmMappingSolution> getHeuristic() {
-        return heuristic;
-    }
-
-    /**
-     * <p>Sets a heuristic to be used to find a sub-optimal mapping between
-     * Cloudlets and Vm's. <b>The list of Cloudlets and Vm's to be used by the heuristic
-     * will be set automatically by the DatacenterBroker. Accordingly,
-     * the developer don't have to set these lists manually,
-     * once they will be overridden.</b></p>
-     *
-     * <p>The time taken to find a suboptimal mapping of Cloudlets to Vm's
-     * depends on the heuristic parameters that have to be set carefully.</p>
-     *
-     * @param heuristic the heuristic to be set
-     * @return the DatacenterBrokerHeuristic instance
-     */
-    public DatacenterBrokerHeuristic setHeuristic(final CloudletToVmMappingHeuristic heuristic) {
-        this.heuristic = heuristic;
-        return this;
-    }
-
 }

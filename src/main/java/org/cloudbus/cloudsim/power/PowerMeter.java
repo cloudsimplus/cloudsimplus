@@ -23,6 +23,9 @@
  */
 package org.cloudbus.cloudsim.power;
 
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.Setter;
 import org.cloudbus.cloudsim.core.CloudSimEntity;
 import org.cloudbus.cloudsim.core.Simulation;
 import org.cloudbus.cloudsim.core.events.SimEvent;
@@ -46,10 +49,19 @@ public class PowerMeter extends CloudSimEntity {
 
     private final Supplier<List<? extends PowerAware<? extends PowerModel>>> powerAwareEntitiesSupplier;
 
-    /** @see #getMeasurementInterval() */
+    /**
+     * The time interval to collect power measurements (in seconds).
+     */
+    @Getter
     private double measurementInterval = 1;
 
-    /** @see #getPowerMeasurements() () */
+    /**
+     * The list of all measurements collected up to now.
+     * Each entry is a measurement collected in the defined {@link #measurementInterval}.
+     * If you provided a list of entities on the class constructor,
+     * an entry is the combined measurement for those entities.
+     */
+    @Getter
     private final List<PowerMeasurement> powerMeasurements = new LinkedList<>();
 
     /**
@@ -85,9 +97,9 @@ public class PowerMeter extends CloudSimEntity {
      * @param powerAwareEntitiesSupplier a {@link Supplier} that provides a list of entities
      *                                   to have their combined power consumption measured
      */
-    public PowerMeter(final Simulation simulation, final Supplier<List<? extends PowerAware<? extends PowerModel>>> powerAwareEntitiesSupplier) {
+    public PowerMeter(final Simulation simulation, @NonNull final Supplier<List<? extends PowerAware<? extends PowerModel>>> powerAwareEntitiesSupplier) {
         super(simulation);
-        this.powerAwareEntitiesSupplier = Objects.requireNonNull(powerAwareEntitiesSupplier, "powerAwareEntitiesSupplier cannot be null");
+        this.powerAwareEntitiesSupplier = powerAwareEntitiesSupplier;
     }
 
     @Override
@@ -130,31 +142,6 @@ public class PowerMeter extends CloudSimEntity {
         if (getSimulation().isThereAnyFutureEvt(evt -> evt.getTag() != POWER_MEASUREMENT)) {
             schedule(measurementInterval, POWER_MEASUREMENT);
         }
-    }
-
-    @Override
-    public PowerMeter setName(final String name) {
-        super.setName(name);
-        return this;
-    }
-
-    /**
-     * Gets the list of all measurements collected up to now.
-     * Each entry is a measurement collected in the defined {@link #measurementInterval}.
-     * If you provided a list of entities on the class constructor,
-     * a entry is the combined measurement for those entities.
-     * @return
-     */
-    public List<PowerMeasurement> getPowerMeasurements() {
-        return powerMeasurements;
-    }
-
-    /**
-     * Gets the time interval to collect power measurements.
-     * @return
-     */
-    public double getMeasurementInterval() {
-        return measurementInterval;
     }
 
     /**

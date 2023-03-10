@@ -7,6 +7,10 @@
  */
 package org.cloudbus.cloudsim.cloudlets.network;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.Setter;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.CloudletExecution;
 import org.cloudbus.cloudsim.core.Identifiable;
@@ -33,20 +37,31 @@ import org.cloudbus.cloudsim.core.Identifiable;
  * TODO Classes {@link CloudletTask}, {@link Cloudlet}
  * and {@link CloudletExecution} share a common set of attributes that should be defined by a common interface.
  */
+@Getter @Setter
 public abstract class CloudletTask implements Identifiable {
-    /** @see #getId() */
+    /** The id of the task. */
     private long id;
 
-    /** @see #getStartTime() */
+    /**
+     * The time the task started executing (in seconds), or -1 if not started yet.
+     */
     private double startTime;
 
-    /** @see #getFinishTime() */
+    /**
+     * The time the task finished (in seconds) or -1 if not finished yet.
+     */
+    @Setter(AccessLevel.NONE)
     private double finishTime;
 
-    /** @see #getMemory() */
+    /**
+     * The memory amount used by the task (in Megabytes).
+     */
     private long memory;
 
-    /** @see #getCloudlet() */
+    /**
+     * The NetworkCloudlet that the task belongs to.
+     */
+    @NonNull
     private NetworkCloudlet cloudlet;
 
     /**
@@ -59,70 +74,6 @@ public abstract class CloudletTask implements Identifiable {
         this.startTime = -1;
         this.finishTime = -1;
         this.memory = 0;
-    }
-
-    /**
-     * Gets the id of the task.
-     * @return
-     */
-    @Override
-    public long getId() {
-        return id;
-    }
-
-    /**
-     * Sets the id of the task.
-     * @param id the ID to set
-     */
-    public CloudletTask setId(final int id) {
-        this.id = id;
-        return this;
-    }
-
-    /**
-     * Gets the memory amount used by the task (in Megabytes).
-     * @return
-     */
-    public long getMemory() {
-        return memory;
-    }
-
-    /**
-     * Sets the memory amount used by the task (in Megabytes).
-     * @param memory the memory amount to set
-     */
-    public CloudletTask setMemory(final long memory) {
-        this.memory = memory;
-        return this;
-    }
-
-    /**
-     * @return the time the task started executing (in seconds), or -1 if not started yet.
-     */
-    public double getStartTime() {
-        return startTime;
-    }
-
-    /**
-     * Sets the time the task started executing (in seconds).
-     * @param startTime the start time to set
-     */
-    public CloudletTask setStartTime(final double startTime) {
-        this.startTime = startTime;
-        return this;
-    }
-
-    /**
-     * Gets the NetworkCloudlet that the task belongs to.
-     * @return
-     */
-    public NetworkCloudlet getCloudlet() {
-        return cloudlet;
-    }
-
-    public CloudletTask setCloudlet(final NetworkCloudlet cloudlet) {
-        this.cloudlet = cloudlet;
-        return this;
     }
 
     /**
@@ -159,13 +110,6 @@ public abstract class CloudletTask implements Identifiable {
         if(isActive() && finished) {
             finishTime = cloudlet.getSimulation().clock();
         }
-    }
-
-    /**
-     * @return the time the task spent executing (in seconds), or -1 if not finished yet
-     */
-    public double getExecutionTime(){
-        return isFinished() ? finishTime - startTime : -1;
     }
 
     /**

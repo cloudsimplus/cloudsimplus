@@ -83,8 +83,9 @@ final class CloudletSchedulerTimeSharedTestUtil {
         final CloudletSchedulerTimeShared instance = createCloudletSchedulerWithMipsList(vmPes, mips);
 
         for(int i = 0; i < cloudlets; i++) {
-            final Cloudlet cloudlet = CloudletTestUtil.createCloudlet(i, mips, cloudletPes);
-            cloudlet.setUtilizationModelRam(ramBwModel).setUtilizationModelBw(ramBwModel);
+            final var cloudlet = CloudletTestUtil.createCloudlet(i, mips, cloudletPes);
+            cloudlet.setUtilizationModelRam(ramBwModel);
+            cloudlet.setUtilizationModelBw(ramBwModel);
             cloudlet.registerArrivalInDatacenter();
             instance.cloudletSubmit(cloudlet);
         }
