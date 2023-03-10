@@ -127,14 +127,14 @@ public abstract class HeuristicAbstract<S extends HeuristicSolution<?>>  impleme
 		}
 		setSolveTime((System.currentTimeMillis() - startTime)/1000.0);
 
-		return getBestSolutionSoFar();
+		return bestSolutionSoFar;
 	}
 
     private void searchSolutionInNeighborhood() {
-        for (int i = 0; i < getSearchesByIteration(); i++) {
-            setNeighborSolution(createNeighbor(getBestSolutionSoFar()));
+        for (int i = 0; i < searchesByIteration; i++) {
+            setNeighborSolution(createNeighbor(bestSolutionSoFar));
             if (getAcceptanceProbability() > getRandomValue(1)) {
-                setBestSolutionSoFar(getNeighborSolution());
+                setBestSolutionSoFar(neighborSolution);
             }
         }
     }
