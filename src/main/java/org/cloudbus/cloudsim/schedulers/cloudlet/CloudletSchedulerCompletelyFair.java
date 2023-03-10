@@ -253,18 +253,18 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
     }
 
 	/**
-	 * Gets the weight of the Cloudlet to use the CPU, that is
-	 * defined based on its niceness. As greater is the weight,
+     * {@return the weight of the Cloudlet to use the CPU},
+     * which is defined based on its niceness. As higher is the weight,
 	 * more time the Cloudlet will have to use the PEs.
 	 *
      * <p>As the {@link #computeCloudletTimeSlice(CloudletExecution) timelice} assigned to a Cloudlet to use the CPU is defined
      * exponentially instead of linearly according to its niceness,
      * this method is used as the base to correctly compute the timeslice.
      * </p>
+     *
 	 * <p><b>NOTICE</b>: The formula used is based on the book referenced at the class documentation.</p>
 	 *
 	 * @param cloudlet Cloudlet to get the weight to use PEs
-	 * @return the cloudlet weight to use PEs
      * @see #getCloudletNiceness(CloudletExecution)
 	 */
     private double getCloudletWeight(final CloudletExecution cloudlet){
@@ -287,18 +287,17 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
     }
 
     /**
-	 * Gets the percentage (in scale from [0 to 1]) that the weight of a Cloudlet
-	 * represents, compared to the weight sum of all Cloudlets in the execution list.
+	 * {@return the weight of the cloudlet (in percentage from [0 to 1])},
+     * compared to the weight sum of all Cloudlets in the execution list.
 	 *
 	 * @param cloudlet Cloudlet to get its weight percentage
-	 * @return the cloudlet weight percentage between all Cloudlets in the execution list
 	 */
 	private double getCloudletWeightPercentBetweenAllCloudlets(final CloudletExecution cloudlet) {
 		return getCloudletWeight(cloudlet) / getWeightSumOfRunningCloudlets();
 	}
 
 	/**
-	 * Gets the weight sum of all cloudlets in the executing list.
+	 * {@return the weight sum} of all cloudlets in the executing list.
 	 */
 	private double getWeightSumOfRunningCloudlets() {
 		return getCloudletExecList()
@@ -339,6 +338,7 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
         if(minimumGranularity > latency){
             throw new IllegalArgumentException("Minimum granularity cannot be greater than latency.");
         }
+
 		this.minimumGranularity = minimumGranularity;
 	}
 
@@ -380,7 +380,7 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
     @Override
     public long updateCloudletProcessing(final CloudletExecution cle, final double currentTime) {
         /*
-        Cloudlet has never been executed yet and it will start executing now,
+        Cloudlet has never been executed yet, so it will start executing now,
         sets its actual virtual runtime. The negative value was used so far
         just to sort Cloudlets in the waiting list according to their priorities.
         */
@@ -396,20 +396,19 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
     }
 
     /**
-     * Computes the initial virtual runtime for a Cloudlet that will be added to the execution list.
+     * {@return the computed initial virtual runtime for a Cloudlet}
+     * that will be added to the execution list.
      * This virtual runtime is updated as long as the Cloudlet is executed.
      * The initial value is negative to indicate the Cloudlet hasn't started
-     * executing yet. The virtual runtime is computed based on the Cloudlet priority.
+     * executing yet. It is computed based on the Cloudlet priority.
      *
      * @param cloudlet Cloudlet to compute the initial virtual runtime
-     * @return the computed initial virtual runtime as a negative value
-     * to indicate that the Cloudlet hasn't started executing yet
      */
     private double computeCloudletInitialVirtualRuntime(final CloudletExecution cloudlet) {
         /*
         A negative virtual runtime indicates the cloudlet has never been executed yet.
         This math was used just to ensure that the first added cloudlets
-        will have the lower vruntime, depending of their priorities.
+        will have the lower vruntime, depending on their priorities.
         If all cloudlets have the same priority, the first
         added will start executing first.
         */
