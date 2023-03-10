@@ -58,11 +58,10 @@ public final class Processor extends ResourceManageableAbstract {
     }
 
     /**
-     * Gets the sum of MIPS from all {@link Pe}s.
-     * @return
+     * {@return the sum of MIPS} from all {@link Pe}s.
      */
     public double getTotalMips(){
-        return getMips()* getCapacity();
+        return getMips() * getCapacity();
     }
 
     /**
