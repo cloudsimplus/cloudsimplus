@@ -191,7 +191,9 @@ public abstract class VerticalVmScalingAbstract extends VmScalingAbstract implem
     public Function<Vm, Double> getResourceUsageThresholdFunction(){
         if(isVmUnderloaded()) {
             return lowerThresholdFunction;
-        } else if(isVmOverloaded()) {
+        }
+
+        if(isVmOverloaded()) {
             return upperThresholdFunction;
         }
 
@@ -224,7 +226,7 @@ public abstract class VerticalVmScalingAbstract extends VmScalingAbstract implem
 
     @Override
     protected boolean requestUpScaling(final double time) {
-        final DatacenterBroker broker = this.getVm().getBroker();
+        final var broker = this.getVm().getBroker();
         broker.getSimulation().sendNow(broker, broker, CloudSimTag.VM_VERTICAL_SCALING, this);
         return true;
     }
