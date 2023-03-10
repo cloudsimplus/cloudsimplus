@@ -41,6 +41,8 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * An abstract class to implement simulation experiments
  * that can be executed in a repeatable way
@@ -117,7 +119,7 @@ public abstract class Experiment extends AbstractRunnable {
     protected Experiment(final int index, final ExperimentRunner runner, final long seed) {
         super();
         if(seed == -1){
-            Objects.requireNonNull(runner);
+            requireNonNull(runner);
         }
         this.brokersNumber = 1;
         this.datacentersNumber = 1;
@@ -161,7 +163,7 @@ public abstract class Experiment extends AbstractRunnable {
      */
     @Override
     public final void run() {
-        Objects.requireNonNull(vmsByBrokerFunction, "You need to set the function that indicates the number of VMs to create for each broker.");
+        requireNonNull(vmsByBrokerFunction, "You need to set the function that indicates the number of VMs to create for each broker.");
         build();
         beforeExperimentRun(this);
         simulation.start();
@@ -360,9 +362,9 @@ public abstract class Experiment extends AbstractRunnable {
      * @param broker broker to submit Cloudlets to
      */
     protected void createAndSubmitCloudletsInternal(final DatacenterBroker broker) {
-        final List<Cloudlet> list = createCloudlets(broker);
-        cloudletList.addAll(list);
-        broker.submitCloudletList(list);
+        final var newCloudletList = createCloudlets(broker);
+        cloudletList.addAll(newCloudletList);
+        broker.submitCloudletList(newCloudletList);
     }
 
     /**
@@ -372,9 +374,9 @@ public abstract class Experiment extends AbstractRunnable {
      * @param broker broker to submit VMs to
      */
     private void createAndSubmitVmsInternal(final DatacenterBroker broker) {
-        final List<Vm> list = createVms(broker);
-        vmList.addAll(list);
-        broker.submitVmList(list);
+        final var newVmList = createVms(broker);
+        vmList.addAll(newVmList);
+        broker.submitVmList(newVmList);
     }
 
     protected final List<Host> createHosts() {
@@ -382,12 +384,12 @@ public abstract class Experiment extends AbstractRunnable {
             throw new IllegalStateException("The number of hosts to create was not set");
         }
 
-        final List<Host> list = new ArrayList<>(hostsNumber);
+        final var hostList = new ArrayList<Host>(hostsNumber);
         for (int i = 0; i < hostsNumber; i++) {
-            list.add(createHost(i));
+            hostList.add(createHost(i));
         }
 
-        return list;
+        return hostList;
     }
 
     protected abstract Host createHost(int id);
