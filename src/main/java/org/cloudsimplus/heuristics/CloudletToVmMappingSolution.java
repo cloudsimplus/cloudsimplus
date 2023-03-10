@@ -252,9 +252,9 @@ public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudl
      * in the {@link #cloudletVmMap} in order to
      * provide a neighbor solution.
      *
-     * The method change the given Map entries, moving the
+     * <p>The method change the given Map entries, moving the
      * cloudlet of the first entry to the Vm of the second entry
-     * and vice-versa.
+     * and vice-versa.</p>
      *
      * @param entries a List of 2 entries containing Cloudlets to swap their VMs.
      * If the entries don't have 2 elements, the method will
@@ -279,9 +279,9 @@ public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudl
      * in the {@link #cloudletVmMap} in order to
      * provide a neighbor solution.
      *
-     * The method change the given Map entries, moving the
+     * <p>The method change the given Map entries, moving the
      * cloudlet of the first entry to the Vm of the second entry
-     * and vice-versa.
+     * and vice-versa.</p>
      *
      * @see #swapVmsOfTwoMapEntries(List)
      * @return true if the Cloudlet's VMs where swapped, false otherwise
@@ -294,7 +294,7 @@ public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudl
      * Try to get 2 randomly selected entries from the {@link #cloudletVmMap}.
      *
      * @return a List with 2 entries from the {@link #cloudletVmMap} if the map size is at least 2;
-     *         an unitary List if the map has only 1 entry;
+     *         a unitary List if the map has only 1 entry;
      *         or an empty List if there is no entry in the map.
      *
      * @see #swapVmsOfTwoMapEntries(List)
@@ -340,7 +340,7 @@ public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudl
         final var entryIterator = cloudletVmMap.entrySet().iterator();
 
         /*
-        Loop over the entries until those ones defined by the first and second index
+        Loop over the entries until those defined by the first and second index
         are found and added to the List.
         Since Map doesn't have an index, we can't access the ith entry directly.
         This loop ensures we iterate the least number of times
