@@ -181,7 +181,7 @@ public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudl
      */
     public double getVmCost(final Map.Entry<Vm, List<Map.Entry<Cloudlet, Vm>>> entry) {
         final Vm vm = entry.getKey();
-        final var cloudletList = convertListOfMapEntriesToListOfCloudlets(entry.getValue());
+        final var cloudletList = convertMapEntryListToCloudletList(entry.getValue());
         return getVmCost(vm, cloudletList);
     }
 
@@ -198,7 +198,7 @@ public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudl
         return Math.abs(vm.getNumberOfPes() - getTotalCloudletsPes(cloudlets));
     }
 
-    private List<Cloudlet> convertListOfMapEntriesToListOfCloudlets(final List<Map.Entry<Cloudlet, Vm>> entriesList) {
+    private List<Cloudlet> convertMapEntryListToCloudletList(final List<Map.Entry<Cloudlet, Vm>> entriesList) {
         return entriesList
             .stream()
             .map(Map.Entry::getKey)
@@ -207,11 +207,11 @@ public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudl
 
     /**
      * Gets the total number of PEs from a list of Cloudlets
-     * @param listOfCloudletsForVm the list of Cloudlets to get the total number of PEs
+     * @param cloudletListForVm the list of Cloudlets to get the total number of PEs
      * @return the total number of PEs from all given Cloudlets
      */
-    private long getTotalCloudletsPes(final List<Cloudlet> listOfCloudletsForVm) {
-        return listOfCloudletsForVm
+    private long getTotalCloudletsPes(final List<Cloudlet> cloudletListForVm) {
+        return cloudletListForVm
                 .stream()
                 .mapToLong(Cloudlet::getNumberOfPes)
                 .sum();
