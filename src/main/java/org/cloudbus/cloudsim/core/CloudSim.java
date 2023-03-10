@@ -25,7 +25,6 @@ import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-import static java.util.Objects.requireNonNull;
 import static org.cloudbus.cloudsim.util.TimeUtil.secondsToStr;
 
 /**
@@ -433,8 +432,7 @@ public class CloudSim implements Simulation {
     }
 
     @Override
-    public void addEntity(final CloudSimEntity entity) {
-        requireNonNull(entity);
+    public void addEntity(@NonNull final CloudSimEntity entity) {
         if (running) {
             final var evt = new CloudSimEvent(SimEvent.Type.CREATE, 0, entity, SimEntity.NULL, CloudSimTag.NONE, entity);
             future.addEvent(evt);
@@ -560,8 +558,7 @@ public class CloudSim implements Simulation {
     }
 
     @Override
-    public void send(final SimEvent evt) {
-        requireNonNull(evt);
+    public void send(@NonNull final SimEvent evt) {
         //Events with a negative tag have higher priority
         if(evt.getPriority() < 0)
             future.addEventFirst(evt);
@@ -707,8 +704,7 @@ public class CloudSim implements Simulation {
      *
      * @param entity the new entity to add
      */
-    private void addEntityDynamically(final SimEntity entity) {
-        requireNonNull(entity);
+    private void addEntityDynamically(@NonNull final SimEntity entity) {
         LOGGER.trace("Adding: {}", entity.getName());
         entity.start();
     }
@@ -876,42 +872,42 @@ public class CloudSim implements Simulation {
     }
 
     @Override
-    public final Simulation addOnSimulationPauseListener(final EventListener<EventInfo> listener) {
-        this.onSimulationPauseListeners.add(requireNonNull(listener));
+    public final Simulation addOnSimulationPauseListener(@NonNull final EventListener<EventInfo> listener) {
+        this.onSimulationPauseListeners.add(listener);
         return this;
     }
 
     @Override
-    public final Simulation addOnSimulationStartListener(final EventListener<EventInfo> listener) {
-        this.onSimulationStartListeners.add(requireNonNull(listener));
+    public final Simulation addOnSimulationStartListener(@NonNull final EventListener<EventInfo> listener) {
+        this.onSimulationStartListeners.add(listener);
         return this;
     }
 
     @Override
-    public boolean removeOnSimulationPauseListener(final EventListener<EventInfo> listener) {
-        return this.onSimulationPauseListeners.remove(requireNonNull(listener));
+    public boolean removeOnSimulationPauseListener(@NonNull final EventListener<EventInfo> listener) {
+        return this.onSimulationPauseListeners.remove(listener);
     }
 
     @Override
-    public final Simulation addOnEventProcessingListener(final EventListener<SimEvent> listener) {
-        this.onEventProcessingListeners.add(requireNonNull(listener));
+    public final Simulation addOnEventProcessingListener(@NonNull final EventListener<SimEvent> listener) {
+        this.onEventProcessingListeners.add(listener);
         return this;
     }
 
     @Override
-    public boolean removeOnEventProcessingListener(final EventListener<SimEvent> listener) {
-        return onEventProcessingListeners.remove(requireNonNull(listener));
+    public boolean removeOnEventProcessingListener(@NonNull final EventListener<SimEvent> listener) {
+        return onEventProcessingListeners.remove(listener);
     }
 
     @Override
-    public Simulation addOnClockTickListener(final EventListener<EventInfo> listener) {
-        onClockTickListeners.add(requireNonNull(listener));
+    public Simulation addOnClockTickListener(@NonNull final EventListener<EventInfo> listener) {
+        onClockTickListeners.add(listener);
         return this;
     }
 
     @Override
-    public boolean removeOnClockTickListener(final EventListener<? extends EventInfo> listener) {
-        return onClockTickListeners.remove(requireNonNull(listener));
+    public boolean removeOnClockTickListener(@NonNull final EventListener<? extends EventInfo> listener) {
+        return onClockTickListeners.remove(listener);
     }
 
     /**
