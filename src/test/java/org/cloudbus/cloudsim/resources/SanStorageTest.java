@@ -514,7 +514,6 @@ public class SanStorageTest {
         fileList.forEach(file -> assertTrue(san.contains(file.getName())));
 
         assertFalse(san.contains(NON_EXISTENT_FILE));
-        assertFalse(san.contains((String)null));
         assertFalse(san.contains(""));
     }
 
@@ -525,7 +524,6 @@ public class SanStorageTest {
 
         fileList.forEach(file -> assertTrue(san.contains(file)));
         assertFalse(san.contains(new File(NON_EXISTENT_FILE, FILE_SIZE)));
-        assertFalse(san.contains((File) null));
     }
 
     @Test

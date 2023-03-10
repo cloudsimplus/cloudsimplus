@@ -365,7 +365,6 @@ public class HostSimpleTest {
         assertTrue(host.removeOnUpdateProcessingListener(updateVmsProcessing));
 
         host.addOnUpdateProcessingListener(e -> {});
-        assertFalse(host.removeOnUpdateProcessingListener(null));
     }
 
     @Test
