@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Measurement of execution times of CloudSim's methods.
+ * Measures execution times of CloudSim's methods.
  *
  * @author Anton Beloglazov
  * @since CloudSim Toolkit 3.0
@@ -20,7 +20,7 @@ import java.util.Map;
 public final class ExecutionTimeMeasurer {
 
     /**
-     * A map of execution start times where each key
+     * A map of execution start times, where each key
      * represents the name of the method/process and each key is the
      * time the method/process started (in milliseconds).
      * Usually, this name is the method/process name, making
@@ -57,9 +57,7 @@ public final class ExecutionTimeMeasurer {
     }
 
     /**
-     * Gets the map of execution times.
-     *
-     * @return the execution times map
+     * {@return the map} of execution times.
      * @see #EXECUTION_START_TIMES
      */
     static Map<String, Long> getExecutionStartTimes() {
@@ -67,10 +65,9 @@ public final class ExecutionTimeMeasurer {
     }
 
     /**
-     * Gets the execution start time
+     * {@return the execution start time} for the given method/process.
      *
      * @param name the name of the method/process to get the execution start time
-     * @return the execution start time for the the given method/process
      * @see #EXECUTION_START_TIMES
      */
     static Long getExecutionStartTime(final String name){
