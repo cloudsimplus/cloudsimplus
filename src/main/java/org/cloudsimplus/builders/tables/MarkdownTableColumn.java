@@ -24,7 +24,7 @@
 package org.cloudsimplus.builders.tables;
 
 /**
- * A column of an Markdown table. The class generates the string
+ * A column of a Markdown table. The class generates the string
  * that represents a column in a Markdown table.
  *
  * @author Manoel Campos da Silva Filho
