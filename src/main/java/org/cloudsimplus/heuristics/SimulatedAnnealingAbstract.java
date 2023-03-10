@@ -89,8 +89,9 @@ public abstract class SimulatedAnnealingAbstract<S extends HeuristicSolution<?>>
      * of a worse solution (considering its cost)
      * to be accepted or not in order to avoid local minima.
      * The computed Boltzmann factor also ensures that better solutions are always accepted.
+     * </p>
      *
-     * The Boltzmann Constant has different values depending of the used unit.
+     * <p>The Boltzmann Constant has different values depending of the used unit.
      * In this case, it was used the natural unit of information.</p>
      *
      * @return {@inheritDoc}
