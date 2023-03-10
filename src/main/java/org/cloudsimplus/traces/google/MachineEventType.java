@@ -78,6 +78,7 @@ public enum MachineEventType {
          */
         @Override
         protected boolean process(final GoogleMachineEventsTraceReader reader) {
+            System.err.printf("%s: Update events are NOT being processed yet.%n", getClass().getSimpleName());
             return false;
         }
     };
