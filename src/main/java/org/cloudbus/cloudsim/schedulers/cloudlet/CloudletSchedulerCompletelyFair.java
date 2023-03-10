@@ -220,7 +220,7 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
 	 */
 	private double computeCloudletTimeSlice(final CloudletExecution cloudlet){
 		final double timeSlice = getLatency() * getCloudletWeightPercentBetweenAllCloudlets(cloudlet);
-		return Math.min(timeSlice, getMinimumGranularity());
+		return Math.min(timeSlice, minimumGranularity);
 	}
 
     /**
