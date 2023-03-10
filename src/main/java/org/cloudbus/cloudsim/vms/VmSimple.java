@@ -459,11 +459,7 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
 
     @Override
     public Vm setStartTime(final double startTime) {
-        if (startTime < 0) {
-            return this;
-        }
-
-        this.startTime = startTime;
+        this.startTime = MathUtil.nonNegative(startTime, "startTime");
         setLastBusyTime(startTime);
         return this;
     }
