@@ -13,7 +13,7 @@ import org.cloudbus.cloudsim.core.Simulation;
 import java.util.Objects;
 
 /**
- * An abstract implementation of {@link UtilizationModel}.
+ * An abstract class to implement {@link UtilizationModel}s.
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.2
  */
