@@ -32,7 +32,7 @@ package org.cloudbus.cloudsim.resources;
  */
 public final class Ram extends ResourceManageableAbstract {
     /**
-     * Creates a new RAM resource.
+     * Creates a RAM resource.
      * @param capacity the RAM capacity in Megabytes
      */
     public Ram(final long capacity) {
