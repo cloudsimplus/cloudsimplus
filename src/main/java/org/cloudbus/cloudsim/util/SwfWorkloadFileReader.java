@@ -42,18 +42,18 @@ import java.util.function.Predicate;
  * </ul>
  * </p>
  *
- * <b>List of unused fields:</b>
  * <p>
+ * <b>List of unused fields:</b>
  * <ul>
- * <li>Required running time (index 8):
- * This can be either runtime (measured in wall-clock seconds),
- * or average CPU time per processor (also in seconds).
- * The exact meaning is determined by a header comment.
- * If a log contains a request for total CPU time, it is divided by the number of requested processors.
- * </li>
+ *   <li>Required running time (index 8):
+ *   This can be either runtime (measured in wall-clock seconds),
+ *   or average CPU time per processor (also in seconds).
+ *   The exact meaning is determined by a header comment.
+ *   If a log contains a request for total CPU time, it is divided by the number of requested processors.
+ *   </li>
  *
- * <li>User who submitted the job (index 11)</li>
- * <li>Group of the user who submitted the job (index 12)</li>
+ *   <li>User who submitted the job (index 11)</li>
+ *   <li>Group of the user who submitted the job (index 12)</li>
  * </ul>
  * </p>
  *
@@ -123,7 +123,7 @@ public final class SwfWorkloadFileReader extends TraceReaderAbstract {
     private Predicate<Cloudlet> predicate;
 
     /**
-     * Gets a {@link SwfWorkloadFileReader} instance from a workload file
+     * {@return a new {@link SwfWorkloadFileReader} instance from a workload file}
      * inside the <b>application's resource directory</b>.
      * Use the available constructors if you want to load a file outside the resource directory.
      *
@@ -143,7 +143,7 @@ public final class SwfWorkloadFileReader extends TraceReaderAbstract {
     }
 
     /**
-     * Create a new SwfWorkloadFileReader object.
+     * Create a SwfWorkloadFileReader object.
      *
      * @param filePath the workload trace file path in one of the following formats: <i>ASCII text, zip, gz.</i>
      * @param mips     the MIPS capacity of the PEs from the VM where each created Cloudlet is supposed to run.
@@ -161,7 +161,7 @@ public final class SwfWorkloadFileReader extends TraceReaderAbstract {
     }
 
     /**
-     * Create a new SwfWorkloadFileReader object.
+     * Create a SwfWorkloadFileReader object.
      *
      * @param filePath the workload trace file path in one of the following formats: <i>ASCII text, zip, gz.</i>
      * @param reader   a {@link InputStreamReader} object to read the file
@@ -189,10 +189,8 @@ public final class SwfWorkloadFileReader extends TraceReaderAbstract {
     }
 
     /**
-     * Generates a list of jobs ({@link Cloudlet Cloudlets}) to be executed,
-     * if it wasn't generated yet.
-     *
-     * @return a generated Cloudlet list
+     * {@return a list of Cloudlet} representing jobs to be executed.
+     * The list is generated only if it wasn't yet.
      */
     public List<Cloudlet> generateWorkload() {
         if (cloudlets.isEmpty()) {
@@ -256,14 +254,13 @@ public final class SwfWorkloadFileReader extends TraceReaderAbstract {
     }
 
     /**
-     * Creates a Cloudlet with the given information.
+     * {@return a new Cloudlet} created with the given information.
      *
      * @param id      a Cloudlet ID
      * @param runTime The number of seconds the Cloudlet has to run.
      *                {@link Cloudlet#getLength()} is computed based on
      *                the {@link #getMips() mips} and this value.
      * @param numProc number of Cloudlet's PEs
-     * @return the created Cloudlet
      * @see #mips
      */
     private Cloudlet createCloudlet(final int id, final int runTime, final int numProc) {
