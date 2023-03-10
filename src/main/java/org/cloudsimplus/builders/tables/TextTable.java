@@ -23,8 +23,6 @@
  */
 package org.cloudsimplus.builders.tables;
 
-import org.apache.commons.lang3.StringUtils;
-
 /**
  * Prints a table from a given data set, using a simple delimited text format.
  * @author Manoel Campos da Silva Filho
@@ -46,7 +44,7 @@ public class TextTable extends CsvTable {
 
     @Override
     public void printTitle() {
-        if(StringUtils.isNotBlank(getTitle())){
+        if(!getTitle().isBlank()){
             getPrintStream().println(getCentralizedString(getTitle()));
         }
     }
