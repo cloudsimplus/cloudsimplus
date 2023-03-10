@@ -213,25 +213,27 @@ public class UtilizationModelDynamic extends UtilizationModelAbstract {
         }
 
         currentUtilizationTime = time;
-        if(previousUtilizationTime != time) {
-            /*
-            Pass a copy of this current UtilizationModel to avoid it to be changed
-            and also to enable the developer to call the getUtilization() method from
-            his/her given utilizationUpdateFunction on such an instance,
-            without causing infinity loop. Without passing a UtilizationModel clone,
-            since the utilizationUpdateFunction function usually will call this current one,
-            that in turns calls the utilizationUpdateFunction to update the utilization progress,
-            it would lead to an infinity loop.
-            */
-            currentUtilization = utilizationUpdateFunction.apply(new UtilizationModelDynamic(this));
-            previousUtilizationTime = time;
-            if (currentUtilization <= 0) {
-                currentUtilization = 0;
-            }
+        if (previousUtilizationTime == time) {
+            return currentUtilization;
+        }
 
-            if (currentUtilization > maxResourceUtilization && maxResourceUtilization > 0) {
-                currentUtilization = maxResourceUtilization;
-            }
+        /*
+        Pass a copy of this current UtilizationModel to avoid it to be changed
+        and also to enable the developer to call the getUtilization() method from
+        his/her given utilizationUpdateFunction on such an instance,
+        without causing infinity loop. Without passing a UtilizationModel clone,
+        since the utilizationUpdateFunction function usually will call this current one,
+        that in turns calls the utilizationUpdateFunction to update the utilization progress,
+        it would lead to an infinity loop.
+        */
+        currentUtilization = utilizationUpdateFunction.apply(new UtilizationModelDynamic(this));
+        previousUtilizationTime = time;
+        if (currentUtilization <= 0) {
+            currentUtilization = 0;
+        }
+
+        if (currentUtilization > maxResourceUtilization && maxResourceUtilization > 0) {
+            currentUtilization = maxResourceUtilization;
         }
 
         return currentUtilization;
