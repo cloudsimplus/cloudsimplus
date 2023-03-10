@@ -38,6 +38,8 @@ import java.util.function.Function;
 
 /**
  * An abstract class for implementing {@link VerticalVmScaling}.
+ * <p>The constructors define a {@link ResourceScalingGradual}
+ * as the default {@link ResourceScaling}.</p>
  *
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 7.0.4
