@@ -19,13 +19,12 @@ public final class Regression {
     private Regression(){/**/}
 
     /**
-     * Creates a simple linear regression.
+     * {@return a new instance} of a simple linear regression.
      * @param x the independent variable
      * @param y the dependent variable
-     * @return
      */
     public static SimpleRegression newLinearRegression(final double[] x, final double[] y) {
-        final SimpleRegression regression = new SimpleRegression();
+        final var regression = new SimpleRegression();
         for (int i = 0; i < x.length; i++) {
             regression.addData(x[i], y[i]);
         }
@@ -33,23 +32,21 @@ public final class Regression {
     }
 
     /**
-     * Creates a a multiple linear regression.
+     * {@return a new instance} of a multiple linear regression.
      * @param x the independent variable
      * @param y the dependent variable
-     * @return
      */
     public static OLSMultipleLinearRegression newLinearRegression(final double[][] x, final double[] y) {
-        final OLSMultipleLinearRegression regression = new OLSMultipleLinearRegression();
+        final var regression = new OLSMultipleLinearRegression();
         regression.newSampleData(y, x);
         return regression;
     }
 
     /**
-     * Creates a weighted linear regression.
+     * {@return a new instance} of a weighted linear regression.
      * @param x the independent variable
      * @param y the dependent variable
      * @param weights the weights to apply to x and y
-     * @return
      */
     public static SimpleRegression newWeightedLinearRegression(
         final double[] x, final double[] y, final double[] weights)
@@ -74,47 +71,41 @@ public final class Regression {
     }
 
     /**
-     * Gets the Local Regression (LOESS) parameter estimates.
+     * {@return an array} containing the Local Regression (LOESS) parameter estimates.
      *
      * @param y the dependent variable
-     * @return the Loess parameter estimates
      * @see <a href="https://www.itl.nist.gov/div898/handbook/pmd/section1/pmd144.htm">LOESS</a>
      */
     public static double[] getLoessParameterEstimates(final double... y) {
         final double[] x = createIndependentArray(y.length);
-        return newWeightedLinearRegression(x, y, getTricubeWeights(y.length))
-                               .regress().getParameterEstimates();
+        final var regression = newWeightedLinearRegression(x, y, getTricubeWeights(y.length));
+        return regression.regress().getParameterEstimates();
     }
 
     /**
-     * Gets the robust LOESS parameter estimates.
-     *
+     * {@return an array} containing the robust LOESS parameter estimates.
      * @param y the dependent variable
-     * @return the robust loess parameter estimates
      */
     public static double[] getRobustLoessParameterEstimates(final double... y) {
         final double[] x = createIndependentArray(y.length);
-        final SimpleRegression tricubeRegression =
-                newWeightedLinearRegression(x, y, getTricubeWeights(y.length));
+        final var tricubeRegression = newWeightedLinearRegression(x, y, getTricubeWeights(y.length));
         final double[] residuals = new double[y.length];
         for (int i = 0; i < y.length; i++) {
             residuals[i] = y[i] - tricubeRegression.predict(x[i]);
         }
-        final SimpleRegression tricubeBySqrRegression =
-                newWeightedLinearRegression(x, y, getTricubeBisquareWeights(residuals));
+        final var tricubeBySqrRegression = newWeightedLinearRegression(x, y, getTricubeBisquareWeights(residuals));
 
         final double[] estimates = tricubeBySqrRegression.regress().getParameterEstimates();
         if (Double.isNaN(estimates[0]) || Double.isNaN(estimates[1])) {
             return tricubeRegression.regress().getParameterEstimates();
         }
+
         return estimates;
     }
 
     /**
-     * Gets the tricube weigths.
-     *
+     * {@return an array} containing the tricube weigths with n elements.
      * @param weightsNumber the number of weights
-     * @return an array of tricube weigths with n elements
      */
     private static double[] getTricubeWeights(final int weightsNumber) {
         final double[] weights = new double[weightsNumber];
@@ -129,10 +120,8 @@ public final class Regression {
     }
 
     /**
-     * Gets the tricube bisquare weigths.
-     *
+     * {@return an array} containing the tricube bisquare weigths.
      * @param residuals the residuals array
-     * @return the tricube bisquare weigths
      */
     private static double[] getTricubeBisquareWeights(final double... residuals) {
         final double[] weights = getTricubeWeights(residuals.length);
@@ -148,10 +137,8 @@ public final class Regression {
     }
 
     /**
-     * Computes correlation coefficients for a set of data.
-     *
+     * {@return the computed correlation coefficients} for a set of data.
      * @param data the data to compute the correlation coefficients
-     * @return the correlation coefficients
      */
     public static List<Double> correlationCoefficients(final double[][] data) {
         final int rows = data.length;
@@ -177,11 +164,10 @@ public final class Regression {
     }
 
     /**
-     * Creates an array representing the independent variable for
+     * {@return a new array} representing the independent variable for
      * computing a linear regression.
      *
      * @param length the length of the array to create
-     * @return
      */
     private static double[] createIndependentArray(final int length) {
         final double[] x = new double[length];
