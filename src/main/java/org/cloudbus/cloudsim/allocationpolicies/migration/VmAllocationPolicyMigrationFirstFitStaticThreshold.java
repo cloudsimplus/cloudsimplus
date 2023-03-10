@@ -7,6 +7,9 @@
  */
 package org.cloudbus.cloudsim.allocationpolicies.migration;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicy;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.selectionpolicies.VmSelectionPolicy;
@@ -30,6 +33,7 @@ import java.util.function.Predicate;
  * @since CloudSim Plus 7.2.0
  */
 public class VmAllocationPolicyMigrationFirstFitStaticThreshold extends VmAllocationPolicyMigrationStaticThreshold {
+    @Getter(AccessLevel.NONE) @Setter(AccessLevel.NONE)
     private int lastHostIndex;
 
     /**

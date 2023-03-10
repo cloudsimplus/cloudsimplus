@@ -8,6 +8,9 @@
 
 package org.cloudbus.cloudsim.resources;
 
+import lombok.Getter;
+import lombok.NonNull;
+
 import java.util.*;
 
 /**
@@ -42,11 +45,15 @@ public class SanStorage extends HarddriveStorage {
     private final SimpleStorage reservedStorage;
 
     /**
-     * @see #getBandwidth()
+     * The bandwidth of the SAN network (in Megabits/s).
      */
+    @Getter
     private double bandwidth;
 
-    /** @see #getNetworkLatency() */
+    /**
+     * The SAN's network latency (in seconds).
+     */
+    @Getter
     private double networkLatency;
 
     /** @see #getFileNameList() */
@@ -95,9 +102,7 @@ public class SanStorage extends HarddriveStorage {
      * @param file the file to be added
      * @return the time (in seconds) required to add the file
      */
-    public double addReservedFile(final File file) {
-        Objects.requireNonNull(file);
-
+    public double addReservedFile(@NonNull final File file) {
         if (!reservedStorage.isResourceAmountBeingUsed(file.getSize())) {
             throw new IllegalStateException("The file size wasn't previously reserved in order to add a reserved file.");
         }
@@ -124,8 +129,7 @@ public class SanStorage extends HarddriveStorage {
      * @return the time taken (in seconds) for adding the specified file or zero if the
      * file is invalid or there isn't available storage space.
      */
-    public double addFile(final List<File> list) {
-        Objects.requireNonNull(list);
+    public double addFile(@NonNull final List<File> list) {
         if (list.isEmpty()) {
             LOGGER.debug("{}.addFile(): File list is empty.", getName());
             return 0.0;
@@ -164,15 +168,6 @@ public class SanStorage extends HarddriveStorage {
     }
 
     /**
-     * Gets the bandwidth of the SAN network (in Megabits/s).
-     *
-     * @return the bandwidth (in Megabits/s)
-     */
-    public double getBandwidth() {
-        return bandwidth;
-    }
-
-    /**
      * Sets the bandwidth of the SAN network (in Megabits/s).
      *
      * @param bandwidth the bandwidth to set (in Megabits/s)
@@ -184,15 +179,6 @@ public class SanStorage extends HarddriveStorage {
         }
 
         this.bandwidth = bandwidth;
-    }
-
-    /**
-     * Gets the SAN's network latency (in seconds).
-     *
-     * @return the SAN's network latency (in seconds)
-     */
-    public double getNetworkLatency() {
-        return networkLatency;
     }
 
     /**
@@ -323,7 +309,7 @@ public class SanStorage extends HarddriveStorage {
      * @param file the file to compute the transfer time (where its size is defined in MByte)
      * @return the transfer time in seconds
      */
-    public double getTransferTime(final File file) {
+    public double getTransferTime(@NonNull final File file) {
         return getTransferTime(file.getSize());
     }
 
@@ -360,7 +346,7 @@ public class SanStorage extends HarddriveStorage {
      *
      * @param file the file to compute the total addition time
      */
-    private double getTotalFileAddTime(final File file) {
+    private double getTotalFileAddTime(@NonNull final File file) {
         final double seekTime = getSeekTime(file.getSize());
         final double transferTime = getTransferTime(file.getSize());
         return seekTime + transferTime;
@@ -414,26 +400,6 @@ public class SanStorage extends HarddriveStorage {
     }
 
     /**
-     * Checks whether a file is stored in the storage or not.
-     *
-     * @param file the file we are looking for
-     * @return true if the file is in the storage, false otherwise
-     */
-    public boolean contains(final File file) {
-        return file != null && contains(file.getName());
-    }
-
-    /**
-     * Checks whether a file exists in the storage or not.
-     *
-     * @param fileName the name of the file we are looking for
-     * @return true if the file is in the storage, false otherwise
-     */
-    public boolean contains(final String fileName) {
-        return fileNameList.contains(fileName);
-    }
-
-    /**
      * Renames a file on the storage. The time taken (in seconds) for renaming the specified file
      * can also be found using {@link File#getTransactionTime()}.
      *
@@ -441,7 +407,7 @@ public class SanStorage extends HarddriveStorage {
      * @param newName the new name of the file
      * @return true if the renaming succeeded, false otherwise
      */
-    public boolean renameFile(final File file, final String newName) {
+    public boolean renameFile(@NonNull final File file, final String newName) {
         //check whether the new filename is conflicting with existing ones or not
         if (contains(newName)) {
             return false;
@@ -457,5 +423,25 @@ public class SanStorage extends HarddriveStorage {
                 fileNameList.add(newName);
                 return fileFound;
             }).isPresent();
+    }
+
+    /**
+     * Checks whether a file is stored in the storage or not.
+     *
+     * @param file the file we are looking for
+     * @return true if the file is in the storage, false otherwise
+     */
+    public boolean contains(@NonNull final File file) {
+        return contains(file.getName());
+    }
+
+    /**
+     * Checks whether a file exists in the storage or not.
+     *
+     * @param fileName the name of the file we are looking for
+     * @return true if the file is in the storage, false otherwise
+     */
+    public boolean contains(@NonNull final String fileName) {
+        return fileNameList.contains(fileName);
     }
 }

@@ -108,11 +108,11 @@ public class CloudletBuilder implements Builder {
             final int cloudletId = initialId + createdCloudlets++;
             final Cloudlet cloudlet = cloudletCreationFunction.apply(length, pes)
                     .setFileSize(fileSize)
-                    .setOutputSize(outputSize)
-                    .setUtilizationModelCpu(utilizationModelCpu)
-                    .setUtilizationModelRam(utilizationModelRam)
-                    .setUtilizationModelBw(utilizationModelBw)
-                    .addOnFinishListener(onCloudletFinishListener);
+                    .setOutputSize(outputSize);
+            cloudlet.setUtilizationModelCpu(utilizationModelCpu);
+            cloudlet.setUtilizationModelRam(utilizationModelRam);
+            cloudlet.setUtilizationModelBw(utilizationModelBw);
+            cloudlet.addOnFinishListener(onCloudletFinishListener);
             cloudlet.setId(cloudletId);
             cloudlet.setBroker(broker);
             cloudlet.addRequiredFiles(requiredFiles);

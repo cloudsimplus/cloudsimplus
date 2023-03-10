@@ -23,6 +23,10 @@
  */
 package org.cloudsimplus.slametrics;
 
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.ToString;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,6 +40,7 @@ import java.util.List;
  *
  * @author raysaoliveira
  */
+@Getter @ToString
 public class SlaMetric {
     public static final SlaMetric NULL = new SlaMetric();
     private static final SlaMetricDimension DEFAULT_MIN_DIMENSION = new SlaMetricDimension(-1);
@@ -55,32 +60,19 @@ public class SlaMetric {
      * Creates an SLA metric
      * @param name the metric name
      */
-    public SlaMetric(final String name){
+    public SlaMetric(@NonNull final String name){
         this.name = name;
         this.dimensions = new ArrayList<>();
     }
 
-    public List<SlaMetricDimension> getDimensions() {
-        return dimensions;
-    }
-
-    public SlaMetric setDimensions(List<SlaMetricDimension> dimensions) {
+    public SlaMetric setDimensions(final List<SlaMetricDimension> dimensions) {
         this.dimensions = dimensions == null ? new ArrayList<>() : dimensions;
         return this;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public SlaMetric setName(String name) {
+    public SlaMetric setName(final String name) {
         this.name = name == null ? "" : name;
         return this;
-    }
-
-    @Override
-    public String toString() {
-        return "Metric{name = %s,  dimensions = %s}".formatted(name, dimensions);
     }
 
     /**

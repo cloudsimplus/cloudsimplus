@@ -10,6 +10,7 @@ package org.cloudbus.cloudsim.network.switches;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
+import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.core.CloudSimEntity;
 import org.cloudbus.cloudsim.core.CloudSimTag;
 import org.cloudbus.cloudsim.core.events.PredicateType;
@@ -254,38 +255,18 @@ public abstract class AbstractSwitch extends CloudSimEntity implements Switch {
     }
 
     @Override
-    public double getUplinkBandwidth() {
-        return uplinkBandwidth;
-    }
-
-    @Override
-    public final void setUplinkBandwidth(double uplinkBandwidth) {
+    public final void setUplinkBandwidth(final double uplinkBandwidth) {
         this.uplinkBandwidth = MathUtil.nonNegative(uplinkBandwidth, "uplinkBandwidth");
     }
 
     @Override
-    public double getDownlinkBandwidth() {
-        return downlinkBandwidth;
-    }
-
-    @Override
-    public final void setDownlinkBandwidth(double downlinkBandwidth) {
+    public final void setDownlinkBandwidth(final double downlinkBandwidth) {
         this.downlinkBandwidth = MathUtil.nonNegative(downlinkBandwidth, "downlinkBandwidth");
-    }
-
-    @Override
-    public int getPorts() {
-        return ports;
     }
 
     @Override
     public final void setPorts(final int ports) {
         this.ports = MathUtil.nonNegative(ports, "ports");
-    }
-
-    @Override
-    public double getSwitchingDelay() {
-        return switchingDelay;
     }
 
     @Override

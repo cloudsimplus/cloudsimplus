@@ -23,6 +23,10 @@
  */
 package org.cloudsimplus.heuristics;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.Setter;
 import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
 
 import java.lang.reflect.InvocationTargetException;
@@ -38,24 +42,29 @@ import java.lang.reflect.InvocationTargetException;
  *            to find a satisfying solution (defined by a stop criteria)
  * @since CloudSim Plus 1.0
  */
+@Getter
 public abstract class HeuristicAbstract<S extends HeuristicSolution<?>>  implements Heuristic<S> {
 	/**
 	 * Reference to the generic class that will be used to instantiate objects.
 	 */
+    @Getter(AccessLevel.NONE)
     private final Class<S> solutionClass;
 
+    /**
+     * A random number generator
+     */
 	private final ContinuousDistribution random;
 
-	/** @see #getSearchesByIteration() */
+    /**
+     * The number of neighborhood searches by each iteration of the heuristic.
+     */
+    @Setter
     private int searchesByIteration;
 
-	/** @see #getBestSolutionSoFar() */
     private S bestSolutionSoFar;
 
-	/** @see #getNeighborSolution() */
     private S neighborSolution;
 
-	/** @see #getSolveTime() */
 	private double solveTime;
 
 	/**
@@ -64,17 +73,12 @@ public abstract class HeuristicAbstract<S extends HeuristicSolution<?>>  impleme
 	 * @param random a random number generator
 	 * @param solutionClass reference to the generic class that will be used to instantiate heuristic solutions
 	 */
-	HeuristicAbstract(final ContinuousDistribution random, final Class<S> solutionClass){
-		this.solutionClass = solutionClass;
-		this.random = random;
+	HeuristicAbstract(@NonNull final ContinuousDistribution random, @NonNull final Class<S> solutionClass){
+        this.random = random;
+        this.solutionClass = solutionClass;
 		this.searchesByIteration = 1;
 		setBestSolutionSoFar(newSolutionInstance());
 		setNeighborSolution(bestSolutionSoFar);
-	}
-
-	@Override
-	public double getSolveTime() {
-		return solveTime;
 	}
 
 	/**
@@ -83,13 +87,6 @@ public abstract class HeuristicAbstract<S extends HeuristicSolution<?>>  impleme
 	 */
 	protected void setSolveTime(final double solveTime) {
 		this.solveTime = solveTime;
-	}
-
-	/**
-	 * @return a random number generator
-	 */
-	protected ContinuousDistribution getRandom(){
-		return random;
 	}
 
 	private S newSolutionInstance() {
@@ -139,21 +136,11 @@ public abstract class HeuristicAbstract<S extends HeuristicSolution<?>>  impleme
         }
     }
 
-    @Override
-	public S getBestSolutionSoFar() {
-	    return bestSolutionSoFar;
-	}
-
-	@Override
-	public S getNeighborSolution() {
-	    return neighborSolution;
-	}
-
-	/**
-	 * Sets a solution as the current one.
-	 * @param solution the solution to set as the current one.
-	 */
-	protected final void setBestSolutionSoFar(final S solution) {
+    /**
+     * Sets a solution as the current one.
+     * @param solution the solution to set as the current one.
+     */
+    protected final void setBestSolutionSoFar(final S solution) {
         this.bestSolutionSoFar = solution;
     }
 
@@ -165,19 +152,4 @@ public abstract class HeuristicAbstract<S extends HeuristicSolution<?>>  impleme
         this.neighborSolution = solution;
     }
 
-    /**
-     * Gets the number of neighborhood searches by each iteration of the heuristic.
-     * @return
-     */
-	public int getSearchesByIteration() {
-        return searchesByIteration;
-    }
-
-    /**
-     * Sets the number of neighborhood searches by each iteration of the heuristic.
-     * @param searches the number of neighborhood searches to set
-     */
-	public void setSearchesByIteration(final int searches) {
-        this.searchesByIteration = searches;
-    }
 }

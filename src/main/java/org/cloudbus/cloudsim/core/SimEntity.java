@@ -6,6 +6,7 @@
  */
 package org.cloudbus.cloudsim.core;
 
+import lombok.NonNull;
 import org.cloudbus.cloudsim.core.events.SimEvent;
 
 /**
@@ -55,7 +56,7 @@ public interface SimEntity extends Nameable, Runnable, Comparable<SimEntity> {
      *
      * @param state the new state to set
      */
-    SimEntity setState(State state);
+    void setState(@NonNull State state);
 
     /**
      * Checks if the entity already was started or not.
@@ -80,13 +81,6 @@ public interface SimEntity extends Nameable, Runnable, Comparable<SimEntity> {
      * @return
      */
     Simulation getSimulation();
-
-    /**
-     * Sets the CloudSim instance that represents the simulation the Entity belongs to.
-     * @param simulation The simulation instance the Entity is related to
-     * @return
-     */
-    SimEntity setSimulation(Simulation simulation);
 
     /**
      * Processes events or services that are available for the entity. This

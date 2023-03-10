@@ -7,6 +7,7 @@
  */
 package org.cloudbus.cloudsim.datacenters;
 
+import lombok.NonNull;
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicy;
 import org.cloudbus.cloudsim.allocationpolicies.migration.VmAllocationPolicyMigration;
 import org.cloudbus.cloudsim.core.SimEntity;
@@ -203,6 +204,13 @@ public interface Datacenter extends SimEntity, PowerAware<PowerModelDatacenter>,
      * @return the characteristics
      */
     DatacenterCharacteristics getCharacteristics();
+
+
+    /**
+     * Sets the Datacenter characteristics.
+     * @param characteristics the characteristics to set
+     */
+    void setCharacteristics(DatacenterCharacteristics characteristics);
 
     /**
      * Gets the storage of the Datacenter.

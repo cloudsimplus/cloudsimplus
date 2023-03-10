@@ -1,5 +1,7 @@
 package org.cloudbus.cloudsim.core.events;
 
+import lombok.Getter;
+
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
@@ -31,8 +33,27 @@ public class DeferredQueue implements EventQueue {
      */
     private double maxTime = -1;
 
+    /**
+     * Keeps track of the total number of events
+     * added to the tail of the queue,
+     * just for debug purpose.
+     */
+    @Getter
     private int addedToTail;
+
+    /**
+     * Keeps track of the total number of events
+     * added to the middle of the queue,
+     * just for debug purpose.
+     */
+    @Getter
     private int addedToMiddle;
+
+    /**
+     * Keeps track of the maximum number of events
+     * added to the queue, just for debug purpose.
+     */
+    @Getter
     private int maxSize;
 
     /**
@@ -145,31 +166,5 @@ public class DeferredQueue implements EventQueue {
         }
 
         return eventList.get(0);
-    }
-
-    /**
-     * Keeps track of the total number of events
-     * added to the tail of the queue,
-     * just for debug purpose.
-     */
-    public int getAddedToTail() {
-        return addedToTail;
-    }
-
-    /**
-     * Keeps track of the total number of events
-     * added to the middle of the queue,
-     * just for debug purpose.
-     */
-    public int getAddedToMiddle() {
-        return addedToMiddle;
-    }
-
-    /**
-     * Keeps track of the maximum number of events
-     * added to the queue, just for debug purpose.
-     */
-    public int getMaxSize() {
-        return maxSize;
     }
 }

@@ -8,6 +8,7 @@
 
 package org.cloudbus.cloudsim.provisioners;
 
+import lombok.Getter;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.resources.ResourceManageable;
 import org.cloudbus.cloudsim.vms.Vm;
@@ -26,9 +27,7 @@ import java.util.function.Function;
  * @since 3.0.4
  */
 public abstract class ResourceProvisionerAbstract implements ResourceProvisioner {
-    /**
-     * @see #getPmResource()
-     */
+    @Getter
     private ResourceManageable pmResource;
 
     /** @see #getVmResourceFunction() */
@@ -57,11 +56,6 @@ public abstract class ResourceProvisionerAbstract implements ResourceProvisioner
     @Override
     public long getAllocatedResourceForVm(final Vm vm) {
         return vmResourceFunction.apply(vm).getAllocatedResource();
-    }
-
-    @Override
-    public ResourceManageable getPmResource() {
-        return pmResource;
     }
 
     @Override

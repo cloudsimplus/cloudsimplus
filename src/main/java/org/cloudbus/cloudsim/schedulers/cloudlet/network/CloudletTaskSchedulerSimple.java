@@ -7,6 +7,9 @@
  */
 package org.cloudbus.cloudsim.schedulers.cloudlet.network;
 
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.Setter;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.network.*;
 import org.cloudbus.cloudsim.core.CloudSimTag;
@@ -35,7 +38,7 @@ import java.util.stream.Collectors;
 public class CloudletTaskSchedulerSimple implements CloudletTaskScheduler {
     private static final Logger LOGGER = LoggerFactory.getLogger(CloudletTaskSchedulerSimple.class.getSimpleName());
 
-    /** @see #getVm() */
+    @Getter @Setter
     private Vm vm;
 
     /** @see #getVmPacketsToSend() */
@@ -96,8 +99,7 @@ public class CloudletTaskSchedulerSimple implements CloudletTaskScheduler {
     }
 
     @Override
-    public boolean isTimeToUpdateCloudletProcessing(final Cloudlet cloudlet) {
-        Objects.requireNonNull(cloudlet);
+    public boolean isTimeToUpdateCloudletProcessing(@NonNull final Cloudlet cloudlet) {
         if(cloudlet.isFinished()){
             return false;
         }
@@ -202,16 +204,6 @@ public class CloudletTaskSchedulerSimple implements CloudletTaskScheduler {
 
         final var dc = getVm().getHost().getDatacenter();
         dc.schedule(dc, dc.getSimulation().getMinTimeBetweenEvents(), CloudSimTag.VM_UPDATE_CLOUDLET_PROCESSING);
-    }
-
-    @Override
-    public Vm getVm() {
-        return vm;
-    }
-
-    @Override
-    public void setVm(final Vm vm) {
-        this.vm = Objects.requireNonNull(vm);
     }
 
     @Override

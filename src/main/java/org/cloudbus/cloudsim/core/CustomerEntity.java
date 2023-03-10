@@ -78,7 +78,7 @@ public interface CustomerEntity extends UniquelyIdentifiable, ChangeableId, Dela
      *
      * @param time the time to set
      */
-    CustomerEntity setArrivedTime(double time);
+    void setArrivedTime(double time);
 
     /**
      * Gets the absolute time the entity was created into a Datacenter.

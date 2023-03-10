@@ -38,10 +38,10 @@ public class CloudletSimpleTest {
         utilizationModelBw = new UtilizationModelStochastic();
         cloudlet = new CloudletSimple(0, CloudletTestUtil.CLOUDLET_LENGTH, PES_NUMBER);
         cloudlet.setFileSize(CloudletTestUtil.CLOUDLET_FILE_SIZE)
-                .setOutputSize(CloudletTestUtil.CLOUDLET_OUTPUT_SIZE)
-                .setUtilizationModelCpu(utilizationModelCpu)
-                .setUtilizationModelRam(utilizationModelRam)
-                .setUtilizationModelBw(utilizationModelBw);
+                .setOutputSize(CloudletTestUtil.CLOUDLET_OUTPUT_SIZE);
+        cloudlet.setUtilizationModelCpu(utilizationModelCpu);
+        cloudlet.setUtilizationModelRam(utilizationModelRam);
+        cloudlet.setUtilizationModelBw(utilizationModelBw);
     }
 
     @Test

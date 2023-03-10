@@ -23,6 +23,8 @@
  */
 package org.cloudbus.cloudsim.vms;
 
+import lombok.Getter;
+import lombok.NonNull;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.resources.Resource;
 import org.cloudbus.cloudsim.schedulers.MipsShare;
@@ -47,13 +49,17 @@ import static java.util.Objects.requireNonNull;
  * @since CloudSim Plus 4.6.0
  */
 public class VmGroup extends VmSimple {
+    /**
+     * The List of VMs belonging to this group.
+     */
+    @Getter
     private final List<Vm> vmList;
 
     /**
      * Creates a VmGroup for a List of VMs.
      * @param vmList the List of VMs to create the group
      */
-    public VmGroup(final List<Vm> vmList) {
+    public VmGroup(@NonNull final List<Vm> vmList) {
         super(getMaxMips(vmList), getTotalPes(vmList));
 
         this.vmList = vmList;
@@ -163,14 +169,6 @@ public class VmGroup extends VmSimple {
     private void setTotalStorage() {
         final long total = vmList.stream().map(Vm::getStorage).mapToLong(Resource::getCapacity).sum();
         setSize(total);
-    }
-
-    /**
-     * Gets the List of VMs belonging to this group.
-     * @return
-     */
-    public List<Vm> getVmList() {
-        return vmList;
     }
 
     /**

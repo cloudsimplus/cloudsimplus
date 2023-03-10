@@ -67,7 +67,7 @@ public interface DatacenterCharacteristics extends Identifiable {
      * Sets the VMM.
      * @param vmm the new VMM
      */
-    DatacenterCharacteristics setVmm(String vmm);
+    void setVmm(String vmm);
 
     /**
      * Gets the architecture of the Datacenter.
@@ -81,7 +81,7 @@ public interface DatacenterCharacteristics extends Identifiable {
      *
      * @param architecture the new architecture
      */
-    DatacenterCharacteristics setArchitecture(String architecture);
+    void setArchitecture(String architecture);
 
     /**
      * Gets the Operating System (OS) used by the Hosts in the Datacenter.
@@ -95,7 +95,7 @@ public interface DatacenterCharacteristics extends Identifiable {
      *
      * @param os the new Operating System (OS)
      */
-    DatacenterCharacteristics setOs(String os);
+    void setOs(String os);
 
     /**
      * Gets the total MIPS rating, which is the sum of MIPS rating of all Hosts in
@@ -138,7 +138,7 @@ public interface DatacenterCharacteristics extends Identifiable {
      *
      * @param costPerBw the cost ($) to set
      */
-    DatacenterCharacteristics setCostPerBw(double costPerBw);
+    void setCostPerBw(double costPerBw);
 
     /**
      * Get the monetary cost to use each Megabyte of RAM in the Datacenter.
@@ -152,7 +152,7 @@ public interface DatacenterCharacteristics extends Identifiable {
      *
      * @param costPerMem cost ($) to use RAM
      */
-    DatacenterCharacteristics setCostPerMem(double costPerMem);
+    void setCostPerMem(double costPerMem);
 
     /**
      * Gets the monetary cost per second of CPU for using the Hosts in the Datacenter.
@@ -166,7 +166,7 @@ public interface DatacenterCharacteristics extends Identifiable {
      *
      * @param costPerSecond the new cost ($) per second
      */
-    DatacenterCharacteristics setCostPerSecond(double costPerSecond);
+    void setCostPerSecond(double costPerSecond);
 
     /**
      * Get the monetary cost to use each Megabyte of storage in the Datacenter.
@@ -180,5 +180,5 @@ public interface DatacenterCharacteristics extends Identifiable {
      *
      * @param costPerStorage cost ($) to use storage
      */
-    DatacenterCharacteristics setCostPerStorage(double costPerStorage);
+    void setCostPerStorage(double costPerStorage);
 }

@@ -8,6 +8,7 @@
 
 package org.cloudbus.cloudsim.selectionpolicies;
 
+import lombok.NonNull;
 import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
 import org.cloudbus.cloudsim.distributions.UniformDistr;
 import org.cloudbus.cloudsim.hosts.Host;
@@ -51,9 +52,9 @@ public class VmSelectionPolicyRandomSelection implements VmSelectionPolicy {
      *
      * @param rand a Pseudo Random Number Generator (PRNG) to randomly select VMs to migrate.
      */
-    public VmSelectionPolicyRandomSelection(final ContinuousDistribution rand){
+    public VmSelectionPolicyRandomSelection(@NonNull final ContinuousDistribution rand){
         super();
-        this.rand = Objects.requireNonNull(rand);
+        this.rand = rand;
     }
 
 	@Override

@@ -23,6 +23,9 @@
  */
 package org.cloudsimplus.faultinjection;
 
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.Setter;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.core.AbstractMachine;
@@ -159,8 +162,9 @@ public class HostFaultInjection extends CloudSimEntity {
     private static final Logger LOGGER = LoggerFactory.getLogger(HostFaultInjection.class.getSimpleName());
 
     /**
-     * @see #getLastFailedHost()
+     * {@return the last failed Host} or {@link Host#NULL} if not Host has failed yet.
      */
+    @Getter
     private Host lastFailedHost;
 
     /**
@@ -169,8 +173,9 @@ public class HostFaultInjection extends CloudSimEntity {
     private int lastFailedPesNumber;
 
     /**
-     * @see #getDatacenter()
+     * The datacenter in which failures will be injected.
      */
+    @Getter
     private Datacenter datacenter;
 
     /**
@@ -194,8 +199,11 @@ public class HostFaultInjection extends CloudSimEntity {
     private final StatisticalDistribution faultArrivalHoursGenerator;
 
     /**
-     * The number of host failures that have happened in the simulation.
+     * The total number of faults happened for existing hosts.
+     * This isn't the total number of failed hosts because one
+     * host may fail multiple times.
      */
+    @Getter
     private int hostFaultsNumber;
 
     /**
@@ -219,7 +227,12 @@ public class HostFaultInjection extends CloudSimEntity {
      */
     private final Map<DatacenterBroker, Integer> vmFaultsByBroker;
 
-    /** @see #getMaxTimeToFailInHours() */
+    /**
+     * The maximum time to generate a failure (in hours).
+     * After that time, no failure will be generated.
+     * @see #getMaxTimeToFailInSecs()
+     */
+    @Getter @Setter
     private double maxTimeToFailInHours;
 
     /**
@@ -666,16 +679,6 @@ public class HostFaultInjection extends CloudSimEntity {
     }
 
     /**
-     * Gets the total number of faults happened for existing hosts.
-     * This isn't the total number of failed hosts because one
-     * host may fail multiple times.
-     * @return
-     */
-    public int getHostFaultsNumber() {
-        return hostFaultsNumber;
-    }
-
-    /**
      * Gets the total number of faults which affected all VMs from any broker.
      * @return
      * @see #getTotalFaultsNumber(DatacenterBroker)
@@ -692,8 +695,7 @@ public class HostFaultInjection extends CloudSimEntity {
      * @return
      * @see #getTotalFaultsNumber()
      */
-    public long getTotalFaultsNumber(final DatacenterBroker broker) {
-        Objects.requireNonNull(broker);
+    public long getTotalFaultsNumber(@NonNull final DatacenterBroker broker) {
         return vmFaultsByBroker.getOrDefault(broker, 0);
     }
 
@@ -858,21 +860,12 @@ public class HostFaultInjection extends CloudSimEntity {
     }
 
     /**
-     * Gets the datacenter in which failures will be injected.
-     *
-     * @return
-     */
-    public Datacenter getDatacenter() {
-        return datacenter;
-    }
-
-    /**
      * Sets the datacenter in which failures will be injected.
      *
      * @param datacenter the datacenter to set
      */
-    protected final void setDatacenter(final Datacenter datacenter) {
-        this.datacenter = requireNonNull(datacenter);
+    protected final void setDatacenter(@NonNull final Datacenter datacenter) {
+        this.datacenter = datacenter;
     }
 
     /**
@@ -885,18 +878,8 @@ public class HostFaultInjection extends CloudSimEntity {
      * @param broker the broker to set the VM cloner Function to
      * @param cloner the {@link VmCloner} to set
      */
-    public void addVmCloner(final DatacenterBroker broker, final VmCloner cloner) {
-        this.vmClonerMap.put(requireNonNull(broker), requireNonNull(cloner));
-    }
-
-    /**
-     * Gets the last Host for which a failure was injected.
-     *
-     * @return the last failed Host or {@link Host#NULL} if not Host has failed
-     * yet.
-     */
-    public Host getLastFailedHost() {
-        return lastFailedHost;
+    public void addVmCloner(@NonNull final DatacenterBroker broker, @NonNull final VmCloner cloner) {
+        this.vmClonerMap.put(broker, cloner);
     }
 
     /**
@@ -909,30 +892,11 @@ public class HostFaultInjection extends CloudSimEntity {
     }
 
     /**
-     * Gets the maximum time to generate a failure (in hours).
-     * After that time, no failure will be generated.
-     * @see #getMaxTimeToFailInSecs()
-     */
-    public double getMaxTimeToFailInHours() {
-        return maxTimeToFailInHours;
-    }
-
-    /**
      * Gets the maximum time to generate a failure (in seconds).
      * After that time, no failure will be generated.
      * @see #getMaxTimeToFailInHours()
      */
     private double getMaxTimeToFailInSecs() {
         return maxTimeToFailInHours *3600;
-    }
-
-    /**
-     * Sets the maximum time to generate a failure (in hours).
-     * After that time, no failure will be generated.
-     *
-     * @param maxTimeToFailInHours the maximum time to set (in hours)
-     */
-    public void setMaxTimeToFailInHours(final double maxTimeToFailInHours) {
-        this.maxTimeToFailInHours = maxTimeToFailInHours;
     }
 }

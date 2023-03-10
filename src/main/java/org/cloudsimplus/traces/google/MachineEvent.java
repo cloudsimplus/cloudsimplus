@@ -23,6 +23,9 @@
  */
 package org.cloudsimplus.traces.google;
 
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisioner;
 import org.cloudbus.cloudsim.resources.Pe;
@@ -54,55 +57,26 @@ import java.util.function.Function;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 4.0.0
  */
+@Getter @Setter @Builder
 public final class MachineEvent extends MachineDataBase {
-    private double timestamp;
-    private long ram;
-    private int cpuCores;
-
     /**
-     * Gets the actual RAM capacity to be assigned to a Host,
-     * according the {@link GoogleMachineEventsTraceReader#getMaxRamCapacity()}.
-     *
-     * @return
-     * @see MachineEventField#RAM_CAPACITY
-     */
-    public long getRam(){
-        return ram;
-    }
-
-    MachineEvent setRam(final long ram){
-        this.ram = ram;
-        return this;
-    }
-
-    /**
-     * Gets the actual number of {@link Pe}s (CPU cores) to be assigned to a Host,
-     * according the {@link GoogleMachineEventsTraceReader#getMaxCpuCores()}.
-     *
-     * @return
-     * @see MachineEventField#CPU_CAPACITY
-     */
-    public int getCpuCores() {
-        return cpuCores;
-    }
-
-    /* default */ MachineEvent setCpuCores(final int cpuCores) {
-        this.cpuCores = cpuCores;
-        return this;
-    }
-
-    /**
-     * Gets the time the event happened (converted to seconds).
-     *
-     * @return
+     * the time the event happened (converted to seconds).
      * @see MachineEventField#TIMESTAMP
      */
-    public double getTimestamp() {
-        return timestamp;
-    }
+    private double timestamp;
 
-    /* default */ MachineEvent setTimestamp(final double timestamp) {
-        this.timestamp = timestamp;
-        return this;
-    }
+    /**
+     * The actual RAM capacity to be assigned to a Host,
+     * according the {@link GoogleMachineEventsTraceReader#getMaxRamCapacity()}.
+     * @see MachineEventField#RAM_CAPACITY
+     */
+    private long ram;
+
+    /**
+     * The actual number of {@link Pe}s (CPU cores) to be assigned to a Host,
+     * according the {@link GoogleMachineEventsTraceReader#getMaxCpuCores()}.
+     *
+     * @see MachineEventField#CPU_CAPACITY
+     */
+    private int cpuCores;
 }

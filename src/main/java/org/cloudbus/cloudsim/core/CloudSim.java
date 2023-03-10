@@ -7,6 +7,9 @@
  */
 package org.cloudbus.cloudsim.core;
 
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.Setter;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.core.events.*;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
@@ -45,14 +48,13 @@ public class CloudSim implements Simulation {
 
     private final CircularTimeQueue clockQueue;
 
-    /** @see #getNetworkTopology() */
+    @NonNull @Getter @Setter
     private NetworkTopology networkTopology;
 
-    /**
-     * The Cloud Information Service (CIS) entity.
-     */
+    @Getter
     private final CloudInformationService cis;
 
+    @Getter
     private final Calendar calendar;
 
     /**
@@ -60,6 +62,7 @@ public class CloudSim implements Simulation {
      */
     private double terminationTime = -1;
 
+    @Getter @Setter
     private double lastCloudletProcessingUpdate;
 
     /**
@@ -75,7 +78,7 @@ public class CloudSim implements Simulation {
      */
     private double newTerminationTime = -1;
 
-    /** @see #getMinTimeBetweenEvents() */
+    @Getter
     private final double minTimeBetweenEvents;
 
     private final List<CloudSimEntity> entityList;
@@ -93,7 +96,7 @@ public class CloudSim implements Simulation {
     /** @see #clock() */
     private double clock;
 
-    /** @see #isRunning() */
+    @Getter
     private boolean running;
 
     /**
@@ -103,7 +106,7 @@ public class CloudSim implements Simulation {
      */
     private final Map<SimEntity, Predicate<SimEvent>> waitPredicates;
 
-    /** @see #isPaused() */
+    @Getter
     private boolean paused;
 
     /**
@@ -112,10 +115,10 @@ public class CloudSim implements Simulation {
      */
     private double pauseAt = -1;
 
-    /** @see #isAbortRequested() */
+    @Getter
     private boolean abortRequested;
 
-    /** @see #isAborted() */
+    @Getter
     private boolean aborted;
 
     /**
@@ -383,29 +386,6 @@ public class CloudSim implements Simulation {
 
         terminationTime = time;
         return true;
-    }
-
-    /**
-     * Gets the time defined to terminate the simulation or -1 if it was not set.
-     * @return
-     */
-    public double getTerminationTime(){
-        return terminationTime;
-    }
-
-    @Override
-    public double getMinTimeBetweenEvents() {
-        return minTimeBetweenEvents;
-    }
-
-    @Override
-    public Calendar getCalendar() {
-        return calendar;
-    }
-
-    @Override
-    public CloudInformationService getCloudInfoService() {
-        return cis;
     }
 
     @Override
@@ -774,11 +754,6 @@ public class CloudSim implements Simulation {
     }
 
     @Override
-    public boolean isRunning() {
-        return running;
-    }
-
-    @Override
     public boolean pause() {
         return pause(clock);
     }
@@ -901,16 +876,6 @@ public class CloudSim implements Simulation {
     }
 
     @Override
-    public boolean isAborted() {
-        return aborted;
-    }
-
-    @Override
-    public boolean isPaused() {
-        return paused;
-    }
-
-    @Override
     public final Simulation addOnSimulationPauseListener(final EventListener<EventInfo> listener) {
         this.onSimulationPauseListeners.add(requireNonNull(listener));
         return this;
@@ -949,26 +914,6 @@ public class CloudSim implements Simulation {
         return onClockTickListeners.remove(requireNonNull(listener));
     }
 
-    @Override
-    public NetworkTopology getNetworkTopology() {
-        return networkTopology;
-    }
-
-    @Override
-    public void setNetworkTopology(final NetworkTopology networkTopology) {
-        this.networkTopology = networkTopology;
-    }
-
-    @Override
-    public double getLastCloudletProcessingUpdate() {
-        return lastCloudletProcessingUpdate;
-    }
-
-    @Override
-    public void setLastCloudletProcessingUpdate(final double lastCloudletProcessingUpdate) {
-        this.lastCloudletProcessingUpdate = lastCloudletProcessingUpdate;
-    }
-
     /**
      * Gets the maximum number of events that have ever existed at the same time
      * inside the {@link FutureQueue}.
@@ -980,14 +925,5 @@ public class CloudSim implements Simulation {
     /** Gets the total number of events generated in the {@link FutureQueue} */
     public long getGeneratedEventsNumber() {
         return future.getSerial();
-    }
-
-    /**
-     * Indicates if an abrupt termination was requested.
-     * @see #abort()
-     */
-    @Override
-    public boolean isAbortRequested() {
-        return abortRequested;
     }
 }

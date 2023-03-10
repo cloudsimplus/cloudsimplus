@@ -46,9 +46,10 @@ public interface TraceReader {
      * Sets the regex defining how fields are delimited in the trace file.
      * Usually, this can be just a String with a single character such as
      * a space, comma or semi-colon or tab (\t).
+     *
      * @param fieldDelimiterRegex the field separator regex to set
      */
-    TraceReader setFieldDelimiterRegex(String fieldDelimiterRegex);
+    void setFieldDelimiterRegex(String fieldDelimiterRegex);
 
     /**
      * Gets the maximum number of lines of the workload reader that will be read.

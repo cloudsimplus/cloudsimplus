@@ -23,6 +23,9 @@
  */
 package org.cloudsimplus.autoscaling;
 
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.Setter;
 import org.cloudbus.cloudsim.vms.Vm;
 
 import java.util.Objects;
@@ -36,20 +39,12 @@ import java.util.Objects;
  */
 public abstract class VmScalingAbstract implements VmScaling {
     private double lastProcessingTime;
+
+    @Getter @Setter @NonNull
     private Vm vm;
 
     protected VmScalingAbstract() {
         this.vm = Vm.NULL;
-    }
-
-    @Override
-    public Vm getVm() {
-        return vm;
-    }
-
-    @Override
-    public void setVm(final Vm vm) {
-        this.vm = Objects.requireNonNull(vm);
     }
 
     /**

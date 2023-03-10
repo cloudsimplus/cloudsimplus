@@ -23,6 +23,9 @@
  */
 package org.cloudsimplus.builders.tables;
 
+import lombok.Getter;
+import lombok.NonNull;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
@@ -46,6 +49,7 @@ public abstract class TableBuilderAbstract<T> {
      */
     private List<ColumnMapping<T>> colsMappings;
 
+    @Getter
     private Table table;
 
     /**
@@ -87,10 +91,6 @@ public abstract class TableBuilderAbstract<T> {
         return this;
     }
 
-    protected Table getTable() {
-        return table;
-    }
-
     /**
      * Access a column at a given position in order to perform some configuration on it.
      * @param index index of the column to access
@@ -98,8 +98,7 @@ public abstract class TableBuilderAbstract<T> {
      *                 The consumer should provide the code you want to be performed over that column.
      * @return this TableBuilder object
      */
-    public final TableBuilderAbstract<T> column(final int index, final Consumer<TableColumn> consumer){
-        requireNonNull(consumer);
+    public final TableBuilderAbstract<T> column(final int index, @NonNull final Consumer<TableColumn> consumer){
         consumer.accept(table.getColumns().get(index));
         return this;
     }
@@ -110,8 +109,8 @@ public abstract class TableBuilderAbstract<T> {
      * @param table the  {@link Table} to set
      * @return
      */
-    protected final TableBuilderAbstract<T> setTable(final Table table) {
-        this.table = requireNonNull(table);
+    protected final TableBuilderAbstract<T> setTable(@NonNull final Table table) {
+        this.table = table;
         return this;
     }
 
@@ -133,7 +132,7 @@ public abstract class TableBuilderAbstract<T> {
      * @param index        the position to insert the column.
      * @return
      */
-    public TableBuilderAbstract<T> addColumn(final TableColumn col, final Function<T, Object> dataFunction, final int index){
+    public TableBuilderAbstract<T> addColumn(@NonNull final TableColumn col, @NonNull final Function<T, Object> dataFunction, final int index){
         colsMappings.add(new ColumnMapping<>(col, dataFunction, index));
         return this;
     }

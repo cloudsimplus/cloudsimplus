@@ -23,6 +23,9 @@
  */
 package org.cloudbus.cloudsim.brokers;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudsimplus.listeners.EventListener;
 
@@ -35,6 +38,7 @@ import org.cloudsimplus.listeners.EventListener;
  * @author sohamchari
  * @since CloudSim Plus 7.3.1
  */
+@Getter @Setter
 public class VmCreation {
 
     /**
@@ -42,16 +46,38 @@ public class VmCreation {
      */
     public static final int DEF_CURRENT_VM_CREATION_RETRIES = 5;
 
-    /** @see #getRetryDelay() */
+    /**
+     * A delay (in seconds) for the broker to retry allocating VMs
+     * that couldn't be placed due to lack of suitable active Hosts.
+     *
+     * <ul>
+     *  <li>A value larger than zero indicates the broker will retry
+     *  to place failed VM as soon as new VMs or Cloudlets
+     *  are submitted or after the given delay.</li>
+     *  <li>otherwise, indicates failed VMs will be just added to the
+     *  {@link DatacenterBroker#getVmFailedList()} and the user simulation have to deal with it.
+     *  If the VM has an {@link Vm#addOnCreationFailureListener(EventListener) OnCreationFailureListener},
+     *  it will be notified about the failure.</li>
+     * </ul>
+     */
     private double retryDelay;
 
-    /** @see #getMaxRetries() */
+    /**
+     * The maximum number of times the broker will try to find a host to create (place) the VM.
+     */
     private int maxRetries;
 
-    /** @see #getRetries() */
+    /**
+     * The current number of times failed VMs were tried to be recreated.
+     * @see #getMaxRetries()
+     */
+    @Setter(AccessLevel.NONE)
     private int retries;
 
-    /** @see #getCreationRequests() */
+    /**
+     * The number of VM creation requests considering all submitted VMs.
+     */
+    @Setter(AccessLevel.NONE)
     private int creationRequests;
 
     /**
@@ -82,61 +108,6 @@ public class VmCreation {
     }
 
     /**
-     * Gets a delay (in seconds) for the broker to retry allocating VMs
-     * that couldn't be placed due to lack of suitable active Hosts.
-     *
-     * @return
-     * <ul>
-     *  <li>a value larger than zero to indicate the broker will retry
-     *  to place failed VM as soon as new VMs or Cloudlets
-     *  are submitted or after the given delay.</li>
-     *  <li>otherwise, to indicate failed VMs will be just added to the
-     *  {@link DatacenterBroker#getVmFailedList()} and the user simulation have to deal with it.
-     *  If the VM has an {@link Vm#addOnCreationFailureListener(EventListener) OnCreationFailureListener},
-     *  it will be notified about the failure.</li>
-     * </ul>
-     */
-    public double getRetryDelay() {
-        return retryDelay;
-    }
-
-    /**
-     * Sets a delay (in seconds) for the broker to retry allocating VMs
-     * that couldn't be placed due to lack of suitable active Hosts.
-     *
-     * Setting the attribute as:
-     * <ul>
-     *  <li>larger than zero, the broker will retry to place failed VM as soon as new VMs or Cloudlets
-     *  are submitted or after the given delay.</li>
-     *  <li>otherwise, failed VMs will be just added to the {@link DatacenterBroker#getVmFailedList()}
-     *  and the user simulation have to deal with it.
-     *  If the VM has an {@link Vm#addOnCreationFailureListener(EventListener) OnCreationFailureListener},
-     *  it will be notified about the failure.</li>
-     * </ul>
-     * @param retryDelay the value to set
-     */
-    public void setRetryDelay(final double retryDelay) {
-        this.retryDelay = retryDelay;
-    }
-
-    /**
-     * Gets the maximum number of times the broker will try to find a host to create (place) the VM.
-     * @return
-     * @see #getRetries()
-     */
-    public int getMaxRetries() {
-        return maxRetries;
-    }
-
-    /**
-     * Sets the maximum number of times the broker will try to find a host to create (place) the VM.
-     * @param maxRetries value to set
-     */
-    public void setMaxRetries(final int maxRetries) {
-        this.maxRetries = maxRetries;
-    }
-
-    /**
      * Checks if the broker has to retry allocating VMs
      * that couldn't be placed due to lack of suitable Hosts.
      * @return
@@ -150,23 +121,6 @@ public class VmCreation {
      */
     public void incCurrentRetries() {
         this.retries++;
-    }
-
-    /**
-     * Gets the current number of times failed VMs were tried to be recreated.
-     * @return
-     * @see #getMaxRetries()
-     */
-    public int getRetries() {
-        return retries;
-    }
-
-    /**
-     * Gets the number of VM creation requests considering all submitted VMs.
-     * @return
-     */
-    public int getCreationRequests() {
-        return creationRequests;
     }
 
     /**

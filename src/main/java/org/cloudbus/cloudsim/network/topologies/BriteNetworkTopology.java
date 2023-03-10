@@ -7,6 +7,7 @@
  */
 package org.cloudbus.cloudsim.network.topologies;
 
+import lombok.Getter;
 import org.cloudbus.cloudsim.core.SimEntity;
 import org.cloudbus.cloudsim.network.DelayMatrix;
 import org.cloudbus.cloudsim.network.topologies.readers.TopologyReaderBrite;
@@ -51,6 +52,12 @@ public final class BriteNetworkTopology implements NetworkTopology {
      */
     private int nextIdx;
 
+    /**
+     * Checks if the network simulation is working. If there were some problem
+     * during creation of network (e.g., during parsing of BRITE file) that does
+     * not allow a proper simulation of the network, this method returns false.
+     */
+    @Getter
     private boolean networkEnabled;
 
     /**
@@ -61,7 +68,10 @@ public final class BriteNetworkTopology implements NetworkTopology {
     /** @see #getBwMatrix() */
     private double[][] bwMatrix;
 
-    /** @see #getGraph() */
+    /**
+     * The Topological Graph of the network.
+     */
+    @Getter
     private TopologicalGraph graph;
 
     /**
@@ -241,25 +251,6 @@ public final class BriteNetworkTopology implements NetworkTopology {
         } catch (ArrayIndexOutOfBoundsException e) {
             return 0.0;
         }
-    }
-
-    /**
-     * Checks if the network simulation is working. If there were some problem
-     * during creation of network (e.g., during parsing of BRITE file) that does
-     * not allow a proper simulation of the network, this method returns false.
-     *
-     * @return true if network simulation is working, $false otherwise
-     */
-    public boolean isNetworkEnabled() {
-        return networkEnabled;
-    }
-
-    /**
-     * Gets the Topological Graph of the network.
-     * @return
-     */
-    public TopologicalGraph getGraph() {
-        return graph;
     }
 
     /**

@@ -23,6 +23,9 @@
  */
 package org.cloudsimplus.faultinjection;
 
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.Setter;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.vms.Vm;
 
@@ -41,9 +44,13 @@ import static java.util.Objects.requireNonNull;
  * @since CloudSim Plus 1.2.2
  */
 public class VmClonerSimple implements VmCloner {
+    @Setter @NonNull
     private UnaryOperator<Vm> vmClonerFunction;
+    @Setter @NonNull
     private Function<Vm, List<Cloudlet>> cloudletsClonerFunction;
+    @Getter @Setter
     private int maxClonesNumber;
+    @Getter
     private int clonedVmsNumber;
 
     /**
@@ -60,13 +67,8 @@ public class VmClonerSimple implements VmCloner {
     }
 
     @Override
-    public int getClonedVmsNumber() {
-        return clonedVmsNumber;
-    }
-
-    @Override
-    public Map.Entry<Vm, List<Cloudlet>> clone(final Vm sourceVm) {
-        final var clonedVm = vmClonerFunction.apply(requireNonNull(sourceVm));
+    public Map.Entry<Vm, List<Cloudlet>> clone(@NonNull final Vm sourceVm) {
+        final var clonedVm = vmClonerFunction.apply(sourceVm);
         final var clonedCloudletList = cloudletsClonerFunction.apply(sourceVm);
         if(clonedCloudletList.isEmpty()){
             LOGGER.warn(
@@ -80,30 +82,7 @@ public class VmClonerSimple implements VmCloner {
     }
 
     @Override
-    public final VmCloner setVmClonerFunction(final UnaryOperator<Vm> vmClonerFunction) {
-        this.vmClonerFunction = requireNonNull(vmClonerFunction);
-        return this;
-    }
-
-    @Override
-    public final VmCloner setCloudletsClonerFunction(final Function<Vm, List<Cloudlet>> cloudletsClonerFunction) {
-        this.cloudletsClonerFunction = requireNonNull(cloudletsClonerFunction);
-        return this;
-    }
-
-    @Override
-    public int getMaxClonesNumber() {
-        return maxClonesNumber;
-    }
-
-    @Override
     public boolean isMaxClonesNumberReached() {
         return clonedVmsNumber >= maxClonesNumber;
-    }
-
-    @Override
-    public VmCloner setMaxClonesNumber(final int maxClonesNumber) {
-        this.maxClonesNumber = maxClonesNumber;
-        return this;
     }
 }

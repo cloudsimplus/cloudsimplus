@@ -62,10 +62,10 @@ public interface UtilizationModel {
 
     /**
      * Sets the simulation that this UtilizationModel belongs to.
+     *
      * @param simulation the Simulation instance to set
-     * @return
      */
-    UtilizationModel setSimulation(Simulation simulation);
+    void setSimulation(Simulation simulation);
 
     /**
      * Gets the <b>expected</b> utilization of resource at a given simulation time.
@@ -129,7 +129,6 @@ public interface UtilizationModel {
      * is defined as {@link Unit#PERCENTAGE}.</p>
      *
      * @param allow true to allow requesting more than 100% of a resource, false to disallow that
-     * @return
      */
-    UtilizationModel setOverCapacityRequestAllowed(boolean allow);
+    void setOverCapacityRequestAllowed(boolean allow);
 }

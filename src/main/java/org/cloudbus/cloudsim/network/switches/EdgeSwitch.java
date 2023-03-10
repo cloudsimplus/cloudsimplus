@@ -7,6 +7,7 @@
  */
 package org.cloudbus.cloudsim.network.switches;
 
+import lombok.NonNull;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.core.events.SimEvent;
 import org.cloudbus.cloudsim.datacenters.network.NetworkDatacenter;
@@ -142,8 +143,8 @@ public class EdgeSwitch extends AbstractSwitch {
      * {@link #getHostList()}.
      * @param host the host to be connected to the switch
      */
-    public void connectHost(final NetworkHost host) {
-        hostList.add(Objects.requireNonNull(host));
+    public void connectHost(@NonNull final NetworkHost host) {
+        hostList.add(host);
         host.setEdgeSwitch(this);
     }
 
@@ -153,7 +154,7 @@ public class EdgeSwitch extends AbstractSwitch {
      * @param host the host to be disconnected from the switch
      * @return true if the Host was connected to the switch, false otherwise
      */
-    public boolean disconnectHost(final NetworkHost host) {
+    public boolean disconnectHost(@NonNull final NetworkHost host) {
         if(hostList.remove(host)){
             host.setEdgeSwitch(null);
             return true;

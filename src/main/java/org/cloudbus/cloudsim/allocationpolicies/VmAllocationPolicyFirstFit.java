@@ -23,6 +23,9 @@
  */
 package org.cloudbus.cloudsim.allocationpolicies;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.vms.Vm;
 
@@ -54,7 +57,9 @@ import java.util.Optional;
  * @see VmAllocationPolicySimple
  */
 public class VmAllocationPolicyFirstFit extends VmAllocationPolicyAbstract implements VmAllocationPolicy {
-    /** @see #getLastHostIndex() */
+    /** The index of the last host where a VM was placed. */
+    @Getter(AccessLevel.PROTECTED)
+    @Setter(AccessLevel.NONE)
     private int lastHostIndex;
 
     @Override
@@ -75,13 +80,6 @@ public class VmAllocationPolicyFirstFit extends VmAllocationPolicyAbstract imple
         }
 
         return Optional.empty();
-    }
-
-    /**
-     * Gets the index of the last host where a VM was placed.
-     */
-    protected int getLastHostIndex() {
-        return lastHostIndex;
     }
 
     /**

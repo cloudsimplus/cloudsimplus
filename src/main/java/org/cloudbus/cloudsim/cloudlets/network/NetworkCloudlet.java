@@ -184,12 +184,16 @@ public class NetworkCloudlet extends CloudletSimple {
     }
 
     @Override
-    public Cloudlet setVm(final Vm vm) {
-        if(vm == Vm.NULL)
-            return super.setVm(NetworkVm.NULL);
+    public void setVm(final Vm vm) {
+        if(vm == Vm.NULL) {
+            setVm(NetworkVm.NULL);
+            return;
+        }
 
-        if(vm instanceof NetworkVm)
-            return super.setVm(vm);
+        if(vm instanceof NetworkVm) {
+            super.setVm(vm);
+            return;
+        }
 
         throw new IllegalArgumentException("NetworkCloudlet can just be executed by a NetworkVm");
     }

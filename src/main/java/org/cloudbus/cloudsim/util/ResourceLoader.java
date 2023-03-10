@@ -23,6 +23,8 @@
  */
 package org.cloudbus.cloudsim.util;
 
+import lombok.SneakyThrows;
+
 import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -159,6 +161,7 @@ public final class ResourceLoader {
      * @param resourceDir the name of the resource directory to get the list of files from
      * @return the file name list
      */
+    @SneakyThrows(IOException.class)
     public static List<String> getResourceList(final Class klass, final String resourceDir){
         final var uri = getResourceUri(klass, resourceDir);
         final Path fullPath = uriToPath(resourceDir, uri);
@@ -173,8 +176,6 @@ public final class ResourceLoader {
             }
 
             return fileNameList;
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
         }
     }
 
@@ -186,12 +187,11 @@ public final class ResourceLoader {
         }
     }
 
+    @SneakyThrows(IOException.class)
     private static Path uriToPath(final String resourceDir, final URI uri){
         if (uri.getScheme().equals("jar")) {
             try (var fileSystem = FileSystems.newFileSystem(uri, Collections.emptyMap())) {
                 return fileSystem.getPath(resourceDir);
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
             }
         }
 

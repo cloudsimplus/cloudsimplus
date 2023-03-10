@@ -7,6 +7,9 @@
  */
 package org.cloudbus.cloudsim.datacenters;
 
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.Setter;
 import org.cloudbus.cloudsim.hosts.Host;
 
 /**
@@ -22,30 +25,24 @@ import org.cloudbus.cloudsim.hosts.Host;
  * @author Anton Beloglazov
  * @since CloudSim Toolkit 1.0
  */
+@Getter @Setter
 public class DatacenterCharacteristicsSimple implements DatacenterCharacteristics {
-    /** @see #getArchitecture() */
+    @NonNull
+    private final Datacenter datacenter;
+
+    @NonNull
     private String architecture;
 
-    /** @see #getOs() */
+    @NonNull
     private String os;
 
-    /** @see #getCostPerSecond() */
-    private double costPerSecond;
-
-    /** @see #getVmm() */
+    @NonNull
     private String vmm;
 
-    /** @see #getCostPerMem() */
+    private double costPerSecond;
     private double costPerMem;
-
-    /** @see #getCostPerStorage() */
     private double costPerStorage;
-
-    /** @see #getCostPerBw() */
     private double costPerBw;
-
-    /** @see #getDatacenter() */
-    private final Datacenter datacenter;
 
     /**
      * Creates a DatacenterCharacteristics with default values
@@ -57,13 +54,40 @@ public class DatacenterCharacteristicsSimple implements DatacenterCharacteristic
      * </p>
      */
     public DatacenterCharacteristicsSimple(final Datacenter datacenter){
-        setArchitecture(DEFAULT_ARCH);
-        setOs(DEFAULT_OS);
-        setVmm(DEFAULT_VMM);
-        setCostPerSecond(0);
-        setCostPerMem(0);
-        setCostPerStorage(0);
-        setCostPerBw(0);
+        this(datacenter, DEFAULT_ARCH, DEFAULT_OS, DEFAULT_VMM, 0, 0, 0, 0);
+    }
+
+    /**
+     * A copy constructor
+     * @param source the source object to copy
+     * @param dc the target Datacenter for the copy
+     */
+    public DatacenterCharacteristicsSimple(final DatacenterCharacteristics source, final Datacenter dc){
+        this(
+            dc,
+            source.getArchitecture(),
+            source.getOs(),
+            source.getVmm(),
+            source.getCostPerSecond(),
+            source.getCostPerMem(),
+            source.getCostPerStorage(),
+            source.getCostPerBw()
+        );
+    }
+
+    private DatacenterCharacteristicsSimple(
+        final @NonNull Datacenter datacenter, final @NonNull String architecture,
+        final @NonNull String os, final @NonNull String vmm,
+        final double costPerSecond, final double costPerMem,
+        final double costPerStorage, final double costPerBw)
+    {
+        setArchitecture(architecture);
+        setOs(os);
+        setVmm(vmm);
+        setCostPerSecond(costPerSecond);
+        setCostPerMem(costPerMem);
+        setCostPerStorage(costPerStorage);
+        setCostPerBw(costPerBw);
         this.datacenter = datacenter;
     }
 
@@ -88,93 +112,7 @@ public class DatacenterCharacteristicsSimple implements DatacenterCharacteristic
     }
 
     @Override
-    public double getCostPerMem() {
-        return costPerMem;
-    }
-
-    @Override
-    public final DatacenterCharacteristics setCostPerMem(final double costPerMem) {
-        this.costPerMem = costPerMem;
-        return this;
-    }
-
-    @Override
-    public double getCostPerStorage() {
-        return costPerStorage;
-    }
-
-    @Override
-    public final DatacenterCharacteristics setCostPerStorage(final double costPerStorage) {
-        this.costPerStorage = costPerStorage;
-        return this;
-    }
-
-    @Override
-    public double getCostPerBw() {
-        return costPerBw;
-    }
-
-    @Override
-    public final DatacenterCharacteristics setCostPerBw(final double costPerBw) {
-        this.costPerBw = costPerBw;
-        return this;
-    }
-
-    @Override
-    public String getVmm() {
-        return vmm;
-    }
-
-    /**
-     * Gets the Datacenter id, setup when Datacenter is created.
-     * @return
-     */
-    @Override
     public long getId() {
         return datacenter.getId();
-    }
-
-    @Override
-    public String getArchitecture() {
-        return architecture;
-    }
-
-    @Override
-    public final DatacenterCharacteristics setArchitecture(final String architecture) {
-        this.architecture = architecture;
-        return this;
-    }
-
-    @Override
-    public String getOs() {
-        return os;
-    }
-
-    @Override
-    public final DatacenterCharacteristics setOs(final String os) {
-        this.os = os;
-        return this;
-    }
-
-    @Override
-    public double getCostPerSecond() {
-        return costPerSecond;
-    }
-
-    @Override
-    public final DatacenterCharacteristics setCostPerSecond(final double costPerSecond) {
-        this.costPerSecond = costPerSecond;
-        return this;
-    }
-
-    @Override
-    public final DatacenterCharacteristics setVmm(final String vmm) {
-        this.vmm = vmm;
-        return this;
-    }
-
-    @Override
-    public Datacenter getDatacenter() {
-        return datacenter;
     }
 }

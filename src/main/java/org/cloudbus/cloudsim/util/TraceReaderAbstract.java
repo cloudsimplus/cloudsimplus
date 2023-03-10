@@ -1,5 +1,9 @@
 package org.cloudbus.cloudsim.util;
 
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.Setter;
+
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -11,7 +15,7 @@ import java.util.zip.ZipInputStream;
 import static java.util.Objects.requireNonNull;
 
 /**
- * An abstract to implement trace file readers for specific file formats.
+ * An abstract class to implement trace file readers for specific file formats.
  *
  * <p>
  * <b>NOTES:</b>
@@ -32,20 +36,19 @@ import static java.util.Objects.requireNonNull;
  * @since CloudSim Plus 4.0.0
  */
 public abstract class TraceReaderAbstract implements TraceReader {
+    @Getter
     private final String filePath;
     private final InputStream inputStream;
 
-    /** @see #getFieldDelimiterRegex() */
+    @Getter @Setter @NonNull
     private String fieldDelimiterRegex;
 
-    /**
-     * @see #getMaxLinesToRead()
-     */
+    @Getter
     private int maxLinesToRead;
 
     private String[] commentString = {";", "#"};
 
-    /** @see #getLastLineNumber() */
+    @Getter
     private int lastLineNumber;
 
     /**
@@ -56,7 +59,7 @@ public abstract class TraceReaderAbstract implements TraceReader {
      * @throws FileNotFoundException    when the trace file is not found
      * @throws IllegalArgumentException when the workload trace file name is null or empty
      */
-    public TraceReaderAbstract(final String filePath) throws IOException {
+    public TraceReaderAbstract(@NonNull final String filePath) throws IOException {
         this(filePath, Files.newInputStream(Paths.get(filePath)));
     }
 
@@ -67,8 +70,8 @@ public abstract class TraceReaderAbstract implements TraceReader {
      * @param inputStream   a {@link InputStreamReader} object to read the file
      * @throws IllegalArgumentException when the workload trace file name is null or empty; or the resource PE mips is less or equal to 0
      */
-    protected TraceReaderAbstract(final String filePath, final InputStream inputStream) {
-        if (filePath == null || filePath.isEmpty()) {
+    protected TraceReaderAbstract(@NonNull final String filePath, @NonNull final InputStream inputStream) {
+        if (filePath.isEmpty()) {
             throw new IllegalArgumentException("Invalid trace file name.");
         }
 
@@ -79,8 +82,8 @@ public abstract class TraceReaderAbstract implements TraceReader {
     }
 
     @Override
-    public TraceReader setCommentString(final String... commentString) {
-        if (requireNonNull(commentString).length == 0) {
+    public TraceReader setCommentString(@NonNull final String... commentString) {
+        if (commentString.length == 0) {
             throw new IllegalArgumentException("A comment String is required");
         }
         //Creates a defensive copy of the array to avoid directly change its values after storing it
@@ -99,22 +102,6 @@ public abstract class TraceReaderAbstract implements TraceReader {
     }
 
     @Override
-    public String getFieldDelimiterRegex() {
-        return fieldDelimiterRegex;
-    }
-
-    @Override
-    public final TraceReader setFieldDelimiterRegex(String fieldDelimiterRegex) {
-        this.fieldDelimiterRegex = fieldDelimiterRegex;
-        return this;
-    }
-
-    @Override
-    public int getMaxLinesToRead() {
-        return maxLinesToRead;
-    }
-
-    @Override
     public final TraceReader setMaxLinesToRead(final int maxLinesToRead) {
         if(maxLinesToRead <= 0) {
             throw new IllegalArgumentException("Maximum number of lines to read from the trace must be greater than 0. If you want to read the entire file, provide Integer.MAX_VALUE.");
@@ -122,11 +109,6 @@ public abstract class TraceReaderAbstract implements TraceReader {
 
         this.maxLinesToRead = maxLinesToRead;
         return this;
-    }
-
-    @Override
-    public String getFilePath() {
-        return filePath;
     }
 
     protected InputStream getInputStream() {
@@ -253,10 +235,5 @@ public abstract class TraceReaderAbstract implements TraceReader {
         }
 
         return null;
-    }
-
-    @Override
-    public int getLastLineNumber() {
-        return lastLineNumber;
     }
 }

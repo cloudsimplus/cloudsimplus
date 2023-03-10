@@ -23,6 +23,10 @@
  */
 package org.cloudsimplus.traces.google;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.Setter;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.core.CloudSim;
@@ -66,25 +70,44 @@ import static java.util.Objects.requireNonNull;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 4.0.0
  */
+@Getter
 public class GoogleTaskEventsTraceReader extends GoogleTraceReaderAbstract<Cloudlet> {
     /**
      * List of messages to send to the {@link DatacenterBroker} that owns each created Cloudlet.
      * Such events request a Cloudlet's status change or attributes change.
      * @see #addCloudletStatusChangeEvents(CloudSimEvent, TaskEvent)
      */
+    @Getter(AccessLevel.NONE)
     protected final Map<Cloudlet, List<CloudSimEvent>> cloudletEvents;
 
-    /** @see #getBrokerManager() */
+    /**
+     * The manager that creates and provide access to {@link DatacenterBroker}s used by
+     * the trace reader.
+     */
     private final BrokerManager brokerManager;
 
-    /** @see #getMaxCloudletsToCreate() */
+    /**
+     * The maximum number of Cloudlets to create from the trace file.
+     */
     private int maxCloudletsToCreate;
 
-    /** @see #setAutoSubmitCloudlets(boolean) */
+    /**
+     * If Cloudlets must be auto-submitted to the broker after created
+     * (default is true).
+     */
+    @Setter
     private boolean autoSubmitCloudlets;
 
     /**
-     * @see #setCloudletCreationFunction(Function)
+     * A {@link Function} that will be called for every {@link Cloudlet} to be created
+     * from a line inside the trace file.
+     * The {@link Function} will receive a {@link TaskEvent} object containing
+     * the task data read from the trace and should the created Cloudlet.
+     * The provided function must instantiate the Host and defines Host's CPU cores and RAM
+     * capacity according the received parameters.
+     * For other Hosts configurations (such as storage capacity), the provided
+     * function must define the value as desired, since the trace file
+     * doesn't have any other information for such resources.
      */
     private Function<TaskEvent, Cloudlet> cloudletCreationFunction;
 
@@ -152,13 +175,13 @@ public class GoogleTaskEventsTraceReader extends GoogleTraceReaderAbstract<Cloud
      * @see #process()
      */
     protected GoogleTaskEventsTraceReader(
-        final CloudSim simulation,
+        @NonNull final CloudSim simulation,
         final String filePath,
         final InputStream reader,
         final Function<TaskEvent, Cloudlet> cloudletCreationFunction)
     {
         super(filePath, reader);
-        this.simulation = requireNonNull(simulation);
+        this.simulation = simulation;
         this.cloudletCreationFunction = requireNonNull(cloudletCreationFunction);
         this.autoSubmitCloudlets = true;
         this.cloudletEvents = new HashMap<>();
@@ -362,46 +385,6 @@ public class GoogleTaskEventsTraceReader extends GoogleTraceReaderAbstract<Cloud
     }
 
     /**
-     * Gets a {@link Function} that will be called for every {@link Cloudlet} to be created
-     * from a line inside the trace file.
-     * @return
-     * @see #setCloudletCreationFunction(Function)
-     */
-    protected Function<TaskEvent, Cloudlet> getCloudletCreationFunction() {
-        return cloudletCreationFunction;
-    }
-
-    /**
-     * Sets a {@link Function} that will be called for every {@link Cloudlet} to be created
-     * from a line inside the trace file.
-     * The {@link Function} will receive a {@link TaskEvent} object containing
-     * the task data read from the trace and should the created Cloudlet.
-     * The provided function must instantiate the Host and defines Host's CPU cores and RAM
-     * capacity according the received parameters.
-     * For other Hosts configurations (such as storage capacity), the provided
-     * function must define the value as desired, since the trace file
-     * doesn't have any other information for such resources.
-     *
-     * @param cloudletCreationFunction the {@link Function} to set
-     */
-    public void setCloudletCreationFunction(final Function<TaskEvent, Cloudlet> cloudletCreationFunction) {
-        this.cloudletCreationFunction = requireNonNull(cloudletCreationFunction);
-    }
-
-    public CloudSim getSimulation() {
-        return simulation;
-    }
-
-    /**
-     * Gets the maximum number of Cloudlets to create from the trace file.
-     * @return
-     * @see #setMaxCloudletsToCreate(int)
-     */
-    public int getMaxCloudletsToCreate() {
-        return maxCloudletsToCreate;
-    }
-
-    /**
      * Sets the maximum number of Cloudlets to create from the trace file.
      * Since the number of lines in the file may be greater to the number
      * of Cloudlets that will be created from it (since there may be lines
@@ -427,33 +410,5 @@ public class GoogleTaskEventsTraceReader extends GoogleTraceReaderAbstract<Cloud
      */
     protected boolean allowCloudletCreation() {
         return availableObjectsCount() < getMaxCloudletsToCreate();
-    }
-
-    /**
-     * Checks if Cloudlets will be auto-submitted to the broker after created
-     * (default is true).
-     * @return true if auto-submit is enabled, false otherwise
-     */
-    public boolean isAutoSubmitCloudlets() {
-        return autoSubmitCloudlets;
-    }
-
-    /**
-     * Sets if Cloudlets must be auto-submitted to the broker after created
-     * (default is true).
-     * @param autoSubmitCloudlets true to auto-submit, false otherwise
-     */
-    public GoogleTaskEventsTraceReader setAutoSubmitCloudlets(final boolean autoSubmitCloudlets) {
-        this.autoSubmitCloudlets = autoSubmitCloudlets;
-        return this;
-    }
-
-    /**
-     * Gets the manager that creates and provide access to {@link DatacenterBroker}s used by
-     * the trace reader.
-     * @return
-     */
-    public BrokerManager getBrokerManager() {
-        return brokerManager;
     }
 }

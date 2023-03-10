@@ -460,9 +460,8 @@ public interface Host extends Machine, Comparable<Host>, PowerAware<PowerModelHo
      *                 A negative value disables idle host shutdown.
      * @see #DEF_IDLE_SHUTDOWN_DEADLINE
      * @see #getIdleShutdownDeadline()
-     * @return
      */
-    Host setIdleShutdownDeadline(double deadline);
+    void setIdleShutdownDeadline(double deadline);
 
     /**
      * Checks if the host is working properly or has failed.
@@ -595,9 +594,8 @@ public interface Host extends Machine, Comparable<Host>, PowerAware<PowerModelHo
      * Sets the CloudSim instance that represents the simulation the Entity belongs
      * Such attribute has to be set by the {@link Datacenter} that the host belongs to.
      * @param simulation The CloudSim instance that represents the simulation the Entity belongs
-     * @return
      */
-    Host setSimulation(Simulation simulation);
+    void setSimulation(Simulation simulation);
 
     /**
      * Gets the {@link ResourceProvisioner}s that manages a Host resource
@@ -744,5 +742,5 @@ public interface Host extends Machine, Comparable<Host>, PowerAware<PowerModelHo
      * This laziness improves performance but provides less information
      * when calling {@link #getSuitabilityFor(Vm)}.
      */
-    Host setLazySuitabilityEvaluation(boolean lazySuitabilityEvaluation);
+    void setLazySuitabilityEvaluation(boolean lazySuitabilityEvaluation);
 }

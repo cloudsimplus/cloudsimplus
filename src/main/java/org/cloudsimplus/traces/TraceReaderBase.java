@@ -23,10 +23,10 @@
  */
 package org.cloudsimplus.traces;
 
+import lombok.NonNull;
 import org.cloudbus.cloudsim.util.TraceReaderAbstract;
 
 import java.io.InputStream;
-import java.util.Objects;
 
 /**
  * An abstract class providing additional features for subclasses implementing trace file
@@ -138,7 +138,7 @@ public abstract class TraceReaderBase extends TraceReaderAbstract {
      * Sets an array containing the field values from the last parsed trace line.
      * @param lastParsedLineArray the field values from the last parsed trace line
      */
-    protected void setLastParsedLineArray(final String[] lastParsedLineArray) {
-        this.lastParsedLineArray = Objects.requireNonNull(lastParsedLineArray);
+    protected void setLastParsedLineArray(@NonNull final String[] lastParsedLineArray) {
+        this.lastParsedLineArray = lastParsedLineArray;
     }
 }

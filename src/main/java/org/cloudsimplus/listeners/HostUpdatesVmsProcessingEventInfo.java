@@ -23,6 +23,7 @@
  */
 package org.cloudsimplus.listeners;
 
+import lombok.Getter;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.hosts.Host;
 

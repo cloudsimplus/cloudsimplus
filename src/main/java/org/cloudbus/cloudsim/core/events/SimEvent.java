@@ -35,9 +35,8 @@ public interface SimEvent extends Comparable<SimEvent>, EventInfo {
     /**
      * Sets the simulation the event belongs to
      * @param simulation the simulation instance to set
-     * @return
      */
-    SimEvent setSimulation(Simulation simulation);
+    void setSimulation(Simulation simulation);
 
     /**
      * Gets the internal type
@@ -99,17 +98,15 @@ public interface SimEvent extends Comparable<SimEvent>, EventInfo {
      * Sets the source entity of this event, that defines its sender.
      *
      * @param source the unique id number of the source entity
-     * @return
      */
-    SimEvent setSource(SimEntity source);
+    void setSource(SimEntity source);
 
     /**
      * Sets the destination entity of this event, that defines its destination.
      *
      * @param destination the unique id number of the destination entity
-     * @return
      */
-    SimEvent setDestination(SimEntity destination);
+    void setDestination(SimEntity destination);
 
     /**
      * Gets the serial number that defines the order of received events when multiple

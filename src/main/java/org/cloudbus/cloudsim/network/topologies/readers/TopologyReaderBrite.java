@@ -8,6 +8,7 @@
 
 package org.cloudbus.cloudsim.network.topologies.readers;
 
+import lombok.Getter;
 import org.cloudbus.cloudsim.network.topologies.TopologicalGraph;
 import org.cloudbus.cloudsim.util.ResourceLoader;
 
@@ -37,11 +38,8 @@ public class TopologyReaderBrite implements TopologyReader {
     /**
      * The network Topological Graph.
      */
+    @Getter
     private TopologicalGraph graph;
-
-    TopologicalGraph getGraph() {
-        return graph;
-    }
 
     void setState(final ParsingState state) {
         this.state = state;

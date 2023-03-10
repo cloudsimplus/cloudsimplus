@@ -1,5 +1,8 @@
 package org.cloudbus.cloudsim.power.models;
 
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.Setter;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 
 import java.util.Objects;
@@ -15,21 +18,9 @@ public abstract class PowerModelDatacenter implements PowerModel {
      */
     public static final PowerModelDatacenterNull NULL = new PowerModelDatacenterNull();
 
+    /**
+     * The Datacenter this PowerModel is collecting power consumption measurements from.
+     */
+    @Getter @Setter @NonNull
     private Datacenter datacenter;
-
-    /**
-     * Gets the Datacenter this PowerModel is collecting power consumption measurements from.
-     * @return
-     */
-    public Datacenter getDatacenter() {
-        return datacenter;
-    }
-
-    /**
-     * Sets the Datacenter this PowerModel will collect power consumption measurements from.
-     * @param datacenter the Datacenter to set
-     */
-    public final void setDatacenter(final Datacenter datacenter) {
-        this.datacenter = Objects.requireNonNull(datacenter);
-    }
 }

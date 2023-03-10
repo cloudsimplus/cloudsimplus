@@ -109,9 +109,8 @@ public interface Pe extends ChangeableId, ResourceManageable {
      * Sets the {@link #getStatus() status} of the PE.
      *
      * @param status the new PE status
-     * @return true if the status was set, false otherwise
      */
-    boolean setStatus(Status status);
+    void setStatus(Status status);
 
     /**
      * Checks if the PE is working (not failed).

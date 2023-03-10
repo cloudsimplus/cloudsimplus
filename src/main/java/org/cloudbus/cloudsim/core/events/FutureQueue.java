@@ -8,6 +8,8 @@
 
 package org.cloudbus.cloudsim.core.events;
 
+import lombok.Getter;
+
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
@@ -31,12 +33,17 @@ public class FutureQueue implements EventQueue {
      */
     private final SortedSet<SimEvent> sortedSet = new TreeSet<>();
 
-    /** @see #getSerial() */
+    /** An incremental number used for {@link SimEvent#getSerial()} event attribute. */
+    @Getter
     private long serial;
 
     private long lowestSerial;
 
-    /** @see #getMaxEventsNumber() */
+    /**
+     * Maximum number of events that have ever existed at the same time
+     * inside the queue.
+     */
+    @Getter
     private long maxEventsNumber;
 
     @Override
@@ -110,18 +117,5 @@ public class FutureQueue implements EventQueue {
      */
     public void clear() {
         sortedSet.clear();
-    }
-
-    /** Gets an incremental number used for {@link SimEvent#getSerial()} event attribute. */
-    public long getSerial() {
-        return serial;
-    }
-
-    /**
-     * Maximum number of events that have ever existed at the same time
-     * inside the queue.
-     */
-    public long getMaxEventsNumber() {
-        return maxEventsNumber;
     }
 }

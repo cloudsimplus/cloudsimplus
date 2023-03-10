@@ -23,6 +23,7 @@
  */
 package org.cloudsimplus.autoscaling.resources;
 
+import lombok.NonNull;
 import org.cloudsimplus.autoscaling.VerticalVmScaling;
 
 /**
@@ -43,7 +44,7 @@ import org.cloudsimplus.autoscaling.VerticalVmScaling;
  */
 public class ResourceScalingGradual implements ResourceScaling {
     @Override
-    public double getResourceAmountToScale(VerticalVmScaling vmScaling) {
+    public double getResourceAmountToScale(@NonNull VerticalVmScaling vmScaling) {
         return vmScaling.getResource().getCapacity() * vmScaling.getScalingFactor();
     }
 }

@@ -1,9 +1,9 @@
 package org.cloudbus.cloudsim.power.models;
 
+import lombok.NonNull;
 import org.cloudbus.cloudsim.power.PowerMeasurement;
 
 import java.util.List;
-import java.util.Objects;
 
 /**
  * A power model created based on data from
@@ -73,9 +73,8 @@ public class PowerModelHostSpec extends PowerModelHost {
      * For instance, element 0 represents the power consumption
      * when CPU utilization is between [0 .. 10%].</p>
      */
-    public PowerModelHostSpec(final List<Double> powerSpec) {
+    public PowerModelHostSpec(@NonNull final List<Double> powerSpec) {
         super();
-        Objects.requireNonNull(powerSpec, "powerSpec cannot be null");
         if (powerSpec.size() >= MIN_POWER_CONSUMPTION_DATA_SIZE) {
             this.powerSpec = powerSpec;
             return;

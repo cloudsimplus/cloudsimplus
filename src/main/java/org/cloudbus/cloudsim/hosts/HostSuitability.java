@@ -23,6 +23,7 @@
  */
 package org.cloudbus.cloudsim.hosts;
 
+import lombok.Setter;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.vms.Vm;
 
@@ -40,9 +41,20 @@ import java.util.Objects;
 public final class HostSuitability {
     public static final HostSuitability NULL = new HostSuitability();
 
+    /** Indicates if the Host has enough storage for running a VM. */
+    @Setter
     private boolean forStorage;
+
+    /** Indicates if the Host has enough RAM for running a VM. */
+    @Setter
     private boolean forRam;
+
+    /** Indicates if the Host has enough Bandwidth for running a VM. */
+    @Setter
     private boolean forBw;
+
+    /** Indicates if the Host has enough {@link Pe}s for running a VM. */
+    @Setter
     private boolean forPes;
 
     /**
@@ -115,15 +127,6 @@ public final class HostSuitability {
      */
     public boolean forPes() {
         return forPes;
-    }
-
-    /** Sets if the Host has {@link Pe} suitability for running the VM.
-     * @param forPes true to indicate it's suitable according to VM's number of PEs requirements;
-     *               false otherwise
-     * */
-    HostSuitability setForPes(final boolean forPes) {
-        this.forPes = forPes;
-        return this;
     }
 
     /**

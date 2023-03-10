@@ -64,9 +64,7 @@ final class PeNull implements Pe {
     @Override public boolean isSuitable(long newTotalAllocatedResource) {
         return false;
     }
-    @Override public boolean setStatus(Status status) {
-        return false;
-    }
+    @Override public void setStatus(Status status) { /**/ }
     @Override public boolean isWorking() { return false; }
     @Override public boolean isFailed() { return true; }
     @Override public boolean isFree() { return false; }

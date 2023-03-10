@@ -6,6 +6,9 @@
  */
 package org.cloudbus.cloudsim.vms;
 
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
@@ -17,6 +20,7 @@ import org.cloudbus.cloudsim.resources.*;
 import org.cloudbus.cloudsim.schedulers.MipsShare;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
+import org.cloudbus.cloudsim.util.MathUtil;
 import org.cloudsimplus.autoscaling.HorizontalVmScaling;
 import org.cloudsimplus.autoscaling.VerticalVmScaling;
 import org.cloudsimplus.autoscaling.VmScaling;
@@ -40,6 +44,7 @@ import static java.util.Objects.requireNonNull;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Toolkit 1.0
  */
+@Getter
 public class VmSimple extends CustomerEntityAbstract implements Vm {
     /** @see #setDefaultRamCapacity(long) */
     private static long defaultRamCapacity = 1024;
@@ -50,65 +55,62 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
     /** @see #setDefaultStorageCapacity(long) */
     private static long defaultStorageCapacity = 1024;
 
-    /** @see #getCpuUtilizationStats() */
-    private VmResourceStats cpuUtilizationStats;
+    @Setter
+    private String description;
 
-    /** @see #getStateHistory() */
-    private final List<VmStateHistoryEntry> stateHistory;
-
-    private HorizontalVmScaling horizontalScaling;
-    private boolean failed;
-
-    /** @see #getProcessor() */
-    private final Processor processor;
-
-    /** @see #getVmm() */
+    @Setter
     private String vmm;
 
-    /** @see #getCloudletScheduler() */
-    private CloudletScheduler cloudletScheduler;
-
-    /** @see #getHost() */
     private Host host;
 
-    /** @see #isInMigration() */
-    private boolean inMigration;
+    private double timeZone;
 
-    /** @see #isCreated() */
+    private double submissionDelay;
+    private double startTime;
+    private double stopTime;
+    private double lastBusyTime;
+
+    @Setter @NonNull
+    private VmGroup group;
+
+    private boolean failed;
+
+    private SimpleStorage storage;
+
+    private Ram ram;
+
+    private Bandwidth bw;
+    private final Processor processor;
+
+    @NonNull
+    private CloudletScheduler cloudletScheduler;
+
     private boolean created;
+
+    @Setter
+    private boolean inMigration;
 
     private List<ResourceManageable> resources;
 
-    /** @see #getStorage() */
-    private SimpleStorage storage;
-
-    /** @see #getRam() */
-    private Ram ram;
-
-    /** @see #getBw() */
-    private Bandwidth bw;
-
-    /** @see #getFreePesNumber() */
     private long freePesNumber;
 
-    /** @see #getFreePesNumber() */
     private long expectedFreePesNumber;
 
-    /** @see #getSubmissionDelay() */
-    private double submissionDelay;
-
+    private HorizontalVmScaling horizontalScaling;
     private VerticalVmScaling ramVerticalScaling;
     private VerticalVmScaling bwVerticalScaling;
     private VerticalVmScaling peVerticalScaling;
 
-    private String description;
-    private double startTime;
-    private double stopTime;
-    private double lastBusyTime;
-    private VmGroup group;
-    private double timeZone;
+    @Setter @NonNull
     private MipsShare allocatedMips;
+
+    @Setter @NonNull
     private MipsShare requestedMips;
+
+    private VmResourceStats cpuUtilizationStats;
+
+    /** @see #getStateHistory() */
+    private final List<VmStateHistoryEntry> stateHistory;
 
     private final List<EventListener<VmHostEventInfo>> onMigrationStartListeners;
     private final List<EventListener<VmHostEventInfo>> onMigrationFinishListeners;
@@ -311,11 +313,6 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
         return nextSimulationDelay - decimals < 0 ? nextSimulationDelay : nextSimulationDelay - decimals;
     }
 
-    @Override
-    public long getFreePesNumber() {
-        return freePesNumber;
-    }
-
     /**
      * Sets the current number of free PEs.
      *
@@ -327,11 +324,6 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
         }
         this.freePesNumber = Math.min(freePesNumber, getNumberOfPes());
         return this;
-    }
-
-    @Override
-    public long getExpectedFreePesNumber() {
-        return expectedFreePesNumber;
     }
 
     /**
@@ -421,6 +413,7 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
 
     @Override
     public MipsShare getCurrentRequestedMips() {
+        //TODO This method is confusing, since there is a getRequestedMips() (created with lombok)
         if (isCreated()) {
             return host.getVmScheduler().getRequestedMips(this);
         }
@@ -453,11 +446,6 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
     }
 
     @Override
-    public double getStartTime() {
-        return this.startTime;
-    }
-
-    @Override
     public Vm setStartTime(final double startTime) {
         this.startTime = MathUtil.nonNegative(startTime, "startTime");
         setLastBusyTime(startTime);
@@ -465,19 +453,9 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
     }
 
     @Override
-    public double getStopTime() {
-        return this.stopTime;
-    }
-
-    @Override
     public Vm setStopTime(final double stopTime) {
         this.stopTime = Math.max(stopTime, -1);
         return this;
-    }
-
-    @Override
-    public double getLastBusyTime() {
-        return this.lastBusyTime;
     }
 
     /**
@@ -530,23 +508,13 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
         processor.setCapacity(numberOfPes);
     }
 
-    @Override
-    public Processor getProcessor() {
-        return processor;
-    }
-
-    @Override
-    public ResourceManageable getRam() {
-        return ram;
-    }
-
     /**
      * Sets a new {@link Ram} resource for the Vm.
      *
      * @param ram the Ram resource to set
      */
-    private void setRam(final Ram ram) {
-        this.ram = requireNonNull(ram);
+    private void setRam(@NonNull final Ram ram) {
+        this.ram = ram;
     }
 
     @Override
@@ -559,18 +527,13 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
         return this;
     }
 
-    @Override
-    public ResourceManageable getBw() {
-        return bw;
-    }
-
     /**
      * Sets a new {@link Bandwidth} resource for the Vm.
      *
      * @param bw the Bandwidth resource to set
      */
-    private void setBw(final Bandwidth bw) {
-        this.bw = requireNonNull(bw);
+    private void setBw(@NonNull final Bandwidth bw) {
+        this.bw = bw;
     }
 
     @Override
@@ -582,18 +545,13 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
         return this;
     }
 
-    @Override
-    public Resource getStorage() {
-        return storage;
-    }
-
     /**
      * Sets a new {@link SimpleStorage} resource for the Vm.
      *
      * @param storage the RawStorage resource to set
      */
-    private void setStorage(final SimpleStorage storage) {
-        this.storage = requireNonNull(storage);
+    private void setStorage(@NonNull final SimpleStorage storage) {
+        this.storage = storage;
     }
 
     @Override
@@ -606,22 +564,8 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
     }
 
     @Override
-    public String getVmm() {
-        return vmm;
-    }
-
-    /**
-     * Sets the Virtual Machine Monitor (VMM) that manages the VM.
-     *
-     * @param vmm the new VMM
-     */
-    protected final void setVmm(final String vmm) {
-        this.vmm = vmm;
-    }
-
-    @Override
-    public Vm setHost(final Host host) {
-        if (Host.NULL.equals(requireNonNull(host)))  {
+    public Vm setHost(@NonNull final Host host) {
+        if (Host.NULL.equals(host))  {
             setCreated(false);
         }
 
@@ -630,18 +574,7 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
     }
 
     @Override
-    public Host getHost() {
-        return host;
-    }
-
-    @Override
-    public CloudletScheduler getCloudletScheduler() {
-        return cloudletScheduler;
-    }
-
-    @Override
-    public final Vm setCloudletScheduler(final CloudletScheduler cloudletScheduler) {
-        requireNonNull(cloudletScheduler);
+    public final Vm setCloudletScheduler(@NonNull final CloudletScheduler cloudletScheduler) {
         if (isCreated()) {
             throw new UnsupportedOperationException("CloudletScheduler can just be changed when the Vm was not created inside a Host yet.");
         }
@@ -649,16 +582,6 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
         this.cloudletScheduler = cloudletScheduler;
         this.cloudletScheduler.setVm(this);
         return this;
-    }
-
-    @Override
-    public boolean isInMigration() {
-        return inMigration;
-    }
-
-    @Override
-    public final void setInMigration(final boolean migrating) {
-        this.inMigration = migrating;
     }
 
     /**
@@ -683,11 +606,6 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
             final var listener = onMigrationFinishListeners.get(i);
             listener.update(VmHostEventInfo.of(listener, this, targetHost));
         }
-    }
-
-    @Override
-    public final boolean isCreated() {
-        return created;
     }
 
     @Override
@@ -748,71 +666,71 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
     }
 
     @Override
-    public Vm addOnHostAllocationListener(final EventListener<VmHostEventInfo> listener) {
-        this.onHostAllocationListeners.add(requireNonNull(listener));
+    public Vm addOnHostAllocationListener(@NonNull final EventListener<VmHostEventInfo> listener) {
+        this.onHostAllocationListeners.add(listener);
         return this;
     }
 
     @Override
-    public Vm addOnMigrationStartListener(final EventListener<VmHostEventInfo> listener) {
-        onMigrationStartListeners.add(requireNonNull(listener));
+    public Vm addOnMigrationStartListener(@NonNull final EventListener<VmHostEventInfo> listener) {
+        onMigrationStartListeners.add(listener);
         return this;
     }
 
     @Override
-    public Vm addOnMigrationFinishListener(final EventListener<VmHostEventInfo> listener) {
-        onMigrationFinishListeners.add(requireNonNull(listener));
+    public Vm addOnMigrationFinishListener(@NonNull final EventListener<VmHostEventInfo> listener) {
+        onMigrationFinishListeners.add(listener);
         return this;
     }
 
     @Override
-    public Vm addOnHostDeallocationListener(final EventListener<VmHostEventInfo> listener) {
+    public Vm addOnHostDeallocationListener(@NonNull final EventListener<VmHostEventInfo> listener) {
         if (listener.equals(EventListener.NULL)) {
             return this;
         }
 
-        this.onHostDeallocationListeners.add(requireNonNull(listener));
+        this.onHostDeallocationListeners.add(listener);
         return this;
     }
 
     @Override
-    public Vm addOnCreationFailureListener(final EventListener<VmDatacenterEventInfo> listener) {
+    public Vm addOnCreationFailureListener(@NonNull final EventListener<VmDatacenterEventInfo> listener) {
         if (listener.equals(EventListener.NULL)) {
             return this;
         }
 
-        this.onCreationFailureListeners.add(requireNonNull(listener));
+        this.onCreationFailureListeners.add(listener);
         return this;
     }
 
     @Override
-    public Vm addOnUpdateProcessingListener(final EventListener<VmHostEventInfo> listener) {
+    public Vm addOnUpdateProcessingListener(@NonNull final EventListener<VmHostEventInfo> listener) {
         if (listener.equals(EventListener.NULL)) {
             return this;
         }
 
-        this.onUpdateProcessingListeners.add(requireNonNull(listener));
+        this.onUpdateProcessingListeners.add(listener);
         return this;
     }
 
     @Override
-    public boolean removeOnCreationFailureListener(final EventListener<VmDatacenterEventInfo> listener) {
-        return onCreationFailureListeners.remove(requireNonNull(listener));
+    public boolean removeOnCreationFailureListener(@NonNull final EventListener<VmDatacenterEventInfo> listener) {
+        return onCreationFailureListeners.remove(listener);
     }
 
     @Override
-    public boolean removeOnUpdateProcessingListener(final EventListener<VmHostEventInfo> listener) {
-        return onUpdateProcessingListeners.remove(requireNonNull(listener));
+    public boolean removeOnUpdateProcessingListener(@NonNull final EventListener<VmHostEventInfo> listener) {
+        return onUpdateProcessingListeners.remove(listener);
     }
 
     @Override
-    public boolean removeOnHostAllocationListener(final EventListener<VmHostEventInfo> listener) {
-        return onHostAllocationListeners.remove(requireNonNull(listener));
+    public boolean removeOnHostAllocationListener(@NonNull final EventListener<VmHostEventInfo> listener) {
+        return onHostAllocationListeners.remove(listener);
     }
 
     @Override
-    public boolean removeOnHostDeallocationListener(final EventListener<VmHostEventInfo> listener) {
-        return onHostDeallocationListeners.remove(requireNonNull(listener));
+    public boolean removeOnHostDeallocationListener(@NonNull final EventListener<VmHostEventInfo> listener) {
+        return onHostDeallocationListeners.remove(listener);
     }
 
     @Override
@@ -829,8 +747,8 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
      * @return {@inheritDoc}
      */
     @Override
-    public int compareTo(final Vm obj) {
-        if(this.equals(requireNonNull(obj))) {
+    public int compareTo(@NonNull final Vm obj) {
+        if(this.equals(obj)) {
             return 0;
         }
 
@@ -856,19 +774,10 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
     }
 
     @Override
-    public boolean isFailed() {
-        return failed;
-    }
-
-    @Override
     public boolean isWorking() {
         return !isFailed();
     }
 
-    @Override
-    public double getSubmissionDelay() {
-        return this.submissionDelay;
-    }
 
     @Override
     public final void setSubmissionDelay(final double submissionDelay) {
@@ -890,8 +799,7 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
     }
 
     @Override
-    public void notifyOnHostDeallocationListeners(final Host deallocatedHost) {
-        requireNonNull(deallocatedHost);
+    public void notifyOnHostDeallocationListeners(@NonNull final Host deallocatedHost) {
         // TODO: Workaround - Uses indexed for to avoid ConcurrentModificationException
         for (int i = 0; i < onHostDeallocationListeners.size(); i++) {
             final var listener = onHostDeallocationListeners.get(i);
@@ -911,8 +819,7 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
     }
 
     @Override
-    public void notifyOnCreationFailureListeners(final Datacenter failedDatacenter) {
-        requireNonNull(failedDatacenter);
+    public void notifyOnCreationFailureListeners(@NonNull final Datacenter failedDatacenter) {
         // TODO: Workaround - Uses indexed for to avoid ConcurrentModificationException
         for (int i = 0; i < onCreationFailureListeners.size(); i++) {
             final var listener = onCreationFailureListeners.get(i);
@@ -921,18 +828,13 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
     }
 
     @Override
-    public boolean removeOnMigrationStartListener(final EventListener<VmHostEventInfo> listener) {
-        return onMigrationStartListeners.remove(requireNonNull(listener));
+    public boolean removeOnMigrationStartListener(@NonNull final EventListener<VmHostEventInfo> listener) {
+        return onMigrationStartListeners.remove(listener);
     }
 
     @Override
-    public boolean removeOnMigrationFinishListener(final EventListener<VmHostEventInfo> listener) {
-        return onMigrationFinishListeners.remove(requireNonNull(listener));
-    }
-
-    @Override
-    public HorizontalVmScaling getHorizontalScaling() {
-        return horizontalScaling;
+    public boolean removeOnMigrationFinishListener(@NonNull final EventListener<VmHostEventInfo> listener) {
+        return onMigrationFinishListeners.remove(listener);
     }
 
     @Override
@@ -959,23 +861,7 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
         return this;
     }
 
-    @Override
-    public VerticalVmScaling getRamVerticalScaling() {
-        return ramVerticalScaling;
-    }
-
-    @Override
-    public VerticalVmScaling getBwVerticalScaling() {
-        return bwVerticalScaling;
-    }
-
-    @Override
-    public VerticalVmScaling getPeVerticalScaling() {
-        return peVerticalScaling;
-    }
-
-    private <T extends VmScaling> T validateAndConfigureVmScaling(final T vmScaling) {
-        requireNonNull(vmScaling);
+    private <T extends VmScaling> T validateAndConfigureVmScaling(@NonNull final T vmScaling) {
         if (vmScaling.getVm() != null && vmScaling.getVm() != Vm.NULL && vmScaling.getVm() != this) {
             final String name = vmScaling.getClass().getSimpleName();
             throw new IllegalArgumentException(
@@ -987,31 +873,6 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
         vmScaling.setVm(this);
         this.addOnUpdateProcessingListener(vmScaling::requestUpScalingIfPredicateMatches);
         return vmScaling;
-    }
-
-    @Override
-    public String getDescription() {
-        return description;
-    }
-
-    @Override
-    public Vm setDescription(final String description) {
-        this.description = description == null ? "" : description;
-        return this;
-    }
-
-    @Override
-    public VmGroup getGroup() {
-        return group;
-    }
-
-    public void setGroup(final VmGroup group) {
-        this.group = requireNonNull(group);
-    }
-
-    @Override
-    public VmResourceStats getCpuUtilizationStats() {
-        return cpuUtilizationStats;
     }
 
     @Override
@@ -1073,29 +934,8 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
     }
 
     @Override
-    public double getTimeZone() {
-        return timeZone;
-    }
-
-    @Override
     public Vm setTimeZone(final double timeZone) {
         this.timeZone = validateTimeZone(timeZone);
         return this;
-    }
-
-    public MipsShare getAllocatedMips() {
-        return allocatedMips;
-    }
-
-    public void setAllocatedMips(final MipsShare allocatedMips) {
-        this.allocatedMips = requireNonNull(allocatedMips);
-    }
-
-    public MipsShare getRequestedMips() {
-        return requestedMips;
-    }
-
-    public void setRequestedMips(final MipsShare requestedMips) {
-        this.requestedMips = requireNonNull(requestedMips);
     }
 }

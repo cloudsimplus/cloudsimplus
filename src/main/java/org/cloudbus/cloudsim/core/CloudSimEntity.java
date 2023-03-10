@@ -7,6 +7,10 @@
  */
 package org.cloudbus.cloudsim.core;
 
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.Setter;
 import org.cloudbus.cloudsim.core.events.CloudSimEvent;
 import org.cloudbus.cloudsim.core.events.SimEvent;
 import org.slf4j.Logger;
@@ -24,34 +28,31 @@ import static java.util.Objects.requireNonNullElse;
  * @author Marcos Dias de Assuncao
  * @since CloudSim Toolkit 1.0
  */
-public abstract class CloudSimEntity implements SimEntity, Cloneable {
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+public abstract class CloudSimEntity implements SimEntity {
     private static final Logger LOGGER = LoggerFactory.getLogger(CloudSimEntity.class.getSimpleName());
 
-    /** @see #getStartTime() */
-    private double startTime;
+    @Getter @EqualsAndHashCode.Include
+    private long id;
+    @Getter @NonNull @EqualsAndHashCode.Include
+    private final Simulation simulation;
 
-    /** @see #getSimulation() */
-    private Simulation simulation;
-
+    @Getter
     private String name;
 
-    /**
-     * The entity id.
-     */
-    private long id;
+    @Getter
+    private double startTime;
+
+    @Getter
+    private double shutdownTime;
+
+    @Getter @Setter
+    private State state;
 
     /**
      * The buffer for selected incoming events.
      */
     private SimEvent buffer;
-
-    /**
-     * The entity's current state.
-     */
-    private State state;
-
-    /** @see #getShutdownTime() */
-    private double shutdownTime;
 
     /**
      * Creates a new entity.
@@ -60,32 +61,12 @@ public abstract class CloudSimEntity implements SimEntity, Cloneable {
      * @throws IllegalArgumentException when the entity name is invalid
      */
     public CloudSimEntity(final Simulation simulation) {
-        setSimulation(simulation);
         setId(-1);
         state = State.RUNNABLE;
+        this.simulation = simulation;
         this.simulation.addEntity(this);
         this.startTime = -1;
         this.shutdownTime = -1;
-    }
-
-    /**
-     * Gets the name of this entity.
-     *
-     * @return the entity's name
-     */
-    @Override
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * Gets the unique id number assigned to this entity.
-     *
-     * @return the id number
-     */
-    @Override
-    public long getId() {
-        return id;
     }
 
     /**
@@ -348,59 +329,13 @@ public abstract class CloudSimEntity implements SimEntity, Cloneable {
         buffer = null;
     }
 
-    /**
-     * Gets a clone of the entity. This is used when independent replications
-     * have been specified as an output analysis method. Clones or backups of
-     * the entities are made in the beginning of the simulation in order to
-     * reset the entities for each subsequent replication. This method should
-     * not be called by the user.
-     *
-     * @return A clone of the entity
-     * @throws CloneNotSupportedException when the entity doesn't support cloning
-     */
     @Override
-    public final CloudSimEntity clone() throws CloneNotSupportedException {
-        final var copy = (CloudSimEntity) super.clone();
-        copy.setName(name);
-        copy.setSimulation(simulation);
-        copy.setEventBuffer(null);
-        return copy;
-    }
-
-    @Override
-    public Simulation getSimulation() {
-        return simulation;
-    }
-
-    @Override
-    public final SimEntity setSimulation(final Simulation simulation) {
-        this.simulation = requireNonNull(simulation);
-        return this;
-    }
-
-    @Override
-    public SimEntity setName(final String name) throws IllegalArgumentException {
-        if (requireNonNull(name).isBlank()) {
+    public SimEntity setName(@NonNull final String name) throws IllegalArgumentException {
+        if (name.isBlank()) {
             throw new IllegalArgumentException("Entity names cannot be empty.");
         }
 
         this.name = name;
-        return this;
-    }
-
-    @Override
-    public State getState() {
-        return state;
-    }
-
-    /**
-     * Sets the entity state.
-     *
-     * @param state the new state
-     */
-    @Override
-    public SimEntity setState(final State state) {
-        this.state = state;
         return this;
     }
 
@@ -427,8 +362,8 @@ public abstract class CloudSimEntity implements SimEntity, Cloneable {
      *
      * @param evt the new event buffer
      */
-    protected void setEventBuffer(final SimEvent evt) {
-        buffer = evt;
+    protected void setEventBuffer(@NonNull final SimEvent evt) {
+        this.buffer = evt;
     }
 
     /**
@@ -530,33 +465,5 @@ public abstract class CloudSimEntity implements SimEntity, Cloneable {
     @Override
     public int compareTo(final SimEntity entity) {
         return Long.compare(this.getId(), entity.getId());
-    }
-
-    @Override
-    public boolean equals(final Object object) {
-        if (this == object) return true;
-        if (object == null || getClass() != object.getClass()) return false;
-
-        final var that = (CloudSimEntity) object;
-
-        if (id != that.id) return false;
-        return simulation.equals(that.simulation);
-    }
-
-    @Override
-    public int hashCode() {
-        int result = simulation.hashCode();
-        result = 31 * result + Long.hashCode(id);
-        return result;
-    }
-
-    @Override
-    public double getShutdownTime() {
-        return shutdownTime;
-    }
-
-    @Override
-    public double getStartTime() {
-        return startTime;
     }
 }

@@ -36,7 +36,8 @@ import java.nio.file.Paths;
 /**
  * Represents an
  * <a href="http://aws.amazon.com/ec2/">Amazon EC2 VM Instance</a> template.
- * This class enables reading a template from a JSON file, containing actual configurations for VMs
+ * This class enables reading a template from a JSON file,
+ * containing actual configurations for VMs
  * available in <a href="http://aws.amazon.com/">Amazon Web Services</a>.
  * Such templates can be used to create {@link Vm} instances.
  *
@@ -46,14 +47,38 @@ import java.nio.file.Paths;
  * @author raysaoliveira
  * @see #getInstance(String)
  */
+@Data
+@Builder
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class AwsEc2Template implements Comparable<AwsEc2Template> {
     public static final AwsEc2Template NULL = new AwsEc2Template();
 
+    @ToString.Exclude
     private Path path;
+    /**
+     * The name of the template.
+     */
     private String name;
+
+    /**
+     * The number of CPUs {PEs} for the VM instance
+     */
     private int cpus;
+
+    /**
+     * The VM RAM capacity (in MB)
+     */
     private int memoryInMB;
+
+    /**
+     * The price per hour of a VM created from this template
+     */
     private double pricePerHour;
+
+    /**
+     * The AWS Region in which the instance is run.
+     * @see <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html">AWS Regions, Availability Zones, and Local Zones</a>
+     */
     private String region;
 
     /**
@@ -64,6 +89,7 @@ public class AwsEc2Template implements Comparable<AwsEc2Template> {
      * <p>This constructor is just provided to enable the {@link Gson} object
      * to use reflection to instantiate a AwsEc2Template.</p>
      * @see #getInstance(String)
+     * @see AwsEc2TemplateBuilder
      */
     public AwsEc2Template(){
         super();
@@ -121,82 +147,11 @@ public class AwsEc2Template implements Comparable<AwsEc2Template> {
     }
 
     /**
-     * Gets the name of the template.
-     * @return
-     */
-    public String getName() {return name; }
-
-    /**
-     * Sets the name of the template.
-     * @param name the name to set
-     */
-    public void setName(final String name) {
-        this.name = name;
-    }
-
-    /**
-     * Gets the number of CPUs {PEs} for the VM instance
-     * @return
-     */
-    public int getCpus() {
-        return cpus;
-    }
-
-    /**
-     * Sets the number of CPUs {PEs} for the VM instance
-     * @param cpus number of CPUs to set
-     */
-    public void setCpus(final int cpus) {
-        this.cpus = cpus;
-    }
-
-    /**
-     * Gets the VM RAM capacity (in MB)
-     */
-    public int getMemoryInMB() {
-        return memoryInMB;
-    }
-
-    /**
-     * Sets the VM RAM capacity (in MB)
-     * @param memoryInMB RAM capacity to set
-     */
-    public void setMemoryInMB(final int memoryInMB) {
-        this.memoryInMB = memoryInMB;
-    }
-
-    /**
-     * Gets the price per hour of a VM created from this template
-     * @return
-     */
-    public double getPricePerHour() {
-        return pricePerHour;
-    }
-
-    /**
      * Sets the price per hour of a VM created from this template
      * @param pricePerHour the price to set
      */
     public void setPricePerHour(final double pricePerHour) {
         this.pricePerHour = MathUtil.nonNegative(pricePerHour, "pricePerHour");
-    }
-
-    /**
-     * Gets the AWS Region in which the instance is run.
-     * @return
-     * @see <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html">AWS Regions, Availability Zones, and Local Zones</a>
-     */
-    public String getRegion() {
-        return region;
-    }
-
-    /**
-     * Sets the AWS Region in which the instance is run.
-     * @param region the region to set
-     * @see <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html">AWS Regions, Availability Zones, and Local Zones</a>
-     */
-    public void setRegion(final String region) {
-        this.region = region;
     }
 
     /**
@@ -215,15 +170,6 @@ public class AwsEc2Template implements Comparable<AwsEc2Template> {
     public String getFileName(){
         return path.getFileName().toString();
     }
-
-    @Override
-    public String toString() {
-        return "AwsEc2Template {name = " + name +
-            ",  cpus = " + cpus +
-            ",  memoryInMB = " + memoryInMB +
-            ",  pricePerHour = " + pricePerHour +'}';
-    }
-
 
     @Override
     public int compareTo(final AwsEc2Template template) {

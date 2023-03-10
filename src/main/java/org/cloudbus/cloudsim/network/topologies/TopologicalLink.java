@@ -8,12 +8,15 @@
 
 package org.cloudbus.cloudsim.network.topologies;
 
+import lombok.Getter;
+
 /**
  * Represents a link (edge) of a network graph
  * where the network topology was defined
  * from a file in <a href="http://www.cs.bu.edu/brite/user_manual/node29.html">BRITE format</a>.
  *
  * @author Thomas Hohnstein
+ * @author Manoel Campos da Silva Filho
  * @since CloudSim Toolkit 1.0
  */
 public class TopologicalLink {
@@ -21,17 +24,25 @@ public class TopologicalLink {
     /**
      * The BRITE id of the source node of the link.
      */
+    @Getter
     private final int srcNodeID;
 
     /**
-     * The BRITE id of the destination node of the link.
+     * {@return the BRITE id} of the destination node of the link.
      */
+    @Getter
     private final int destNodeID;
 
-    /** @see #getLinkDelay() */
+    /**
+     * {@return the delay} of the link (in seconds).
+     */
+    @Getter
     private final double linkDelay;
 
-    /** @see #getLinkBw() */
+    /**
+     * {@return the bandwidth} of the link (in Megabits/s).
+     */
+    @Getter
     private final double linkBw;
 
     /**
@@ -46,41 +57,5 @@ public class TopologicalLink {
         destNodeID = destNode;
         linkDelay = delay;
         linkBw = bandwidth;
-    }
-
-    /**
-     * Gets the BRITE id of the source node of the link.
-     *
-     * @return nodeID
-     */
-    public int getSrcNodeID() {
-        return srcNodeID;
-    }
-
-    /**
-     * Gets the BRITE id of the destination node of the link.
-     *
-     * @return nodeID
-     */
-    public int getDestNodeID() {
-        return destNodeID;
-    }
-
-    /**
-     * Gets the delay of the link.
-     *
-     * @return the link delay (in seconds)
-     */
-    public double getLinkDelay() {
-        return linkDelay;
-    }
-
-    /**
-     * Gets the bandwidth of the link.
-     *
-     * @return the bandwidth in Megabits/s.
-     */
-    public double getLinkBw() {
-        return linkBw;
     }
 }
