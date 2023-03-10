@@ -24,7 +24,7 @@
 package org.cloudsimplus.builders.tables;
 
 /**
- * A column of an text (ASCII) table. The class generates the string
+ * A column of a text (ASCII) table. The class generates the string
  * that represents a column in a text table.
  *
  * @author Manoel Campos da Silva Filho
