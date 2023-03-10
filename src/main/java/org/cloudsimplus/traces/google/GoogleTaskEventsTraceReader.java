@@ -110,8 +110,8 @@ public class GoogleTaskEventsTraceReader extends GoogleTraceReaderAbstract<Cloud
         final String filePath,
         final Function<TaskEvent, Cloudlet> cloudletCreationFunction)
     {
-        final InputStream reader = ResourceLoader.newInputStream(filePath, GoogleTaskEventsTraceReader.class);
-        return new GoogleTaskEventsTraceReader(simulation, filePath, reader, cloudletCreationFunction);
+        final var is = ResourceLoader.newInputStream(filePath, GoogleTaskEventsTraceReader.class);
+        return new GoogleTaskEventsTraceReader(simulation, filePath, is, cloudletCreationFunction);
     }
 
     /**
@@ -221,8 +221,8 @@ public class GoogleTaskEventsTraceReader extends GoogleTraceReaderAbstract<Cloud
      * @return true if the request was created, false otherwise
      */
     /* default */ boolean requestCloudletStatusChange(final CloudSimTag tag) {
-        final TaskEvent taskEvent = TaskEvent.of(this);
-        final DatacenterBroker broker = brokerManager.getBroker(taskEvent.getUserName());
+        final var taskEvent = TaskEvent.of(this);
+        final var broker = brokerManager.getBroker(taskEvent.getUserName());
         final double delay = taskEvent.getTimestamp();
 
         return findObject(taskEvent.getUniqueTaskId())
@@ -244,7 +244,7 @@ public class GoogleTaskEventsTraceReader extends GoogleTraceReaderAbstract<Cloud
     private Cloudlet addCloudletStatusChangeEvents(final CloudSimEvent statusChangeSimEvt, final TaskEvent taskEvent){
         /*The actual Cloudlet that needs to have its status and/or attributes changed
          * by sending a request message to the broker.*/
-        final Cloudlet cloudlet = (Cloudlet)statusChangeSimEvt.getData();
+        final var cloudlet = (Cloudlet)statusChangeSimEvt.getData();
 
         addEventToSend(cloudlet, statusChangeSimEvt);
 
@@ -262,7 +262,7 @@ public class GoogleTaskEventsTraceReader extends GoogleTraceReaderAbstract<Cloud
         provided function so that the correct objects for such attributes
         are created and then set to the Cloudlet being updated.
          */
-        final Cloudlet clone = createCloudlet(taskEvent);
+        final var clone = createCloudlet(taskEvent);
         clone.setId(cloudlet.getId());
 
         /* If some attribute of the Cloudlet that needs to be changed,
@@ -300,8 +300,8 @@ public class GoogleTaskEventsTraceReader extends GoogleTraceReaderAbstract<Cloud
             }
 
             //It's ensured when creating the Cloudlet that a UtilizationModelDynamic is used for RAM
-            final UtilizationModelDynamic cloneRamUM = (UtilizationModelDynamic)clone.getUtilizationModelRam();
-            final UtilizationModelDynamic cloudletRamUM = (UtilizationModelDynamic)cloudlet.getUtilizationModelRam();
+            final var cloneRamUM = (UtilizationModelDynamic)clone.getUtilizationModelRam();
+            final var cloudletRamUM = (UtilizationModelDynamic)cloudlet.getUtilizationModelRam();
             if(cloneRamUM.getMaxResourceUtilization() != cloudletRamUM.getMaxResourceUtilization()){
                 builder.append("Max RAM Usage: ")
                     .append(formatPercentValue(cloudletRamUM.getMaxResourceUtilization())).append(VAL_SEPARATOR)
@@ -317,7 +317,7 @@ public class GoogleTaskEventsTraceReader extends GoogleTraceReaderAbstract<Cloud
 
         /* The Runnable is the data of the event that is sent to the broker.
          * This way, it will be executed only when the event is processed.*/
-        final CloudSimEvent attrsChangeSimEvt =
+        final var attrsChangeSimEvt =
             new CloudSimEvent(
                 taskEvent.getTimestamp(),
                 statusChangeSimEvt.getDestination(),
