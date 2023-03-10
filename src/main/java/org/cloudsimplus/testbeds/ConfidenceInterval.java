@@ -54,9 +54,9 @@ public final class ConfidenceInterval {
     private final double upperLimit;
 
     /**
-     * Creates a ConfidenceInterval object with 95% confidence level.
+     * Creates a ConfidenceInterval (CI) object with 95% confidence level.
      * @param stats the object containing the statistics for the arbitrary metric collected
-     * @param metricName
+     * @param metricName the name of the metric for which the CI is computed.
      */
     public ConfidenceInterval(final SummaryStatistics stats, final String metricName) {
         this.metricName = Objects.requireNonNull(metricName);
@@ -86,7 +86,7 @@ public final class ConfidenceInterval {
      }
 
     /**
-     * Computes the Confidence Interval error margin for a given set of samples
+     * Computes the Confidence Interval (CI) error margin for a given set of samples
      * in order to enable finding the interval lower and upper bound around a
      * mean value.
      *
@@ -144,7 +144,7 @@ public final class ConfidenceInterval {
     }
 
     /**
-     * Computes the Confidence Interval critical value for a given
+     * Computes the Confidence Interval (CI) critical value for a given
      * number of samples and confidence level.
      * @param samples number of collected samples
      * @return
@@ -225,14 +225,14 @@ public final class ConfidenceInterval {
     }
 
     /**
-     * Check if the CI was actually computed, if the number of samples is greater than 1.
-     * Otherwise, the CI {@link #value} is just the mean for the experiment metric,
+     * {@return true or false} to indicate if the CI was actually computed
+     * (when the number of samples is greater than 1).
+     *
+     * <p>Otherwise, the CI {@link #value} is just the mean for the experiment metric,
      * not the CI in fact.
      * In that case, {@link #criticalValue}, {@link #errorMargin},
      * {@link #lowerLimit} and {@link #upperLimit}
-     * will be zero (corroborating there is no CI).
-     *
-     * @return
+     * will be zero (corroborating there is no CI).</p>
      */
     public boolean isComputed(){
         return samples > 1;
