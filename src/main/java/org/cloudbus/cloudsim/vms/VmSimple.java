@@ -37,15 +37,19 @@ import static java.util.Objects.requireNonNull;
  *
  * @author Rodrigo N. Calheiros
  * @author Anton Beloglazov
+ * @author Manoel Campos da Silva Filho
  * @since CloudSim Toolkit 1.0
  */
 public class VmSimple extends CustomerEntityAbstract implements Vm {
     /** @see #setDefaultRamCapacity(long) */
     private static long defaultRamCapacity = 1024;
+
     /** @see #setDefaultBwCapacity(long) */
     private static long defaultBwCapacity = 100;
+
     /** @see #setDefaultStorageCapacity(long) */
     private static long defaultStorageCapacity = 1024;
+
     /** @see #getCpuUtilizationStats() */
     private VmResourceStats cpuUtilizationStats;
 
@@ -93,13 +97,6 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
     /** @see #getSubmissionDelay() */
     private double submissionDelay;
 
-    private final List<EventListener<VmHostEventInfo>> onMigrationStartListeners;
-    private final List<EventListener<VmHostEventInfo>> onMigrationFinishListeners;
-    private final List<EventListener<VmHostEventInfo>> onHostAllocationListeners;
-    private final List<EventListener<VmHostEventInfo>> onHostDeallocationListeners;
-    private final List<EventListener<VmHostEventInfo>> onUpdateProcessingListeners;
-    private final List<EventListener<VmDatacenterEventInfo>> onCreationFailureListeners;
-
     private VerticalVmScaling ramVerticalScaling;
     private VerticalVmScaling bwVerticalScaling;
     private VerticalVmScaling peVerticalScaling;
@@ -112,6 +109,13 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
     private double timeZone;
     private MipsShare allocatedMips;
     private MipsShare requestedMips;
+
+    private final List<EventListener<VmHostEventInfo>> onMigrationStartListeners;
+    private final List<EventListener<VmHostEventInfo>> onMigrationFinishListeners;
+    private final List<EventListener<VmHostEventInfo>> onHostAllocationListeners;
+    private final List<EventListener<VmHostEventInfo>> onHostDeallocationListeners;
+    private final List<EventListener<VmHostEventInfo>> onUpdateProcessingListeners;
+    private final List<EventListener<VmDatacenterEventInfo>> onCreationFailureListeners;
 
     /**
      * A copy constructor that creates a VM based on the configuration of another one.
@@ -201,7 +205,9 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
     }
 
     /**
-     * Creates a Vm with 1024 MEGA of RAM, 100 Megabits/s of Bandwidth and 1024 MEGA of Storage Size.
+     * Creates a Vm with 1024 MEGA of RAM, 100 Megabits/s of Bandwidth and
+     * 1024 MEGA of Storage Size.
+     *
      * <p>
      * To change these values, use the respective setters. While the Vm {@link #isCreated()
      * is being instantiated}, such values can be changed freely.
