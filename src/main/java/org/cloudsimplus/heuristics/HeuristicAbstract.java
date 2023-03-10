@@ -33,7 +33,7 @@ import java.lang.reflect.InvocationTargetException;
  * @author Manoel Campos da Silva Filho
  * @param <S> The {@link HeuristicSolution class of solutions} the heuristic will deal with.
  *            It starts with an initial
- *            solution (usually random, depending on each sub-class implementation)
+ *            solution (usually random, depending on each subclass implementation)
  *            and executes the solution search in order
  *            to find a satisfying solution (defined by a stop criteria)
  * @since CloudSim Plus 1.0
