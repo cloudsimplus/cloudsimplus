@@ -57,37 +57,30 @@ public class VmCost {
     }
 
     /**
-     * Gets the characteristics of the Datacenter where the VM is running.
+     * {@return the characteristics of the Datacenter} where the VM is running.
      * Such characteristics include the price to run a VM in such a Datacenter.
-     * @return
      */
     private DatacenterCharacteristics getDcCharacteristics() {
         return vm.getHost().getDatacenter().getCharacteristics();
     }
 
     /**
-     * Gets the total monetary cost ($) of the VM's allocated memory.
-     *
-     * @return
+     * {@return the memory monetary cost ($)} of the resource allocated to the VM
      */
     public double getMemoryCost() {
         return getDcCharacteristics().getCostPerMem() * vm.getRam().getCapacity();
     }
 
     /**
-     * Gets the total monetary cost ($) of the VM's allocated BW.
-     *
-     * @return
+     * {@return the bandwidth monetary cost ($)} of the resource allocated to the VM
      */
     public double getBwCost() {
         return getDcCharacteristics().getCostPerBw() * vm.getBw().getCapacity();
     }
 
     /**
-     * Gets the total monetary cost ($) of processing power allocated from the PM hosting the VM,
+     * {@return the processing monetary cost ($)} of the PEs allocated from the PM hosting the VM,
      * considering the VM's PEs number and total execution time.
-     *
-     * @return
      */
     public double getProcessingCost() {
         final double hostMips = vm.getHost().getMips();
@@ -96,19 +89,15 @@ public class VmCost {
     }
 
     /**
-     * Gets the total monetary cost ($) of the VM's allocated storage.
-     *
-     * @return getStorageCost
+     * {@return the storage monetary cost ($)} of the resource allocated to the VM
      */
     public double getStorageCost() {
         return getDcCharacteristics().getCostPerStorage() * vm.getStorage().getCapacity();
     }
 
     /**
-     * Gets the total monetary cost ($) of all resources allocated to the VM,
+     * {@return the total monetary cost ($)} of all resources allocated to the VM,
      * namely the processing power, bandwidth, memory and storage.
-     *
-     * @return
      */
     public double getTotalCost() {
         return getProcessingCost() + getStorageCost() + getMemoryCost() + getBwCost();
