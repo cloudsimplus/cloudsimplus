@@ -74,7 +74,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     private final List<CloudletExecution> cloudletExecList;
 
     /** @see #enableCloudletSubmittedList() */
-    private boolean enableCloudletSubmittedList;
+    private boolean cloudletSubmittedListEnabled;
 
     /** @see #getCloudletSubmittedList() */
     private final List<Cloudlet> cloudletSubmittedList;
@@ -211,7 +211,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
 
     @Override
     public <T extends Cloudlet> List<T> getCloudletSubmittedList() {
-        if(cloudletSubmittedList.isEmpty() && !enableCloudletSubmittedList) {
+        if(cloudletSubmittedList.isEmpty() && !cloudletSubmittedListEnabled) {
             LOGGER.warn("{}: The list of submitted Cloudlets for {} is empty maybe because you didn't enabled it by calling enableCloudletSubmittedList().", getClass().getSimpleName(), vm);
         }
 
@@ -220,7 +220,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
 
     @Override
     public CloudletScheduler enableCloudletSubmittedList() {
-        this.enableCloudletSubmittedList = true;
+        this.cloudletSubmittedListEnabled = true;
         return this;
     }
 
@@ -278,7 +278,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
 
     @Override
     public final double cloudletSubmit(final Cloudlet cloudlet, final double fileTransferTime) {
-        if(enableCloudletSubmittedList) {
+        if(cloudletSubmittedListEnabled) {
             cloudletSubmittedList.add(cloudlet);
         }
 

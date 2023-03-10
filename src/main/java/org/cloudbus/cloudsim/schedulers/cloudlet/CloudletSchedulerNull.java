@@ -44,6 +44,7 @@ final class CloudletSchedulerNull implements CloudletScheduler {
         return Collections.emptyList();
     }
     @Override public <T extends Cloudlet> List<T> getCloudletSubmittedList() { return Collections.emptyList(); }
+    @Override public boolean isCloudletSubmittedListEnabled() { return false; }
     @Override public CloudletScheduler enableCloudletSubmittedList() { return this; }
     @Override public double getCurrentRequestedBwPercentUtilization() { return 0.0; }
     @Override public double getCurrentRequestedRamPercentUtilization() { return 0.0; }
