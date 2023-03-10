@@ -224,16 +224,14 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
 	}
 
     /**
-     * Gets a <b>read-only</b> list of Cloudlets which are waiting to run, the so called
-     * <a href="https://en.wikipedia.org/wiki/Run_queue">run queue</a>.
+     * {@return a <b>read-only</b> list of Cloudlets which are waiting to run},
+     * the so called <a href="https://en.wikipedia.org/wiki/Run_queue">run queue</a>.
      *
      * <p>
      * <b>NOTE:</b> Different from real implementations, this scheduler uses just one run queue
      * for all processor cores (PEs). Since CPU context switch is not concerned,
      * there is no point in using different run queues.
      * </p>
-     *
-     * @return
      */
     @Override
     public List<CloudletExecution> getCloudletWaitingList() {
