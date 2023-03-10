@@ -30,7 +30,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import static java.util.stream.Collectors.toList;
 
 /**
  * An abstract base class for implementing data tables.
@@ -114,7 +113,7 @@ public abstract class AbstractTable implements Table {
 
     @Override
     public List<Object> newRow(){
-        final List<Object> row = new ArrayList<>();
+        final var row = new ArrayList<>();
         rows.add(row);
         return row;
     }
@@ -125,21 +124,21 @@ public abstract class AbstractTable implements Table {
      * has a subtitle.
      */
     private boolean isThereAnySubtitledColumn(){
-        return columns.stream().anyMatch(col -> StringUtils.isNotBlank(col.getSubTitle()));
+        return columns.stream().anyMatch(col -> !col.getSubTitle().isBlank());
     }
 
     private void printRow(final List<Object> row) {
-        getPrintStream().printf(rowOpening());
+        printStream.printf(rowOpening());
         final List<TableColumn> cols =
             columns.stream()
-                .limit( Math.min(columns.size(), row.size()))
-                .collect(toList());
+                .limit(Math.min(columns.size(), row.size()))
+                .toList();
 
         int idxCol = 0;
         for(final TableColumn col: cols){
-            getPrintStream().print(col.generateData(row.get(idxCol++)));
+            printStream.print(col.generateData(row.get(idxCol++)));
         }
-        getPrintStream().printf(rowClosing());
+        printStream.printf(rowClosing());
     }
 
     @Override
