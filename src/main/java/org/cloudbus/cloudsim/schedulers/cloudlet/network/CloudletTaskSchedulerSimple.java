@@ -59,20 +59,17 @@ public class CloudletTaskSchedulerSimple implements CloudletTaskScheduler {
 
     @Override
     public void processCloudletTasks(final Cloudlet cloudlet, final long partialFinishedMI) {
-        if (cloudlet.isFinished() || isNotNetworkCloudlet(cloudlet)) {
-            return;
-        }
+        if(cloudlet.isRunning() && cloudlet instanceof NetworkCloudlet netCloudlet){
+            if (!netCloudlet.isTasksStarted()) {
+                scheduleNextTaskIfCurrentIsFinished(netCloudlet);
+                return;
+            }
 
-        final var netCloudlet = (NetworkCloudlet) cloudlet;
-        if (!netCloudlet.isTasksStarted()) {
-            scheduleNextTaskIfCurrentIsFinished(netCloudlet);
-            return;
+            //TODO Needs to use polymorphism to avoid these ifs
+            if (isTimeToUpdateCloudletProcessing(netCloudlet))
+                updateExecutionTask(netCloudlet, partialFinishedMI);
+            else updateNetworkTasks(netCloudlet);
         }
-
-        //TODO Needs to use polymorphism to avoid these ifs
-        if (isTimeToUpdateCloudletProcessing(netCloudlet))
-            updateExecutionTask(netCloudlet, partialFinishedMI);
-        else updateNetworkTasks(netCloudlet);
     }
 
     private void updateExecutionTask(final NetworkCloudlet cloudlet, final long partialFinishedMI) {
@@ -105,15 +102,12 @@ public class CloudletTaskSchedulerSimple implements CloudletTaskScheduler {
             return false;
         }
 
-        if(isNotNetworkCloudlet(cloudlet)) {
-            return true;
+        if (cloudlet instanceof NetworkCloudlet nc) {
+            return nc.getCurrentTask().filter(CloudletTask::isExecutionTask).isPresent();
         }
 
-        return ((NetworkCloudlet)cloudlet).getCurrentTask().filter(CloudletTask::isExecutionTask).isPresent();
-    }
+        return true;
 
-    private boolean isNotNetworkCloudlet(final Cloudlet cloudlet) {
-        return !(cloudlet instanceof NetworkCloudlet);
     }
 
     /**
