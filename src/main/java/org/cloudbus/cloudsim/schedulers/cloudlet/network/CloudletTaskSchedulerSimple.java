@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 /**
  * A scheduling policy performed by a
  * virtual machine to process {@link CloudletTask}s
- * of a {@link NetworkCloudlet}.
+ * belonging to a {@link NetworkCloudlet}.
  *
  * <p>It also schedules the network communication between cloudlets,
  * managing the time a cloudlet stays blocked waiting
