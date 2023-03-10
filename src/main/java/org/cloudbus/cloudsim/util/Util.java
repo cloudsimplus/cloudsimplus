@@ -28,7 +28,7 @@ import org.apache.commons.lang3.StringUtils;
 import static org.cloudbus.cloudsim.util.MathUtil.percentValue;
 
 /**
- * A class with general purpose utilities.
+ * A utility class with general purpose functions.
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 6.0.0
  */
