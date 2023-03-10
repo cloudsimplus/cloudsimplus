@@ -56,7 +56,7 @@ public class SanStorage extends HarddriveStorage {
     private final List<File> fileList;
 
     /**
-     * Creates a new SAN with a given capacity, latency, and bandwidth of the network connection.
+     * Creates a SAN with a given capacity, latency, and bandwidth of the network connection.
      *
      * @param capacity       Total storage capacity of the SAN
      * @param bandwidth      Network bandwidth (in Megabits/s)
@@ -68,7 +68,7 @@ public class SanStorage extends HarddriveStorage {
     }
 
     /**
-     * Creates a new SAN with a given capacity, latency, and bandwidth of the network connection
+     * Creates a SAN with a given capacity, latency, and bandwidth of the network connection
      * and with a specific name.
      *
      * @param name           the name of the new storage device
@@ -336,7 +336,7 @@ public class SanStorage extends HarddriveStorage {
      */
     @Override
     public double getTransferTime(final int fileSize) {
-        //Gets the time to read the from the local storage device (such as an HD or SSD).
+        //Gets the time to read from the local storage device (such as an HD or SSD).
         final double storageDeviceReadTime = super.getTransferTime(fileSize);
 
         //Gets the time to transfer the file through the network
@@ -356,10 +356,9 @@ public class SanStorage extends HarddriveStorage {
     }
 
     /**
-     * Gets the total time to add a file to the storage.
+     * {@return the total time} to add a file to the storage.
      *
      * @param file the file to compute the total addition time
-     * @return
      */
     private double getTotalFileAddTime(final File file) {
         final double seekTime = getSeekTime(file.getSize());
