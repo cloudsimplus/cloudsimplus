@@ -277,8 +277,8 @@ public final class GoogleTaskUsageTraceReader extends GoogleTraceReaderAbstract<
         final GoogleTaskEventsTraceReader taskEventsReader,
         final String filePath)
     {
-        final InputStream reader = ResourceLoader.newInputStream(filePath, GoogleTaskUsageTraceReader.class);
-        return new GoogleTaskUsageTraceReader(taskEventsReader, filePath, reader);
+        final var is = ResourceLoader.newInputStream(filePath, GoogleTaskUsageTraceReader.class);
+        return new GoogleTaskUsageTraceReader(taskEventsReader, filePath, is);
     }
 
     /**
@@ -369,7 +369,7 @@ public final class GoogleTaskUsageTraceReader extends GoogleTraceReaderAbstract<
 
     @Override
     protected boolean processParsedLineInternal() {
-        final TaskUsage taskUsage = new TaskUsage(this);
+        final var taskUsage = new TaskUsage(this);
         return taskEventsReader
                 .findObject(taskUsage.getUniqueTaskId())
                 .map(cloudlet -> requestCloudletUsageChange(cloudlet, taskUsage))
@@ -450,5 +450,4 @@ public final class GoogleTaskUsageTraceReader extends GoogleTraceReaderAbstract<
         return cloudlet.getUtilizationOfCpu() != taskUsage.getMeanCpuUsageRate() ||
                cloudlet.getUtilizationOfRam() != taskUsage.getCanonicalMemoryUsage();
     }
-
 }
