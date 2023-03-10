@@ -270,7 +270,7 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
      * @return the allocated MIPS share to the VM
      */
     protected MipsShare getMipsShareToAllocate(final Vm vm, final MipsShare requestedMips) {
-        return getMipsShareToAllocate(requestedMips, percentOfMipsToRequest(vm));
+        return getMipsShareToAllocate(requestedMips, mipsPercentToRequest(vm));
     }
 
     /**

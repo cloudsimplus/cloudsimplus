@@ -187,7 +187,7 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
         final double peMips = getPeCapacity();
         final long requestedPes = mipsShareRequested.pes();
         final double requestedMips = mipsShareRequested.mips();
-        return new MipsShare(requestedPes, Math.min(requestedMips, peMips)*percentOfMipsToRequest(vm));
+        return new MipsShare(requestedPes, Math.min(requestedMips, peMips)* mipsPercentToRequest(vm));
     }
 
     @Override
@@ -263,7 +263,7 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
         The line below computes the original
         requested MIPS (which correspond to 100%)
         */
-        return totalVmRequestedMips / percentOfMipsToRequest(vm);
+        return totalVmRequestedMips / mipsPercentToRequest(vm);
     }
 
     /**
@@ -287,7 +287,7 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
      * @return the percentage of MIPS requested by the VM that will be in fact
      * requested to the Host (in scale from [0 to 1], where  is 100%)
      */
-    protected double percentOfMipsToRequest(final Vm vm) {
+    protected double mipsPercentToRequest(final Vm vm) {
         if (host.getVmsMigratingIn().contains(vm)) {
             /* While the VM is migrating in,
             the destination host only increases CPU usage according
