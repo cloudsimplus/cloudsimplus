@@ -168,15 +168,16 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * exclusively by them.</p>
      *
      * @return the amount of available MIPS for each Processor PE.
-     *
-     * @TODO Splitting the capacity of a CPU core among different applications
-     *       inside a VM is not in fact possible (unless containers are used).
-     *       This was just an oversimplification
-     *       performed by the CloudletSchedulerTimeShared that may affect
-     *       other schedulers such as the CloudletSchedulerCompletelyFair,
-     *       which in fact performs task preemption.
      */
     public double getAvailableMipsByPe(){
+        /*
+         * TODO  Splitting the capacity of a CPU core among different applications
+         *       inside a VM is not in fact possible (unless containers are used).
+         *       This was just an oversimplification
+         *       performed by the CloudletSchedulerTimeShared that may affect
+         *       other schedulers such as the CloudletSchedulerCompletelyFair,
+         *       which in fact performs task preemption.
+        */
         final long totalPesOfAllExecCloudlets = totalPesOfAllExecCloudlets();
         if(totalPesOfAllExecCloudlets > currentMipsShare.pes()) {
             return getTotalMipsShare() / totalPesOfAllExecCloudlets;
