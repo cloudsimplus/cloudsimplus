@@ -240,9 +240,8 @@ public class UtilizationModelDynamic extends UtilizationModelAbstract {
     }
 
     /**
-     * Gets the time difference from the current simulation time to the
+     * {@return the time difference} from the current simulation time to the
      * last time the resource utilization was updated.
-     * @return
      */
     public double getTimeSpan(){
         return currentUtilizationTime - previousUtilizationTime;
