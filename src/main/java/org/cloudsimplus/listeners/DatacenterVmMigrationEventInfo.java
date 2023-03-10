@@ -70,8 +70,7 @@ public final class DatacenterVmMigrationEventInfo implements VmDatacenterEventIn
     }
 
     /**
-     * Indicates if the VM was successfully migrated or not.
-     * @return
+     * {@return true or false} to indicate if the VM was successfully migrated or not.
      */
     public boolean isMigrationSuccessful() {
         return suitability.fully();
