@@ -116,9 +116,8 @@ public class HorizontalVmScalingSimple extends VmScalingAbstract implements Hori
     }
 
     /**
-     * Checks if new Cloudlets were submitted to the broker since the last
-     * time this method was called.
-     * @return
+     * {@return true or false} to indicate if new Cloudlets were submitted
+     * to the broker since the last time this method was called.
      */
     private boolean haveNewCloudletsArrived(){
         return getVm().getBroker().getCloudletCreatedList().size() > cloudletCreationRequests;
