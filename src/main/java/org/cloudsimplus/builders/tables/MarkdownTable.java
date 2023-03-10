@@ -66,6 +66,9 @@ public class MarkdownTable extends CsvTable {
         return createHorizontalLine(true);
     }
 
+    /**
+     * There is no need for a table closing in Markdown.
+     */
     @Override
     public void printTableClosing() {/**/}
 
