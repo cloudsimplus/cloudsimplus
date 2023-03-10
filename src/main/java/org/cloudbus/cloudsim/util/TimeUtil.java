@@ -25,11 +25,13 @@ package org.cloudbus.cloudsim.util;
 
 /**
  * Utility class that provides some methods to deal with time units.
- * It's not used the {@link java.time.Duration}
- * and {@link java.time.Period} classes because
+ *
+ * <p><b>INFO:</b> It's not used the {@link java.time.Duration},
+ * {@link java.util.concurrent.TimeUnit} and {@link java.time.Period} classes because
  * they don't work with double type.
  * Therefore, it's not possible for them to deal with
  * time fractions, such as 2.5 hours.
+ * </p>
  *
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 4.4.2
@@ -207,8 +209,6 @@ public final class TimeUtil {
 
     /**
      * Converts a value in seconds to days.
-     * <p>The existing {@link java.util.concurrent.TimeUnit} and {@link java.time.Duration} classes
-     * don't provide the double precision required here.</p>
      *
      * @param seconds the value in seconds
      * @return the value in days
@@ -219,8 +219,6 @@ public final class TimeUtil {
 
     /**
      * Converts a value in hours to days.
-     * <p>The existing {@link java.util.concurrent.TimeUnit} and {@link java.time.Duration} classes
-     * don't provide the double precision required here.</p>
      *
      * @param hours the value in hours
      * @return the value in days
@@ -231,8 +229,6 @@ public final class TimeUtil {
 
     /**
      * Converts a value in hours to minutes.
-     * <p>The existing {@link java.util.concurrent.TimeUnit} and {@link java.time.Duration} classes
-     * don't provide the double precision required here.</p>
      *
      * @param hours the value in hours
      * @return the value in minutes
@@ -243,8 +239,6 @@ public final class TimeUtil {
 
     /**
      * Converts a value in hours to seconds.
-     * <p>The existing {@link java.util.concurrent.TimeUnit} and {@link java.time.Duration} classes
-     * don't provide the double precision required here.</p>
      *
      * @param hours the value in hours
      * @return the value in seconds
@@ -255,8 +249,6 @@ public final class TimeUtil {
 
     /**
      * Converts a value in days to seconds.
-     * <p>The existing {@link java.util.concurrent.TimeUnit} and {@link java.time.Duration} classes
-     * don't provide the double precision required here.</p>
      *
      * @param days the value in days
      * @return the value in seconds
@@ -267,8 +259,6 @@ public final class TimeUtil {
 
     /**
      * Converts a value in days to hours.
-     * <p>The existing {@link java.util.concurrent.TimeUnit} and {@link java.time.Duration} classes
-     * don't provide the double precision required here.</p>
      *
      * @param days the value in days
      * @return the value in hours
@@ -280,10 +270,6 @@ public final class TimeUtil {
     /**
      * Converts a value in months to an <b>approximated</b> number of seconds,
      * since it considers every month has 30 days.
-     *
-     * <p>The existing {@link java.util.concurrent.TimeUnit}, {@link java.time.Duration}
-     * and {@link java.time.Period} classes
-     * don't provide the double precision required here.</p>
      *
      * @param months the value in months
      * @return the value in seconds
