@@ -48,7 +48,7 @@ public final class ResourceLoader {
 
     /**
      * Instantiates a {@link BufferedReader} to read a file
-     * (a file or sub-directory inside the resources directory) from its path.
+     * (a file or subdirectory inside the resources' directory) from its path.
      *
      * @param filePath the path of the resource to get a {@link BufferedReader} for it
      * @param klass a class from the project that will be used just to assist in getting the path of the given resource
@@ -122,13 +122,13 @@ public final class ResourceLoader {
     }
 
     /**
-     * Gets the absolute path of a resource (a file or sub-directory) inside the resources directory.
+     * Gets the absolute path of a resource (a file or subdirectory) inside the resources' directory.
      *
      * @param klass a class from the project which will be used just to assist in getting the path
-     *              of the given resource. It can can any class inside the project
+     *              of the given resource. It can be any class inside the project
      *              where a resource you are trying to get from the resources directory
      * @param name the name of the resource to get its path
-     *             (that can be a file or a sub-directory inside the resources directory)
+     *             (that can be a file or a subdirectory inside the resources' directory)
      * @return the absolute path of the resource
      */
     public static String getResourcePath(final Class klass, final String name) {
@@ -137,13 +137,13 @@ public final class ResourceLoader {
     }
 
     /**
-     * Gets the {@link URL} of a resource (a file or sub-directory) inside the resources directory.
+     * Gets the {@link URL} of a resource (a file or subdirectory) inside the resources' directory.
      *
      * @param klass a class from the project which will be used just to assist in getting the path
-     *              of the given resource. It can can any class inside the project
+     *              of the given resource. It can be any class inside the project
      *              where a resource you are trying to get from the resources directory
      * @param name the name of the resource to get its path
-     *             (that can be a file or a sub-directory inside the resources directory)
+     *             (that can be a file or a subdirectory inside the resources' directory)
      * @return the {@link URL} of the resource
      */
     public static URL getResourceUrl(final Class klass, final String name) {
@@ -154,10 +154,10 @@ public final class ResourceLoader {
      * Gets the list of files contained inside a given resource directory.
      *
      * @param klass a class from the project which will be used just to assist in getting the path
-     *              of the given resource. It can can any class inside the project
+     *              of the given resource. It can be any class inside the project
      *              where a resource you are trying to get from the resources directory
      * @param resourceDir the name of the resource directory to get the list of files from
-     * @return
+     * @return the file name list
      */
     public static List<String> getResourceList(final Class klass, final String resourceDir){
         final URI uri;
