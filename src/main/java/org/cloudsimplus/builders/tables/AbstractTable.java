@@ -105,7 +105,7 @@ public abstract class AbstractTable implements Table {
     }
 
     /**
-     * @return The data to be printed, where each row contains
+     * {@return the data to be printed}, where each row contains
      * a list of data columns.
      */
     protected List<List<Object>> getRows() {
