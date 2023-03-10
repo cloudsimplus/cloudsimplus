@@ -233,7 +233,7 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
         this.allocatedMips = new MipsShare();
         this.requestedMips = new MipsShare();
 
-        this.processor = new Processor(this, mipsCapacity, numberOfPes);
+        this.processor = new Processor(this, numberOfPes, mipsCapacity);
         setMips(mipsCapacity);
         setNumberOfPes(numberOfPes);
 

@@ -25,7 +25,7 @@ public class ProcessorTest {
      * @return the created processor
      */
     private static Processor createDefaultProcessor() {
-        return new Processor(Vm.NULL, PE_MIPS, NUMBER_OF_PES);
+        return new Processor(Vm.NULL, NUMBER_OF_PES, PE_MIPS);
     }
 
     @Test
