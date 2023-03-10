@@ -31,9 +31,7 @@ package org.cloudbus.cloudsim.resources;
  */
 public interface ResourceCapacity  {
     /**
-     * Gets the total capacity of the resource.
-     *
-     * @return the total resource capacity
+     * {@return the total capacity} of the resource
      */
     long getCapacity();
 }

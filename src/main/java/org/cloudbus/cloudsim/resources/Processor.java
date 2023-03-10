@@ -27,8 +27,8 @@ import org.cloudbus.cloudsim.util.MathUtil;
 import org.cloudbus.cloudsim.vms.Vm;
 
 /**
- * A Central Unit Processing (CPU) attached to a {@link Vm} and which can have multiple
- * cores ({@link Pe}s). It's a also called a Virtual CPU (vCPU).
+ * A virtual Central Unit Processing (vCPU) attached to a {@link Vm},
+ * having one or more cores ({@link Pe}s).
  *
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
@@ -82,8 +82,7 @@ public final class Processor extends ResourceManageableAbstract {
     }
 
     /**
-     * Gets the number of {@link Pe}s of the Processor
-     * @return
+     * {@return the number of Pes} of the Processor
      */
     @Override
     public long getCapacity() {
@@ -91,8 +90,7 @@ public final class Processor extends ResourceManageableAbstract {
     }
 
     /**
-     * Gets the number of free PEs.
-     * @return
+     * {@return the number of available PEs} that are free to be used
      */
     @Override
     public long getAvailableResource() {
@@ -100,8 +98,7 @@ public final class Processor extends ResourceManageableAbstract {
     }
 
     /**
-     * Gets the number of used PEs.
-     * @return
+     * {@return the number of PEs} allocated
      */
     @Override
     public long getAllocatedResource() {

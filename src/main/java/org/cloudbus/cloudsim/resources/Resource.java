@@ -37,21 +37,17 @@ public interface Resource extends ResourceCapacity {
     }
 
     /**
-     * Gets the amount of the resource that is available (free).
-     *
-     * @return the amount of available resource
+     * {@return the available amount} of the resource that is free to be used
      */
     long getAvailableResource();
 
     /**
-     * Gets the current total amount of allocated resource.
-     *
-     * @return amount of allocated resource
+     * {@return the current total amount} of allocated resource
      */
     long getAllocatedResource();
 
     /**
-     * Checks if there the capacity required for the given resource is available (free)
+     * Checks if there is the capacity required for the given resource is available (free)
      * at this resource. This method is commonly used to check if there is a specific
      * amount of resource free at a physical resource (this Resource instance)
      * that is required by a virtualized resource (the given Resource).
