@@ -88,25 +88,23 @@ public class MipsShare {
     }
 
     /**
-     * Gets the number of allocated/requested PEs,
+     * {@return  the number of allocated/requested PEs},
      * which indicates the size of the MIPS share.
-     * @return
      */
     public long pes(){
         return pes;
     }
 
     /**
-     * Checks if there isn't MIPS capacity allocated to any PE.
-     * @return
+     * {@return true or false} respectively if there isn't MIPS capacity allocated to any PE,
+     * or if some capacity was already allocated.
      */
     public boolean isEmpty(){
         return pes == 0 || mips == 0;
     }
 
     /**
-     * Gets the total MIPS capacity sum across all PEs.
-     * @return
+     * {@return the total MIPS capacity} sum across all PEs.
      */
     public double totalMips(){
         return pes * mips;
