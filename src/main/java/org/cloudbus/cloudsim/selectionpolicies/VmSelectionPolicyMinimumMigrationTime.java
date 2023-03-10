@@ -21,8 +21,8 @@ import static java.util.Comparator.comparingLong;
 /**
  * A VM selection policy that selects for migration the VM with Minimum Migration Time (MMT).
  *
- * <br>If you are using any algorithms, policies or workload included in the power package please cite
- * the following paper:<br>
+ * <p>If you are using any algorithms, policies or workload included in the power package please cite
+ * the following paper:</p>
  *
  * <ul>
  * <li><a href="https://doi.org/10.1002/cpe.1867">Anton Beloglazov, and Rajkumar Buyya, "Optimal Online Deterministic Algorithms and Adaptive
