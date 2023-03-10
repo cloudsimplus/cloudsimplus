@@ -271,7 +271,7 @@ public class HostFaultInjection extends CloudSimEntity {
      * to try injecting a Host PEs failure.
      */
     private void scheduleFaultInjection() {
-        final Simulation sim = getSimulation();
+        final var sim = getSimulation();
         final Predicate<SimEvent> otherEventsPredicate = evt -> evt.getTag() != HOST_FAILURE;
 
         /*
@@ -343,13 +343,11 @@ public class HostFaultInjection extends CloudSimEntity {
                 hostWorkingPes, lastFailedHost.getVmList().size(), msg);
         }
 
-        if (hostWorkingPes == 0) {
+        if (hostWorkingPes == 0)
             setAllVmsToFailed();
-        } else if (hostWorkingPes >= vmsRequiredPes) {
+        else if (hostWorkingPes >= vmsRequiredPes)
             logNoVmFault();
-        } else {
-            deallocateFailedHostPesFromVms();
-        }
+        else deallocateFailedHostPesFromVms();
     }
 
     private String getTime() {
@@ -498,7 +496,7 @@ public class HostFaultInjection extends CloudSimEntity {
      * Sets all VMs from a given list as failed, due to Host PEs failures.
      */
     private void setVmListToFailed(final List<Vm> vms) {
-        final Map<DatacenterBroker, Vm> lastVmFailedByBrokerMap = getLastFailedVmByBroker(vms);
+        final var lastVmFailedByBrokerMap = getLastFailedVmByBroker(vms);
 
         vms.forEach(this::setVmToFailed);
         lastVmFailedByBrokerMap.forEach(this::createVmCloneIfAllVmsDestroyed);
@@ -522,15 +520,15 @@ public class HostFaultInjection extends CloudSimEntity {
      * clones already was created, from the time of the failure
      * until the end of the simulation, this interval the customer
      * service is completely unavailable.
+     * </p>
      *
-     * Since the map below stores recovery times and not unavailability times,
+     * <p>Since the map below stores recovery times and not unavailability times,
      * it's being store the failure time as a negative value.
      * This way, when computing the availability for the customer,
      * these negative values are changed to: lastSimulationTime - |negativeRecoveryTime|.
      * Using this logic, is like the VM was recovered only in the end of the simulation.
      * It in fact is not recovered, but this logic has to be applied to
      * allow computing the availability.
-     *
      * </p>
      * @param broker
      * @param lastVmFailedFromBroker
@@ -566,11 +564,11 @@ public class HostFaultInjection extends CloudSimEntity {
         final Map.Entry<Vm, List<Cloudlet>> entry = cloner.clone(lastVmFailedFromBroker);
 
         final Vm clonedVm = entry.getKey();
-        final List<Cloudlet> clonedCloudlets = entry.getValue();
+        final var clonedCloudletList = entry.getValue();
         clonedVm.setSubmissionDelay(recoveryTimeSecs);
         clonedVm.addOnHostAllocationListener(evt -> vmRecoveryTimeSecsMap.put(evt.getVm(), recoveryTimeSecs));
         broker.submitVm(clonedVm);
-        broker.submitCloudletList(clonedCloudlets, recoveryTimeSecs);
+        broker.submitCloudletList(clonedCloudletList, recoveryTimeSecs);
     }
 
     /**
@@ -826,7 +824,7 @@ public class HostFaultInjection extends CloudSimEntity {
         final var peList = lastFailedHost.getWorkingPeList()
             .stream()
             .limit(pesFailures)
-            .collect(toList());
+            .toList();
 
         ((HostSimple)lastFailedHost).setPeStatus(peList, Pe.Status.FAILED);
 
