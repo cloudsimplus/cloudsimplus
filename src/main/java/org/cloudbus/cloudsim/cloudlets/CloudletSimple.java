@@ -7,12 +7,11 @@
  */
 package org.cloudbus.cloudsim.cloudlets;
 
+import lombok.NonNull;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.Vm;
-
-import java.util.Objects;
 
 /**
  * Cloudlet implements the basic features of an application/job/task to be executed
@@ -106,8 +105,8 @@ public class CloudletSimple extends CloudletAbstract {
      * @return {@inheritDoc}
      */
     @Override
-    public int compareTo(final Cloudlet other) {
-        if(this.equals(Objects.requireNonNull(other))) {
+    public int compareTo(@NonNull final Cloudlet other) {
+        if(this.equals(other)) {
             return 0;
         }
 

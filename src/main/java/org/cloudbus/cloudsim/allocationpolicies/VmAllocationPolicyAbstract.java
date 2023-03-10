@@ -24,7 +24,6 @@ import org.cloudsimplus.autoscaling.VerticalVmScaling;
 import java.util.*;
 import java.util.function.BiFunction;
 
-import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -245,8 +244,7 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
     }
 
     @Override
-    public <T extends Vm> List<T> allocateHostForVm(final Collection<T> vmCollection) {
-        requireNonNull(vmCollection, "The list of VMs to allocate a host to cannot be null");
+    public <T extends Vm> List<T> allocateHostForVm(@NonNull final Collection<T> vmCollection) {
         return vmCollection.stream().filter(vm -> !allocateHostForVm(vm).fully()).collect(toList());
     }
 

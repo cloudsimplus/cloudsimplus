@@ -28,8 +28,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import static java.util.Objects.requireNonNull;
-
 /**
  * An abstract class for {@link Cloudlet} implementations.
  *
@@ -207,34 +205,34 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
     }
 
     @Override
-    public Cloudlet addOnUpdateProcessingListener(final EventListener<CloudletVmEventInfo> listener) {
-        this.onUpdateProcessingListeners.add(requireNonNull(listener));
+    public Cloudlet addOnUpdateProcessingListener(@NonNull final EventListener<CloudletVmEventInfo> listener) {
+        this.onUpdateProcessingListeners.add(listener);
         return this;
     }
 
     @Override
-    public boolean removeOnUpdateProcessingListener(final EventListener<CloudletVmEventInfo> listener) {
+    public boolean removeOnUpdateProcessingListener(@NonNull final EventListener<CloudletVmEventInfo> listener) {
         return this.onUpdateProcessingListeners.remove(listener);
     }
 
     @Override
-    public Cloudlet addOnStartListener(final EventListener<CloudletVmEventInfo> listener) {
-        this.onStartListeners.add(requireNonNull(listener));
+    public Cloudlet addOnStartListener(@NonNull final EventListener<CloudletVmEventInfo> listener) {
+        this.onStartListeners.add(listener);
         return this;
     }
 
     @Override
-    public boolean removeOnStartListener(final EventListener<CloudletVmEventInfo> listener) {
+    public boolean removeOnStartListener(@NonNull final EventListener<CloudletVmEventInfo> listener) {
         return onStartListeners.remove(listener);
     }
 
     @Override
-    public Cloudlet addOnFinishListener(final EventListener<CloudletVmEventInfo> listener) {
+    public Cloudlet addOnFinishListener(@NonNull final EventListener<CloudletVmEventInfo> listener) {
         if(listener.equals(EventListener.NULL)){
             return this;
         }
 
-        this.onFinishListeners.add(requireNonNull(listener));
+        this.onFinishListeners.add(listener);
         return this;
     }
 
