@@ -36,8 +36,6 @@ import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-import static java.util.Objects.requireNonNull;
-
 /**
  * An abstract class for implementing {@link DatacenterBroker}s.
  *
@@ -277,8 +275,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     }
 
     @Override
-    public DatacenterBroker submitVm(final Vm vm) {
-        requireNonNull(vm);
+    public DatacenterBroker submitVm(@NonNull final Vm vm) {
         if (Vm.NULL.equals(vm)) {
             return this;
         }
@@ -289,8 +286,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     }
 
     @Override
-    public DatacenterBroker submitCloudlet(final Cloudlet cloudlet) {
-        requireNonNull(cloudlet);
+    public DatacenterBroker submitCloudlet(@NonNull final Cloudlet cloudlet) {
         if (cloudlet == Cloudlet.NULL) {
             return this;
         }
@@ -1157,14 +1153,14 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     }
 
     @Override
-    public DatacenterBroker addOnVmsCreatedListener(final EventListener<DatacenterBrokerEventInfo> listener) {
-        this.onVmsCreatedListeners.add(requireNonNull(listener));
+    public DatacenterBroker addOnVmsCreatedListener(@NonNull final EventListener<DatacenterBrokerEventInfo> listener) {
+        this.onVmsCreatedListeners.add(listener);
         return this;
     }
 
     @Override
-    public DatacenterBroker removeOnVmsCreatedListener(final EventListener<? extends EventInfo> listener) {
-        this.onVmsCreatedListeners.remove(requireNonNull(listener));
+    public DatacenterBroker removeOnVmsCreatedListener(@NonNull final EventListener<? extends EventInfo> listener) {
+        this.onVmsCreatedListeners.remove(listener);
         return this;
     }
 

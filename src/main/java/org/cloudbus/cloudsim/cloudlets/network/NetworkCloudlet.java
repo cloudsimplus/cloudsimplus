@@ -7,12 +7,15 @@
  */
 package org.cloudbus.cloudsim.cloudlets.network;
 
-import org.cloudbus.cloudsim.cloudlets.Cloudlet;
+import lombok.NonNull;
 import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.network.NetworkVm;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * NetworkCloudlet to support simulation of complex applications.
@@ -171,8 +174,7 @@ public class NetworkCloudlet extends CloudletSimple {
      * @param task Task to be added
      * @return the NetworkCloudlet instance
      */
-    public NetworkCloudlet addTask(final CloudletTask task) {
-        Objects.requireNonNull(task);
+    public NetworkCloudlet addTask(@NonNull final CloudletTask task) {
         task.setCloudlet(this);
         tasks.add(task);
         return this;

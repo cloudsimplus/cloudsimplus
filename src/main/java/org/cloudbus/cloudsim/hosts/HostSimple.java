@@ -309,7 +309,7 @@ public class HostSimple implements Host {
     }
 
     private HostSimple(
-        final long ram, final long bw, final HarddriveStorage storage,
+        final long ram, final long bw, @NonNull final HarddriveStorage storage,
         final List<Pe> peList, final boolean activate)
     {
         this.setId(-1);
@@ -319,7 +319,7 @@ public class HostSimple implements Host {
 
         this.ram = new Ram(ram);
         this.bw = new Bandwidth(bw);
-        this.disk = requireNonNull(storage);
+        this.disk = storage;
         this.setRamProvisioner(new ResourceProvisionerSimple());
         this.setBwProvisioner(new ResourceProvisionerSimple());
 
