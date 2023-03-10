@@ -127,7 +127,7 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
      * and that just a fraction or zero MIPS were allocated.
      *
      * @param vm the VM requesting the MIPS
-     * @param requestedMipsForVmPe the the MIPS requested for a vPE
+     * @param requestedMipsForVmPe the MIPS requested for a vPE
      * @param allocatedMipsForVmPe the actually allocated MIPS for the vPE
      */
     private void logMipsUnavailable(final Vm vm, final double requestedMipsForVmPe, final double allocatedMipsForVmPe) {
@@ -169,7 +169,7 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
              if(allocateAllVmPeRequestedMipsFromHostPe(vm, selectedHostPe, requestedMipsForVmPe)){
                 allocatedMipsForVmPe = requestedMipsForVmPe;
              } else {
-                allocatedMipsForVmPe += allocatedAvailableMipsFromHostPeToVirtualPe(vm, selectedHostPe);
+                allocatedMipsForVmPe += allocatedMipsFromHostPeToVirtualPe(vm, selectedHostPe);
              }
         }
 
@@ -189,7 +189,7 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
      *
      * @see #allocateAllVmPeRequestedMipsFromHostPe(org.cloudbus.cloudsim.vms.Vm, org.cloudbus.cloudsim.resources.Pe, double)
      */
-    private double allocatedAvailableMipsFromHostPeToVirtualPe(final Vm vm, final Pe hostPe) {
+    private double allocatedMipsFromHostPeToVirtualPe(final Vm vm, final Pe hostPe) {
         final double availableMips = getAvailableMipsFromHostPe(hostPe);
         if (availableMips <= 0){
            return 0;
