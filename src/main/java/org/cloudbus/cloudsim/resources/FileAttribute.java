@@ -147,7 +147,10 @@ public class FileAttribute {
      * @param fileSize the file size (in MBytes)
      */
     public final void setFileSize(final int fileSize) {
-        this.fileSize = MathUtil.nonNegative(fileSize, "fileSize");
+        if(fileSize <= 0)
+            throw new IllegalArgumentException("File size must be higher than 0");
+
+        this.fileSize = fileSize;
     }
 
     /**

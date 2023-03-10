@@ -76,10 +76,13 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
 
     private List<String> requiredFiles;
 
+    @NonNull
     private UtilizationModel utilizationModelCpu;
 
+    @NonNull
     private UtilizationModel utilizationModelRam;
 
+    @NonNull
     private UtilizationModel utilizationModelBw;
 
     @Getter(AccessLevel.NONE)
@@ -196,7 +199,7 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
     }
 
     @Override
-    public Cloudlet setUtilizationModel(final UtilizationModel utilizationModel) {
+    public Cloudlet setUtilizationModel(@NonNull final UtilizationModel utilizationModel) {
         setUtilizationModelBw(utilizationModel);
         setUtilizationModelRam(utilizationModel);
         setUtilizationModelCpu(utilizationModel);

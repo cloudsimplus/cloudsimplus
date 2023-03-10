@@ -136,12 +136,11 @@ public class FileTest {
         instance.setSize(fileSize);
         assertEquals(fileSize, instance.getSize());
 
-        instance.setSize(-1);
+        assertThrows(IllegalArgumentException.class, () -> instance.setSize(-1));
         assertEquals(fileSize, instance.getSize());
 
         final int zero = 0;
-        instance.setSize(zero);
-        assertEquals(zero, instance.getSize());
+        assertThrows(IllegalArgumentException.class, () -> instance.setSize(zero));
     }
 
     @Test

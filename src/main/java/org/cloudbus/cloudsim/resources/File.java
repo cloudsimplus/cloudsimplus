@@ -16,8 +16,6 @@ import org.cloudbus.cloudsim.util.MathUtil;
 
 import java.time.LocalDateTime;
 
-import static java.util.Objects.requireNonNull;
-
 /**
  * A class for representing a physical file in a DataCloud environment
  *
@@ -48,6 +46,7 @@ public class File {
      * and such a storage is attached to a Datacenter,
      * the Datacenter sets itself for all files of that storage.
      */
+    @NonNull
     private Datacenter datacenter;
 
     /**
