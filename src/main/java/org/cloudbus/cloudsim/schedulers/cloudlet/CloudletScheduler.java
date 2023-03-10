@@ -129,8 +129,17 @@ public interface CloudletScheduler extends Serializable {
     <T extends Cloudlet> List<T> getCloudletSubmittedList();
 
     /**
+     * {@return true or false} if the list of all Cloudlets submitted so far is enabled,
+     * indicading it keeps a history of each submitted Cloudlet.
+     * @see #getCloudletSubmittedList()
+     * @see #enableCloudletSubmittedList()
+     */
+    boolean isCloudletSubmittedListEnabled();
+
+    /**
      * Enables the history of all Cloudlets submitted so far.
      * @see #getCloudletSubmittedList()
+     * @see #isCloudletSubmittedListEnabled()
      */
     CloudletScheduler enableCloudletSubmittedList();
 
