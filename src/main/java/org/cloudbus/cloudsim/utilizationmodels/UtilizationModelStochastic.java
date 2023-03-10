@@ -19,7 +19,8 @@ import java.util.Objects;
 
 /**
  * Implements a model, according to which a Cloudlet generates
- * random resource utilization every time frame.
+ * random resource utilization every time frame,
+ * using a {@link ContinuousDistribution}.
  *
  * <p>The class may return different utilization values
  * for the same requested time.
@@ -164,7 +165,10 @@ public class UtilizationModelStochastic extends UtilizationModelAbstract {
     }
 
     /**
+     * {@inheritDoc}
      * @see <a href="https://github.com/manoelcampos/cloudsim-plus/issues/197">Issue #197 for more details</a>
+     * @param time {@inheritDoc}
+     * @return {@inheritDoc}
      */
     @Override
     protected double getUtilizationInternal(final double time) {
