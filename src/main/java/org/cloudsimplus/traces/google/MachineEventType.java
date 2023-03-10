@@ -26,7 +26,7 @@ package org.cloudsimplus.traces.google;
 import org.cloudbus.cloudsim.hosts.Host;
 
 /**
- * Defines the type of an event (a line) in the trace file
+ * Defines the type of event (a line) in the trace file
  * that represents the operation to be performed with the {@link Host}.
  * Each enum instance is a possible value for the {@link MachineEventField#EVENT_TYPE} field.
  *
