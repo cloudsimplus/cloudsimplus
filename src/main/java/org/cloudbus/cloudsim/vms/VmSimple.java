@@ -876,11 +876,7 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
 
     @Override
     public final void setSubmissionDelay(final double submissionDelay) {
-        if (submissionDelay < 0) {
-            return;
-        }
-
-        this.submissionDelay = submissionDelay;
+        this.submissionDelay = MathUtil.nonNegative(submissionDelay, "submissionDelay");
     }
 
     @Override
