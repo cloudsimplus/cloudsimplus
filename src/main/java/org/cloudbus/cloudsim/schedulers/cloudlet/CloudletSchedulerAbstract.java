@@ -1293,9 +1293,8 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     }
 
     /**
-     * Gets a <b>read-only</b> list of Cloudlets that finished executing and were returned the their broker.
+     * {@return a <b>read-only</b> list of Cloudlets}  that finished executing and were returned to the broker.
      * A Cloudlet is returned to notify the broker about the end of its execution.
-     * @return
      */
     protected Set<Cloudlet> getCloudletReturnedList() {
         return Collections.unmodifiableSet(cloudletReturnedList);
