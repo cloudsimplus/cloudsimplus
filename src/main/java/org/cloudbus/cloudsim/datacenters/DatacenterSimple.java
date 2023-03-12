@@ -1072,13 +1072,9 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         return this;
     }
 
-    /**
-     * {@inheritDoc}
-     * <p>It creates a copy of the given parameter.</p>
-     * @param characteristics {@inheritDoc}
-     */
     @Override
-    public void setCharacteristics(@NonNull DatacenterCharacteristics characteristics) {
-        this.characteristics = new DatacenterCharacteristicsSimple(characteristics, this);
+    public void setCharacteristics(@NonNull DatacenterCharacteristics c) {
+        ((DatacenterCharacteristicsSimple)c).setDatacenter(this);
+        this.characteristics = c;
     }
 }
