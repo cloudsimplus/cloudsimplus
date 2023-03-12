@@ -11,6 +11,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.core.CloudSimTag;
 import org.cloudbus.cloudsim.core.CustomerEntityAbstract;
@@ -35,7 +36,7 @@ import java.util.Set;
  * @author Anton Beloglazov
  * @author Manoel Campos da Silva Filho
  */
-@Getter @Setter
+@Accessors(makeFinal = false) @Getter @Setter
 public abstract class CloudletAbstract extends CustomerEntityAbstract implements Cloudlet {
     private long jobId;
 
@@ -247,12 +248,13 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
     }
 
     @Override
-    public void setNetServiceLevel(final int netServiceLevel) {
+    public Cloudlet setNetServiceLevel(final int netServiceLevel) {
         if (netServiceLevel < 0) {
             throw new IllegalArgumentException("Net Service Level cannot be negative");
         }
 
         this.netServiceLevel = netServiceLevel;
+        return this;
     }
 
     @Override

@@ -11,6 +11,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicy;
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicyAbstract;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
@@ -52,7 +53,7 @@ import static java.util.stream.Collectors.*;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Toolkit 3.0
  */
-@Getter @Setter
+@Accessors @Getter @Setter
 public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPolicyAbstract implements VmAllocationPolicyMigration {
     public static final double DEF_UNDERLOAD_THRESHOLD = 0.35;
 
@@ -125,9 +126,10 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
     }
 
     @Override
-    public void setDatacenter(final Datacenter datacenter) {
+    public VmAllocationPolicyAbstract setDatacenter(final Datacenter datacenter) {
         super.setDatacenter(datacenter);
         this.targetMigrationDc = datacenter;
+        return this;
     }
 
     @Override

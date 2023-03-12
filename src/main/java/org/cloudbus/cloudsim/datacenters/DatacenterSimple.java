@@ -1050,7 +1050,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     }
 
     @Override
-    public final void setPowerModel(final PowerModelDatacenter powerModel) {
+    public final Datacenter setPowerModel(final PowerModelDatacenter powerModel) {
         requireNonNull(powerModel,
             "powerModel cannot be null. You could provide a " +
             PowerModelDatacenter.class.getSimpleName() + ".NULL instead");
@@ -1060,6 +1060,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         }
 
         this.powerModel = powerModel;
+        return null;
     }
 
     @Override

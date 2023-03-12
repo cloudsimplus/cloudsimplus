@@ -25,6 +25,7 @@ package org.cloudsimplus.testbeds;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 
 /**
  * An abstract class to provide base features for {@link Experiment} and {@link ExperimentRunner}.
@@ -32,6 +33,7 @@ import lombok.Setter;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 6.1.0
  */
+@Accessors
 public abstract class AbstractRunnable implements Runnable {
     /**
      * Checks if simulation results of the experiment have to be output.

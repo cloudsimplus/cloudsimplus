@@ -45,13 +45,11 @@ final class VmClonerNull implements VmCloner {
         return 0;
     }
     @Override public Map.Entry<Vm, List<Cloudlet>> clone(Vm sourceVm) { return new HashMap.SimpleEntry<>(Vm.NULL, Collections.EMPTY_LIST); }
-    @Override public void setVmClonerFunction(UnaryOperator<Vm> vmClonerFunction) {/**/}
-    @Override public void setCloudletsClonerFunction(Function<Vm, List<Cloudlet>> cloudletsClonerFunction) { /**/ }
+    @Override public VmCloner setVmClonerFunction(UnaryOperator<Vm> vmClonerFunction) { return this; }
+    @Override public VmCloner setCloudletsClonerFunction(Function<Vm, List<Cloudlet>> cloudletsClonerFunction) { return this; }
     @Override public int getMaxClonesNumber() {
         return 0;
     }
-    @Override public boolean isMaxClonesNumberReached() {
-        return false;
-    }
-    @Override public void setMaxClonesNumber(int maxClonesNumber) {/**/}
+    @Override public boolean isMaxClonesNumberReached() { return false; }
+    @Override public VmCloner setMaxClonesNumber(int maxClonesNumber) { return this; }
 }

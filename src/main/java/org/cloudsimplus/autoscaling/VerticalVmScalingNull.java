@@ -48,7 +48,7 @@ final class VerticalVmScalingNull implements VerticalVmScaling {
     @Override public double getResourceAmountToScale() {
         return 0.0;
     }
-    @Override public void setScalingFactor(double scalingFactor) {/**/}
+    @Override public VerticalVmScaling setScalingFactor(double scalingFactor) {return this;}
     @Override public boolean isVmUnderloaded() { return false; }
     @Override public boolean isVmOverloaded() { return false; }
     @Override public Resource getResource() { return Resource.NULL; }
@@ -58,14 +58,14 @@ final class VerticalVmScalingNull implements VerticalVmScaling {
     @Override public Vm getVm() {
         return Vm.NULL;
     }
-    @Override public void setVm(Vm vm) {/**/}
+    @Override public VmScaling setVm(Vm vm) {return this;}
     @Override public Function<Vm, Double> getUpperThresholdFunction() {
         return vm -> Double.MAX_VALUE;
     }
     @Override public VerticalVmScaling setUpperThresholdFunction(Function<Vm, Double> upperThresholdFunction) { return this; }
     @Override public Function<Vm, Double> getLowerThresholdFunction() { return vm -> Double.MIN_VALUE; }
     @Override public VerticalVmScaling setLowerThresholdFunction(Function<Vm, Double> lowerThresholdFunction) { return this; }
-    @Override public void setResourceScaling(ResourceScaling resourceScaling) { /**/ }
+    @Override public VerticalVmScaling setResourceScaling(ResourceScaling resourceScaling) {return this;}
     @Override public long getAllocatedResource() { return 0; }
     @Override public boolean allocateResourceForVm() { return false; }
     @Override public void logResourceUnavailable() {/**/}

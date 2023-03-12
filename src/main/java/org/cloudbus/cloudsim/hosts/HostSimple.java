@@ -10,9 +10,11 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.cloudbus.cloudsim.core.*;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
+import org.cloudbus.cloudsim.power.PowerAware;
 import org.cloudbus.cloudsim.power.models.PowerModelHost;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisioner;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
@@ -46,7 +48,7 @@ import static java.util.stream.Collectors.toList;
  * @author Anton Beloglazov
  * @since CloudSim Toolkit 1.0
  */
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@Accessors @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class HostSimple implements Host {
     @Getter @Setter @EqualsAndHashCode.Include
     private long id;
@@ -1194,7 +1196,7 @@ public class HostSimple implements Host {
     }
 
     @Override
-    public final void setPowerModel(final PowerModelHost powerModel) {
+    public final PowerAware<PowerModelHost> setPowerModel(final PowerModelHost powerModel) {
         requireNonNull(powerModel,
             "powerModel cannot be null. You could provide a " +
             PowerModelHost.class.getSimpleName() + ".NULL instead.");
@@ -1205,16 +1207,19 @@ public class HostSimple implements Host {
 
         this.powerModel = powerModel;
         powerModel.setHost(this);
+        return this;
     }
 
     @Override
-    public void enableStateHistory() {
+    public Host enableStateHistory() {
         this.stateHistoryEnabled = true;
+        return this;
     }
 
     @Override
-    public void disableStateHistory() {
+    public Host disableStateHistory() {
         this.stateHistoryEnabled = false;
+        return this;
     }
 
     @Override

@@ -50,7 +50,7 @@ import java.util.List;
  * @see Vm#NULL
  */
 class VmNull implements Vm {
-    @Override public void setId(long id) {/**/}
+    @Override public Vm setId(long id) { return this; }
     @Override public long getId() {
         return -1;
     }
@@ -143,7 +143,7 @@ class VmNull implements Vm {
     @Override public DatacenterBroker getBroker() {
         return DatacenterBroker.NULL;
     }
-    @Override public void setBroker(DatacenterBroker broker) {/**/}
+    @Override public Vm setBroker(DatacenterBroker broker) { return this; }
     @Override public double getStartTime() { return 0; }
     @Override public Vm setStartTime(double startTime) { return this; }
     @Override public double getStopTime() { return 0; }
@@ -171,7 +171,7 @@ class VmNull implements Vm {
         return this;
     }
     @Override public Vm setHost(Host host) { return this; }
-    @Override public void setInMigration(boolean migrating) {/**/}
+    @Override public Vm setInMigration(boolean migrating) {return this;}
     @Override public Vm setRam(long ramCapacity) {
         return this;
     }
@@ -195,7 +195,7 @@ class VmNull implements Vm {
     @Override public Simulation getSimulation() {
         return Simulation.NULL;
     }
-    @Override public void setLastTriedDatacenter(Datacenter lastTriedDatacenter) {/**/}
+    @Override public Vm setLastTriedDatacenter(Datacenter lastTriedDatacenter) { return this; }
     @Override public Datacenter getLastTriedDatacenter() { return Datacenter.NULL; }
     @Override public double getArrivedTime() { return 0; }
     @Override public void setArrivedTime(double time) { /**/ }
@@ -211,7 +211,7 @@ class VmNull implements Vm {
     @Override public VerticalVmScaling getPeVerticalScaling() { return VerticalVmScaling.NULL; }
     @Override public Processor getProcessor() { return Processor.NULL; }
     @Override public String getDescription() { return ""; }
-    @Override public void setDescription(String description) { /**/ }
+    @Override public Vm setDescription(String description) { return this; }
     @Override public VmGroup getGroup() { return null; }
     @Override public double getTimeZone() { return Integer.MAX_VALUE; }
     @Override public Vm setTimeZone(double timeZone) { return this; }

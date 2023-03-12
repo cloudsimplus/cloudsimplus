@@ -99,10 +99,10 @@ final class SimulationNull implements Simulation {
     }
     @Override public void wait(CloudSimEntity src, Predicate<SimEvent> predicate) {/**/}
     @Override public NetworkTopology getNetworkTopology() { return NetworkTopology.NULL; }
-    @Override public void setNetworkTopology(NetworkTopology networkTopology) {/**/}
+    @Override public Simulation setNetworkTopology(NetworkTopology networkTopology) { return this; }
     @Override public long getNumberOfFutureEvents(Predicate<SimEvent> predicate) { return 0; }
     @Override public double getLastCloudletProcessingUpdate() { return 0; }
-    @Override public void setLastCloudletProcessingUpdate(double lastCloudletProcessingUpdate) {/**/}
+    @Override public Simulation setLastCloudletProcessingUpdate(double lastCloudletProcessingUpdate) { return this; }
     @Override public boolean isAbortRequested() {return true;}
     @Override public boolean isAborted() {return true; }
 }

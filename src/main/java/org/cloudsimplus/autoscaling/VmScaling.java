@@ -61,7 +61,7 @@ public interface VmScaling {
      * creating an association between the two objects.</b></p>
      * @param vm the Vm to set
      */
-    void setVm(Vm vm);
+    VmScaling setVm(Vm vm);
 
     /**
      * Requests the Vm to be scaled up or down if it is over or underloaded, respectively.

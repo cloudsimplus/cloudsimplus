@@ -11,10 +11,9 @@ package org.cloudbus.cloudsim.resources;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.cloudbus.cloudsim.provisioners.PeProvisioner;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
-
-import java.util.Objects;
 
 /**
  * Pe (Processing Element) class represents a CPU core of a physical machine (PM),
@@ -30,7 +29,7 @@ import java.util.Objects;
  * @author Rajkumar Buyya
  * @since CloudSim Toolkit 1.0
  */
-@Getter @Setter
+@Accessors @Getter @Setter
 public class PeSimple extends ResourceManageableAbstract implements Pe {
     /** @see #setDefaultMips(double) */
     private static double defaultMips = 1000;

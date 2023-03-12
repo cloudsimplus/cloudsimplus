@@ -36,5 +36,5 @@ public interface ChangeableId extends Identifiable {
      * -1 indicates the object has no id.
      * @param id the id to set
      */
-    void setId(long id);
+    ChangeableId setId(long id);
 }

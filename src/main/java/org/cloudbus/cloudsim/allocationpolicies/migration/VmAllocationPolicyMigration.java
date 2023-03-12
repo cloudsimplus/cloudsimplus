@@ -71,7 +71,7 @@ public interface VmAllocationPolicyMigration extends VmAllocationPolicy {
      *
      * @param vmSelectionPolicy the new vm selection policy
      */
-    void setVmSelectionPolicy(VmSelectionPolicy vmSelectionPolicy);
+    VmAllocationPolicy setVmSelectionPolicy(VmSelectionPolicy vmSelectionPolicy);
 
     /**
      * Gets the policy that defines how VMs are selected for migration.

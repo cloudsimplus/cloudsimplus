@@ -35,7 +35,7 @@ import org.cloudbus.cloudsim.core.events.SimEvent;
  */
 public interface SimEntityNullBase extends SimEntity {
     @Override default State getState() { return State.FINISHED; }
-    @Override default void setState(State state) { /**/ }
+    @Override default SimEntity setState(State state) { return this; }
     @Override default boolean isStarted() { return false; }
     @Override default boolean isAlive() { return false; }
     @Override default boolean isFinished() { return false; }

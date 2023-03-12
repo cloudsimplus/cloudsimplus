@@ -26,7 +26,7 @@ package org.cloudsimplus.autoscaling;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
-import org.cloudbus.cloudsim.brokers.DatacenterBroker;
+import lombok.experimental.Accessors;
 import org.cloudbus.cloudsim.core.CloudSimTag;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisioner;
 import org.cloudbus.cloudsim.resources.*;
@@ -36,7 +36,6 @@ import org.cloudsimplus.autoscaling.resources.ResourceScalingGradual;
 import org.cloudsimplus.autoscaling.resources.ResourceScalingInstantaneous;
 import org.cloudsimplus.listeners.VmHostEventInfo;
 
-import java.util.Objects;
 import java.util.function.Function;
 
 /**
@@ -47,6 +46,7 @@ import java.util.function.Function;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 7.0.4
  */
+@Accessors
 public abstract class VerticalVmScalingAbstract extends VmScalingAbstract implements VerticalVmScaling {
     @Getter @NonNull
     private Function<Vm, Double> upperThresholdFunction;
@@ -207,9 +207,10 @@ public abstract class VerticalVmScalingAbstract extends VmScalingAbstract implem
     }
 
     @Override
-    public void setVm(final Vm vm) {
+    public VmScalingAbstract setVm(final Vm vm) {
         super.setVm(vm);
         this.vmResource = vm.getResource(this.resourceClassToScale);
+        return this;
     }
 
     private ResourceProvisioner getResourceProvisioner(){

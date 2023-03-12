@@ -26,9 +26,8 @@ package org.cloudsimplus.autoscaling;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.cloudbus.cloudsim.vms.Vm;
-
-import java.util.Objects;
 
 /**
  * An abstract class for implementing {@link HorizontalVmScaling} and
@@ -37,6 +36,7 @@ import java.util.Objects;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.1.0
  */
+@Accessors(makeFinal = false)
 public abstract class VmScalingAbstract implements VmScaling {
     private double lastProcessingTime;
 

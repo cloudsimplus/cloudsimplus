@@ -16,8 +16,6 @@ import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
 import org.cloudbus.cloudsim.util.BytesConversion;
 import org.cloudbus.cloudsim.util.MathUtil;
 
-import static java.util.Objects.requireNonNullElse;
-
 /**
  * An implementation of a Hard Drive (HD) storage device with a specific capacity (in Megabytes).
  * It simulates the behavior of a typical hard drive.
@@ -143,8 +141,9 @@ public class HarddriveStorage implements FileStorage {
      *
      * @param seekTime the average seek time in seconds
      */
-    public void setAvgSeekTime(final double seekTime) {
+    public HarddriveStorage setAvgSeekTime(final double seekTime) {
         this.avgSeekTime = MathUtil.nonNegative(seekTime, "seekTime");
+        return this;
     }
 
     /**

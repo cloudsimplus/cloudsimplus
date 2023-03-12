@@ -290,7 +290,7 @@ public interface DatacenterBroker extends SimEntity {
      *
      * @param datacenterMapper the datacenterMapper to set
      */
-    void setDatacenterMapper(BiFunction<Datacenter, Vm, Datacenter> datacenterMapper);
+    DatacenterBroker setDatacenterMapper(BiFunction<Datacenter, Vm, Datacenter> datacenterMapper);
 
     /**
      * Sets a {@link Comparator} that will be used to sort every list
@@ -300,7 +300,7 @@ public interface DatacenterBroker extends SimEntity {
      *
      * @param comparator the VM Comparator to set
      */
-    void setVmComparator(Comparator<Vm> comparator);
+    DatacenterBroker setVmComparator(Comparator<Vm> comparator);
 
     /**
      * Sets a {@link Comparator} that will be used to sort every list
@@ -310,7 +310,7 @@ public interface DatacenterBroker extends SimEntity {
      *
      * @param comparator the Cloudlet Comparator to set
      */
-    void setCloudletComparator(Comparator<Cloudlet> comparator);
+    DatacenterBroker setCloudletComparator(Comparator<Cloudlet> comparator);
 
     /**
      * Sets a {@link Function} that maps a given Cloudlet to a Vm.
@@ -322,7 +322,7 @@ public interface DatacenterBroker extends SimEntity {
      *                 If the Function is unable to find a VM for a Cloudlet,
      *                 it should return {@link Vm#NULL}.
      */
-    void setVmMapper(Function<Cloudlet, Vm> vmMapper);
+    DatacenterBroker setVmMapper(Function<Cloudlet, Vm> vmMapper);
 
     /**
      * Defines if the broker has to try selecting the closest {@link Datacenter}
@@ -450,7 +450,7 @@ public interface DatacenterBroker extends SimEntity {
     /**
      * Indicates if the broker must be shut down after becoming idle.
      */
-    void setShutdownWhenIdle(boolean shutdownWhenIdle);
+    DatacenterBroker setShutdownWhenIdle(boolean shutdownWhenIdle);
 
     /**
      * Gets the object that keeps track of number of VM creation retries sent by the broker
@@ -465,7 +465,7 @@ public interface DatacenterBroker extends SimEntity {
      * instead of the previous one.
      * @param lastSelectedDc the new Datacenter to try to place next arriving VMs
      */
-    void setLastSelectedDc(Datacenter lastSelectedDc);
+    DatacenterBroker setLastSelectedDc(Datacenter lastSelectedDc);
 
     /**
      * Gets the last selected datacenter attempted to place arriving VMs.

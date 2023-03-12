@@ -11,6 +11,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.core.CloudSimTag;
 import org.cloudbus.cloudsim.core.SimEntity;
@@ -27,7 +28,7 @@ import java.util.Objects;
  * @see CloudSim
  * @see SimEntity
  */
-@Getter @Setter
+@Accessors @Getter @Setter
 public final class CloudSimEvent implements SimEvent {
     @NonNull
     private Simulation simulation;

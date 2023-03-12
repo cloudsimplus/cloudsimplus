@@ -20,7 +20,7 @@ import java.util.function.BiFunction;
  */
 final class VmAllocationPolicyMigrationNull implements VmAllocationPolicyMigration {
     @Override public Datacenter getDatacenter() { return Datacenter.NULL; }
-    @Override public void setDatacenter(Datacenter datacenter) {/**/}
+    @Override public VmAllocationPolicy setDatacenter(Datacenter datacenter) { return this; }
     @Override public HostSuitability allocateHostForVm(Vm vm) { return HostSuitability.NULL; }
     @Override public HostSuitability allocateHostForVm(Vm vm, Host host) {
         return HostSuitability.NULL;
@@ -33,16 +33,16 @@ final class VmAllocationPolicyMigrationNull implements VmAllocationPolicyMigrati
     @Override public Optional<Host> findHostForVm(Vm vm) { return Optional.empty(); }
     @Override public boolean isVmMigrationSupported() { return false; }
     @Override public int getHostCountForParallelSearch() { return 0; }
-    @Override public void setHostCountForParallelSearch(int hostCountForParallelSearch) {/**/}
+    @Override public VmAllocationPolicy setHostCountForParallelSearch(int hostCountForParallelSearch) { return this; }
     @Override public <T extends Host> List<T> getHostList() {
         return Collections.emptyList();
     }
     @Override public Map<Vm, Host> getOptimizedAllocationMap(List<? extends Vm> vmList) { return Collections.emptyMap(); }
-    @Override public void setFindHostForVmFunction(BiFunction<VmAllocationPolicy, Vm, Optional<Host>> findHostForVmFunction) {/**/}
+    @Override public VmAllocationPolicy setFindHostForVmFunction(BiFunction<VmAllocationPolicy, Vm, Optional<Host>> findHostForVmFunction) { return this; }
     @Override public boolean isOverloaded(Host host) { return false; }
     @Override public boolean isUnderloaded(Host host) { return false; }
     @Override public double getOverUtilizationThreshold(Host host) { return 0; }
-    @Override public void setVmSelectionPolicy(VmSelectionPolicy vmSelectionPolicy) {/**/}
+    @Override public VmAllocationPolicy setVmSelectionPolicy(VmSelectionPolicy vmSelectionPolicy) { return this; }
     @Override public VmSelectionPolicy getVmSelectionPolicy() {
         return VmSelectionPolicy.NULL;
     }

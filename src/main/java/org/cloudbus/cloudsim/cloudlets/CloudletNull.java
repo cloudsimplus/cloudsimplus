@@ -43,7 +43,7 @@ import java.util.List;
  * @see Cloudlet#NULL
  */
 final class CloudletNull implements Cloudlet {
-    @Override public void setId(long id) {/**/}
+    @Override public Cloudlet setId(long id) { return this; }
     @Override public long getId() {
         return -1;
     }
@@ -101,7 +101,7 @@ final class CloudletNull implements Cloudlet {
     }
     @Override public boolean isReturnedToBroker() { return false; }
     @Override public long getJobId() { return 0; }
-    @Override public void setJobId(long jobId) {/**/}
+    @Override public Cloudlet setJobId(long jobId) { return this; }
     @Override public UtilizationModel getUtilizationModelBw() {
         return UtilizationModel.NULL;
     }
@@ -142,7 +142,7 @@ final class CloudletNull implements Cloudlet {
     @Override public boolean hasRequiresFiles() {
         return false;
     }
-    @Override public void setPriority(int priority) { /**/ }
+    @Override public Cloudlet setPriority(int priority) { return this; }
     @Override public Cloudlet setLength(long length) {
         return Cloudlet.NULL;
     }
@@ -156,28 +156,28 @@ final class CloudletNull implements Cloudlet {
     @Override public boolean setStatus(Status newStatus) {
         return false;
     }
-    @Override public void setNetServiceLevel(int netServiceLevel) {/**/}
+    @Override public Cloudlet setNetServiceLevel(int netServiceLevel) { return this; }
     @Override public Cloudlet setNumberOfPes(long numberOfPes) {
         return Cloudlet.NULL;
     }
-    @Override public void setBroker(DatacenterBroker broker) {/**/}
+    @Override public Cloudlet setBroker(DatacenterBroker broker) { return this; }
     @Override public DatacenterBroker getBroker() {
         return DatacenterBroker.NULL;
     }
     @Override public Cloudlet setUtilizationModel(UtilizationModel utilizationModel) {
         return Cloudlet.NULL;
     }
-    @Override public void setUtilizationModelBw(UtilizationModel utilizationModelBw) {/**/}
-    @Override public void setUtilizationModelCpu(UtilizationModel utilizationModelCpu) {/**/}
-    @Override public void setUtilizationModelRam(UtilizationModel utilizationModelRam) {/**/}
-    @Override public void setVm(Vm vm) {/**/}
+    @Override public Cloudlet setUtilizationModelBw(UtilizationModel utilizationModelBw) { return this; }
+    @Override public Cloudlet setUtilizationModelCpu(UtilizationModel utilizationModelCpu) { return this; }
+    @Override public Cloudlet setUtilizationModelRam(UtilizationModel utilizationModelRam) { return this; }
+    @Override public Cloudlet setVm(Vm vm) { return this; }
     @Override public boolean removeOnFinishListener(EventListener<CloudletVmEventInfo> listener) { return false; }
     @Override public Cloudlet addOnFinishListener(EventListener<CloudletVmEventInfo> listener) { return Cloudlet.NULL; }
     @Override public void notifyOnUpdateProcessingListeners(double time) {/**/}
     @Override public Simulation getSimulation() {
         return Simulation.NULL;
     }
-    @Override public void setLastTriedDatacenter(Datacenter lastTriedDatacenter) {/**/}
+    @Override public Cloudlet setLastTriedDatacenter(Datacenter lastTriedDatacenter) { return this; }
     @Override public Datacenter getLastTriedDatacenter() { return Datacenter.NULL; }
     @Override public double getArrivedTime() { return 0; }
     @Override public void setArrivedTime(double time) { /**/ }
