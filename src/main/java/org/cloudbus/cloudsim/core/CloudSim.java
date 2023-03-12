@@ -38,7 +38,7 @@ import static org.cloudbus.cloudsim.util.TimeUtil.secondsToStr;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Toolkit 1.0
  */
-@Accessors(makeFinal = false)
+@Accessors(makeFinal = false) // makeFinal required for Mockito
 public class CloudSim implements Simulation {
     /**
      * CloudSim Plus current version.
