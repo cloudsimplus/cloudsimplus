@@ -65,7 +65,7 @@ public interface Vm extends AbstractMachine<Resource>, UniquelyIdentifiable, Com
      *
      * @param description the Vm description to set
      */
-    void setDescription(String description);
+    Vm setDescription(String description);
 
     /**
      * Gets the {@link VmGroup group} this Vm belongs to
@@ -479,7 +479,7 @@ public interface Vm extends AbstractMachine<Resource>, UniquelyIdentifiable, Com
      *
      * @param migrating true to indicate the VM is migrating into a Host, false otherwise
      */
-    void setInMigration(boolean migrating);
+    Vm setInMigration(boolean migrating);
 
     /**
      * Sets the bandwidth capacity (in Megabits/s)
@@ -689,7 +689,7 @@ public interface Vm extends AbstractMachine<Resource>, UniquelyIdentifiable, Com
      * @param broker the {@link DatacenterBroker} to set
      */
     @Override
-    void setBroker(DatacenterBroker broker);
+    CustomerEntity setBroker(DatacenterBroker broker);
 
     /**
      * Gets the time the VM was destroyed into the last Host it executed (in seconds).

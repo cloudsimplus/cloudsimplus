@@ -7,6 +7,7 @@
  */
 package org.cloudbus.cloudsim.brokers;
 
+import lombok.experimental.Accessors;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
@@ -36,6 +37,7 @@ import org.cloudbus.cloudsim.vms.Vm;
  * @see DatacenterBrokerBestFit
  * @see DatacenterBrokerHeuristic
  */
+@Accessors
 public class DatacenterBrokerSimple extends DatacenterBrokerAbstract {
     /**
      * Index of the last VM selected from the {@link #getVmExecList()}

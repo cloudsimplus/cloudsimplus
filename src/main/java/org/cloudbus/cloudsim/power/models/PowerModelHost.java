@@ -2,10 +2,9 @@ package org.cloudbus.cloudsim.power.models;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.util.MathUtil;
-
-import java.util.Objects;
 
 /**
  * Abstract implementation of a host power model.
@@ -13,6 +12,7 @@ import java.util.Objects;
  * @since CloudSim Plus 6.0.0
  * @see org.cloudbus.cloudsim.power.PowerMeter
  */
+@Accessors(makeFinal = false)
 public abstract class PowerModelHost implements PowerModel {
     /**
      * An attribute that implements the Null Object Design Pattern for {@link PowerModelHost}

@@ -59,12 +59,12 @@ public interface CloudletToVmMappingHeuristic extends Heuristic<CloudletToVmMapp
      * Sets the list of Cloudlets to be mapped to {@link #getVmList() available Vm's}.
      * @param cloudletList the list of Cloudlets to set
      */
-    void setCloudletList(List<Cloudlet> cloudletList);
+    CloudletToVmMappingHeuristic setCloudletList(List<Cloudlet> cloudletList);
 
     /**
      * Sets the list of available VMs to host Cloudlets.
      * @param vmList the list of VMs to set
      */
-    void setVmList(List<Vm> vmList);
+    CloudletToVmMappingHeuristic setVmList(List<Vm> vmList);
 }
 

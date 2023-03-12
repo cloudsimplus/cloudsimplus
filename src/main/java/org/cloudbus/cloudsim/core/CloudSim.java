@@ -10,6 +10,7 @@ package org.cloudbus.cloudsim.core;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.core.events.*;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
@@ -37,6 +38,7 @@ import static org.cloudbus.cloudsim.util.TimeUtil.secondsToStr;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Toolkit 1.0
  */
+@Accessors
 public class CloudSim implements Simulation {
     /**
      * CloudSim Plus current version.

@@ -27,6 +27,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
 
 import java.lang.reflect.InvocationTargetException;
@@ -42,7 +43,7 @@ import java.lang.reflect.InvocationTargetException;
  *            to find a satisfying solution (defined by a stop criteria)
  * @since CloudSim Plus 1.0
  */
-@Getter
+@Accessors @Getter
 public abstract class HeuristicAbstract<S extends HeuristicSolution<?>>  implements Heuristic<S> {
 	/**
 	 * Reference to the generic class that will be used to instantiate objects.

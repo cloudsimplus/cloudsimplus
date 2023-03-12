@@ -43,7 +43,7 @@ final class VmAllocationPolicyNull implements VmAllocationPolicy {
     @Override public Datacenter getDatacenter() {
         return Datacenter.NULL;
     }
-    @Override public void setDatacenter(Datacenter datacenter) {/**/}
+    @Override public VmAllocationPolicy setDatacenter(Datacenter datacenter) { return this; }
     @Override public boolean scaleVmVertically(VerticalVmScaling scaling) {
         return false;
     }
@@ -60,6 +60,6 @@ final class VmAllocationPolicyNull implements VmAllocationPolicy {
     @Override public Optional<Host> findHostForVm(Vm vm) { return Optional.empty(); }
     @Override public boolean isVmMigrationSupported() { return false; }
     @Override public int getHostCountForParallelSearch() { return 0; }
-    @Override public void setHostCountForParallelSearch(int hostCountForParallelSearch) {/**/}
-    @Override public void setFindHostForVmFunction(BiFunction<VmAllocationPolicy, Vm, Optional<Host>> findHostForVmFunction) {/**/}
+    @Override public VmAllocationPolicy setHostCountForParallelSearch(int hostCountForParallelSearch) { return this; }
+    @Override public VmAllocationPolicy setFindHostForVmFunction(BiFunction<VmAllocationPolicy, Vm, Optional<Host>> findHostForVmFunction) { return this; }
 }

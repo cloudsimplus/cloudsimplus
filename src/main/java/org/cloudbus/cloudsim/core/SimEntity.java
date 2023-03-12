@@ -56,7 +56,7 @@ public interface SimEntity extends Nameable, Runnable, Comparable<SimEntity> {
      *
      * @param state the new state to set
      */
-    void setState(@NonNull State state);
+    SimEntity setState(@NonNull State state);
 
     /**
      * Checks if the entity already was started or not.

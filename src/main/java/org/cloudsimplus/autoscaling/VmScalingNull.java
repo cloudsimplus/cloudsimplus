@@ -36,7 +36,7 @@ final class VmScalingNull implements VmScaling {
     @Override public Vm getVm() {
         return Vm.NULL;
     }
-    @Override public void setVm(Vm vm) {/**/}
+    @Override public VmScaling setVm(Vm vm) { return this; }
     @Override public boolean requestUpScalingIfPredicateMatches(VmHostEventInfo evt) {
         return false;
     }

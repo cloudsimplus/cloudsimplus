@@ -10,6 +10,7 @@ package org.cloudbus.cloudsim.hosts.network;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.cloudbus.cloudsim.core.CloudSimTag;
 import org.cloudbus.cloudsim.hosts.HostSimple;
 import org.cloudbus.cloudsim.hosts.HostSuitability;
@@ -50,6 +51,7 @@ import java.util.List;
  * @author Saurabh Kumar Garg
  * @since CloudSim Toolkit 3.0
  */
+@Accessors
 public class NetworkHost extends HostSimple {
     public static final NetworkHost NULL = new NetworkHost();
     private static final Logger LOGGER = LoggerFactory.getLogger(NetworkHost.class.getSimpleName());

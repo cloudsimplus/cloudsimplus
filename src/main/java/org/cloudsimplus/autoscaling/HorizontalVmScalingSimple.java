@@ -26,13 +26,13 @@ package org.cloudsimplus.autoscaling;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudsimplus.listeners.VmHostEventInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
@@ -56,6 +56,7 @@ import java.util.function.Supplier;
  * @since CloudSim Plus 1.0
  * @see HorizontalVmScaling
  */
+@Accessors
 public class HorizontalVmScalingSimple extends VmScalingAbstract implements HorizontalVmScaling {
     private static final Logger LOGGER = LoggerFactory.getLogger(HorizontalVmScalingSimple.class.getSimpleName());
 

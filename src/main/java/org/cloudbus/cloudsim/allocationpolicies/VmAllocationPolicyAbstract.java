@@ -10,6 +10,7 @@ package org.cloudbus.cloudsim.allocationpolicies;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.HostSuitability;
@@ -40,7 +41,7 @@ import static java.util.stream.Collectors.toList;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Toolkit 1.0
  */
-@Getter @Setter
+@Accessors(makeFinal = false) @Getter @Setter
 public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
     /**
      * WARNING: the function should not be called directly because it may be null.
@@ -302,8 +303,9 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
      *                              Passing null makes the default method to find a Host for a VM to be used.
      */
     @Override
-    public final void setFindHostForVmFunction(final BiFunction<VmAllocationPolicy, Vm, Optional<Host>> findHostForVmFunction) {
+    public final VmAllocationPolicy setFindHostForVmFunction(final BiFunction<VmAllocationPolicy, Vm, Optional<Host>> findHostForVmFunction) {
         this.findHostForVmFunction = findHostForVmFunction;
+        return this;
     }
 
     @Override

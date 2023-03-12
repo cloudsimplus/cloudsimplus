@@ -26,6 +26,7 @@ package org.cloudsimplus.faultinjection;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.vms.Vm;
 
@@ -35,14 +36,13 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
 
-import static java.util.Objects.requireNonNull;
-
 /**
  * A basic implementation of a {@link VmCloner}.
  *
  * @author raysaoliveira
  * @since CloudSim Plus 1.2.2
  */
+@Accessors
 public class VmClonerSimple implements VmCloner {
     @Setter @NonNull
     private UnaryOperator<Vm> vmClonerFunction;

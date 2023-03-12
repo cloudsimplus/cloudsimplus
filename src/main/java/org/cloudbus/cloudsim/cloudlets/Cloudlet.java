@@ -271,7 +271,7 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
      *
      * @param jobId the job id to set
      */
-    void setJobId(long jobId);
+    Cloudlet setJobId(long jobId);
 
     /**
      * Gets the priority of this Cloudlet for scheduling inside a Vm.
@@ -297,7 +297,7 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
      *
      * @param priority the priority to set
      */
-    void setPriority(int priority);
+    Cloudlet setPriority(int priority);
 
     /**
      * Gets the Type of Service (ToS) of IPv4 for sending Cloudlet over the network.
@@ -512,7 +512,7 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
      *
      * @param netServiceLevel the new type of service (ToS) of this cloudlet
      */
-    void setNetServiceLevel(int netServiceLevel);
+    Cloudlet setNetServiceLevel(int netServiceLevel);
 
     /**
      * Sets the number of PEs required to run this Cloudlet. <br>
@@ -543,25 +543,25 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
      * Sets the {@link #getUtilizationModelBw() utilization model of bw}.
      * @param utilizationModelBw the new utilization model of bw
      */
-    void setUtilizationModelBw(UtilizationModel utilizationModelBw);
+    Cloudlet setUtilizationModelBw(UtilizationModel utilizationModelBw);
 
     /**
      * Sets the {@link #getUtilizationModelCpu() utilization model of cpu}.
      * @param utilizationModelCpu the new utilization model of cpu
      */
-    void setUtilizationModelCpu(UtilizationModel utilizationModelCpu);
+    Cloudlet setUtilizationModelCpu(UtilizationModel utilizationModelCpu);
 
     /**
      * Sets the {@link #getUtilizationModelRam() utilization model of ram}.
      * @param utilizationModelRam the new utilization model of ram
      */
-    void setUtilizationModelRam(UtilizationModel utilizationModelRam);
+    Cloudlet setUtilizationModelRam(UtilizationModel utilizationModelRam);
 
     /**
      * Sets the id of {@link Vm} that is planned to execute the cloudlet.
      * @param vm the id of vm to run the cloudlet
      */
-    void setVm(Vm vm);
+    Cloudlet setVm(Vm vm);
 
     /**
      * Gets the execution length of this Cloudlet (in Million Instructions (MI))
@@ -736,7 +736,7 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
      * @param broker the {@link DatacenterBroker} to set
      */
     @Override
-    void setBroker(DatacenterBroker broker);
+    CustomerEntity setBroker(DatacenterBroker broker);
 
     /**
      * Resets the state of the Cloudlet.

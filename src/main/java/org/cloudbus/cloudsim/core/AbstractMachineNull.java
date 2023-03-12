@@ -60,7 +60,7 @@ final class AbstractMachineNull implements AbstractMachine {
     @Override public AbstractMachine setStartTime(double startTime) { return this; }
     @Override public double getLastBusyTime() { return 0; }
     @Override public boolean isIdle() { return true; }
-    @Override public void setId(long id) {/**/}
+    @Override public AbstractMachine setId(long id) { return this; }
     @Override public long getId() {
         return 0;
     }

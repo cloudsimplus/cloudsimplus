@@ -3,10 +3,9 @@ package org.cloudbus.cloudsim.allocationpolicies.migration;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.selectionpolicies.VmSelectionPolicy;
-
-import java.util.Objects;
 
 /**
  * An abstract class that is the base for implementation of VM allocation policies which use
@@ -14,7 +13,7 @@ import java.util.Objects;
  *
  * @author Manoel Campos da Silva Filho
  */
-@Getter @Setter
+@Accessors @Getter @Setter
 public abstract class VmAllocationPolicyMigrationDynamicUpperThresholdFirstFit extends VmAllocationPolicyMigrationAbstract
     implements VmAllocationPolicyMigrationDynamicUpperThreshold {
 

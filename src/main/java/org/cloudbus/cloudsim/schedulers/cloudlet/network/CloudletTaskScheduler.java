@@ -64,7 +64,7 @@ public interface CloudletTaskScheduler {
      *
      * @param vm the Vm to set
      */
-    void setVm(Vm vm);
+    CloudletTaskScheduler setVm(Vm vm);
 
     /**
      * Clears the list of {@link VmPacket}'s to send from the Vm of this scheduler

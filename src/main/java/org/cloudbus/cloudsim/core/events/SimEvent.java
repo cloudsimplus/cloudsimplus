@@ -36,7 +36,7 @@ public interface SimEvent extends Comparable<SimEvent>, EventInfo {
      * Sets the simulation the event belongs to
      * @param simulation the simulation instance to set
      */
-    void setSimulation(Simulation simulation);
+    SimEvent setSimulation(Simulation simulation);
 
     /**
      * Gets the internal type
@@ -99,14 +99,14 @@ public interface SimEvent extends Comparable<SimEvent>, EventInfo {
      *
      * @param source the unique id number of the source entity
      */
-    void setSource(SimEntity source);
+    SimEvent setSource(SimEntity source);
 
     /**
      * Sets the destination entity of this event, that defines its destination.
      *
      * @param destination the unique id number of the destination entity
      */
-    void setDestination(SimEntity destination);
+    SimEvent setDestination(SimEntity destination);
 
     /**
      * Gets the serial number that defines the order of received events when multiple
@@ -124,7 +124,7 @@ public interface SimEvent extends Comparable<SimEvent>, EventInfo {
      *
      * @param serial the serial value to set
      */
-    void setSerial(long serial);
+    SimEvent setSerial(long serial);
 
     /**
      * Gets the CloudSim instance that represents the simulation for with the Entity is related to.

@@ -74,7 +74,7 @@ public interface VmCloner {
      *
      * @param vmClonerFunction the {@link Vm} cloner Function to set
      */
-    void setVmClonerFunction(UnaryOperator<Vm> vmClonerFunction);
+    VmCloner setVmClonerFunction(UnaryOperator<Vm> vmClonerFunction);
 
     /**
      * Gets the {@link Function} to be used to clone Vm's {@link Cloudlet}s.
@@ -90,7 +90,7 @@ public interface VmCloner {
      *
      * @param cloudletsClonerFunction the {@link Cloudlet}s cloner Function to set
      */
-    void setCloudletsClonerFunction(Function<Vm, List<Cloudlet>> cloudletsClonerFunction);
+    VmCloner setCloudletsClonerFunction(Function<Vm, List<Cloudlet>> cloudletsClonerFunction);
 
     /**
      * Gets the maximum number of Vm clones to create.
@@ -114,7 +114,7 @@ public interface VmCloner {
      *
      * @param maxClonesNumber the value to set
      */
-    void setMaxClonesNumber(int maxClonesNumber);
+    VmCloner setMaxClonesNumber(int maxClonesNumber);
 
     /**
      * Checks if the maximum number of Vm clones to be created was reached.

@@ -70,8 +70,8 @@ final class DatacenterBrokerNull implements DatacenterBroker, SimEntityNullBase 
     @Override public void requestShutdownWhenIdle() {/**/}
     @Override public List<Cloudlet> destroyVm(Vm vm) { return Collections.emptyList(); }
     @Override public <T extends Vm> List<T> getVmCreatedList() { return Collections.emptyList(); }
-    @Override public void setDatacenterMapper(BiFunction<Datacenter, Vm, Datacenter> datacenterMapper) { /**/ }
-    @Override public void setVmMapper(Function<Cloudlet, Vm> vmMapper) { /**/ }
+    @Override public DatacenterBroker setDatacenterMapper(BiFunction<Datacenter, Vm, Datacenter> datacenterMapper) { return this; }
+    @Override public DatacenterBroker setVmMapper(Function<Cloudlet, Vm> vmMapper) { return this; }
     @Override public DatacenterBroker setSelectClosestDatacenter(boolean select) { return this; }
     @Override public boolean isSelectClosestDatacenter() { return false; }
     @Override public List<Cloudlet> getCloudletCreatedList() { return Collections.emptyList(); }
@@ -83,13 +83,13 @@ final class DatacenterBrokerNull implements DatacenterBroker, SimEntityNullBase 
     @Override public <T extends Vm> List<T> getVmFailedList() { return Collections.emptyList(); }
     @Override public VmCreation getVmCreation() { return VmCreation.ofZero(); }
 
-    @Override public void setLastSelectedDc(Datacenter lastSelectedDc) {/**/}
+    @Override public DatacenterBroker setLastSelectedDc(Datacenter lastSelectedDc) { return this; }
     @Override public Datacenter getLastSelectedDc() { return Datacenter.NULL; }
 
     @Override public boolean isShutdownWhenIdle() { return false; }
-    @Override public void setShutdownWhenIdle(boolean shutdownWhenIdle) { /**/ }
-    @Override public void setVmComparator(Comparator<Vm> comparator) { /**/ }
-    @Override public void setCloudletComparator(Comparator<Cloudlet> comparator) {/**/}
+    @Override public DatacenterBroker setShutdownWhenIdle(boolean shutdownWhenIdle) { return this; }
+    @Override public DatacenterBroker setVmComparator(Comparator<Vm> comparator) { return this; }
+    @Override public DatacenterBroker setCloudletComparator(Comparator<Cloudlet> comparator) { return this; }
     @Override public DatacenterBroker submitCloudlet(Cloudlet cloudlet) { return this; }
     @Override public DatacenterBroker submitCloudletList(List<? extends Cloudlet> list) { return this; }
     @Override public DatacenterBroker submitCloudletList(List<? extends Cloudlet> list, double submissionDelay) { return this; }

@@ -29,7 +29,7 @@ public interface VmAllocationPolicyMigrationDynamicUpperThreshold extends VmAllo
      *
      * @param fallbackPolicy the new fallback vm allocation policy
      */
-    void setFallbackVmAllocationPolicy(VmAllocationPolicyMigration fallbackPolicy);
+    VmAllocationPolicyMigrationDynamicUpperThreshold setFallbackVmAllocationPolicy(VmAllocationPolicyMigration fallbackPolicy);
 
     /**
      * Gets the fallback VM allocation policy to be used when

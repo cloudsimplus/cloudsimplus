@@ -11,6 +11,7 @@ package org.cloudbus.cloudsim.utilizationmodels;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.cloudbus.cloudsim.core.Simulation;
 
 /**
@@ -18,7 +19,7 @@ import org.cloudbus.cloudsim.core.Simulation;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.2
  */
-@Getter
+@Accessors @Getter
 public abstract class UtilizationModelAbstract implements UtilizationModel {
     /**
      * Indicates that values lower or equal to this will be considered as zero.

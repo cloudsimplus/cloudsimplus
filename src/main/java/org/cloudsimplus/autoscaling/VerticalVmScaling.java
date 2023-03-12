@@ -143,7 +143,7 @@ public interface VerticalVmScaling extends VmScaling {
      *                      (for {@link Pe} scaling) or percentage (for scaling other resources)
      * @see #getUpperThresholdFunction()
      */
-    void setScalingFactor(double scalingFactor);
+    VerticalVmScaling setScalingFactor(double scalingFactor);
 
     /**
      * Gets the lower or upper resource utilization threshold {@link Function},
@@ -290,7 +290,7 @@ public interface VerticalVmScaling extends VmScaling {
      *
      * @param resourceScaling the {@link ResourceScaling} to set
      */
-    void setResourceScaling(ResourceScaling resourceScaling);
+    VerticalVmScaling setResourceScaling(ResourceScaling resourceScaling);
 
     /**
      * Gets the current amount allocated to the {@link #getResource() resource}

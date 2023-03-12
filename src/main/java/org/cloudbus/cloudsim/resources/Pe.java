@@ -110,7 +110,7 @@ public interface Pe extends ChangeableId, ResourceManageable {
      *
      * @param status the new PE status
      */
-    void setStatus(Status status);
+    Pe setStatus(Status status);
 
     /**
      * Checks if the PE is working (not failed).

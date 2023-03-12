@@ -10,6 +10,7 @@ package org.cloudbus.cloudsim.datacenters;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.cloudbus.cloudsim.hosts.Host;
 
 /**
@@ -25,7 +26,7 @@ import org.cloudbus.cloudsim.hosts.Host;
  * @author Anton Beloglazov
  * @since CloudSim Toolkit 1.0
  */
-@Getter @Setter
+@Accessors @Getter @Setter
 public class DatacenterCharacteristicsSimple implements DatacenterCharacteristics {
     @NonNull
     private Datacenter datacenter = Datacenter.NULL;

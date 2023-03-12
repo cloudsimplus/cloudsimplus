@@ -134,7 +134,7 @@ public interface Heuristic<S extends HeuristicSolution<?>> {
      * @param numberOfNeighborhoodSearches number of neighbor searches to perform
      * at each iteration
      */
-    void setSearchesByIteration(int numberOfNeighborhoodSearches);
+    Heuristic<S> setSearchesByIteration(int numberOfNeighborhoodSearches);
 
 	/**
 	 * Starts the heuristic to find a suboptimal solution.

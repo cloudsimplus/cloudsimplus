@@ -8,6 +8,7 @@
 package org.cloudbus.cloudsim.cloudlets.network;
 
 import lombok.NonNull;
+import lombok.experimental.Accessors;
 import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.network.NetworkVm;
@@ -42,6 +43,7 @@ import java.util.Optional;
  *
  * TODO Check how to implement the NULL pattern for this class.
  */
+@Accessors
 public class NetworkCloudlet extends CloudletSimple {
 
     /**
@@ -186,15 +188,15 @@ public class NetworkCloudlet extends CloudletSimple {
     }
 
     @Override
-    public void setVm(final Vm vm) {
+    public NetworkCloudlet setVm(final Vm vm) {
         if(vm == Vm.NULL) {
             setVm(NetworkVm.NULL);
-            return;
+            return this;
         }
 
         if(vm instanceof NetworkVm) {
             super.setVm(vm);
-            return;
+            return this;
         }
 
         throw new IllegalArgumentException("NetworkCloudlet can just be executed by a NetworkVm");

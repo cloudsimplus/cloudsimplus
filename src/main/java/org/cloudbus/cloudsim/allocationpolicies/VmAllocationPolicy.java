@@ -62,7 +62,7 @@ public interface VmAllocationPolicy {
      * Sets the Datacenter associated to the VmAllocationPolicy
      * @param datacenter the Datacenter to set
      */
-    void setDatacenter(Datacenter datacenter);
+    VmAllocationPolicy setDatacenter(Datacenter datacenter);
 
     /**
      * Tries to allocate a host for a given {@link Vm} or {@link VmGroup}.
@@ -129,7 +129,7 @@ public interface VmAllocationPolicy {
      *
      * @param findHostForVmFunction the {@link BiFunction} to set
      */
-    void setFindHostForVmFunction(BiFunction<VmAllocationPolicy, Vm, Optional<Host>> findHostForVmFunction);
+    VmAllocationPolicy setFindHostForVmFunction(BiFunction<VmAllocationPolicy, Vm, Optional<Host>> findHostForVmFunction);
 
     /**
      * Gets the list of Hosts available in a {@link Datacenter}, that will be
@@ -195,5 +195,5 @@ public interface VmAllocationPolicy {
      * Sets the minimum number of Hosts to start using parallel search.
      * @param hostCountForParallelSearch the value to set (use {@link Integer#MAX_VALUE} to disable parallel search)
      */
-    void setHostCountForParallelSearch(int hostCountForParallelSearch);
+    VmAllocationPolicy setHostCountForParallelSearch(int hostCountForParallelSearch);
 }
