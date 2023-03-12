@@ -65,7 +65,7 @@ public interface UtilizationModel {
      *
      * @param simulation the Simulation instance to set
      */
-    void setSimulation(Simulation simulation);
+    UtilizationModel setSimulation(Simulation simulation);
 
     /**
      * Gets the <b>expected</b> utilization of resource at a given simulation time.
