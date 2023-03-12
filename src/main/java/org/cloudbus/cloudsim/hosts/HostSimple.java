@@ -142,7 +142,7 @@ public class HostSimple implements Host {
     @Getter
     private HostResourceStats cpuUtilizationStats;
 
-    @Getter
+    @Getter @Setter
     private boolean stateHistoryEnabled;
 
     /** @see #getStateHistory() */
@@ -1207,18 +1207,6 @@ public class HostSimple implements Host {
 
         this.powerModel = powerModel;
         powerModel.setHost(this);
-        return this;
-    }
-
-    @Override
-    public Host enableStateHistory() {
-        this.stateHistoryEnabled = true;
-        return this;
-    }
-
-    @Override
-    public Host disableStateHistory() {
-        this.stateHistoryEnabled = false;
         return this;
     }
 
