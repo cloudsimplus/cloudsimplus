@@ -30,7 +30,7 @@ public class CloudletSimple extends CloudletAbstract {
      *
      * @param length the length or size (in MI) of this cloudlet to be executed in a VM
      *               (check out {@link #setLength(long)})
-     * @param pesNumber number of PEs that Cloudlet will require
+     * @param numberOfPes number of PEs that Cloudlet will require
      * @param utilizationModel a {@link UtilizationModel} to define how the Cloudlet uses CPU, RAM and BW.
      *                         To define an independent utilization model for each resource,
      *                         call the respective setters.
@@ -39,8 +39,8 @@ public class CloudletSimple extends CloudletAbstract {
      * @see #setUtilizationModelRam(UtilizationModel)
      * @see #setUtilizationModelBw(UtilizationModel)
      */
-    public CloudletSimple(final long length, final int pesNumber, final UtilizationModel utilizationModel) {
-        super(length, pesNumber, utilizationModel);
+    public CloudletSimple(final long length, final int numberOfPes, final UtilizationModel utilizationModel) {
+        super(length, numberOfPes, utilizationModel);
     }
 
     /**
@@ -54,10 +54,10 @@ public class CloudletSimple extends CloudletAbstract {
      *
      * @param length the length or size (in MI) of this cloudlet to be executed in a VM
      *               (check out {@link #setLength(long)})
-     * @param pesNumber number of PEs that Cloudlet will require
+     * @param numberOfPes number of PEs that Cloudlet will require
      */
-    public CloudletSimple(final long length, final int pesNumber) {
-        super(length, pesNumber);
+    public CloudletSimple(final long length, final int numberOfPes) {
+        super(length, numberOfPes);
     }
 
     /**
@@ -71,10 +71,10 @@ public class CloudletSimple extends CloudletAbstract {
      *
      * @param length the length or size (in MI) of this cloudlet to be executed in a VM
      *               (check out {@link #setLength(long)})
-     * @param pesNumber number of PEs that Cloudlet will require
+     * @param numberOfPes number of PEs that Cloudlet will require
      */
-    public CloudletSimple(final long length, final long pesNumber) {
-        super(length, pesNumber);
+    public CloudletSimple(final long length, final long numberOfPes) {
+        super(length, numberOfPes);
     }
 
     /**
@@ -87,10 +87,10 @@ public class CloudletSimple extends CloudletAbstract {
      * @param id  the unique ID of this cloudlet
      * @param length the length or size (in MI) of this cloudlet to be executed in a VM
      *               (check out {@link #setLength(long)})
-     * @param pesNumber the pes number
+     * @param numberOfPes the pes number
      */
-    public CloudletSimple(final long id, final long length, final long pesNumber) {
-        super(id, length, pesNumber);
+    public CloudletSimple(final long id, final long length, final long numberOfPes) {
+        super(id, length, numberOfPes);
     }
 
     @Override
