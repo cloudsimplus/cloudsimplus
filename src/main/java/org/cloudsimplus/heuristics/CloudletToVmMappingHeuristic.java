@@ -30,7 +30,7 @@ import java.util.List;
 
 /**
  * Provides the methods to be used for implementing a heuristic to get
- * a sub-optimal solution for mapping Cloudlets to Vm's.
+ * a suboptimal solution for mapping Cloudlets to Vm's.
  *
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
