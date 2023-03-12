@@ -306,13 +306,13 @@ public final class GoogleMachineEventsTraceReader extends GoogleTraceReaderAbstr
      * @return the Host instance
      */
     Host createHostFromTraceLine() {
-        final var builder = new MachineEvent.Builder();
-        builder.cpuCores(MachineEventField.CPU_CAPACITY.getValue(this))
-               .ram(MachineEventField.RAM_CAPACITY.getValue(this))
-               .timestamp(MachineEventField.TIMESTAMP.getValue(this));
-
-        final var event = builder.build();
-        event.setMachineId(MachineEventField.MACHINE_ID.getValue(this));
+        final var event =
+            MachineEvent.builder()
+                .cpuCores(MachineEventField.CPU_CAPACITY.getValue(this))
+                .ram(MachineEventField.RAM_CAPACITY.getValue(this))
+                .timestamp(MachineEventField.TIMESTAMP.getValue(this))
+                .machineId(MachineEventField.MACHINE_ID.getValue(this))
+                .build();
         final Host host = hostCreationFunction.apply(event);
         host.setId(MachineEventField.MACHINE_ID.getValue(this));
         return host;
