@@ -28,16 +28,16 @@ import org.cloudbus.cloudsim.hosts.Host;
 @Getter @Setter
 public class DatacenterCharacteristicsSimple implements DatacenterCharacteristics {
     @NonNull
-    private final Datacenter datacenter;
+    private Datacenter datacenter = Datacenter.NULL;
 
     @NonNull
-    private String architecture;
+    private String architecture = DEFAULT_ARCH;
 
     @NonNull
-    private String os;
+    private String os = DEFAULT_OS;
 
     @NonNull
-    private String vmm;
+    private String vmm = DEFAULT_VMM;
 
     private double costPerSecond;
     private double costPerMem;
@@ -52,43 +52,52 @@ public class DatacenterCharacteristicsSimple implements DatacenterCharacteristic
      * <p>The costs for {@link #getCostPerBw() BW},
      * {@link #getCostPerMem()} () RAM} and {@link #getCostPerStorage()} () Storage} are set to zero.
      * </p>
+     *
+     * @see DatacenterCharacteristicsSimple#DatacenterCharacteristicsSimple(double, double, double)
+     * @see DatacenterCharacteristicsSimple#DatacenterCharacteristicsSimple(double, double, double, double)
      */
     public DatacenterCharacteristicsSimple(final Datacenter datacenter){
-        this(datacenter, DEFAULT_ARCH, DEFAULT_OS, DEFAULT_VMM, 0, 0, 0, 0);
+        this(0, 0, 0, 0);
+        setDatacenter(datacenter);
     }
 
     /**
-     * A copy constructor
-     * @param source the source object to copy
-     * @param dc the target Datacenter for the copy
+     * Creates a DatacenterCharacteristics with default values
+     * for {@link #getArchitecture() architecture}, {@link #getOs() OS} and
+     * {@link #getVmm() VMM} and the given costs.
+     *
+     * @see DatacenterCharacteristicsSimple#DatacenterCharacteristicsSimple(Datacenter)
+     * @see DatacenterCharacteristicsSimple#DatacenterCharacteristicsSimple(double, double, double, double)
      */
-    public DatacenterCharacteristicsSimple(final DatacenterCharacteristics source, final Datacenter dc){
-        this(
-            dc,
-            source.getArchitecture(),
-            source.getOs(),
-            source.getVmm(),
-            source.getCostPerSecond(),
-            source.getCostPerMem(),
-            source.getCostPerStorage(),
-            source.getCostPerBw()
-        );
+    public DatacenterCharacteristicsSimple(
+        final double costPerSecond, final double costPerMem, final double costPerStorage)
+    {
+        this(costPerSecond, costPerMem, costPerStorage, 0);
     }
 
-    private DatacenterCharacteristicsSimple(
-        final @NonNull Datacenter datacenter, final @NonNull String architecture,
-        final @NonNull String os, final @NonNull String vmm,
+    /**
+     * Creates a DatacenterCharacteristics with default values
+     * for {@link #getArchitecture() architecture}, {@link #getOs() OS} and
+     * {@link #getVmm() VMM} and the given costs.
+     *
+     * @see DatacenterCharacteristicsSimple#DatacenterCharacteristicsSimple(Datacenter)
+     * @see DatacenterCharacteristicsSimple#DatacenterCharacteristicsSimple(double, double, double)
+     */
+    public DatacenterCharacteristicsSimple(
         final double costPerSecond, final double costPerMem,
         final double costPerStorage, final double costPerBw)
     {
-        setArchitecture(architecture);
-        setOs(os);
-        setVmm(vmm);
         setCostPerSecond(costPerSecond);
         setCostPerMem(costPerMem);
         setCostPerStorage(costPerStorage);
         setCostPerBw(costPerBw);
-        this.datacenter = datacenter;
+    }
+
+    void setDatacenter(@NonNull final Datacenter dc) {
+        if(!Datacenter.NULL.equals(this.datacenter) && !this.datacenter.equals(dc))
+            throw new IllegalStateException("This characteristics object is already attached to another Datacenter.");
+
+        this.datacenter = dc;
     }
 
     @Override
