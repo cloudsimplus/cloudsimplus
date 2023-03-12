@@ -50,15 +50,6 @@ import static java.util.stream.Collectors.toList;
  */
 @Accessors @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class HostSimple implements Host {
-    @Getter @Setter @EqualsAndHashCode.Include
-    private long id;
-
-    @Getter @Setter @NonNull @EqualsAndHashCode.Include
-    private Simulation simulation;
-
-    @Getter
-    private Datacenter datacenter;
-
     /**
      * The Default RAM capacity (in MB) for creating Hosts.
      * This value is used when the RAM capacity is not given in a Host constructor.
@@ -79,6 +70,15 @@ public class HostSimple implements Host {
      */
     @Getter
     private static long defaultStorageCapacity = (long) BytesConversion.gigaToMega(500);
+
+    @Getter @Setter @EqualsAndHashCode.Include
+    private long id;
+
+    @Getter @Setter @NonNull @EqualsAndHashCode.Include
+    private Simulation simulation;
+
+    @Getter
+    private Datacenter datacenter;
 
     /**
      * {@return true or false} to indicate the Host must be automatically started up when the assigned Datacenter is initialized or not.
