@@ -158,7 +158,7 @@ public abstract class Experiment extends AbstractRunnable {
     @Getter @Setter @NonNull
     private Function<DatacenterBroker, Integer> vmsByBrokerFunction;
 
-    @Setter @NonNull
+    @Setter
     private Supplier<VmAllocationPolicy> vmAllocationPolicySupplier;
 
     /**
