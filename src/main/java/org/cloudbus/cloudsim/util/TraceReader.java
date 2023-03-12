@@ -49,7 +49,7 @@ public interface TraceReader {
      *
      * @param fieldDelimiterRegex the field separator regex to set
      */
-    void setFieldDelimiterRegex(String fieldDelimiterRegex);
+    TraceReader setFieldDelimiterRegex(String fieldDelimiterRegex);
 
     /**
      * Gets the maximum number of lines of the workload reader that will be read.
