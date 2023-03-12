@@ -1074,8 +1074,9 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     }
 
     @Override
-    public void setCharacteristics(@NonNull DatacenterCharacteristics c) {
+    public Datacenter setCharacteristics(@NonNull DatacenterCharacteristics c) {
         ((DatacenterCharacteristicsSimple)c).setDatacenter(this);
         this.characteristics = c;
+        return this;
     }
 }
