@@ -209,7 +209,7 @@ public interface Datacenter extends SimEntity, PowerAware<PowerModelDatacenter>,
      * Sets the Datacenter characteristics.
      * @param characteristics the characteristics to set
      */
-    void setCharacteristics(DatacenterCharacteristics characteristics);
+    Datacenter setCharacteristics(DatacenterCharacteristics characteristics);
 
     /**
      * Gets the storage of the Datacenter.

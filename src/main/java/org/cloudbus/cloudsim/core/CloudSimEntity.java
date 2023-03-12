@@ -60,7 +60,7 @@ public abstract class CloudSimEntity implements SimEntity {
      * @param simulation The CloudSim instance that represents the simulation the Entity belongs to
      * @throws IllegalArgumentException when the entity name is invalid
      */
-    public CloudSimEntity(final Simulation simulation) {
+    public CloudSimEntity(@NonNull final Simulation simulation) {
         this.simulation = simulation;
         setId(-1);
         state = State.RUNNABLE;
