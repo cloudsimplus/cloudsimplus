@@ -25,6 +25,7 @@ package org.cloudbus.cloudsim.resources;
 
 import lombok.Getter;
 import lombok.NonNull;
+import lombok.experimental.Accessors;
 import org.apache.commons.lang3.StringUtils;
 import org.cloudbus.cloudsim.util.MathUtil;
 
@@ -34,7 +35,7 @@ import org.cloudbus.cloudsim.util.MathUtil;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.2.0
  */
-@Getter
+@Accessors(makeFinal = false) @Getter
 public abstract class ResourceAbstract implements Resource {
     protected long capacity;
     private final String unit;
