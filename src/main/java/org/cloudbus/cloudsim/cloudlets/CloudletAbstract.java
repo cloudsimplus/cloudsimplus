@@ -39,7 +39,6 @@ import java.util.Set;
 @Accessors(makeFinal = false) @Getter @Setter
 public abstract class CloudletAbstract extends CustomerEntityAbstract implements Cloudlet {
     private long jobId;
-
     private long numberOfPes;
 
     @NonNull
@@ -52,29 +51,18 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
 
     @Setter(AccessLevel.NONE)
     private boolean returnedToBroker;
-
-    private double execStartTime;
-
     private int priority;
-
     private int netServiceLevel;
-
     private long fileSize;
-
     private long outputSize;
-
     private double arrivalTime;
-
-    private double lifeTime;
-
+    private double execStartTime;
     private double finishTime;
-
+    private double lifeTime;
     private double submissionDelay;
 
     @NonNull
     private Vm vm;
-
-    private List<String> requiredFiles;
 
     @NonNull
     private UtilizationModel utilizationModelCpu;
@@ -84,6 +72,8 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
 
     @NonNull
     private UtilizationModel utilizationModelBw;
+
+    private List<String> requiredFiles;
 
     @Getter(AccessLevel.NONE)
     private final Set<EventListener<CloudletVmEventInfo>> onStartListeners;
