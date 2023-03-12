@@ -23,6 +23,8 @@
  */
 package org.cloudsimplus.traces.google;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -34,6 +36,7 @@ import lombok.Setter;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 4.0.0
  */
+@AllArgsConstructor(access = AccessLevel.PROTECTED) // Used just to generate a builder in subclasses
 class MachineDataBase {
     /**
      * The machineID that indicates the machine onto which the task was scheduled.

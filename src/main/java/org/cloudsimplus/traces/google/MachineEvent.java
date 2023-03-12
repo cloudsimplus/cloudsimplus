@@ -23,7 +23,6 @@
  */
 package org.cloudsimplus.traces.google;
 
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.cloudbus.cloudsim.hosts.Host;
@@ -57,7 +56,7 @@ import java.util.function.Function;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 4.0.0
  */
-@Getter @Setter @Builder
+@Getter @Setter
 public final class MachineEvent extends MachineDataBase {
     /**
      * the time the event happened (converted to seconds).
@@ -79,4 +78,13 @@ public final class MachineEvent extends MachineDataBase {
      * @see MachineEventField#CPU_CAPACITY
      */
     private int cpuCores;
+
+    /** Constructor just to generate the Builder inner class. */
+    @lombok.Builder
+    private MachineEvent(double timestamp, long ram, int cpuCores, long machineId) {
+        super(machineId);
+        this.timestamp = timestamp;
+        this.ram = ram;
+        this.cpuCores = cpuCores;
+    }
 }
