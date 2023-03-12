@@ -99,7 +99,7 @@ public interface ResourceManageable extends Resource {
      * specified amount.
      *
      * @param newTotalAllocatedResource the new total amount of resource to
-     * allocate, changing the allocate resource to this new amount.
+     * allocate, changing the allocated resource to this new amount.
      * @return true if newTotalAllocatedResource is not negative and there is
      * enough resource to allocate, false otherwise
      */

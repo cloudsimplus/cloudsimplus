@@ -34,8 +34,9 @@ import org.slf4j.LoggerFactory;
  * for instance, in exponential time. Such problems can be, for instance,
  * mapping a set of VMs to existing Hosts or mapping a set of Cloudlets
  * to VMs.
+ * </p>
  *
- * A heuristic implementation thus provides an approximation of
+ * <p>A heuristic implementation thus provides an approximation of
  * an optimal solution (a suboptimal solution).
  * </p>
  *
