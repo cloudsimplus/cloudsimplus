@@ -60,7 +60,7 @@ public abstract class Experiment<T extends Experiment<T>> extends AbstractRunnab
      * The object that is in charge to run the experiment.
      */
     @Getter
-    protected final ExperimentRunner<?> runner;
+    private final ExperimentRunner<?> runner;
 
     protected int hostsNumber;
 

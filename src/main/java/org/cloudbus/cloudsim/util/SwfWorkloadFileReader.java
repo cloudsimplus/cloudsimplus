@@ -135,26 +135,6 @@ public final class SwfWorkloadFileReader extends TraceReaderAbstract {
     private Predicate<Cloudlet> predicate;
 
     /**
-     * {@return a new {@link SwfWorkloadFileReader} instance from a workload file}
-     * inside the <b>application's resource directory</b>.
-     * Use the available constructors if you want to load a file outside the resource directory.
-     *
-     * @param fileName the workload trace <b>relative file name</b> in one of the following formats: <i>ASCII text, zip, gz.</i>
-     * @param mips     the MIPS capacity of the PEs from the VM where each created Cloudlet is supposed to run.
-     *                 Considering the workload reader provides the run time for each
-     *                 application registered inside the reader, the MIPS value will be used
-     *                 to compute the {@link Cloudlet#getLength() length of the Cloudlet (in MI)}
-     *                 so that it's expected to execute, inside the VM with the given MIPS capacity,
-     *                 for the same time as specified into the workload reader.
-     * @throws IllegalArgumentException when the workload trace file name is null or empty; or the resource PE mips is less or equal to 0
-     * @throws UncheckedIOException     when the file cannot be accessed (such as when it doesn't exist)
-     */
-    public static SwfWorkloadFileReader getInstance(final String fileName, final int mips) {
-        final InputStream reader = ResourceLoader.newInputStream(fileName, SwfWorkloadFileReader.class);
-        return new SwfWorkloadFileReader(fileName, reader, mips);
-    }
-
-    /**
      * Create a SwfWorkloadFileReader object.
      *
      * @param filePath the workload trace file path in one of the following formats: <i>ASCII text, zip, gz.</i>
@@ -198,6 +178,26 @@ public final class SwfWorkloadFileReader extends TraceReaderAbstract {
         That is, there isn't an actual condition to create a Cloudlet.
         */
         this.predicate = cloudlet -> true;
+    }
+
+    /**
+     * {@return a new {@link SwfWorkloadFileReader} instance from a workload file}
+     * inside the <b>application's resource directory</b>.
+     * Use the available constructors if you want to load a file outside the resource directory.
+     *
+     * @param fileName the workload trace <b>relative file name</b> in one of the following formats: <i>ASCII text, zip, gz.</i>
+     * @param mips     the MIPS capacity of the PEs from the VM where each created Cloudlet is supposed to run.
+     *                 Considering the workload reader provides the run time for each
+     *                 application registered inside the reader, the MIPS value will be used
+     *                 to compute the {@link Cloudlet#getLength() length of the Cloudlet (in MI)}
+     *                 so that it's expected to execute, inside the VM with the given MIPS capacity,
+     *                 for the same time as specified into the workload reader.
+     * @throws IllegalArgumentException when the workload trace file name is null or empty; or the resource PE mips is less or equal to 0
+     * @throws UncheckedIOException     when the file cannot be accessed (such as when it doesn't exist)
+     */
+    public static SwfWorkloadFileReader getInstance(final String fileName, final int mips) {
+        final InputStream reader = ResourceLoader.newInputStream(fileName, SwfWorkloadFileReader.class);
+        return new SwfWorkloadFileReader(fileName, reader, mips);
     }
 
     /**
