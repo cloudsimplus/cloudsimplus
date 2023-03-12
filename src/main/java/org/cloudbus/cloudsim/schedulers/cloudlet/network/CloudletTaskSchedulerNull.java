@@ -28,15 +28,6 @@ final class CloudletTaskSchedulerNull implements CloudletTaskScheduler {
         return false;
     }
     @Override public void processCloudletTasks(Cloudlet cloudlet, long partialFinishedMI) {/**/}
-    /**
-     * {@inheritDoc}
-     *
-     * @param cloudlet {@inheritDoc}
-     * @return always returns true to indicate that if this NULL Object is being used,
-     * no network packets will be processed by the {@link CloudletScheduler} that this
-     * object is assigned to. By this way, the processing of Cloudlets must be always updated
-     * because the Cloudlet doesn't have to wait for packets dispatch or reception.
-     */
     @Override
     public boolean isTimeToUpdateCloudletProcessing(Cloudlet cloudlet) {
         return true;

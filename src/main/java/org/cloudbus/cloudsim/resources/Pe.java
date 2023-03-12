@@ -11,7 +11,7 @@ import org.cloudbus.cloudsim.core.ChangeableId;
 import org.cloudbus.cloudsim.provisioners.PeProvisioner;
 
 /**
- * A interface to be implemented by each class that provides
+ * An interface to be implemented by each class that provides
  * the basic features of a virtual or physical Processing Element (PE)
  * of a PM or VM. Each Pe represents a  virtual or physical processor core
  * and its {@link #getCapacity() capacity} is defined in
