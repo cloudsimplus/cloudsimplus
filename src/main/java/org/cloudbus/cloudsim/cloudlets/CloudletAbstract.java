@@ -42,6 +42,7 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
 
     private long numberOfPes;
 
+    @NonNull
     private Status status;
 
     private long length;
