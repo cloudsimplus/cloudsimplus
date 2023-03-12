@@ -25,7 +25,6 @@ package org.cloudbus.cloudsim.power;
 
 import lombok.Getter;
 import lombok.NonNull;
-import lombok.Setter;
 import org.cloudbus.cloudsim.core.CloudSimEntity;
 import org.cloudbus.cloudsim.core.Simulation;
 import org.cloudbus.cloudsim.core.events.SimEvent;
@@ -33,7 +32,6 @@ import org.cloudbus.cloudsim.power.models.PowerModel;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Objects;
 import java.util.function.Supplier;
 
 import static org.cloudbus.cloudsim.core.CloudSimTag.POWER_MEASUREMENT;

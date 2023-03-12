@@ -33,12 +33,6 @@ public interface VmAllocationPolicyMigration extends VmAllocationPolicy {
     boolean isUnderloaded();
 
     /**
-     * Checks if there is any overloaded Host.
-     * @return
-     */
-    boolean isOverloaded();
-
-    /**
      * Checks if host is currently under utilized, according the
      * conditions defined by the Allocation Policy.
      *
@@ -46,6 +40,12 @@ public interface VmAllocationPolicyMigration extends VmAllocationPolicy {
      * @return true, if the host is under utilized; false otherwise
      */
     boolean isUnderloaded(Host host);
+
+    /**
+     * Checks if there is any overloaded Host.
+     * @return
+     */
+    boolean isOverloaded();
 
     /**
      * Checks if host is currently over utilized, according the

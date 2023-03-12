@@ -126,7 +126,7 @@ public abstract class PowerModelHost implements PowerModel {
      * Set the delay (in seconds) for starting up the {@link Host}.
      */
     public PowerModelHost setStartupDelay(final double delay) {
-        this.startupDelay = MathUtil.nonNegative(delay, "Delay");
+        this.startupDelay = MathUtil.nonNegative(delay, "Startup Delay");
         return this;
     }
 
@@ -134,7 +134,7 @@ public abstract class PowerModelHost implements PowerModel {
      * Set the delay (in seconds) for shutting down the {@link Host}.
      */
     public PowerModelHost setShutDownDelay(final double delay) {
-        this.shutDownDelay = MathUtil.nonNegative(delay, "Delay");
+        this.shutDownDelay = MathUtil.nonNegative(delay, "Shutdown Delay");
         return this;
     }
 

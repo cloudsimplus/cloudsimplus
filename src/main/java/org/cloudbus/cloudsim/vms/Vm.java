@@ -311,7 +311,7 @@ public interface Vm extends AbstractMachine<Resource>, UniquelyIdentifiable, Com
      * The VM state history is just collected and stored if the Host is storing such a data.
      *
      * @return the state history
-     * @see Host#enableStateHistory()
+     * @see Host#setStateHistoryEnabled(boolean)
      */
     List<VmStateHistoryEntry> getStateHistory();
 

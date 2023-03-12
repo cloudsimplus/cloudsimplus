@@ -39,8 +39,10 @@ final class VmAllocationPolicyMigrationNull implements VmAllocationPolicyMigrati
     }
     @Override public Map<Vm, Host> getOptimizedAllocationMap(List<? extends Vm> vmList) { return Collections.emptyMap(); }
     @Override public VmAllocationPolicy setFindHostForVmFunction(BiFunction<VmAllocationPolicy, Vm, Optional<Host>> findHostForVmFunction) { return this; }
-    @Override public boolean isOverloaded(Host host) { return false; }
+    @Override public boolean isUnderloaded() { return false; }
     @Override public boolean isUnderloaded(Host host) { return false; }
+    @Override public boolean isOverloaded() { return false; }
+    @Override public boolean isOverloaded(Host host) { return false; }
     @Override public double getOverUtilizationThreshold(Host host) { return 0; }
     @Override public VmAllocationPolicy setVmSelectionPolicy(VmSelectionPolicy vmSelectionPolicy) { return this; }
     @Override public VmSelectionPolicy getVmSelectionPolicy() {
@@ -50,6 +52,4 @@ final class VmAllocationPolicyMigrationNull implements VmAllocationPolicyMigrati
         return 0;
     }
     @Override public void setUnderUtilizationThreshold(double underUtilizationThreshold) {/**/}
-    @Override public boolean isUnderloaded() { return false; }
-    @Override public boolean isOverloaded() { return false; }
 }

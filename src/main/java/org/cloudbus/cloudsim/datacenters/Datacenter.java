@@ -7,7 +7,6 @@
  */
 package org.cloudbus.cloudsim.datacenters;
 
-import lombok.NonNull;
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicy;
 import org.cloudbus.cloudsim.allocationpolicies.migration.VmAllocationPolicyMigration;
 import org.cloudbus.cloudsim.core.SimEntity;

@@ -683,16 +683,11 @@ public interface Host extends Machine, Comparable<Host>, PowerAware<PowerModelHo
     PowerAware<PowerModelHost> setPowerModel(PowerModelHost powerModel);
 
     /**
-     * Enables storing Host state history.
+     * Enables or disables storage of Host state history.
+     * @param enable true to enable, false to disable
      * @see #getStateHistory()
      */
-    Host enableStateHistory();
-
-    /**
-     * Disable storing Host state history.
-     * @see #getStateHistory()
-     */
-    Host disableStateHistory();
+    Host setStateHistoryEnabled(boolean enable);
 
     /**
      * Checks if Host state history is being collected and stored.
@@ -705,7 +700,7 @@ public interface Host extends Machine, Comparable<Host>, PowerAware<PowerModelHo
      * This List is just populated if {@link #isStateHistoryEnabled()}
      *
      * @return the state history
-     * @see #enableStateHistory()
+     * @see #setStateHistoryEnabled(boolean)
      */
     List<HostStateHistoryEntry> getStateHistory();
 
