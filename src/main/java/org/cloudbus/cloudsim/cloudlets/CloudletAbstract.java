@@ -113,10 +113,10 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
      *
      * @param length the length or size (in MI) of this cloudlet to be executed in a VM
      *               (check out {@link #setLength(long)})
-     * @param pesNumber number of PEs that Cloudlet will require
+     * @param numberOfPes number of PEs that Cloudlet will require
      */
-    public CloudletAbstract(final long length, final int pesNumber) {
-        this(-1, length, pesNumber);
+    public CloudletAbstract(final long length, final int numberOfPes) {
+        this(-1, length, numberOfPes);
     }
 
     /**
@@ -129,10 +129,10 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
      *
      * @param length the length or size (in MI) of this cloudlet to be executed in a VM
      *               (check out {@link #setLength(long)})
-     * @param pesNumber number of PEs that Cloudlet will require
+     * @param numberOfPes number of PEs that Cloudlet will require
      */
-    public CloudletAbstract(final long length, final long pesNumber) {
-        this(-1, length, pesNumber);
+    public CloudletAbstract(final long length, final long numberOfPes) {
+        this(-1, length, numberOfPes);
     }
 
     /**
@@ -145,15 +145,15 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
      * @param id     id of the Cloudlet
      * @param length the length or size (in MI) of this cloudlet to be executed in a VM
      *               (check out {@link #setLength(long)})
-     * @param pesNumber number of PEs that Cloudlet will require
+     * @param numberOfPes number of PEs that Cloudlet will require
      */
-    public CloudletAbstract(final long id, final long length, final long pesNumber) {
+    public CloudletAbstract(final long id, final long length, final long numberOfPes) {
         super();
 
         this.requiredFiles = new LinkedList<>();
         this.setId(id);
         this.setJobId(NOT_ASSIGNED);
-        this.setNumberOfPes(pesNumber);
+        this.setNumberOfPes(numberOfPes);
         this.setLength(length);
         this.setFileSize(1);
         this.setOutputSize(1);
