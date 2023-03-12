@@ -3,14 +3,14 @@ package org.cloudbus.cloudsim.power.models;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
-
-import java.util.Objects;
 
 /**
  * Abstract implementation of a data center power model.
  * @since CloudSim Plus 6.0.0
  */
+@Accessors(makeFinal = false)
 public abstract class PowerModelDatacenter implements PowerModel {
     /**
      * An attribute that implements the Null Object Design Pattern for {@link PowerModelDatacenter}

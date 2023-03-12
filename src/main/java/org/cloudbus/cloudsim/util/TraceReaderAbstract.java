@@ -3,6 +3,7 @@ package org.cloudbus.cloudsim.util;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -35,6 +36,7 @@ import static java.util.Objects.requireNonNull;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 4.0.0
  */
+@Accessors
 public abstract class TraceReaderAbstract implements TraceReader {
     @Getter
     private final String filePath;
