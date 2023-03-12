@@ -57,7 +57,7 @@ public class DatacenterCharacteristicsSimple implements DatacenterCharacteristic
      * @see DatacenterCharacteristicsSimple#DatacenterCharacteristicsSimple(double, double, double)
      * @see DatacenterCharacteristicsSimple#DatacenterCharacteristicsSimple(double, double, double, double)
      */
-    public DatacenterCharacteristicsSimple(final Datacenter datacenter){
+    DatacenterCharacteristicsSimple(final Datacenter datacenter){
         this(0, 0, 0, 0);
         setDatacenter(datacenter);
     }
