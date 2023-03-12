@@ -188,8 +188,7 @@ final class HostNull implements Host {
     @Override public void enableUtilizationStats() {/**/}
     @Override public PowerModelHost getPowerModel() { return PowerModelHost.NULL; }
     @Override public Host setPowerModel(PowerModelHost powerModel) { return this; }
-    @Override public Host enableStateHistory() { return this; }
-    @Override public Host disableStateHistory() { return this; }
+    @Override public Host setStateHistoryEnabled(boolean enable) { return this; }
     @Override public boolean isStateHistoryEnabled() { return false; }
     @Override public List<HostStateHistoryEntry> getStateHistory() { return Collections.emptyList(); }
     @Override public List<Vm> getFinishedVms() { return Collections.emptyList(); }
