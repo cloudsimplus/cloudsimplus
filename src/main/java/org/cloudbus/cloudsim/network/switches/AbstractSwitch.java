@@ -10,6 +10,7 @@ package org.cloudbus.cloudsim.network.switches;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.core.CloudSimEntity;
 import org.cloudbus.cloudsim.core.CloudSimTag;
@@ -33,6 +34,7 @@ import static org.cloudbus.cloudsim.util.BytesConversion.bytesToMegaBits;
  * @author Saurabh Kumar Garg
  * @author Manoel Campos da Silva Filho
  */
+@Accessors
 public abstract class AbstractSwitch extends CloudSimEntity implements Switch {
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractSwitch.class.getSimpleName());
 

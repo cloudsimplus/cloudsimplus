@@ -11,6 +11,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
 import org.cloudbus.cloudsim.core.*;
@@ -43,7 +44,7 @@ import java.util.function.Function;
  * @author Anton Beloglazov
  * @author Manoel Campos da Silva Filho
  */
-@Getter @Setter
+@Accessors @Getter @Setter
 public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements DatacenterBroker {
     /**
      * A default {@link Function} which always returns {@link #DEF_VM_DESTRUCTION_DELAY}

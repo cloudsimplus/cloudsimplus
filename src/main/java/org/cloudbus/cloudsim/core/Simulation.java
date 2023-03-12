@@ -482,7 +482,7 @@ public interface Simulation {
      *
      * @param networkTopology the network topology to set
      */
-    void setNetworkTopology(NetworkTopology networkTopology);
+    Simulation setNetworkTopology(NetworkTopology networkTopology);
 
     /**
      * Gets the number of events in the future queue which match a given predicate.
@@ -509,7 +509,7 @@ public interface Simulation {
      * Sets the last time (in seconds) some Cloudlet was processed in the simulation.
      * @param lastCloudletProcessingUpdate the time to set (in seconds)
      */
-    void setLastCloudletProcessingUpdate(double lastCloudletProcessingUpdate);
+    Simulation setLastCloudletProcessingUpdate(double lastCloudletProcessingUpdate);
 
     /**
      * Checks if a request to abort the simulation was already sent.

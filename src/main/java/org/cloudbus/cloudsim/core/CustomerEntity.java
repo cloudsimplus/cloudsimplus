@@ -46,7 +46,7 @@ public interface CustomerEntity extends UniquelyIdentifiable, ChangeableId, Dela
      *
      * @param broker the {@link DatacenterBroker} to set
      */
-    void setBroker(DatacenterBroker broker);
+    CustomerEntity setBroker(DatacenterBroker broker);
 
     /**
      * Gets the CloudSim instance that represents the simulation the Entity is related to.
@@ -58,7 +58,7 @@ public interface CustomerEntity extends UniquelyIdentifiable, ChangeableId, Dela
      * Sets the last Datacenter where entity was tried to be created.
      * @param lastTriedDatacenter
      */
-    void setLastTriedDatacenter(Datacenter lastTriedDatacenter);
+    CustomerEntity setLastTriedDatacenter(Datacenter lastTriedDatacenter);
 
     /** Gets the last Datacenter where entity was tried to be created. */
     Datacenter getLastTriedDatacenter();

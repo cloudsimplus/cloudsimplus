@@ -130,5 +130,5 @@ public interface UtilizationModel {
      *
      * @param allow true to allow requesting more than 100% of a resource, false to disallow that
      */
-    void setOverCapacityRequestAllowed(boolean allow);
+    UtilizationModel setOverCapacityRequestAllowed(boolean allow);
 }

@@ -49,7 +49,7 @@ public interface NetworkPacket<T extends Identifiable> {
      * Sets the entity that this packet is coming from (the sender).
      * @param source the source ID to set
      */
-    void setSource(T source);
+    NetworkPacket setSource(T source);
 
     /**
      * Gets the entity that the packet is going to.
@@ -63,7 +63,7 @@ public interface NetworkPacket<T extends Identifiable> {
      *
      * @param destination the destination to set
      */
-    void setDestination(T destination);
+    NetworkPacket setDestination(T destination);
 
     /**
      * Gets the time (in seconds) when the packet was sent.
@@ -75,7 +75,7 @@ public interface NetworkPacket<T extends Identifiable> {
      * Sets the time when the packet was sent.
      * @param time the time to set (in seconds)
      */
-    void setSendTime(double time);
+    NetworkPacket setSendTime(double time);
 
     /**
      * Gets the time (in seconds) when the packet was received.
@@ -87,5 +87,5 @@ public interface NetworkPacket<T extends Identifiable> {
      * Sets the time when the packet was received.
      * @param time the time to set (in seconds)
      */
-    void setReceiveTime(double time);
+    NetworkPacket setReceiveTime(double time);
 }

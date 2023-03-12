@@ -79,7 +79,7 @@ public interface HorizontalVmScaling extends VmScaling {
      *
      * @param supplier the supplier to set
      */
-    void setVmSupplier(Supplier<Vm> supplier);
+    HorizontalVmScaling setVmSupplier(Supplier<Vm> supplier);
 
     /**
      * Requests a horizontal scale if the Vm is overloaded, according to the
@@ -130,5 +130,5 @@ public interface HorizontalVmScaling extends VmScaling {
      *                  the Vm parameter for the {@link Predicate} enables reusing the same predicate
      *                  to detect overload of different VMs.
      */
-    void setOverloadPredicate(Predicate<Vm> predicate);
+    HorizontalVmScaling setOverloadPredicate(Predicate<Vm> predicate);
 }

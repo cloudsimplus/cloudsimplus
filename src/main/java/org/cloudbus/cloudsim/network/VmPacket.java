@@ -10,6 +10,7 @@ package org.cloudbus.cloudsim.network;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.cloudbus.cloudsim.cloudlets.network.NetworkCloudlet;
 import org.cloudbus.cloudsim.hosts.network.NetworkHost;
 import org.cloudbus.cloudsim.vms.network.NetworkVm;
@@ -37,7 +38,7 @@ import org.cloudbus.cloudsim.vms.network.NetworkVm;
  *
  * @since CloudSim Toolkit 1.0
  */
-@Getter @Setter
+@Accessors @Getter @Setter
 public class VmPacket implements NetworkPacket<NetworkVm> {
 
     /**

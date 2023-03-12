@@ -162,7 +162,7 @@ final class HostNull implements Host {
     }
     @Override public double getLastBusyTime() { return 0; }
     @Override public boolean isIdle() { return true; }
-    @Override public void setSimulation(Simulation simulation) {/**/}
+    @Override public Host setSimulation(Simulation simulation) { return this; }
     @Override public ResourceProvisioner getProvisioner(Class<? extends ResourceManageable> clazz) { return ResourceProvisioner.NULL; }
     @Override public int getWorkingPesNumber() {
         return 0;
@@ -173,7 +173,7 @@ final class HostNull implements Host {
     @Override public String toString() {
         return "Host.NULL";
     }
-    @Override public void setId(long id) {/**/}
+    @Override public Host setId(long id) { return this; }
     @Override public double getTotalMipsCapacity() { return 0.0; }
     @Override public int getFailedPesNumber() { return 0; }
     @Override public List<Pe> getWorkingPeList() { return Collections.emptyList(); }
@@ -187,21 +187,21 @@ final class HostNull implements Host {
     @Override public HostResourceStats getCpuUtilizationStats() { return new HostResourceStats(this, host -> 0.0); }
     @Override public void enableUtilizationStats() {/**/}
     @Override public PowerModelHost getPowerModel() { return PowerModelHost.NULL; }
-    @Override public void setPowerModel(PowerModelHost powerModel) {/**/}
-    @Override public void enableStateHistory() {/**/}
-    @Override public void disableStateHistory() {/**/}
+    @Override public Host setPowerModel(PowerModelHost powerModel) { return this; }
+    @Override public Host enableStateHistory() { return this; }
+    @Override public Host disableStateHistory() { return this; }
     @Override public boolean isStateHistoryEnabled() { return false; }
     @Override public List<HostStateHistoryEntry> getStateHistory() { return Collections.emptyList(); }
     @Override public List<Vm> getFinishedVms() { return Collections.emptyList(); }
     @Override public List<Vm> getMigratableVms() { return Collections.emptyList(); }
     @Override public boolean isLazySuitabilityEvaluation() { return false; }
-    @Override public void setLazySuitabilityEvaluation(boolean lazySuitabilityEvaluation) {/**/}
+    @Override public Host setLazySuitabilityEvaluation(boolean lazySuitabilityEvaluation) { return this; }
     @Override public double getTotalUpTime() { return 0; }
     @Override public double getTotalUpTimeHours() { return 0; }
     @Override public void setShutdownTime(double shutdownTime) {/**/}
     @Override public double getUpTime() { return 0; }
     @Override public double getUpTimeHours() { return 0; }
     @Override public double getIdleShutdownDeadline() { return -1; }
-    @Override public void setIdleShutdownDeadline(double deadline) {/**/}
+    @Override public Host setIdleShutdownDeadline(double deadline) { return this; }
     @Override public List<ResourceManageable> getResources() {return Collections.emptyList(); }
 }

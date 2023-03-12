@@ -4,6 +4,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.util.MathUtil;
@@ -13,7 +14,7 @@ import org.cloudbus.cloudsim.util.MathUtil;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 4.0.3
  */
-@Getter @Setter @EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@Accessors @Getter @Setter @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public abstract class CustomerEntityAbstract implements CustomerEntity {
     @EqualsAndHashCode.Include
     private long id;

@@ -9,6 +9,7 @@ package org.cloudbus.cloudsim.vms;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.apache.commons.lang3.StringUtils;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
@@ -44,7 +45,7 @@ import static java.util.Objects.requireNonNull;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Toolkit 1.0
  */
-@Getter
+@Accessors(makeFinal = false) @Getter
 public class VmSimple extends CustomerEntityAbstract implements Vm {
     /** @see #setDefaultRamCapacity(long) */
     private static long defaultRamCapacity = 1024;

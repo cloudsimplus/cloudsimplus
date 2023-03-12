@@ -140,7 +140,7 @@ public interface Switch extends SimEntity {
      * Sets the Datacenter where the switch is connected to.
      * @param datacenter the Datacenter to set
      */
-    void setDatacenter(NetworkDatacenter datacenter);
+    Switch setDatacenter(NetworkDatacenter datacenter);
 
     /**
      * Gets the level (layer) of the Switch in the network topology,

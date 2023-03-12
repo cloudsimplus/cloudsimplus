@@ -10,6 +10,7 @@ package org.cloudbus.cloudsim.vms.network;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.cloudlets.network.NetworkCloudlet;
 import org.cloudbus.cloudsim.hosts.Host;
@@ -43,7 +44,7 @@ import java.util.List;
  * @author Saurabh Kumar Garg
  * @since CloudSim Toolkit 3.0
  */
-@Getter @Setter
+@Accessors @Getter @Setter
 public class NetworkVm extends VmSimple {
     public static final NetworkVm NULL = new NetworkVm();
 

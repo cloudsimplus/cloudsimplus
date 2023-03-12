@@ -25,6 +25,7 @@ package org.cloudsimplus.testbeds;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
@@ -54,12 +55,19 @@ import static java.util.stream.Collectors.toList;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
-@Getter
+@Getter @Accessors
 public abstract class ExperimentRunner<T extends Experiment> extends AbstractRunnable {
     /**
      * If experiments are executed in parallel, each experiment verbosity is disabled,
      * otherwise, you'll see mixed log messages from different
      * experiment runs.
+     *
+     * <p>
+     * If parallel execution is enabled,
+     * you may consider disabling {@link #setVerbose(boolean) verbosity} for individual {@link Experiment}s created,
+     * since messages from different runs will be mixed up
+     * and may cause confusion.
+     * </p>
      */
     private final boolean parallel;
 
@@ -724,19 +732,5 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractRun
         if(simulationRuns > 1 && showProgress) {
             Util.printProgress(current, simulationRuns, progressBarInNewLine);
         }
-    }
-
-    /**
-     * {@inheritDoc}
-     * If {@link #isParallel() parallel} execution is enabled,
-     * you may consider disabling verbosity for individual {@link Experiment}s created,
-     * since messages from different runs will be mixed up
-     * and may cause confusion.
-     *
-     * @return {@inheritDoc}
-     */
-    @Override
-    public boolean isVerbose() {
-        return super.isVerbose();
     }
 }

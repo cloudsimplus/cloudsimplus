@@ -10,6 +10,7 @@ package org.cloudbus.cloudsim.schedulers.cloudlet.network;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.network.*;
 import org.cloudbus.cloudsim.core.CloudSimTag;
@@ -35,6 +36,7 @@ import java.util.stream.Collectors;
  *
  * @since CloudSim Plus 1.0
  */
+@Accessors
 public class CloudletTaskSchedulerSimple implements CloudletTaskScheduler {
     private static final Logger LOGGER = LoggerFactory.getLogger(CloudletTaskSchedulerSimple.class.getSimpleName());
 

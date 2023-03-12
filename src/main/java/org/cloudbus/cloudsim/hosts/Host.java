@@ -461,7 +461,7 @@ public interface Host extends Machine, Comparable<Host>, PowerAware<PowerModelHo
      * @see #DEF_IDLE_SHUTDOWN_DEADLINE
      * @see #getIdleShutdownDeadline()
      */
-    void setIdleShutdownDeadline(double deadline);
+    Host setIdleShutdownDeadline(double deadline);
 
     /**
      * Checks if the host is working properly or has failed.
@@ -595,7 +595,7 @@ public interface Host extends Machine, Comparable<Host>, PowerAware<PowerModelHo
      * Such attribute has to be set by the {@link Datacenter} that the host belongs to.
      * @param simulation The CloudSim instance that represents the simulation the Entity belongs
      */
-    void setSimulation(Simulation simulation);
+    Host setSimulation(Simulation simulation);
 
     /**
      * Gets the {@link ResourceProvisioner}s that manages a Host resource
@@ -680,19 +680,19 @@ public interface Host extends Machine, Comparable<Host>, PowerAware<PowerModelHo
      * @param powerModel the {@link PowerModelHost} to set
      * @return
      */
-    void setPowerModel(PowerModelHost powerModel);
+    PowerAware<PowerModelHost> setPowerModel(PowerModelHost powerModel);
 
     /**
      * Enables storing Host state history.
      * @see #getStateHistory()
      */
-    void enableStateHistory();
+    Host enableStateHistory();
 
     /**
      * Disable storing Host state history.
      * @see #getStateHistory()
      */
-    void disableStateHistory();
+    Host disableStateHistory();
 
     /**
      * Checks if Host state history is being collected and stored.
@@ -742,5 +742,5 @@ public interface Host extends Machine, Comparable<Host>, PowerAware<PowerModelHo
      * This laziness improves performance but provides less information
      * when calling {@link #getSuitabilityFor(Vm)}.
      */
-    void setLazySuitabilityEvaluation(boolean lazySuitabilityEvaluation);
+    Host setLazySuitabilityEvaluation(boolean lazySuitabilityEvaluation);
 }
