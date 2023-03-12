@@ -264,7 +264,7 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
     /**
      * Sets the id of the job that this Cloudlet belongs to, if any.
      * This field is just used for classification.
-     * If there is an supposed job that multiple Cloudlets belong to,
+     * If there is a supposed job that multiple Cloudlets belong to,
      * one can set the job id for all Cloudlets of that job
      * in order to classify them.
      * Besides classification, this field doesn't have any effect.

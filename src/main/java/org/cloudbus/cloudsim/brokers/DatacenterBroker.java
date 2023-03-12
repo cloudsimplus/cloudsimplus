@@ -119,13 +119,13 @@ public interface DatacenterBroker extends SimEntity {
 
     /**
      * Checks if a VM is idle VM and request it to be destroyed at the time defined by
-     * the {@link #getVmDestructionDelayFunction()}.
+     * the {@link #setVmDestructionDelayFunction(Function)}.
      * The request will be sent if the given delay function returns a value
      * greater than {@link #DEF_VM_DESTRUCTION_DELAY}.
      * Otherwise, it doesn't send the request, meaning the VM should not be destroyed according to a specific delay.
      *
      * @param vm the VM to destroy
-     * @see #getVmDestructionDelayFunction()
+     * @see #setVmDestructionDelayFunction(Function)
      * @return
      */
     DatacenterBroker requestIdleVmDestruction(Vm vm);
