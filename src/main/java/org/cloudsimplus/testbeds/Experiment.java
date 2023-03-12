@@ -50,16 +50,17 @@ import static java.util.Objects.requireNonNull;
  * that can be executed in a repeatable way
  * by a {@link ExperimentRunner}.
  *
+ * @param <T> the type of the subclass extending this class
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
 @Accessors
-public abstract class Experiment extends AbstractRunnable {
+public abstract class Experiment<T extends Experiment<T>> extends AbstractRunnable {
     /**
      * The object that is in charge to run the experiment.
      */
     @Getter
-    protected final ExperimentRunner runner;
+    protected final ExperimentRunner<?> runner;
 
     protected int hostsNumber;
 
@@ -111,7 +112,7 @@ public abstract class Experiment extends AbstractRunnable {
      * @param beforeExperimentRun the beforeExperimentRun Consumer to set
      */
     @Setter @NonNull
-    private Consumer<? extends Experiment> beforeExperimentRun;
+    private Consumer<T> beforeExperimentRun;
     /**
      * Sets a {@link Consumer} object that will receive the experiment instance
      * after the experiment finishes, then it performs some post-processing
@@ -126,7 +127,7 @@ public abstract class Experiment extends AbstractRunnable {
      * @param afterExperimentFinishConsumer a {@link Consumer} instance to set
      */
     @Setter @NonNull
-    private Consumer<? extends Experiment> afterExperimentFinish;
+    private Consumer<T> afterExperimentFinish;
 
     /**
      * Sets a {@link Consumer} that will be called before the simulation scenario is built.
@@ -179,7 +180,7 @@ public abstract class Experiment extends AbstractRunnable {
      * statistical analysis.
      * @see #setDatacentersNumber(int)
      */
-    public Experiment(final int index, final ExperimentRunner runner) {
+    public Experiment(final int index, final ExperimentRunner<?> runner) {
         //the seed will be generated from the Runner base seed
         this(index, runner, -1);
     }
@@ -198,7 +199,7 @@ public abstract class Experiment extends AbstractRunnable {
      * @see #setBrokersNumber(int)
      * @see #setDatacentersNumber(int)
      */
-    protected Experiment(final int index, final ExperimentRunner runner, final long seed) {
+    protected Experiment(final int index, final ExperimentRunner<?> runner, final long seed) {
         super();
         if(seed == -1){
             requireNonNull(runner);
