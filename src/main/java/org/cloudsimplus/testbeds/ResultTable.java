@@ -35,7 +35,7 @@ import static org.cloudsimplus.builders.tables.CsvTableColumn.alignStringRight;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 7.0.1
  */
-final class ResultTable<T extends Experiment> {
+final class ResultTable<T extends Experiment<T>> {
     private final ExperimentRunner<T> runner;
     private final List<ConfidenceInterval> confidenceIntervals;
 

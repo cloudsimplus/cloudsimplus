@@ -56,7 +56,7 @@ import static java.util.stream.Collectors.toList;
  * @since CloudSim Plus 1.0
  */
 @Getter @Accessors
-public abstract class ExperimentRunner<T extends Experiment> extends AbstractRunnable {
+public abstract class ExperimentRunner<T extends Experiment<T>> extends AbstractRunnable {
     /**
      * If experiments are executed in parallel, each experiment verbosity is disabled,
      * otherwise, you'll see mixed log messages from different
