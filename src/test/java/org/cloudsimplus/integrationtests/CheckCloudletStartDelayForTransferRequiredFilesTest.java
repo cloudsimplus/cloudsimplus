@@ -25,7 +25,7 @@ package org.cloudsimplus.integrationtests;
 
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
-import org.cloudbus.cloudsim.core.CloudSim;
+import org.cloudbus.cloudsim.core.CloudSimPlus;
 import org.cloudbus.cloudsim.resources.File;
 import org.cloudbus.cloudsim.resources.SanStorage;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
@@ -75,13 +75,13 @@ public final class CheckCloudletStartDelayForTransferRequiredFilesTest {
     private DatacenterBroker broker;
 	private List<File> files;
 	private SanStorage storage;
-    private CloudSim simulation;
+    private CloudSimPlus simulation;
 
 	@BeforeEach
     public void setUp() {
 		createStorage();
 
-        this.simulation = new  CloudSim();
+        this.simulation = new CloudSimPlus();
         final SimulationScenarioBuilder scenario = new SimulationScenarioBuilder(simulation);
         scenario.getDatacenterBuilder()
 	        .setSchedulingInterval(1)

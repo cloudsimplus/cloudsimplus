@@ -77,14 +77,14 @@ public interface SimEntity extends Nameable, Runnable, Comparable<SimEntity> {
     boolean isFinished();
 
     /**
-     * Gets the CloudSim instance that represents the simulation to each the Entity belongs to.
+     * Gets the CloudSimPlus instance that represents the simulation to each the Entity belongs to.
      * @return
      */
     Simulation getSimulation();
 
     /**
      * Processes events or services that are available for the entity. This
-     * method is invoked by the {@link CloudSim} class whenever there is an
+     * method is invoked by the {@link CloudSimPlus} class whenever there is an
      * event in the deferred queue, which needs to be processed by the entity.
      *
      * @param evt information about the event just happened
@@ -162,13 +162,13 @@ public interface SimEntity extends Nameable, Runnable, Comparable<SimEntity> {
 
     /**
      * Starts the entity during simulation start.
-     * This method is invoked by the {@link CloudSim} class when the simulation is started.
+     * This method is invoked by the {@link CloudSimPlus} class when the simulation is started.
      * @return true if the entity started successfully; false if it was already started
      */
     boolean start();
 
     /**
-     * Shuts down the entity. This method is invoked by the {@link CloudSim}
+     * Shuts down the entity. This method is invoked by the {@link CloudSimPlus}
      * before the simulation finishes. If you want to save data in log files
      * this is the method in which the corresponding code would be placed.
      */

@@ -26,7 +26,7 @@ package org.cloudsimplus.integrationtests;
 import ch.qos.logback.classic.Level;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
-import org.cloudbus.cloudsim.core.CloudSim;
+import org.cloudbus.cloudsim.core.CloudSimPlus;
 import org.cloudbus.cloudsim.core.events.SimEvent;
 import org.cloudbus.cloudsim.hosts.HostSimple;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerSpaceShared;
@@ -67,8 +67,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * <p>The IT uses the new VM listeners to get notified when a host is allocated,
  * deallocated for a given VM and when a VM fails to be created due to lack of
  * host resources. It also relies on the new CloudSim Plus
- * {@link CloudSim#addOnEventProcessingListener(EventListener) process event listener} to be notified every time
- * when any event is processed by CloudSim. By this way, it is possible to
+ * {@link CloudSimPlus#addOnEventProcessingListener(EventListener) process event listener} to be notified every time
+ * when any event is processed by CloudSimPlus. By this way, it is possible to
  * verify, for instance, if the resource usage of a given host at a given time
  * is as expected.</p>
  *
@@ -78,7 +78,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * @see Vm#addOnHostAllocationListener(EventListener)
  * @see Vm#addOnHostDeallocationListener(EventListener)
  * @see Vm#addOnCreationFailureListener(EventListener)
- * @see CloudSim#addOnEventProcessingListener(EventListener)
+ * @see CloudSimPlus#addOnEventProcessingListener(EventListener)
  * @see Cloudlet#addOnFinishListener(EventListener)
  *
  * @author Manoel Campos da Silva Filho
@@ -96,7 +96,7 @@ public final class VmCreationFailureIntegrationTest {
     private int numberOfVmCreationFailures;
 
     private SimulationScenarioBuilder scenario;
-    private CloudSim simulation;
+    private CloudSimPlus simulation;
 
     /**
      * A Listener that will be called every time a Host is
@@ -153,9 +153,9 @@ public final class VmCreationFailureIntegrationTest {
 
     /**
      * A function used by an event processing listener
-     * that will be called every time an event is processed by {@link CloudSim}.
+     * that will be called every time an event is processed by {@link CloudSimPlus}.
      * @param evt
-     * @see CloudSim#addOnEventProcessingListener(EventListener)
+     * @see CloudSimPlus#addOnEventProcessingListener(EventListener)
      */
     private void onEventProcessing(final SimEvent evt) {
         //LOGGER.info("* onEventProcessing at time {}: {}", evt.getTime(), evt);
@@ -185,7 +185,7 @@ public final class VmCreationFailureIntegrationTest {
     @BeforeEach
     public void setUp() {
         Log.setLevel(Level.WARN);
-        simulation = new CloudSim();
+        simulation = new CloudSimPlus();
         simulation.addOnEventProcessingListener(this::onEventProcessing);
         scenario = new SimulationScenarioBuilder(simulation);
         scenario.getDatacenterBuilder().create(

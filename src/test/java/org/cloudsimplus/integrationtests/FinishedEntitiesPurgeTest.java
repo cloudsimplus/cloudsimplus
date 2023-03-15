@@ -28,7 +28,7 @@ import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
-import org.cloudbus.cloudsim.core.CloudSim;
+import org.cloudbus.cloudsim.core.CloudSimPlus;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
 import org.cloudbus.cloudsim.hosts.Host;
@@ -95,7 +95,7 @@ class FinishedEntitiesPurgeTest {
      */
     private static final double MAX_TIME_DELTA = 0.25;
 
-    private CloudSim simulation;
+    private CloudSimPlus simulation;
     private List<DatacenterBroker> brokerList;
 
     private long lastVmId;
@@ -227,7 +227,7 @@ class FinishedEntitiesPurgeTest {
 
     private void buildAndStartSimulation() {
         Log.setLevel(Level.WARN);
-        simulation = new CloudSim();
+        simulation = new CloudSimPlus();
         createDatacenter();
         createBrokers();
         simulation.addOnClockTickListener(this::onClockTickListener);

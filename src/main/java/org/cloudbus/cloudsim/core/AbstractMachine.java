@@ -89,7 +89,7 @@ public interface AbstractMachine<T extends Resource> extends ChangeableId, Resou
     double getTotalMipsCapacity();
 
     /**
-     * Gets the CloudSim instance that represents the simulation the Entity belongs to.
+     * Gets the CloudSimPlus instance that represents the simulation the Entity belongs to.
      * @return
      */
     Simulation getSimulation();

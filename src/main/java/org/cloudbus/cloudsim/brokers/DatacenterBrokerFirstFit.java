@@ -24,7 +24,7 @@
 package org.cloudbus.cloudsim.brokers;
 
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
-import org.cloudbus.cloudsim.core.CloudSim;
+import org.cloudbus.cloudsim.core.CloudSimPlus;
 import org.cloudbus.cloudsim.vms.Vm;
 
 /**
@@ -46,9 +46,9 @@ public class DatacenterBrokerFirstFit extends DatacenterBrokerSimple {
     /**
      * Creates a DatacenterBroker object.
      *
-     * @param simulation The CloudSim instance that represents the simulation the Entity is related to
+     * @param simulation The CloudSimPlus instance that represents the simulation the Entity is related to
      */
-    public DatacenterBrokerFirstFit(final CloudSim simulation) {
+    public DatacenterBrokerFirstFit(final CloudSimPlus simulation) {
         super(simulation);
     }
 

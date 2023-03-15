@@ -9,7 +9,7 @@ package org.cloudbus.cloudsim.hosts;
 
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
-import org.cloudbus.cloudsim.core.CloudSim;
+import org.cloudbus.cloudsim.core.CloudSimPlus;
 import org.cloudbus.cloudsim.core.Simulation;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
@@ -176,7 +176,7 @@ public class HostSimpleTest {
         final int numberOfVms = 4;
         final HostSimple host = createHostSimple(0, numberOfVms);
 
-        final CloudSim cloudsim = CloudSimMocker.createMock(mocker -> {
+        final CloudSimPlus cloudsim = CloudSimMocker.createMock(mocker -> {
             mocker.clock(0);
             mocker.getNumEntities();
             mocker.isTerminationTimeSet();
@@ -537,7 +537,7 @@ public class HostSimpleTest {
 
     @Test
     public void testVmDestroy() {
-        final CloudSim cloudsim = CloudSimMocker.createMock(mocker -> mocker.clock(0));
+        final CloudSimPlus cloudsim = CloudSimMocker.createMock(mocker -> mocker.clock(0));
         final VmSimple vm = VmTestUtil.createVm(
                 0, MIPS, 1, RAM / 2, BW / 2, STORAGE,
                 new CloudletSchedulerTimeShared());
@@ -556,7 +556,7 @@ public class HostSimpleTest {
 
     @Test
     public void testVmDestroyAll() {
-        final CloudSim cloudsim = CloudSimMocker.createMock(mocker -> mocker.clock(0));
+        final CloudSimPlus cloudsim = CloudSimMocker.createMock(mocker -> mocker.clock(0));
         final DatacenterBroker broker = MocksHelper.createMockBroker(cloudsim);
         final Vm vm0 = VmTestUtil.createVm(
                 0, MIPS, 1, RAM / 2, BW / 2, HALF_STORAGE,
@@ -580,7 +580,7 @@ public class HostSimpleTest {
 
     @Test
     public void testDestroyVmAndRemoveFromBrokerCreatedList() {
-        final CloudSim cloudsim = new CloudSim();
+        final CloudSimPlus cloudsim = new CloudSimPlus();
 
         final DatacenterBroker broker = new DatacenterBrokerSimple(cloudsim);
         final Vm vm = VmTestUtil.createVm(0, 2);

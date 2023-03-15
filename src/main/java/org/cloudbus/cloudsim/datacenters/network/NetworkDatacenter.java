@@ -52,7 +52,7 @@ public class NetworkDatacenter extends DatacenterSimple {
     /**
      * Creates a NetworkDatacenter with the given parameters.
      *
-     * @param simulation The CloudSim instance that represents the simulation the Entity belongs to
+     * @param simulation The CloudSimPlus instance that represents the simulation the Entity belongs to
      * @param hostList list of {@link Host}s that will compound the Datacenter
      * @param vmAllocationPolicy the policy to be used to allocate VMs into hosts
      *
@@ -71,7 +71,7 @@ public class NetworkDatacenter extends DatacenterSimple {
      * Creates a NetworkDatacenter that uses a {@link VmAllocationPolicySimple}
      * as default.
      *
-     * @param simulation The CloudSim instance that represents the simulation the Entity belongs to
+     * @param simulation The CloudSimPlus instance that represents the simulation the Entity belongs to
      * @param hostList list of {@link Host}s that will compound the Datacenter
      *
      * @throws IllegalArgumentException when this Host has zero number of PEs (Processing Elements).

@@ -2,7 +2,7 @@ package org.cloudbus.cloudsim.vms;
 
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
-import org.cloudbus.cloudsim.core.CloudSim;
+import org.cloudbus.cloudsim.core.CloudSimPlus;
 import org.cloudbus.cloudsim.mocks.CloudSimMocker;
 import org.cloudbus.cloudsim.mocks.MocksHelper;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
@@ -97,7 +97,7 @@ public final class VmTestUtil {
     public static VmSimple createVm(
         final int vmId,
         final double mips, final int pesNumber,
-        final long ram, final long bw, final long storage, CloudSim cloudsim)
+        final long ram, final long bw, final long storage, CloudSimPlus cloudsim)
     {
         final DatacenterBroker broker = new DatacenterBrokerSimple(cloudsim);
         final VmSimple vm = new VmSimple(vmId, mips, pesNumber);
@@ -136,7 +136,7 @@ public final class VmTestUtil {
         final CloudletScheduler scheduler,
         final Consumer<DatacenterBroker> brokerMockerConsumer)
     {
-        final CloudSim cloudsim = CloudSimMocker.createMock(mocker -> {
+        final CloudSimPlus cloudsim = CloudSimMocker.createMock(mocker -> {
             mocker.clock(0);
             mocker.clockStr();
         });

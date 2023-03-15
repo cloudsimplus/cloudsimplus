@@ -11,8 +11,8 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.core.CloudSimEntity;
+import org.cloudbus.cloudsim.core.CloudSimPlus;
 import org.cloudbus.cloudsim.core.CloudSimTag;
 import org.cloudbus.cloudsim.core.events.PredicateType;
 import org.cloudbus.cloudsim.core.events.SimEvent;
@@ -77,7 +77,7 @@ public abstract class AbstractSwitch extends CloudSimEntity implements Switch {
      */
     private final Map<NetworkHost, List<HostPacket>> packetToHostMap;
 
-    public AbstractSwitch(final CloudSim simulation, final NetworkDatacenter dc) {
+    public AbstractSwitch(final CloudSimPlus simulation, final NetworkDatacenter dc) {
         super(simulation);
         this.packetToHostMap = new HashMap<>();
         this.uplinkSwitchPacketMap = new HashMap<>();

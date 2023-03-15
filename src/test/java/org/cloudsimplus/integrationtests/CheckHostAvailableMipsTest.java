@@ -23,7 +23,7 @@
  */
 package org.cloudsimplus.integrationtests;
 
-import org.cloudbus.cloudsim.core.CloudSim;
+import org.cloudbus.cloudsim.core.CloudSimPlus;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
@@ -73,11 +73,11 @@ public final class CheckHostAvailableMipsTest {
     private static final int    LAST_VM_FINISH_TIME = 10;
 
     private UtilizationModel utilizationModel;
-    private CloudSim simulation;
+    private CloudSimPlus simulation;
 
     @BeforeEach
     public void setUp() {
-        this.simulation = new  CloudSim();
+        this.simulation = new CloudSimPlus();
         utilizationModel = new UtilizationModelFull();
         final var scenario = new SimulationScenarioBuilder(simulation);
         final List<Host> hosts = new HostBuilder()

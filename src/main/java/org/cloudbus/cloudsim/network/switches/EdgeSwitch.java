@@ -8,7 +8,7 @@
 package org.cloudbus.cloudsim.network.switches;
 
 import lombok.NonNull;
-import org.cloudbus.cloudsim.core.CloudSim;
+import org.cloudbus.cloudsim.core.CloudSimPlus;
 import org.cloudbus.cloudsim.core.events.SimEvent;
 import org.cloudbus.cloudsim.datacenters.network.NetworkDatacenter;
 import org.cloudbus.cloudsim.hosts.Host;
@@ -18,7 +18,6 @@ import org.cloudbus.cloudsim.network.HostPacket;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * Represents an Edge Switch in a Datacenter network, which can be connected to {@link NetworkHost}s.
@@ -73,10 +72,10 @@ public class EdgeSwitch extends AbstractSwitch {
      * downlink and uplink ports, and corresponding bandwidths. In this switch,
      * downlink ports aren't connected to other switch but to hosts.
      *
-     * @param simulation the CloudSim instance that represents the simulation the Entity belongs
+     * @param simulation the CloudSimPlus instance that represents the simulation the Entity belongs
      * @param dc The Datacenter where the switch is connected to
      */
-    public EdgeSwitch(final CloudSim simulation, final NetworkDatacenter dc) {
+    public EdgeSwitch(final CloudSimPlus simulation, final NetworkDatacenter dc) {
         super(simulation, dc);
 
         this.hostList = new ArrayList<>();

@@ -23,7 +23,7 @@
  */
 package org.cloudbus.cloudsim.utilizationmodels;
 
-import org.cloudbus.cloudsim.core.CloudSim;
+import org.cloudbus.cloudsim.core.CloudSimPlus;
 import org.cloudbus.cloudsim.mocks.CloudSimMocker;
 import org.cloudbus.cloudsim.util.Conversion;
 
@@ -64,7 +64,7 @@ final class TestUtility {
         final List<Integer> times = IntStream.rangeClosed(initSimulationTime, NUM_TIMES_TEST_USAGE)
             .boxed()
             .collect(toList());
-        final CloudSim simulation = CloudSimMocker.createMock(mocker -> mocker.clock(times));
+        final CloudSimPlus simulation = CloudSimMocker.createMock(mocker -> mocker.clock(times));
 
         final var um = new UtilizationModelDynamic(initUsage);
         um.setUtilizationUpdateFunction(model -> model.getUtilization() + model.getTimeSpan() * usagePercentInc);

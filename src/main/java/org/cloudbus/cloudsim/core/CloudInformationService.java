@@ -24,7 +24,7 @@ import java.util.*;
  *
  * <p>
  * In summary, it acts like a yellow page service.
- * An instance of this class is automatically created by CloudSim upon initialisation of the simulation.
+ * An instance of this class is automatically created by CloudSimPlus upon initialisation of the simulation.
  * </p>
  *
  * @author Manzur Murshed
@@ -49,7 +49,7 @@ public class CloudInformationService extends CloudSimEntity {
     /**
      * Instantiates a new CloudInformationService object.
      *
-     * @param simulation CloudSim instance that represents the simulation the Entity belongs to
+     * @param simulation CloudSimPlus instance that represents the simulation the Entity belongs to
      */
     CloudInformationService(final CloudSim simulation) {
         super(simulation);
