@@ -86,7 +86,7 @@ final class HostNull implements Host {
     @Override public int getFreePesNumber() {
         return 0;
     }
-    @Override public long getNumberOfPes() {
+    @Override public long getPesNumber() {
         return 0;
     }
     @Override public double getMips() { return 0; }

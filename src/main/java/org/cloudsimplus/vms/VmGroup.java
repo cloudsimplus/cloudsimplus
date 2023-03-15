@@ -144,7 +144,7 @@ public class VmGroup extends VmSimple {
      * {@return the total number of PEs} from all VMs inside the List.
      */
     private static long getTotalPes(final List<Vm> vmList){
-        return vmList.stream().mapToLong(Vm::getNumberOfPes).sum();
+        return vmList.stream().mapToLong(Vm::getPesNumber).sum();
     }
 
     /**

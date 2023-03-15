@@ -231,8 +231,8 @@ public class VmSimpleTest {
     }
 
     @Test
-    public void testGetNumberOfPes() {
-        assertEquals(VmTestUtil.PES_NUMBER, vm.getNumberOfPes());
+    public void testGetPesNumber() {
+        assertEquals(VmTestUtil.PES_NUMBER, vm.getPesNumber());
     }
 
     @Test

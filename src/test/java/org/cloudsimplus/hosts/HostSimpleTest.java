@@ -59,28 +59,28 @@ public class HostSimpleTest {
 
     private HostSimple host;
 
-    public static HostSimple createHostSimple(final int hostId, final int numberOfPes) {
-        return createHostSimple(hostId, numberOfPes, true);
+    public static HostSimple createHostSimple(final int hostId, final int pesNumber) {
+        return createHostSimple(hostId, pesNumber, true);
     }
 
-    public static HostSimple createHostSimple(final int hostId, final int numberOfPes, final boolean activate) {
-        return createHostSimple(hostId, numberOfPes, MIPS, RAM, BW, STORAGE, activate);
+    public static HostSimple createHostSimple(final int hostId, final int pesNumber, final boolean activate) {
+        return createHostSimple(hostId, pesNumber, MIPS, RAM, BW, STORAGE, activate);
     }
 
     public static HostSimple createHostSimple(
-        final int hostId, final int numberOfPes,
+        final int hostId, final int pesNumber,
         final double mips, final long ram,
         final long bw, final long storage)
     {
-        return createHostSimple(hostId, numberOfPes, mips, ram, bw, storage, true);
+        return createHostSimple(hostId, pesNumber, mips, ram, bw, storage, true);
     }
 
     public static HostSimple createHostSimple(
-        final int hostId, final int numberOfPes,
+        final int hostId, final int pesNumber,
         final double mips, final long ram,
         final long bw, final long storage, final boolean activate)
     {
-        final List<Pe> peList = createPes(numberOfPes, mips);
+        final List<Pe> peList = createPes(pesNumber, mips);
 
         final HostSimple host = new HostSimple(ram, bw, storage, peList, activate);
         host.setRamProvisioner(new ResourceProvisionerSimple())
@@ -90,8 +90,8 @@ public class HostSimpleTest {
         return host;
     }
 
-    private static HostSimple createHostSimple(final int numberOfPes, VmScheduler vmScheduler) {
-        final List<Pe> peList = createPes(numberOfPes, MIPS);
+    private static HostSimple createHostSimple(final int pesNumber, VmScheduler vmScheduler) {
+        final List<Pe> peList = createPes(pesNumber, MIPS);
 
         final HostSimple host = new HostSimple(RAM, BW, STORAGE, peList);
         host.setRamProvisioner(new ResourceProvisionerSimple())
@@ -101,10 +101,10 @@ public class HostSimpleTest {
 
     }
 
-    private static List<Pe> createPes(final int numberOfPes, final double mips) {
-        return IntStream.range(0, numberOfPes)
+    private static List<Pe> createPes(final int pesNumber, final double mips) {
+        return IntStream.range(0, pesNumber)
                         .mapToObj(id -> new PeSimple(mips, new PeProvisionerSimple()))
-                        .collect(Collectors.toCollection(() -> new ArrayList<>(numberOfPes)));
+                        .collect(Collectors.toCollection(() -> new ArrayList<>(pesNumber)));
     }
 
     @BeforeEach
@@ -211,10 +211,10 @@ public class HostSimpleTest {
 
     @Test
     public void testAddMigratingInVmAndCheckVmWasChangedToInMigration() {
-        final int numberOfPes = 2;
-        final Host host = createHostSimple(0, numberOfPes);
+        final int pesNumber = 2;
+        final Host host = createHostSimple(0, pesNumber);
         final VmSimple vm = VmTestUtil.createVm(
-                0, MIPS, numberOfPes, RAM, BW, STORAGE,
+                0, MIPS, pesNumber, RAM, BW, STORAGE,
                 new CloudletSchedulerTimeShared());
         vm.setHost(Host.NULL);
         host.addMigratingInVm(vm);
@@ -226,13 +226,13 @@ public class HostSimpleTest {
 
     @Test
     public void testAddMigratingInVmAndCheckAvailableMipsAndStorage() {
-        final int numberOfPes = 1;
+        final int pesNumber = 1;
         final double VM_MIPS = 500;
         final VmSimple vm = VmTestUtil.createVm(
-            0, VM_MIPS, numberOfPes, RAM, BW, STORAGE,
+            0, VM_MIPS, pesNumber, RAM, BW, STORAGE,
             new CloudletSchedulerTimeShared(),
             b -> Mockito.when(b.requestIdleVmDestruction(Mockito.any())).thenReturn(b));
-        final Host targetHost = createHostSimple(0, numberOfPes);
+        final Host targetHost = createHostSimple(0, pesNumber);
 
         assertEquals(MIPS, targetHost.getTotalAvailableMips());
         assertTrue(targetHost.addMigratingInVm(vm));
@@ -247,11 +247,11 @@ public class HostSimpleTest {
      */
     @Test
     public void testAddMigratingInVmAndCheckAllocatedMips() {
-        final int numberOfPes = 1;
-        final Host targetHost = createHostSimple(0, numberOfPes);
+        final int pesNumber = 1;
+        final Host targetHost = createHostSimple(0, pesNumber);
         final double VM_MIPS = 500;
         final VmSimple vm = VmTestUtil.createVm(
-            0, VM_MIPS, numberOfPes, RAM, BW, STORAGE,
+            0, VM_MIPS, pesNumber, RAM, BW, STORAGE,
             new CloudletSchedulerTimeShared());
         targetHost.addMigratingInVm(vm);
         final double allocatedMips = 50;
@@ -260,43 +260,43 @@ public class HostSimpleTest {
 
     @Test
     public void testAddMigratingInVmWhenLackRam() {
-        final int numberOfPes = 2;
-        final Host host = createHostSimple(0, numberOfPes);
+        final int pesNumber = 2;
+        final Host host = createHostSimple(0, pesNumber);
         final Vm vm = VmTestUtil.createVm(
-            0, MIPS, numberOfPes, RAM * 2,
+            0, MIPS, pesNumber, RAM * 2,
             BW, STORAGE, new CloudletSchedulerTimeShared());
         assertFalse(host.addMigratingInVm(vm));
     }
 
     @Test
     public void testAddMigratingInVmWhenLackStorage() {
-        final int numberOfPes = 2;
-        final Host host = createHostSimple(0, numberOfPes);
-        final Vm vm = VmTestUtil.createVm(0, MIPS, numberOfPes, RAM, BW, STORAGE * 2, new CloudletSchedulerTimeShared());
+        final int pesNumber = 2;
+        final Host host = createHostSimple(0, pesNumber);
+        final Vm vm = VmTestUtil.createVm(0, MIPS, pesNumber, RAM, BW, STORAGE * 2, new CloudletSchedulerTimeShared());
         assertFalse(host.addMigratingInVm(vm));
     }
 
     @Test
     public void testAddMigratingInVmWhenLackBw() {
-        final int numberOfPes = 2;
-        final Host host = createHostSimple(0, numberOfPes);
-        final Vm vm = VmTestUtil.createVm(0, MIPS, numberOfPes, RAM, BW * 2, STORAGE, new CloudletSchedulerTimeShared());
+        final int pesNumber = 2;
+        final Host host = createHostSimple(0, pesNumber);
+        final Vm vm = VmTestUtil.createVm(0, MIPS, pesNumber, RAM, BW * 2, STORAGE, new CloudletSchedulerTimeShared());
         assertFalse(host.addMigratingInVm(vm));
     }
 
     @Test
     public void testAddMigratingInVmWhenLackMips() {
-        final int numberOfPes = 2;
-        final Host host = createHostSimple(0, numberOfPes);
-        final Vm vm = VmTestUtil.createVm(0, MIPS * 2, numberOfPes, RAM, BW, STORAGE, new CloudletSchedulerTimeShared());
+        final int pesNumber = 2;
+        final Host host = createHostSimple(0, pesNumber);
+        final Vm vm = VmTestUtil.createVm(0, MIPS * 2, pesNumber, RAM, BW, STORAGE, new CloudletSchedulerTimeShared());
         assertFalse(host.addMigratingInVm(vm));
     }
 
     @Test
     public void testRemoveMigratingInVm() {
-        final int numberOfPes = 2;
-        final Host host = createHostSimple(0, numberOfPes);
-        final VmSimple vm = VmTestUtil.createVm(0, MIPS, numberOfPes, RAM, BW, STORAGE, new CloudletSchedulerTimeShared());
+        final int pesNumber = 2;
+        final Host host = createHostSimple(0, pesNumber);
+        final VmSimple vm = VmTestUtil.createVm(0, MIPS, pesNumber, RAM, BW, STORAGE, new CloudletSchedulerTimeShared());
         vm.setHost(Host.NULL);
         host.addMigratingInVm(vm);
         host.removeMigratingInVm(vm);
@@ -407,10 +407,10 @@ public class HostSimpleTest {
     }
 
     @Test
-    public void testGetNumberOfPes() {
-        final int numberOfPes = 2;
-        final Host host = createHostSimple(0, numberOfPes);
-        assertEquals(numberOfPes, host.getNumberOfPes());
+    public void testGetPesNumber() {
+        final int pesNumber = 2;
+        final Host host = createHostSimple(0, pesNumber);
+        assertEquals(pesNumber, host.getPesNumber());
     }
 
     @Test
@@ -430,15 +430,15 @@ public class HostSimpleTest {
 
     @Test
     public void testGetNumberOfFreePes() {
-        final int numberOfPes = 2;
-        final Host host = createHostSimple(0, numberOfPes);
-        assertEquals(numberOfPes, host.getFreePesNumber());
+        final int pesNumber = 2;
+        final Host host = createHostSimple(0, pesNumber);
+        assertEquals(pesNumber, host.getFreePesNumber());
     }
 
     @Test
     public void testGetNumberOfFreePesWhenOneBusyPes() {
-        final int numberOfPes = 2;
-        final HostSimple host = createHostSimple(0, numberOfPes);
+        final int pesNumber = 2;
+        final HostSimple host = createHostSimple(0, pesNumber);
         host.setPeStatus(host.getPeList().subList(0,1), Pe.Status.BUSY);
         assertAll(
             () -> assertEquals(1, host.getFreePesNumber()),
@@ -496,8 +496,8 @@ public class HostSimpleTest {
 
     @Test
     public void testGetNumberOfWorkingPesWhenOneIsFailed() {
-        final int numberOfPes = 2;
-        final HostSimple host = createHostSimple(0, numberOfPes);
+        final int pesNumber = 2;
+        final HostSimple host = createHostSimple(0, pesNumber);
         host.setPeStatus(host.getPeList().subList(0,1), Pe.Status.FAILED);
         assertAll(
             () -> assertEquals(1, host.getFreePesNumber()),
@@ -508,8 +508,8 @@ public class HostSimpleTest {
 
     @Test
     public void testGetNumberOfFreePesWhenNoFreePes() {
-        final int numberOfPes = 4;
-        final HostSimple host = createHostSimple(0, numberOfPes);
+        final int pesNumber = 4;
+        final HostSimple host = createHostSimple(0, pesNumber);
 
         host.setPeStatus(host.getPeList(), Pe.Status.BUSY);
         assertEquals(0, host.getFreePesNumber());

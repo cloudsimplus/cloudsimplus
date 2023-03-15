@@ -77,10 +77,10 @@ public class NetworkVm extends VmSimple {
      *
      * @param id unique ID of the VM
      * @param mipsCapacity the mips capacity of each Vm {@link Pe}
-     * @param numberOfPes amount of {@link Pe} (CPU cores)
+     * @param pesNumber amount of {@link Pe} (CPU cores)
      */
-    public NetworkVm(final int id, final long mipsCapacity, final int numberOfPes) {
-        super(id, mipsCapacity, numberOfPes);
+    public NetworkVm(final int id, final long mipsCapacity, final int pesNumber) {
+        super(id, mipsCapacity, pesNumber);
         cloudletList = new ArrayList<>();
     }
 
@@ -101,10 +101,10 @@ public class NetworkVm extends VmSimple {
      * a {@link DatacenterBroker}.</p>
      *
      * @param mipsCapacity the mips capacity of each Vm {@link Pe}
-     * @param numberOfPes amount of {@link Pe} (CPU cores)
+     * @param pesNumber amount of {@link Pe} (CPU cores)
      */
-    public NetworkVm(final long mipsCapacity, final int numberOfPes) {
-        super(mipsCapacity, numberOfPes);
+    public NetworkVm(final long mipsCapacity, final int pesNumber) {
+        super(mipsCapacity, pesNumber);
         cloudletList = new ArrayList<>();
     }
 

@@ -71,7 +71,7 @@ public interface AbstractMachine<T extends Resource> extends ChangeableId, Resou
      *
      * @return the machine's number of PEs
      */
-    long getNumberOfPes();
+    long getPesNumber();
 
     /**
      * Gets the individual MIPS capacity of any machine's {@link Pe},

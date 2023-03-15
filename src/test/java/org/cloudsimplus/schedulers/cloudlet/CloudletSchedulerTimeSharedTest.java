@@ -174,10 +174,10 @@ public class CloudletSchedulerTimeSharedTest {
     @Test
     public void testGetTotalUtilizationOfCpuWhenMoreCloudletsThanPes() {
         final long mips = 1000;
-        final int numberOfPes = 2;
+        final int pesNumber = 2;
         final int numberOfCloudlets = 4;
 
-        final CloudletSchedulerTimeShared instance = CloudletSchedulerTimeSharedTestUtil.newSchedulerWithSingleCoreRunningCloudlets(mips, numberOfPes, numberOfCloudlets);
+        final CloudletSchedulerTimeShared instance = CloudletSchedulerTimeSharedTestUtil.newSchedulerWithSingleCoreRunningCloudlets(mips, pesNumber, numberOfCloudlets);
 
         final double expected = 1.0;
         assertEquals(expected, instance.getRequestedCpuPercent(0));
@@ -186,10 +186,10 @@ public class CloudletSchedulerTimeSharedTest {
     @Test
     public void testGetTotalUtilizationOfCpuWhenOnePeForEachCloudlet() {
         final long mips = 1000;
-        final int numberOfPes = 2;
-        final int numberOfCloudlets = numberOfPes;
+        final int pesNumber = 2;
+        final int numberOfCloudlets = pesNumber;
 
-        final CloudletSchedulerTimeShared instance = CloudletSchedulerTimeSharedTestUtil.newSchedulerWithSingleCoreRunningCloudlets(mips, numberOfPes, numberOfCloudlets);
+        final CloudletSchedulerTimeShared instance = CloudletSchedulerTimeSharedTestUtil.newSchedulerWithSingleCoreRunningCloudlets(mips, pesNumber, numberOfCloudlets);
 
         final double expected = 1;
         assertEquals(expected, instance.getRequestedCpuPercent(0));
@@ -198,10 +198,10 @@ public class CloudletSchedulerTimeSharedTest {
     @Test
     public void testGetTotalUtilizationOfCpuWhenLessCloudletsThanPesHalfUsage() {
         final long mips = 1000;
-        final int numberOfPes = 4;
+        final int pesNumber = 4;
         final int numberOfCloudlets = 2;
 
-        final CloudletSchedulerTimeShared instance = CloudletSchedulerTimeSharedTestUtil.newSchedulerWithSingleCoreRunningCloudlets(mips, numberOfPes, numberOfCloudlets);
+        final CloudletSchedulerTimeShared instance = CloudletSchedulerTimeSharedTestUtil.newSchedulerWithSingleCoreRunningCloudlets(mips, pesNumber, numberOfCloudlets);
 
         final double expected = 0.5;
         assertEquals(expected, instance.getRequestedCpuPercent(0));
@@ -210,10 +210,10 @@ public class CloudletSchedulerTimeSharedTest {
     @Test
     public void testGetTotalUtilizationOfCpuWhenLessCloudletsThanPesThreeThirdUsage() {
         final long mips = 1000;
-        final int numberOfPes = 4;
+        final int pesNumber = 4;
         final int numberOfCloudlets = 3;
 
-        final CloudletSchedulerTimeShared instance = CloudletSchedulerTimeSharedTestUtil.newSchedulerWithSingleCoreRunningCloudlets(mips, numberOfPes, numberOfCloudlets);
+        final CloudletSchedulerTimeShared instance = CloudletSchedulerTimeSharedTestUtil.newSchedulerWithSingleCoreRunningCloudlets(mips, pesNumber, numberOfCloudlets);
 
         final double expected = 0.75;
         assertEquals(expected, instance.getRequestedCpuPercent(0));
@@ -222,10 +222,10 @@ public class CloudletSchedulerTimeSharedTest {
     @Test
     public void testGetTotalUtilizationOfCpuWhenLessCloudletsThanPesNotFullUsage() {
         final long mips = 1000;
-        final int numberOfPes = 5;
+        final int pesNumber = 5;
         final int numberOfCloudlets = 4;
 
-        final CloudletSchedulerTimeShared instance = CloudletSchedulerTimeSharedTestUtil.newSchedulerWithSingleCoreRunningCloudlets(mips, numberOfPes, numberOfCloudlets);
+        final CloudletSchedulerTimeShared instance = CloudletSchedulerTimeSharedTestUtil.newSchedulerWithSingleCoreRunningCloudlets(mips, pesNumber, numberOfCloudlets);
 
         final double expected = 0.8;
         assertEquals(expected, instance.getRequestedCpuPercent(0));

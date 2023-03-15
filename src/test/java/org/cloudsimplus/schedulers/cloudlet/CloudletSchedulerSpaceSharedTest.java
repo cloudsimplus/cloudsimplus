@@ -314,10 +314,10 @@ public class CloudletSchedulerSpaceSharedTest {
     @Test
     public void testGetTotalUtilizationOfCpuWhenMoreCloudletsThanPes() {
         final long mips = 1000;
-        final int numberOfPes = 2;
+        final int pesNumber = 2;
         final int numberOfCloudlets = 4;
 
-        final var instance = CloudletSchedulerSpaceSharedTestUtil.newSchedulerWithSingleCoreRunningCloudlets(mips, numberOfPes, numberOfCloudlets);
+        final var instance = CloudletSchedulerSpaceSharedTestUtil.newSchedulerWithSingleCoreRunningCloudlets(mips, pesNumber, numberOfCloudlets);
         final double expected = 1;
         assertEquals(expected, instance.getRequestedCpuPercent(0));
     }
@@ -325,10 +325,10 @@ public class CloudletSchedulerSpaceSharedTest {
     @Test
     public void testGetTotalUtilizationOfCpuWhenOnePeForEachCloudlet() {
         final long mips = 1000;
-        final int numberOfPes = 2;
-        final int numberOfCloudlets = numberOfPes;
+        final int pesNumber = 2;
+        final int numberOfCloudlets = pesNumber;
 
-        final var instance = CloudletSchedulerSpaceSharedTestUtil.newSchedulerWithSingleCoreRunningCloudlets(mips, numberOfPes, numberOfCloudlets);
+        final var instance = CloudletSchedulerSpaceSharedTestUtil.newSchedulerWithSingleCoreRunningCloudlets(mips, pesNumber, numberOfCloudlets);
         final double expected = 1;
         assertEquals(expected, instance.getRequestedCpuPercent(0));
     }
@@ -336,10 +336,10 @@ public class CloudletSchedulerSpaceSharedTest {
     @Test
     public void testGetTotalUtilizationOfCpuWhenLessCloudletsThanPesHalfUsage() {
         final long mips = 1000;
-        final int numberOfPes = 4;
+        final int pesNumber = 4;
         final int numberOfCloudlets = 2;
 
-        final var instance = CloudletSchedulerSpaceSharedTestUtil.newSchedulerWithSingleCoreRunningCloudlets(mips, numberOfPes, numberOfCloudlets);
+        final var instance = CloudletSchedulerSpaceSharedTestUtil.newSchedulerWithSingleCoreRunningCloudlets(mips, pesNumber, numberOfCloudlets);
         final double expected = 0.5;
         assertEquals(expected, instance.getRequestedCpuPercent(0));
     }
@@ -347,10 +347,10 @@ public class CloudletSchedulerSpaceSharedTest {
     @Test
     public void testGetTotalUtilizationOfCpuWhenLessCloudletsThanPesThreeThirdUsage() {
         final long mips = 1000;
-        final int numberOfPes = 4;
+        final int pesNumber = 4;
         final int numberOfCloudlets = 3;
 
-        final var instance = CloudletSchedulerSpaceSharedTestUtil.newSchedulerWithSingleCoreRunningCloudlets(mips, numberOfPes, numberOfCloudlets);
+        final var instance = CloudletSchedulerSpaceSharedTestUtil.newSchedulerWithSingleCoreRunningCloudlets(mips, pesNumber, numberOfCloudlets);
         final double expected = 0.75;
         assertEquals(expected, instance.getRequestedCpuPercent(0));
     }
@@ -358,10 +358,10 @@ public class CloudletSchedulerSpaceSharedTest {
     @Test
     public void testGetTotalUtilizationOfCpuWhenLessCloudletsThanPesNotFullUsage() {
         final long mips = 1000;
-        final int numberOfPes = 5;
+        final int pesNumber = 5;
         final int numberOfCloudlets = 4;
 
-        final var instance = CloudletSchedulerSpaceSharedTestUtil.newSchedulerWithSingleCoreRunningCloudlets(mips, numberOfPes, numberOfCloudlets);
+        final var instance = CloudletSchedulerSpaceSharedTestUtil.newSchedulerWithSingleCoreRunningCloudlets(mips, pesNumber, numberOfCloudlets);
         final double expected = 0.8;
         assertEquals(expected, instance.getRequestedCpuPercent(0));
     }

@@ -71,9 +71,9 @@ public class DatacenterBrokerFirstFit extends DatacenterBrokerSimple {
         final int maxTries = getVmCreatedList().size();
         for (int i = 0; i < maxTries; i++) {
             final Vm vm = getVmCreatedList().get(lastVmIndex);
-            if (vm.getExpectedFreePesNumber() >= cloudlet.getNumberOfPes()) {
+            if (vm.getExpectedFreePesNumber() >= cloudlet.getPesNumber()) {
                 LOGGER.trace("{}: {}: {} (PEs: {}) mapped to {} (available PEs: {}, tot PEs: {})",
-                    getSimulation().clockStr(), getName(), cloudlet, cloudlet.getNumberOfPes(), vm,
+                    getSimulation().clockStr(), getName(), cloudlet, cloudlet.getPesNumber(), vm,
                     vm.getExpectedFreePesNumber(), vm.getFreePesNumber());
                 return vm;
             }
@@ -86,7 +86,7 @@ public class DatacenterBrokerFirstFit extends DatacenterBrokerSimple {
         }
 
         LOGGER.warn("{}: {}: {} (PEs: {}) couldn't be mapped to any suitable VM.",
-                getSimulation().clockStr(), getName(), cloudlet, cloudlet.getNumberOfPes());
+                getSimulation().clockStr(), getName(), cloudlet, cloudlet.getPesNumber());
 
         return Vm.NULL;
     }

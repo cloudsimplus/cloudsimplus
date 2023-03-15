@@ -128,9 +128,9 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * @see #getCurrentMipsShare()
      */
     protected void setCurrentMipsShare(@NonNull final MipsShare currentMipsShare) {
-        if(currentMipsShare.pes() > vm.getNumberOfPes()){
-            LOGGER.warn("Requested {} PEs but {} has just {}", currentMipsShare.pes(), vm, vm.getNumberOfPes());
-            this.currentMipsShare = new MipsShare(vm.getNumberOfPes(), currentMipsShare.mips());
+        if(currentMipsShare.pes() > vm.getPesNumber()){
+            LOGGER.warn("Requested {} PEs but {} has just {}", currentMipsShare.pes(), vm, vm.getPesNumber());
+            this.currentMipsShare = new MipsShare(vm.getPesNumber(), currentMipsShare.mips());
         }
         else this.currentMipsShare = currentMipsShare;
     }
@@ -177,8 +177,8 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      */
     private long totalAllExecCloudletsPes() {
         return cloudletExecList.stream()
-            .map(CloudletExecution::getCloudlet)
-            .mapToLong(Cloudlet::getNumberOfPes).sum();
+                               .map(CloudletExecution::getCloudlet)
+                               .mapToLong(Cloudlet::getPesNumber).sum();
     }
 
     private double getTotalMipsShare(){
@@ -274,7 +274,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
         cle.setStatus(Cloudlet.Status.INEXEC);
         cle.setLastProcessingTime(getVm().getSimulation().clock());
         cloudletExecList.add(cle);
-        addUsedPes(cle.getNumberOfPes());
+        addUsedPes(cle.getPesNumber());
     }
 
     @Override
@@ -370,7 +370,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
 
     private void changeInExecToPaused(final CloudletExecution cle) {
         changeStatusOfCloudlet(cle, Cloudlet.Status.INEXEC, Cloudlet.Status.PAUSED);
-        removeUsedPes(cle.getNumberOfPes());
+        removeUsedPes(cle.getPesNumber());
     }
 
     private void changeReadyToPaused(final CloudletExecution cle) {
@@ -520,10 +520,10 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
             final CloudletExecution cle = cloudletExecList.get(i);
             updateCloudletProcessingAndPacketsDispatch(cle, currentTime);
             nextCloudletFinishTime = Math.min(nextCloudletFinishTime, cloudletEstimatedFinishTime(cle, currentTime));
-            usedPes += cle.getCloudlet().getNumberOfPes();
+            usedPes += cle.getCloudlet().getPesNumber();
         }
 
-        ((VmSimple) vm).setFreePesNumber(vm.getNumberOfPes() - usedPes);
+        ((VmSimple) vm).setFreePesNumber(vm.getPesNumber() - usedPes);
 
         return nextCloudletFinishTime;
     }
@@ -907,7 +907,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * @return the removed Cloudlet or {@link CloudletExecution#NULL} if not found
      */
     protected CloudletExecution removeCloudletFromExecList(final CloudletExecution cle) {
-        removeUsedPes(cle.getNumberOfPes());
+        removeUsedPes(cle.getPesNumber());
         return cloudletExecList.remove(cle) ? cle : CloudletExecution.NULL;
     }
 
@@ -1012,7 +1012,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * @return true if there is the amount of free PEs, false otherwise
      */
     protected boolean isThereEnoughFreePesForCloudlet(final CloudletExecution cle) {
-        return vm.getProcessor().getAvailableResource() >= cle.getNumberOfPes();
+        return vm.getProcessor().getAvailableResource() >= cle.getPesNumber();
     }
 
     /**
@@ -1123,7 +1123,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
             getAbsoluteCloudletResourceUtilization(
                 cloudlet, cloudlet.getUtilizationModelCpu(), time, getAvailableMipsByPe(), "CPU", requestedUtilization);
 
-        return cloudletCpuUsageForOnePe * cloudlet.getNumberOfPes();
+        return cloudletCpuUsageForOnePe * cloudlet.getPesNumber();
     }
 
     /**

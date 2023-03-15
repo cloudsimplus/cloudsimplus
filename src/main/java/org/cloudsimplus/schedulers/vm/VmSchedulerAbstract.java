@@ -98,7 +98,7 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
      * @param vm the VM to set the status of its used physical PEs
      * */
     private void updateHostPesStatusToBusy(final Vm vm) {
-        updateHostPesStatus(host.getFreePeList(), vm.getNumberOfPes(), Pe.Status.BUSY);
+        updateHostPesStatus(host.getFreePeList(), vm.getPesNumber(), Pe.Status.BUSY);
     }
 
     /**
@@ -121,12 +121,12 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
 
     @Override
     public void deallocatePesFromVm(final Vm vm) {
-        deallocatePesFromVm(vm, (int)vm.getNumberOfPes());
+        deallocatePesFromVm(vm, (int)vm.getPesNumber());
     }
 
     @Override
     public void deallocatePesFromVm(final Vm vm, final int pesToRemove) {
-        if(pesToRemove <= 0 || vm.getNumberOfPes() == 0){
+        if(pesToRemove <= 0 || vm.getPesNumber() == 0){
             return;
         }
 
@@ -151,7 +151,7 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
      * @return the number of actual removed PEs
      */
     protected final long removePesFromVm(final Vm vm, final MipsShare mipsShare, final long pesToRemove) {
-        return mipsShare.remove(Math.min(vm.getNumberOfPes(), pesToRemove));
+        return mipsShare.remove(Math.min(vm.getPesNumber(), pesToRemove));
     }
 
     protected abstract long deallocatePesFromVmInternal(Vm vm, int pesToRemove);
