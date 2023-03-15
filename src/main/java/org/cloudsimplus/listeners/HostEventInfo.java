@@ -23,7 +23,7 @@
  */
 package org.cloudsimplus.listeners;
 
-import org.cloudbus.cloudsim.hosts.Host;
+import org.cloudsimplus.hosts.Host;
 
 /**
  * An interface that represents data to be passed

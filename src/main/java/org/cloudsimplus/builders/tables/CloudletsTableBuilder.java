@@ -24,12 +24,11 @@
 package org.cloudsimplus.builders.tables;
 
 import lombok.Getter;
-import org.cloudbus.cloudsim.cloudlets.Cloudlet;
-import org.cloudbus.cloudsim.core.Identifiable;
+import org.cloudsimplus.cloudlets.Cloudlet;
+import org.cloudsimplus.core.Identifiable;
 
 import java.util.List;
 
-import static java.util.Objects.requireNonNull;
 import static java.util.Objects.requireNonNullElse;
 
 /**

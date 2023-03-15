@@ -23,10 +23,12 @@
  */
 package org.cloudsimplus.traces.google;
 
-import org.cloudbus.cloudsim.core.Identifiable;
-import org.cloudbus.cloudsim.util.TraceReaderAbstract;
+import org.cloudsimplus.cloudlets.Cloudlet;
+import org.cloudsimplus.core.Identifiable;
+import org.cloudsimplus.hosts.Host;
 import org.cloudsimplus.traces.ParsingException;
 import org.cloudsimplus.traces.TraceReaderBase;
+import org.cloudsimplus.util.TraceReaderAbstract;
 
 import java.io.InputStream;
 import java.util.*;
@@ -51,9 +53,9 @@ abstract class GoogleTraceReaderAbstract<T extends Identifiable> extends TraceRe
      * where the key is the object ID and the value is the object itself.
      * The type <T> of the objects depends on each concrete class.
      * For instance, the {@link GoogleMachineEventsTraceReader}
-     * creates {@link org.cloudbus.cloudsim.hosts.Host}s.
+     * creates {@link Host}s.
      * The {@link GoogleTaskEventsTraceReader} creates
-     * {@link org.cloudbus.cloudsim.cloudlets.Cloudlet}s.
+     * {@link Cloudlet}s.
      */
     private final Map<Long, T> availableObjectsMap;
 

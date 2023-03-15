@@ -27,7 +27,7 @@ import com.google.gson.Gson;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.ToString;
-import org.cloudbus.cloudsim.util.ResourceLoader;
+import org.cloudsimplus.util.ResourceLoader;
 import org.cloudsimplus.vmtemplates.AwsEc2Template;
 
 import java.io.InputStream;

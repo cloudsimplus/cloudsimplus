@@ -25,9 +25,9 @@ package org.cloudsimplus.listeners;
 
 import lombok.Getter;
 import lombok.NonNull;
-import org.cloudbus.cloudsim.datacenters.Datacenter;
-import org.cloudbus.cloudsim.hosts.HostSuitability;
-import org.cloudbus.cloudsim.vms.Vm;
+import org.cloudsimplus.datacenters.Datacenter;
+import org.cloudsimplus.hosts.HostSuitability;
+import org.cloudsimplus.vms.Vm;
 
 /**
  * An interface that represent data to be passed

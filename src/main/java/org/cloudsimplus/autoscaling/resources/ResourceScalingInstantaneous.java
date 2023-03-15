@@ -24,9 +24,9 @@
 package org.cloudsimplus.autoscaling.resources;
 
 import lombok.NonNull;
-import org.cloudbus.cloudsim.resources.Resource;
-import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudsimplus.autoscaling.VerticalVmScaling;
+import org.cloudsimplus.resources.Resource;
+import org.cloudsimplus.vms.Vm;
 
 import java.util.function.Function;
 

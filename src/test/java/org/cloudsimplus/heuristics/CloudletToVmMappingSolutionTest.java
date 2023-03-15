@@ -23,10 +23,10 @@
  */
 package org.cloudsimplus.heuristics;
 
-import org.cloudbus.cloudsim.cloudlets.Cloudlet;
-import org.cloudbus.cloudsim.cloudlets.CloudletTestUtil;
-import org.cloudbus.cloudsim.vms.Vm;
-import org.cloudbus.cloudsim.vms.VmTestUtil;
+import org.cloudsimplus.cloudlets.Cloudlet;
+import org.cloudsimplus.cloudlets.CloudletTestUtil;
+import org.cloudsimplus.vms.Vm;
+import org.cloudsimplus.vms.VmTestUtil;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;

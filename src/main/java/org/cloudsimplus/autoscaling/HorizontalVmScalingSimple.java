@@ -27,9 +27,9 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import org.cloudbus.cloudsim.brokers.DatacenterBroker;
-import org.cloudbus.cloudsim.vms.Vm;
+import org.cloudsimplus.brokers.DatacenterBroker;
 import org.cloudsimplus.listeners.VmHostEventInfo;
+import org.cloudsimplus.vms.Vm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

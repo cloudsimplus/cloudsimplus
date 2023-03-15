@@ -13,7 +13,7 @@
  * </p>
  *
  * <p>The first introduced heuristic is the {@link org.cloudsimplus.heuristics.CloudletToVmMappingSimulatedAnnealing}
- * that is used by a {@link org.cloudbus.cloudsim.brokers.DatacenterBrokerHeuristic}
+ * that is used by a {@link org.cloudsimplus.brokers.DatacenterBrokerHeuristic}
  * to map Cloudlets to VMs.</p>
  *
  * @author Manoel Campos da Silva Filho

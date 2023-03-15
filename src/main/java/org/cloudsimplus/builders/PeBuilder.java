@@ -23,9 +23,9 @@
  */
 package org.cloudsimplus.builders;
 
-import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
-import org.cloudbus.cloudsim.resources.Pe;
-import org.cloudbus.cloudsim.resources.PeSimple;
+import org.cloudsimplus.provisioners.PeProvisionerSimple;
+import org.cloudsimplus.resources.Pe;
+import org.cloudsimplus.resources.PeSimple;
 
 import java.util.ArrayList;
 import java.util.List;

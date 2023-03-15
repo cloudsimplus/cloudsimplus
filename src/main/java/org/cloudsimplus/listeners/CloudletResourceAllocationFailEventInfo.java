@@ -23,9 +23,9 @@
  */
 package org.cloudsimplus.listeners;
 
-import org.cloudbus.cloudsim.cloudlets.Cloudlet;
-import org.cloudbus.cloudsim.resources.ResourceManageable;
-import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
+import org.cloudsimplus.cloudlets.Cloudlet;
+import org.cloudsimplus.resources.ResourceManageable;
+import org.cloudsimplus.schedulers.cloudlet.CloudletScheduler;
 
 /**
  * An interface that represents data to be passed

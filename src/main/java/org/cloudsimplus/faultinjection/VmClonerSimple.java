@@ -27,8 +27,8 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import org.cloudbus.cloudsim.cloudlets.Cloudlet;
-import org.cloudbus.cloudsim.vms.Vm;
+import org.cloudsimplus.cloudlets.Cloudlet;
+import org.cloudsimplus.vms.Vm;
 
 import java.util.HashMap;
 import java.util.List;

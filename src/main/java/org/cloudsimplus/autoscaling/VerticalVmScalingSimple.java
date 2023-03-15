@@ -23,11 +23,11 @@
  */
 package org.cloudsimplus.autoscaling;
 
-import org.cloudbus.cloudsim.brokers.DatacenterBroker;
-import org.cloudbus.cloudsim.resources.*;
-import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudsimplus.autoscaling.resources.ResourceScaling;
 import org.cloudsimplus.autoscaling.resources.ResourceScalingGradual;
+import org.cloudsimplus.brokers.DatacenterBroker;
+import org.cloudsimplus.resources.*;
+import org.cloudsimplus.vms.Vm;
 
 /**
  * A {@link VerticalVmScaling} implementation which allows a {@link DatacenterBroker}

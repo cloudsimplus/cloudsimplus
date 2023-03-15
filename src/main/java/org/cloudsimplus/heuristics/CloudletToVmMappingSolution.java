@@ -25,13 +25,12 @@ package org.cloudsimplus.heuristics;
 
 import lombok.Getter;
 import lombok.NonNull;
-import org.cloudbus.cloudsim.cloudlets.Cloudlet;
-import org.cloudbus.cloudsim.vms.Vm;
+import org.cloudsimplus.cloudlets.Cloudlet;
+import org.cloudsimplus.vms.Vm;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.groupingBy;
 
 /**

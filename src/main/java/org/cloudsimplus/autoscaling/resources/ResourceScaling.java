@@ -23,8 +23,8 @@
  */
 package org.cloudsimplus.autoscaling.resources;
 
-import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudsimplus.autoscaling.VerticalVmScaling;
+import org.cloudsimplus.datacenters.Datacenter;
 
 /**
  * A {@link FunctionalInterface} to define how the capacity of the resource to be scaled by

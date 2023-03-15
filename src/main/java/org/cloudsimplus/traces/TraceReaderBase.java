@@ -24,7 +24,7 @@
 package org.cloudsimplus.traces;
 
 import lombok.NonNull;
-import org.cloudbus.cloudsim.util.TraceReaderAbstract;
+import org.cloudsimplus.util.TraceReaderAbstract;
 
 import java.io.InputStream;
 

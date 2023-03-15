@@ -24,8 +24,8 @@
 package org.cloudsimplus.traces.google;
 
 import lombok.NonNull;
-import org.cloudbus.cloudsim.brokers.DatacenterBroker;
-import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
+import org.cloudsimplus.brokers.DatacenterBroker;
+import org.cloudsimplus.brokers.DatacenterBrokerSimple;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,7 +34,6 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 import static java.util.Collections.singletonList;
-import static java.util.Objects.requireNonNull;
 
 /**
  * Manages creation and access to {@link DatacenterBroker}s used by

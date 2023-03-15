@@ -23,8 +23,8 @@
  */
 package org.cloudsimplus.listeners;
 
-import org.cloudbus.cloudsim.datacenters.Datacenter;
-import org.cloudbus.cloudsim.vms.Vm;
+import org.cloudsimplus.datacenters.Datacenter;
+import org.cloudsimplus.vms.Vm;
 
 /**
  * An interface that represent data to be passed
