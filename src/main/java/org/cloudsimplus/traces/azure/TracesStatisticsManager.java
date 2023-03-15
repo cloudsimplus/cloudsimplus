@@ -275,7 +275,7 @@ public class TracesStatisticsManager {
 
 			this.vmsFromVmPlacementGroupRequests += vmPlacementGroup.getVmList().size();
 
-			final long cores = vmPlacementGroup.getVmList().get(0).getNumberOfPes();
+			final long cores = vmPlacementGroup.getVmList().get(0).getPesNumber();
 			final long ram = vmPlacementGroup.getVmList().get(0).getRam().getCapacity();
 			final long bw = vmPlacementGroup.getVmList().get(0).getBw().getCapacity();
 			final long storage = vmPlacementGroup.getVmList().get(0).getStorage().getCapacity();
@@ -300,7 +300,7 @@ public class TracesStatisticsManager {
 
 			this.vmsFromVmGroupRequests += vmGroup.getVmList().size();
 
-			final long cores = vmGroup.getNumberOfPes();
+			final long cores = vmGroup.getPesNumber();
 			final long ram = vmGroup.getRam().getCapacity();
 			final long bw = vmGroup.getBw().getCapacity();
 			final long storage = vmGroup.getStorage().getCapacity();
@@ -322,7 +322,7 @@ public class TracesStatisticsManager {
 				this.negativeSingleVmRequests++;
 			}
 
-			final long cores = vm.getNumberOfPes();
+			final long cores = vm.getPesNumber();
 			final long ram = vm.getRam().getCapacity();
 			final long bw = vm.getBw().getCapacity();
 			final long storage = vm.getStorage().getCapacity();

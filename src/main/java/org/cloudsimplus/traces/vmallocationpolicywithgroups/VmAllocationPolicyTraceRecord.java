@@ -158,7 +158,7 @@ public class VmAllocationPolicyTraceRecord {
 			VmPlacementGroup vmGroup = (VmPlacementGroup) vm;
 
 			this.requestType   = VmAllocationPolicyRequestType.VM_PLACEMENT_GROUP;
-			this.numOfCores    = vmGroup.getVmList().get(0).getNumberOfPes();
+			this.numOfCores    = vmGroup.getVmList().get(0).getPesNumber();
 			this.ramMiB        = vmGroup.getVmList().get(0).getRam().getCapacity();
 			this.bwMbps        = vmGroup.getVmList().get(0).getBw().getCapacity();
 			this.storageMiB    = vmGroup.getVmList().get(0).getStorage().getCapacity();
@@ -177,7 +177,7 @@ public class VmAllocationPolicyTraceRecord {
 			VmGroup vmGroup = (VmGroup) vm;
 
 			this.requestType   = VmAllocationPolicyRequestType.VM_GROUP;
-			this.numOfCores    = vmGroup.getNumberOfPes();
+			this.numOfCores    = vmGroup.getPesNumber();
 			this.ramMiB        = vmGroup.getRam().getCapacity();
 			this.bwMbps        = vmGroup.getBw().getCapacity();
 			this.storageMiB    = vmGroup.getStorage().getCapacity();
@@ -192,7 +192,7 @@ public class VmAllocationPolicyTraceRecord {
 		}
 		else {
 			this.requestType   = VmAllocationPolicyRequestType.SINGLE_VM;
-			this.numOfCores    = vm.getNumberOfPes();
+			this.numOfCores    = vm.getPesNumber();
 			this.ramMiB        = vm.getRam().getCapacity();
 			this.bwMbps        = vm.getBw().getCapacity();
 			this.storageMiB    = vm.getStorage().getCapacity();
