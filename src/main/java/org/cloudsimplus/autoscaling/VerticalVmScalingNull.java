@@ -23,11 +23,11 @@
  */
 package org.cloudsimplus.autoscaling;
 
-import org.cloudbus.cloudsim.resources.Resource;
-import org.cloudbus.cloudsim.resources.ResourceManageable;
-import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudsimplus.autoscaling.resources.ResourceScaling;
 import org.cloudsimplus.listeners.VmHostEventInfo;
+import org.cloudsimplus.resources.Resource;
+import org.cloudsimplus.resources.ResourceManageable;
+import org.cloudsimplus.vms.Vm;
 
 import java.util.function.Function;
 

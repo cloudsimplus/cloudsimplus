@@ -23,10 +23,10 @@
  */
 package org.cloudsimplus.listeners;
 
-import org.cloudbus.cloudsim.cloudlets.Cloudlet;
-import org.cloudbus.cloudsim.datacenters.Datacenter;
-import org.cloudbus.cloudsim.hosts.Host;
-import org.cloudbus.cloudsim.vms.Vm;
+import org.cloudsimplus.cloudlets.Cloudlet;
+import org.cloudsimplus.datacenters.Datacenter;
+import org.cloudsimplus.hosts.Host;
+import org.cloudsimplus.vms.Vm;
 
 /**
  * A general interface that represents data to be passed to

@@ -23,8 +23,8 @@
  */
 package org.cloudsimplus.faultinjection;
 
-import org.cloudbus.cloudsim.cloudlets.Cloudlet;
-import org.cloudbus.cloudsim.vms.Vm;
+import org.cloudsimplus.cloudlets.Cloudlet;
+import org.cloudsimplus.vms.Vm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

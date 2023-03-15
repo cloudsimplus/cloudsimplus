@@ -28,7 +28,7 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
+import org.cloudsimplus.distributions.ContinuousDistribution;
 
 import java.lang.reflect.InvocationTargetException;
 

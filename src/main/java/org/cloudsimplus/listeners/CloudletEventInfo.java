@@ -23,7 +23,7 @@
  */
 package org.cloudsimplus.listeners;
 
-import org.cloudbus.cloudsim.cloudlets.Cloudlet;
+import org.cloudsimplus.cloudlets.Cloudlet;
 
 /**
  * An interface that represents data to be passed

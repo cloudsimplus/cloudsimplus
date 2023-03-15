@@ -23,9 +23,9 @@
  */
 package org.cloudsimplus.builders;
 
-import org.cloudbus.cloudsim.core.CloudSimPlus;
-import org.cloudbus.cloudsim.hosts.Host;
-import org.cloudbus.cloudsim.vms.Vm;
+import org.cloudsimplus.core.CloudSimPlus;
+import org.cloudsimplus.hosts.Host;
+import org.cloudsimplus.vms.Vm;
 
 /**
  * An builder to help getting instance of other CloudSimPlus object builders.

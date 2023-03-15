@@ -25,9 +25,9 @@ package org.cloudsimplus.vmtemplates;
 
 import com.google.gson.Gson;
 import lombok.*;
-import org.cloudbus.cloudsim.util.MathUtil;
-import org.cloudbus.cloudsim.util.ResourceLoader;
-import org.cloudbus.cloudsim.vms.Vm;
+import org.cloudsimplus.util.MathUtil;
+import org.cloudsimplus.util.ResourceLoader;
+import org.cloudsimplus.vms.Vm;
 
 import java.io.InputStreamReader;
 import java.nio.file.Path;

@@ -24,26 +24,24 @@
 package org.cloudsimplus.traces.google;
 
 import lombok.NonNull;
-import org.cloudbus.cloudsim.brokers.DatacenterBroker;
-import org.cloudbus.cloudsim.cloudlets.Cloudlet;
-import org.cloudbus.cloudsim.core.CloudSimTag;
-import org.cloudbus.cloudsim.core.Simulation;
-import org.cloudbus.cloudsim.core.events.CloudSimEvent;
-import org.cloudbus.cloudsim.util.ResourceLoader;
-import org.cloudbus.cloudsim.util.TimeUtil;
-import org.cloudbus.cloudsim.util.TraceReaderAbstract;
-import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
-import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelDynamic;
-import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
+import org.cloudsimplus.brokers.DatacenterBroker;
+import org.cloudsimplus.cloudlets.Cloudlet;
+import org.cloudsimplus.core.CloudSimTag;
+import org.cloudsimplus.core.Simulation;
+import org.cloudsimplus.core.events.CloudSimEvent;
 import org.cloudsimplus.listeners.EventInfo;
+import org.cloudsimplus.util.ResourceLoader;
+import org.cloudsimplus.util.TimeUtil;
+import org.cloudsimplus.util.TraceReaderAbstract;
+import org.cloudsimplus.utilizationmodels.UtilizationModel;
+import org.cloudsimplus.utilizationmodels.UtilizationModelDynamic;
+import org.cloudsimplus.utilizationmodels.UtilizationModelFull;
 
 import java.io.InputStream;
 import java.io.UncheckedIOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
-import static java.util.Objects.requireNonNull;
 
 /**
  * Process "task usage" trace files from

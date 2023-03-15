@@ -23,8 +23,8 @@
  */
 package org.cloudsimplus.builders.tables;
 
-import org.cloudbus.cloudsim.hosts.Host;
-import org.cloudbus.cloudsim.hosts.HostStateHistoryEntry;
+import org.cloudsimplus.hosts.Host;
+import org.cloudsimplus.hosts.HostStateHistoryEntry;
 
 /**
  * Builds a table for printing {@link HostStateHistoryEntry} entries from the

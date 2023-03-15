@@ -23,8 +23,8 @@
  */
 package org.cloudsimplus.heuristics;
 
-import org.cloudbus.cloudsim.cloudlets.Cloudlet;
-import org.cloudbus.cloudsim.vms.Vm;
+import org.cloudsimplus.cloudlets.Cloudlet;
+import org.cloudsimplus.vms.Vm;
 
 import java.util.Collections;
 import java.util.List;

@@ -23,20 +23,20 @@
  */
 package org.cloudsimplus.autoscaling;
 
-import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicy;
-import org.cloudbus.cloudsim.brokers.DatacenterBroker;
-import org.cloudbus.cloudsim.cloudlets.Cloudlet;
-import org.cloudbus.cloudsim.datacenters.Datacenter;
-import org.cloudbus.cloudsim.resources.*;
-import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
-import org.cloudbus.cloudsim.vms.Vm;
+import org.cloudsimplus.allocationpolicies.VmAllocationPolicy;
 import org.cloudsimplus.autoscaling.resources.ResourceScaling;
+import org.cloudsimplus.brokers.DatacenterBroker;
+import org.cloudsimplus.cloudlets.Cloudlet;
+import org.cloudsimplus.datacenters.Datacenter;
 import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.listeners.VmHostEventInfo;
+import org.cloudsimplus.resources.*;
+import org.cloudsimplus.utilizationmodels.UtilizationModel;
+import org.cloudsimplus.vms.Vm;
 
 import java.util.function.Function;
 
-import static org.cloudbus.cloudsim.utilizationmodels.UtilizationModel.Unit;
+import static org.cloudsimplus.utilizationmodels.UtilizationModel.Unit;
 
 /**
  * A Vm <a href="https://en.wikipedia.org/wiki/Scalability#Horizontal_and_vertical_scaling">Vertical Scaling</a>

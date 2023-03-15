@@ -5,7 +5,7 @@
  *
  * <p>These scaling mechanisms define a {@link java.util.function.Predicate} that
  * define the condition to fire the scaling mechanism.
- * The {@link org.cloudbus.cloudsim.brokers.DatacenterBroker} that the VM
+ * The {@link org.cloudsimplus.brokers.DatacenterBroker} that the VM
  * belongs to is accountable to evaluate the predicate and then
  * request the scaling mechanism to act.</p>
  *

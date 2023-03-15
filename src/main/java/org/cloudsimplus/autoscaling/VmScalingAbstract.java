@@ -27,7 +27,7 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import org.cloudbus.cloudsim.vms.Vm;
+import org.cloudsimplus.vms.Vm;
 
 /**
  * An abstract class for implementing {@link HorizontalVmScaling} and

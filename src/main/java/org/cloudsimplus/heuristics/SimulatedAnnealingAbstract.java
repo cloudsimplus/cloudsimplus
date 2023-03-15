@@ -26,7 +26,7 @@ package org.cloudsimplus.heuristics;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
+import org.cloudsimplus.distributions.ContinuousDistribution;
 
 /**
  * An abstract class for implementation of

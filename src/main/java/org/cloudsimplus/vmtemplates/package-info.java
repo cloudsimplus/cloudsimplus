@@ -5,7 +5,7 @@
  *
  * <p>A JSON file can be read using a method such as the
  * {@link org.cloudsimplus.vmtemplates.AwsEc2Template#getInstance(java.lang.String)}.
- * Then, one can call the usual {@link org.cloudbus.cloudsim.vms.Vm} constructors
+ * Then, one can call the usual {@link org.cloudsimplus.vms.Vm} constructors
  * to create an actual VM, using the configurations from the template file.
  * </p>
  *

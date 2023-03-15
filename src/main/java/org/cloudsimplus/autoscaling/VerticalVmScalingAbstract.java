@@ -27,14 +27,14 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import org.cloudbus.cloudsim.core.CloudSimTag;
-import org.cloudbus.cloudsim.provisioners.ResourceProvisioner;
-import org.cloudbus.cloudsim.resources.*;
-import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudsimplus.autoscaling.resources.ResourceScaling;
 import org.cloudsimplus.autoscaling.resources.ResourceScalingGradual;
 import org.cloudsimplus.autoscaling.resources.ResourceScalingInstantaneous;
+import org.cloudsimplus.core.CloudSimTag;
 import org.cloudsimplus.listeners.VmHostEventInfo;
+import org.cloudsimplus.provisioners.ResourceProvisioner;
+import org.cloudsimplus.resources.*;
+import org.cloudsimplus.vms.Vm;
 
 import java.util.function.Function;
 
