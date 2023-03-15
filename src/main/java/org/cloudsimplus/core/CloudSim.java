@@ -81,7 +81,8 @@ abstract class CloudSim implements Simulation {
     /**
      * The queue of events that will be sent in a future simulation time.
      */
-    protected final FutureQueue future;
+    @Getter
+    private final FutureQueue future;
 
     /**
      * The deferred event queue.

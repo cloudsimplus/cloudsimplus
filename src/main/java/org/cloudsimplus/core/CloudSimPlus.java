@@ -87,7 +87,7 @@ public final class CloudSimPlus extends CloudSim {
              * If some event is processed, the clock is automatically increased.*/
             setClock(until);
 
-            if(future.isEmpty()){
+            if(getFuture().isEmpty()){
                 finish();
             }
         }
@@ -139,13 +139,13 @@ public final class CloudSimPlus extends CloudSim {
     }
 
     @Override
-    public final Simulation addOnSimulationPauseListener(@NonNull final EventListener<EventInfo> listener) {
+    public Simulation addOnSimulationPauseListener(@NonNull final EventListener<EventInfo> listener) {
         this.onSimulationPauseListeners.add(listener);
         return this;
     }
 
     @Override
-    public final Simulation addOnSimulationStartListener(@NonNull final EventListener<EventInfo> listener) {
+    public Simulation addOnSimulationStartListener(@NonNull final EventListener<EventInfo> listener) {
         this.onSimulationStartListeners.add(listener);
         return this;
     }
@@ -156,7 +156,7 @@ public final class CloudSimPlus extends CloudSim {
     }
 
     @Override
-    public final Simulation addOnEventProcessingListener(@NonNull final EventListener<SimEvent> listener) {
+    public Simulation addOnEventProcessingListener(@NonNull final EventListener<SimEvent> listener) {
         this.onEventProcessingListeners.add(listener);
         return this;
     }
