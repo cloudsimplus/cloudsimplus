@@ -17,8 +17,6 @@ import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.network.topologies.NetworkTopology;
 import org.cloudbus.cloudsim.util.TimeUtil;
 import org.cloudbus.cloudsim.util.Util;
-import org.cloudsimplus.listeners.EventInfo;
-import org.cloudsimplus.listeners.EventListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,7 +27,7 @@ import java.util.stream.Stream;
 import static org.cloudbus.cloudsim.util.TimeUtil.secondsToStr;
 
 /**
- * The main class of the simulation API, that manages Cloud Computing simulations,
+ * An abstract class to manage Cloud Computing simulations,
  * providing all methods to start, pause and stop them.
  * It sends and processes all discrete events during the simulation time.
  *
@@ -38,16 +36,14 @@ import static org.cloudbus.cloudsim.util.TimeUtil.secondsToStr;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Toolkit 1.0
  */
-@Accessors(makeFinal = false) // makeFinal required for Mockito
-public class CloudSim implements Simulation {
+@Accessors(makeFinal = false) // non-final required for Mockito
+abstract class CloudSim implements Simulation {
     /**
      * CloudSim Plus current version.
      */
     public static final String VERSION = "CloudSim Plus 8.0.0";
 
     public static final Logger LOGGER = LoggerFactory.getLogger(CloudSim.class.getSimpleName());
-
-    private final CircularTimeQueue clockQueue;
 
     @NonNull @Getter @Setter
     private NetworkTopology networkTopology;
@@ -87,7 +83,7 @@ public class CloudSim implements Simulation {
     /**
      * The queue of events that will be sent in a future simulation time.
      */
-    private final FutureQueue future;
+    protected final FutureQueue future;
 
     /**
      * The deferred event queue.
@@ -130,13 +126,6 @@ public class CloudSim implements Simulation {
      */
     private boolean alreadyRunOnce;
 
-    private final Set<EventListener<SimEvent>> onEventProcessingListeners;
-    private final Set<EventListener<EventInfo>> onSimulationPauseListeners;
-    private final Set<EventListener<EventInfo>> onClockTickListeners;
-    private final Set<EventListener<EventInfo>> onSimulationStartListeners;
-
-    private boolean processEventsInParallel;
-
     /**
      * Creates a CloudSim simulation.
      * Internally it creates a CloudInformationService.
@@ -166,21 +155,16 @@ public class CloudSim implements Simulation {
         this.clock = 0;
         this.running = false;
         this.alreadyRunOnce = false;
-        this.onEventProcessingListeners = new HashSet<>();
-        this.onSimulationPauseListeners = new HashSet<>();
-        this.onClockTickListeners = new HashSet<>();
-        this.onSimulationStartListeners = new HashSet<>();
 
         // NOTE: the order for the lines below is important
         this.calendar = Calendar.getInstance();
-        this.cis = new CloudInformationService(this);
 
         if (minTimeBetweenEvents <= 0) {
             throw new IllegalArgumentException("The minimal time between events should be positive, but is: " + minTimeBetweenEvents);
         }
 
         this.minTimeBetweenEvents = minTimeBetweenEvents;
-        this.clockQueue = new CircularTimeQueue(this);
+        this.cis = new CloudInformationService(this);
     }
 
     /**
@@ -190,7 +174,7 @@ public class CloudSim implements Simulation {
      * <b>Note:</b> Should be used only in the <b>synchronous</b> mode
      * (after starting the simulation with {@link #startSync()}).
      */
-    private void finish() {
+    protected void finish() {
         if(abortRequested){
             return;
         }
@@ -224,25 +208,6 @@ public class CloudSim implements Simulation {
     }
 
     @Override
-    public double runFor(final double interval) {
-        final double until = interval == Double.MAX_VALUE ? interval : this.clock + interval;
-
-        if(!processEvents(until)){
-            /* If no event happening up to the given time, increases the clock
-             * so that when the runFor method is called again with the new clock,
-             * some events may be processed that time.
-             * If some event is processed, the clock is automatically increased.*/
-            setClock(until);
-
-            if(future.isEmpty()){
-                finish();
-            }
-        }
-
-        return clock;
-    }
-
-    @Override
     public double start() {
         aborted = false;
         startSync();
@@ -268,18 +233,6 @@ public class CloudSim implements Simulation {
         this.alreadyRunOnce = true;
     }
 
-    private void notifyOnSimulationStartListeners() {
-        if(!onSimulationStartListeners.isEmpty() && clock > 0) {
-            notifyEventListeners(onSimulationStartListeners, clock);
-            //Since the simulation starts just once, clear the listeners to avoid them to be notified again
-            onSimulationStartListeners.clear();
-        }
-    }
-
-    private void notifyEventListeners(final Set<EventListener<EventInfo>> listeners, final double clock) {
-        listeners.forEach(listener -> listener.update(EventInfo.of(listener, clock)));
-    }
-
     /**
      * Process all the events happening up to a given time are processed.
      *
@@ -287,7 +240,7 @@ public class CloudSim implements Simulation {
      * @return true if some event was processed, false if no event was processed
      *         or a termination time was set and the clock reached that time
      */
-    private boolean processEvents(final double until) {
+    protected boolean processEvents(final double until) {
         if (!runClockTickAndProcessFutureEvents(until) && !isToWaitClockToReachTerminationTime()) {
             return false;
         }
@@ -315,6 +268,8 @@ public class CloudSim implements Simulation {
         checkIfSimulationPauseRequested();
         return true;
     }
+
+    protected abstract void notifyOnSimulationStartListeners();
 
     private boolean logSimulationAborted() {
         if (!abortRequested) {
@@ -350,8 +305,8 @@ public class CloudSim implements Simulation {
         final String msg1 = "Simulation finished at time %.2f".formatted(clock);
         final String extra = future.isEmpty() ? "" : ", before completing,";
         final String msg2 = isTimeToTerminateSimulationUnderRequest()
-                                ? extra + " in reason of an explicit request to terminate() or terminateAt()"
-                                : "";
+            ? extra + " in reason of an explicit request to terminate() or terminateAt()"
+            : "";
 
         if(terminationTime > 0 && clock > lastCloudletProcessingUpdate + TimeUtil.minutesToSeconds(60)){
             LOGGER.warn(
@@ -413,13 +368,10 @@ public class CloudSim implements Simulation {
      * Updates the simulation clock and notify listeners if the clock has changed.
      * @param newTime simulation time to set
      * @return the old simulation time
-     *
-     * @see #onClockTickListeners
      */
-    private double setClock(final double newTime){
+    protected double setClock(final double newTime){
         final double oldTime = clock;
         this.clock = newTime;
-        clockQueue.tryToUpdateListeners(previousTime -> notifyEventListeners(onClockTickListeners, previousTime));
         return oldTime;
     }
 
@@ -488,9 +440,9 @@ public class CloudSim implements Simulation {
             : "Datacenter.getSchedulingInterval()";
 
         /*If a termination time is set, even if there is no events to process,
-        * the simulation must keep running waiting for dynamic events
-        * (such as the dynamic arrival of VMs or Cloudlets).
-        * Without increasing the time, the simulation stops due to lack of new events.*/
+         * the simulation must keep running waiting for dynamic events
+         * (such as the dynamic arrival of VMs or Cloudlets).
+         * Without increasing the time, the simulation stops due to lack of new events.*/
         LOGGER.info(
             "{}: Simulation: Waiting more events or the clock to reach {} (the termination time set). Checking new events in {} seconds ({})",
             clockStr(), terminationTime, increment, info);
@@ -509,11 +461,11 @@ public class CloudSim implements Simulation {
      */
     private double minDatacentersSchedulingInterval() {
         return cis
-                .getDatacenterList()
-                .stream()
-                .mapToDouble(Datacenter::getSchedulingInterval)
-                .filter(interval -> interval > 0)
-                .min().orElse(minTimeBetweenEvents);
+            .getDatacenterList()
+            .stream()
+            .mapToDouble(Datacenter::getSchedulingInterval)
+            .filter(interval -> interval > 0)
+            .min().orElse(minTimeBetweenEvents);
     }
 
     private void processFutureEventsHappeningAtSameTimeOfTheFirstOne(final SimEvent firstEvent) {
@@ -617,10 +569,10 @@ public class CloudSim implements Simulation {
     @Override
     public SimEvent cancel(final SimEntity src, final Predicate<SimEvent> predicate) {
         final SimEvent canceled =
-                future.stream()
-                      .filter(isEventSourceEqualsTo(predicate, src))
-                      .findFirst()
-                      .orElse(SimEvent.NULL);
+            future.stream()
+                  .filter(isEventSourceEqualsTo(predicate, src))
+                  .findFirst()
+                  .orElse(SimEvent.NULL);
         future.remove(canceled);
         return canceled;
     }
@@ -652,7 +604,7 @@ public class CloudSim implements Simulation {
      *
      * @param evt the event to be processed
      */
-    private void processEvent(final SimEvent evt) {
+    protected void processEvent(final SimEvent evt) {
         if (evt.getTime() < clock) {
             final var msg = "Past event detected. Event time: %.2f Simulation clock: %.2f";
             throw new IllegalArgumentException(msg.formatted(evt.getTime(), clock));
@@ -660,30 +612,6 @@ public class CloudSim implements Simulation {
 
         setClock(evt.getTime());
         processEventByType(evt);
-        for (final var listener : onEventProcessingListeners) {
-            listener.update(evt);
-        }
-    }
-
-    /**
-     * Checks if the simulation must {@link #processEventsInParallel process events in parallel}
-     * and then synchronizes some code block encapsulated into a {@link Runnable} object
-     * (or lambda expression). This ensures thread safety to call the code block.
-     *
-     * <p>For instance, if you want to change the simulation clock in a synchronous way,
-     * call {@code sync(() -> setClock(NEW_TIME))}.
-     * This gives the sync() method a lambda expression representing a {@link Runnable}.
-     * </p>
-     *
-     * <p><b>WARNING:</b> this is a very experimental feature. It may result
-     * in unexpected simulation behaviour. Use at your own risk.</p>
-     *
-     * @param runnable The {@link Runnable} that encapsulates the code block to be called synchronously.
-     */
-    private void sync(final Runnable runnable){
-        if(processEventsInParallel)
-            synchronized(this){ runnable.run(); }
-        else runnable.run();
     }
 
     private void processEventByType(final SimEvent evt) {
@@ -817,11 +745,10 @@ public class CloudSim implements Simulation {
      * @see #pause()
      * @see #pause(double)
      */
-    private boolean doPause() {
+    protected boolean doPause() {
         if(running && isPauseRequested()) {
-            paused=true;
-            setClock(pauseAt);
-            notifyEventListeners(onSimulationPauseListeners, clock);
+            this.paused=true;
+            setClock(this.pauseAt);
             return true;
         }
 
@@ -871,45 +798,6 @@ public class CloudSim implements Simulation {
     public void abort() {
         abortRequested = true;
         running = false;
-    }
-
-    @Override
-    public final Simulation addOnSimulationPauseListener(@NonNull final EventListener<EventInfo> listener) {
-        this.onSimulationPauseListeners.add(listener);
-        return this;
-    }
-
-    @Override
-    public final Simulation addOnSimulationStartListener(@NonNull final EventListener<EventInfo> listener) {
-        this.onSimulationStartListeners.add(listener);
-        return this;
-    }
-
-    @Override
-    public boolean removeOnSimulationPauseListener(@NonNull final EventListener<EventInfo> listener) {
-        return this.onSimulationPauseListeners.remove(listener);
-    }
-
-    @Override
-    public final Simulation addOnEventProcessingListener(@NonNull final EventListener<SimEvent> listener) {
-        this.onEventProcessingListeners.add(listener);
-        return this;
-    }
-
-    @Override
-    public boolean removeOnEventProcessingListener(@NonNull final EventListener<SimEvent> listener) {
-        return onEventProcessingListeners.remove(listener);
-    }
-
-    @Override
-    public Simulation addOnClockTickListener(@NonNull final EventListener<EventInfo> listener) {
-        onClockTickListeners.add(listener);
-        return this;
-    }
-
-    @Override
-    public boolean removeOnClockTickListener(@NonNull final EventListener<? extends EventInfo> listener) {
-        return onClockTickListeners.remove(listener);
     }
 
     /**

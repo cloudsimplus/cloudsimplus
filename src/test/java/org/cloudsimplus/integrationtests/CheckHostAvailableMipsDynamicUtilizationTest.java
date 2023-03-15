@@ -24,7 +24,7 @@
 package org.cloudsimplus.integrationtests;
 
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
-import org.cloudbus.cloudsim.core.CloudSim;
+import org.cloudbus.cloudsim.core.CloudSimPlus;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerSpaceShared;
@@ -64,7 +64,7 @@ public final class CheckHostAvailableMipsDynamicUtilizationTest {
 
     private SimulationScenarioBuilder scenario;
     private UtilizationModelDynamic utilizationModel;
-    private CloudSim simulation;
+    private CloudSimPlus simulation;
 
     /**
      * A lambda function used by the {@link Host#addOnUpdateProcessingListener(EventListener)}
@@ -89,7 +89,7 @@ public final class CheckHostAvailableMipsDynamicUtilizationTest {
 
     @BeforeEach
     public void setUp() {
-        this.simulation = new  CloudSim();
+        this.simulation = new CloudSimPlus();
         scenario = new SimulationScenarioBuilder(simulation);
         scenario.getDatacenterBuilder().setSchedulingInterval(2).create(
                 new HostBuilder()

@@ -153,10 +153,10 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     /**
      * Creates a DatacenterBroker giving a specific name.
      *
-     * @param simulation the CloudSim instance that represents the simulation the Entity is related to
+     * @param simulation the CloudSimPlus instance that represents the simulation the Entity is related to
      * @param name the DatacenterBroker name
      */
-    public DatacenterBrokerAbstract(final CloudSim simulation, final String name) {
+    public DatacenterBrokerAbstract(final CloudSimPlus simulation, final String name) {
         super(simulation);
         if(name != null && !name.isEmpty()) {
             setName(name);

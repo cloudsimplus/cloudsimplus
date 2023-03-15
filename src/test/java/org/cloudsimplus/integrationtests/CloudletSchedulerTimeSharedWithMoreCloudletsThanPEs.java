@@ -25,7 +25,7 @@ package org.cloudsimplus.integrationtests;
 
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
-import org.cloudbus.cloudsim.core.CloudSim;
+import org.cloudbus.cloudsim.core.CloudSimPlus;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerSpaceShared;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
@@ -63,11 +63,11 @@ public final class CloudletSchedulerTimeSharedWithMoreCloudletsThanPEs {
     private static final int NUMBER_OF_CLOUDLETS = VM_PES*2;
 
     private DatacenterBroker broker;
-    private CloudSim simulation;
+    private CloudSimPlus simulation;
 
     @BeforeEach
     public void setUp() {
-        simulation = new CloudSim();
+        simulation = new CloudSimPlus();
         final SimulationScenarioBuilder scenario = new SimulationScenarioBuilder(simulation);
         scenario.getDatacenterBuilder().setSchedulingInterval(2).create(
             new HostBuilder()

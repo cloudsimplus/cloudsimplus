@@ -27,12 +27,11 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
-import org.cloudbus.cloudsim.core.CloudSim;
+import org.cloudbus.cloudsim.core.CloudSimPlus;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudsimplus.heuristics.CloudletToVmMappingHeuristic;
 import org.cloudsimplus.heuristics.CloudletToVmMappingSimulatedAnnealing;
 import org.cloudsimplus.heuristics.CloudletToVmMappingSolution;
-import org.cloudsimplus.heuristics.Heuristic;
 
 import java.util.stream.Collectors;
 
@@ -64,10 +63,10 @@ public class DatacenterBrokerHeuristic extends DatacenterBrokerSimple {
     /**
      * Creates a new DatacenterBroker object.
      *
-     * @param simulation the CloudSim instance that represents the simulation the Entity is related to
+     * @param simulation the CloudSimPlus instance that represents the simulation the Entity is related to
      * @see #setHeuristic(CloudletToVmMappingHeuristic)
      */
-    public DatacenterBrokerHeuristic(final CloudSim simulation) {
+    public DatacenterBrokerHeuristic(final CloudSimPlus simulation) {
         super(simulation);
         heuristic = CloudletToVmMappingHeuristic.NULL;
     }

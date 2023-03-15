@@ -7,7 +7,7 @@
  */
 package org.cloudbus.cloudsim.cloudlets;
 
-import org.cloudbus.cloudsim.core.CloudSim;
+import org.cloudbus.cloudsim.core.CloudSimPlus;
 import org.cloudbus.cloudsim.mocks.CloudSimMocker;
 import org.cloudbus.cloudsim.mocks.MocksHelper;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
@@ -84,7 +84,7 @@ public class CloudletSimpleTest {
     @Test
     public void testGetWaitingTime() {
         final double arrivalTime = 0.0, execStartTime = 10.0;
-        final CloudSim cloudsim = CloudSimMocker.createMock(mocker -> {
+        final CloudSimPlus cloudsim = CloudSimMocker.createMock(mocker -> {
             mocker.clock(arrivalTime);
         });
 
@@ -112,7 +112,7 @@ public class CloudletSimpleTest {
     public void testGetActualCpuTimeSimulationNotFinished() {
         final double simulationClock = 100;
 
-        final CloudSim cloudsim = CloudSimMocker.createMock(mocker -> mocker.clock(simulationClock));
+        final CloudSimPlus cloudsim = CloudSimMocker.createMock(mocker -> mocker.clock(simulationClock));
         final CloudletSimple cloudlet = CloudletTestUtil.createCloudlet();
 
         cloudlet.setBroker(MocksHelper.createMockBroker(cloudsim));
@@ -125,7 +125,7 @@ public class CloudletSimpleTest {
         final double simulationClock = 200;
         final double actualCpuTime = simulationClock - execStartTime;
 
-        final CloudSim cloudsim = CloudSimMocker.createMock(mocker -> mocker.clock(simulationClock));
+        final CloudSimPlus cloudsim = CloudSimMocker.createMock(mocker -> mocker.clock(simulationClock));
         final CloudletSimple cloudlet = CloudletTestUtil.createCloudlet();
 
         cloudlet.setBroker(MocksHelper.createMockBroker(cloudsim));

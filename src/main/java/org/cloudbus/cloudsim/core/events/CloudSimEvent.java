@@ -12,7 +12,7 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import org.cloudbus.cloudsim.core.CloudSim;
+import org.cloudbus.cloudsim.core.CloudSimPlus;
 import org.cloudbus.cloudsim.core.CloudSimTag;
 import org.cloudbus.cloudsim.core.SimEntity;
 import org.cloudbus.cloudsim.core.Simulation;
@@ -25,7 +25,7 @@ import java.util.Objects;
  * An event which is passed between the entities in the simulation.
  *
  * @author Costas Simatos
- * @see CloudSim
+ * @see CloudSimPlus
  * @see SimEntity
  */
 @Accessors @Getter @Setter

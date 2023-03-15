@@ -7,7 +7,7 @@
  */
 package org.cloudbus.cloudsim.cloudlets;
 
-import org.cloudbus.cloudsim.core.CloudSim;
+import org.cloudbus.cloudsim.core.CloudSimPlus;
 import org.cloudbus.cloudsim.core.CloudSimTag;
 import org.cloudbus.cloudsim.core.events.CloudSimEvent;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
@@ -108,7 +108,7 @@ public class CloudletExecution {
 
     /**
      * Instantiates a CloudletExecutionInfo object upon the arrival of a Cloudlet inside a Datacenter.
-     * The arriving time is determined by {@link CloudSim#clock()}.
+     * The arriving time is determined by {@link CloudSimPlus#clock()}.
      *
      * @param cloudlet the Cloudlet to store execution information from
      */

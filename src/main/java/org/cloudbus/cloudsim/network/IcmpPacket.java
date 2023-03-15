@@ -19,6 +19,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
+import org.cloudbus.cloudsim.core.CloudSimPlus;
 import org.cloudbus.cloudsim.core.CloudSimTag;
 import org.cloudbus.cloudsim.core.SimEntity;
 import org.cloudbus.cloudsim.util.MathUtil;
@@ -273,7 +274,7 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
      * when the IcmpPacket reaches them along with the current simulation time.
      *
      * @param time current simulation time, use
-     *             {@link org.cloudbus.cloudsim.core.CloudSim#clock()} to obtain this
+     *             {@link CloudSimPlus#clock()} to obtain this
      */
     public void addEntryTime(final double time) {
         entryTimes.add(Math.min(time, 0));
@@ -286,7 +287,7 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
      * simulation time.
      *
      * @param time current simulation time, use
-     *             {@link org.cloudbus.cloudsim.core.CloudSim#clock()} to obtain this
+     *             {@link CloudSimPlus#clock()} to obtain this
      */
     public void addExitTime(final double time) {
         exitTimes.add(Math.min(time, 0));

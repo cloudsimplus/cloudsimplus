@@ -49,7 +49,7 @@ public interface CustomerEntity extends UniquelyIdentifiable, ChangeableId, Dela
     CustomerEntity setBroker(DatacenterBroker broker);
 
     /**
-     * Gets the CloudSim instance that represents the simulation the Entity is related to.
+     * Gets the CloudSimPlus instance that represents the simulation the Entity is related to.
      * @return
      */
     Simulation getSimulation();

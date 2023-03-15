@@ -127,7 +127,7 @@ public interface SimEvent extends Comparable<SimEvent>, EventInfo {
     SimEvent setSerial(long serial);
 
     /**
-     * Gets the CloudSim instance that represents the simulation for with the Entity is related to.
+     * Gets the CloudSimPlus instance that represents the simulation for with the Entity is related to.
      * @return
      */
     Simulation getSimulation();

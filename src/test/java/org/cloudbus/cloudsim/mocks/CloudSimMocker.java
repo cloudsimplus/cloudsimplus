@@ -23,7 +23,7 @@
  */
 package org.cloudbus.cloudsim.mocks;
 
-import org.cloudbus.cloudsim.core.CloudSim;
+import org.cloudbus.cloudsim.core.CloudSimPlus;
 import org.mockito.Mockito;
 import org.mockito.stubbing.OngoingStubbing;
 
@@ -31,33 +31,33 @@ import java.util.List;
 import java.util.function.Consumer;
 
 /**
- * A class that provides a set of methods to mock the {@link CloudSim} class
+ * A class that provides a set of methods to mock the {@link CloudSimPlus} class
  * using {@link Mockito}. Each method in this class provides a mock for a
- * method with the same name in the CloudSim class.
+ * method with the same name in the CloudSimPlus class.
  *
  * @author Manoel Campos da Silva Filho
  */
 public final class CloudSimMocker {
     /**
-     * The created CloudSim mock object.
+     * The created CloudSimPlus mock object.
      */
-    private final CloudSim mock;
+    private final CloudSimPlus mock;
 
     /**
-     * Instantiates a CloudSimMocker that creates a {@link CloudSim} mock
+     * Instantiates a CloudSimMocker that creates a {@link CloudSimPlus} mock
      * object. The constructor is used just internally by the
      * {@link #createMock(java.util.function.Consumer)} method to create a
      * Mocker object.
      */
     private CloudSimMocker() {
-        this.mock = Mockito.mock(CloudSim.class);
+        this.mock = Mockito.mock(CloudSimPlus.class);
     }
 
     /**
-     * Creates a CloudSim mock object. It requires a {@link Consumer} object as
+     * Creates a CloudSimPlus mock object. It requires a {@link Consumer} object as
      * parameter (that can be a lambda expression) where the developer defines
      * what methods of the Mocker class will be called. Each CloudSimMocker's
-     * method call defines a method in the mocked CloudSim class that is
+     * method call defines a method in the mocked CloudSimPlus class that is
      * expected to be called.
      * <p>
      * An usage example can be as follows:
@@ -65,7 +65,7 @@ public final class CloudSimMocker {
      * {@code CloudSimMocker.createMock(mocker -> mocker.clock(10).getEntityName(1));}
      * </p>
      * This example will mock the static methods clock and getEntityName
-     * from CloudSim class, making it return 10 and 1, respectively.
+     * from CloudSimPlus class, making it return 10 and 1, respectively.
      *
      * <p>
      * If you a mocked method to return 2 different values in different calls,
@@ -73,21 +73,21 @@ public final class CloudSimMocker {
      * <br>
      * {@code CloudSimMocker.createMock(mocker -> mocker.clock(10).clock(11));}
      * </p>
-     * This example will make the mocked CloudSim.clock() method to return 10
+     * This example will make the mocked CloudSimPlus.clock() method to return 10
      * for the first time it is called inside a unit test and 11 for the second
      * time.
      *
      * <p>
      * Realize that the provided examples uses lambda expression as a parameter
      * to the createMock method, defining which method calls are expected in the
-     * mocked CloudSim class.</p>
+     * mocked CloudSimPlus class.</p>
      *
      * @param consumer a {@link Consumer} that will receive the CloudSimMocker instance
      *                 to allow the developer to call some of its methods to mock
-     *                 methods from CloudSim class
-     * @return the created CloudSim mock object
+     *                 methods from CloudSimPlus class
+     * @return the created CloudSimPlus mock object
      */
-    public static CloudSim createMock(final Consumer<CloudSimMocker> consumer) {
+    public static CloudSimPlus createMock(final Consumer<CloudSimMocker> consumer) {
         final CloudSimMocker mocker = new CloudSimMocker();
         consumer.accept(mocker);
         Mockito.when(mocker.mock.isRunning()).thenReturn(true);
@@ -95,10 +95,10 @@ public final class CloudSimMocker {
     }
 
     /**
-     * Makes the {@link CloudSim#clock()} method from the mocked CloudSim class
+     * Makes the {@link CloudSimPlus#clock()} method from the mocked CloudSimPlus class
      * to return a given value.
      *
-     * @param clockTimeToReturn the value that the {@link CloudSim#clock()}
+     * @param clockTimeToReturn the value that the {@link CloudSimPlus#clock()}
      * method must return
      * @return
      */
@@ -109,11 +109,11 @@ public final class CloudSimMocker {
     }
 
     /**
-     * Makes the {@link CloudSim#clock()} method from the mocked CloudSim class
+     * Makes the {@link CloudSimPlus#clock()} method from the mocked CloudSimPlus class
      * to return each one of the values inside the given List for each
      * time it is called.
      *
-     * @param clockTimesToReturn the values that the {@link CloudSim#clock()}
+     * @param clockTimesToReturn the values that the {@link CloudSimPlus#clock()}
      * method will return in each call
      */
     public void clock(final List<Integer> clockTimesToReturn) {
@@ -143,10 +143,10 @@ public final class CloudSimMocker {
     }
 
     /**
-     * Makes the {@link CloudSim#getMinTimeBetweenEvents()} method from the mocked CloudSim class
+     * Makes the {@link CloudSimPlus#getMinTimeBetweenEvents()} method from the mocked CloudSimPlus class
      * to return a given value.
      *
-     * @param clockTimeToReturn the value that the {@link CloudSim#getMinTimeBetweenEvents()}
+     * @param clockTimeToReturn the value that the {@link CloudSimPlus#getMinTimeBetweenEvents()}
      * method must return
      * @return
      */

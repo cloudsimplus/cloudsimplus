@@ -29,7 +29,7 @@ import lombok.NonNull;
 import lombok.Setter;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
-import org.cloudbus.cloudsim.core.CloudSim;
+import org.cloudbus.cloudsim.core.CloudSimPlus;
 import org.cloudbus.cloudsim.core.CloudSimTag;
 import org.cloudbus.cloudsim.core.events.CloudSimEvent;
 import org.cloudbus.cloudsim.util.ResourceLoader;
@@ -111,7 +111,7 @@ public class GoogleTaskEventsTraceReader extends GoogleTraceReaderAbstract<Cloud
      */
     private Function<TaskEvent, Cloudlet> cloudletCreationFunction;
 
-    private final CloudSim simulation;
+    private final CloudSimPlus simulation;
 
     /**
      * Gets a {@link GoogleTaskEventsTraceReader} instance to read a "task events" trace file
@@ -129,7 +129,7 @@ public class GoogleTaskEventsTraceReader extends GoogleTraceReaderAbstract<Cloud
      * @see #process()
      */
     public static GoogleTaskEventsTraceReader getInstance(
-        final CloudSim simulation,
+        final CloudSimPlus simulation,
         final String filePath,
         final Function<TaskEvent, Cloudlet> cloudletCreationFunction)
     {
@@ -152,7 +152,7 @@ public class GoogleTaskEventsTraceReader extends GoogleTraceReaderAbstract<Cloud
      * @see #process()
      */
     public GoogleTaskEventsTraceReader(
-        final CloudSim simulation,
+        final CloudSimPlus simulation,
         final String filePath,
         final Function<TaskEvent, Cloudlet> cloudletCreationFunction) throws IOException
     {
@@ -175,7 +175,7 @@ public class GoogleTaskEventsTraceReader extends GoogleTraceReaderAbstract<Cloud
      * @see #process()
      */
     protected GoogleTaskEventsTraceReader(
-        @NonNull final CloudSim simulation,
+        @NonNull final CloudSimPlus simulation,
         final String filePath,
         final InputStream reader,
         final Function<TaskEvent, Cloudlet> cloudletCreationFunction)

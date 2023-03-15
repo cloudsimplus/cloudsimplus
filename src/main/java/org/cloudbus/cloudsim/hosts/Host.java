@@ -591,9 +591,9 @@ public interface Host extends Machine, Comparable<Host>, PowerAware<PowerModelHo
     boolean removeOnUpdateProcessingListener(EventListener<HostUpdatesVmsProcessingEventInfo> listener);
 
     /**
-     * Sets the CloudSim instance that represents the simulation the Entity belongs
+     * Sets the CloudSimPlus instance that represents the simulation the Entity belongs
      * Such attribute has to be set by the {@link Datacenter} that the host belongs to.
-     * @param simulation The CloudSim instance that represents the simulation the Entity belongs
+     * @param simulation The CloudSimPlus instance that represents the simulation the Entity belongs
      */
     Host setSimulation(Simulation simulation);
 
