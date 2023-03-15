@@ -25,7 +25,7 @@ package org.cloudsimplus.vmplacementgroups;
 
 import org.cloudsimplus.allocationpolicies.VmAllocationPolicyBestFit;
 import org.cloudsimplus.allocationpolicies.VmAllocationPolicyFirstFit;
-import org.cloudsimplus.core.CloudSim;
+import org.cloudsimplus.core.CloudSimPlus;
 import org.cloudsimplus.hosts.Host;
 import org.cloudsimplus.traces.azure.TracesSimulationManager;
 import org.cloudsimplus.vms.Vm;
@@ -53,7 +53,7 @@ public class VmAllocationPolicyFirstFitWithPlacementGroups extends VmAllocationP
     /**
      * The constructor
      */
-    public VmAllocationPolicyFirstFitWithPlacementGroups(CloudSim simulation, TracesSimulationManager simulationManager) {
+    public VmAllocationPolicyFirstFitWithPlacementGroups(CloudSimPlus simulation, TracesSimulationManager simulationManager) {
 		super(simulation, simulationManager);
 	}
 

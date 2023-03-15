@@ -24,7 +24,7 @@
 package org.cloudsimplus.vmplacementgroups;
 
 import org.cloudsimplus.allocationpolicies.VmAllocationPolicyBestFit;
-import org.cloudsimplus.core.CloudSim;
+import org.cloudsimplus.core.CloudSimPlus;
 import org.cloudsimplus.hosts.Host;
 import org.cloudsimplus.hosts.HostSuitability;
 import org.cloudsimplus.traces.azure.TracesSimulationManager;
@@ -57,7 +57,7 @@ public class VmAllocationPolicyBestFitWithPlacementGroups extends VmAllocationPo
 	/**
 	 * The simulation object
 	 */
-	final private CloudSim simulation;
+	final private CloudSimPlus simulation;
 
 	/**
 	 * Number of hosts per switch
@@ -70,14 +70,14 @@ public class VmAllocationPolicyBestFitWithPlacementGroups extends VmAllocationPo
 	final protected TracesSimulationManager simulationManager;
 
 	/**
-	 * Takes as input the {@link CloudSim} and {@link TracesSimulationManager} and performs basic
+	 * Takes as input the {@link CloudSimPlus} and {@link TracesSimulationManager} and performs basic
 	 * checks about the number of hosts per switch. See {@link TracesSimulationManager} for more
 	 * information about how to run this kind of trace-based simulations.
 	 *
-	 * @param simulation a handle to the {@link CloudSim} object
+	 * @param simulation a handle to the {@link CloudSimPlus} object
 	 * @param simulationManager see {@link TracesSimulationManager}
 	 */
-	public VmAllocationPolicyBestFitWithPlacementGroups(final CloudSim simulation, final TracesSimulationManager simulationManager) {
+	public VmAllocationPolicyBestFitWithPlacementGroups(final CloudSimPlus simulation, final TracesSimulationManager simulationManager) {
 		super();
 
 		this.simulation = simulation;
@@ -378,11 +378,11 @@ public class VmAllocationPolicyBestFitWithPlacementGroups extends VmAllocationPo
     }
 
     /**
-     * Getter for the {@link CloudSim} object of the simulation
+     * Getter for the {@link CloudSimPlus} object of the simulation
      *
-     * @return the {@link CloudSim} object of the simulation
+     * @return the {@link CloudSimPlus} object of the simulation
      */
-    protected CloudSim getSimulation() {
+    protected CloudSimPlus getSimulation() {
     	return this.simulation;
     }
 

@@ -24,7 +24,7 @@
 package org.cloudsimplus.vmplacementgroups;
 
 import org.cloudsimplus.allocationpolicies.VmAllocationPolicyBestFit;
-import org.cloudsimplus.core.CloudSim;
+import org.cloudsimplus.core.CloudSimPlus;
 import org.cloudsimplus.hosts.Host;
 import org.cloudsimplus.traces.azure.TracesSimulationManager;
 import org.cloudsimplus.vmplacementgroup.VmPlacementGroup;
@@ -86,14 +86,14 @@ public class VmAllocationPolicyBestFitWithPlacementGroups_LRRL extends VmAllocat
 	private int rightToLeftFirstSwitchIndex;
 
 	/**
-	 * Takes as input the {@link CloudSim} and {@link TracesSimulationManager} and feeds them to the constructor
+	 * Takes as input the {@link CloudSimPlus} and {@link TracesSimulationManager} and feeds them to the constructor
 	 * of the superclass to performs basic checks about the number of hosts per switch. It also initializes
 	 * {@link #switchHosts}.
 	 *
-	 * @param simulation a handle to the {@link CloudSim} object
+	 * @param simulation a handle to the {@link CloudSimPlus} object
 	 * @param simulationManager see {@link TracesSimulationManager} for info about how to run this kind of trace-based simulations.
 	 */
-	public VmAllocationPolicyBestFitWithPlacementGroups_LRRL(final CloudSim simulation, final TracesSimulationManager simulationManager) {
+	public VmAllocationPolicyBestFitWithPlacementGroups_LRRL(final CloudSimPlus simulation, final TracesSimulationManager simulationManager) {
 
 		super(simulation, simulationManager);
 

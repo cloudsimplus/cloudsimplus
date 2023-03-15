@@ -28,10 +28,12 @@ import org.cloudsimplus.allocationpolicies.VmAllocationPolicy;
 import org.cloudsimplus.brokers.DatacenterBroker;
 import org.cloudsimplus.cloudlets.Cloudlet;
 import org.cloudsimplus.cloudlets.CloudletSimple;
-import org.cloudsimplus.core.CloudSim;
+import org.cloudsimplus.core.CloudSimPlus;
 import org.cloudsimplus.datacenters.DatacenterSimple;
 import org.cloudsimplus.hosts.Host;
 import org.cloudsimplus.hosts.HostSimple;
+import org.cloudsimplus.listeners.CloudletVmEventInfo;
+import org.cloudsimplus.listeners.VmEventInfo;
 import org.cloudsimplus.provisioners.PeProvisionerSimple;
 import org.cloudsimplus.provisioners.ResourceProvisionerSimple;
 import org.cloudsimplus.resources.Pe;
@@ -187,7 +189,7 @@ public class TracesSimulationManager {
 
 
 
-	/** See {@link CloudSim#CloudSim(double)} */
+	/** See {@link CloudSimPlus#CloudSimPlus(double)} */
 	private double minTimeBetweenEvents;
 
 
@@ -211,7 +213,7 @@ public class TracesSimulationManager {
 
 
 	/** The simulation object */
-	private CloudSim simulation;
+	private CloudSimPlus simulation;
 
 	/** The data center broker */
 	private DatacenterBroker broker;
@@ -240,11 +242,11 @@ public class TracesSimulationManager {
 
 
 	/**
-	 * Takes as input a {@link CloudSim} object and a {@link DatacenterBroker} and
+	 * Takes as input a {@link CloudSimPlus} object and a {@link DatacenterBroker} and
 	 * initializes the {@link TracesSimulationManager}, i.e., it creates the {@link Host}s,
 	 * the {@link VmAllocationPolicy}, and the {@link TracesBatchesManager}.
 	 */
-    public void initialize(final CloudSim simulation, final DatacenterBroker broker) {
+    public void initialize(final CloudSimPlus simulation, final DatacenterBroker broker) {
 
     	//broker.setFailedVmsRetryDelay(-1d); // do not retry allocating failed requests
     	broker.getVmCreation().setRetryDelay(-1);
@@ -823,7 +825,7 @@ public class TracesSimulationManager {
 
 
 	//
-	public CloudSim getSimulation() {
+	public CloudSimPlus getSimulation() {
 		return this.simulation;
 	}
 
