@@ -81,7 +81,6 @@ abstract class CloudSim implements Simulation {
     /**
      * The queue of events that will be sent in a future simulation time.
      */
-    @Getter
     private final FutureQueue future;
 
     /**
@@ -810,5 +809,9 @@ abstract class CloudSim implements Simulation {
     /** Gets the total number of events generated in the {@link FutureQueue} */
     public long getGeneratedEventsNumber() {
         return future.getSerial();
+    }
+
+    public boolean noFutureEvents(){
+        return future.isEmpty();
     }
 }
