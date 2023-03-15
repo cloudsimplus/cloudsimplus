@@ -23,8 +23,8 @@
  */
 package org.cloudsimplus.traces.google;
 
-import org.cloudbus.cloudsim.brokers.DatacenterBroker;
-import org.cloudbus.cloudsim.util.TimeUtil;
+import org.cloudsimplus.brokers.DatacenterBroker;
+import org.cloudsimplus.util.TimeUtil;
 
 /**
  * The index of each field in a Google Task Events trace file.

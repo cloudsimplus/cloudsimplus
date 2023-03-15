@@ -4,7 +4,7 @@
  * to allow instantiating multiple simulation objects more easily.
  *
  * <p>Since that creating and setting up some simulation objects such as a
- * {@link org.cloudbus.cloudsim.datacenters.Datacenter} requires a considerable amount
+ * {@link org.cloudsimplus.datacenters.Datacenter} requires a considerable amount
  * of code, that usually becomes duplicated along different simulations,
  * the builder classes  work as object factories that make it easier to create multiple
  * simulation objects with the same configuration.</p>

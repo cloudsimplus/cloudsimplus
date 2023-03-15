@@ -27,12 +27,12 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
-import org.cloudbus.cloudsim.core.CloudSimPlus;
-import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
-import org.cloudbus.cloudsim.distributions.StatisticalDistribution;
-import org.cloudbus.cloudsim.distributions.UniformDistr;
-import org.cloudbus.cloudsim.util.TimeUtil;
-import org.cloudbus.cloudsim.util.Util;
+import org.cloudsimplus.core.CloudSimPlus;
+import org.cloudsimplus.distributions.ContinuousDistribution;
+import org.cloudsimplus.distributions.StatisticalDistribution;
+import org.cloudsimplus.distributions.UniformDistr;
+import org.cloudsimplus.util.TimeUtil;
+import org.cloudsimplus.util.Util;
 
 import java.time.LocalTime;
 import java.util.*;

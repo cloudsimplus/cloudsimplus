@@ -23,8 +23,8 @@
  */
 package org.cloudsimplus.traces.google;
 
-import org.cloudbus.cloudsim.resources.Pe;
-import org.cloudbus.cloudsim.util.TimeUtil;
+import org.cloudsimplus.resources.Pe;
+import org.cloudsimplus.util.TimeUtil;
 
 /**
  * The index of each field in the Google Machine Events trace file.

@@ -25,10 +25,8 @@ package org.cloudsimplus.traces.google;
 
 import lombok.Getter;
 import lombok.NonNull;
-import org.cloudbus.cloudsim.cloudlets.Cloudlet;
+import org.cloudsimplus.cloudlets.Cloudlet;
 import org.cloudsimplus.traces.google.GoogleTaskUsageTraceReader.FieldIndex;
-
-import java.util.Objects;
 
 /**
  * A data class to store the attributes representing the resource usage of a {@link Cloudlet},

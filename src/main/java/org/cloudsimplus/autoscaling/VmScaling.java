@@ -23,10 +23,10 @@
  */
 package org.cloudsimplus.autoscaling;
 
-import org.cloudbus.cloudsim.brokers.DatacenterBroker;
-import org.cloudbus.cloudsim.vms.Vm;
+import org.cloudsimplus.brokers.DatacenterBroker;
 import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.listeners.VmHostEventInfo;
+import org.cloudsimplus.vms.Vm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

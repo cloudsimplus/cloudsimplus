@@ -23,8 +23,8 @@
  */
 package org.cloudsimplus.builders;
 
-import org.cloudbus.cloudsim.brokers.DatacenterBroker;
-import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
+import org.cloudsimplus.brokers.DatacenterBroker;
+import org.cloudsimplus.brokers.DatacenterBrokerSimple;
 
 import java.util.List;
 import java.util.Objects;

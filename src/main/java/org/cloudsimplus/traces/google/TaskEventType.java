@@ -23,8 +23,8 @@
  */
 package org.cloudsimplus.traces.google;
 
-import org.cloudbus.cloudsim.cloudlets.Cloudlet;
-import org.cloudbus.cloudsim.core.CloudSimTag;
+import org.cloudsimplus.cloudlets.Cloudlet;
+import org.cloudsimplus.core.CloudSimTag;
 
 /**
  * Defines the type of {@link TaskEvent} (a line) in the trace file

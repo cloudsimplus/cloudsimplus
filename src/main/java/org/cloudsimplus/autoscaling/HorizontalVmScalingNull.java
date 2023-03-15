@@ -23,8 +23,8 @@
  */
 package org.cloudsimplus.autoscaling;
 
-import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudsimplus.listeners.VmHostEventInfo;
+import org.cloudsimplus.vms.Vm;
 
 import java.util.function.Predicate;
 import java.util.function.Supplier;

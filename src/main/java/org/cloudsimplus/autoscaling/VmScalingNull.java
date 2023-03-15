@@ -23,8 +23,8 @@
  */
 package org.cloudsimplus.autoscaling;
 
-import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudsimplus.listeners.VmHostEventInfo;
+import org.cloudsimplus.vms.Vm;
 
 /**
  * A class that implements the Null Object Design Pattern for {@link VmScaling} class.

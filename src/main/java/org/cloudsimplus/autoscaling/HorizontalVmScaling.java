@@ -23,10 +23,10 @@
  */
 package org.cloudsimplus.autoscaling;
 
-import org.cloudbus.cloudsim.brokers.DatacenterBroker;
-import org.cloudbus.cloudsim.datacenters.Datacenter;
-import org.cloudbus.cloudsim.vms.Vm;
+import org.cloudsimplus.brokers.DatacenterBroker;
+import org.cloudsimplus.datacenters.Datacenter;
 import org.cloudsimplus.listeners.VmHostEventInfo;
+import org.cloudsimplus.vms.Vm;
 
 import java.util.function.Function;
 import java.util.function.Predicate;

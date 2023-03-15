@@ -1,6 +1,4 @@
 /**
- * Provides general-purpose, utility classes.
- *
- * @author Manoel Campos da Silva Filho
+ * Provides general purpose, helper classes used internally by CloudSim Plus.
  */
 package org.cloudsimplus.util;

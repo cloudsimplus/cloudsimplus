@@ -23,7 +23,7 @@
  */
 package org.cloudsimplus.traces.google;
 
-import org.cloudbus.cloudsim.hosts.Host;
+import org.cloudsimplus.hosts.Host;
 
 /**
  * Defines the type of event (a line) in the trace file

@@ -26,23 +26,22 @@ package org.cloudsimplus.faultinjection;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
-import org.cloudbus.cloudsim.brokers.DatacenterBroker;
-import org.cloudbus.cloudsim.cloudlets.Cloudlet;
-import org.cloudbus.cloudsim.core.AbstractMachine;
-import org.cloudbus.cloudsim.core.CloudSimEntity;
-import org.cloudbus.cloudsim.core.CloudSimTag;
-import org.cloudbus.cloudsim.core.Simulation;
-import org.cloudbus.cloudsim.core.events.SimEvent;
-import org.cloudbus.cloudsim.datacenters.Datacenter;
-import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
-import org.cloudbus.cloudsim.distributions.PoissonDistr;
-import org.cloudbus.cloudsim.distributions.StatisticalDistribution;
-import org.cloudbus.cloudsim.distributions.UniformDistr;
-import org.cloudbus.cloudsim.hosts.Host;
-import org.cloudbus.cloudsim.hosts.HostSimple;
-import org.cloudbus.cloudsim.resources.Pe;
-import org.cloudbus.cloudsim.util.TimeUtil;
-import org.cloudbus.cloudsim.vms.Vm;
+import org.cloudsimplus.brokers.DatacenterBroker;
+import org.cloudsimplus.cloudlets.Cloudlet;
+import org.cloudsimplus.core.AbstractMachine;
+import org.cloudsimplus.core.CloudSimEntity;
+import org.cloudsimplus.core.CloudSimTag;
+import org.cloudsimplus.core.events.SimEvent;
+import org.cloudsimplus.datacenters.Datacenter;
+import org.cloudsimplus.distributions.ContinuousDistribution;
+import org.cloudsimplus.distributions.PoissonDistr;
+import org.cloudsimplus.distributions.StatisticalDistribution;
+import org.cloudsimplus.distributions.UniformDistr;
+import org.cloudsimplus.hosts.Host;
+import org.cloudsimplus.hosts.HostSimple;
+import org.cloudsimplus.resources.Pe;
+import org.cloudsimplus.util.TimeUtil;
+import org.cloudsimplus.vms.Vm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,11 +50,10 @@ import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
-import static org.cloudbus.cloudsim.core.CloudSimTag.HOST_FAILURE;
-import static org.cloudbus.cloudsim.util.Conversion.HUNDRED_PERCENT;
+import static org.cloudsimplus.core.CloudSimTag.HOST_FAILURE;
+import static org.cloudsimplus.util.Conversion.HUNDRED_PERCENT;
 
 /**
  * Generates random failures for the {@link Pe}'s of {@link Host}s
