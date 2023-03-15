@@ -51,7 +51,7 @@ public class CloudInformationService extends CloudSimEntity {
      *
      * @param simulation CloudSimPlus instance that represents the simulation the Entity belongs to
      */
-    CloudInformationService(final CloudSimPlus simulation) {
+    CloudInformationService(final CloudSim simulation) {
         super(simulation);
         datacenterList = new ArrayList<>();
         cisList = new TreeSet<>();

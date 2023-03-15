@@ -70,12 +70,12 @@ import java.util.function.Consumer;
  * <pre>
  *  (1) Create the {@link TracesSimulationManager} and set the configuration parameters
  *      with the setter functions
- *  (2) Create the {@link CloudSim} and {@link DatacenterBroker} objects
- *  (3) Initialize {@link TracesSimulationManager} by calling {@link #initialize(CloudSim, DatacenterBroker)}
+ *  (2) Create the {@link CloudSimPlus} and {@link DatacenterBroker} objects
+ *  (3) Initialize {@link TracesSimulationManager} by calling {@link #initialize(CloudSimPlus, DatacenterBroker)}
  *  (4) Create the data center, i.e., {@link DatacenterSimple}, by
  *      providing as input the {@link Host}s and the {@link VmAllocationPolicy}
  *      returned by the {@link #getHosts()} and {@link #getVmAllocationPolicy()} functions
- *  (5) Start the simulation by calling {@link CloudSim#start()}
+ *  (5) Start the simulation by calling {@link CloudSimPlus#start()}
  *  (6) Save the results by using {@link #saveResults()}
  * </pre>
  * For a detailed example see class VmPlacementGroupsWithAzureTraces in org.cloudsimplus.examples.traces.vmplacementgroups.
@@ -88,11 +88,11 @@ import java.util.function.Consumer;
  *  (1) We set the MIPS capacity equal to 1 for all the PEs of all
  *      hosts. See {@link #createHost(long, long, long, long)}
  *  (2) We create only one new Cloudlet for every request.
- *      See {@link TracesBatchesManager#createRequest}
+ *      See {@link TracesBatchesManager#createRequest(List)}
  *  (3) We set the Cloudlet's MI parameter equal to the lifetime of
- *      the VM in seconds. See {@link TracesBatchesManager#vmAllocationListener}
+ *      the VM in seconds. See {@link TracesBatchesManager#vmAllocationListener(VmEventInfo)}
  *  (4) Once the Cloudlets finish their execution we destroy the VMs
- *      of the corresponding requests. See {@link TracesBatchesManager#cloudletFinishListener}
+ *      of the corresponding requests. See {@link TracesBatchesManager#cloudletFinishListener(CloudletVmEventInfo)}
  * </pre>
  *
  * Alternatively we could build a solution around {@link Cloudlet}'s function setLifeTime().
