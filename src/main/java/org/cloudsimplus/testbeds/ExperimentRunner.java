@@ -27,7 +27,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
-import org.cloudbus.cloudsim.core.CloudSim;
+import org.cloudbus.cloudsim.core.CloudSimPlus;
 import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
 import org.cloudbus.cloudsim.distributions.StatisticalDistribution;
 import org.cloudbus.cloudsim.distributions.UniformDistr;
@@ -536,7 +536,7 @@ public abstract class ExperimentRunner<T extends Experiment<T>> extends Abstract
         final String runWord = simulationRuns > 1 ? "runs" : "run";
         System.out.printf(
             "Started %s for %d %s using %s (real local time: %s)%n",
-            getClass().getSimpleName(), simulationRuns, runWord, CloudSim.VERSION, LocalTime.now());
+            getClass().getSimpleName(), simulationRuns, runWord, CloudSimPlus.VERSION, LocalTime.now());
         if(description != null && !description.isBlank()){
             System.out.println(description);
         }

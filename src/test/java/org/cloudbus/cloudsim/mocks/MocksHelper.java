@@ -1,7 +1,7 @@
 package org.cloudbus.cloudsim.mocks;
 
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
-import org.cloudbus.cloudsim.core.CloudSim;
+import org.cloudbus.cloudsim.core.CloudSimPlus;
 import org.cloudbus.cloudsim.core.Simulation;
 import org.mockito.Mockito;
 
@@ -45,13 +45,13 @@ public final class MocksHelper {
         return broker;
     }
 
-    public static DatacenterBroker createMockBroker(final CloudSim cloudsim) {
+    public static DatacenterBroker createMockBroker(final CloudSimPlus cloudsim) {
         return createMockBroker(cloudsim, broker -> {});
     }
 
     /**
      * Creates a DatacenterBroker mock object.
-     * @param cloudsim the CloudSim instance or mock to use
+     * @param cloudsim the CloudSimPlus instance or mock to use
      * @param consumer a {@link Runnable} that can be used for additional {@link Mockito#when(Object) calls}
      * @return
      */

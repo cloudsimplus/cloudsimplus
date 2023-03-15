@@ -31,7 +31,7 @@ import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicy;
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
-import org.cloudbus.cloudsim.core.CloudSim;
+import org.cloudbus.cloudsim.core.CloudSimPlus;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
 import org.cloudbus.cloudsim.hosts.Host;
@@ -74,7 +74,7 @@ public abstract class Experiment<T extends Experiment<T>> extends AbstractRunnab
     private int brokersNumber;
 
     @Getter
-    private final CloudSim simulation;
+    private final CloudSimPlus simulation;
 
     @Getter
     private final List<Datacenter> datacenterList;
@@ -206,7 +206,7 @@ public abstract class Experiment<T extends Experiment<T>> extends AbstractRunnab
         }
         this.brokersNumber = 1;
         this.datacentersNumber = 1;
-        this.simulation = new CloudSim();
+        this.simulation = new CloudSimPlus();
         this.vmList = new ArrayList<>();
         this.index = index;
         this.datacenterList = new ArrayList<>();

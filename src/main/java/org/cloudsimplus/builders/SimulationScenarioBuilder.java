@@ -23,12 +23,12 @@
  */
 package org.cloudsimplus.builders;
 
-import org.cloudbus.cloudsim.core.CloudSim;
+import org.cloudbus.cloudsim.core.CloudSimPlus;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.vms.Vm;
 
 /**
- * An builder to help getting instance of other CloudSim object builders.
+ * An builder to help getting instance of other CloudSimPlus object builders.
  *
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
@@ -36,9 +36,9 @@ import org.cloudbus.cloudsim.vms.Vm;
 public class SimulationScenarioBuilder {
     private final DatacenterBuilder datacenterBuilder;
     private final BrokerBuilder brokerBuilder;
-    private final CloudSim simulation;
+    private final CloudSimPlus simulation;
 
-    public SimulationScenarioBuilder(CloudSim simulation) {
+    public SimulationScenarioBuilder(CloudSimPlus simulation) {
         this.simulation = simulation;
         this.datacenterBuilder = new DatacenterBuilder(this);
         this.brokerBuilder = new BrokerBuilder(this);
@@ -68,7 +68,7 @@ public class SimulationScenarioBuilder {
         return brokerBuilder.get(brokerIndex).getWaitingVm(vmIndex);
     }
 
-    public CloudSim getSimulation() {
+    public CloudSimPlus getSimulation() {
         return simulation;
     }
 }

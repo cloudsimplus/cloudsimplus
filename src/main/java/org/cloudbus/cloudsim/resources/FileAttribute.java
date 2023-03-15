@@ -10,6 +10,7 @@ package org.cloudbus.cloudsim.resources;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
+import org.cloudbus.cloudsim.core.CloudSimPlus;
 import org.cloudbus.cloudsim.util.Conversion;
 import org.cloudbus.cloudsim.util.DataCloudTags;
 import org.cloudbus.cloudsim.util.MathUtil;
@@ -166,7 +167,7 @@ public class FileAttribute {
     /**
      * Sets the last update time of the file (in seconds). <br>
      * NOTE: This time is relative to the start time. Preferably use
-     * {@link org.cloudbus.cloudsim.core.CloudSim#clock()} method.
+     * {@link CloudSimPlus#clock()} method.
      *
      * @param time the last update time (in seconds)
      * @return true if successful, false otherwise

@@ -28,7 +28,7 @@ import java.util.function.Predicate;
  * @author Anton Beloglazov
  * @author Manoel Campos da Silva Filho
  *
- * @see CloudSim
+ * @see CloudSimPlus
  * @since CloudSim Plus 1.0
  */
 public interface Simulation {
@@ -248,7 +248,7 @@ public interface Simulation {
 
     /**
      * Adds a {@link EventListener} object that will be notified when any event
-     * is processed by CloudSim. When this Listener is notified, it will receive
+     * is processed by CloudSim Plus. When this Listener is notified, it will receive
      * the {@link SimEvent} that was processed.
      *
      * @param listener the event listener to add

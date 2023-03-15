@@ -181,7 +181,7 @@ together with other ones available in the [cloudsimplus-examples](https://github
 //Make sure to import org.cloudsimplus.util.Log;
 //Log.setLevel(ch.qos.logback.classic.Level.WARN);
 
-//Creates a CloudSim object to initialize the simulation.
+//Creates a CloudSimPlus object to initialize the simulation.
 var simulation = new CloudSim();
 
 //Creates a Broker that will act on behalf of a cloud user (customer).

@@ -113,7 +113,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      *
      * <p><b>NOTE:</b> To change such attributes, just call the respective setters.</p>
      *
-     * @param simulation the CloudSim instance that represents the simulation the Entity belongs
+     * @param simulation the CloudSimPlus instance that represents the simulation the Entity belongs
      * @param hostList list of {@link Host}s that will compound the Datacenter
      * @see #DatacenterSimple(Simulation, List, VmAllocationPolicy, DatacenterStorage)
      */
@@ -124,7 +124,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     /**
      * Creates a Datacenter with an empty {@link #getDatacenterStorage() storage}.
      *
-     * @param simulation the CloudSim instance that represents the simulation the Entity belongs
+     * @param simulation the CloudSimPlus instance that represents the simulation the Entity belongs
      * @param hostList list of {@link Host}s that will compound the Datacenter
      * @param vmAllocationPolicy the policy to be used to allocate VMs into hosts
      * @see #DatacenterSimple(Simulation, List, VmAllocationPolicy, DatacenterStorage)
@@ -141,7 +141,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      * Creates a Datacenter with an empty {@link #getDatacenterStorage() storage}
      * and no Hosts.
      *
-     * @param simulation the CloudSim instance that represents the simulation the Entity belongs
+     * @param simulation the CloudSimPlus instance that represents the simulation the Entity belongs
      * @param vmAllocationPolicy the policy to be used to allocate VMs into hosts
      * @see #DatacenterSimple(Simulation, List, VmAllocationPolicy)
      * @see #DatacenterSimple(Simulation, List, VmAllocationPolicy, DatacenterStorage)
@@ -158,7 +158,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     /**
      * Creates a Datacenter attaching a given storage list to its {@link #getDatacenterStorage() storage}.
      *
-     * @param simulation the CloudSim instance that represents the simulation the Entity belongs
+     * @param simulation the CloudSimPlus instance that represents the simulation the Entity belongs
      * @param hostList list of {@link Host}s that will compound the Datacenter
      * @param vmAllocationPolicy the policy to be used to allocate VMs into hosts
      * @param storageList the storage list to attach to the {@link #getDatacenterStorage() datacenter storage}
@@ -175,7 +175,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     /**
      * Creates a Datacenter with a given {@link #getDatacenterStorage() storage}.
      *
-     * @param simulation the CloudSim instance that represents the simulation the Entity belongs
+     * @param simulation the CloudSimPlus instance that represents the simulation the Entity belongs
      * @param hostList list of {@link Host}s that will compound the Datacenter
      * @param vmAllocationPolicy the policy to be used to allocate VMs into hosts
      * @param storage the {@link #getDatacenterStorage() storage} for this Datacenter
@@ -692,7 +692,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
          NOTE: If a Cloudlet has finished, then it won't be processed.
          So, if ack is required, this method sends back a result.
          If ack is not required, this method don't send back a result.
-         Hence, this might cause CloudSim to be hanged since waiting
+         Hence, this might cause CloudSimPlus to be hanged since waiting
          for this Cloudlet back.
         */
         sendCloudletSubmitAckToBroker(cloudlet, ack);

@@ -7,7 +7,7 @@
  */
 package org.cloudbus.cloudsim.network.switches;
 
-import org.cloudbus.cloudsim.core.CloudSim;
+import org.cloudbus.cloudsim.core.CloudSimPlus;
 import org.cloudbus.cloudsim.core.events.SimEvent;
 import org.cloudbus.cloudsim.datacenters.network.NetworkDatacenter;
 import org.cloudbus.cloudsim.network.HostPacket;
@@ -69,10 +69,10 @@ public class RootSwitch extends AbstractSwitch {
      * Instantiates a Root Switch specifying what other Datacenter are connected
      * to its downlink ports, and corresponding bandwidths.
      *
-     * @param simulation the CloudSim instance that represents the simulation the Entity belongs
+     * @param simulation the CloudSimPlus instance that represents the simulation the Entity belongs
      * @param dc the Datacenter where the switch is connected to
      */
-    public RootSwitch(final CloudSim simulation, final NetworkDatacenter dc) {
+    public RootSwitch(final CloudSimPlus simulation, final NetworkDatacenter dc) {
         super(simulation, dc);
         setDownlinkBandwidth(DOWNLINK_BW);
         setSwitchingDelay(SWITCHING_DELAY);

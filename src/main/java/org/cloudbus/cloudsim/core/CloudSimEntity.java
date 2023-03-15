@@ -57,7 +57,7 @@ public abstract class CloudSimEntity implements SimEntity {
     /**
      * Creates a new entity.
      *
-     * @param simulation The CloudSim instance that represents the simulation the Entity belongs to
+     * @param simulation The CloudSimPlus instance that represents the simulation the Entity belongs to
      * @throws IllegalArgumentException when the entity name is invalid
      */
     public CloudSimEntity(@NonNull final Simulation simulation) {
@@ -102,7 +102,7 @@ public abstract class CloudSimEntity implements SimEntity {
          * Here the finished entity is purged from that list
          * to improve performance of large-scale experiments.
          */
-        ((CloudSim)simulation).removeFinishedEntity(this);
+        ((CloudSimPlus)simulation).removeFinishedEntity(this);
     }
 
     /**

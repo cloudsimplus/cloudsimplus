@@ -9,7 +9,7 @@ package org.cloudbus.cloudsim.brokers;
 
 import lombok.experimental.Accessors;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
-import org.cloudbus.cloudsim.core.CloudSim;
+import org.cloudbus.cloudsim.core.CloudSimPlus;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.vms.Vm;
 
@@ -58,19 +58,19 @@ public class DatacenterBrokerSimple extends DatacenterBrokerAbstract {
     /**
      * Creates a new DatacenterBroker.
      *
-     * @param simulation the CloudSim instance that represents the simulation the Entity is related to
+     * @param simulation the CloudSimPlus instance that represents the simulation the Entity is related to
      */
-    public DatacenterBrokerSimple(final CloudSim simulation) {
+    public DatacenterBrokerSimple(final CloudSimPlus simulation) {
         this(simulation, "");
     }
 
     /**
      * Creates a DatacenterBroker giving a specific name.
      *
-     * @param simulation the CloudSim instance that represents the simulation the Entity is related to
+     * @param simulation the CloudSimPlus instance that represents the simulation the Entity is related to
      * @param name the DatacenterBroker name
      */
-    public DatacenterBrokerSimple(final CloudSim simulation, final String name) {
+    public DatacenterBrokerSimple(final CloudSimPlus simulation, final String name) {
         super(simulation, name);
         this.lastSelectedVmIndex = -1;
         this.lastSelectedDcIndex = -1;
