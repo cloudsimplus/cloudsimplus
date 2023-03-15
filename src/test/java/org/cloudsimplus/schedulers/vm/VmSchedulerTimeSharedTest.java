@@ -201,14 +201,14 @@ public class VmSchedulerTimeSharedTest {
         host.getVmList().add(vm0);
         host.getVmList().add(vm1);
 
-        final MipsShare mipsShare = new MipsShare(vm0.getNumberOfPes(), MIPS);
+        final MipsShare mipsShare = new MipsShare(vm0.getPesNumber(), MIPS);
 
         vmScheduler.allocatePesForVm(vm0, mipsShare);
         vmScheduler.allocatePesForVm(vm1, mipsShare);
         //Try to remove more PEs than it's allocated (only the allocated PEs have to be deallocated)
         vmScheduler.deallocatePesFromVm(vm0, HOST_PES);
         //Since only the PEs for vm0 were deallocated, the PEs from vm1 have to be busy yet
-        final long expectedBusyPes = vm1.getNumberOfPes();
+        final long expectedBusyPes = vm1.getPesNumber();
         assertEquals(expectedBusyPes, host.getBusyPeList().size(), "Number of busy Host PEs:");
     }
 }

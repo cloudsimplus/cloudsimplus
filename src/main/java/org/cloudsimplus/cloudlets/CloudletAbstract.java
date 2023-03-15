@@ -39,7 +39,7 @@ import java.util.Set;
 @Accessors(makeFinal = false) @Getter @Setter
 public abstract class CloudletAbstract extends CustomerEntityAbstract implements Cloudlet {
     private long jobId;
-    private long numberOfPes;
+    private long pesNumber;
 
     @NonNull
     private Status status;
@@ -113,10 +113,10 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
      *
      * @param length the length or size (in MI) of this cloudlet to be executed in a VM
      *               (check out {@link #setLength(long)})
-     * @param numberOfPes number of PEs that Cloudlet will require
+     * @param pesNumber number of PEs that Cloudlet will require
      */
-    public CloudletAbstract(final long length, final int numberOfPes) {
-        this(-1, length, numberOfPes);
+    public CloudletAbstract(final long length, final int pesNumber) {
+        this(-1, length, pesNumber);
     }
 
     /**
@@ -129,10 +129,10 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
      *
      * @param length the length or size (in MI) of this cloudlet to be executed in a VM
      *               (check out {@link #setLength(long)})
-     * @param numberOfPes number of PEs that Cloudlet will require
+     * @param pesNumber number of PEs that Cloudlet will require
      */
-    public CloudletAbstract(final long length, final long numberOfPes) {
-        this(-1, length, numberOfPes);
+    public CloudletAbstract(final long length, final long pesNumber) {
+        this(-1, length, pesNumber);
     }
 
     /**
@@ -145,15 +145,15 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
      * @param id     id of the Cloudlet
      * @param length the length or size (in MI) of this cloudlet to be executed in a VM
      *               (check out {@link #setLength(long)})
-     * @param numberOfPes number of PEs that Cloudlet will require
+     * @param pesNumber number of PEs that Cloudlet will require
      */
-    public CloudletAbstract(final long id, final long length, final long numberOfPes) {
+    public CloudletAbstract(final long id, final long length, final long pesNumber) {
         super();
 
         this.requiredFiles = new LinkedList<>();
         this.setId(id);
         this.setJobId(NOT_ASSIGNED);
-        this.setNumberOfPes(numberOfPes);
+        this.setPesNumber(pesNumber);
         this.setLength(length);
         this.setFileSize(1);
         this.setOutputSize(1);
@@ -254,12 +254,12 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
     }
 
     @Override
-    public final Cloudlet setNumberOfPes(final long numberOfPes) {
-        if (numberOfPes <= 0) {
+    public final Cloudlet setPesNumber(final long pesNumber) {
+        if (pesNumber <= 0) {
             throw new IllegalArgumentException("Cloudlet number of PEs has to be greater than zero.");
         }
 
-        this.numberOfPes = numberOfPes;
+        this.pesNumber = pesNumber;
         return this;
     }
 
@@ -361,7 +361,7 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
 
     @Override
     public long getTotalLength() {
-        return length * numberOfPes;
+        return length * pesNumber;
     }
 
     @Override

@@ -128,7 +128,7 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
      * @see #VmSimple(double, long)
      */
     public VmSimple(final Vm sourceVm) {
-        this(sourceVm.getMips(), sourceVm.getNumberOfPes());
+        this(sourceVm.getMips(), sourceVm.getPesNumber());
         this.setBw(sourceVm.getBw().getCapacity())
             .setRam(sourceVm.getRam().getCapacity())
             .setSize(sourceVm.getStorage().getCapacity());
@@ -146,7 +146,7 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
      * just call {@link #setCloudletScheduler(CloudletScheduler)}.</p>
      *
      * @param mipsCapacity the mips capacity of each Vm {@link Pe}
-     * @param numberOfPes  amount of {@link Pe} (CPU cores)
+     * @param pesNumber  amount of {@link Pe} (CPU cores)
      * @see #setRam(long)
      * @see #setBw(long)
      * @see #setStorage(SimpleStorage)
@@ -154,8 +154,8 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
      * @see #setDefaultBwCapacity(long)
      * @see #setDefaultStorageCapacity(long)
      */
-    public VmSimple(final double mipsCapacity, final long numberOfPes) {
-        this(-1, mipsCapacity, numberOfPes);
+    public VmSimple(final double mipsCapacity, final long pesNumber) {
+        this(-1, mipsCapacity, pesNumber);
     }
 
     /**
@@ -167,7 +167,7 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
      * a {@link DatacenterBroker}.</p>
      *
      * @param mipsCapacity the mips capacity of each Vm {@link Pe}
-     * @param numberOfPes  amount of {@link Pe} (CPU cores)
+     * @param pesNumber  amount of {@link Pe} (CPU cores)
      * @see #setRam(long)
      * @see #setBw(long)
      * @see #setStorage(SimpleStorage)
@@ -175,8 +175,8 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
      * @see #setDefaultBwCapacity(long)
      * @see #setDefaultStorageCapacity(long)
      */
-    public VmSimple(final double mipsCapacity, final long numberOfPes, final CloudletScheduler cloudletScheduler) {
-        this(-1, mipsCapacity, numberOfPes);
+    public VmSimple(final double mipsCapacity, final long pesNumber, final CloudletScheduler cloudletScheduler) {
+        this(-1, mipsCapacity, pesNumber);
         setCloudletScheduler(cloudletScheduler);
     }
 
@@ -195,7 +195,7 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
      *
      * @param id           unique ID of the VM
      * @param mipsCapacity the mips capacity of each Vm {@link Pe}
-     * @param numberOfPes  amount of {@link Pe} (CPU cores)
+     * @param pesNumber  amount of {@link Pe} (CPU cores)
      * @see #setRam(long)
      * @see #setBw(long)
      * @see #setStorage(SimpleStorage)
@@ -203,8 +203,8 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
      * @see #setDefaultBwCapacity(long)
      * @see #setDefaultStorageCapacity(long)
      */
-    public VmSimple(final long id, final double mipsCapacity, final long numberOfPes) {
-        this(id, (long) mipsCapacity, numberOfPes);
+    public VmSimple(final long id, final double mipsCapacity, final long pesNumber) {
+        this(id, (long) mipsCapacity, pesNumber);
     }
 
     /**
@@ -220,7 +220,7 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
      *
      * @param id           unique ID of the VM
      * @param mipsCapacity the mips capacity of each Vm {@link Pe}
-     * @param numberOfPes  amount of {@link Pe} (CPU cores)
+     * @param pesNumber  amount of {@link Pe} (CPU cores)
      * @see #setRam(long)
      * @see #setBw(long)
      * @see #setStorage(SimpleStorage)
@@ -228,7 +228,7 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
      * @see #setDefaultBwCapacity(long)
      * @see #setDefaultStorageCapacity(long)
      */
-    public VmSimple(final long id, final long mipsCapacity, final long numberOfPes) {
+    public VmSimple(final long id, final long mipsCapacity, final long pesNumber) {
         super();
         setId(id);
         this.resources = new ArrayList<>(4);
@@ -242,15 +242,15 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
         this.allocatedMips = new MipsShare();
         this.requestedMips = new MipsShare();
 
-        this.processor = new Processor(this, numberOfPes, mipsCapacity);
+        this.processor = new Processor(this, pesNumber, mipsCapacity);
         setMips(mipsCapacity);
-        setNumberOfPes(numberOfPes);
+        setPesNumber(pesNumber);
 
         mutableAttributesInit();
 
         //initiate number of free PEs as number of PEs of VM
-        freePesNumber = numberOfPes;
-        expectedFreePesNumber = numberOfPes;
+        freePesNumber = pesNumber;
+        expectedFreePesNumber = pesNumber;
     }
 
     private void mutableAttributesInit() {
@@ -323,7 +323,7 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
         if (freePesNumber < 0) {
             freePesNumber = 0;
         }
-        this.freePesNumber = Math.min(freePesNumber, getNumberOfPes());
+        this.freePesNumber = Math.min(freePesNumber, getPesNumber());
         return this;
     }
 
@@ -433,7 +433,7 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
 
     @Override
     public double getTotalMipsCapacity() {
-        return getMips() * getNumberOfPes();
+        return getMips() * getPesNumber();
     }
 
     @Override
@@ -501,12 +501,12 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
     }
 
     @Override
-    public long getNumberOfPes() {
+    public long getPesNumber() {
         return processor.getCapacity();
     }
 
-    private void setNumberOfPes(final long numberOfPes) {
-        processor.setCapacity(numberOfPes);
+    private void setPesNumber(final long pesNumber) {
+        processor.setCapacity(pesNumber);
     }
 
     /**
@@ -611,7 +611,7 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
 
     @Override
     public boolean isSuitableForCloudlet(final Cloudlet cloudlet) {
-        return getNumberOfPes() >= cloudlet.getNumberOfPes() &&
+        return getPesNumber() >= cloudlet.getPesNumber() &&
             storage.getAvailableResource() >= cloudlet.getFileSize();
     }
 

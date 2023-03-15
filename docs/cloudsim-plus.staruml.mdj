@@ -3696,7 +3696,7 @@
 															"_parent": {
 																"$ref": "AAAAAAFYsNytrsUSQbU="
 															},
-															"name": "getNumberOfPes",
+															"name": "getPesNumber",
 															"documentation": "Gets the number of PEs required to execute this Cloudlet.\n@return number of Pe\n@pre $none\n@post $none",
 															"parameters": [
 																{
@@ -4524,7 +4524,7 @@
 															"_parent": {
 																"$ref": "AAAAAAFYsNyts8VLj6A="
 															},
-															"name": "setNumberOfPes",
+															"name": "setPesNumber",
 															"parameters": [
 																{
 																	"_type": "UMLParameter",
@@ -4532,7 +4532,7 @@
 																	"_parent": {
 																		"$ref": "AAAAAAFYsNyttMVyaVw="
 																	},
-																	"name": "numberOfPes",
+																	"name": "pesNumber",
 																	"type": "int"
 																},
 																{
@@ -4552,7 +4552,7 @@
 															"_parent": {
 																"$ref": "AAAAAAFYsNyts8VLj6A="
 															},
-															"name": "getNumberOfPes",
+															"name": "getPesNumber",
 															"parameters": [
 																{
 																	"_type": "UMLParameter",
@@ -12788,7 +12788,7 @@
 															"_parent": {
 																"$ref": "AAAAAAFW1qU41+6FLwQ="
 															},
-															"name": "getNumberOfPes",
+															"name": "getPesNumber",
 															"documentation": "@todo It is not exacly clear what this method does.\n                 I guess it computes how many time the cloudlet will\n                 spend using the CPU to finish its job, considering \n                 the CPU allocation policy. By this way,\n                 the load parameter may be cloudlet's the percentage of load (from 0 to 1).\n                 Then, (getMipsOfOnePe()\n(1.0 - load)) computes the amount\n                 MIPS that is currently being used by the cloudlet.\n                 Dividing the total cloudlet length in MI by that result\n                 returns the number of seconds that the cloudlet will spend\n                 to execute its total MI.\n                                \n                 This method has to be reviewed and documentation\n                 checked.\n                            \n                 If load is equals to 1, this calculation will \n                 raise and division by zero exception, what makes invalid\n                 the pre condition defined in the method documention",
 															"parameters": [
 																{
@@ -15560,7 +15560,7 @@
 															"_parent": {
 																"$ref": "AAAAAAFW1qU5T+7+sWQ="
 															},
-															"name": "getNumberOfPes",
+															"name": "getPesNumber",
 															"parameters": [
 																{
 																	"_type": "UMLParameter",
@@ -36721,7 +36721,7 @@
 																			"top": 576,
 																			"width": 489,
 																			"height": 13,
-																			"text": "«constructor»+CloudletSchedulerDynamicWorkload(mips: double, numberOfPes: int)",
+																			"text": "«constructor»+CloudletSchedulerDynamicWorkload(mips: double, pesNumber: int)",
 																			"horizontalAlignment": 0
 																		},
 																		{
@@ -36919,7 +36919,7 @@
 																			"top": 576,
 																			"width": 236,
 																			"height": 13,
-																			"text": "+setNumberOfPes(pesNumber: int): void",
+																			"text": "+setPesNumber(pesNumber: int): void",
 																			"horizontalAlignment": 0
 																		},
 																		{
@@ -36937,7 +36937,7 @@
 																			"top": 576,
 																			"width": 138,
 																			"height": 13,
-																			"text": "+getNumberOfPes(): int",
+																			"text": "+getPesNumber(): int",
 																			"horizontalAlignment": 0
 																		},
 																		{
@@ -39646,7 +39646,7 @@
 																		"$ref": "AAAAAAFW1qU9dPV+q/0="
 																	},
 																	"name": "CloudletSchedulerDynamicWorkload",
-																	"documentation": "Instantiates a new VM scheduler\n@param mips The individual MIPS capacity of each PE allocated to the VM\nusing the scheduler, considering that all PEs have the same capacity.\n@param numberOfPes The number of PEs allocated to the VM using the\nscheduler.",
+																	"documentation": "Instantiates a new VM scheduler\n@param mips The individual MIPS capacity of each PE allocated to the VM\nusing the scheduler, considering that all PEs have the same capacity.\n@param pesNumber The number of PEs allocated to the VM using the\nscheduler.",
 																	"stereotype": "constructor",
 																	"parameters": [
 																		{
@@ -39664,7 +39664,7 @@
 																			"_parent": {
 																				"$ref": "AAAAAAFW1qU9dPV/b7k="
 																			},
-																			"name": "numberOfPes",
+																			"name": "pesNumber",
 																			"type": "int"
 																		}
 																	]
@@ -40034,7 +40034,7 @@
 																	"_parent": {
 																		"$ref": "AAAAAAFW1qU9dPV+q/0="
 																	},
-																	"name": "setNumberOfPes",
+																	"name": "setPesNumber",
 																	"documentation": "Sets the pes number.\n@param pesNumber the new pes number",
 																	"isLeaf": true,
 																	"parameters": [
@@ -40064,7 +40064,7 @@
 																	"_parent": {
 																		"$ref": "AAAAAAFW1qU9dPV+q/0="
 																	},
-																	"name": "getNumberOfPes",
+																	"name": "getPesNumber",
 																	"documentation": "Gets the pes number.\n@return the pes number",
 																	"isLeaf": true,
 																	"parameters": [
@@ -44273,7 +44273,7 @@
 																	"top": 73,
 																	"width": 652,
 																	"height": 13,
-																	"text": "+getNumberOfPes(): int",
+																	"text": "+getPesNumber(): int",
 																	"horizontalAlignment": 0
 																},
 																{
@@ -46481,7 +46481,7 @@
 																	"top": 46,
 																	"width": 1239,
 																	"height": 13,
-																	"text": "+getNumberOfPes(): int",
+																	"text": "+getPesNumber(): int",
 																	"horizontalAlignment": 0
 																},
 																{
@@ -53214,7 +53214,7 @@
 																	"top": 403,
 																	"width": 1124,
 																	"height": 13,
-																	"text": "+setNumberOfPes(numberOfPes: int): boolean",
+																	"text": "+setPesNumber(pesNumber: int): boolean",
 																	"horizontalAlignment": 0
 																},
 																{
@@ -53233,7 +53233,7 @@
 																	"top": 418,
 																	"width": 1124,
 																	"height": 13,
-																	"text": "+getNumberOfPes(): int",
+																	"text": "+getPesNumber(): int",
 																	"horizontalAlignment": 0
 																},
 																{
@@ -55698,7 +55698,7 @@
 															}
 														}
 													],
-													"documentation": "Title:        CloudSim Toolkit\nDescription:  CloudSim (Cloud Simulation) Toolkit for Modeling and Simulation of Clouds\nLicence:      GPL - http://www.gnu.org/copyleft/gpl.html\nCopyright (c) 2009-2012, The University of Melbourne, Australia\nThis class is responsible for reading resource traces from a file and\ncreating a list of jobs ({@link Cloudlet Cloudlets}). By default, it follows\nthe Standard Workload Format (\n.swf files) from\n<a href=\"http://www.cs.huji.ac.il/labs/parallel/workload/\">\nThe Hebrew University of Jerusalem</a>. However, you can use other formats by\ncalling the methods below before running the simulation:\n<ul>\n<li> {@link #setComment(String)}\n<li> {@link #setField(int, int, int, int, int)}\n</ul>\n<p/>\n<b>NOTE:</b>\n<ul>\n<li>This class can only take <tt>one</tt> trace file of the following format:\n<i>ASCII text, zip, gz.</i>\n<li>If you need to load multiple trace files, then you need to create\nmultiple instances of this class <tt>each with a unique entity name</tt>.\n<li>If size of the trace file is huge or contains lots of traces, please\nincrease the JVM heap size accordingly by using <tt>java -Xmx</tt> option\nwhen running the simulation.\n<li>The default job file size for sending to and receiving from a resource is\n{@link org.cloudsimplus.DataCloudTags#DEFAULT_MTU}. However, you can\nspecify the file size by using {@link #setCloudletFileSize(int)}.\n<li>A job run time is only for 1 PE <tt>not</tt> the total number of\nallocated PEs. Therefore, a Cloudlet length is also calculated for 1 PE.<br>\nFor example, job #1 in the trace has a run time of 100 seconds for 2\nprocessors. This means each processor runs job #1 for 100 seconds, if the\nprocessors have the same specification.\n</ul>\n@todo The last item in the list above is not true. The cloudlet length is not\ndivided by the number of PEs. If there is more than 1 PE, all PEs run the\nsame number of MI as specified in the {@link Cloudlet#cloudletLength}\nattribute. See {@link Cloudlet#setNumberOfPes(int)} method documentation.\n@author Anthony Sulistio\n@author Marcos Dias de Assuncao\n@since 5.0\n@see Workload",
+													"documentation": "Title:        CloudSim Toolkit\nDescription:  CloudSim (Cloud Simulation) Toolkit for Modeling and Simulation of Clouds\nLicence:      GPL - http://www.gnu.org/copyleft/gpl.html\nCopyright (c) 2009-2012, The University of Melbourne, Australia\nThis class is responsible for reading resource traces from a file and\ncreating a list of jobs ({@link Cloudlet Cloudlets}). By default, it follows\nthe Standard Workload Format (\n.swf files) from\n<a href=\"http://www.cs.huji.ac.il/labs/parallel/workload/\">\nThe Hebrew University of Jerusalem</a>. However, you can use other formats by\ncalling the methods below before running the simulation:\n<ul>\n<li> {@link #setComment(String)}\n<li> {@link #setField(int, int, int, int, int)}\n</ul>\n<p/>\n<b>NOTE:</b>\n<ul>\n<li>This class can only take <tt>one</tt> trace file of the following format:\n<i>ASCII text, zip, gz.</i>\n<li>If you need to load multiple trace files, then you need to create\nmultiple instances of this class <tt>each with a unique entity name</tt>.\n<li>If size of the trace file is huge or contains lots of traces, please\nincrease the JVM heap size accordingly by using <tt>java -Xmx</tt> option\nwhen running the simulation.\n<li>The default job file size for sending to and receiving from a resource is\n{@link org.cloudsimplus.DataCloudTags#DEFAULT_MTU}. However, you can\nspecify the file size by using {@link #setCloudletFileSize(int)}.\n<li>A job run time is only for 1 PE <tt>not</tt> the total number of\nallocated PEs. Therefore, a Cloudlet length is also calculated for 1 PE.<br>\nFor example, job #1 in the trace has a run time of 100 seconds for 2\nprocessors. This means each processor runs job #1 for 100 seconds, if the\nprocessors have the same specification.\n</ul>\n@todo The last item in the list above is not true. The cloudlet length is not\ndivided by the number of PEs. If there is more than 1 PE, all PEs run the\nsame number of MI as specified in the {@link Cloudlet#cloudletLength}\nattribute. See {@link Cloudlet#setPesNumber(int)} method documentation.\n@author Anthony Sulistio\n@author Marcos Dias de Assuncao\n@since 5.0\n@see Workload",
 													"operations": [
 														{
 															"_type": "UMLOperation",

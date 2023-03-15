@@ -66,16 +66,16 @@ public class DatacenterBrokerBestFit extends DatacenterBrokerSimple {
 
         final Vm mappedVm = getVmCreatedList()
             .stream()
-            .filter(vm -> vm.getExpectedFreePesNumber() >= cloudlet.getNumberOfPes())
+            .filter(vm -> vm.getExpectedFreePesNumber() >= cloudlet.getPesNumber())
             .min(Comparator.comparingLong(Vm::getExpectedFreePesNumber))
             .orElse(Vm.NULL);
 
         if (Vm.NULL.equals(mappedVm)) {
             LOGGER.warn("{}: {}: {} (PEs: {}) couldn't be mapped to any suitable VM.",
-                getSimulation().clockStr(), getName(), cloudlet, cloudlet.getNumberOfPes());
+                getSimulation().clockStr(), getName(), cloudlet, cloudlet.getPesNumber());
         } else {
             LOGGER.trace("{}: {}: {} (PEs: {}) mapped to {} (available PEs: {}, tot PEs: {})",
-                getSimulation().clockStr(), getName(), cloudlet, cloudlet.getNumberOfPes(), mappedVm,
+                getSimulation().clockStr(), getName(), cloudlet, cloudlet.getPesNumber(), mappedVm,
                 mappedVm.getExpectedFreePesNumber(), mappedVm.getFreePesNumber());
         }
 

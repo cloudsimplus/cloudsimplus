@@ -47,7 +47,7 @@ final class AbstractMachineNull implements AbstractMachine {
     @Override public Resource getStorage() {
         return Resource.NULL;
     }
-    @Override public long getNumberOfPes() {
+    @Override public long getPesNumber() {
         return 0;
     }
     @Override public double getMips() {

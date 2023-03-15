@@ -117,7 +117,7 @@ public interface DatacenterCharacteristics extends Identifiable {
      *
      * @return number of PEs
      */
-    int getNumberOfPes();
+    int getPesNumber();
 
     /**
      * Checks whether all PMs of the Datacenter are working properly or not.

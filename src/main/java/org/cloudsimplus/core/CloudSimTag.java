@@ -213,7 +213,7 @@ public enum CloudSimTag implements Comparable<CloudSimTag> {
      * </p>
      *
      * <pre>
-     * {@code Runnable runnable = () -> cloudletList.forEach(cloudlet -> cloudlet.setNumberOfPes(cloudlet.getNumberOfPes()/2));}
+     * {@code Runnable runnable = () -> cloudletList.forEach(cloudlet -> cloudlet.setPesNumber(cloudlet.getPesNumber()/2));}
      * </pre>
      *
      * <p>The {@code runnable} variable must be set as the data for the event to be sent with this tag.</p>

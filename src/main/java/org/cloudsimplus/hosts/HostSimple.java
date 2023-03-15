@@ -755,7 +755,7 @@ public class HostSimple implements Host {
      * @see #getFailedPesNumber()
      */
     @Override
-    public long getNumberOfPes() {
+    public long getPesNumber() {
         return peList.size();
     }
 
@@ -1083,7 +1083,7 @@ public class HostSimple implements Host {
 
     @Override
     public double getBusyPesPercent() {
-        return getBusyPesNumber() / (double)getNumberOfPes();
+        return getBusyPesNumber() / (double) getPesNumber();
     }
 
     @Override
@@ -1234,10 +1234,10 @@ public class HostSimple implements Host {
         final double totalRequestedMips = vm.getTotalCpuMipsRequested();
         if (totalAllocatedMips + 0.1 < totalRequestedMips) {
             final String reason = getVmsMigratingOut().contains(vm) ? "migration overhead" : "capacity unavailability";
-            final long notAllocatedMipsByPe = (long)((totalRequestedMips - totalAllocatedMips)/vm.getNumberOfPes());
+            final long notAllocatedMipsByPe = (long)((totalRequestedMips - totalAllocatedMips)/vm.getPesNumber());
             LOGGER.warn(
                 "{}: {}: {} MIPS not allocated for each one of the {} PEs from {} due to {}.",
-                getSimulation().clockStr(), this, notAllocatedMipsByPe, vm.getNumberOfPes(), vm, reason);
+                getSimulation().clockStr(), this, notAllocatedMipsByPe, vm.getPesNumber(), vm, reason);
         }
 
         final var entry = new VmStateHistoryEntry(

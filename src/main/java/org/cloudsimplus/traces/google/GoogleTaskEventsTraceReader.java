@@ -316,11 +316,11 @@ public class GoogleTaskEventsTraceReader extends GoogleTraceReaderAbstract<Cloud
                 cloudlet.setFileSize(clone.getFileSize());
             }
 
-            if(clone.getNumberOfPes() != cloudlet.getNumberOfPes()){
+            if(clone.getPesNumber() != cloudlet.getPesNumber()){
                 builder.append("PEs: ")
-                    .append(cloudlet.getNumberOfPes()).append(VAL_SEPARATOR)
-                    .append(clone.getNumberOfPes()).append(COL_SEPARATOR);
-                cloudlet.setNumberOfPes(clone.getNumberOfPes());
+                       .append(cloudlet.getPesNumber()).append(VAL_SEPARATOR)
+                       .append(clone.getPesNumber()).append(COL_SEPARATOR);
+                cloudlet.setPesNumber(clone.getPesNumber());
             }
 
             //It's ensured when creating the Cloudlet that a UtilizationModelDynamic is used for RAM
@@ -379,7 +379,7 @@ public class GoogleTaskEventsTraceReader extends GoogleTraceReaderAbstract<Cloud
 
     private boolean areCloudletAttributesDifferent(final Cloudlet cloudlet1, final Cloudlet cloudlet2) {
         return cloudlet2.getFileSize() != cloudlet1.getFileSize() ||
-               cloudlet2.getNumberOfPes() != cloudlet1.getNumberOfPes() ||
+               cloudlet2.getPesNumber() != cloudlet1.getPesNumber() ||
                cloudlet2.getUtilizationOfCpu() != cloudlet1.getUtilizationOfCpu() ||
                cloudlet2.getUtilizationOfRam() != cloudlet1.getUtilizationOfRam();
     }

@@ -84,7 +84,7 @@ class VmNull implements Vm {
     @Override public double getMips() {
         return 0;
     }
-    @Override public long getNumberOfPes() {
+    @Override public long getPesNumber() {
         return 0;
     }
     @Override public Vm addOnHostAllocationListener(EventListener<VmHostEventInfo> listener) {

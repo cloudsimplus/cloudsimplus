@@ -107,8 +107,8 @@ public class DatacenterCharacteristicsSimple implements DatacenterCharacteristic
     }
 
     @Override
-    public int getNumberOfPes() {
-        return (int)datacenter.getHostList().stream().mapToLong(Host::getNumberOfPes).sum();
+    public int getPesNumber() {
+        return (int)datacenter.getHostList().stream().mapToLong(Host::getPesNumber).sum();
     }
 
     @Override

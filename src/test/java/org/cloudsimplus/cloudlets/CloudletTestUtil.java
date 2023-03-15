@@ -34,10 +34,10 @@ public final class CloudletTestUtil {
                 cpuRamAndBwUtilizationModel);
     }
 
-    public static CloudletSimple createCloudlet(final int id, long length, int numberOfPes)
+    public static CloudletSimple createCloudlet(final int id, long length, int pesNumber)
     {
         final UtilizationModel model = new UtilizationModelFull();
-        return createCloudlet(id, model, model, model, length, numberOfPes);
+        return createCloudlet(id, model, model, model, length, pesNumber);
     }
 
     private static CloudletSimple createCloudlet(
@@ -51,8 +51,8 @@ public final class CloudletTestUtil {
                 CLOUDLET_LENGTH, 1);
     }
 
-    public static CloudletSimple createCloudlet(final int id, final int numberOfPes) {
-        return createCloudlet(id, CLOUDLET_LENGTH, numberOfPes);
+    public static CloudletSimple createCloudlet(final int id, final int pesNumber) {
+        return createCloudlet(id, CLOUDLET_LENGTH, pesNumber);
     }
 
     private static CloudletSimple createCloudlet(
@@ -60,9 +60,9 @@ public final class CloudletTestUtil {
         final UtilizationModel utilizationModelCPU,
         final UtilizationModel utilizationModelRAM,
         final UtilizationModel utilizationModelBW,
-        final long length, final int numberOfPes)
+        final long length, final int pesNumber)
     {
-        final CloudletSimple cloudlet = new CloudletSimple(id, length, numberOfPes);
+        final CloudletSimple cloudlet = new CloudletSimple(id, length, pesNumber);
 
         cloudlet
             .setFileSize(CLOUDLET_FILE_SIZE)
@@ -77,11 +77,11 @@ public final class CloudletTestUtil {
      * Creates a Cloudlet with id equals to 0.
      *
      * @param length the length of the Cloudlet to create
-     * @param numberOfPes the number of PEs of the Cloudlet to create
+     * @param pesNumber the number of PEs of the Cloudlet to create
      * @return the created Cloudlet
      */
-    public static CloudletSimple createCloudlet0(final long length, final int numberOfPes) {
-        return createCloudlet(0, length, numberOfPes);
+    public static CloudletSimple createCloudlet0(final long length, final int pesNumber) {
+        return createCloudlet(0, length, pesNumber);
     }
 
     public static CloudletSimple createCloudletWithOnePe(final int id) {

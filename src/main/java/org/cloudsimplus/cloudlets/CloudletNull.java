@@ -90,7 +90,7 @@ final class CloudletNull implements Cloudlet {
     @Override public int getNetServiceLevel() {
         return 0;
     }
-    @Override public long getNumberOfPes() {
+    @Override public long getPesNumber() {
         return 0;
     }
     @Override public List<String> getRequiredFiles() {
@@ -157,7 +157,7 @@ final class CloudletNull implements Cloudlet {
         return false;
     }
     @Override public Cloudlet setNetServiceLevel(int netServiceLevel) { return this; }
-    @Override public Cloudlet setNumberOfPes(long numberOfPes) {
+    @Override public Cloudlet setPesNumber(long pesNumber) {
         return Cloudlet.NULL;
     }
     @Override public Cloudlet setBroker(DatacenterBroker broker) { return this; }

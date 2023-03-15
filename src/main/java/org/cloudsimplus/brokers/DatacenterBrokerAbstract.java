@@ -792,7 +792,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     private boolean processCloudletReturn(final SimEvent evt) {
         final var cloudlet = (Cloudlet) evt.getData();
         cloudletFinishedList.add(cloudlet);
-        ((VmSimple) cloudlet.getVm()).addExpectedFreePesNumber(cloudlet.getNumberOfPes());
+        ((VmSimple) cloudlet.getVm()).addExpectedFreePesNumber(cloudlet.getPesNumber());
         final String lifeTime = cloudlet.getLifeTime() == -1 ? "" : " (after defined lifetime expired)";
         LOGGER.info(
             "{}: {}: {} finished{} in {} and returned to broker.",
@@ -998,7 +998,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
                 continue;
             }
 
-            ((VmSimple) lastSelectedVm).removeExpectedFreePesNumber(cloudlet.getNumberOfPes());
+            ((VmSimple) lastSelectedVm).removeExpectedFreePesNumber(cloudlet.getPesNumber());
 
             logCloudletCreationRequest(cloudlet);
             cloudlet.setVm(lastSelectedVm);

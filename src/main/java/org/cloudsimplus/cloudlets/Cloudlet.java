@@ -315,7 +315,7 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
      * @return number of PEs
      * @see #getTotalLength()
      */
-    long getNumberOfPes();
+    long getPesNumber();
 
     /**
      * Gets the utilization model that defines how the cloudlet will use the VM's
@@ -520,11 +520,11 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
      * For example, consider a Cloudlet that has a length of 500 MI and requires
      * 2 PEs. This means each PE will execute 500 MI of this Cloudlet.
      *
-     * @param numberOfPes number of PEs
+     * @param pesNumber number of PEs
      * @return
      * @throws IllegalArgumentException when the number of PEs is lower or equal to zero
      */
-    Cloudlet setNumberOfPes(long numberOfPes);
+    Cloudlet setPesNumber(long pesNumber);
 
     /**
      * Sets the <b>same utilization model</b> for defining the usage of Bandwidth, CPU and RAM.
@@ -583,7 +583,7 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
      *
      * @return the length of this Cloudlet (in MI)
      * @see #getTotalLength()
-     * @see #getNumberOfPes()
+     * @see #getPesNumber()
      */
     long getLength();
 
@@ -617,15 +617,15 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
     /**
      * Gets the total length (across all PEs) of this Cloudlet (in MI). It considers the
      * {@link #getLength()} of the cloudlet will be executed in each Pe defined by
-     * {@link #getNumberOfPes()}.
+     * {@link #getPesNumber()}.
      *
      * <p>For example, setting the cloudletLength as 10000 MI and
-     * {@link #getNumberOfPes()} to 4, each Pe will execute 10000 MI.
+     * {@link #getPesNumber()} to 4, each Pe will execute 10000 MI.
      * Thus, the entire Cloudlet has a total length of 40000 MI.
      * </p>
      *
      * @return the total length of this Cloudlet (in MI)
-     * @see #getNumberOfPes()
+     * @see #getPesNumber()
      * @see #getLength()
      */
     long getTotalLength();

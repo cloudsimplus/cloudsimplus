@@ -411,7 +411,7 @@ public class HostFaultInjection extends CloudSimEntity {
         LOGGER.error(
                 "{}: {}: All {} PEs from {} failed at {}, {}.",
                 getSimulation().clockStr(), getClass().getSimpleName(),
-                lastFailedHost.getNumberOfPes(), lastFailedHost, getTime(), msg);
+                lastFailedHost.getPesNumber(), lastFailedHost, getTime(), msg);
         setVmListToFailed(lastFailedHost.getVmList());
     }
 
@@ -430,7 +430,7 @@ public class HostFaultInjection extends CloudSimEntity {
                 "{}: {}: Number of failed PEs in Host {} is smaller than working ones required by all VMs, not affecting any VM.{}" +
                 "\t  Total PEs: {} | Total Failed PEs: {} | Working PEs: {} | Current PEs required by VMs: {}.",
                 getSimulation().clockStr(), getClass().getSimpleName(), lastFailedHost.getId(), System.lineSeparator(),
-                lastFailedHost.getNumberOfPes(), lastFailedHost.getFailedPesNumber(),
+                lastFailedHost.getPesNumber(), lastFailedHost.getFailedPesNumber(),
                 lastFailedHost.getWorkingPesNumber(), vmsRequiredPes);
     }
 
@@ -444,7 +444,7 @@ public class HostFaultInjection extends CloudSimEntity {
         final List<Vm> vmsWithoutPes =
             lastFailedHost.getVmList()
                 .stream()
-                .filter(vm -> vm.getNumberOfPes() == 0)
+                .filter(vm -> vm.getPesNumber() == 0)
                 .collect(toList());
         setVmListToFailed(vmsWithoutPes);
     }
@@ -475,7 +475,7 @@ public class HostFaultInjection extends CloudSimEntity {
 
             LOGGER.warn(
                     "Removing 1 PE from VM {} due to Host PE failure. New VM PEs Number: {}",
-                    vm.getId(), vm.getNumberOfPes());
+                    vm.getId(), vm.getPesNumber());
             idx++;
             vmsWithPes = getVmsWithPEsFromFailedHost();
         }
@@ -499,7 +499,7 @@ public class HostFaultInjection extends CloudSimEntity {
         return lastFailedHost
                 .getVmList()
                 .stream()
-                .filter(vm -> vm.getNumberOfPes() > 0)
+                .filter(vm -> vm.getPesNumber() > 0)
                 .collect(toList());
     }
 
@@ -838,7 +838,7 @@ public class HostFaultInjection extends CloudSimEntity {
     private long getWorkingVmsPesCount() {
         return lastFailedHost.getVmList().stream()
                 .filter(Vm::isWorking)
-                .mapToLong(AbstractMachine::getNumberOfPes)
+                .mapToLong(AbstractMachine::getPesNumber)
                 .sum();
     }
 

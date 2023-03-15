@@ -109,10 +109,10 @@ public class CloudletsTableBuilder extends TableBuilderAbstract<Cloudlet> {
         addColumn(getTable().newColumn("VM", ID, idFormat), cloudlet -> cloudlet.getVm().getId());
 
         // 3 extra spaces to ensure proper formatting
-        addColumn(getTable().newColumn("   VM PEs", CPU_CORES, peFormat), cloudlet -> cloudlet.getVm().getNumberOfPes());
+        addColumn(getTable().newColumn("   VM PEs", CPU_CORES, peFormat), cloudlet -> cloudlet.getVm().getPesNumber());
         addColumn(getTable().newColumn("CloudletLen", MI, lengthFormat), Cloudlet::getLength);
         addColumn(getTable().newColumn("FinishedLen", MI, lengthFormat), Cloudlet::getFinishedLengthSoFar);
-        addColumn(getTable().newColumn("CloudletPEs", CPU_CORES, peFormat), Cloudlet::getNumberOfPes);
+        addColumn(getTable().newColumn("CloudletPEs", CPU_CORES, peFormat), Cloudlet::getPesNumber);
         addColumn(getTable().newColumn("StartTime", SECONDS, timeFormat), Cloudlet::getExecStartTime);
         addColumn(getTable().newColumn("FinishTime", SECONDS, timeFormat), Cloudlet::getFinishTime);
         addColumn(getTable().newColumn("ExecTime", SECONDS, timeFormat), Cloudlet::getActualCpuTime);

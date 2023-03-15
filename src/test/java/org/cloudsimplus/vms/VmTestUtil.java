@@ -30,7 +30,7 @@ public final class VmTestUtil {
     private VmTestUtil(){/**/}
 
     /**
-     * Creates a VM with the given numberOfPes and default configuration for
+     * Creates a VM with the given pesNumber and default configuration for
      * HOST_MIPS, HOST_RAM, HOST_BW and Storage.
      *
      * @param vmId
@@ -63,7 +63,7 @@ public final class VmTestUtil {
     }
 
     /**
-     * Creates a VM with the given mips and numberOfPes and default
+     * Creates a VM with the given mips and pesNumber and default
      * configuration for HOST_RAM, HOST_BW and Storage.
      *
      * @param vmId

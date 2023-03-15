@@ -36,14 +36,14 @@ public class ProcessorTest {
     }
 
     @Test
-    public void testGetNumberOfPesFromDefaultConstructor() {
+    public void testGetPesNumberFromDefaultConstructor() {
         final Processor instance = createDefaultProcessor();
         final int expResult = NUMBER_OF_PES;
         assertEquals(expResult, instance.getCapacity());
     }
 
     @Test
-    public void testSetNumberOfPes() {
+    public void testSetPesNumber() {
         final int expResult = NUMBER_OF_PES*2;
         final Processor instance = createDefaultProcessor();
         instance.setCapacity(expResult);

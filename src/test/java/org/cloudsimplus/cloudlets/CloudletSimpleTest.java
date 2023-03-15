@@ -50,7 +50,7 @@ public class CloudletSimpleTest {
         assertEquals(CloudletTestUtil.CLOUDLET_LENGTH * PES_NUMBER, cloudlet.getTotalLength());
         assertEquals(CloudletTestUtil.CLOUDLET_FILE_SIZE, cloudlet.getFileSize());
         assertEquals(CloudletTestUtil.CLOUDLET_OUTPUT_SIZE, cloudlet.getOutputSize());
-        assertEquals(PES_NUMBER, cloudlet.getNumberOfPes());
+        assertEquals(PES_NUMBER, cloudlet.getPesNumber());
         assertSame(utilizationModelCpu, cloudlet.getUtilizationModelCpu());
         assertSame(utilizationModelRam, cloudlet.getUtilizationModelRam());
         assertSame(utilizationModelBw, cloudlet.getUtilizationModelBw());
@@ -202,20 +202,20 @@ public class CloudletSimpleTest {
     }
 
     @Test
-    public void testSetValidNumberOfPes() {
+    public void testSetValidPesNumber() {
         final int expected = 2;
-        cloudlet.setNumberOfPes(expected);
-        assertEquals(expected, cloudlet.getNumberOfPes());
+        cloudlet.setPesNumber(expected);
+        assertEquals(expected, cloudlet.getPesNumber());
     }
 
     @Test()
-    public void testSetNumberOfPesToZero() {
-        assertThrows(IllegalArgumentException.class, () -> cloudlet.setNumberOfPes(0));
+    public void testSetPesNumberToZero() {
+        assertThrows(IllegalArgumentException.class, () -> cloudlet.setPesNumber(0));
     }
 
     @Test()
-    public void testSetNumberOfPesToNegative() {
-        assertThrows(IllegalArgumentException.class, () -> cloudlet.setNumberOfPes(-1));
+    public void testSetPesNumberToNegative() {
+        assertThrows(IllegalArgumentException.class, () -> cloudlet.setPesNumber(-1));
     }
 
     @Test

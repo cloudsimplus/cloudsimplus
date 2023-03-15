@@ -52,16 +52,16 @@ public final class Processor extends ResourceManageableAbstract {
      * Instantiates a Processor for a given VM.
      *
      * @param vm          the {@link Vm} the processor will belong to
-     * @param numberOfPes number of {@link Pe}s (the processor {@link #getCapacity() capacity})
+     * @param pesNumber number of {@link Pe}s (the processor {@link #getCapacity() capacity})
      * @param pesMips     MIPS of each {@link Pe}
      */
-    public Processor(final Vm vm, final long numberOfPes, final double pesMips) {
-        this(vm, numberOfPes);
+    public Processor(final Vm vm, final long pesNumber, final double pesMips) {
+        this(vm, pesNumber);
         setMips(pesMips);
     }
 
-    private Processor(final Vm vm, final long numberOfPes){
-        super(numberOfPes, "Unit");
+    private Processor(final Vm vm, final long pesNumber){
+        super(pesNumber, "Unit");
         this.vm = vm;
     }
 
@@ -90,15 +90,15 @@ public final class Processor extends ResourceManageableAbstract {
 
     /**
      * Sets the number of {@link Pe}s of the Processor
-     * @param numberOfPes the number of PEs to set
+     * @param pesNumber the number of PEs to set
      * @return
      */
     @Override
-    public boolean setCapacity(long numberOfPes) {
-        if(numberOfPes <= 0){
+    public boolean setCapacity(long pesNumber) {
+        if(pesNumber <= 0){
             throw new IllegalArgumentException("The Processor's number of PEs must be greater than 0.");
         }
-        return super.setCapacity(numberOfPes);
+        return super.setCapacity(pesNumber);
     }
 
     /**

@@ -49,7 +49,7 @@ public class CloudletTest {
         assertEquals(0, Cloudlet.NULL.getTotalLength());
 
         assertEquals(0, Cloudlet.NULL.getNetServiceLevel());
-        assertEquals(0, Cloudlet.NULL.getNumberOfPes());
+        assertEquals(0, Cloudlet.NULL.getPesNumber());
 
         assertSame(DatacenterBroker.NULL, Cloudlet.NULL.getBroker());
 

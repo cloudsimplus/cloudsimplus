@@ -132,7 +132,7 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
 
         final boolean isVmUnderloaded = scaling.isVmUnderloaded();
         //Avoids trying to downscale the number of vPEs to zero
-        if(isVmUnderloaded && scaling.getVm().getNumberOfPes() == pesNumberForScaling) {
+        if(isVmUnderloaded && scaling.getVm().getPesNumber() == pesNumberForScaling) {
             scaling.logDownscaleToZeroNotAllowed();
             return false;
         }
