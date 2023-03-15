@@ -87,7 +87,7 @@ public final class CloudSimPlus extends CloudSim {
              * If some event is processed, the clock is automatically increased.*/
             setClock(until);
 
-            if(getFuture().isEmpty()){
+            if(noFutureEvents()){
                 finish();
             }
         }
