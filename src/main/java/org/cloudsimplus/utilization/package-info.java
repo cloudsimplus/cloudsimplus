@@ -23,12 +23,12 @@
  */
 
 /**
- * A package with the definition of the {@link org.cloudbus.cloudsim.vms.vmplacementgroup.VmPlacementGroup}, which is a group of VMs 
- * that is requested to be placed according to a set of rules/constrains that take into account the topology of the system. This kind
- * of requests represents parallel applications and/or workloads that require multiple VMs for their execution. 
- * 
+ * A packaged with the {@link org.cloudsimplus.utilization.ResourcesUtilizationRecord} which is for creating timestamped records
+ * of the resources utilization for the data center as a whole.
+ * See also {@link org.cloudsimplus.traces.azure.TracesStatisticsManager}.
+ *
  * @since CloudSim Plus 7.3.2
- * 
+ *
  * @author Pavlos Maniotis
  */
-package org.cloudbus.cloudsim.vms.vmplacementgroup;
+package org.cloudsimplus.utilization;

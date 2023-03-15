@@ -21,32 +21,34 @@
  *     You should have received a copy of the GNU General Public License
  *     along with CloudSim Plus. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.cloudbus.cloudsim.vms.vmplacementgroup;
+package org.cloudsimplus.vmplacementgroups;
 
-import org.cloudbus.cloudsim.allocationpolicies.vmplacementgroups.VmAllocationPolicyBestFitWithPlacementGroups_LRRL;
-import org.cloudbus.cloudsim.allocationpolicies.vmplacementgroups.VmAllocationPolicyChicSchedAllPack;
+import org.cloudsimplus.vmplacementgroup.VmPlacementGroup;
+import org.cloudsimplus.vms.VmGroup;
+import org.cloudsimplus.vms.VmSimple;
 
 /**
- * An enumerator for the scope of a {@link VmPlacementGroup}.
+ * An enumerator with the request types that are supported by the
+ * VM placement group allocation policies.
  *
- * @see VmPlacementGroupAffinityType
- * @see VmPlacementGroupEnforcement
- * @see VmAllocationPolicyBestFitWithPlacementGroups_LRRL
- * @see VmAllocationPolicyChicSchedAllPack
- *  
  * @since CloudSim Plus 7.3.2
- * 
+ *
  * @author Pavlos Maniotis
  */
-public enum VmPlacementGroupScope {
-	
+public enum VmAllocationPolicyRequestType {
+
 	/**
-	 * Denotes that the scope of the group is the Top-of-Rack switch
+	 * Denotes a {@link VmSimple} request
 	 */
-	SWITCH,
-	
+	SINGLE_VM,
+
 	/**
-	 * Denotes that the scope of the group is the host 
+	 * Denotes a {@link VmGroup} request
 	 */
-	HOST
+	VM_GROUP,
+
+	/**
+	 * Denotes a {@link VmPlacementGroup} request
+	 */
+	VM_PLACEMENT_GROUP,
 }

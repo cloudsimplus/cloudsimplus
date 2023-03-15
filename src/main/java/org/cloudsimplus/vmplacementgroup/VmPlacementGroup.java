@@ -21,19 +21,19 @@
  *     You should have received a copy of the GNU General Public License
  *     along with CloudSim Plus. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.cloudbus.cloudsim.vms.vmplacementgroup;
+package org.cloudsimplus.vmplacementgroup;
+
+import org.cloudsimplus.vmplacementgroups.VmAllocationPolicyBestFitWithPlacementGroups_LRRL;
+import org.cloudsimplus.vmplacementgroups.VmAllocationPolicyChicSchedAllPack;
+import org.cloudsimplus.vms.Vm;
+import org.cloudsimplus.vms.VmGroup;
 
 import java.util.List;
 
-import org.cloudbus.cloudsim.allocationpolicies.vmplacementgroups.VmAllocationPolicyBestFitWithPlacementGroups_LRRL;
-import org.cloudbus.cloudsim.allocationpolicies.vmplacementgroups.VmAllocationPolicyChicSchedAllPack;
-import org.cloudbus.cloudsim.vms.Vm;
-import org.cloudbus.cloudsim.vms.VmGroup;
-
 /**
- * A VmPlacementGroup is a group of VMs that is requested to be placed according 
- * to a set of rules/constrains that take into account the topology of the system. 
- * These rules are characterized by:  
+ * A VmPlacementGroup is a group of VMs that is requested to be placed according
+ * to a set of rules/constrains that take into account the topology of the system.
+ * These rules are characterized by:
  * <pre>
  * (1) the {@link VmPlacementGroupScope} of the group
  * (2) the {@link VmPlacementGroupAffinityType} of the group
@@ -50,34 +50,34 @@ import org.cloudbus.cloudsim.vms.VmGroup;
  * @author Pavlos Maniotis
  */
 public class VmPlacementGroup extends VmGroup {
-	
+
 	/**
 	 * See {@link VmPlacementGroupScope}
 	 */
 	final private VmPlacementGroupScope scope;
-	
+
 	/**
 	 * See {@link VmPlacementGroupAffinityType}
 	 */
 	final private VmPlacementGroupAffinityType affinityType;
-	
+
 	/**
 	 * See {@link VmPlacementGroupEnforcement}
 	 */
 	final private VmPlacementGroupEnforcement enforcement;
-	
+
 	/**
-	 * The ideal number of hosts refers to the minimum number of hosts 
+	 * The ideal number of hosts refers to the minimum number of hosts
 	 * that can be used to place the VMs of the group request.
 	 */
 	final private long idealNumOfHosts;
-	
+
 	/**
-	 * The ideal number of switches refers to the minimum number of switches 
+	 * The ideal number of switches refers to the minimum number of switches
 	 * that can be used to place the VMs of the group request.
 	 */
 	final private long idealNumOfSwitches;
-	
+
 	/**
 	 * The number of hosts is updated once the VM group is placed
 	 * corresponds to the actual number of hosts that have been used for
@@ -91,10 +91,10 @@ public class VmPlacementGroup extends VmGroup {
 	 * the placement.
 	 */
 	private long numOfSwitches = 0;
-	
+
 	/**
 	 * Constructor to initialize the {@link VmPlacementGroup}
-	 * 
+	 *
 	 * @param vmList the VMs of the group
 	 * @param scope the {@link VmPlacementGroupScope} of the group
 	 * @param affinityType the {@link VmPlacementGroupAffinityType} of the group
@@ -102,18 +102,18 @@ public class VmPlacementGroup extends VmGroup {
 	 * @param idealNumOfHosts the ideal number of hosts needed to place the group
 	 * @param idealNumOfSwitches the ideal number of switches needed to place the group
 	 */
-	public VmPlacementGroup(final List<Vm> vmList, VmPlacementGroupScope scope, 
-			VmPlacementGroupAffinityType affinityType, VmPlacementGroupEnforcement enforcement, 
+	public VmPlacementGroup(final List<Vm> vmList, VmPlacementGroupScope scope,
+			VmPlacementGroupAffinityType affinityType, VmPlacementGroupEnforcement enforcement,
 			long idealNumOfHosts, long idealNumOfSwitches) {
 		super(vmList);
-		
+
 		this.scope = scope;
 		this.affinityType = affinityType;
 		this.enforcement = enforcement;
 		this.idealNumOfHosts = idealNumOfHosts;
 		this.idealNumOfSwitches = idealNumOfSwitches;
 	}
-	
+
 	/**
 	 * returns the {@link VmPlacementGroupScope} of the group
 	 */
@@ -134,7 +134,7 @@ public class VmPlacementGroup extends VmGroup {
 	public VmPlacementGroupEnforcement getEnforcement() {
 		return this.enforcement;
 	}
-	
+
 	/**
 	 * returns the ideal number of hosts needed to place the group
 	 */
@@ -148,7 +148,7 @@ public class VmPlacementGroup extends VmGroup {
 	public long getIdealNumOfSwitches() {
 		return this.idealNumOfSwitches;
 	}
-	
+
 	/**
 	 * returns the number of hosts that have been used to place the group or zero
 	 * if the group has not been placed
@@ -157,7 +157,7 @@ public class VmPlacementGroup extends VmGroup {
 		return this.numOfHosts;
 	}
 
-	
+
 	/**
 	 * returns the number of switches that have been used to place the group or zero
 	 * if the group has not been placed
@@ -165,8 +165,8 @@ public class VmPlacementGroup extends VmGroup {
 	public long getNumOfSwitches() {
 		return this.numOfSwitches;
 	}
-	
-	
+
+
 	/**
 	 * sets the number of switches used to place the group
 	 */
@@ -185,70 +185,70 @@ public class VmPlacementGroup extends VmGroup {
 	 * returns true if it is SwitchAffinityStrict or false otherwise
 	 */
 	public boolean isSwitchAffinityStrict() {
-		return this.scope           == VmPlacementGroupScope       .SWITCH 
+		return this.scope           == VmPlacementGroupScope       .SWITCH
 			   && this.affinityType == VmPlacementGroupAffinityType.AFFINITY
 			   && this.enforcement  == VmPlacementGroupEnforcement .STRICT;
 	}
-	
+
 	/**
 	 * returns true if it is SwitchAffinityBestEffort or false otherwise
 	 */
 	public boolean isSwitchAffinityBestEffort() {
-		return this.scope           == VmPlacementGroupScope       .SWITCH 
+		return this.scope           == VmPlacementGroupScope       .SWITCH
 			   && this.affinityType == VmPlacementGroupAffinityType.AFFINITY
 			   && this.enforcement  == VmPlacementGroupEnforcement .BEST_EFFORT;
 	}
-	
+
 	/**
 	 * returns true if it is SwitchAntiAffinityStrict or false otherwise
 	 */
 	public boolean isSwitchAntiAffinityStrict() {
-		return this.scope           == VmPlacementGroupScope       .SWITCH 
+		return this.scope           == VmPlacementGroupScope       .SWITCH
 			   && this.affinityType == VmPlacementGroupAffinityType.ANTI_AFFINITY
 			   && this.enforcement  == VmPlacementGroupEnforcement .STRICT;
 	}
-	
+
 	/**
 	 * returns true if it is SwitchAntiAffinityBestEffort or false otherwise
 	 */
 	public boolean isSwitchAntiAffinityBestEffort() {
-		return this.scope           == VmPlacementGroupScope       .SWITCH 
+		return this.scope           == VmPlacementGroupScope       .SWITCH
 			   && this.affinityType == VmPlacementGroupAffinityType.ANTI_AFFINITY
 			   && this.enforcement  == VmPlacementGroupEnforcement .BEST_EFFORT;
 	}
-	
+
 	/**
 	 * returns true if it is HostAffinityStrict or false otherwise
 	 */
 	public boolean isHostAffinityStrict() {
-		return this.scope           == VmPlacementGroupScope       .HOST 
+		return this.scope           == VmPlacementGroupScope       .HOST
 			   && this.affinityType == VmPlacementGroupAffinityType.AFFINITY
 			   && this.enforcement  == VmPlacementGroupEnforcement .STRICT;
 	}
-	
+
 	/**
 	 * returns true if it is HostAffinityBestEffort or false otherwise
 	 */
 	public boolean isHostAffinityBestEffort() {
-		return this.scope           == VmPlacementGroupScope       .HOST 
+		return this.scope           == VmPlacementGroupScope       .HOST
 			   && this.affinityType == VmPlacementGroupAffinityType.AFFINITY
 			   && this.enforcement  == VmPlacementGroupEnforcement .BEST_EFFORT;
 	}
-	
+
 	/**
 	 * returns true if it is HostAntiAffinityStrict or false otherwise
 	 */
 	public boolean isHostAntiAffinityStrict() {
-		return this.scope           == VmPlacementGroupScope       .HOST 
+		return this.scope           == VmPlacementGroupScope       .HOST
 			   && this.affinityType == VmPlacementGroupAffinityType.ANTI_AFFINITY
 			   && this.enforcement  == VmPlacementGroupEnforcement .STRICT;
 	}
-	
+
 	/**
 	 * returns true if it is HostAntiAffinityBestEffort or false otherwise
 	 */
 	public boolean isHostAntiAffinityBestEffort() {
-		return this.scope           == VmPlacementGroupScope       .HOST 
+		return this.scope           == VmPlacementGroupScope       .HOST
 			   && this.affinityType == VmPlacementGroupAffinityType.ANTI_AFFINITY
 			   && this.enforcement  == VmPlacementGroupEnforcement .BEST_EFFORT;
 	}

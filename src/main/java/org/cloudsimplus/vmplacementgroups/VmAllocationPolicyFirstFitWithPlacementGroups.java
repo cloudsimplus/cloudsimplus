@@ -21,35 +21,35 @@
  *     You should have received a copy of the GNU General Public License
  *     along with CloudSim Plus. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.cloudbus.cloudsim.allocationpolicies.vmplacementgroups;
+package org.cloudsimplus.vmplacementgroups;
+
+import org.cloudsimplus.allocationpolicies.VmAllocationPolicyBestFit;
+import org.cloudsimplus.allocationpolicies.VmAllocationPolicyFirstFit;
+import org.cloudsimplus.core.CloudSim;
+import org.cloudsimplus.hosts.Host;
+import org.cloudsimplus.traces.azure.TracesSimulationManager;
+import org.cloudsimplus.vms.Vm;
 
 import java.util.List;
 import java.util.Optional;
 
-import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicyBestFit;
-import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicyFirstFit;
-import org.cloudbus.cloudsim.core.CloudSim;
-import org.cloudbus.cloudsim.hosts.Host;
-import org.cloudbus.cloudsim.vms.Vm;
-import org.cloudsimplus.traces.azure.TracesSimulationManager;
-
 /**
- * An extension of the {@link VmAllocationPolicyBestFitWithPlacementGroups} that places the individual VMs 
+ * An extension of the {@link VmAllocationPolicyBestFitWithPlacementGroups} that places the individual VMs
  * of a group request according to First Fit algorithm instead of Best Fit. It dublicates the code of
  * {@link VmAllocationPolicyFirstFit}.
  *
  * @see VmAllocationPolicyFirstFit
  * @see VmAllocationPolicyBestFit
  * @see VmAllocationPolicyBestFitWithPlacementGroups
- * 
+ *
  * @since CloudSim Plus 7.3.2
- * 
+ *
  * @author Pavlos Maniotis
  */
 public class VmAllocationPolicyFirstFitWithPlacementGroups extends VmAllocationPolicyBestFitWithPlacementGroups {
     /** @see #getLastHostIndex() */
     private int lastHostIndex;
-	
+
     /**
      * The constructor
      */
@@ -58,7 +58,7 @@ public class VmAllocationPolicyFirstFitWithPlacementGroups extends VmAllocationP
 	}
 
     /**
-     * {@inheritDoc}} 
+     * {@inheritDoc}}
      */
     @Override
     protected Optional<Host> defaultFindHostForVm(final Vm vm) {
@@ -89,11 +89,11 @@ public class VmAllocationPolicyFirstFitWithPlacementGroups extends VmAllocationP
 
     /**
      * Increment the index to move to the next Host.
-     * If the end of the Host list is reached, starts from the beginning. 
+     * If the end of the Host list is reached, starts from the beginning.
      */
     protected void incLastHostIndex() {
         lastHostIndex = ++lastHostIndex % getHostList().size();
     }
-    
+
 }
 

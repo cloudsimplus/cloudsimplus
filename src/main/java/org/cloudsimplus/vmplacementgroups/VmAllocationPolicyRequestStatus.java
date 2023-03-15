@@ -21,14 +21,14 @@
  *     You should have received a copy of the GNU General Public License
  *     along with CloudSim Plus. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.cloudbus.cloudsim.allocationpolicies.vmplacementgroups;
+package org.cloudsimplus.vmplacementgroups;
 
 /**
- * An enumerator with the possible statuses a request can take after 
- * being processed by the VM placement group allocation policies. 
- * 
+ * An enumerator with the possible statuses a request can take after
+ * being processed by the VM placement group allocation policies.
+ *
  * @since CloudSim Plus 7.3.2
- * 
+ *
  * @author Pavlos Maniotis
  */
 public enum VmAllocationPolicyRequestStatus {
@@ -36,7 +36,7 @@ public enum VmAllocationPolicyRequestStatus {
 	 * Denotes a request that has been successfully placed
 	 */
 	SUCCESS,
-	
+
 	/**
 	 * Denotes a request that has not been placed due to lack of resources
 	 */

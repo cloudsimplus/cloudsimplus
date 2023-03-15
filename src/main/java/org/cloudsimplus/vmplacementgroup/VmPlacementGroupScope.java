@@ -21,44 +21,32 @@
  *     You should have received a copy of the GNU General Public License
  *     along with CloudSim Plus. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.cloudbus.cloudsim.vms.vmplacementgroup;
+package org.cloudsimplus.vmplacementgroup;
 
-import org.cloudbus.cloudsim.allocationpolicies.vmplacementgroups.VmAllocationPolicyBestFitWithPlacementGroups_LRRL;
-import org.cloudbus.cloudsim.allocationpolicies.vmplacementgroups.VmAllocationPolicyChicSchedAllPack;
-import org.cloudbus.cloudsim.vms.VmGroup;
+import org.cloudsimplus.vmplacementgroups.VmAllocationPolicyBestFitWithPlacementGroups_LRRL;
+import org.cloudsimplus.vmplacementgroups.VmAllocationPolicyChicSchedAllPack;
 
 /**
- * An enumerator for the enforcement of the placement rules for a {@link VmPlacementGroup}. 
- * Strict enforcement means that a request is rejected if the constrains cannot be satisfied. 
- * Best effort means that the algorithm will try to satisfy the constrains but the 
- * request will not be rejected if they cannot be satisfied (provided that there are available 
- * resources to realize the placement). 
+ * An enumerator for the scope of a {@link VmPlacementGroup}.
  *
- * @see VmPlacementGroupScope
  * @see VmPlacementGroupAffinityType
+ * @see VmPlacementGroupEnforcement
  * @see VmAllocationPolicyBestFitWithPlacementGroups_LRRL
  * @see VmAllocationPolicyChicSchedAllPack
- * 
+ *
  * @since CloudSim Plus 7.3.2
  *
  * @author Pavlos Maniotis
  */
-public enum VmPlacementGroupEnforcement {
-	
-	/**
-	 * Denotes that a request is rejected if the constrains cannot be satisfied
-	 */
-	STRICT,
-	
-	/**
-	 * Denotes that a request is not rejected if the constrains cannot be satisfied,
-	 * provided that there are available resources to realize the placement 
-	 * 
-	 */
-	BEST_EFFORT,
+public enum VmPlacementGroupScope {
 
 	/**
-	 * Denotes that a request type without enforcement, e.g., {@link VmGroup}
+	 * Denotes that the scope of the group is the Top-of-Rack switch
 	 */
-	NONE
+	SWITCH,
+
+	/**
+	 * Denotes that the scope of the group is the host
+	 */
+	HOST
 }

@@ -23,62 +23,62 @@
  */
 package org.cloudsimplus.traces.vmallocationpolicywithgroups;
 
-import java.io.PrintStream;
-import java.util.List;
-
-import org.cloudbus.cloudsim.allocationpolicies.vmplacementgroups.VmAllocationPolicyRequestStatus;
 import org.cloudsimplus.builders.tables.CsvTable;
 import org.cloudsimplus.builders.tables.TableBuilderAbstract;
 import org.cloudsimplus.traces.azure.TracesStatisticsManager;
+import org.cloudsimplus.vmplacementgroups.VmAllocationPolicyRequestStatus;
+
+import java.io.PrintStream;
+import java.util.List;
 
 /**
  * A class for creating trace files with {@link VmAllocationPolicyTraceRecord}.
- * It extends {@link TableBuilderAbstract}. The trace files are printed in the 
+ * It extends {@link TableBuilderAbstract}. The trace files are printed in the
  * form of csv table.
- * 
+ *
  * @see VmAllocationPolicyTraceRecord
  * @see TracesStatisticsManager
- * 
+ *
  * @since CloudSim Plus 7.3.2
- * 
+ *
  * @author Pavlos Maniotis
  */
 public class VmAllocationPolicyTraceTableBuilder extends TableBuilderAbstract<VmAllocationPolicyTraceRecord> {
 
 	/**
-	 * Takes as input a list with the {@link VmAllocationPolicyTraceRecord}s 
-	 * and a {@link PrintStream} which is used to print them. 
-	 * 
+	 * Takes as input a list with the {@link VmAllocationPolicyTraceRecord}s
+	 * and a {@link PrintStream} which is used to print them.
+	 *
 	 * @param records the list with the records for the trace file
 	 * @param out a {@link PrintStream} to print the statistics
 	 */
 	public VmAllocationPolicyTraceTableBuilder (final List<VmAllocationPolicyTraceRecord> records, final PrintStream out) {
-		
+
 		super(records);
-		
+
 		final CsvTable csvTable = new CsvTable();
 		csvTable.setPrintStream(out);
 		csvTable.setColumnSeparator(",");
 		this.setTable(csvTable);
-		
+
 		if(records.isEmpty())
 			return;
 
 		this.createColumns();
-		
+
 		this.setObjectList(records);
 	}
-	
+
     /**
-     * {@inheritDoc}} 
+     * {@inheritDoc}}
      */
 	@Override
-	protected void createTableColumns() {		
+	protected void createTableColumns() {
 
 	}
-	
+
 	/**
-	 * creates the columns for the recorded data 
+	 * creates the columns for the recorded data
 	 */
 	private void createColumns() {
 		addColumn(getTable().newColumn("Id"),                       record -> record.getId());
@@ -105,12 +105,12 @@ public class VmAllocationPolicyTraceTableBuilder extends TableBuilderAbstract<Vm
         addColumn(getTable().newColumn("Affinity type"),            record -> record.getAffinityType());
         addColumn(getTable().newColumn("Enforcement"),              record -> record.getEnforcement());
 	}
-	
+
 	/**
 	 * Calculates the percentage difference between two values
 	 */
 	private double calculatePercentageDifference (double initialValue, double finalValue) {
-		
+
 		return 100 * ((finalValue - initialValue) / Math.abs(initialValue));
 	}
 }

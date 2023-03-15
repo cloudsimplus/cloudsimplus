@@ -21,12 +21,41 @@
  *     You should have received a copy of the GNU General Public License
  *     along with CloudSim Plus. If not, see <http://www.gnu.org/licenses/>.
  */
+package org.cloudsimplus.vmplacementgroups;
 
 /**
- * A package with VM allocation policies that support requests with {@link org.cloudbus.cloudsim.vms.vmplacementgroup.VmPlacementGroup}s.
- * 
+ * An enumerator with the supported VM placement group allocation policies.
+ *
+ * <pre>
+ * The following policies are supported for now:
+ *  - {@link VmAllocationPolicyFirstFitWithPlacementGroups}
+ *  - {@link VmAllocationPolicyBestFitWithPlacementGroups}
+ *  - {@link VmAllocationPolicyBestFitWithPlacementGroups_LRRL}
+ *  - {@link VmAllocationPolicyChicSchedAllPack}
+ * </pre>
+ *
  * @since CloudSim Plus 7.3.2
- * 
+ *
  * @author Pavlos Maniotis
  */
-package org.cloudbus.cloudsim.allocationpolicies.vmplacementgroups;
+public enum VmAllocationPolicyWithPlacementGroups {
+	/**
+	 * see {@link VmAllocationPolicyFirstFitWithPlacementGroups}
+	 */
+	FirstFitWithGroups,
+
+	/**
+	 * see {@link VmAllocationPolicyBestFitWithPlacementGroups}
+	 */
+	BestFitWithGroups,
+
+	/**
+	 * see {@link VmAllocationPolicyBestFitWithPlacementGroups_LRRL}
+	 */
+	BestFitWithGroups_LRRL,
+
+	/**
+	 * see {@link VmAllocationPolicyChicSchedAllPack}
+	 */
+	ChicSchedAllPack
+}

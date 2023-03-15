@@ -23,27 +23,27 @@
  */
 package org.cloudsimplus.traces.vmallocationpolicywithgroups;
 
-import org.cloudbus.cloudsim.allocationpolicies.vmplacementgroups.VmAllocationPolicyRequestStatus;
-import org.cloudbus.cloudsim.allocationpolicies.vmplacementgroups.VmAllocationPolicyRequestType;
-import org.cloudbus.cloudsim.vms.Vm;
-import org.cloudbus.cloudsim.vms.VmGroup;
-import org.cloudbus.cloudsim.vms.vmplacementgroup.VmPlacementGroup;
-import org.cloudbus.cloudsim.vms.vmplacementgroup.VmPlacementGroupAffinityType;
-import org.cloudbus.cloudsim.vms.vmplacementgroup.VmPlacementGroupEnforcement;
-import org.cloudbus.cloudsim.vms.vmplacementgroup.VmPlacementGroupScope;
 import org.cloudsimplus.traces.azure.TracesStatisticsManager;
+import org.cloudsimplus.vmplacementgroup.VmPlacementGroup;
+import org.cloudsimplus.vmplacementgroup.VmPlacementGroupAffinityType;
+import org.cloudsimplus.vmplacementgroup.VmPlacementGroupEnforcement;
+import org.cloudsimplus.vmplacementgroup.VmPlacementGroupScope;
+import org.cloudsimplus.vmplacementgroups.VmAllocationPolicyRequestStatus;
+import org.cloudsimplus.vmplacementgroups.VmAllocationPolicyRequestType;
+import org.cloudsimplus.vms.Vm;
+import org.cloudsimplus.vms.VmGroup;
 
 /**
- * 
+ *
  * A class for creating records of how the VM requests are handled by the
  * VM placement group allocation policies (see {@link VmAllocationPolicyRequestType}).
  * The records are used to create trace files.
- *  
+ *
  * @see VmAllocationPolicyTraceTableBuilder
  * @see TracesStatisticsManager
- * 
+ *
  * @since CloudSim Plus 7.3.2
- * 
+ *
  * @author Pavlos Maniotis
  */
 public class VmAllocationPolicyTraceRecord {
@@ -52,112 +52,112 @@ public class VmAllocationPolicyTraceRecord {
 	 * A unique id
 	 */
 	final private long id;
-	
+
 	/**
 	 * Arrival time of the request
 	 */
 	final private double arrivalTime;
-	
+
 	/**
 	 * Departure time of the request
 	 */
 	private double departureTime;
-	
+
 	/**
 	 * The requested lifetime
 	 */
 	private double requestedLifeTime;
-	
+
 	/**
 	 * Cores per VM
 	 */
 	final private long numOfCores;
-	
+
 	/**
 	 * RAM per VM
 	 */
 	final private long ramMiB;
-	
+
 	/**
 	 * Bandwidth per VM
 	 */
 	final private long bwMbps;
-	
+
 	/**
 	 * Storage size per VM
 	 */
 	final private long storageMiB;
-	
+
 	/**
 	 * See {@link VmAllocationPolicyRequestType}
 	 */
 	final private VmAllocationPolicyRequestType requestType;
-	
+
 	/**
 	 * See {@link VmAllocationPolicyRequestStatus}
 	 */
 	final private VmAllocationPolicyRequestStatus requestStatus;
-	
+
 	/**
 	 * See {@link VmPlacementGroupScope}
 	 */
-	final private VmPlacementGroupScope scope;	
-	
+	final private VmPlacementGroupScope scope;
+
 	/**
 	 * See {@link VmPlacementGroupAffinityType}
 	 */
 	final private VmPlacementGroupAffinityType affinityType;
-	
+
 	/**
 	 * See {@link VmPlacementGroupEnforcement}
 	 */
 	final private VmPlacementGroupEnforcement enforcement;
-	
+
 	/**
 	 * Number of VMs in the request
 	 */
 	final private long numOfVms;
-	
+
 	/**
 	 * Ideal number of switches under which the request can be placed
 	 */
 	final private long idealNumOfSwitches;
-	
+
 	/**
 	 * Number of switches under which the request has been placed
 	 */
 	final private long numOfSwitches;
-	
+
 	/**
 	 * Ideal number of hosts in which the request can be placed
 	 */
 	final private long idealNumOfHosts;
-	
+
 	/**
 	 * Number of hosts in which the request has been placed
 	 */
 	final private long numOfHosts;
-	
+
 	/**
 	 * Constructor to initialize the record
-	 * 
-	 * @param vm the request for which we create the record 
+	 *
+	 * @param vm the request for which we create the record
 	 */
 	public VmAllocationPolicyTraceRecord(final Vm vm) {
-		
+
 		this.arrivalTime       = vm.getSimulation().clock();
-		this.departureTime     = -1; 
+		this.departureTime     = -1;
 		this.requestedLifeTime = -1;
 		this.requestStatus     = vm.isCreated() ? VmAllocationPolicyRequestStatus.SUCCESS : VmAllocationPolicyRequestStatus.FAIL;
 		this.id                = vm.getId();
 
-		
-		
+
+
 		if(vm instanceof VmPlacementGroup) {
-			
+
 			VmPlacementGroup vmGroup = (VmPlacementGroup) vm;
-			
-			this.requestType   = VmAllocationPolicyRequestType.VM_PLACEMENT_GROUP; 
+
+			this.requestType   = VmAllocationPolicyRequestType.VM_PLACEMENT_GROUP;
 			this.numOfCores    = vmGroup.getVmList().get(0).getNumberOfPes();
 			this.ramMiB        = vmGroup.getVmList().get(0).getRam().getCapacity();
 			this.bwMbps        = vmGroup.getVmList().get(0).getBw().getCapacity();
@@ -173,7 +173,7 @@ public class VmAllocationPolicyTraceRecord {
 			return;
 		}
 		else if (vm instanceof VmGroup) {
-			
+
 			VmGroup vmGroup = (VmGroup) vm;
 
 			this.requestType   = VmAllocationPolicyRequestType.VM_GROUP;
@@ -205,8 +205,8 @@ public class VmAllocationPolicyTraceRecord {
 			this.idealNumOfHosts    = 1;
 			this.numOfHosts         = vm.isCreated() ? 1 : 0;
 		}
-		
-			
+
+
 	}
 
 	/**
@@ -216,7 +216,7 @@ public class VmAllocationPolicyTraceRecord {
 		return id;
 	}
 
-	
+
 	/**
 	 * Returns the arrival time of the request
 	 */
@@ -237,14 +237,14 @@ public class VmAllocationPolicyTraceRecord {
 	public void setRequestedLifetime(double requestedLifetime) {
 		this.requestedLifeTime = requestedLifetime;
 	}
-	
+
 	/**
 	 * Returns the requested lifetime
 	 */
 	public double getRequestedLifetime() {
 		return this.requestedLifeTime;
 	}
-	
+
 	/**
 	 * Sets the departure time of the request
 	 */
@@ -293,7 +293,7 @@ public class VmAllocationPolicyTraceRecord {
 	public VmAllocationPolicyRequestStatus getRequestStatus() {
 		return requestStatus;
 	}
-	
+
 	/**
 	 * Returns the {@link VmPlacementGroupScope}
 	 */

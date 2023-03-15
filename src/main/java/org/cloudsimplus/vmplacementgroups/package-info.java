@@ -23,12 +23,10 @@
  */
 
 /**
- * A packaged with the {@link org.cloudbus.cloudsim.resources.utilization.ResourcesUtilizationRecord} which is for creating timestamped records 
- * of the resources utilization for the data center as a whole.  
- * See also {@link org.cloudsimplus.traces.azure.TracesStatisticsManager}. 
- * 
+ * A package with VM allocation policies that support requests with {@link org.cloudsimplus.vmplacementgroup.VmPlacementGroup}s.
+ *
  * @since CloudSim Plus 7.3.2
- * 
+ *
  * @author Pavlos Maniotis
  */
-package org.cloudbus.cloudsim.resources.utilization;
+package org.cloudsimplus.vmplacementgroups;

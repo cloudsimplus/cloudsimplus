@@ -24,6 +24,31 @@
 package org.cloudsimplus.traces.azure;
 
 
+import org.cloudsimplus.allocationpolicies.VmAllocationPolicy;
+import org.cloudsimplus.brokers.DatacenterBroker;
+import org.cloudsimplus.cloudlets.Cloudlet;
+import org.cloudsimplus.cloudlets.CloudletSimple;
+import org.cloudsimplus.core.CloudSim;
+import org.cloudsimplus.datacenters.DatacenterSimple;
+import org.cloudsimplus.hosts.Host;
+import org.cloudsimplus.hosts.HostSimple;
+import org.cloudsimplus.provisioners.PeProvisionerSimple;
+import org.cloudsimplus.provisioners.ResourceProvisionerSimple;
+import org.cloudsimplus.resources.Pe;
+import org.cloudsimplus.resources.PeSimple;
+import org.cloudsimplus.schedulers.cloudlet.CloudletSchedulerSpaceShared;
+import org.cloudsimplus.schedulers.vm.VmSchedulerSpaceShared;
+import org.cloudsimplus.util.TimeUtil;
+import org.cloudsimplus.utilizationmodels.UtilizationModel;
+import org.cloudsimplus.utilizationmodels.UtilizationModelFull;
+import org.cloudsimplus.vmplacementgroup.VmPlacementGroup;
+import org.cloudsimplus.vmplacementgroup.VmPlacementGroupAffinityType;
+import org.cloudsimplus.vmplacementgroup.VmPlacementGroupEnforcement;
+import org.cloudsimplus.vmplacementgroup.VmPlacementGroupScope;
+import org.cloudsimplus.vmplacementgroups.*;
+import org.cloudsimplus.vms.Vm;
+import org.cloudsimplus.vms.VmSimple;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -34,48 +59,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicy;
-import org.cloudbus.cloudsim.allocationpolicies.vmplacementgroups.VmAllocationPolicyBestFitWithPlacementGroups;
-import org.cloudbus.cloudsim.allocationpolicies.vmplacementgroups.VmAllocationPolicyBestFitWithPlacementGroups_LRRL;
-import org.cloudbus.cloudsim.allocationpolicies.vmplacementgroups.VmAllocationPolicyChicSchedAllPack;
-import org.cloudbus.cloudsim.allocationpolicies.vmplacementgroups.VmAllocationPolicyFirstFitWithPlacementGroups;
-import org.cloudbus.cloudsim.allocationpolicies.vmplacementgroups.VmAllocationPolicyWithPlacementGroups;
-import org.cloudbus.cloudsim.brokers.DatacenterBroker;
-import org.cloudbus.cloudsim.cloudlets.Cloudlet;
-import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
-import org.cloudbus.cloudsim.core.CloudSim;
-import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
-import org.cloudbus.cloudsim.hosts.Host;
-import org.cloudbus.cloudsim.hosts.HostSimple;
-import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
-import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
-import org.cloudbus.cloudsim.resources.Pe;
-import org.cloudbus.cloudsim.resources.PeSimple;
-import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerSpaceShared;
-import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerSpaceShared;
-import org.cloudbus.cloudsim.util.TimeUtil;
-import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
-import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
-import org.cloudbus.cloudsim.vms.Vm;
-import org.cloudbus.cloudsim.vms.VmSimple;
-import org.cloudbus.cloudsim.vms.vmplacementgroup.VmPlacementGroup;
-import org.cloudbus.cloudsim.vms.vmplacementgroup.VmPlacementGroupAffinityType;
-import org.cloudbus.cloudsim.vms.vmplacementgroup.VmPlacementGroupEnforcement;
-import org.cloudbus.cloudsim.vms.vmplacementgroup.VmPlacementGroupScope;
-
 /**
- * A class for facilitating the trace-based simulations by keeping all the configuration 
+ * A class for facilitating the trace-based simulations by keeping all the configuration
  * parameters in a single place. It also provides a set of helper functions for common tasks
  * like creating {@link Vm}s and {@link Host}s.
  * <br>
  * Steps to properly run trace-based simulations with this class:
  * <pre>
- *  (1) Create the {@link TracesSimulationManager} and set the configuration parameters 
+ *  (1) Create the {@link TracesSimulationManager} and set the configuration parameters
  *      with the setter functions
  *  (2) Create the {@link CloudSim} and {@link DatacenterBroker} objects
  *  (3) Initialize {@link TracesSimulationManager} by calling {@link #initialize(CloudSim, DatacenterBroker)}
- *  (4) Create the data center, i.e., {@link DatacenterSimple}, by 
- *      providing as input the {@link Host}s and the {@link VmAllocationPolicy} 
+ *  (4) Create the data center, i.e., {@link DatacenterSimple}, by
+ *      providing as input the {@link Host}s and the {@link VmAllocationPolicy}
  *      returned by the {@link #getHosts()} and {@link #getVmAllocationPolicy()} functions
  *  (5) Start the simulation by calling {@link CloudSim#start()}
  *  (6) Save the results by using {@link #saveResults()}
@@ -83,27 +79,27 @@ import org.cloudbus.cloudsim.vms.vmplacementgroup.VmPlacementGroupScope;
  * For a detailed example see class VmPlacementGroupsWithAzureTraces in org.cloudsimplus.examples.traces.vmplacementgroups.
  * <br>
  * <br>
- * An important aspect of these simulations is that we are only interested in the 
- * lifetimes of the VMs and not in the particular Cloudlets that run in them. To control 
+ * An important aspect of these simulations is that we are only interested in the
+ * lifetimes of the VMs and not in the particular Cloudlets that run in them. To control
  * how long the VMs stay alive we follow these steps:
  * <pre>
- *  (1) We set the MIPS capacity equal to 1 for all the PEs of all 
+ *  (1) We set the MIPS capacity equal to 1 for all the PEs of all
  *      hosts. See {@link #createHost(long, long, long, long)}
- *  (2) We create only one new Cloudlet for every request. 
+ *  (2) We create only one new Cloudlet for every request.
  *      See {@link TracesBatchesManager#createRequest}
- *  (3) We set the Cloudlet's MI parameter equal to the lifetime of 
+ *  (3) We set the Cloudlet's MI parameter equal to the lifetime of
  *      the VM in seconds. See {@link TracesBatchesManager#vmAllocationListener}
- *  (4) Once the Cloudlets finish their execution we destroy the VMs 
+ *  (4) Once the Cloudlets finish their execution we destroy the VMs
  *      of the corresponding requests. See {@link TracesBatchesManager#cloudletFinishListener}
  * </pre>
- * 
- * Alternatively we could build a solution around {@link Cloudlet}'s function setLifeTime(). 
- * feature, which, however, was not available when this solution was built.  
+ *
+ * Alternatively we could build a solution around {@link Cloudlet}'s function setLifeTime().
+ * feature, which, however, was not available when this solution was built.
  * <br>
  * <br>
- * For the Pes we use the {@link PeProvisionerSimple} while for the Cloudlet we 
- * use the {@link CloudletSchedulerSpaceShared}. 
- * 
+ * For the Pes we use the {@link PeProvisionerSimple} while for the Cloudlet we
+ * use the {@link CloudletSchedulerSpaceShared}.
+ *
  * @see TracesBatchesManager
  * @see TracesParser
  * @see TracesStatisticsManager
@@ -115,163 +111,163 @@ import org.cloudbus.cloudsim.vms.vmplacementgroup.VmPlacementGroupScope;
  * @author Pavlos Maniotis
  */
 public class TracesSimulationManager {
-	
-	private long uniqueId = 1; 
+
+	private long uniqueId = 1;
 	/*FIXME: create our own unique ids for the VMs and the cloudlets.
-	 * Before 7.3.1 ids worked fine but now seems like individual VMs of different 
+	 * Before 7.3.1 ids worked fine but now seems like individual VMs of different
 	 * VmPlacementGroups get same ids which leads to other errors. */
-	
+
 	// configuration parameters
 	/** The working path for the simulations */
     private String workingPath;
-    
+
     /** The path where the dataset files reside */
     private String tracePath;
-    
-    
-    
+
+
+
     /** Number of cores per host */
     private long hostCores;
-    
+
     /** Amount of RAM per host */
     private long hostRamMiB;
-    
+
     /** Amount of bandwidth per host */
 	private long hostBwMbps;
-	
+
     /** Amount of storage per host */
 	private long hostStorageMiB;
-	
-	
-	
+
+
+
     /** Number of top-of-rack switches in the data center */
 	private long numOfSwitches;
-	
+
     /** Number of hosts per top-of-rack switch */
 	private long hostsPerSwitch;
-	
-	
-	
+
+
+
     /** Stop simulating after that time  */
 	private long simEndTimeLimitSec;
-    
+
 	/** Simulate VM requests starting from this timestamp  */
 	private long startTimesFromSec;
-    
+
 	/** Simulate VM requests until this timestamp */
 	private long startTimesUntilSec;
-    
+
 	/** Cap time for the VM lifetimes */
 	private long vmCapSec;
-	
-	
-	
+
+
+
 	/** Minimum number of hosts per request */
 	private long minHostsPerRequest;
-	
+
 	/** Minimum number of VMs per request */
 	private long minVmsPerRequest;
-	
+
 	/** Threshold for VM start and VM end times to consider a set of requests as a group request */
 	private long groupThresholdSec;
-	
+
 	/** Batch size to be used for the requests submission to the broker */
 	private long batchSize;
-	
-	
-	
+
+
+
 	/** Which {@link VmAllocationPolicyWithPlacementGroups} to simulate */
     private VmAllocationPolicyWithPlacementGroups vmAllocationPolicyType;
-	
+
     /** The VM allocation policy to simulate */
 	private VmAllocationPolicy vmAllocationPolicy;
-	
+
 	/** Should the simulation finish when the first request allocation failure occurs? */
 	private boolean quitOnAllocationFailure;
-    
-	
-	
+
+
+
 	/** See {@link CloudSim#CloudSim(double)} */
-	private double minTimeBetweenEvents; 
-	
-	
-	
+	private double minTimeBetweenEvents;
+
+
+
 	// these are calculated in the initialize function
 	/** Total number of host in the data center */
 	private long totalHosts;
-	
+
 	/** Total number of cores in the data center */
 	private long totalCores;
-	
+
 	/** Total amount of RAM in the data center */
 	private long totalRamMiB;
-	
+
 	/** Total host bandwidth the data center */
 	private long totalBwMbps;
-	
+
 	/** Total amount of storage in the data center */
 	private long totalStorageMiB;
 
-	
-	
+
+
 	/** The simulation object */
 	private CloudSim simulation;
-	
+
 	/** The data center broker */
 	private DatacenterBroker broker;
-	
+
 	/** A list with the hosts of the data center */
 	private List<Host> hosts;
-	
+
 	/** The batches manager of the simulation */
     private TracesBatchesManager batchesManager;
-    
-    
+
+
     /** Print to file? */
     private boolean printToFile;
-    
+
     /** Where to print during the simulation */
 	private PrintStream simOut;
-	
+
 	/** Timestamp for the completion of the simulation initialization */
     private double initializationCompletionTimestamp;
 
-    
+
     /** The constructor */
 	public TracesSimulationManager () {
-		
+
 	}
-	
-	
+
+
 	/**
-	 * Takes as input a {@link CloudSim} object and a {@link DatacenterBroker} and 
-	 * initializes the {@link TracesSimulationManager}, i.e., it creates the {@link Host}s, 
-	 * the {@link VmAllocationPolicy}, and the {@link TracesBatchesManager}. 
+	 * Takes as input a {@link CloudSim} object and a {@link DatacenterBroker} and
+	 * initializes the {@link TracesSimulationManager}, i.e., it creates the {@link Host}s,
+	 * the {@link VmAllocationPolicy}, and the {@link TracesBatchesManager}.
 	 */
     public void initialize(final CloudSim simulation, final DatacenterBroker broker) {
-    	
+
     	//broker.setFailedVmsRetryDelay(-1d); // do not retry allocating failed requests
     	broker.getVmCreation().setRetryDelay(-1);
 
     	final double timeZeroTimestamp = TimeUtil.currentTimeSecs();
 
-    	
+
     	new File (this.workingPath).mkdirs();
 
     	PrintStream systemOut = System.out;
-    	
+
     	if(this.printToFile) {
     		try {
-    			
+
     			final File file = new File(this.workingPath + "console.txt");
-    			
+
     			final FileOutputStream fileOutputStream = new FileOutputStream(file, true);
-    			
+
     			this.simOut = new PrintStream(fileOutputStream);
     			System.setOut(simOut);
-    			
+
     		} catch (FileNotFoundException e) {
-    			
+
     			this.simOut = systemOut;
     			this.simOut.println("Cannot open PrintStream for console output. Printing to System.out");
     		}
@@ -279,56 +275,56 @@ public class TracesSimulationManager {
     		this.simOut = systemOut;
     	}
 
-		    	
+
     	SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss z");
     	Date date = new Date(System.currentTimeMillis());
     	simOut.println(formatter.format(date));
-    	
+
     	simOut.println("\n"+"Start of initialization phase");
-		
+
     	this.simulation = simulation;
     	this.broker = broker;
-    	
-    	
+
+
     	this.totalHosts      = numOfSwitches * hostsPerSwitch;
     	this.totalCores      = totalHosts * hostCores;
     	this.totalRamMiB     = totalHosts * hostRamMiB;
     	this.totalBwMbps     = totalHosts * hostBwMbps;
     	this.totalStorageMiB = totalHosts * hostStorageMiB;
-    	
-    	
-    	this.hosts = this.createHosts();    	
-    	
-    	
+
+
+    	this.hosts = this.createHosts();
+
+
     	this.batchesManager = new TracesBatchesManager(this);
 
-    	
+
         switch(this.vmAllocationPolicyType) {
-        
+
         case BestFitWithGroups:
-        	
-            this.vmAllocationPolicy = 
+
+            this.vmAllocationPolicy =
     		new VmAllocationPolicyBestFitWithPlacementGroups(this.simulation, this);
         	break;
-        	
+
         case BestFitWithGroups_LRRL:
-        	
-            this.vmAllocationPolicy = 
+
+            this.vmAllocationPolicy =
     		new VmAllocationPolicyBestFitWithPlacementGroups_LRRL(this.simulation, this);
         	break;
-            
+
         case ChicSchedAllPack:
         	this.vmAllocationPolicy=
         	new VmAllocationPolicyChicSchedAllPack(this.simulation, this);
         	break;
-        	
+
         default:
-        	
-            this.vmAllocationPolicy = 
+
+            this.vmAllocationPolicy =
     		new VmAllocationPolicyFirstFitWithPlacementGroups(this.simulation, this);
             break;
         }
-        
+
     	this.initializationCompletionTimestamp = TimeUtil.currentTimeSecs();
         final double initializationDuration = TimeUtil.elapsedSeconds(timeZeroTimestamp);
         simOut.println("\n"+"Initialization phase completed in " + TimeUtil.secondsToStr(initializationDuration));
@@ -336,15 +332,15 @@ public class TracesSimulationManager {
 
 	/**
 	 * Creates a hosts with MIPS = 1 for all Pes
-	 * 
-	 * @param cores the number of cores 
+	 *
+	 * @param cores the number of cores
 	 * @param ramMiB the amount of RAM
 	 * @param bwMbps the amount of bandwidth
 	 * @param storageMiB the amount of storage
 	 * @return a {@link Host} with MPIS = 1 for all Pes
 	 */
     private Host createHost(final long cores, final long ramMiB, final long bwMbps, final long storageMiB) {
-    	
+
         List<Pe> peList = new ArrayList<>((int) cores);
 
         // We set the MIPS capacity equal to 1 for all the PEs of the host
@@ -355,28 +351,28 @@ public class TracesSimulationManager {
         					.setRamProvisioner(new ResourceProvisionerSimple())
         					.setBwProvisioner(new ResourceProvisionerSimple())
         					.setVmScheduler(new VmSchedulerSpaceShared());
-        
+
         return host;
     }
-    
+
 	/**
-	 * Creates the {@link Host}s for the simulation 
+	 * Creates the {@link Host}s for the simulation
 	 */
 	private List<Host> createHosts () {
-		
+
 		List<Host> hosts = new ArrayList<Host>();
-		
+
 		for (long i = 0; i < this.totalHosts; i++) {
 			hosts.add(createHost(this.hostCores, this.hostRamMiB, this.hostBwMbps, this.hostStorageMiB));
-		}	
-		
+		}
+
 		return hosts;
 	}
-	
+
 	/**
 	 * Creates a single {@link Vm} with submission delay
-	 * 
-	 * @param cores the number of cores 
+	 *
+	 * @param cores the number of cores
 	 * @param ramMiB the amount of RAM
 	 * @param bwMbps the amount of bandwidth
 	 * @param storageMiB the amount of storage
@@ -384,25 +380,25 @@ public class TracesSimulationManager {
 	 * @return a {@link Vm} with submission delay
 	 */
 	public Vm createVm (long cores, long ramMiB, long bwMbps, long storageMiB, long submissionDelay) {
-		
+
 		Vm vm = new VmSimple(1d, cores)
 				.setRam(ramMiB)
 				.setBw(bwMbps)
 				.setSize(storageMiB)
 				.setCloudletScheduler(new CloudletSchedulerSpaceShared());
-		
+
 		vm.setSubmissionDelay(submissionDelay);
-		
+
 		vm.setId(this.uniqueId++);
-		
+
 		return vm;
 	}
-	
+
 	/**
 	 * Creates a {@link VmPlacementGroup} with submission delay.
-	 * All {@link VmPlacementGroup}s are created as {@link VmPlacementGroupScope#SWITCH}, 
+	 * All {@link VmPlacementGroup}s are created as {@link VmPlacementGroupScope#SWITCH},
 	 * {@link VmPlacementGroupAffinityType#AFFINITY} with {@link VmPlacementGroupEnforcement#BEST_EFFORT}
-	 * 
+	 *
 	 * @param numOfVms the number of VMs in the VM placement group
 	 * @param cores the number of cores / VM
 	 * @param ramMiB the amount of RAM / VM
@@ -412,41 +408,41 @@ public class TracesSimulationManager {
 	 * @return a {@link VmPlacementGroup} with submission delay
 	 */
 	public VmPlacementGroup createVmPlacementGroup(long numOfVms, long cores, long ramMiB, long bwMbps, long storageMiB, long submissionDelay) {
-		
-		final List<Vm> vms = new ArrayList<Vm>(); 
-		
+
+		final List<Vm> vms = new ArrayList<Vm>();
+
 		for (long i = 0; i < numOfVms; i++) {
-			
+
 			Vm vm = new VmSimple(1d, cores)
 					.setRam(ramMiB)
 					.setBw(bwMbps)
 					.setSize(storageMiB)
 					.setCloudletScheduler(new CloudletSchedulerSpaceShared());
-			
+
 			vm.setId(this.uniqueId++);
-			
-			vms.add(vm);		
+
+			vms.add(vm);
 		}
-		
+
 		long idealNumOfHosts = this.calculateIdealNumOfHosts(numOfVms, cores, ramMiB, bwMbps, storageMiB);
 
 		long idealNumOfSwitches = this.calculateIdealNumOfSwitches(idealNumOfHosts);
-		
-		VmPlacementGroup vmPlacementGroup = 
-				new VmPlacementGroup(vms, 
-						VmPlacementGroupScope.SWITCH, VmPlacementGroupAffinityType.AFFINITY, VmPlacementGroupEnforcement.BEST_EFFORT, 
+
+		VmPlacementGroup vmPlacementGroup =
+				new VmPlacementGroup(vms,
+						VmPlacementGroupScope.SWITCH, VmPlacementGroupAffinityType.AFFINITY, VmPlacementGroupEnforcement.BEST_EFFORT,
 						idealNumOfHosts, idealNumOfSwitches);
-		
+
 		vmPlacementGroup.setSubmissionDelay(submissionDelay);
-		
+
 		vmPlacementGroup.setId(this.uniqueId++);
-		
+
 		return vmPlacementGroup;
 	}
-	
+
 	/**
 	 * Calculates the minimum number of {@link Host}s that can be used to place the {@link VmPlacementGroup}.
-	 * 
+	 *
 	 * @param numOfVms the number of VMs in the VM placement group
 	 * @param cores the number of cores / VM
 	 * @param ramMiB the amount of RAM / VM
@@ -455,58 +451,58 @@ public class TracesSimulationManager {
 	 * @return the minimum number of {@link Host}s that can be used to place the {@link VmPlacementGroup}.
 	 */
 	public long calculateIdealNumOfHosts(long numOfVms, long cores, long ramMiB, long bwMbps, long storageMiB) {
-		
+
 		if(numOfVms == 1)
 			return 1;
-		
+
 		final long idealVmsPerHostByCore    = cores      == 0 ? Long.MAX_VALUE : this.hostCores / cores;
 		final long idealVmsPerHostByRam     = ramMiB     == 0 ? Long.MAX_VALUE : this.hostRamMiB / ramMiB;
 		final long idealVmsPerHostByBw      = bwMbps     == 0 ? Long.MAX_VALUE : this.hostBwMbps / bwMbps;
 		final long idealVmsPerHostByStorage = storageMiB == 0 ? Long.MAX_VALUE : this.hostStorageMiB / storageMiB;
-		
-		
+
+
 		final long asArray[] = {idealVmsPerHostByCore, idealVmsPerHostByRam, idealVmsPerHostByBw, idealVmsPerHostByStorage};
-		
+
 		long idealVmsPerHost = asArray[0];
-		
+
 		for(int i = 1; i < asArray.length; i++) {
 			if(asArray[i] < idealVmsPerHost)
 				idealVmsPerHost = asArray[i];
 		}
-		
+
 		long idealNumOfHosts = (long) Math.ceil((double) numOfVms / (double) idealVmsPerHost);
-		
+
 		return idealNumOfHosts;
 	}
-	
+
 	/**
 	 * Calculates the minimum number of switches that can be used to place a {@link VmPlacementGroup}.
-	 * 
+	 *
 	 * @param idealNumOfHosts the minimum number of {@link Host}s that can be used to place the {@link VmPlacementGroup}
 	 * @return the minimum number of switches that can be used to place a {@link VmPlacementGroup}
 	 */
 	private long calculateIdealNumOfSwitches(long idealNumOfHosts) {
-		
+
 		if(idealNumOfHosts == 1)
 			return 1;
-		
+
 		return (long) Math.ceil((double) idealNumOfHosts / (double) this.hostsPerSwitch);
 	}
-	
-	
+
+
 	/**
-	 * A {@link UtilizationModelFull} for the {@link Cloudlet}s created in the VMs 
+	 * A {@link UtilizationModelFull} for the {@link Cloudlet}s created in the VMs
 	 */
 	final private UtilizationModel utilModelFull = new UtilizationModelFull();
-	
+
 	/**
 	 * Creates a {@link Cloudlet} for a specific {@link Vm}
-	 * 
+	 *
 	 * @param vm the VM which will host the Cloudlet
 	 * @param lifetime how long we want the Cloudlet to run
 	 */
 	public Cloudlet createCloudlet(final Vm vm, final long lifetime) {
-		
+
 		// We set the MI parameter of the Cloudlet equal to the VM lifetime
         Cloudlet cloudlet = new CloudletSimple(lifetime, 1)
         							.setFileSize(1)
@@ -515,41 +511,41 @@ public class TracesSimulationManager {
         							.setUtilizationModelRam(this.utilModelFull)
         							.setUtilizationModelCpu(this.utilModelFull)
         							.setVm(vm);
-        
+
         cloudlet.setId(this.uniqueId++);
-        
+
         return cloudlet;
 	}
-	
+
 	/**
 	 * Takes as input a file name and a {@link Consumer} function and prints
-	 * the output of the function in the file. 
+	 * the output of the function in the file.
 	 */
     public void printToFile (final String filename, final Consumer<PrintStream> printFunction) {
 
 		try {
-			
+
 			final File file = new File(this.workingPath + filename);
-			
+
 			final FileOutputStream fileOutputStream = new FileOutputStream(file, true);
-			
+
 			final PrintStream printStream = new PrintStream(fileOutputStream);
-			
+
 			printFunction.accept(printStream);
-			
+
 			printStream.close();
 
 			if(file.length() == 0)
 				file.delete();
-			
+
 		} catch (FileNotFoundException e) {
-			
+
 			this.simOut.println("Cannot open PrintStream for file " + this.workingPath + filename + ". Printing to simOut");
-			
+
 			printFunction.accept(this.simOut);
-		}		
+		}
     }
-	
+
 	/**
 	 * Saves the simulation parameters and the results into files
 	 */
@@ -557,63 +553,63 @@ public class TracesSimulationManager {
 
     	this.printToFile("config.txt",
     			i -> this.printConfig(i));
-    	
-    	this.printToFile("config.txt", 
+
+    	this.printToFile("config.txt",
     			i -> this.getBatchesManager()
     			.getParser()
     			.printDatasetMetadata(i));
-    	
-    	this.printToFile("config.txt", 
+
+    	this.printToFile("config.txt",
     			i -> this.getBatchesManager()
     			.getStatisticsManager()
     			.printRequestStatistics(i));
-    	
-    	this.printToFile("config.txt", 
+
+    	this.printToFile("config.txt",
     			i -> this.getBatchesManager()
     			.getStatisticsManager()
     			.printBrokerResults(i));
-    	
-    	this.printToFile("resourcesUtilizationTrace.csv", 
+
+    	this.printToFile("resourcesUtilizationTrace.csv",
     			i -> this.getBatchesManager()
     			.getStatisticsManager()
     			.printResourcesUtilizationTrace(i));
-    	
-    	this.printToFile("requestTypes.csv", 
+
+    	this.printToFile("requestTypes.csv",
     			i -> this.getBatchesManager()
     			.getStatisticsManager()
     			.printRequestTypes(i));
-    	
-    	this.printToFile("lifetimes.csv", 
+
+    	this.printToFile("lifetimes.csv",
     			i -> this.getBatchesManager()
     			.getStatisticsManager()
     			.printLifetimeStatistics(i));
-    	
-    	this.printToFile("interarrivalTimes.csv", 
+
+    	this.printToFile("interarrivalTimes.csv",
     			i -> this.getBatchesManager()
     			.getStatisticsManager()
     			.printInterarrivalTimeStatistics(i));
-    	
-    	this.printToFile("placementTrace.csv", 
+
+    	this.printToFile("placementTrace.csv",
     			i -> this.getBatchesManager()
     			.getStatisticsManager()
     			.printVmAllocationPolicyTrace(i));
-    	
-    	this.printToFile("requestsTrace.csv", 
+
+    	this.printToFile("requestsTrace.csv",
     			i -> this.getBatchesManager()
     			.getStatisticsManager()
     			.printVmAllocationPolicyRequestSizeTrace(i));
-    	
-    	this.printToFile("switchesHistograms.csv", 
+
+    	this.printToFile("switchesHistograms.csv",
     			i -> this.getBatchesManager()
     			.getStatisticsManager()
     			.printNumOfSwitchesHistograms(i));
     }
-    
+
     /**
      * Prints the configuration parameters
      */
     private void printConfig(PrintStream out) {
-    	
+
     	out.println("----------- Simulation Config -----------");
     	out.println("Host cores   : " + hostCores);
     	out.println("Host ram     : " + hostRamMiB / 1024 + " GiB");
@@ -644,10 +640,10 @@ public class TracesSimulationManager {
     	out.println();
     	out.println("Min time between events : " + minTimeBetweenEvents);
     }
-	
-    
+
+
     // setters for the configuration parameters
-    
+
 	public void setWorkingPath(String workingPath) {
 		this.workingPath = workingPath;
 	}
@@ -683,7 +679,7 @@ public class TracesSimulationManager {
 	public void setSimEndTimeLimitSec(long simEndTimeLimitSec) {
 		this.simEndTimeLimitSec = simEndTimeLimitSec;
 	}
-	
+
 	public void setStartTimesFromSec(long startTimesFromSec) {
 		this.startTimesFromSec = startTimesFromSec;
 	}
@@ -699,7 +695,7 @@ public class TracesSimulationManager {
 	public void setMinHostsPerRequest(long minHostsPerRequest) {
 		this.minHostsPerRequest = minHostsPerRequest;
 	}
-	
+
 	public void setMinVmsPerRequest(long minVmsPerRequest) {
 		this.minVmsPerRequest = minVmsPerRequest;
 	}
@@ -715,58 +711,58 @@ public class TracesSimulationManager {
 	public void setVmAllocationPolicyType(VmAllocationPolicyWithPlacementGroups vmAllocationPolicyType) {
 		this.vmAllocationPolicyType = vmAllocationPolicyType;
 	}
-	
+
 	public void setQuitOnAllocationFailure(boolean quitOnAllocationFailure) {
 		this.quitOnAllocationFailure = quitOnAllocationFailure;
 	}
-	
+
 	public void setMinTimeBetweenEvents(double minTimeBetweenEvents) {
 		this.minTimeBetweenEvents = minTimeBetweenEvents;
 	}
-	
+
 	public void setPrintToFile(boolean printToFile) {
 		this.printToFile = printToFile;
 	}
-	
-	
+
+
 	// getters for the configuration parameters
-	
+
 	public String getWorkingPath() {
 		return this.workingPath;
 	}
-	
+
 	public String getTracePath() {
 		return this.tracePath;
 	}
-	
+
 	public long getHostCores() {
 		return this.hostCores;
 	}
-	
+
 	public long getHostRamMiB() {
 		return this.hostRamMiB;
 	}
-	
+
 	public long getHostBwMbps() {
 		return this.hostBwMbps;
 	}
-	
+
 	public long getHostStorageMiB() {
 		return this.hostStorageMiB;
 	}
-	
+
 	public long getNumOfSwitches() {
 		return this.numOfSwitches;
 	}
-	
+
 	public long getHostsPerSwitch() {
 		return this.hostsPerSwitch;
 	}
-	
+
 	public long getSimEndTimeLimitSec() {
 		return this.simEndTimeLimitSec;
 	}
-	
+
 	public long getStartTimesFromSec() {
 		return startTimesFromSec;
 	}
@@ -774,27 +770,27 @@ public class TracesSimulationManager {
 	public long getStartTimesUntilSec() {
 		return startTimesUntilSec;
 	}
-	
+
 	public long getVmCapSec() {
 		return this.vmCapSec;
 	}
-	
+
 	public long getMinHostsPerRequest() {
 		return this.minHostsPerRequest;
 	}
-	
+
 	public long getMinVmsPerRequest() {
 		return this.minVmsPerRequest;
 	}
-	
+
 	public long getGroupThresholdSec() {
 		return this.groupThresholdSec;
 	}
-	
+
 	public long getBatchSize() {
 		return this.batchSize;
 	}
-	
+
 	public boolean quitOnAllocationFailure() {
 		return quitOnAllocationFailure;
 	}
@@ -803,12 +799,12 @@ public class TracesSimulationManager {
 		return minTimeBetweenEvents;
 	}
 
-	
-	//	
+
+	//
 	public long getTotalHosts() {
 		return this.totalHosts;
 	}
-	
+
 	public long getTotalCores() {
 		return this.totalCores;
 	}
@@ -825,20 +821,20 @@ public class TracesSimulationManager {
 		return this.totalStorageMiB;
 	}
 
-	
+
 	//
 	public CloudSim getSimulation() {
 		return this.simulation;
 	}
-	
+
 	public DatacenterBroker getBroker () {
 		return this.broker;
 	}
-	
+
 	public VmAllocationPolicy getVmAllocationPolicy() {
 		return this.vmAllocationPolicy;
 	}
-	
+
 	public TracesBatchesManager getBatchesManager() {
 		return this.batchesManager;
 	}
@@ -850,11 +846,11 @@ public class TracesSimulationManager {
 	public double getInitializationCompletionTimestamp() {
 		return initializationCompletionTimestamp;
 	}
-	
+
 	public List<Host> getHosts() {
 		return this.hosts;
 	}
-	
+
 	public boolean printToFile() {
 		return this.printToFile;
 	}

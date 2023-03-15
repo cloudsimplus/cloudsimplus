@@ -21,18 +21,18 @@
  *     You should have received a copy of the GNU General Public License
  *     along with CloudSim Plus. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.cloudbus.cloudsim.resources.utilization;
+package org.cloudsimplus.utilization;
 
 import org.cloudsimplus.traces.azure.TracesStatisticsManager;
 
 /**
  * A class for creating timestamped records of the resources utilization for the data center
- * as a whole. The records include the timestamp, the number of allocated cores, the allocated 
- * RAM, the allocated bandwidth, and the allocated amount of storage. 
- * See also {@link TracesStatisticsManager}. 
- * 
+ * as a whole. The records include the timestamp, the number of allocated cores, the allocated
+ * RAM, the allocated bandwidth, and the allocated amount of storage.
+ * See also {@link TracesStatisticsManager}.
+ *
  * @since CloudSim Plus 7.3.2
- * 
+ *
  * @author Pavlos Maniotis
  */
 public class ResourcesUtilizationRecord {
@@ -41,12 +41,12 @@ public class ResourcesUtilizationRecord {
 	 * The timestamp of the record
 	 */
 	final private double timeStamp;
-	
+
 	/**
 	 * The number of allocated cores (i.e., Pes) for the data center
 	 */
 	final private long allocatedCores;
-	
+
 	/**
 	 * The amount of allocated RAM
 	 */
@@ -56,19 +56,19 @@ public class ResourcesUtilizationRecord {
 	 * The amount of allocated bandwidth
 	 */
 	final private long allocatedBwMbps;
-	
+
 	/**
 	 * The amount of allocated storage
 	 */
 	final private long allocatedStorageMiB;
-	
+
 	/**
 	 * Constructor to initialize the record.
-	 * Input parameters are self explanatory 
+	 * Input parameters are self explanatory
 	 */
 	public ResourcesUtilizationRecord(double timeStamp, long allocatedCores,
 			long allocatedRamMiB, long allocatedBwMbps, long allocatedStorageMiB) {
-		
+
 		this.timeStamp = timeStamp;
 		this.allocatedCores = allocatedCores;
 		this.allocatedRamMiB = allocatedRamMiB;
