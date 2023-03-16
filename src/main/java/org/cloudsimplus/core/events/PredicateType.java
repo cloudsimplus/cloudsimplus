@@ -7,8 +7,6 @@
  */
 package org.cloudsimplus.core.events;
 
-import org.cloudsimplus.core.CloudSimTag;
-
 import java.util.function.Predicate;
 
 /**
@@ -19,7 +17,7 @@ import java.util.function.Predicate;
  * @see Predicate
  * @since CloudSim Toolkit 1.0
  */
-public record PredicateType(CloudSimTag tag) implements Predicate<SimEvent> {
+public record PredicateType(int tag) implements Predicate<SimEvent> {
 
     /**
      * Matches any event that has the specified {@link #tag}.

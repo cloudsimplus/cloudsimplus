@@ -46,7 +46,7 @@ public final class CloudSimEvent implements SimEvent {
     @NonNull
     private SimEntity destination;
 
-    private final CloudSimTag tag;
+    private final int tag;
 
     private final Object data;
 
@@ -64,7 +64,7 @@ public final class CloudSimEvent implements SimEvent {
     public CloudSimEvent(
         final double delay,
         final SimEntity source, final SimEntity destination,
-        final CloudSimTag tag, final Object data)
+        final int tag, final Object data)
     {
         this(Type.SEND, delay, source, destination, tag, data);
     }
@@ -76,7 +76,7 @@ public final class CloudSimEvent implements SimEvent {
      * @param tag the tag that identifies the type of the message
      *            (which is used by the destination entity to perform operations based on the message type)
      */
-    public CloudSimEvent(final double delay, final SimEntity destination, final CloudSimTag tag) {
+    public CloudSimEvent(final double delay, final SimEntity destination, final int tag) {
         this(delay, destination, tag, null);
     }
 
@@ -89,7 +89,7 @@ public final class CloudSimEvent implements SimEvent {
      *            (which is used by the destination entity to perform operations based on the message type)
      * @param data the data attached to the message, that depends on the message tag
      */
-    public CloudSimEvent(final SimEntity destination, final CloudSimTag tag, Object data) {
+    public CloudSimEvent(final SimEntity destination, final int tag, Object data) {
         this(0, destination, tag, data);
     }
 
@@ -103,7 +103,7 @@ public final class CloudSimEvent implements SimEvent {
      */
     public CloudSimEvent(
         final double delay,
-        final SimEntity destination, final CloudSimTag tag, final Object data)
+        final SimEntity destination, final int tag, final Object data)
     {
         this(Type.SEND, delay, destination, destination, tag, data);
     }
@@ -117,7 +117,7 @@ public final class CloudSimEvent implements SimEvent {
      *            (which is used by the destination entity to perform operations based on the message type)
      */
     public CloudSimEvent(
-        final SimEntity destination, final CloudSimTag tag)
+        final SimEntity destination, final int tag)
     {
         this(Type.SEND, 0, destination, destination, tag, null);
     }
@@ -158,7 +158,7 @@ public final class CloudSimEvent implements SimEvent {
     public CloudSimEvent(
         final Type type, final double delay,
         final SimEntity source, final SimEntity destination,
-        final CloudSimTag tag, final Object data)
+        final int tag, final Object data)
     {
         if (delay < 0) {
             throw new IllegalArgumentException("Delay can't be negative.");
@@ -188,7 +188,7 @@ public final class CloudSimEvent implements SimEvent {
             return res;
         }
 
-        res = this.tag.compareTo(that.getTag());
+        res = Integer.compare(this.tag, that.getTag());
         if (res != 0) {
             return res;
         }
@@ -207,11 +207,6 @@ public final class CloudSimEvent implements SimEvent {
     @Override
     public int hashCode() {
         return Objects.hash(getTime(), getTag(), getSerial());
-    }
-
-    @Override
-    public int getPriority() {
-        return tag.priority();
     }
 
     @Override

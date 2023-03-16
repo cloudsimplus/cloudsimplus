@@ -103,7 +103,7 @@ public interface SimEntity extends Nameable, Runnable, Comparable<SimEntity> {
      * @param tag   a tag representing the type of event.
      * @return true if the event was sent; false if the simulation was not started yet
      */
-    default boolean schedule(CloudSimTag tag) {
+    default boolean schedule(int tag) {
         return schedule(0, tag);
     }
 
@@ -114,7 +114,7 @@ public interface SimEntity extends Nameable, Runnable, Comparable<SimEntity> {
      * @param data  The data to be sent with the event.
      * @return true if the event was sent; false if the simulation was not started yet
      */
-    boolean schedule(double delay, CloudSimTag tag, Object data);
+    boolean schedule(double delay, int tag, Object data);
 
     /**
      * Sends an event from the entity to itself with no data.
@@ -122,7 +122,7 @@ public interface SimEntity extends Nameable, Runnable, Comparable<SimEntity> {
      * @param tag   a tag representing the type of event.
      * @return true if the event was sent; false if the simulation was not started yet
      */
-    boolean schedule(double delay, CloudSimTag tag);
+    boolean schedule(double delay, int tag);
 
     /**
      * Sends an event to another entity.
@@ -132,7 +132,7 @@ public interface SimEntity extends Nameable, Runnable, Comparable<SimEntity> {
      * @param data  The data to be sent with the event.
      * @return true if the event was sent; false if the simulation was not started yet
      */
-    boolean schedule(SimEntity dest, double delay, CloudSimTag tag, Object data);
+    boolean schedule(SimEntity dest, double delay, int tag, Object data);
 
     /**
      * Sends an event to another entity with <b>no</b> attached data.
@@ -141,7 +141,7 @@ public interface SimEntity extends Nameable, Runnable, Comparable<SimEntity> {
      * @param tag   a tag representing the type of event.
      * @return true if the event was sent; false if the simulation was not started yet
      */
-    boolean schedule(SimEntity dest, double delay, CloudSimTag tag);
+    boolean schedule(SimEntity dest, double delay, int tag);
 
     /**
      * Sends an event from the entity to itself with <b>no</b> delay.
@@ -149,7 +149,7 @@ public interface SimEntity extends Nameable, Runnable, Comparable<SimEntity> {
      * @param data  The data to be sent with the event.
      * @return true if the event was sent; false if the simulation was not started yet
      */
-    boolean schedule(CloudSimTag tag, Object data);
+    boolean schedule(int tag, Object data);
 
     /**
      * The run loop to process events fired during the simulation. The events

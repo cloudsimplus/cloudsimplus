@@ -351,7 +351,7 @@ public interface Simulation {
      * @param tag   the {@link SimEvent#getTag() tag} that classifies the event
      * @param data  the {@link SimEvent#getData() data} to be sent inside the event
      */
-    void send(SimEntity src, SimEntity dest, double delay, CloudSimTag tag, Object data);
+    void send(SimEntity src, SimEntity dest, double delay, int tag, Object data);
 
     /**
      * Sends an event where all data required is defined inside the event instance,
@@ -370,7 +370,7 @@ public interface Simulation {
      * @param tag   the {@link SimEvent#getTag() tag} that classifies the event
      * @param data  the {@link SimEvent#getData() data} to be sent inside the event
      */
-    void sendFirst(SimEntity src, SimEntity dest, double delay, CloudSimTag tag, Object data);
+    void sendFirst(SimEntity src, SimEntity dest, double delay, int tag, Object data);
 
     /**
      * Sends an event from one entity to another without delaying the message.
@@ -380,7 +380,7 @@ public interface Simulation {
      * @param tag  the {@link SimEvent#getTag() tag} that classifies the event
      * @param data the {@link SimEvent#getData() data} to be sent inside the event
      */
-    void sendNow(SimEntity src, SimEntity dest, CloudSimTag tag, Object data);
+    void sendNow(SimEntity src, SimEntity dest, int tag, Object data);
 
     /**
      * Runs the simulation for a specific period of time and then immediately returns.

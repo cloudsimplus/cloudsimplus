@@ -435,17 +435,17 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
 
     private boolean processCloudletEvents(final SimEvent evt) {
         return switch (evt.getTag()) {
-            case CLOUDLET_RETURN -> processCloudletReturn(evt);
-            case CLOUDLET_READY -> processCloudletReady(evt);
+            case CloudSimTag.CLOUDLET_RETURN -> processCloudletReturn(evt);
+            case CloudSimTag.CLOUDLET_READY -> processCloudletReady(evt);
             /* The data of such a kind of event is a Runnable that has all
              * the logic to update Cloudlet's attributes.
              * This way, it will be run to perform such an update.
              * Check the documentation of the tag below for details.*/
-            case CLOUDLET_UPDATE_ATTRIBUTES -> executeRunnableEvent(evt);
-            case CLOUDLET_PAUSE -> processCloudletPause(evt);
-            case CLOUDLET_CANCEL -> processCloudletCancel(evt);
-            case CLOUDLET_FINISH -> processCloudletFinish(evt);
-            case CLOUDLET_FAIL -> processCloudletFail(evt);
+            case CloudSimTag.CLOUDLET_UPDATE_ATTRIBUTES -> executeRunnableEvent(evt);
+            case CloudSimTag.CLOUDLET_PAUSE -> processCloudletPause(evt);
+            case CloudSimTag.CLOUDLET_CANCEL -> processCloudletCancel(evt);
+            case CloudSimTag.CLOUDLET_FINISH -> processCloudletFinish(evt);
+            case CloudSimTag.CLOUDLET_FAIL -> processCloudletFail(evt);
             default -> false;
         };
     }
@@ -461,12 +461,12 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
 
     private boolean processVmEvents(final SimEvent evt) {
         return switch (evt.getTag()) {
-            case VM_CREATE_RETRY -> {
+            case CloudSimTag.VM_CREATE_RETRY -> {
                 vmCreationRetrySent = false;
                 yield requestDatacenterToCreateWaitingVms(false, true);
             }
-            case VM_CREATE_ACK -> processVmCreateResponseFromDatacenter(evt);
-            case VM_VERTICAL_SCALING -> requestVmVerticalScaling(evt);
+            case CloudSimTag.VM_CREATE_ACK -> processVmCreateResponseFromDatacenter(evt);
+            case CloudSimTag.VM_VERTICAL_SCALING -> requestVmVerticalScaling(evt);
             default -> false;
         };
     }

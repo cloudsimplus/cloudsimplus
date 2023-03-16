@@ -59,7 +59,7 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
      * The direction can be {@link CloudSimTag#ICMP_PKT_SUBMIT}
      * or {@link CloudSimTag#ICMP_PKT_RETURN}.
      */
-    private CloudSimTag tag;
+    private int tag;
 
     /**
      * The packet name.
@@ -353,8 +353,8 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
      *
      * @param tag the direction to set
      */
-    public void setTag(final CloudSimTag tag) {
-        if (tag.between(CloudSimTag.ICMP_PKT_SUBMIT, CloudSimTag.ICMP_PKT_RETURN)) {
+    public void setTag(final int tag) {
+        if (CloudSimTag.between(tag, CloudSimTag.ICMP_PKT_SUBMIT, CloudSimTag.ICMP_PKT_RETURN)) {
             this.tag = tag;
             return;
         }

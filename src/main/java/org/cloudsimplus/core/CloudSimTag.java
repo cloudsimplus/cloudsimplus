@@ -32,20 +32,26 @@ import org.cloudsimplus.vms.Vm;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Toolkit 1.0
  */
-public enum CloudSimTag implements Comparable<CloudSimTag> {
-    /** An unclassified tag. */
-    NONE(-1),
+public class CloudSimTag{
+    public static final int NONE = -1;
+
+    /** Starting constant value for cloud-related tags. */
+    private static final int BASE = 0;
+
+    /** Starting constant value for network-related tags. */
+    private static final int NET_BASE = 100;
+
+    /**
+     * Denotes the end of simulation.
+     */
+    public static final int SIMULATION_END = -2;
 
     /**
      * Tag used for requesting an entity to shut down.
      * That ensures a graceful shutdown, after other entity events are processed.
      */
-    ENTITY_SHUTDOWN(-2),
+    public static final int ENTITY_SHUTDOWN = -3;
 
-    /**
-     * Denotes the end of simulation.
-     */
-    SIMULATION_END,
 
     /**
      * Denotes a request from a Datacenter to register itself. This tag is normally used
@@ -53,36 +59,36 @@ public enum CloudSimTag implements Comparable<CloudSimTag> {
      * When such a {@link SimEvent} is sent, the {@link SimEvent#getData()}
      * must be a {@link Datacenter} object.
      */
-    DC_REGISTRATION_REQUEST,
+    public static final int DC_REGISTRATION_REQUEST = BASE + 2;
 
     /**
      * Denotes a request from a broker to a {@link CloudInformationService} to get
      * the list of all Datacenters, including the ones that can support advanced reservation.
      */
-    DC_LIST_REQUEST,
+    public static final int DC_LIST_REQUEST = BASE + 4;
 
     /**
      * Denotes a request to register a {@link CloudInformationService} entity as a regional CIS.
      * When such a {@link SimEvent} is sent, the {@link SimEvent#getData()}
      * must be a {@link CloudInformationService} object.
      */
-    REGISTER_REGIONAL_CIS,
+    public static final int REGISTER_REGIONAL_CIS = BASE + 13;
 
     /**
      * Denotes a request to get a list of other regional CIS entities from the
      * system CIS entity.
      */
-    REQUEST_REGIONAL_CIS,
+    public static final int REQUEST_REGIONAL_CIS = BASE + 14;
 
     /**
      * This tag is used by an entity to send ping requests.
      */
-    ICMP_PKT_SUBMIT,
+    public static final int ICMP_PKT_SUBMIT = NET_BASE + 5;
 
     /**
      * This tag is used to return the ping request back to sender.
      */
-    ICMP_PKT_RETURN,
+    public static final int ICMP_PKT_RETURN = NET_BASE + 6;
 
     /**
      * Denotes the return of a finished Cloudlet back to the sender.
@@ -90,7 +96,7 @@ public enum CloudSimTag implements Comparable<CloudSimTag> {
      * When an event of this type is sent, the {@link SimEvent#getData()}
      * must be a {@link Cloudlet} object.
      */
-    CLOUDLET_RETURN,
+    public static final int CLOUDLET_RETURN = BASE + 15;
 
     /**
      * Denotes the submission of a Cloudlet. This tag is normally used between
@@ -98,7 +104,7 @@ public enum CloudSimTag implements Comparable<CloudSimTag> {
      * When an event of this type is sent, the {@link SimEvent#getData()}
      * must be a {@link Cloudlet} object.
      */
-    CLOUDLET_SUBMIT,
+    public static final int CLOUDLET_SUBMIT = BASE + 16;
 
     /**
      * Denotes the submission of a Cloudlet with an acknowledgement. This tag is
@@ -107,21 +113,21 @@ public enum CloudSimTag implements Comparable<CloudSimTag> {
      * must be a {@link Cloudlet} object.
      *
      */
-    CLOUDLET_SUBMIT_ACK,
+    public static final int CLOUDLET_SUBMIT_ACK = BASE + 17;
 
     /**
      * Cancels a Cloudlet submitted in the Datacenter entity.
      * When an event of this type is sent, the {@link SimEvent#getData()}
      * must be a {@link Cloudlet} object.
      */
-    CLOUDLET_CANCEL,
+    public static final int CLOUDLET_CANCEL = BASE + 18;
 
     /**
      * Pauses a Cloudlet submitted in the Datacenter entity.
      * When an event of this type is sent, the {@link SimEvent#getData()}
      * must be a {@link Cloudlet} object.
      */
-    CLOUDLET_PAUSE,
+    public static final int CLOUDLET_PAUSE = BASE + 19;
 
     /**
      * Pauses a Cloudlet submitted in the Datacenter entity with an
@@ -129,14 +135,14 @@ public enum CloudSimTag implements Comparable<CloudSimTag> {
      * When an event of this type is sent, the {@link SimEvent#getData()}
      * must be a {@link Cloudlet} object.
      */
-    CLOUDLET_PAUSE_ACK,
+    public static final int CLOUDLET_PAUSE_ACK = BASE + 20;
 
     /**
      * Resumes a Cloudlet submitted in the Datacenter entity.
      * When an event of this type is sent, the {@link SimEvent#getData()}
      * must be a {@link Cloudlet} object.
      */
-    CLOUDLET_RESUME,
+    public static final int CLOUDLET_RESUME = BASE + 21;
 
     /**
      * Resumes a Cloudlet submitted in the Datacenter entity with an
@@ -144,7 +150,7 @@ public enum CloudSimTag implements Comparable<CloudSimTag> {
      * When an event of this type is sent, the {@link SimEvent#getData()}
      * must be a {@link Cloudlet} object.
      */
-    CLOUDLET_RESUME_ACK,
+    public static final int CLOUDLET_RESUME_ACK = BASE + 22;
 
     /**
      * Request a Cloudlet to be set as ready to start executing inside a VM.
@@ -160,14 +166,14 @@ public enum CloudSimTag implements Comparable<CloudSimTag> {
      * When an event of this type is sent, the {@link SimEvent#getData()}
      * must be a {@link Cloudlet} object.
      */
-    CLOUDLET_READY,
+    public static final int CLOUDLET_READY = BASE + 23;
 
     /**
      * Request a Cloudlet to be set as failed.
      * When an event of this type is sent, the {@link SimEvent#getData()}
      * must be a {@link Cloudlet} object.
      */
-    CLOUDLET_FAIL,
+    public static final int CLOUDLET_FAIL = BASE + 24;
 
     /**
      * Requests an indefinite-length Cloudlet (negative value) to be finished by
@@ -183,7 +189,7 @@ public enum CloudSimTag implements Comparable<CloudSimTag> {
      * That is way this event must be processed before other events.
      * </p>
      */
-    CLOUDLET_FINISH(-2),
+    public static final int CLOUDLET_FINISH = -(BASE + 25);
 
     /**
      * Requests a Cloudlet to be cancelled.
@@ -192,7 +198,7 @@ public enum CloudSimTag implements Comparable<CloudSimTag> {
      * When an event of this type is sent, the {@link SimEvent#getData()}
      * must be a {@link Cloudlet} object.
      */
-    CLOUDLET_KILL,
+    public static final int CLOUDLET_KILL = BASE + 26;
 
     /**
      * Request a Cloudlet to have its attributes changed.
@@ -218,12 +224,12 @@ public enum CloudSimTag implements Comparable<CloudSimTag> {
      *
      * <p>The {@code runnable} variable must be set as the data for the event to be sent with this tag.</p>
      */
-    CLOUDLET_UPDATE_ATTRIBUTES,
+    public static final int CLOUDLET_UPDATE_ATTRIBUTES = BASE + 27;
 
     /**
      * Denotes a request to retry creating waiting VMs from a {@link DatacenterBroker}.
      */
-    VM_CREATE_RETRY,
+    public static final int VM_CREATE_RETRY = BASE + 31;
 
     /**
      * Denotes a request to create a new VM in a {@link Datacenter}
@@ -234,14 +240,14 @@ public enum CloudSimTag implements Comparable<CloudSimTag> {
      * one has only to call {@link Vm#isCreated()}.
      * </p>
      */
-    VM_CREATE_ACK,
+    public static final int VM_CREATE_ACK = BASE + 32;
 
     /**
      * Denotes a request to destroy a VM in a {@link Datacenter}.
      * When an event of this type is sent, the {@link SimEvent#getData()}
      * must be a {@link Vm} object.
      */
-    VM_DESTROY,
+    public static final int VM_DESTROY = BASE + 33;
 
     /**
      * Denotes a request to destroy a new VM in a {@link Datacenter} with
@@ -249,7 +255,7 @@ public enum CloudSimTag implements Comparable<CloudSimTag> {
      * When an event of this type is sent, the {@link SimEvent#getData()}
      * must be a {@link Vm} object.
      */
-    VM_DESTROY_ACK,
+    public static final int VM_DESTROY_ACK = BASE + 34;
 
     /**
      * Denotes a request to finish the migration of a new VM in a {@link Datacenter}.
@@ -262,14 +268,14 @@ public enum CloudSimTag implements Comparable<CloudSimTag> {
      * a suitable Host when the migration request message is processed.
      * </p>
      */
-    VM_MIGRATE,
+    public static final int VM_MIGRATE = BASE + 35;
 
     /**
      * Denotes a request to finish the migration of a new VM in a {@link Datacenter} with
      * acknowledgement information sent by the Datacenter.
      * @see #VM_MIGRATE
      */
-    VM_MIGRATE_ACK,
+    public static final int VM_MIGRATE_ACK = BASE + 36;
 
     /**
      * Denotes an internal event generated in a {@link Datacenter}
@@ -282,7 +288,7 @@ public enum CloudSimTag implements Comparable<CloudSimTag> {
      * means that all Hosts from the Datacenter will have
      * its cloudlets updated.</p>
      */
-    VM_UPDATE_CLOUDLET_PROCESSING,
+    public static final int VM_UPDATE_CLOUDLET_PROCESSING = BASE + 41;
 
     /**
      * Denotes a request vertical scaling of VM resources
@@ -290,36 +296,36 @@ public enum CloudSimTag implements Comparable<CloudSimTag> {
      * When an event of this type is sent, the {@link SimEvent#getData()}
      * must be a {@link VerticalVmScaling} object.
      */
-    VM_VERTICAL_SCALING,
+    public static final int VM_VERTICAL_SCALING = BASE + 42;
 
     /**
      * Denotes the transmission of packets up through the network topology.
      */
-    NETWORK_EVENT_UP,
+    public static final int NETWORK_EVENT_UP = BASE + 43;
 
-    NETWORK_EVENT_SEND,
+    public static final int NETWORK_EVENT_SEND = BASE + 44;
 
     /**
      * Denotes the transmission of packets down through the network topology.
      */
-    NETWORK_EVENT_DOWN,
+    public static final int NETWORK_EVENT_DOWN = BASE + 46;
 
     /**
      * Denotes the transmission of packets targeting a given Host.
      * The {@link SimEvent#getData()} must be a {@link HostPacket}
      * to be processed.
      */
-    NETWORK_EVENT_HOST,
+    public static final int NETWORK_EVENT_HOST = BASE + 47;
 
     /**
-     * Denotes failure events such as hosts or VMs failures.
+     * Denotes failure events such as {@link #HOST_FAILURE} or VM failures.
     */
-    FAILURE,
+    public static final int FAILURE = BASE + 48;
 
     /**
      * Denotes a request to generate a host failure.
      */
-    HOST_FAILURE,
+    public static final int HOST_FAILURE = FAILURE + 1;
 
     /**
      * Denotes a request to a Datacenter to add a Host or list of Hosts to a Datacenter.
@@ -327,7 +333,7 @@ public enum CloudSimTag implements Comparable<CloudSimTag> {
      * to the Datacenter where the message is being sent to.
      * The source of such events is the {@link CloudInformationService}.
      */
-    HOST_ADD,
+    public static final int HOST_ADD = BASE + 60;
 
     /**
      * Denotes a request to a Datacenter to remove a Host or list of Hosts from a Datacenter.
@@ -341,59 +347,41 @@ public enum CloudSimTag implements Comparable<CloudSimTag> {
      * The source of such events is the {@link CloudInformationService}.
      * </p>
      */
-    HOST_REMOVE,
+    public static final int HOST_REMOVE = BASE + 61;
 
     /**
      * Denotes a power measurement performed periodically by a {@link PowerMeter} on
      * entities having a {@link PowerModel}, such as {@link Datacenter}s and {@link Host}s.
      */
-    POWER_MEASUREMENT,
+    public static final int POWER_MEASUREMENT = BASE + 70;
 
     /**
      * Denotes a tag for starting up a {@link Host} inside a {@link Datacenter}.
      * When such a {@link SimEvent} is sent, the {@link SimEvent#getData()}
      * must be a {@link Host} object.
      */
-    HOST_POWER_ON,
+    public static final int HOST_POWER_ON = BASE + 71;
 
     /**
      * Denotes a tag for shutting down a {@link Host} inside a {@link Datacenter}.
      * When such a {@link SimEvent} is sent, the {@link SimEvent#getData()}
      * must be a {@link Host} object.
      */
-    HOST_POWER_OFF;
-
-    private final int priority;
-
-    CloudSimTag() {
-        this.priority = 0;
-    }
-
-    /**
-     * Creates an event tag with a given priority.
-     * Negative values give higher priority.
-     * @param priority the priority to set
-     */
-    CloudSimTag(final int priority) {
-        this.priority = priority;
-    }
-
-    /**
-     * Gets the event tag priority.
-     * Negative values indicates higher priority.
-     */
-    public int priority(){
-        return priority;
-    }
+    public static final int HOST_POWER_OFF = BASE + 72;
 
     /**
      * Checks if this tag is between a given range of tags,
-     * according to their {@link #ordinal()} values.
+     * according to their values.
      * @param startInclusive the tag starting the range to check
      * @param endInclusive the tag finishing the range to check
      * @return
      */
-    public boolean between(final CloudSimTag startInclusive, final CloudSimTag endInclusive){
-        return this.ordinal() >= startInclusive.ordinal() && this.ordinal() <= endInclusive.ordinal();
+    public static boolean between(final int tag, final int startInclusive, final int endInclusive){
+        return tag >= startInclusive && tag <= endInclusive;
     }
+
+    /**
+     * A private constructor to avoid class instantiation.
+     */
+    private CloudSimTag() {/**/}
 }

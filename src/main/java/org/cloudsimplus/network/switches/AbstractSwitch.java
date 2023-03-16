@@ -95,10 +95,10 @@ public abstract class AbstractSwitch extends CloudSimEntity implements Switch {
     @Override
     public void processEvent(final SimEvent evt) {
         switch (evt.getTag()) {
-            case NETWORK_EVENT_UP -> processPacketUp(evt);
-            case NETWORK_EVENT_DOWN -> processPacketDown(evt);
-            case NETWORK_EVENT_SEND -> processPacketForward();
-            case NETWORK_EVENT_HOST -> processHostPacket(evt);
+            case CloudSimTag.NETWORK_EVENT_UP -> processPacketUp(evt);
+            case CloudSimTag.NETWORK_EVENT_DOWN -> processPacketDown(evt);
+            case CloudSimTag.NETWORK_EVENT_SEND -> processPacketForward();
+            case CloudSimTag.NETWORK_EVENT_HOST -> processHostPacket(evt);
             default -> LOGGER.trace("{}: {}: Unknown event {} received.", getSimulation().clockStr(), this, evt.getTag());
         }
     }
@@ -186,7 +186,7 @@ public abstract class AbstractSwitch extends CloudSimEntity implements Switch {
 
     private void forwardPacketsToSwitch(
         final Switch destinationSwitch, final List<HostPacket> packetList,
-        final double bandwidth, final CloudSimTag tag)
+        final double bandwidth, final int tag)
     {
         for (final HostPacket pkt : packetList) {
             final double delay = packetTransferDelay(pkt, bandwidth, packetList.size());

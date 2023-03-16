@@ -74,10 +74,10 @@ final class SimulationNull implements Simulation {
     }
     @Override public SimEvent select(SimEntity dest, Predicate<SimEvent> predicate) { return SimEvent.NULL; }
     @Override public void send(SimEvent evt) {/**/}
-    @Override public void send(SimEntity src, SimEntity dest, double delay, CloudSimTag tag, Object data) {/**/}
+    @Override public void send(SimEntity src, SimEntity dest, double delay, int tag, Object data) {/**/}
     @Override public void sendFirst(SimEvent evt) {/**/}
-    @Override public void sendFirst(SimEntity src, SimEntity dest, double delay, CloudSimTag tag, Object data) {/**/}
-    @Override public void sendNow(SimEntity src, SimEntity dest, CloudSimTag tag, Object data) {/**/}
+    @Override public void sendFirst(SimEntity src, SimEntity dest, double delay, int tag, Object data) {/**/}
+    @Override public void sendNow(SimEntity src, SimEntity dest, int tag, Object data) {/**/}
     @Override public double runFor(double interval) { return 0; }
     @Override public Simulation addOnEventProcessingListener(EventListener<SimEvent> listener) {
         return this;

@@ -73,14 +73,7 @@ public interface SimEvent extends Comparable<SimEvent>, EventInfo {
      *
      * @return
      */
-    CloudSimTag getTag();
-
-    /**
-     * Gets the priority of this event.
-     * Negative values indicates higher priority.
-     * @return
-     */
-    int getPriority();
+    int getTag();
 
     /**
      * Gets the data object passed in this event.

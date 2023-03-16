@@ -243,7 +243,7 @@ public class GoogleTaskEventsTraceReader extends GoogleTraceReaderAbstract<Cloud
      * @param tag a CLOUDLET tag from the {@link CloudSimTag} used to send a message to request the Cloudlet status change
      * @return true if the request was created, false otherwise
      */
-    /* default */ boolean requestCloudletStatusChange(final CloudSimTag tag) {
+    /* default */ boolean requestCloudletStatusChange(final int tag) {
         final var taskEvent = TaskEvent.of(this);
         final var broker = brokerManager.getBroker(taskEvent.getUserName());
         final double delay = taskEvent.getTimestamp();

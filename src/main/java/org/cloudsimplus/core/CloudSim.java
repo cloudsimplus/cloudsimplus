@@ -495,30 +495,30 @@ abstract class CloudSim implements Simulation {
         }
     }
 
-    private void sendNow(final SimEntity dest, final CloudSimTag tag) {
+    private void sendNow(final SimEntity dest, final int tag) {
         sendNow(cis, dest, tag, null);
     }
 
     @Override
-    public void sendNow(final SimEntity src, final SimEntity dest, final CloudSimTag tag, final Object data) {
+    public void sendNow(final SimEntity src, final SimEntity dest, final int tag, final Object data) {
         send(src, dest, 0, tag, data);
     }
 
     @Override
-    public void send(final SimEntity src, final SimEntity dest, final double delay, final CloudSimTag tag, final Object data) {
+    public void send(final SimEntity src, final SimEntity dest, final double delay, final int tag, final Object data) {
         send(new CloudSimEvent(SimEvent.Type.SEND, delay, src, dest, tag, data));
     }
 
     @Override
     public void send(@NonNull final SimEvent evt) {
         //Events with a negative tag have higher priority
-        if(evt.getPriority() < 0)
+        if(evt.getTag() < 0)
             future.addEventFirst(evt);
         else future.addEvent(evt);
     }
 
     @Override
-    public void sendFirst(final SimEntity src, final SimEntity dest, final double delay, final CloudSimTag tag, final Object data) {
+    public void sendFirst(final SimEntity src, final SimEntity dest, final double delay, final int tag, final Object data) {
         sendFirst(new CloudSimEvent(SimEvent.Type.SEND, delay, src, dest, tag, data));
     }
 
