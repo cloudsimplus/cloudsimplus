@@ -282,7 +282,7 @@ public class TracesBatchesManager {
 
         		double nextBatchDelay =  this.startupLag + nextBatch.get(0).getSubmissionDelay() - info.getTime();
 
-        		CloudSimTag batchTag = CloudSimTag.BATCH_TAG;
+        		final int batchTag = CloudSimTag.BATCH_TAG;
 
         		if(!this.simulationManager.getBroker().schedule(nextBatchDelay, batchTag)) {
         			this.simulationManager.getSimOut().println("Cannot schedule batch submission. Abort");
@@ -410,18 +410,15 @@ public class TracesBatchesManager {
 	 * These events are marked with a {@link CloudSimTag#BATCH_TAG}.
 	 */
     private void simulationEventListener(final EventInfo info) {
+    	if (info instanceof SimEvent evt){
+            final int tag = evt.getTag();
 
-    	if (!(info instanceof SimEvent))
-    		return;
+            if(tag != CloudSimTag.BATCH_TAG)
+                return;
 
-    	final CloudSimTag tag = ((SimEvent) info).getTag();
-
-    	if(tag != CloudSimTag.BATCH_TAG)
-    		return;
-
-		this.printSimulationProgress();
-
-    	this.submitNextBatch(info);
+            this.printSimulationProgress();
+            this.submitNextBatch(info);
+        }
     }
 
     /**
