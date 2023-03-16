@@ -202,12 +202,13 @@ var host0 = new HostSimple(ram, bw, storage, List.of(new PeSimple(20000)));
 //Uses a VmAllocationPolicySimple by default to allocate VMs
 var dc0 = new DatacenterSimple(simulation, List.of(host0));
 
-//Creates one VM to run applications.
+//Creates one VM with one CPU core to run applications.
 //Uses a CloudletSchedulerTimeShared by default to schedule Cloudlets
 var vm0 = new VmSimple(1000, 1);
 vm0.setRam(1000).setBw(1000).setSize(1000);
 
 //Creates Cloudlets that represent applications to be run inside a VM.
+//It has a length of 1000 Million Instructions (MI) and requires 1 CPU core 
 //UtilizationModel defining the Cloudlets use only 50% of any resource all the time
 var utilizationModel = new UtilizationModelDynamic(0.5);
 var cloudlet0 = new CloudletSimple(10000, 1, utilizationModel);
