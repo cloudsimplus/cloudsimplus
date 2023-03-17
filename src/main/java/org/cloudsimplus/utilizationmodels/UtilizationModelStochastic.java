@@ -205,7 +205,7 @@ public class UtilizationModelStochastic extends UtilizationModelAbstract {
 
     /**
      * {@inheritDoc}
-     * @see <a href="https://github.com/manoelcampos/cloudsim-plus/issues/197">Issue #197 for more details</a>
+     * @see <a href="https://github.com/cloudsimplus/cloudsimplus/issues/197">Issue #197 for more details</a>
      * @param time {@inheritDoc}
      * @return {@inheritDoc}
      */

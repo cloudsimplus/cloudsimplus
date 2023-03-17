@@ -10,10 +10,9 @@ Welcome to CloudSim Plus's documentation!
    :maxdepth: 1
    :caption: Contents:
 
-   JavaDocs <https://javadoc.io/doc/org.cloudsimplus/cloudsim-plus/>
+   JavaDocs <https://javadoc.io/doc/org.cloudsimplus/cloudsimplus/>
    FAQ.rst
    publications.rst
-   syncing-you-fork-or-clone.rst
    CloudSim and CloudSim Plus Comparison <http://cloudsimplus.org/docs/CloudSim-and-CloudSimPlus-Comparison.html>
    CloudSim Plus Presentation <http://cloudsimplus.org/docs/presentation/>
 

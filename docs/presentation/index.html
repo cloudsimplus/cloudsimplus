@@ -68,7 +68,7 @@
 
 				<section data-markdown data-separator-notes="^# Notes"><script type="text/template">
 					## What is CloudSim Plus?
-					##### Java 8 independent CloudSim fork for Cloud Computing simulation
+					##### Java 17+ independent CloudSim fork for Cloud Computing simulation
 					##### [https://cloudsimplus.org](https://cloudsimplus.org)
 
 					<!-- .element: class="fragment" --> State-of-the-art cloud computing simulation framework for creationg of 
@@ -94,7 +94,7 @@
 					- <!-- .element: class="fragment" --> Integration tests to ensure accuracy of entire simulation scenarios.
 
 					# Notes
-					Independent CloudSim fork: Java 8, Cloud Computing simulations, Modern.
+					Independent CloudSim fork: Java 17+, Cloud Computing simulations, Modern.
 					- Intuitive and Easier.
 					- Implementation of complex and more realistic scenarios.
 					- Stat-of-the-art framework.
@@ -107,8 +107,8 @@
 					<img src="images/amazon-157609_640.png" id="logo" />
 
 					- <!-- .element: class="fragment" --> [Fully documented: totally reviewed and extended docs](https://cloudsimplus.org/#docs-help). 
-					- <!-- .element: class="fragment" --> [Lots of meaningful examples to get you started](https://github.com/manoelcampos/cloudsim-plus/tree/master/cloudsim-plus-examples).
-					- <!-- .element: class="fragment" --> [+ 20 contributors and counting...](https://github.com/manoelcampos/cloudsim-plus/graphs/contributors)
+					- <!-- .element: class="fragment" --> [Lots of meaningful examples to get you started](https://github.com/cloudsimplus/cloudsimplus-examples).
+					- <!-- .element: class="fragment" --> [+ 20 contributors and counting...](https://github.com/cloudsimplus/cloudsimplus/graphs/contributors)
 					- <!-- .element: class="fragment" --> [Used to build lots of recent and relevant tools](https://cloudsimplus.org/#projects).
 					- <!-- .element: class="fragment" --> Actively maintained since 2016.
 					- <!-- .element: class="fragment" --> Download available from [Maven Central](https://cloudsimplus.org/docs/maven.html).
@@ -210,13 +210,13 @@
 					![](images/gears.gif)
 
 					- <!-- .element: class="fragment" --> Reduce processing time for large scale simulations
-					- <!-- .element: class="fragment" --> [Relies on Java 8 Parallel Streams mechanism](https://github.com/manoelcampos/cloudsim-plus/blob/master/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/ParallelSimulationsExample.java):
+					- <!-- .element: class="fragment" --> [Relies on Java 8+ Parallel Streams mechanism](https://github.com/cloudsimplus/cloudsimplus-examples/blob/master/src/main/java/org/cloudsimplus/examples/ParallelSimulationsExample.java):
 
 					<!-- .element: class="fragment" --> *simulations.parallelStream().forEach(MySimulation::run);* 
 
 					# Notes
 					- Simulations take several minutes. Multiple simulations at the same time.
-					- Java 8 Parallel Streams.
+					- Java 8+ Parallel Streams.
 					- Single line of code to run.
 				</script></section>
 
@@ -304,8 +304,8 @@
 					- <!-- .element: class="fragment" --> Bad scheduling: starvation, wastage of CPU cycles, SLA violations
 					- <!-- .element: class="fragment" --> [Completely Fair Scheduler](https://en.wikipedia.org/wiki/Completely_Fair_Scheduler) reduces these issues ([needs improvements](https://doi.org/10.1145/2901318.2901326) [Lozi et. al. 2016])
 					- <!-- .element: class="fragment" --> Considers tasks priorities to define CPU time slices
-					- <!-- .element: class="fragment" --> `CloudletSchedulerTimeShared`: [simplistic; ignores task's priority; no actual preemption](https://github.com/manoelcampos/cloudsim-plus/issues/33)
-					- <!-- .element: class="fragment" --> [CloudletSchedulerCompletelyFair](https://github.com/manoelcampos/cloudsim-plus/issues/58): more realistic implementation
+					- <!-- .element: class="fragment" --> `CloudletSchedulerTimeShared`: [simplistic; ignores task's priority; no actual preemption](https://github.com/cloudsimplus/cloudsimplus/issues/33)
+					- <!-- .element: class="fragment" --> [CloudletSchedulerCompletelyFair](https://github.com/cloudsimplus/cloudsimplus/issues/58): more realistic implementation
 
 					# Notes
 					Linux Completely Fair Scheduler.
@@ -327,7 +327,7 @@
 						- <!-- .element: class="fragment" --> get away from code duplication to avoid code degeneration;
 						- <!-- .element: class="fragment" --> and provide classes following software engineering principles. 
 					- <!-- .element: class="fragment" --> CloudSim Plus is aligned with all these requirements. 
-					- <!-- .element: class="fragment" --> Proposed future work is available at the [issues page](https://github.com/manoelcampos/cloudsim-plus/issues).
+					- <!-- .element: class="fragment" --> Proposed future work is available at the [issues page](https://github.com/cloudsimplus/cloudsimplus/issues).
 				</script></section>
 
 				<section data-markdown><script type="text/template">

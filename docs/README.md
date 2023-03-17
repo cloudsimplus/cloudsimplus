@@ -6,9 +6,9 @@ You can browse the [online documentation here](http://cloudsimplus.rtfd.io).
 The documentation includes:
 
 - FAQs and guides in [reStructuredText (rst)](https://en.wikipedia.org/wiki/ReStructuredText) format to be published at [ReadTheDocs site](http://cloudsimplus.rtfd.io);
-- [StarUML](http://staruml.io) project containing [UML diagrams](cloudsim-plus.staruml.mdj); 
+- [StarUML](http://staruml.io) project containing [UML diagrams](cloudsimplus.staruml.mdj); 
 - [Side-by-Side comparison between CloudSim and CloudSim Plus java simulation scenarios](CloudSim-and-CloudSimPlus-Comparison.html) (online version available [here](http://cloudsimplus.org/CloudSim-and-CloudSimPlus-Comparison.html));
-- [White Paper](cloudsim-plus-white-paper.pdf) published at the [EU/Brasil Cloud FORUM](https://eubrasilcloudforum.eu).
+- [White Paper](https://github.com/cloudsimplus/cloudsimplus-whitepaper) published at the [EU/Brasil Cloud FORUM](https://eubrasilcloudforum.eu).
 - [Web Slides](presentation/index.html) presenting CloudSim Plus (online version available [here](http://cloudsimplus.org/presentation/)).
 
 ## Building the reStructuredText files for the Documentation Site

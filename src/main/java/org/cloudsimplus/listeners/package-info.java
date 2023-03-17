@@ -12,7 +12,7 @@
  * </ul>
  * </p>
  *
- * <p>These listeners were implemented using Java 8 functional interfaces,
+ * <p>These listeners were implemented using Java 8+ functional interfaces,
  * enabling the use of
  * <a href="http://www.oracle.com/webfolder/technetwork/tutorials/obe/java/Lambda-QuickStart/index.html">Lambda Expressions</a>
  * that allow a function reference to be passed as parameter to another function.

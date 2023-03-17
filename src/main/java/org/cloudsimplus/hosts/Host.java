@@ -521,7 +521,7 @@ public interface Host extends Machine, Comparable<Host>, PowerAware<PowerModelHo
      * @param vm Vm being started
      * @return a {@link HostSuitability} to indicate if the Vm was placed into the host or not
      * (if the Host doesn't have enough resources to allocate the Vm)
-     * TODO: https://github.com/manoelcampos/cloudsim-plus/issues/94
+     * TODO: https://github.com/cloudsimplus/cloudsimplus/issues/94
      */
     HostSuitability createTemporaryVm(Vm vm);
 
@@ -530,7 +530,7 @@ public interface Host extends Machine, Comparable<Host>, PowerAware<PowerModelHo
      *
      * @param vm the VM
      * @see #createTemporaryVm(Vm)
-     * @TODO: https://github.com/manoelcampos/cloudsim-plus/issues/94
+     * @TODO: https://github.com/cloudsimplus/cloudsimplus/issues/94
      */
     void destroyTemporaryVm(Vm vm);
 

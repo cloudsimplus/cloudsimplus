@@ -27,7 +27,7 @@ import java.util.function.BiFunction;
  * a {@link Datacenter} to choose a {@link Host} to place or migrate a
  * given {@link Vm} or {@link VmGroup}.
  *
- * <p>The VmAllocationPolicy uses Java 8 Functional Programming
+ * <p>The VmAllocationPolicy uses Java 8+ Functional Programming
  * to enable changing, at runtime, the policy used
  * to select a Host for a given {@link Vm} or {@link VmGroup}.</p>
  *

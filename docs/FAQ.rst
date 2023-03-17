@@ -75,8 +75,8 @@ details.
 4. How can I learn more about CloudSim Plus ?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-You can start by the examples available in the cloudsim-plus-examples
-module that is available when you download the source codes. They start
+You can start by the examples available in the `cloudsimplus-examples <https://github.com/cloudsimplus/cloudsimplus-examples>`__
+project that is available when you download the source codes. They start
 with simple scenarios and progress to more complex ones. After that, you
 will have a good idea on how you can put components together to build
 your own scenarios.
@@ -86,24 +86,24 @@ start to study the API, so you will be able to use advanced features,
 and to extend or replace components.
 
 Other source of information is the `CloudSim Plus
-Group <https://groups.google.com/group/cloudsim-plus>`__.
+Group <https://groups.google.com/group/cloudsimplus>`__.
 
-5. Can CloudSim Plus run my application X?
+1. Can CloudSim Plus run my application X?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 No, CloudSim Plus is a simulator -- it does not run real applications.
 It is intended to be used for simulating and experimenting with various
 scheduling and VM allocation algorithms.
 
-6. I don't know anything about Java 8. How can I use CloudSim Plus?
+6. I don't know anything about Java 17+. How can I use CloudSim Plus?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-You aren't required to know Java 8 to use CloudSim Plus. Despite there are some examples using Java 8 features such as 
+You aren't required to know Java 17+ to use CloudSim Plus. Despite there are examples using Java new features such as
 `Lambda Expressions <http://www.oracle.com/webfolder/technetwork/tutorials/obe/java/Lambda-QuickStart/index.html>`__ and 
 `Streams API <http://www.oracle.com/technetwork/articles/java/ma14-java-se-8-streams-2177646.html>`__, you can 
-perfectly write Java 7 code to build your simulations. It's just needed to use Java 8 to build and run the examples.
+perfectly write Java 7 code to build your simulations. It's just needed to use Java 17+ to build and run the examples.
 
-Anyway, if you don't know Java 8 yet, it's a good time to start learning. There are lots of free and awesome content
+Anyway, if you don't know Java 17+ yet, it's a good time to start learning. There are lots of free and awesome content
 online. You can start by checking the links above or subscribing for the `JDK 8 Massive Open and Online Course: Lambdas and Streams Introduction <https://apexapps.oracle.com/pls/apex/f?p=44785:145:10040796816707::NO:RP,145:P145_EVENT_ID,P145_PREV_PAGE:5067,2>`__ at the Oracle Learning Library. 
 If new classes aren't scheduled yet, the videos are available at `YouTube <https://www.youtube.com/playlist?list=PLMod1hYiIvSZL1xclvHcsV2dMiminf19x>`__.
 But if you can attend the course, you'll have more resources such as a exercises and a discussion forum.
@@ -503,7 +503,7 @@ such classes work you may get your answers.
 
 If your question is not answered, you should try next previous
 discussions from `CloudSim Plus
-Group <https://groups.google.com/group/cloudsim-plus>`__. Fragments of
+Group <https://groups.google.com/group/cloudsimplus>`__. Fragments of
 code that solve typical problems can be found there.
 
 Finally, if you can't find an answer for your problem, send an e-mail to
@@ -518,7 +518,7 @@ Way <http://www.catb.org/~esr/faqs/smart-questions.html>`__.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Please, use the `issue
-tracker <https://github.com/manoelcampos/cloudsim-plus/issues>`__ for
+tracker <https://github.com/cloudsimplus/cloudsimplus/issues>`__ for
 that. This helps to speed up update process. Issues reported in the
 discussion group may take longer time to be added to the issue tracker.
 
@@ -531,6 +531,6 @@ generic classes and features that can be broadly used, and users develop
 case-specific behavior. Suggestion for new features that may be useful
 for significant number of users are welcomed and can be posted in the
 `issue
-tracker <https://github.com/manoelcampos/cloudsim-plus/issues>`__.
+tracker <https://github.com/cloudsimplus/cloudsimplus/issues>`__.
 Classes and features that are narrow in applicability and are intended
 to solve specific problems, though, are unlikely to be developed.

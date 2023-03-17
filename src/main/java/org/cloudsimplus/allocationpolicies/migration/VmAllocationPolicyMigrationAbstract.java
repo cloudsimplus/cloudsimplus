@@ -135,7 +135,7 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
 
     @Override
     public Map<Vm, Host> getOptimizedAllocationMap(final List<? extends Vm> vmList) {
-        //@TODO See https://github.com/manoelcampos/cloudsim-plus/issues/94
+        //@TODO See https://github.com/cloudsimplus/cloudsimplus/issues/94
         final Set<Host> overloadedHosts = getOverloadedHosts();
         this.overloaded = !overloadedHosts.isEmpty();
         printOverUtilizedHosts(overloadedHosts);
@@ -194,7 +194,7 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
         The target Host that maybe was shut down, might become underloaded too.
         This way, such Hosts are added to be ignored when
         looking for underloaded Hosts.
-        See https://github.com/manoelcampos/cloudsim-plus/issues/94
+        See https://github.com/cloudsimplus/cloudsimplus/issues/94
          */
         ignoredSourceHosts.addAll(migrationMap.values());
 
@@ -528,7 +528,7 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
         /*
         @TODO The method doesn't just gets a list of VMs to migrate from an overloaded Host,
         but it temporarily destroys VMs on such Hosts.
-        See https://github.com/manoelcampos/cloudsim-plus/issues/94
+        See https://github.com/cloudsimplus/cloudsimplus/issues/94
         */
         final var vmsToMigrateList = new LinkedList<Vm>();
         while (true) {
@@ -669,7 +669,7 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
      *  TODO: The allocation map only needs to be restored because
      *  VMs are destroyed in order to assess a new VM placement.
      *  After fixing this issue, there will be no need to restore VM mapping.
-     *  https://github.com/manoelcampos/cloudsim-plus/issues/94
+     *  https://github.com/cloudsimplus/cloudsimplus/issues/94
      *
      * @see #savedAllocation
      */
