@@ -10,9 +10,9 @@ jobs:
     runs-on: ubuntu-20.04
     name: Java 17 Build
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Setup Java
-        uses: actions/setup-java@v2
+        uses: actions/setup-java@v3
         with:
           distribution: 'adopt'
           java-version: 17
