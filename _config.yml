@@ -16,4 +16,4 @@ plugins:
 
 webrick:
   headers:
-    keywords: "CloudSim Plus,CloudSim,Cloud Computing,Simulation,Framework,IaaS,PaaS,SaaS,Java 8,Maven,Maven Central"
+    keywords: "CloudSim Plus,CloudSim,Cloud Computing,Simulation,Framework,IaaS,PaaS,SaaS,Java,Maven,Maven Central"
