@@ -43,7 +43,7 @@ public class VmSelectionPolicyMinimumMigrationTime implements VmSelectionPolicy 
 		}
 
         /* TODO It must compute the migration time based on the current RAM usage, not the capacity.
-         * It should also consider the VM size.*/
+         * It should also consider the VM size. See DatacenterSimple.timeToMigrateVm*/
         final Comparator<Vm> vmComparator = comparingLong(vm -> vm.getRam().getCapacity());
         final Predicate<Vm> vmPredicate = Vm::isInMigration;
         return migratableVms
