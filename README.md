@@ -321,13 +321,14 @@ CloudSim Plus supports modeling and simulation of:
 Here, it's presented a list of some projects based on CloudSim Plus, which trust in its accuracy, performance, maintainability and extensibility.
 If you want your project to be listed here, send us a Pull Request. Make sure your project has a descriptive README.
 
-1. [PureEdgeSim: A simulation toolkit for performance evaluation of Fog and pure Edge computing environments.](https://github.com/CharafeddineMechalikh/PureEdgeSim)
-1. [CloudSim Plus Py4j gateway: building CloudSim Plus simulations in Python](https://github.com/pkoperek/cloudsimplus-gateway)
-1. [RECAP Discrete Event Simulation Framework an extension for CloudSimPlus](https://bitbucket.org/RECAP-DES/recap-des/)
-1. [CloudSim Plus Automation: defining CloudSim Plus simulation scenarios into a YAML file.](https://github.com/cloudsimplus/cloudsimplus-automation)
-1. [LEAF: Simulator for modeling Large Energy-Aware Fog computing environments](https://github.com/dos-group/leaf-java)
-1. [EPCSAC: Extensible Platform for Cloud Scheduling Algorithm Comparison.](https://github.com/TNanukem/EPCSAC)
-1. [SatEdgeSim: A Toolkit for Modeling and Simulation of Performance Evaluation in Satellite Edge Computing Environments.](https://github.com/wjy491156866/SatEdgeSim)
+1. [PureEdgeSim](https://github.com/CharafeddineMechalikh/PureEdgeSim): A simulation toolkit for performance evaluation of Fog and pure Edge computing environments.
+1. [CloudSim Plus Py4j gateway](https://github.com/pkoperek/cloudsimplus-gateway): building CloudSim Plus simulations in Python
+1. [PySDNSim](https://github.com/ulfaric/PySDNSim): a Python simulation tool for microservice-based SDN using CloudSim Plus as the underlying framework.
+1. [RECAP Discrete Event Simulation Framework:](https://bitbucket.org/RECAP-DES/recap-des/) an extension for CloudSimPlus
+1. [CloudSim Plus Automation](https://github.com/cloudsimplus/cloudsimplus-automation): defining CloudSim Plus simulation scenarios into a YAML file.
+1. [LEAF](https://github.com/dos-group/leaf-java): Simulator for modeling Large Energy-Aware Fog computing environments.
+1. [EPCSAC](https://github.com/TNanukem/EPCSAC): Extensible Platform for Cloud Scheduling Algorithm Comparison.
+1. [SatEdgeSim](https://github.com/wjy491156866/SatEdgeSim): A Toolkit for Modeling and Simulation of Performance Evaluation in Satellite Edge Computing Environments.
 
 <p align="right"><a href="#top">:arrow_up:</a></p>
 
