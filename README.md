@@ -122,7 +122,11 @@ The light yellow ones were introduced just to better organize existing CloudSim 
 
 <a id="usage"></a>
 
-# 4. How to Use CloudSim Plus 👩🏽‍💻 
+## 4. Project Requirements
+
+CloudSim Plus is a Java 17 project that uses maven for build and dependency management. To build and run the project, you need JDK 17+ installed and an updated version of maven (such as 3.8.6+). Maven is already installed on your IDE. Unless it's out-of-date or you want to build the project from the command line, you need to install maven into your operating system. All project dependencies are download automatically by maven.
+
+# 5. How to Use CloudSim Plus 👩🏽‍💻 
 
 > **Warning**
 > Before trying to use this project, make sure you have JDK 17 installed.
@@ -134,7 +138,7 @@ There are 2 ways to use CloudSim Plus:
 
 Check sections below if you want to add CloudSim Plus as a dependency into your own Maven or Gradle project. This way you can start building your simulations from scratch.
 
-## 4.1 Maven
+## 5.1 Maven
 
 Add the following dependency into the pom.xml file of your own Maven project. 
 
@@ -147,7 +151,7 @@ Add the following dependency into the pom.xml file of your own Maven project.
 </dependency>
 ```
 
-## 4.2 Gradle
+## 5.2 Gradle
 
 Add the following dependency into the build.gradle file of your own Gradle project. 
 
@@ -162,15 +166,15 @@ dependencies {
 
 <a id="example"></a>
 
-# 5. Building CloudSim Plus
+# 6. Building CloudSim Plus
 
 CloudSim Plus is a maven project. The previuos section just showed that you don't need to download the project sources to understand how the project works or to create your own experiments or tool on top of CloudSim Plus. You can just download the [example's project](https://github.com/cloudsimplus/cloudsimplus-examples) and start your experiments or a new simulation framewework from there. Anyway, if you want to build CloudSim Plus, you have two ways:
 
-## 5.1 Using some IDE
+## 6.1 Using some IDE
 
 Open the project on your favorite IDE and click the build button and that is it.
 
-## 5.1 Using a terminal
+## 6.2 Using a terminal
 
 First, make sure you have an updated Maven version installed (such as 3.8.6+), open a terminal at the project root directory and type:
 
@@ -178,7 +182,7 @@ First, make sure you have an updated Maven version installed (such as 3.8.6+), o
 mvn clean install
 ```
 
-# 6. A Minimal but Complete Simulation Example ⚙️
+# 7. A Minimal but Complete Simulation Example ⚙️
 
 In order to build a simulation scenario, you have to create at least:
  
@@ -248,7 +252,7 @@ For example, the image below shows the output for a simulation with two cloudlet
 
 ![Simulation Results](https://github.com/cloudsimplus/cloudsimplus/raw/master/docs/images/simulation-results.png)
 
-## 6.1 Comparison with CloudSim
+## 7.1 Comparison with CloudSim
 
 A complete, side-by-side [comparison between CloudSim and CloudSim
 Plus Java simulation scenarios
@@ -259,7 +263,7 @@ here](http://cloudsimplus.org/docs/CloudSim-and-CloudSimPlus-Comparison.html).
 
 <a id="docs-help"></a>
 
-# 7. Documentation and Help 📘🆘
+# 8. Documentation and Help 📘🆘
 
 The project documentation originated from CloudSim was entirely updated and extended. 
 You can see the javadoc documentation for classes and their elements directly on your IDE.
@@ -276,7 +280,7 @@ A Google Group forum is available at <https://groups.google.com/group/cloudsimpl
 
 <a id="consulting"></a>
 
-# 8. Consulting and Professional Support 👨🏽‍🏫
+# 9. Consulting and Professional Support 👨🏽‍🏫
 
 If you are doing research on cloud computing simulation and facing challenging issues, I've started to offer my consulting services.
 
@@ -288,7 +292,7 @@ If you have a CloudSim project and want to migrate to CloudSim Plus to benefit f
 
 <a id="general-features"></a>
 
-# 9. General Features of the Framework 🛠
+# 10. General Features of the Framework 🛠
 
 CloudSim Plus supports modeling and simulation of:
 
@@ -302,7 +306,7 @@ CloudSim Plus supports modeling and simulation of:
 
 <a id="publications"></a>
 
-# 10. CloudSim Plus Publications 📝
+# 11. CloudSim Plus Publications 📝
 
 1. M. C. Silva Filho, R. L. Oliveira, C. C. Monteiro, P. R. M. Inácio, and M. M. Freire. [CloudSim Plus: a Cloud Computing Simulation Framework Pursuing Software Engineering Principles for Improved Modularity, Extensibility and Correctness,](https://doi.org/10.23919/INM.2017.7987304) in IFIP/IEEE International Symposium on Integrated Network Management, 2017, p. 7. If you are using CloudSim Plus in your research, please make sure you cite that paper. You can check the paper presentation [here](http://cloudsimplus.org/docs/presentation/).
 2. White Paper. [CloudSim Plus: A Modern Java 17+ Framework for Modeling and Simulation of Cloud Computing Infrastructures and Services](https://cloudsimplus.github.io/cloudsimplus-whitepaper). 2016.
@@ -312,7 +316,7 @@ CloudSim Plus supports modeling and simulation of:
 
 <a id="projects"></a>
 
-# 11. Related Projects 🧩
+# 12. Related Projects 🧩
 
 Here, it's presented a list of some projects based on CloudSim Plus, which trust in its accuracy, performance, maintainability and extensibility.
 If you want your project to be listed here, send us a Pull Request. Make sure your project has a descriptive README.
@@ -329,7 +333,7 @@ If you want your project to be listed here, send us a Pull Request. Make sure yo
 
 <a id="license"></a>
 
-# 12. License ⚖️
+# 13. License ⚖️
 
 This project is licensed under [GNU GPLv3](http://www.gnu.org/licenses/gpl-3.0), as defined inside CloudSim 3 source files.
 
@@ -337,7 +341,7 @@ This project is licensed under [GNU GPLv3](http://www.gnu.org/licenses/gpl-3.0),
 
 <a id="contributing"></a>
 
-# 13. Contributing 🤝
+# 14. Contributing 🤝
 
 You are welcome to contribute to the project. 
 However, make sure you read the [contribution guide](https://github.com/cloudsimplus/.github/blob/main/CONTRIBUTING.md) before starting. 
