@@ -31,8 +31,6 @@ import org.cloudsimplus.util.MathUtil;
 
 import java.util.*;
 
-import static java.util.Objects.requireNonNull;
-
 /**
  * Implements the basic features of a Virtual Machine (VM), which runs inside a
  * {@link Host} that may be shared among other VMs. It processes
@@ -284,9 +282,7 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
     }
 
     @Override
-    public double updateProcessing(final double currentTime, final MipsShare mipsShare) {
-        requireNonNull(mipsShare);
-
+    public double updateProcessing(final double currentTime, @NonNull final MipsShare mipsShare) {
         if (!cloudletScheduler.isEmpty()) {
             setLastBusyTime();
         }
