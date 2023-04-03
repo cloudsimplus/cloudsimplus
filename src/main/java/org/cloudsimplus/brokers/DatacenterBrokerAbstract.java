@@ -750,6 +750,40 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
                     datacenterMapper.apply(lastSelectedDc, vm);
     }
 
+    /**
+     * Try to request the creation of a VM into a given datacenter
+     * @param dc the target Datacenter to try creating the VM
+     *           (or {@link Datacenter#NULL} if not Datacenter is available)
+     * @param isFallbackDatacenter indicate if the given Datacenter was selected when
+     *                             a previous one don't have enough capacity to place the requested VM
+     * @param vm the VM to be placed
+     * @return 1 to indicate a VM creation request was sent to the datacenter,
+     *         0 to indicate the request was not sent due to lack of available datacenter
+     */
+    private int requestVmCreation(final Datacenter dc, final boolean isFallbackDatacenter, final Vm vm) {
+        if (dc == Datacenter.NULL || dc.equals(vm.getLastTriedDatacenter())) {
+            return 0;
+        }
+
+        logVmCreationRequest(dc, isFallbackDatacenter, vm);
+        send(dc, vm.getSubmissionDelay(), CloudSimTag.VM_CREATE_ACK, vm);
+        vm.setLastTriedDatacenter(dc);
+        return 1;
+    }
+
+    private void logVmCreationRequest(final Datacenter datacenter, final boolean isFallbackDatacenter, final Vm vm) {
+        final var fallbackMsg = isFallbackDatacenter ? " (due to lack of a suitable Host in previous one)" : "";
+        if(vm.getSubmissionDelay() == 0)
+            LOGGER.info(
+                "{}: {}: Trying to create {} in {}{}",
+                getSimulation().clockStr(), getName(), vm, datacenter.getName(), fallbackMsg);
+        else
+            LOGGER.info(
+                "{}: {}: Creation of {} in {}{} will be requested in {} seconds",
+                getSimulation().clockStr(), getName(), vm, datacenter.getName(),
+                fallbackMsg, vm.getSubmissionDelay());
+    }
+
     @Override
     public int getVmsNumber() {
         return vmCreatedList.size() + vmWaitingList.size() + vmFailedList.size();
@@ -931,40 +965,6 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
 
     private boolean isBrokerIdle() {
         return cloudletWaitingList.isEmpty() && vmWaitingList.isEmpty() && vmExecList.isEmpty();
-    }
-
-    /**
-     * Try to request the creation of a VM into a given datacenter
-     * @param dc the target Datacenter to try creating the VM
-     *           (or {@link Datacenter#NULL} if not Datacenter is available)
-     * @param isFallbackDatacenter indicate if the given Datacenter was selected when
-     *                             a previous one don't have enough capacity to place the requested VM
-     * @param vm the VM to be placed
-     * @return 1 to indicate a VM creation request was sent to the datacenter,
-     *         0 to indicate the request was not sent due to lack of available datacenter
-     */
-    private int requestVmCreation(final Datacenter dc, final boolean isFallbackDatacenter, final Vm vm) {
-        if (dc == Datacenter.NULL || dc.equals(vm.getLastTriedDatacenter())) {
-            return 0;
-        }
-
-        logVmCreationRequest(dc, isFallbackDatacenter, vm);
-        send(dc, vm.getSubmissionDelay(), CloudSimTag.VM_CREATE_ACK, vm);
-        vm.setLastTriedDatacenter(dc);
-        return 1;
-    }
-
-    private void logVmCreationRequest(final Datacenter datacenter, final boolean isFallbackDatacenter, final Vm vm) {
-        final var fallbackMsg = isFallbackDatacenter ? " (due to lack of a suitable Host in previous one)" : "";
-        if(vm.getSubmissionDelay() == 0)
-            LOGGER.info(
-                "{}: {}: Trying to create {} in {}{}",
-                getSimulation().clockStr(), getName(), vm, datacenter.getName(), fallbackMsg);
-        else
-            LOGGER.info(
-                "{}: {}: Creation of {} in {}{} will be requested in {} seconds",
-                getSimulation().clockStr(), getName(), vm, datacenter.getName(),
-                fallbackMsg, vm.getSubmissionDelay());
     }
 
     /**
