@@ -13,8 +13,6 @@ import java.util.function.Function;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.ZipInputStream;
 
-import static java.util.Objects.requireNonNull;
-
 /**
  * An abstract class to implement trace file readers for specific file formats.
  *
@@ -164,10 +162,10 @@ public abstract class TraceReaderAbstract implements TraceReader {
      * <code>false</code> otherwise.
      * @throws IOException if the there was any error reading the file
      */
-    protected boolean readZipFile(final InputStream inputStream, final Function<String[], Boolean> processParsedLineFunction) throws IOException {
-        try (var zipInputStream = new ZipInputStream(requireNonNull(inputStream))) {
+    protected boolean readZipFile(@NonNull final InputStream inputStream, final Function<String[], Boolean> processParsedLineFunction) throws IOException {
+        try (var zipInputStream = new ZipInputStream(inputStream)) {
             while (zipInputStream.getNextEntry() != null) {
-                readFile(zipInputStream, processParsedLineFunction);
+                readFile(zipInputStream, processParsedLineFunction, false);
             }
             return true;
         }
@@ -197,6 +195,13 @@ public abstract class TraceReaderAbstract implements TraceReader {
         }
     }
 
+    private void readFile(
+        @NonNull final InputStream inputStream,
+        @NonNull final Function<String[], Boolean> processParsedLineFunction) throws IOException
+    {
+        readFile(inputStream, processParsedLineFunction, true);
+    }
+
     /**
      * Reads traces from an {@link InputStream} linked to a file in any supported format,
      * then creates a Cloudlet for each line read.
@@ -204,18 +209,26 @@ public abstract class TraceReaderAbstract implements TraceReader {
      * @param inputStream a {@link InputStream} to read the file
      * @param processParsedLineFunction a {@link Function} that receives each parsed line as an array
      *                          and performs an operation over it, returning true if the operation was executed
+     * @param close indicates if the stream must be closed at the end, or it will be closed by the caller
      * @throws IOException if the there was any error reading the file
      */
-    private void readFile(@NonNull final InputStream inputStream, @NonNull final Function<String[], Boolean> processParsedLineFunction) throws IOException {
-        //The reader is safely closed by the caller
+    private void readFile(
+        @NonNull final InputStream inputStream,
+        @NonNull final Function<String[], Boolean> processParsedLineFunction,
+        final boolean close) throws IOException
+    {
         final var reader = new BufferedReader(new InputStreamReader(inputStream));
-        lastLineNumber = 0;
-        String line;
-        while ((line = readNextLine(reader, lastLineNumber)) != null) {
-            final String[] parsedTraceLine = parseTraceLine(line);
-            if(parsedTraceLine.length > 0 && processParsedLineFunction.apply(parsedTraceLine)) {
-                lastLineNumber++;
+        try {
+            lastLineNumber = 0;
+            String line;
+            while ((line = readNextLine(reader, lastLineNumber)) != null) {
+                final String[] parsedTraceLine = parseTraceLine(line);
+                if(parsedTraceLine.length > 0 && processParsedLineFunction.apply(parsedTraceLine)) {
+                    lastLineNumber++;
+                }
             }
+        } finally {
+            if(close) reader.close();
         }
     }
 
