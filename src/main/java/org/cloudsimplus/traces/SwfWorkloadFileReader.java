@@ -198,7 +198,7 @@ public final class SwfWorkloadFileReader extends TraceReaderAbstract {
      * @throws UncheckedIOException     when the file cannot be accessed (such as when it doesn't exist)
      */
     public static SwfWorkloadFileReader getInstance(final String fileName, final int mips) {
-        final InputStream reader = ResourceLoader.newInputStream(fileName, SwfWorkloadFileReader.class);
+        final var reader = ResourceLoader.newInputStream(fileName, SwfWorkloadFileReader.class);
         return new SwfWorkloadFileReader(fileName, reader, mips);
     }
 
