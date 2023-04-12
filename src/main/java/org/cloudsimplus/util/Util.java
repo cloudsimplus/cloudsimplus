@@ -122,4 +122,14 @@ public final class Util {
 
         return matrix;
     }
+
+    /**
+     * {@return the file extension} including the dot
+     * @param fileName file name to extract extension
+     */
+    public static String getFileExtension(final String fileName){
+        final int i = fileName.lastIndexOf(".");
+        return i == -1 ? "" : fileName.substring(i).toLowerCase();
+
+    }
 }
