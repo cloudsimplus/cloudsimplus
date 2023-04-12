@@ -206,10 +206,7 @@ public abstract class TraceReaderAbstract implements TraceReader {
      *                          and performs an operation over it, returning true if the operation was executed
      * @throws IOException if the there was any error reading the file
      */
-    private void readFile(final InputStream inputStream, final Function<String[], Boolean> processParsedLineFunction) throws IOException {
-        requireNonNull(inputStream);
-        requireNonNull(processParsedLineFunction);
-
+    private void readFile(@NonNull final InputStream inputStream, @NonNull final Function<String[], Boolean> processParsedLineFunction) throws IOException {
         //The reader is safely closed by the caller
         final var reader = new BufferedReader(new InputStreamReader(inputStream));
         lastLineNumber = 0;
