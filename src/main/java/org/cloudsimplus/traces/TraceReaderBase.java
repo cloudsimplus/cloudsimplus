@@ -46,7 +46,7 @@ public abstract class TraceReaderBase extends TraceReaderAbstract {
     private String[] lastParsedLineArray;
 
     protected TraceReaderBase(final String filePath, final InputStream reader) {
-        super(filePath, reader);
+        super(filePath);
     }
 
     /**

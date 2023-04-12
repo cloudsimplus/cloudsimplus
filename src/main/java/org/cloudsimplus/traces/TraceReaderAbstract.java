@@ -1,17 +1,7 @@
 package org.cloudsimplus.traces;
 
-import lombok.Getter;
 import lombok.NonNull;
-import lombok.Setter;
 import lombok.experimental.Accessors;
-
-import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.function.Function;
-import java.util.zip.GZIPInputStream;
-import java.util.zip.ZipInputStream;
 
 /**
  * An abstract class to implement trace file readers for specific file formats.
@@ -35,217 +25,22 @@ import java.util.zip.ZipInputStream;
  * @since CloudSim Plus 4.0.0
  */
 @Accessors
-public abstract class TraceReaderAbstract implements TraceReader {
-    @Getter
-    private final String filePath;
-    private final InputStream inputStream;
-
-    @Getter @Setter @NonNull
-    private String fieldDelimiterRegex;
-
-    @Getter
-    private int maxLinesToRead;
-
-    private String[] commentString = {";", "#"};
-
-    @Getter
-    private int lastLineNumber;
+public abstract class TraceReaderAbstract extends FileReader implements TraceReader {
 
     /**
      * Create a SwfWorkloadFileReader object.
      *
      * @param filePath the workload trace file path in one of the following formats: <i>ASCII text, zip, gz.</i>
      * @throws IllegalArgumentException when the workload trace file name is null or empty; or the resource PE mips is less or equal to 0
-     * @throws FileNotFoundException    when the trace file is not found
      * @throws IllegalArgumentException when the workload trace file name is null or empty
      */
-    public TraceReaderAbstract(@NonNull final String filePath) throws IOException {
-        this(filePath, Files.newInputStream(Paths.get(filePath)));
-    }
-
-    /**
-     * Create a SwfWorkloadFileReader object.
-     *
-     * @param filePath the workload trace file path in one of the following formats: <i>ASCII text, zip, gz.</i>
-     * @param inputStream   a {@link InputStreamReader} object to read the file
-     * @throws IllegalArgumentException when the workload trace file name is null or empty; or the resource PE mips is less or equal to 0
-     */
-    protected TraceReaderAbstract(@NonNull final String filePath, @NonNull final InputStream inputStream) {
-        if (filePath.isEmpty()) {
-            throw new IllegalArgumentException("Invalid trace file name.");
+    public TraceReaderAbstract(@NonNull final String filePath) {
+        super(filePath);
+        if (filePath.isBlank()) {
+            throw new IllegalArgumentException("Trace file name cannot be blank.");
         }
 
-        this.fieldDelimiterRegex = "\\s+";
         this.setMaxLinesToRead(Integer.MAX_VALUE);
-        this.inputStream = inputStream;
-        this.filePath = filePath;
     }
 
-    @Override
-    public TraceReader setCommentString(@NonNull final String... commentString) {
-        if (commentString.length == 0) {
-            throw new IllegalArgumentException("A comment String is required");
-        }
-        //Creates a defensive copy of the array to avoid directly change its values after storing it
-        this.commentString = Arrays.copyOf(commentString, commentString.length);
-        return this;
-    }
-
-    /**
-     * {@inheritDoc}
-     * <p>It's returned a defensive copy of the array.</p>
-     * @return {@inheritDoc}
-     */
-    @Override
-    public String[] getCommentString() {
-        return Arrays.copyOf(commentString, commentString.length);
-    }
-
-    @Override
-    public final TraceReader setMaxLinesToRead(final int maxLinesToRead) {
-        if(maxLinesToRead <= 0) {
-            throw new IllegalArgumentException("Maximum number of lines to read from the trace must be greater than 0. If you want to read the entire file, provide Integer.MAX_VALUE.");
-        }
-
-        this.maxLinesToRead = maxLinesToRead;
-        return this;
-    }
-
-    protected InputStream getInputStream() {
-        return inputStream;
-    }
-
-    protected String[] parseTraceLine(final String line){
-        if (isComment(line)) {
-            return new String[0];
-        }
-
-        //Splits the string, ensuring that empty fields won't be discarded
-        return line.trim().split(fieldDelimiterRegex, -1);
-    }
-
-    private boolean isComment(final String line) {
-        return Arrays.stream(commentString).anyMatch(line::startsWith);
-    }
-
-    /**
-     * Reads traces from a text file, then creates a Cloudlet for each line read.
-     *
-     * @param inputStream a {@link InputStream} to read the file
-     * @param processParsedLineFunction a {@link Function} that receives each parsed line as an array
-     *                          and performs an operation over it, returning true if the operation was executed
-     * @throws IOException if the there was any error reading the file
-     */
-    protected void readTextFile(final InputStream inputStream, final Function<String[], Boolean> processParsedLineFunction) throws IOException {
-        readFile(inputStream, processParsedLineFunction);
-    }
-
-    /**
-     * Reads traces from a gzip file, then creates a Cloudlet for each line read.
-     *
-     * @param inputStream a {@link InputStream} to read the file
-     * @param processParsedLineFunction a {@link Function} that receives each parsed line as an array
-     *                          and performs an operation over it, returning true if the operation was executed
-     * @throws IOException if the there was any error reading the file
-     */
-    protected void readGZIPFile(final InputStream inputStream, final Function<String[], Boolean> processParsedLineFunction) throws IOException {
-        readFile(new GZIPInputStream(inputStream), processParsedLineFunction);
-    }
-
-    /**
-     * Reads a set of trace files inside a Zip file, then creates a Cloudlet for each line read.
-     *
-     * @param inputStream a {@link InputStream} to read the file
-     * @param processParsedLineFunction a {@link Function} that receives each parsed line as an array
-     *                          and performs an operation over it, returning true if the operation was executed
-     * @return <code>true</code> if reading a file is successful;
-     * <code>false</code> otherwise.
-     * @throws IOException if the there was any error reading the file
-     */
-    protected boolean readZipFile(@NonNull final InputStream inputStream, final Function<String[], Boolean> processParsedLineFunction) throws IOException {
-        try (var zipInputStream = new ZipInputStream(inputStream)) {
-            while (zipInputStream.getNextEntry() != null) {
-                readFile(zipInputStream, processParsedLineFunction, false);
-            }
-            return true;
-        }
-    }
-
-    /**
-     * Reads traces from the file indicated by the {@link #getFilePath()},
-     * then creates a Cloudlet for each line read.
-     *
-     * @param processParsedLineFunction a {@link Function} that receives each parsed line as an array
-     *                          and performs an operation over it, returning true if the operation was executed
-     * @throws UncheckedIOException if the there was any error reading the file
-     */
-    protected void readFile(final Function<String[], Boolean> processParsedLineFunction) {
-        /*@TODO It would be implemented using specific classes to avoid this "if" chain.
-                If a new format is included, the code has to be changed to include another if*/
-        try {
-            if (getFilePath().endsWith(".gz")) {
-                readGZIPFile(getInputStream(), processParsedLineFunction);
-            } else if (getFilePath().endsWith(".zip")) {
-                readZipFile(getInputStream(), processParsedLineFunction);
-            } else {
-                readTextFile(getInputStream(), processParsedLineFunction);
-            }
-        } catch(IOException e){
-            throw new UncheckedIOException(e);
-        }
-    }
-
-    private void readFile(
-        @NonNull final InputStream inputStream,
-        @NonNull final Function<String[], Boolean> processParsedLineFunction) throws IOException
-    {
-        readFile(inputStream, processParsedLineFunction, true);
-    }
-
-    /**
-     * Reads traces from an {@link InputStream} linked to a file in any supported format,
-     * then creates a Cloudlet for each line read.
-     *
-     * @param inputStream a {@link InputStream} to read the file
-     * @param processParsedLineFunction a {@link Function} that receives each parsed line as an array
-     *                          and performs an operation over it, returning true if the operation was executed
-     * @param close indicates if the stream must be closed at the end, or it will be closed by the caller
-     * @throws IOException if the there was any error reading the file
-     */
-    private void readFile(
-        @NonNull final InputStream inputStream,
-        @NonNull final Function<String[], Boolean> processParsedLineFunction,
-        final boolean close) throws IOException
-    {
-        final var reader = new BufferedReader(new InputStreamReader(inputStream));
-        try {
-            lastLineNumber = 0;
-            String line;
-            while ((line = readNextLine(reader, lastLineNumber)) != null) {
-                final String[] parsedTraceLine = parseTraceLine(line);
-                if(parsedTraceLine.length > 0 && processParsedLineFunction.apply(parsedTraceLine)) {
-                    lastLineNumber++;
-                }
-            }
-        } finally {
-            if(close) reader.close();
-        }
-    }
-
-    /**
-     * Reads the next line of the workload file.
-     *
-     * @param reader     the object that is reading the workload file
-     * @param lineNumber the number of the line that that will be read from the workload file (starting from 0)
-     * @return the line read; otherwise null if there isn't any more lines to read or if
-     * the number of lines to read was reached
-     * @see #getMaxLinesToRead()
-     */
-    private String readNextLine(final BufferedReader reader, final int lineNumber) throws IOException {
-        if (reader.ready() && lineNumber <= maxLinesToRead - 1) {
-            return reader.readLine();
-        }
-
-        return null;
-    }
 }
