@@ -34,7 +34,7 @@ public class PowerModelHostSpec extends PowerModelHost {
     public static final int MIN_POWER_CONSUMPTION_DATA_SIZE = 2;
 
     /**
-     * A List where each element represents the
+     * An array where each element represents the
      * power consumption (in Watts) of the entity for specific
      * CPU utilization percentage.
      * Item at position 0 indicates the power consumption when the Host is completely idle.
@@ -45,14 +45,14 @@ public class PowerModelHostSpec extends PowerModelHost {
      *     <li>100 elements, each value indicates the power consumption for 1%,  2% ... 100% of CPU utilization.</li>
      * </ul>
      */
-    private final List<Double> powerSpec;
+    private final double[] powerSpec;
 
     /**
      * Instantiates a PowerModelHostSpec providing
      * the power consumption data of the entity for different
      * CPU utilization percentages.
      *
-     * @param powerSpec a List where each element represents the power consumption (in Watts) of the entity for specific
+     * @param powerSpec an array where each element represents the power consumption (in Watts) of the entity for specific
      * CPU utilization percentage.
      * Item at position 0 indicates the power consumption when the Host is completely idle.
      * The number of remaining items indicate the power consumption according the percentage of CPU utilization.
@@ -62,9 +62,9 @@ public class PowerModelHostSpec extends PowerModelHost {
      *     <li>100 elements, each value indicates the power consumption for 1%,  2% ... 100% of CPU utilization.</li>
      * </ul>
      */
-    public PowerModelHostSpec(@NonNull final List<Double> powerSpec) {
+    public PowerModelHostSpec(@NonNull final double[] powerSpec) {
         super();
-        if (powerSpec.size() >= MIN_POWER_CONSUMPTION_DATA_SIZE) {
+        if (powerSpec.length >= MIN_POWER_CONSUMPTION_DATA_SIZE) {
             this.powerSpec = powerSpec;
             return;
         }
@@ -78,15 +78,15 @@ public class PowerModelHostSpec extends PowerModelHost {
     @Override
     public PowerMeasurement getPowerMeasurement() {
         final double utilizationFraction = getHost().getCpuMipsUtilization() / getHost().getTotalMipsCapacity();
-        final int utilizationIndex = (int) Math.round(utilizationFraction * powerSpec.size());
-        final double powerUsage = powerSpec.get(utilizationIndex);
-        final double staticPower = powerSpec.get(0);
+        final int utilizationIndex = (int) Math.round(utilizationFraction * powerSpec.length);
+        final double powerUsage = powerSpec[utilizationIndex];
+        final double staticPower = powerSpec[0];
         return new PowerMeasurement(staticPower, powerUsage - staticPower);
     }
 
     @Override
     public double getPowerInternal(final double utilizationFraction) {
-        final int utilizationIndex = (int) Math.round(utilizationFraction * powerSpec.size());
-        return powerSpec.get(utilizationIndex);
+        final int utilizationIndex = (int) Math.round(utilizationFraction * powerSpec.length);
+        return powerSpec[utilizationIndex];
     }
 }
