@@ -1,9 +1,11 @@
 package org.cloudsimplus.power.models;
 
+import lombok.Getter;
 import lombok.NonNull;
 import org.cloudsimplus.power.PowerMeasurement;
+import org.cloudsimplus.traces.FileReader;
 
-import java.util.List;
+import java.util.Arrays;
 
 /**
  * A power model created based on data from
@@ -24,7 +26,7 @@ import java.util.List;
  */
 public class PowerModelHostSpec extends PowerModelHost {
     /**
-     * Since {@link #powerSpec} represents the power consumption data
+     * Since {@link #powerSpecs} represents the power consumption data
      * according to CPU utilization, as shorter the size of such a List,
      * less accurate is the power consumption according to CPU utilization.
      * Check mentioned attribute for details.
@@ -34,38 +36,35 @@ public class PowerModelHostSpec extends PowerModelHost {
     public static final int MIN_POWER_CONSUMPTION_DATA_SIZE = 2;
 
     /**
-     * An array where each element represents the
-     * power consumption (in Watts) of the entity for specific
-     * CPU utilization percentage.
-     * Item at position 0 indicates the power consumption when the Host is completely idle.
+     * An array where each element represents the power consumption (in Watts)
+     * of the entity for specific CPU utilization percentage.
+     *
+     * <p>Item at position 0 indicates the power consumption when the Host is completely idle.
      * The number of remaining items indicate the power consumption according the percentage of CPU utilization.
      * For instance, if after the first element there are additionals:
      * <ul>
      *     <li>10 elements, each value indicates the power consumption for 10%, 20% ... 100% of CPU utilization.</li>
      *     <li>100 elements, each value indicates the power consumption for 1%,  2% ... 100% of CPU utilization.</li>
      * </ul>
+     * </p>
+     * @see #getInstance(String)
      */
-    private final double[] powerSpec;
+    @Getter
+    private final double[] powerSpecs;
 
     /**
      * Instantiates a PowerModelHostSpec providing
      * the power consumption data of the entity for different
      * CPU utilization percentages.
      *
-     * @param powerSpec an array where each element represents the power consumption (in Watts) of the entity for specific
-     * CPU utilization percentage.
-     * Item at position 0 indicates the power consumption when the Host is completely idle.
-     * The number of remaining items indicate the power consumption according the percentage of CPU utilization.
-     * For instance, if after the first element there are additionals:
-     * <ul>
-     *     <li>10 elements, each value indicates the power consumption for 10%, 20% ... 100% of CPU utilization.</li>
-     *     <li>100 elements, each value indicates the power consumption for 1%,  2% ... 100% of CPU utilization.</li>
-     * </ul>
+     * @param powerSpecs an array where each element represents the power consumption (in Watts) of the entity for specific
+     * CPU utilization percentage. Check {@link #getPowerSpecs()} for more details about this data.
+     * @see #getInstance(String)
      */
-    public PowerModelHostSpec(@NonNull final double[] powerSpec) {
+    public PowerModelHostSpec(@NonNull final double[] powerSpecs) {
         super();
-        if (powerSpec.length >= MIN_POWER_CONSUMPTION_DATA_SIZE) {
-            this.powerSpec = powerSpec;
+        if (powerSpecs.length >= MIN_POWER_CONSUMPTION_DATA_SIZE) {
+            this.powerSpecs = powerSpecs;
             return;
         }
 
@@ -78,15 +77,33 @@ public class PowerModelHostSpec extends PowerModelHost {
     @Override
     public PowerMeasurement getPowerMeasurement() {
         final double utilizationFraction = getHost().getCpuMipsUtilization() / getHost().getTotalMipsCapacity();
-        final int utilizationIndex = (int) Math.round(utilizationFraction * powerSpec.length);
-        final double powerUsage = powerSpec[utilizationIndex];
-        final double staticPower = powerSpec[0];
+        final int utilizationIndex = (int) Math.round(utilizationFraction * powerSpecs.length);
+        final double powerUsage = powerSpecs[utilizationIndex];
+        final double staticPower = powerSpecs[0];
         return new PowerMeasurement(staticPower, powerUsage - staticPower);
     }
 
     @Override
-    public double getPowerInternal(final double utilizationFraction) {
-        final int utilizationIndex = (int) Math.round(utilizationFraction * powerSpec.length);
-        return powerSpec[utilizationIndex];
+    protected double getPowerInternal(final double utilizationFraction) {
+        final int utilizationIndex = (int) Math.round(utilizationFraction * powerSpecs.length);
+        return powerSpecs[utilizationIndex];
+    }
+
+    /**
+     * Creates a PowerModelHostSpec instance reading the power consumption
+     * data (in Watts) from a file with a single line, where each value is separated by space.
+     * The content for this file is usually obtained from <a href="https://www.spec.org">https://www.spec.org</a>.
+     *
+     * <p>The <a href="https://github.com/cloudsimplus/cloudsimplus-examples/tree/master/src/main/resources/power-specs">power-specs</a>
+     * directory in the examples project contains sample files that can be used here.
+     * Check {@link #getPowerSpecs()} for more details about the data of this file.</p>
+     *
+     * @param powerSpecFilePath path to the power spec file
+     * @return a new PowerModelHostSpec instance
+     */
+    public static PowerModelHostSpec getInstance(final String powerSpecFilePath) {
+        final String[] values = FileReader.getSingleLineReader(powerSpecFilePath).readFile();
+        final double[] powerSpecs = Arrays.stream(values).mapToDouble(Double::valueOf).toArray();
+        return new PowerModelHostSpec(powerSpecs);
     }
 }

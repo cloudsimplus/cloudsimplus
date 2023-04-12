@@ -20,25 +20,21 @@ public interface TraceReader {
     Logger LOGGER = LoggerFactory.getLogger(TraceReader.class.getSimpleName());
 
     /**
-     * Gets the Strings that identifies the start of a comment line.
-     * For instance <b>; # % //</b>.
+     * Gets the path of the trace file.
+     * @return
      */
-    String[] getCommentString();
+    String getFilePath();
 
     /**
-     * Sets a string that identifies the start of a comment line.
-     * If there are multiple ways to comment a line,
-     * the different Strings representing comments can be specified as parameters.
-     *
-     * @param commentString the comment Strings to set
+     * Gets the number of the last line read from the trace file (starting from 0).
+     * @return
      */
-    TraceReader setCommentString(String... commentString);
+    int getLastLineNumber();
 
     /**
-     * Gets the regex defining how fields are delimited in the trace file.
+     * {@return the regex defining how fields are delimited} in the trace file.
      * Usually, this can be just a String with a single character such as
      * a space, comma, semi-colon or tab (\t).
-     * @return
      */
     String getFieldDelimiterRegex();
 
@@ -49,7 +45,7 @@ public interface TraceReader {
      *
      * @param fieldDelimiterRegex the field separator regex to set
      */
-    TraceReader setFieldDelimiterRegex(String fieldDelimiterRegex);
+    FileReader setFieldDelimiterRegex(String fieldDelimiterRegex);
 
     /**
      * Gets the maximum number of lines of the workload reader that will be read.
@@ -67,17 +63,20 @@ public interface TraceReader {
      *
      * @param maxLinesToRead the maximum number of lines to set
      */
-    TraceReader setMaxLinesToRead(int maxLinesToRead);
+    FileReader setMaxLinesToRead(int maxLinesToRead);
 
     /**
-     * Gets the path of the trace file.
-     * @return
+     * Gets the Strings that identifies the start of a comment line.
+     * For instance <b>; # % //</b>.
      */
-    String getFilePath();
+    String[] getCommentString();
 
     /**
-     * Gets the number of the last line read from the trace file (starting from 0).
-     * @return
+     * Sets a string that identifies the start of a comment line.
+     * If there are multiple ways to comment a line,
+     * the different Strings representing comments can be specified as parameters.
+     *
+     * @param commentString the comment Strings to set
      */
-    int getLastLineNumber();
+    FileReader setCommentString(String... commentString);
 }

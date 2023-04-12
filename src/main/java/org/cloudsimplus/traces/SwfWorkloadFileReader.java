@@ -13,13 +13,11 @@ import lombok.Setter;
 import org.cloudsimplus.cloudlets.Cloudlet;
 import org.cloudsimplus.cloudlets.CloudletSimple;
 import org.cloudsimplus.util.DataCloudTags;
-import org.cloudsimplus.util.ResourceLoader;
 import org.cloudsimplus.utilizationmodels.UtilizationModel;
 import org.cloudsimplus.utilizationmodels.UtilizationModelFull;
 
-import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.io.FileNotFoundException;
+import java.io.UncheckedIOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
@@ -124,7 +122,7 @@ public final class SwfWorkloadFileReader extends TraceReaderAbstract {
     private int mips;
 
     /**
-     * List of Cloudlets created from the trace {@link #getInputStream()}.
+     * List of Cloudlets created from the trace file.
      */
     private final List<Cloudlet> cloudlets;
 
@@ -150,27 +148,8 @@ public final class SwfWorkloadFileReader extends TraceReaderAbstract {
      * @throws FileNotFoundException    when the file is not found
      * @see #getInstance(String, int)
      */
-    public SwfWorkloadFileReader(@NonNull final String filePath, final int mips) throws IOException {
-        this(filePath, Files.newInputStream(Paths.get(filePath)), mips);
-    }
-
-    /**
-     * Create a SwfWorkloadFileReader object.
-     *
-     * @param filePath the workload trace file path in one of the following formats: <i>ASCII text, zip, gz.</i>
-     * @param reader   a {@link InputStreamReader} object to read the file
-     * @param mips     the MIPS capacity of the PEs from the VM where each created Cloudlet is supposed to run.
-     *                 Considering the workload reader provides the run time for each
-     *                 application registered inside the reader, the MIPS value will be used
-     *                 to compute the {@link Cloudlet#getLength() length of the Cloudlet (in MI)}
-     *                 so that it's expected to execute, inside the VM with the given MIPS capacity,
-     *                 for the same time as specified into the workload reader.
-     * @throws IllegalArgumentException when the workload trace file name is null or empty; or the resource PE mips is less or equal to 0
-     * @see #getInstance(String, int)
-     */
-    private SwfWorkloadFileReader(final String filePath, final InputStream reader, final int mips) {
-        super(filePath, reader);
-
+    public SwfWorkloadFileReader(@NonNull final String filePath, final int mips) {
+        super(filePath);
         this.setMips(mips);
         this.cloudlets = new ArrayList<>();
 
@@ -198,8 +177,7 @@ public final class SwfWorkloadFileReader extends TraceReaderAbstract {
      * @throws UncheckedIOException     when the file cannot be accessed (such as when it doesn't exist)
      */
     public static SwfWorkloadFileReader getInstance(final String fileName, final int mips) {
-        final var reader = ResourceLoader.newInputStream(fileName, SwfWorkloadFileReader.class);
-        return new SwfWorkloadFileReader(fileName, reader, mips);
+        return new SwfWorkloadFileReader(fileName, mips);
     }
 
     /**
