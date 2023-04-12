@@ -37,12 +37,13 @@ public class PowerModelHostSpec extends PowerModelHost {
      * A List where each element represents the
      * power consumption (in Watts) of the entity for specific
      * CPU utilization percentage.
-     * If the list has 10 items, each element represents
-     * the power consumption for 10% of CPU utilization.
-     * This way, the 1st item represents the power consumption for 10% of CPU utilization,
-     * the 2nd for 20% of CPU utilization and so on.
-     * If the list has 100 itens, each item represents the power consumption for 1% of
-     * CPU utilization and so no.
+     * Item at position 0 indicates the power consumption when the Host is completely idle.
+     * The number of remaining items indicate the power consumption according the percentage of CPU utilization.
+     * For instance, if after the first element there are additionals:
+     * <ul>
+     *     <li>10 elements, each value indicates the power consumption for 10%, 20% ... 100% of CPU utilization.</li>
+     *     <li>100 elements, each value indicates the power consumption for 1%,  2% ... 100% of CPU utilization.</li>
+     * </ul>
      */
     private final List<Double> powerSpec;
 
@@ -51,27 +52,15 @@ public class PowerModelHostSpec extends PowerModelHost {
      * the power consumption data of the entity for different
      * CPU utilization percentages.
      *
-     * @param powerSpec a list where each element represents the
-     *                  power consumption (in Watts) of the entity for specific
-     *                  CPU utilization percentage.
-     *                  If the list has 10 items, each element represents
-     *                  the power consumption for 10% of CPU utilization.
-     *                  This way, the 1st item represents the power consumption for 10% of CPU utilization,
-     *                  the 2nd for 20% of CPU utilization and so on.
-     *                  If the list has 100 itens, each item represents the power consumption for 1% of
-     *                  CPU utilization and so no.
-     *
-     * <p>If there are 100 elements in this list,
-     * element at position 1 represents the power consumption
-     * for 1% of CPU utilization, where element 100,</p>
-     * represents power consumption for 100% of CPU utilization.
-     *
-     * <p>If there are only 10 elements in this list,
-     * each element represents the power consumption
-     * when the CPU utilization is between an interval between [p .. p+10],
-     * where p is the CPU utilization percentage.
-     * For instance, element 0 represents the power consumption
-     * when CPU utilization is between [0 .. 10%].</p>
+     * @param powerSpec a List where each element represents the power consumption (in Watts) of the entity for specific
+     * CPU utilization percentage.
+     * Item at position 0 indicates the power consumption when the Host is completely idle.
+     * The number of remaining items indicate the power consumption according the percentage of CPU utilization.
+     * For instance, if after the first element there are additionals:
+     * <ul>
+     *     <li>10 elements, each value indicates the power consumption for 10%, 20% ... 100% of CPU utilization.</li>
+     *     <li>100 elements, each value indicates the power consumption for 1%,  2% ... 100% of CPU utilization.</li>
+     * </ul>
      */
     public PowerModelHostSpec(@NonNull final List<Double> powerSpec) {
         super();
