@@ -5,13 +5,15 @@
  *
  * Copyright (c) 2009-2012, The University of Melbourne, Australia
  */
-package org.cloudsimplus.util;
+package org.cloudsimplus.traces;
 
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import org.cloudsimplus.cloudlets.Cloudlet;
 import org.cloudsimplus.cloudlets.CloudletSimple;
+import org.cloudsimplus.util.DataCloudTags;
+import org.cloudsimplus.util.ResourceLoader;
 import org.cloudsimplus.utilizationmodels.UtilizationModel;
 import org.cloudsimplus.utilizationmodels.UtilizationModelFull;
 
