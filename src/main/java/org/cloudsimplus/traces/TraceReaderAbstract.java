@@ -1,4 +1,4 @@
-package org.cloudsimplus.util;
+package org.cloudsimplus.traces;
 
 import lombok.Getter;
 import lombok.NonNull;

@@ -32,8 +32,8 @@ import org.cloudsimplus.cloudlets.Cloudlet;
 import org.cloudsimplus.core.CloudSimPlus;
 import org.cloudsimplus.core.CloudSimTag;
 import org.cloudsimplus.core.events.CloudSimEvent;
+import org.cloudsimplus.traces.TraceReaderAbstract;
 import org.cloudsimplus.util.ResourceLoader;
-import org.cloudsimplus.util.TraceReaderAbstract;
 import org.cloudsimplus.utilizationmodels.UtilizationModelDynamic;
 
 import java.io.IOException;

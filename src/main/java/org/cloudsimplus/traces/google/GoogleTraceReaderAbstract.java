@@ -27,8 +27,8 @@ import org.cloudsimplus.cloudlets.Cloudlet;
 import org.cloudsimplus.core.Identifiable;
 import org.cloudsimplus.hosts.Host;
 import org.cloudsimplus.traces.ParsingException;
+import org.cloudsimplus.traces.TraceReaderAbstract;
 import org.cloudsimplus.traces.TraceReaderBase;
-import org.cloudsimplus.util.TraceReaderAbstract;
 
 import java.io.InputStream;
 import java.util.*;

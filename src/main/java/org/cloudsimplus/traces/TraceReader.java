@@ -5,7 +5,7 @@
  *
  * Copyright (c) 2009-2012, The University of Melbourne, Australia
  */
-package org.cloudsimplus.util;
+package org.cloudsimplus.traces;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
