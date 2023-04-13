@@ -45,8 +45,9 @@ import java.util.zip.ZipInputStream;
  */
 public class FileReader {
     public static final String DEF_FIELD_DELIMITER_REGEX = "\\s+";
+
     @Getter
-    protected final String filePath;
+    private final String filePath;
 
     /**
      * A regex defining how fields are delimited in the trace file.
@@ -54,7 +55,7 @@ public class FileReader {
      * a space, comma, semi-colon or tab (\t).
      */
     @Getter @Setter @NonNull
-    protected String fieldDelimiterRegex;
+    private String fieldDelimiterRegex;
 
     @Getter
     private int lastLineNumber;
