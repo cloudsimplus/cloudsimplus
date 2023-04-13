@@ -181,6 +181,6 @@ public enum TaskEventType {
      * @return the {@link MachineEventType} value
      */
     protected static TaskEventType of(final GoogleTaskEventsTraceReader reader) {
-        return getValue(TaskEventField.EVENT_TYPE.getValue(reader));
+        return TaskEventField.EVENT_TYPE.getValue(reader);
     }
 }
