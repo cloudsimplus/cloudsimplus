@@ -13,28 +13,28 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class SwfWorkloadFileReaderTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(SwfWorkloadFileReaderTest.class.getSimpleName());
-    private static final int JOBS_AT_SWF_LCG_FILE = 188041;
     private static final String SWF_FILE = "LCG.swf";
-    private static final String ZIP_FILE = "two-workload-files.zip";
+    private static final int    SWF_FILE_JOBS = 188041;
+    private static final String ZIP_FILE = "NASA-iPSC-1993-3.1-cln.swf.zip";
 
     /**
      * Number of jobs of the NASA file inside the zip archive.
      */
-    private static final int JOBS_AT_SWF_NASA_FILE = 18239;
+    private static final int ZIP_FILE_JOBS = 18239;
 
     @Test
     public void readGz() {
-	    assertTrue(assertCreatedCloudletsFromTrace(SWF_FILE+".gz", JOBS_AT_SWF_LCG_FILE));
+	    assertTrue(assertCreatedCloudletsFromTrace(SWF_FILE+".gz", SWF_FILE_JOBS));
     }
 
     @Test
     public void readSwf() {
-	    assertTrue(assertCreatedCloudletsFromTrace(SWF_FILE, JOBS_AT_SWF_LCG_FILE));
+	    assertTrue(assertCreatedCloudletsFromTrace(SWF_FILE, SWF_FILE_JOBS));
     }
 
     @Test
-    public void readZipWithTwoSwfFiles() {
-	    assertTrue(assertCreatedCloudletsFromTrace(ZIP_FILE, JOBS_AT_SWF_LCG_FILE + JOBS_AT_SWF_NASA_FILE));
+    public void readZipSwfFiles() {
+	    assertTrue(assertCreatedCloudletsFromTrace(ZIP_FILE, ZIP_FILE_JOBS));
     }
 
     private boolean assertCreatedCloudletsFromTrace(final String fileNameWithoutPath, final int jobsNumber) {
