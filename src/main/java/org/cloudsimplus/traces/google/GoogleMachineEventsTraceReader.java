@@ -186,7 +186,7 @@ public final class GoogleMachineEventsTraceReader extends GoogleTraceReaderAbstr
         final InputStream reader,
         final Function<MachineEvent, Host> hostCreationFunction)
     {
-        super(filePath, reader);
+        super(filePath);
         this.setHostCreationFunction(hostCreationFunction);
         this.setMaxRamCapacity((long) BytesConversion.gigaToMega(16));
         this.setMaxCpuCores(8);

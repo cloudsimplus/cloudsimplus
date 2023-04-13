@@ -51,7 +51,15 @@ import lombok.experimental.Accessors;
 public abstract class TraceReaderAbstract extends FileReader implements TraceReader {
 
     /**
-     * Create a SwfWorkloadFileReader object.
+     * Regular expression to check if a String corresponds to an integer number.
+     */
+    private static final String INT_REGEX = "^-?\\d+$";
+
+    /** @see #getLastParsedLineArray() */
+    private String[] lastParsedLineArray;
+
+    /**
+     * Create a TraceReader object.
      *
      * @param filePath the workload trace file path in one of the following formats: <i>ASCII text, zip, gz.</i>
      * @throws IllegalArgumentException when the workload trace file name is null or empty; or the resource PE mips is less or equal to 0
@@ -66,4 +74,95 @@ public abstract class TraceReaderAbstract extends FileReader implements TraceRea
         this.setMaxLinesToRead(Integer.MAX_VALUE);
     }
 
+    /**
+     * Gets a field's value from the {@link #getLastParsedLineArray() last parsed line} as String.
+     *
+     * @param field a enum value representing the index of the field to get the value
+     * @return
+     */
+    public <T extends Enum> String getFieldValue(final T field){
+        return lastParsedLineArray[field.ordinal()];
+    }
+
+    /**
+     * Gets a field's value from the {@link #getLastParsedLineArray() last parsed line} as double.
+     *
+     * @param field an enum value representing the index of the field to get the value
+     * @return
+     */
+    public <T extends Enum> double getFieldDoubleValue(final T field){
+        return Double.parseDouble(getFieldValue(field));
+    }
+
+    /**
+     * Gets a field's value from the {@link #getLastParsedLineArray() last parsed line} as double.
+     *
+     * @param field an enum value representing the index of the field to get the value
+     * @param defaultValue the default value to be returned if the field value is not a number
+     * @return
+     */
+    public <T extends Enum> double getFieldDoubleValue(final T field, final double defaultValue){
+        final String value = getFieldValue(field);
+        return  value.matches("^-?\\d+(\\.?\\d+)?$") ? Double.parseDouble(value) : defaultValue;
+    }
+
+    /**
+     * Gets a field's value from the {@link #getLastParsedLineArray() last parsed line} as an int.
+     *
+     * @param field an enum value representing the index of the field to get the value
+     * @return
+     */
+    public <T extends Enum> int getFieldIntValue(final T field){
+        return Integer.parseInt(getFieldValue(field));
+    }
+
+    /**
+     * Gets a field's value from the {@link #getLastParsedLineArray() last parsed line} as an int.
+     *
+     * @param field an enum value representing the index of the field to get the value
+     * @param defaultValue the default value to be returned if the field value is not an int
+     * @return
+     */
+    public <T extends Enum> int getFieldIntValue(final T field, final int defaultValue){
+        final String value = getFieldValue(field);
+        return  value.matches(INT_REGEX) ? Integer.parseInt(value) : defaultValue;
+    }
+
+    /**
+     * Gets a field's value from the {@link #getLastParsedLineArray() last parsed line} as an int.
+     *
+     * @param field an enum value representing the index of the field to get the value
+     * @return
+     */
+    public <T extends Enum> long getFieldLongValue(final T field){
+        return Long.parseLong(getFieldValue(field));
+    }
+
+    /**
+     * Gets a field's value from the {@link #getLastParsedLineArray() last parsed line} as an int.
+     *
+     * @param field an enum value representing the index of the field to get the value
+     * @param defaultValue the default value to be returned if the field value is not an int
+     * @return
+     */
+    public <T extends Enum> long getFieldLongValue(final T field, final long defaultValue){
+        final String value = getFieldValue(field);
+        return  value.matches(INT_REGEX) ? Long.parseLong(value) : defaultValue;
+    }
+
+    /**
+     * Gets an array containing the field values from the last parsed trace line.
+     * @return
+     */
+    protected String[] getLastParsedLineArray() {
+        return lastParsedLineArray;
+    }
+
+    /**
+     * Sets an array containing the field values from the last parsed trace line.
+     * @param lastParsedLineArray the field values from the last parsed trace line
+     */
+    protected void setLastParsedLineArray(@NonNull final String[] lastParsedLineArray) {
+        this.lastParsedLineArray = lastParsedLineArray;
+    }
 }
