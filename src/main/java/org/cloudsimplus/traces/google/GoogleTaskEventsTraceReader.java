@@ -180,7 +180,7 @@ public class GoogleTaskEventsTraceReader extends GoogleTraceReaderAbstract<Cloud
         final InputStream reader,
         final Function<TaskEvent, Cloudlet> cloudletCreationFunction)
     {
-        super(filePath, reader);
+        super(filePath);
         this.simulation = simulation;
         this.cloudletCreationFunction = requireNonNull(cloudletCreationFunction);
         this.autoSubmitCloudlets = true;

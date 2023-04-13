@@ -299,7 +299,7 @@ public final class GoogleTaskUsageTraceReader extends GoogleTraceReaderAbstract<
         final String filePath,
         final InputStream reader)
     {
-        super(filePath, reader);
+        super(filePath);
         this.taskEventsReader = taskEventsReader;
         final var brokerList = getBrokers();
         if(brokerList.isEmpty()){

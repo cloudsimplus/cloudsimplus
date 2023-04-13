@@ -28,9 +28,7 @@ import org.cloudsimplus.core.Identifiable;
 import org.cloudsimplus.hosts.Host;
 import org.cloudsimplus.traces.ParsingException;
 import org.cloudsimplus.traces.TraceReaderAbstract;
-import org.cloudsimplus.traces.TraceReaderBase;
 
-import java.io.InputStream;
 import java.util.*;
 
 /**
@@ -44,7 +42,7 @@ import java.util.*;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 4.0.0
  */
-abstract class GoogleTraceReaderAbstract<T extends Identifiable> extends TraceReaderBase {
+abstract class GoogleTraceReaderAbstract<T extends Identifiable> extends TraceReaderAbstract {
     /* default */ static final String VAL_SEPARATOR = " -> ";
     /* default */ static final String COL_SEPARATOR = " | ";
 
@@ -59,8 +57,8 @@ abstract class GoogleTraceReaderAbstract<T extends Identifiable> extends TraceRe
      */
     private final Map<Long, T> availableObjectsMap;
 
-    /* default */  GoogleTraceReaderAbstract(final String filePath, final InputStream reader) {
-        super(filePath, reader);
+    /* default */  GoogleTraceReaderAbstract(final String filePath) {
+        super(filePath);
         this.setFieldDelimiterRegex(",");
         availableObjectsMap = new HashMap<>();
     }
