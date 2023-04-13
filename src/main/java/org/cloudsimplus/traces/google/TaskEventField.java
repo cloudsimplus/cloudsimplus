@@ -99,12 +99,11 @@ public enum TaskEventField implements TraceField<GoogleTaskEventsTraceReader> {
 
     /**
      * 5: The index of the field containing the type of event.
-     * The possible values for this field are the ordinal values of the enum {@link TaskEventType}.
      */
     EVENT_TYPE {
         @Override
-        public Integer getValue(final GoogleTaskEventsTraceReader reader) {
-            return reader.getFieldIntValue(this);
+        public TaskEventType getValue(final GoogleTaskEventsTraceReader reader) {
+            return TaskEventType.getValue(reader.getFieldIntValue(this));
         }
     },
 
