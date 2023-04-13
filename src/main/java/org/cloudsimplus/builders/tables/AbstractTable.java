@@ -138,6 +138,7 @@ public abstract class AbstractTable implements Table {
         printColumnHeaders();
         rows.forEach(this::printRow);
         printTableClosing();
+        getPrintStream().println();
     }
 
     protected void printColumnHeaders(){
