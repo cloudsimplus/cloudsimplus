@@ -745,26 +745,24 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
     Cloudlet reset();
 
     /**
-     * Sets the lifeTime of this cloudlet,
-     * which indicates its maximum {@link #getActualCpuTime() execution time},
+     * Gets the lifeTime, which indicates the maximum amount of time the Cloudlet must execute,
+     * regardless of its length (in MI).
+     *
+     * @return the Cloudlet lifeTime (in seconds).
+     * @see #setLifeTime(double)
+     */
+    double getLifeTime();
+
+    /**
+     * Sets the lifeTime, which indicates the maximum amount of time the Cloudlet must execute,
      * regardless of its length (in MI).
      *
      * <p>The cloudlet will finish execution as soon as possible, after the given lifeTime has passed,
      * since its {@link #getExecStartTime() exec start time}.
      * </p>
      *
-     * <b>IMPORTANT</b>: Currently lifeTime must be larger than {@link Datacenter#getSchedulingInterval()}.
-     * @param lifeTime lifeTime of this Cloudlet (in seconds)
+     * <b>IMPORTANT</b>: LifeTime must be larger than {@link Datacenter#getSchedulingInterval()}.
+     * @param lifeTime lifeTime to set (in seconds)
      */
 	Cloudlet setLifeTime(double lifeTime);
-
-    /**
-     * Gets the lifeTime of this cloudlet,
-     * which indicates its maximum {@link #getActualCpuTime()} execution time},
-     * regardless of its length (in MI).
-     *
-     * @return lifeTime of this cloudlet (in seconds).
-     * @see #setLifeTime(double)
-     */
-	double getLifeTime();
 }
