@@ -106,11 +106,6 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
     }
 
     /**
-     * Indicates that the Cloudlet was not assigned to a Datacenter yet.
-     */
-    int NOT_ASSIGNED = -1;
-
-    /**
      * An attribute that implements the Null Object Design Pattern for {@link Cloudlet}
      * objects.
      */
@@ -432,8 +427,7 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
      * resource.
      *
      * @return the waiting time (in seconds) when the cloudlet waited to execute;
-     *         or 0 if there wasn't any waiting time
-     *         or the cloudlet hasn't started to execute.
+     *         or -1 if the cloudlet hasn't started executing yet.
      */
     double getWaitingTime();
 

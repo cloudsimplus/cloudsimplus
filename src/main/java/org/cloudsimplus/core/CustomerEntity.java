@@ -35,6 +35,12 @@ import org.cloudsimplus.vms.Vm;
  */
 public interface CustomerEntity extends UniquelyIdentifiable, ChangeableId, Delayable {
     /**
+     * Indicates that some attribute was not set and therefore
+     * its value should be ignored.
+     */
+    int NOT_ASSIGNED = -1;
+
+    /**
      * Gets the {@link DatacenterBroker} that represents the owner of this object.
      *
      * @return the broker or <b>{@link DatacenterBroker#NULL}</b> if a broker has not been set yet
