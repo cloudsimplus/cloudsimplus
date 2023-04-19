@@ -250,7 +250,7 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
 
     @Override
     public double getWaitingTime() {
-        return arrivalTime == -1 ? -1 : execStartTime - arrivalTime;
+        return arrivalTime > NOT_ASSIGNED ? execStartTime - arrivalTime : NOT_ASSIGNED;
     }
 
     @Override
@@ -285,7 +285,7 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
 
     @Override
     public boolean addFinishedLengthSoFar(final long partialFinishedMI) {
-        if (partialFinishedMI < 0.0 || arrivalTime == -1) {
+        if (partialFinishedMI < 0 || arrivalTime <= NOT_ASSIGNED) {
             return false;
         }
 
@@ -372,13 +372,11 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
 
     /**
      * Sets the time the Cloudlet arrived at a Datacenter to be executed.
+     * A negative value indicates there is no arrival time yet
      * @param arrivalTime the arrival time to set (in seconds)
      */
     protected final void setArrivalTime(final double arrivalTime) {
-        //The only negative value accepted is -1, to indicate not arrival time is set
-        if(arrivalTime < 0)
-            this.arrivalTime = -1;
-        else this.arrivalTime = arrivalTime;
+        this.arrivalTime = arrivalTime;
     }
 
     /**
