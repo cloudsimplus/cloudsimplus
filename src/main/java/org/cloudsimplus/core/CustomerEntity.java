@@ -99,5 +99,5 @@ public interface CustomerEntity extends UniquelyIdentifiable, ChangeableId, Dela
      * @return the total wait time (in seconds)
      * @see #getSubmissionDelay()
      */
-    double getWaitTime();
+    double getCreationWaitTime();
 }

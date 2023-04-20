@@ -72,8 +72,8 @@ public abstract class CustomerEntityAbstract extends StartableAbstract implement
     }
 
     @Override
-    public double getWaitTime() {
-        return creationTime <= NOT_ASSIGNED ? getSimulation().clock() - arrivedTime : creationTime - arrivedTime;
+    public double getCreationWaitTime() {
+        return creationTime > NOT_ASSIGNED ? creationTime - brokerArrivalTime : getSimulation().clock() - brokerArrivalTime;
     }
 
     @Override

@@ -412,8 +412,7 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
     boolean isBoundToVm();
 
     /**
-     * Gets the time (in seconds) the cloudlet had to wait before start executing on a
-     * resource.
+     * Gets the time (in seconds) the cloudlet had to wait before start executing on a Datacenter.
      *
      * @return the waiting time (in seconds) when the cloudlet waited to execute;
      *         or -1 if the cloudlet hasn't started executing yet.

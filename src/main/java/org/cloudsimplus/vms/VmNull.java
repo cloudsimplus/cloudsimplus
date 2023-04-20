@@ -151,7 +151,7 @@ class VmNull implements Vm {
     @Override public boolean isFinished() { return true; }
     @Override public Vm setStartTime(double startTime) { return this; }
     public double getFinishTime() { return 0; }
-    @Override public double getWaitTime() { return 0; }
+    @Override public double getCreationWaitTime() { return 0; }
     @Override public double getTotalExecutionTime() { return 0; }
     @Override public Vm setFinishTime(double stopTime) { return this; }
     @Override public double getLastBusyTime() { return 0; }

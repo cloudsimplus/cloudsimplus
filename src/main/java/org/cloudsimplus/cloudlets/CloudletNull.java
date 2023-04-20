@@ -161,7 +161,7 @@ final class CloudletNull implements Cloudlet {
     @Override public double getBrokerArrivalTime() { return 0; }
     @Override public CustomerEntity setBrokerArrivalTime(double time) { return this; }
     @Override public double getCreationTime() { return 0; }
-    @Override public double getWaitTime() { return 0; }
+    @Override public double getCreationWaitTime() { return 0; }
     @Override public boolean removeOnUpdateProcessingListener(EventListener<CloudletVmEventInfo> listener) { return false; }
     @Override public Cloudlet addOnUpdateProcessingListener(EventListener<CloudletVmEventInfo> listener) { return Cloudlet.NULL; }
     @Override public double getSubmissionDelay() { return 0; }
