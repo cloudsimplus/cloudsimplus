@@ -55,7 +55,7 @@ public class VmSimpleTest {
 
         final Vm vm = new VmSimple(this.vm);
         vm.setBroker(broker);
-        vm.setArrivedTime(arrivedTime);
+        vm.setBrokerArrivalTime(arrivedTime);
         assertEquals(clock, vm.getWaitTime());
     }
 
@@ -68,14 +68,14 @@ public class VmSimpleTest {
 
         final Vm vm = new VmSimple(this.vm);
         vm.setBroker(broker);
-        vm.setArrivedTime(arrivedTime);
+        vm.setBrokerArrivalTime(arrivedTime);
         assertEquals(8, vm.getWaitTime());
     }
 
     @Test
     public void testGetWaitTimeForCreateVmWithNonZeroClockAndZeroArrivedTime() {
         final int clock = 10;
-        vm.setArrivedTime(0);
+        vm.setBrokerArrivalTime(0);
         vm.setCreated(true);
         vm.setCreationTime(clock);
         assertEquals(clock, vm.getWaitTime());
@@ -84,7 +84,7 @@ public class VmSimpleTest {
     @Test
     public void testGetWaitTimeForCreateVmWithNonZeroClockAndArrivedTime() {
         final int clock = 10;
-        vm.setArrivedTime(2);
+        vm.setBrokerArrivalTime(2);
         vm.setCreated(true);
         vm.setCreationTime(clock);
         assertEquals(8, vm.getWaitTime());

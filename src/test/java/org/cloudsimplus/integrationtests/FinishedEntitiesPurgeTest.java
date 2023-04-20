@@ -126,7 +126,7 @@ class FinishedEntitiesPurgeTest {
 
     private void assertExecTimeEqualsToFinishTime(final Cloudlet cl) {
         final var msg = "Statically created %s on %s exec time must be equal to finish time".formatted(cl, cl.getBroker());
-        assertEquals(cl.getFinishTime(), cl.getActualCpuTime(), MAX_TIME_DELTA, msg);
+        assertEquals(cl.getFinishTime(), cl.getTotalExecutionTime(), MAX_TIME_DELTA, msg);
     }
 
     /**
@@ -146,7 +146,7 @@ class FinishedEntitiesPurgeTest {
 
     private void assertExecTimeEqualsToStartTime(final Cloudlet cl) {
         final var msg = "Dynamically created %s on %s exec time must be equal to start time".formatted(cl, cl.getBroker());
-        assertEquals(cl.getExecStartTime(), cl.getActualCpuTime(), MAX_TIME_DELTA, msg);
+        assertEquals(cl.getStartTime(), cl.getTotalExecutionTime(), MAX_TIME_DELTA, msg);
     }
 
     @Test
@@ -186,7 +186,7 @@ class FinishedEntitiesPurgeTest {
     private void assertCloudletStartTime(final Cloudlet cl) {
         final double expectedCloudletStartTime = cl.getId() < STATIC_CLOUDLETS_TO_FINISH ? 0 : getBrokerOrder(cl);
         final var msg = "%s on %s start time".formatted(cl, cl.getBroker());
-        assertEquals(expectedCloudletStartTime, cl.getExecStartTime(), MAX_TIME_DELTA, msg);
+        assertEquals(expectedCloudletStartTime, cl.getStartTime(), MAX_TIME_DELTA, msg);
     }
 
     @Test

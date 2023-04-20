@@ -26,7 +26,6 @@ import org.cloudsimplus.schedulers.MipsShare;
 import org.cloudsimplus.schedulers.vm.VmScheduler;
 import org.cloudsimplus.schedulers.vm.VmSchedulerSpaceShared;
 import org.cloudsimplus.util.BytesConversion;
-import org.cloudsimplus.util.MathUtil;
 import org.cloudsimplus.util.TimeUtil;
 import org.cloudsimplus.vms.*;
 
@@ -48,8 +47,8 @@ import static java.util.stream.Collectors.toList;
  * @author Anton Beloglazov
  * @since CloudSim Toolkit 1.0
  */
-@Accessors @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class HostSimple implements Host {
+@Accessors @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
+public class HostSimple extends StartableAbstract implements Host {
     /**
      * The Default RAM capacity (in MB) for creating Hosts.
      * This value is used when the RAM capacity is not given in a Host constructor.
@@ -101,19 +100,10 @@ public class HostSimple implements Host {
     private boolean activationChangeInProgress;
 
     @Getter
-    private double startTime = -1;
-
-    @Getter
     private double firstStartTime = -1;
-
-    @Getter
-    private double shutdownTime;
 
     /** @see #getTotalUpTime() */
     private double totalUpTime;
-
-    @Getter
-    private double lastBusyTime;
 
     @Getter @Setter
     private double idleShutdownDeadline;
@@ -328,7 +318,6 @@ public class HostSimple implements Host {
         this.setVmScheduler(new VmSchedulerSpaceShared());
         this.setPeList(peList);
         this.setFailed(false);
-        this.shutdownTime = -1;
         this.setDatacenter(Datacenter.NULL);
 
         this.onUpdateProcessingListeners = new HashSet<>();
@@ -392,7 +381,7 @@ public class HostSimple implements Host {
         cpuUtilizationStats.add(currentTime);
         addStateHistory(currentTime);
         if (!vmList.isEmpty()) {
-            lastBusyTime = currentTime;
+            setLastBusyTime(currentTime);
         }
 
         return nextSimulationDelay;
@@ -605,7 +594,7 @@ public class HostSimple implements Host {
             setStartTime(getSimulation().clock());
             powerModel.addStartupTotals();
         } else {
-            setShutdownTime(getSimulation().clock());
+            this.setFinishTime(getSimulation().clock());
             powerModel.addShutDownTotals();
         }
 
@@ -660,8 +649,7 @@ public class HostSimple implements Host {
         }
 
         destroyVmInternal(vm);
-        vm.setStopTime(getSimulation().clock());
-        vm.notifyOnHostDeallocationListeners(this);
+        vm.setFinishTime(getSimulation().clock());
     }
 
     @Override
@@ -843,28 +831,25 @@ public class HostSimple implements Host {
     }
 
     @Override
-    public Host setStartTime(final double startTime) {
-        this.startTime = MathUtil.nonNegative(Math.floor(startTime), "startTime");
-        if(firstStartTime == -1){
-            firstStartTime = this.startTime;
+    public void onStart(final double startTime) {
+        if(firstStartTime <= NOT_ASSIGNED){
+            firstStartTime = startTime;
         }
-
-        this.lastBusyTime = startTime;
-
-        //If the Host is being activated or re-activated, the shutdown time is reset
-        this.shutdownTime = -1;
-        return this;
     }
 
     @Override
-    public void setShutdownTime(final double shutdownTime) {
-        this.shutdownTime = MathUtil.nonNegative(Math.floor(shutdownTime), "shutdownTime");
+    protected void onFinish(final double time) {
         this.totalUpTime += getUpTime();
     }
 
     @Override
+    public boolean isFinished() {
+        return !active;
+    }
+
+    @Override
     public double getUpTime() {
-        return active ? simulation.clock() - startTime : shutdownTime - startTime;
+        return active ? simulation.clock() - getStartTime() : getFinishTime() - getStartTime();
     }
 
     @Override

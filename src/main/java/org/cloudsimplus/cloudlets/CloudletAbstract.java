@@ -55,10 +55,7 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
     private int netServiceLevel;
     private long fileSize;
     private long outputSize;
-    private double arrivalTime;
-    private double execStartTime;
-    private double finishTime;
-    private double lifeTime;
+    private double dcArrivalTime;
     private double submissionDelay;
 
     @NonNull
@@ -158,7 +155,7 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
         this.setFileSize(1);
         this.setOutputSize(1);
         this.setSubmissionDelay(0.0);
-        this.setArrivalTime(-1);
+        this.setDcArrivalTime(-1);
 
         this.reset();
 
@@ -173,16 +170,15 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
     @Override
     public final Cloudlet reset() {
         this.netServiceLevel = 0;
-        this.execStartTime = 0.0;
+        setBroker(DatacenterBroker.NULL);
+        this.vm = Vm.NULL;
+        this.setStartTime(0);
+        setFinishTime(NOT_ASSIGNED); // meaning this Cloudlet hasn't finished yet
         this.status = Status.INSTANTIATED;
         this.priority = 0;
-        setBroker(DatacenterBroker.NULL);
-        setFinishTime(NOT_ASSIGNED); // meaning this Cloudlet hasn't finished yet
-        this.vm = Vm.NULL;
-        setExecStartTime(0.0);
-        setArrivedTime(0);
+        this.setStartTime(0.0);
+        this.setBrokerArrivalTime(0);
         setCreationTime(0);
-        setLifeTime(-1);
 
         this.setLastTriedDatacenter(Datacenter.NULL);
         return this;
@@ -279,13 +275,17 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
 
     @Override
     public boolean isFinished() {
-        return (getLifeTime() > 0 && getActualCpuTime() >= getLifeTime()) ||
-               (getLength() > 0 && getFinishedLengthSoFar() >= getLength());
+        return isLifeTimeReached() || (getLength() > 0 && getFinishedLengthSoFar() >= getLength());
+    }
+
+    @Override
+    public boolean isLifeTimeReached() {
+        return super.isLifeTimeReached() || vm.isLifeTimeReached();
     }
 
     @Override
     public boolean addFinishedLengthSoFar(final long partialFinishedMI) {
-        if (partialFinishedMI < 0 || arrivalTime <= NOT_ASSIGNED) {
+        if (partialFinishedMI < 0 || dcArrivalTime <= NOT_ASSIGNED) {
             return false;
         }
 
@@ -316,19 +316,6 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
         }
     }
 
-    /**
-     * Notifies all registered listeners about the termination of the Cloudlet
-     * if it in fact has finished.
-     * It then removes the registered listeners to avoid a Listener to be notified
-     * multiple times about a Cloudlet termination.
-     */
-    void notifyOnFinishListeners() {
-        if (isFinished()) {
-            onFinishListeners.forEach(listener -> listener.update(CloudletVmEventInfo.of(listener, this)));
-            onFinishListeners.clear();
-        }
-    }
-
     @Override
     public void setExecStartTime(final double clockTime) {
         final boolean isStartingInSomeVm = this.execStartTime <= 0 && clockTime > 0 && vm != Vm.NULL && vm != null;
@@ -336,6 +323,12 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
         if(isStartingInSomeVm){
             onStartListeners.forEach(listener -> listener.update(CloudletVmEventInfo.of(listener, clockTime, this)));
         }
+    }
+
+    @Override
+    protected void onFinish(final double time) {
+        onFinishListeners.forEach(listener -> listener.update(CloudletVmEventInfo.of(listener, this)));
+        onFinishListeners.clear();
     }
 
     @Override
@@ -364,28 +357,13 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
         return length * pesNumber;
     }
 
-    @Override
-    public double getActualCpuTime() {
-        final double time = getFinishTime() == NOT_ASSIGNED ? getSimulation().clock() : finishTime;
-        return time - execStartTime;
-    }
-
     /**
      * Sets the time the Cloudlet arrived at a Datacenter to be executed.
      * A negative value indicates there is no arrival time yet
-     * @param arrivalTime the arrival time to set (in seconds)
+     * @param dcArrivalTime the arrival time to set (in seconds)
      */
-    protected final void setArrivalTime(final double arrivalTime) {
-        this.arrivalTime = arrivalTime;
-    }
-
-    /**
-     * Sets the {@link #getFinishTime() finish time} of this cloudlet in the latest Datacenter.
-     *
-     * @param finishTime the finish time
-     */
-    protected final void setFinishTime(final double finishTime) {
-        this.finishTime = finishTime;
+    protected final void setDcArrivalTime(final double dcArrivalTime) {
+        this.dcArrivalTime = dcArrivalTime;
     }
 
     @Override
@@ -545,17 +523,8 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
 
     @Override
     public double registerArrivalInDatacenter() {
-        setArrivalTime(getSimulation().clock());
-        return arrivalTime;
+        setDcArrivalTime(getSimulation().clock());
+        return dcArrivalTime;
     }
 
-    @Override
-	public Cloudlet setLifeTime(final double lifeTime) {
-		if (lifeTime == 0) {
-			throw new IllegalArgumentException("Cloudlet lifeTime cannot be zero.");
-		}
-
-		this.lifeTime = lifeTime;
-		return this;
-	}
 }

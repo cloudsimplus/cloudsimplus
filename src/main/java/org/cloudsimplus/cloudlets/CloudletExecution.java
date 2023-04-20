@@ -178,8 +178,8 @@ public class CloudletExecution {
         final double clock = cloudlet.getSimulation().clock();
         if (newStatus == Cloudlet.Status.INEXEC || isTryingToResumePausedCloudlet(newStatus, oldStatus)) {
             startExecTime = clock;
-            if(cloudlet.getExecStartTime() == 0) {
-                cloudlet.setExecStartTime(startExecTime);
+            if(cloudlet.getStartTime() <= 0) {
+                cloudlet.setStartTime(startExecTime);
             }
         }
     }
@@ -294,33 +294,6 @@ public class CloudletExecution {
      */
     public double getCloudletArrivalTime() {
         return arrivalTime;
-    }
-
-    /**
-     * Gets the time when the Cloudlet has finished completely
-     * (not just in a given Datacenter, but finished at all).
-     * If the cloudlet wasn't finished completely yet,
-     * the value is equals to {@link Cloudlet#NOT_ASSIGNED}.
-     *
-     * @return finish time of a cloudlet;
-     *         or -1 if it cannot finish in this hourly slot
-     */
-    public double getFinishTime() {
-        return finishedTime;
-    }
-
-    /**
-     * Sets the finish time for this Cloudlet.
-     * If time is negative, then it will be ignored.
-     * @param time finish time
-     */
-    public void setFinishTime(final double time) {
-        if (time < 0) {
-            return;
-        }
-
-        finishedTime = time;
-        ((CloudletAbstract)this.cloudlet).notifyOnFinishListeners();
     }
 
     /**
@@ -518,7 +491,7 @@ public class CloudletExecution {
      * @see #getOverSubscriptionDelay()
      */
     public double getExpectedFinishTime() {
-        return getCloudlet().getActualCpuTime() - overSubscriptionDelay;
+        return getCloudlet().getTotalExecutionTime() - overSubscriptionDelay;
     }
 
     /**
@@ -550,7 +523,7 @@ public class CloudletExecution {
 			return Double.MAX_VALUE;
 		}
 
-		return Math.max(cloudlet.getLifeTime() - cloudlet.getActualCpuTime(), 0);
+		return Math.max(cloudlet.getLifeTime() - cloudlet.getTotalExecutionTime(), 0);
 	}
 
     /**

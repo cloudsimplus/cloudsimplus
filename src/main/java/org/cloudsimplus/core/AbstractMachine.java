@@ -37,7 +37,7 @@ import org.cloudsimplus.vms.Vm;
  * @since CloudSim Plus 5.1.4
  * @param <T> The type of the storage device for the machine
  */
-public interface AbstractMachine<T extends Resource> extends ChangeableId, Resourceful {
+public interface AbstractMachine<T extends Resource> extends ChangeableId, Resourceful, Startable {
     /**
      * An attribute that implements the Null Object Design Pattern for {@link AbstractMachine}
      * objects.
@@ -93,23 +93,6 @@ public interface AbstractMachine<T extends Resource> extends ChangeableId, Resou
      * @return
      */
     Simulation getSimulation();
-
-    /**
-     * Gets the last time the machine was started up (in seconds).
-     * The value -1 means it was not started yet.
-     *
-     * @return
-     */
-    double getStartTime();
-
-    /**
-     * Sets the current machine startup time.
-     * The value -1 means it was not started yet.
-     *
-     * @param startTime the start time to set (in seconds)
-     * @return
-     */
-    AbstractMachine setStartTime(double startTime);
 
     /**
      * Checks if the Machine has been idle for a given amount of time (in seconds).

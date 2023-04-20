@@ -105,7 +105,7 @@ public final class CloudletSchedulerTimeSharedWithMoreCloudletsThanPEs {
             assertEquals(time, c.getFinishTime(), 0.3, msg1);
 
             final String msg2 = "Cloudlet %d doesn't have the expected exec time.".formatted(c.getId());
-            assertEquals(time, c.getActualCpuTime(), 0.3, msg2);
+            assertEquals(time, c.getTotalExecutionTime(), 0.3, msg2);
         }
     }
 

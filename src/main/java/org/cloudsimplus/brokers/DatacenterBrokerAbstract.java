@@ -249,7 +249,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     private void configureEntities(final List<? extends CustomerEntity> customerEntities) {
         for (final var entity : customerEntities) {
             entity.setBroker(this);
-            entity.setArrivedTime(getSimulation().clock());
+            entity.setBrokerArrivalTime(getSimulation().clock());
             if(entity instanceof VmGroup vmGroup) {
                 configureEntities(vmGroup.getVmList());
             }

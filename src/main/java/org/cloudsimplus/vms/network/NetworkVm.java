@@ -64,11 +64,6 @@ public class NetworkVm extends VmSimple {
     private boolean free;
 
     /**
-     * The time when the VM finishes processing its cloudlets.
-     */
-    private double finishTime;
-
-    /**
      * Creates a NetworkVm with 1024 MEGA of RAM, 1000 Megabits/s of Bandwidth
      * and 1024 MEGA of Storage Size.
      *

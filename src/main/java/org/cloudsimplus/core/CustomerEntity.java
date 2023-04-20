@@ -33,12 +33,15 @@ import org.cloudsimplus.vms.Vm;
  * namely {@link Vm} and {@link Cloudlet}.
  * @author raysaoliveira
  */
-public interface CustomerEntity extends UniquelyIdentifiable, ChangeableId, Delayable {
+public interface CustomerEntity extends UniquelyIdentifiable, ChangeableId, Delayable, Lifetimed, Startable {
+
     /**
-     * Indicates that some attribute was not set and therefore
-     * its value should be ignored.
+     * Gets the time the entity was finished (in seconds).
+     * The value -1 means it has not stopped or has not even started yet.
+     *
+     * @return
      */
-    int NOT_ASSIGNED = -1;
+    double getFinishTime();
 
     /**
      * Gets the {@link DatacenterBroker} that represents the owner of this object.
@@ -53,12 +56,6 @@ public interface CustomerEntity extends UniquelyIdentifiable, ChangeableId, Dela
      * @param broker the {@link DatacenterBroker} to set
      */
     CustomerEntity setBroker(DatacenterBroker broker);
-
-    /**
-     * Gets the CloudSimPlus instance that represents the simulation the Entity is related to.
-     * @return
-     */
-    Simulation getSimulation();
 
     /**
      * Sets the last Datacenter where entity was tried to be created.
@@ -76,7 +73,7 @@ public interface CustomerEntity extends UniquelyIdentifiable, ChangeableId, Dela
      * @return the arrived time (in seconds)
      * @see #getSubmissionDelay()
      */
-    double getArrivedTime();
+    double getBrokerArrivalTime();
 
     /**
      * Sets the absolute time the entity arrived at the broker, before being
@@ -84,7 +81,7 @@ public interface CustomerEntity extends UniquelyIdentifiable, ChangeableId, Dela
      *
      * @param time the time to set
      */
-    void setArrivedTime(double time);
+    CustomerEntity setBrokerArrivalTime(double time);
 
     /**
      * Gets the absolute time the entity was created into a Datacenter.

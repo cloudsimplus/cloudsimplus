@@ -37,8 +37,8 @@ import org.cloudsimplus.util.MathUtil;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 4.0.3
  */
-@Accessors @Getter @Setter @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public abstract class CustomerEntityAbstract implements CustomerEntity {
+@Accessors @Getter @Setter @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
+public abstract class CustomerEntityAbstract extends StartableAbstract implements CustomerEntity {
     @EqualsAndHashCode.Include
     private long id;
 
@@ -46,24 +46,21 @@ public abstract class CustomerEntityAbstract implements CustomerEntity {
     @EqualsAndHashCode.Include
     private DatacenterBroker broker;
 
-    private double arrivedTime;
+    private double brokerArrivalTime;
     private double creationTime;
 
     private Datacenter lastTriedDatacenter;
+    private double lifeTime;
 
     protected CustomerEntityAbstract(){
         lastTriedDatacenter = Datacenter.NULL;
         creationTime = NOT_ASSIGNED;
+        lifeTime = Double.MAX_VALUE;
     }
 
     @Override
     public String getUid() {
         return UniquelyIdentifiable.getUid(broker.getId(), id);
-    }
-
-    @Override
-    public void setArrivedTime(final double time) {
-        this.arrivedTime = MathUtil.nonNegative(time, "Arrived time");
     }
 
     public void setCreationTime() {
@@ -83,4 +80,15 @@ public abstract class CustomerEntityAbstract implements CustomerEntity {
     public Simulation getSimulation() {
         return broker.getSimulation();
     }
+
+    @Override
+	public Lifetimed setLifeTime(final double lifeTime) {
+		if (lifeTime <= 0) {
+			throw new IllegalArgumentException("LifeTime must be greater than 0. If you want to indicate there is not lifeTime, set Double.MAX_VALUE");
+		}
+
+		this.lifeTime = lifeTime;
+		return this;
+	}
+
 }

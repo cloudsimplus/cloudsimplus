@@ -65,9 +65,6 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
     private double timeZone;
 
     private double submissionDelay;
-    private double startTime;
-    private double stopTime;
-    private double lastBusyTime;
 
     @Setter @NonNull
     private VmGroup group;
@@ -253,9 +250,6 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
 
     private void mutableAttributesInit() {
         this.description = "";
-        this.startTime = -1;
-        this.stopTime = -1;
-        this.lastBusyTime = Double.MAX_VALUE;
         setBroker(DatacenterBroker.NULL);
         setSubmissionDelay(0);
         setVmm("Xen");
@@ -284,7 +278,7 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
     @Override
     public double updateProcessing(final double currentTime, @NonNull final MipsShare mipsShare) {
         if (!cloudletScheduler.isEmpty()) {
-            setLastBusyTime();
+            setLastBusyTime(getSimulation().clock());
         }
         final double nextSimulationDelay = cloudletScheduler.updateProcessing(currentTime, mipsShare);
         notifyOnUpdateProcessingListeners();
@@ -439,20 +433,14 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
         }
 
         return ram.getCapacity();
-
     }
 
     @Override
-    public Vm setStartTime(final double startTime) {
-        this.startTime = MathUtil.nonNegative(startTime, "startTime");
-        setLastBusyTime(startTime);
-        return this;
-    }
+    protected void onStart(final double time) {/**/}
 
     @Override
-    public Vm setStopTime(final double stopTime) {
-        this.stopTime = Math.max(stopTime, -1);
-        return this;
+    protected void onFinish(final double time) {
+        notifyOnHostDeallocationListeners(host);
     }
 
     /**
@@ -461,24 +449,7 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
      * @return
      */
     public boolean hasStartedSomeCloudlet() {
-        return lastBusyTime != Double.MAX_VALUE;
-    }
-
-    private void setLastBusyTime() {
-        this.lastBusyTime = getSimulation().clock();
-    }
-
-    private void setLastBusyTime(final double time) {
-        this.lastBusyTime = time;
-    }
-
-    @Override
-    public double getTotalExecutionTime() {
-        if (startTime < 0) {
-            return 0;
-        }
-
-        return stopTime < 0 ? getSimulation().clock() - startTime : stopTime - startTime;
+        return getLastBusyTime() != Double.MAX_VALUE; //TODO -1?
     }
 
     @Override
@@ -934,5 +905,10 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
     public Vm setTimeZone(final double timeZone) {
         this.timeZone = validateTimeZone(timeZone);
         return this;
+    }
+
+    @Override
+    public boolean isFinished() {
+        return !created;
     }
 }

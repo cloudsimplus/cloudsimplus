@@ -76,9 +76,9 @@ public class CloudletTest {
     @Test
     public void testNullObjectTimes(){
         assertAll(
-            () -> assertEquals(-1, Cloudlet.NULL.getArrivalTime()),
-            () -> assertEquals(0, Cloudlet.NULL.getActualCpuTime()),
-            () -> assertEquals(0, Cloudlet.NULL.getExecStartTime()),
+            () -> assertEquals(-1, Cloudlet.NULL.getDcArrivalTime()),
+            () -> assertEquals(0, Cloudlet.NULL.getTotalExecutionTime()),
+            () -> assertEquals(0, Cloudlet.NULL.getStartTime()),
             () -> assertEquals(0, Cloudlet.NULL.getWaitingTime()),
             () -> Cloudlet.NULL.setSubmissionDelay(10),
             () -> assertEquals(0, Cloudlet.NULL.getSubmissionDelay())

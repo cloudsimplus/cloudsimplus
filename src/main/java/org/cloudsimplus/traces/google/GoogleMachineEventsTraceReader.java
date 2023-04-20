@@ -263,7 +263,7 @@ public final class GoogleMachineEventsTraceReader extends GoogleTraceReaderAbstr
          * it cancels the subsequent messages to the next Datacenters.
          * Since the Host was already found, the simulator doesn't need
          * to keep looking for the Host inside the other datacenters.*/
-        hostsForRemoval.forEach(host -> cis.schedule(dc, host.getShutdownTime() + dc.getId() * 0.00001, CloudSimTag.HOST_REMOVE, host.getId()));
+        hostsForRemoval.forEach(host -> cis.schedule(dc, host.getFinishTime() + dc.getId() * 0.00001, CloudSimTag.HOST_REMOVE, host.getId()));
     }
 
     @Override

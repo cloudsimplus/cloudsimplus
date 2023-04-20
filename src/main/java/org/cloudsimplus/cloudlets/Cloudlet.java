@@ -7,10 +7,7 @@
 package org.cloudsimplus.cloudlets;
 
 import org.cloudsimplus.brokers.DatacenterBroker;
-import org.cloudsimplus.core.CloudSimTag;
-import org.cloudsimplus.core.CustomerEntity;
-import org.cloudsimplus.core.UniquelyIdentifiable;
-import org.cloudsimplus.datacenters.Datacenter;
+import org.cloudsimplus.core.*;
 import org.cloudsimplus.listeners.CloudletVmEventInfo;
 import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.resources.ResourceManageable;
@@ -161,15 +158,7 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
      * Gets the time the Cloudlet arrived at a Datacenter to be executed.
      * @return the arrival time in seconds.
      */
-    double getArrivalTime();
-
-    /**
-     * Gets the total execution time of the Cloudlet so far (in seconds),
-     * if the Cloudlet has finished already or not.
-     *
-     * @return
-     */
-    double getActualCpuTime();
+    double getDcArrivalTime();
 
     /**
      * Gets the input file size of this Cloudlet before execution (in bytes).
@@ -232,7 +221,7 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
      *
      * @return the latest execution start time (in seconds)
      */
-    double getExecStartTime();
+    double getStartTime();
 
     /**
      * Gets the time when this Cloudlet has completed executing in the latest Datacenter.
@@ -430,15 +419,6 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
      *         or -1 if the cloudlet hasn't started executing yet.
      */
     double getWaitingTime();
-
-    /**
-     * Checks whether this Cloudlet has finished executing or not.
-     *
-     * @return true if this Cloudlet has finished execution;
-     *         false otherwise
-     */
-    boolean isFinished();
-
 
     /**
      * Checks whether this Cloudlet is still executing.
@@ -646,7 +626,7 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
     boolean addFinishedLengthSoFar(long partialFinishedMI);
 
     /**
-     * Sets the {@link #getExecStartTime() latest execution start time} of this Cloudlet.
+     * Sets the {@link #getStartTime() latest execution start time} of this Cloudlet.
      *
      * <p>
      * <b>NOTE:</b> The execution start time only holds the
@@ -654,8 +634,9 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
      * </p>
      *
      * @param clockTime the latest execution start time
+     * @return
      */
-    void setExecStartTime(double clockTime);
+    Startable setStartTime(double clockTime);
 
     /**
      * Adds a Listener object that will be notified when
@@ -739,24 +720,24 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
     Cloudlet reset();
 
     /**
-     * Gets the lifeTime, which indicates the maximum amount of time the Cloudlet must execute,
-     * regardless of its length (in MI).
-     *
-     * @return the Cloudlet lifeTime (in seconds).
+     * Cloudlet {@inheritDoc}, regardless of its length (in MI).
+     * @return {@inheritDoc}
      * @see #setLifeTime(double)
      */
+    @Override
     double getLifeTime();
 
     /**
-     * Sets the lifeTime, which indicates the maximum amount of time the Cloudlet must execute,
-     * regardless of its length (in MI).
-     *
+     * Sets the Cloudlet {@inheritDoc}.
      * <p>The cloudlet will finish execution as soon as possible, after the given lifeTime has passed,
-     * since its {@link #getExecStartTime() exec start time}.
+     * since its {@link #getStartTime() exec start time}.
      * </p>
      *
-     * <b>IMPORTANT</b>: LifeTime must be larger than {@link Datacenter#getSchedulingInterval()}.
-     * @param lifeTime lifeTime to set (in seconds)
+     * Check {@link Vm#setLifeTime(double)} for additional details.
+     *
+     * @param lifeTime {@inheritDoc}
+     * @return {@inheritDoc}
      */
-	Cloudlet setLifeTime(double lifeTime);
+    @Override
+    Lifetimed setLifeTime(double lifeTime);
 }

@@ -10,6 +10,7 @@ package org.cloudsimplus.hosts;
 import org.cloudsimplus.core.Machine;
 import org.cloudsimplus.core.ResourceStatsComputer;
 import org.cloudsimplus.core.Simulation;
+import org.cloudsimplus.core.Startable;
 import org.cloudsimplus.datacenters.Datacenter;
 import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.listeners.HostEventInfo;
@@ -102,8 +103,17 @@ public interface Host extends Machine, Comparable<Host>, PowerAware<PowerModelHo
     /**
      * Checks if the Host is powered-on or not.
      * @return true if the Host is powered-on, false otherwise.
+     * @see #isFinished()
      */
     boolean isActive();
+
+    /**
+     * Check if the host is powered-off
+     * @return
+     * @see #isActive()
+     */
+    @Override
+    boolean isFinished();
 
     /**
      * Checks if the Host has ever started sometime,
@@ -385,14 +395,16 @@ public interface Host extends Machine, Comparable<Host>, PowerAware<PowerModelHo
      * Gets the last time the Host was shut down (in seconds).
      * @return the last shut downtime or -1 if the Host is active
      */
-    double getShutdownTime();
+    @Override
+    double getFinishTime();
 
     /**
-     * Sets the the Host shut down time.
+     * Sets the Host shut down time.
      * @param shutdownTime the time to set (in seconds)
-     * @see #getShutdownTime()
+     * @see #getFinishTime()
      */
-    void setShutdownTime(double shutdownTime);
+    @Override
+    Startable setFinishTime(double shutdownTime);
 
     /**
      * Gets the elapsed time since the last power on.
