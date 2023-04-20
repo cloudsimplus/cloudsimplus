@@ -245,8 +245,8 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
     }
 
     @Override
-    public double getWaitingTime() {
-        return arrivalTime > NOT_ASSIGNED ? execStartTime - arrivalTime : NOT_ASSIGNED;
+    public double getStartWaitTime() {
+        return dcArrivalTime > NOT_ASSIGNED ? getStartTime() - dcArrivalTime : NOT_ASSIGNED; //TODO If not started?
     }
 
     @Override

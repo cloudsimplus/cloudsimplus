@@ -81,71 +81,31 @@ final class CloudletNull implements Cloudlet {
     @Override public boolean isReturnedToBroker() { return false; }
     @Override public long getJobId() { return 0; }
     @Override public Cloudlet setJobId(long jobId) { return this; }
-    @Override public UtilizationModel getUtilizationModelBw() {
-        return UtilizationModel.NULL;
-    }
-    @Override public UtilizationModel getUtilizationModelCpu() {
-        return UtilizationModel.NULL;
-    }
-    @Override public UtilizationModel getUtilizationModelRam() {
-        return UtilizationModel.NULL;
-    }
+    @Override public UtilizationModel getUtilizationModelBw() { return UtilizationModel.NULL; }
+    @Override public UtilizationModel getUtilizationModelCpu() { return UtilizationModel.NULL; }
+    @Override public UtilizationModel getUtilizationModelRam() { return UtilizationModel.NULL; }
     @Override public UtilizationModel getUtilizationModel(Class<? extends ResourceManageable> resourceClass) { return UtilizationModel.NULL; }
-    @Override public double getUtilizationOfBw() {
-        return 0;
-    }
-    @Override public double getUtilizationOfBw(double time) {
-        return 0.0;
-    }
-    @Override public double getUtilizationOfCpu() {
-        return 0;
-    }
-    @Override public double getUtilizationOfCpu(double time) {
-        return 0.0;
-    }
-    @Override public double getUtilizationOfRam() {
-        return 0;
-    }
-    @Override public double getUtilizationOfRam(double time) {
-        return 0.0;
-    }
-    @Override public Vm getVm() {
-        return Vm.NULL;
-    }
-    @Override public double getWaitingTime() {
-        return 0.0;
-    }
-    @Override public boolean isFinished() {
-        return false;
-    }
-    @Override public boolean hasRequiresFiles() {
-        return false;
-    }
+    @Override public double getUtilizationOfBw() { return 0; }
+    @Override public double getUtilizationOfBw(double time) { return 0.0; }
+    @Override public double getUtilizationOfCpu() { return 0; }
+    @Override public double getUtilizationOfCpu(double time) { return 0.0; }
+    @Override public double getUtilizationOfRam() { return 0; }
+    @Override public double getUtilizationOfRam(double time) { return 0.0; }
+    @Override public Vm getVm() { return Vm.NULL; }
+    @Override public double getStartWaitTime() { return 0.0; }
+    @Override public boolean isFinished() { return false; }
+    @Override public boolean hasRequiresFiles() { return false; }
     @Override public Cloudlet setPriority(int priority) { return this; }
-    @Override public Cloudlet setLength(long length) {
-        return Cloudlet.NULL;
-    }
-    @Override public Cloudlet setFileSize(long fileSize) {
-        return Cloudlet.NULL;
-    }
-    @Override public Cloudlet setOutputSize(long outputSize) {
-        return Cloudlet.NULL;
-    }
+    @Override public Cloudlet setLength(long length) { return this; }
+    @Override public Cloudlet setFileSize(long fileSize) { return this; }
+    @Override public Cloudlet setOutputSize(long outputSize) { return this; }
     @Override public Cloudlet setSizes(long size) { return this; }
-    @Override public boolean setStatus(Status newStatus) {
-        return false;
-    }
+    @Override public boolean setStatus(Status newStatus) { return false; }
     @Override public Cloudlet setNetServiceLevel(int netServiceLevel) { return this; }
-    @Override public Cloudlet setPesNumber(long pesNumber) {
-        return Cloudlet.NULL;
-    }
+    @Override public Cloudlet setPesNumber(long pesNumber) { return this; }
     @Override public Cloudlet setBroker(DatacenterBroker broker) { return this; }
-    @Override public DatacenterBroker getBroker() {
-        return DatacenterBroker.NULL;
-    }
-    @Override public Cloudlet setUtilizationModel(UtilizationModel utilizationModel) {
-        return Cloudlet.NULL;
-    }
+    @Override public DatacenterBroker getBroker() { return DatacenterBroker.NULL; }
+    @Override public Cloudlet setUtilizationModel(UtilizationModel utilizationModel) { return this; }
     @Override public Cloudlet setUtilizationModelBw(UtilizationModel utilizationModelBw) { return this; }
     @Override public Cloudlet setUtilizationModelCpu(UtilizationModel utilizationModelCpu) { return this; }
     @Override public Cloudlet setUtilizationModelRam(UtilizationModel utilizationModelRam) { return this; }

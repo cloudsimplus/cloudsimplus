@@ -79,7 +79,7 @@ public class CloudletTest {
             () -> assertEquals(-1, Cloudlet.NULL.getDcArrivalTime()),
             () -> assertEquals(0, Cloudlet.NULL.getTotalExecutionTime()),
             () -> assertEquals(0, Cloudlet.NULL.getStartTime()),
-            () -> assertEquals(0, Cloudlet.NULL.getWaitingTime()),
+            () -> assertEquals(0, Cloudlet.NULL.getStartWaitTime()),
             () -> Cloudlet.NULL.setSubmissionDelay(10),
             () -> assertEquals(0, Cloudlet.NULL.getSubmissionDelay())
         );

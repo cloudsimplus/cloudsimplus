@@ -417,7 +417,7 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
      * @return the waiting time (in seconds) when the cloudlet waited to execute;
      *         or -1 if the cloudlet hasn't started executing yet.
      */
-    double getWaitingTime();
+    double getStartWaitTime();
 
     /**
      * Checks whether this Cloudlet is still executing.

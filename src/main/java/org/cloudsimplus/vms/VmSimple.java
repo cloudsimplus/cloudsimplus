@@ -449,7 +449,7 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
      * @return
      */
     public boolean hasStartedSomeCloudlet() {
-        return getLastBusyTime() != Double.MAX_VALUE; //TODO -1?
+        return getLastBusyTime() > NOT_ASSIGNED;
     }
 
     @Override

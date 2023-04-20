@@ -90,11 +90,11 @@ public class CloudletSimpleTest {
 
         final CloudletSimple cloudlet = CloudletTestUtil.createCloudlet();
         cloudlet.setBroker(MocksHelper.createMockBroker(cloudsim));
-        assertEquals(-1, cloudlet.getWaitingTime());
+        assertEquals(-1, cloudlet.getStartWaitTime());
         final double expectedWaitingTime = execStartTime - arrivalTime;
         cloudlet.registerArrivalInDatacenter();
         cloudlet.setStartTime(execStartTime);
-        assertEquals(expectedWaitingTime, cloudlet.getWaitingTime());
+        assertEquals(expectedWaitingTime, cloudlet.getStartWaitTime());
     }
 
     @Test

@@ -35,7 +35,7 @@ import lombok.Setter;
 public abstract class StartableAbstract implements Startable {
     private double startTime = NOT_ASSIGNED;
     private double finishTime = NOT_ASSIGNED;
-    private double lastBusyTime = Double.MAX_VALUE; //TODO: -1?
+    private double lastBusyTime = NOT_ASSIGNED;
 
     /**
      * Gets the total execution time of the entity so far (in seconds),
