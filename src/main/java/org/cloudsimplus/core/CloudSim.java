@@ -34,7 +34,7 @@ import java.util.stream.Stream;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Toolkit 1.0
  */
-@Accessors(makeFinal = false) // non-final required for Mockito
+@Accessors(makeFinal = false) // non-final acessors required for Mockito
 abstract class CloudSim implements Simulation {
     /**
      * CloudSim Plus current version.
