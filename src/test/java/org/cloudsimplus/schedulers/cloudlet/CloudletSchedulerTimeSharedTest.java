@@ -1,14 +1,17 @@
 package org.cloudsimplus.schedulers.cloudlet;
 
+import org.cloudsimplus.brokers.DatacenterBrokerSimple;
 import org.cloudsimplus.cloudlets.Cloudlet;
 import org.cloudsimplus.cloudlets.CloudletExecution;
 import org.cloudsimplus.cloudlets.CloudletSimple;
 import org.cloudsimplus.cloudlets.CloudletTestUtil;
+import org.cloudsimplus.mocks.CloudSimMocker;
 import org.cloudsimplus.utilizationmodels.UtilizationModelFull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.cloudsimplus.schedulers.cloudlet.CloudletSchedulerTimeSharedTestUtil.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -272,10 +275,18 @@ public class CloudletSchedulerTimeSharedTest {
         final int vmPes = 1;
 
         final var instance = newSchedulerWithSingleCoreRunningCloudlets(mips, vmPes, cloudlets);
+        final var broker = createBroker();
+        instance.getCloudletExecList().forEach(ce -> ce.getCloudlet().setBroker(broker));
 
         final double time = 2.0;
         instance.updateProcessing(time, instance.getCurrentMipsShare());
         assertEquals(0, instance.getCloudletExecList().size());
+    }
+
+    private static DatacenterBrokerSimple createBroker() {
+        final var simulation = CloudSimMocker.createMock(cloudsim -> cloudsim.clock(List.of(2)));
+        final var broker = new DatacenterBrokerSimple(simulation);
+        return broker;
     }
 
     @Test
