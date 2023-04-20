@@ -143,7 +143,7 @@ public class CloudletSchedulerTimeSharedTest {
     public void testGetCurrentRequestedUtilizationOfRam() {
         final int cloudlets = 2;
         final var model = new UtilizationModelFull();
-        final var instance = CloudletSchedulerTimeSharedTestUtil.newSchedulerWithRunningCloudlets(1000, 2, cloudlets, 1, model);
+        final var instance = newSchedulerWithRunningCloudlets(1000, 2, cloudlets, 1, model);
 
         final double expResult = 2.0; //200% of RAM usage
         final double result = instance.getCurrentRequestedRamPercentUtilization();

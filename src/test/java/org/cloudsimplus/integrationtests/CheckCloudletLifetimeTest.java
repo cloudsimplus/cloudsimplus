@@ -47,7 +47,7 @@ public final class CheckCloudletLifetimeTest {
     private static final int CLOUDLET_PES = 1;
     private static final int CLOUDLET_LENGTH = 100_000;
     private static final int SCHEDULING_INTERVAL = 10; //seconds
-    public static final int CLOUDLET_LIFE_TIME = 50;
+    private static final int CLOUDLET_LIFE_TIME = 50; //seconds
 
     private DatacenterBroker broker;
     private CloudSimPlus simulation;
