@@ -48,7 +48,6 @@ import org.junit.jupiter.api.function.Executable;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -279,7 +278,7 @@ class FinishedEntitiesPurgeTest {
     private void createVmsAndCloudlets(final DatacenterBroker broker) {
         final var vmList = createVms(broker);
         final long length = BASE_CLOUDLET_LENGTH * brokerList.size();
-        final List<Cloudlet> cloudlets = vmList.stream().map(vm -> createCloudlet(vm, length)).collect(Collectors.toList());
+        final List<Cloudlet> cloudlets = vmList.stream().map(vm -> createCloudlet(vm, length)).toList();
         broker.submitCloudletList(cloudlets);
     }
 
