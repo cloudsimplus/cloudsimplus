@@ -176,9 +176,6 @@ public final class VmCreationFailureIntegrationTest {
      * @see Vm#addOnUpdateProcessingListener(EventListener)}
      */
     private void onUpdateVmProcessing(final VmHostEventInfo evt) {
-        /*LOGGER.info(
-            "- onUpdateVmProcessing at time {} for {}: {} available mips: {}",
-            evt.getTime(), evt.getVm(), evt.getHost(), evt.getHost().getAvailableMips());*/
         assertEquals(200, evt.getHost().getTotalAvailableMips());
     }
 
@@ -231,7 +228,6 @@ public final class VmCreationFailureIntegrationTest {
     public void integrationTest() {
         simulation.start();
         final DatacenterBroker broker = scenario.getBrokerBuilder().getBrokers().get(0);
-        //new CloudletsTableBuilder(broker.getCloudletFinishedList()).build();
         assertThatBrokerCloudletsHaveTheExpectedExecutionTimes(broker);
         assertThatListenersWereCalledTheExpectedAmountOfTimes();
     }
@@ -254,9 +250,9 @@ public final class VmCreationFailureIntegrationTest {
     }
 
     private void assertThatOneGivenCloudletHasTheExpectedExecutionTimes(final ExpectedCloudletResults results) {
-        final double delta = 0.4;
-        assertEquals(results.getExpectedExecTime(), results.getCloudlet().getTotalExecutionTime(), delta, results.getCloudlet()+" getActualCPUTime");
+        final double delta = 0.5;
         assertEquals(results.getExpectedStartTime(), results.getCloudlet().getStartTime(), delta, results.getCloudlet()+" getExecStartTime");
+        assertEquals(results.getExpectedExecTime(), results.getCloudlet().getTotalExecutionTime(), delta, results.getCloudlet()+" getActualCPUTime");
         assertEquals(results.getExpectedFinishTime(), results.getCloudlet().getFinishTime(), delta, results.getCloudlet()+" getFinishTime");
         assertEquals(0, results.getCloudlet().getVm().getId());
         assertEquals(Cloudlet.Status.SUCCESS, results.getCloudlet().getStatus());

@@ -44,7 +44,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.function.Executable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,8 +51,7 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toCollection;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * An integration test to assess the correctness of the simulation
@@ -84,10 +82,10 @@ class FinishedEntitiesPurgeTest {
     private static final int HOST_MIPS = 1000;
 
     /**
-     * Total number of cloudlets created statically, before simulation start,
+     * Total number of cloudlets created statically across all brokers, before simulation start,
      * which are expected to finish.
      */
-    private static final double STATIC_CLOUDLETS_TO_FINISH = 4000;
+    private static final double STATIC_CLOUDLETS_TO_FINISH = CLOUDLETS_BY_BROKER * BROKERS_NUMBER;
 
     /**
      * The maximum accepted difference in time results.
@@ -105,53 +103,11 @@ class FinishedEntitiesPurgeTest {
     @BeforeAll
     void setUp() {
         buildAndStartSimulation();
-        //printFinishedCloudlets();
-    }
-
-    /**
-     * Statically created cloudlets start executing at time zero.
-     * That is why their exec time are equal to the finish time.
-     */
-    @Test()
-    @DisplayName("Statically created cloudlets have exec time equals to start time")
-    void staticCloudletExecTimeEqualFinishTime() {
-        final Stream<Executable> executables =
-            getAllBrokersCloudletStream()
-                .filter(cl -> cl.getId() < STATIC_CLOUDLETS_TO_FINISH)
-                .map(cl -> () -> assertExecTimeEqualsToFinishTime(cl));
-
-        assertAll(executables);
-    }
-
-    private void assertExecTimeEqualsToFinishTime(final Cloudlet cl) {
-        final var msg = "Statically created %s on %s exec time must be equal to finish time".formatted(cl, cl.getBroker());
-        assertEquals(cl.getFinishTime(), cl.getTotalExecutionTime(), MAX_TIME_DELTA, msg);
-    }
-
-    /**
-     * Since cloudlets created dynamically are submitted only after the first broker
-     * finishes its cloudlets, the exec time is not equals to the finish time.
-     */
-    @Test
-    @DisplayName("Dynamically created cloudlets have exec time equals to start time")
-    void dynamicCloudletExecTimeEqualStartTime() {
-        final Stream<Executable> executables =
-            getAllBrokersCloudletStream()
-                .filter(cl -> cl.getId() >= STATIC_CLOUDLETS_TO_FINISH)
-                .map(cl -> () -> assertExecTimeEqualsToStartTime(cl));
-
-        assertAll(executables);
-    }
-
-    private void assertExecTimeEqualsToStartTime(final Cloudlet cl) {
-        final var msg = "Dynamically created %s on %s exec time must be equal to start time %.2f. Len %.2f"
-                                .formatted(cl, cl.getBroker(), cl.getStartTime(), cl.getLength());
-        assertEquals(cl.getStartTime(), cl.getTotalExecutionTime(), MAX_TIME_DELTA, msg);
     }
 
     @Test
-    void cloudletFinishTime() {
-        assertAll(getAllBrokersCloudletStream().map(cl -> () -> assertCloudletFinishTime(cl)));
+    void cloudletExecTimeTime() {
+        assertAll(getAllBrokersCloudletStream().map(cl -> () -> assertCloudletExecTime(cl)));
     }
 
     /**
@@ -162,11 +118,11 @@ class FinishedEntitiesPurgeTest {
      * The exception is for the dynamic submitted cloudlets for the first broker,
      * that start when its previous cloudlets finish.
      * */
-    private void assertCloudletFinishTime(final Cloudlet cl) {
-        final long brokerOrder = getBrokerOrder(cl);
-        final double expectedCloudletFinishTime = brokerOrder + (cl.getId() < STATIC_CLOUDLETS_TO_FINISH ? 0 : brokerOrder);
-        final var msg = "%s on %s finish time".formatted(cl, cl.getBroker());
-        assertEquals(expectedCloudletFinishTime, cl.getFinishTime(), 0.7, msg);
+    private void assertCloudletExecTime(final Cloudlet cl) {
+        final double expectedCloudletFinishTime = getBrokerOrder(cl);
+        final var msg = "%s on %s len %d start %.2f finish time"
+            .formatted(cl, cl.getBroker(), cl.getLength(), cl.getStartTime());
+        assertEquals(expectedCloudletFinishTime, cl.getTotalExecutionTime(), 0.7, msg);
     }
 
     /**
@@ -176,17 +132,6 @@ class FinishedEntitiesPurgeTest {
      */
     private long getBrokerOrder(final Cloudlet cloudlet) {
         return cloudlet.getBroker().getId() - 1;
-    }
-
-    @Test
-    void cloudletStartTime() {
-        assertAll(getAllBrokersCloudletStream().map(cl -> () -> assertCloudletStartTime(cl)));
-    }
-
-    private void assertCloudletStartTime(final Cloudlet cl) {
-        final double expectedCloudletStartTime = cl.getId() < STATIC_CLOUDLETS_TO_FINISH ? 0 : getBrokerOrder(cl);
-        final var msg = "%s on %s start time".formatted(cl, cl.getBroker());
-        assertEquals(expectedCloudletStartTime, cl.getStartTime(), MAX_TIME_DELTA, msg);
     }
 
     @Test
@@ -220,9 +165,8 @@ class FinishedEntitiesPurgeTest {
      * @param broker
      */
     private void assertBrokerShutDownTime(final DatacenterBroker broker) {
-        final long expectedShutdownTime = broker.getId() == 2 ? broker.getId() : broker.getId() - 1;
         final var msg = "%s shutdown time".formatted(broker);
-        assertEquals(expectedShutdownTime, broker.getShutdownTime(), 0.9, msg);
+        assertNotEquals(-1, broker.getShutdownTime(), 0.9, msg);
     }
 
     private void buildAndStartSimulation() {

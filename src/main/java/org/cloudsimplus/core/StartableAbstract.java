@@ -49,7 +49,7 @@ public abstract class StartableAbstract implements Startable {
             return 0;
         }
 
-        final double time = finishTime <= NOT_ASSIGNED ? getSimulation().clock() : finishTime;
+        final double time = finishTime > NOT_ASSIGNED ? finishTime : getSimulation().clock();
         return time - startTime;
     }
 

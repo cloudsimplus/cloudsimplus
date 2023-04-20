@@ -313,6 +313,7 @@ public class CloudletSimpleTest {
         assertFalse(cloudlet.isFinished());
 
         cloudlet.addFinishedLengthSoFar(length);
+        cloudlet.notifyOnUpdateProcessingListeners(1000);
         assertTrue(cloudlet.isFinished());
     }
 

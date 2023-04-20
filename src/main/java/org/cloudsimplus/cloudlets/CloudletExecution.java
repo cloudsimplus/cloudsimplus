@@ -178,7 +178,7 @@ public class CloudletExecution {
         final double clock = cloudlet.getSimulation().clock();
         if (newStatus == Cloudlet.Status.INEXEC || isTryingToResumePausedCloudlet(newStatus, oldStatus)) {
             startExecTime = clock;
-            if(cloudlet.getStartTime() <= 0) {
+            if(cloudlet.getStartTime() <= Cloudlet.NOT_ASSIGNED) {
                 cloudlet.setStartTime(startExecTime);
             }
         }

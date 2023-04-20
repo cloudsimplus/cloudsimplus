@@ -230,7 +230,13 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
 
     @Override
     public void notifyOnUpdateProcessingListeners(final double time) {
+        setFinishTime();
         onUpdateProcessingListeners.forEach(listener -> listener.update(CloudletVmEventInfo.of(listener, time, this)));
+    }
+
+    private void setFinishTime(){
+        if(isLifeTimeReached() || length > 0 && finishedLengthSoFar >= length)
+            setFinishTime(getSimulation().clock());
     }
 
     @Override
@@ -274,7 +280,7 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
 
     @Override
     public boolean isFinished() {
-        return isLifeTimeReached() || (getLength() > 0 && getFinishedLengthSoFar() >= getLength());
+        return getFinishTime() > NOT_ASSIGNED;
     }
 
     @Override
