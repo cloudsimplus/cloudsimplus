@@ -76,14 +76,14 @@ public interface Startable {
     Startable setFinishTime(double stopTime);
 
     /**
-     * Gets the last time the entity was running some process.
+     * Gets the last time the entity was running some process or -1 if it has not been busy yet.
      * @return the last busy time (in seconds)
      */
     double getLastBusyTime();
 
     /**
      * Set the last time the entity was running some process.
-     * @param time the time to set
+     * @param time the time to set (-1 to indicate the entity has not been busy yet)
      * @return
      */
     Startable setLastBusyTime(double time);
