@@ -249,7 +249,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     private void configureEntities(final List<? extends CustomerEntity> customerEntities) {
         for (final var entity : customerEntities) {
             entity.setBroker(this);
-            entity.setArrivedTime(getSimulation().clock());
+            entity.setBrokerArrivalTime(getSimulation().clock());
             if(entity instanceof VmGroup vmGroup) {
                 configureEntities(vmGroup.getVmList());
             }
@@ -869,8 +869,9 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     @Override
     public DatacenterBroker requestIdleVmDestruction(final Vm vm) {
         if (vm.isCreated()) {
-            if(isVmIdleEnough(vm) || isFinished()) {
-                LOGGER.info("{}: {}: Requesting {} destruction.", getSimulation().clockStr(), getName(), vm);
+            if(isFinished() || vm.isLifeTimeReached() || isVmIdleEnough(vm)) {
+                final var lifeTimeMsg = vm.isLifeTimeReached() ? " after reaching defined lifetime" : "";
+                LOGGER.info("{}: {}: Requesting {} destruction{}.", getSimulation().clockStr(), getName(), vm, lifeTimeMsg);
                 sendNow(getDatacenter(vm), CloudSimTag.VM_DESTROY, vm);
             }
 

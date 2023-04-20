@@ -90,22 +90,22 @@ public class CloudletSimpleTest {
 
         final CloudletSimple cloudlet = CloudletTestUtil.createCloudlet();
         cloudlet.setBroker(MocksHelper.createMockBroker(cloudsim));
-        assertEquals(-1, cloudlet.getWaitingTime());
+        assertEquals(-1, cloudlet.getStartWaitTime());
         final double expectedWaitingTime = execStartTime - arrivalTime;
         cloudlet.registerArrivalInDatacenter();
-        cloudlet.setExecStartTime(execStartTime);
-        assertEquals(expectedWaitingTime, cloudlet.getWaitingTime());
+        cloudlet.setStartTime(execStartTime);
+        assertEquals(expectedWaitingTime, cloudlet.getStartWaitTime());
     }
 
     @Test
-    public void testGetExecStartTime() {
+    public void testGetStartTime() {
         final CloudletSimple cloudlet = CloudletTestUtil.createCloudlet();
-        assertEquals(0, cloudlet.getExecStartTime());
+        assertEquals(Cloudlet.NOT_ASSIGNED, cloudlet.getStartTime());
 
         final int execStartTime = 10;
         cloudlet.registerArrivalInDatacenter();
-        cloudlet.setExecStartTime(execStartTime);
-        assertEquals(execStartTime, cloudlet.getExecStartTime());
+        cloudlet.setStartTime(execStartTime);
+        assertEquals(execStartTime, cloudlet.getStartTime());
     }
 
     @Test
@@ -114,9 +114,10 @@ public class CloudletSimpleTest {
 
         final CloudSimPlus cloudsim = CloudSimMocker.createMock(mocker -> mocker.clock(simulationClock));
         final CloudletSimple cloudlet = CloudletTestUtil.createCloudlet();
+        cloudlet.setStartTime(0);
 
         cloudlet.setBroker(MocksHelper.createMockBroker(cloudsim));
-        assertEquals(simulationClock, cloudlet.getActualCpuTime());
+        assertEquals(simulationClock, cloudlet.getTotalExecutionTime());
     }
 
     @Test
@@ -130,9 +131,9 @@ public class CloudletSimpleTest {
 
         cloudlet.setBroker(MocksHelper.createMockBroker(cloudsim));
         cloudlet.registerArrivalInDatacenter();
-        cloudlet.setExecStartTime(execStartTime);
+        cloudlet.setStartTime(execStartTime);
         cloudlet.setStatus(Cloudlet.Status.SUCCESS);
-        assertEquals(actualCpuTime, cloudlet.getActualCpuTime());
+        assertEquals(actualCpuTime, cloudlet.getTotalExecutionTime());
     }
 
     @Test
@@ -312,6 +313,7 @@ public class CloudletSimpleTest {
         assertFalse(cloudlet.isFinished());
 
         cloudlet.addFinishedLengthSoFar(length);
+        cloudlet.notifyOnUpdateProcessingListeners(1000);
         assertTrue(cloudlet.isFinished());
     }
 

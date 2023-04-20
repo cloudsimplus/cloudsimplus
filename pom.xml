@@ -4,7 +4,7 @@
 
     <groupId>org.cloudsimplus</groupId>
     <artifactId>cloudsimplus</artifactId>
-    <version>8.1.0</version>
+    <version>8.2.0</version>
 
     <name>CloudSim Plus API</name>
     <description>CloudSim Plus: A modern, highly extensible and easier-to-use Java 17+ Framework for Modeling and Simulation of Cloud Computing Infrastructures and Services</description>
@@ -100,7 +100,7 @@
                             <tags>
                                 <tag>
                                     <name>TODO</name>
-                                    <!-- TODO tag for all places -->
+                                    <!-- "to do" tag for all places -->
                                     <placement>a</placement>
                                     <head>To do something:</head>
                                 </tag>
@@ -138,7 +138,7 @@
                             <tags>
                                 <tag>
                                     <name>TODO</name>
-                                    <!-- TODO tag for all places -->
+                                    <!-- "to do" tag for all places -->
                                     <placement>a</placement>
                                     <head>To do something:</head>
                                 </tag>
@@ -220,7 +220,7 @@
                             <tags>
                                 <tag>
                                     <name>TODO</name>
-                                    <!-- TODO tag for all places -->
+                                    <!-- "to do" tag for all places -->
                                     <placement>a</placement>
                                     <head>To do something:</head>
                                 </tag>
@@ -297,7 +297,7 @@
                         <tags>
                             <tag>
                                 <name>TODO</name>
-                                <!-- TODO tag for all places -->
+                                <!-- "to do" tag for all places -->
                                 <placement>a</placement>
                                 <head>To do something:</head>
                             </tag>
@@ -530,7 +530,7 @@
                     <tags>
                         <tag>
                             <name>TODO</name>
-                            <!-- TODO tag for all places -->
+                            <!-- "to do" tag for all places -->
                             <placement>a</placement>
                             <head>To do something:</head>
                         </tag>

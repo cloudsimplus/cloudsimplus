@@ -59,7 +59,7 @@ public enum MachineEventType {
         @Override
         protected boolean process(final GoogleMachineEventsTraceReader reader) {
             final Host host = reader.createHostFromTraceLine();
-            host.setShutdownTime(MachineEventField.TIMESTAMP.getValue(reader));
+            host.setFinishTime(MachineEventField.TIMESTAMP.getValue(reader));
             return reader.addHostToRemovalList(host);
         }
     },

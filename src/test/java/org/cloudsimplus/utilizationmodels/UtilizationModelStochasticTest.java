@@ -48,7 +48,6 @@ public class UtilizationModelStochasticTest {
         /*Even if the PRNG always return a negative value (-1 in this case),
         * the UtilizationModel must get its absolute value to
         * return the resource utilization.*/
-        System.out.println("Generated Pseudo Random Number: " + prng.sample());
         final double expected = 1;
         final double result = utilizationModel.getUtilization();
         assertEquals(expected, result);

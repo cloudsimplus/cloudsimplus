@@ -38,32 +38,23 @@ import java.util.List;
  * @since CloudSim 1.2.0
  */
 final class AbstractMachineNull implements AbstractMachine {
-    @Override public Resource getBw() {
-        return Resource.NULL;
-    }
-    @Override public Resource getRam() {
-        return Resource.NULL;
-    }
-    @Override public Resource getStorage() {
-        return Resource.NULL;
-    }
-    @Override public long getPesNumber() {
-        return 0;
-    }
-    @Override public double getMips() {
-        return 0;
-    }
-    @Override public Simulation getSimulation() {
-        return Simulation.NULL;
-    }
-    @Override public double getStartTime() { return 0; }
+    @Override public Resource getBw() { return Resource.NULL; }
+    @Override public Resource getRam() { return Resource.NULL; }
+    @Override public Resource getStorage() { return Resource.NULL; }
+    @Override public long getPesNumber() { return 0; }
+    @Override public double getMips() { return 0; }
+    @Override public Simulation getSimulation() { return Simulation.NULL; }
+    @Override public double getTotalExecutionTime() { return 0; }
+    @Override public double getStartTime() { return -1; }
+    @Override public boolean isFinished() { return true; }
     @Override public AbstractMachine setStartTime(double startTime) { return this; }
+    @Override public double getFinishTime() { return -1; }
+    @Override public Startable setFinishTime(double stopTime) { return this; }
     @Override public double getLastBusyTime() { return 0; }
+    @Override public Startable setLastBusyTime(double time) { return this; }
     @Override public boolean isIdle() { return true; }
     @Override public AbstractMachine setId(long id) { return this; }
-    @Override public long getId() {
-        return 0;
-    }
+    @Override public long getId() { return 0; }
     @Override public double getTotalMipsCapacity() { return 0.0; }
     @Override public List<ResourceManageable> getResources() { return Collections.emptyList(); }
 }

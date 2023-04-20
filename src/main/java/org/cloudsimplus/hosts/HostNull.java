@@ -25,6 +25,7 @@ package org.cloudsimplus.hosts;
 
 import org.cloudsimplus.core.AbstractMachine;
 import org.cloudsimplus.core.Simulation;
+import org.cloudsimplus.core.Startable;
 import org.cloudsimplus.datacenters.Datacenter;
 import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.listeners.HostEventInfo;
@@ -117,15 +118,13 @@ final class HostNull implements Host {
     @Override public double getStartTime() { return -1; }
     @Override public AbstractMachine setStartTime(double startTime) { return this; }
     @Override public double getFirstStartTime() { return -1; }
-    @Override public double getShutdownTime() { return 0; }
-    @Override public boolean isFailed() {
-        return false;
-    }
-    @Override public boolean isSuitableForVm(Vm vm) {
-        return false;
-    }
+    @Override public double getFinishTime() { return 0; }
+    @Override public Startable setFinishTime(double stopTime) { return this; }
+    @Override public boolean isFailed() { return false; }
+    @Override public boolean isSuitableForVm(Vm vm) { return false; }
     @Override public HostSuitability getSuitabilityFor(Vm vm) { return new HostSuitability(); }
     @Override public boolean isActive() { return false; }
+    @Override public boolean isFinished() { return true; }
     @Override public boolean hasEverStarted() { return false; }
     @Override public Host setActive(boolean activate) { return this; }
     @Override public <T extends Vm> Set<T> getVmsMigratingIn() {
@@ -151,16 +150,12 @@ final class HostNull implements Host {
     @Override public boolean removeOnShutdownListener(EventListener<HostEventInfo> listener) { return false; }
     @Override public boolean removeOnUpdateProcessingListener(EventListener<HostUpdatesVmsProcessingEventInfo> listener) { return false; }
     @Override public Host addOnUpdateProcessingListener(EventListener<HostUpdatesVmsProcessingEventInfo> listener) { return NULL; }
-    @Override public long getAvailableStorage() {
-        return 0L;
-    }
-    @Override public boolean setFailed(boolean failed) {
-        return false;
-    }
-    @Override public Simulation getSimulation() {
-        return Simulation.NULL;
-    }
+    @Override public long getAvailableStorage() { return 0L; }
+    @Override public boolean setFailed(boolean failed) { return false; }
+    @Override public Simulation getSimulation() { return Simulation.NULL; }
+    @Override public double getTotalExecutionTime() { return 0; }
     @Override public double getLastBusyTime() { return 0; }
+    @Override public Startable setLastBusyTime(double time) { return this; }
     @Override public boolean isIdle() { return true; }
     @Override public Host setSimulation(Simulation simulation) { return this; }
     @Override public ResourceProvisioner getProvisioner(Class<? extends ResourceManageable> clazz) { return ResourceProvisioner.NULL; }
@@ -197,7 +192,6 @@ final class HostNull implements Host {
     @Override public Host setLazySuitabilityEvaluation(boolean lazySuitabilityEvaluation) { return this; }
     @Override public double getTotalUpTime() { return 0; }
     @Override public double getTotalUpTimeHours() { return 0; }
-    @Override public void setShutdownTime(double shutdownTime) {/**/}
     @Override public double getUpTime() { return 0; }
     @Override public double getUpTimeHours() { return 0; }
     @Override public double getIdleShutdownDeadline() { return -1; }

@@ -24,7 +24,9 @@
 package org.cloudsimplus.cloudlets;
 
 import org.cloudsimplus.brokers.DatacenterBroker;
+import org.cloudsimplus.core.CustomerEntity;
 import org.cloudsimplus.core.Simulation;
+import org.cloudsimplus.core.Startable;
 import org.cloudsimplus.datacenters.Datacenter;
 import org.cloudsimplus.listeners.CloudletVmEventInfo;
 import org.cloudsimplus.listeners.EventListener;
@@ -59,114 +61,51 @@ final class CloudletNull implements Cloudlet {
     @Override public boolean deleteRequiredFile(String filename) {
         return false;
     }
-    @Override public double getArrivalTime() { return -1; }
-    @Override public double getActualCpuTime() {
-        return 0.0;
-    }
-    @Override public int getPriority() {
-        return 0;
-    }
-    @Override public long getFileSize() {
-        return 0L;
-    }
-    @Override public long getFinishedLengthSoFar() {
-        return 0L;
-    }
-    @Override public long getLength() {
-        return 0L;
-    }
-    @Override public long getOutputSize() {
-        return 0L;
-    }
-    @Override public long getTotalLength() {
-        return 0L;
-    }
-    @Override public double getExecStartTime() {
-        return 0.0;
-    }
-    @Override public double getFinishTime() {
-        return 0.0;
-    }
-    @Override public int getNetServiceLevel() {
-        return 0;
-    }
-    @Override public long getPesNumber() {
-        return 0;
-    }
-    @Override public List<String> getRequiredFiles() {
-        return Collections.emptyList();
-    }
-    @Override public Status getStatus() {
-        return Status.FAILED;
-    }
+    @Override public double getDcArrivalTime() { return -1; }
+    @Override public double getTotalExecutionTime() { return 0; }
+    @Override public int getPriority() { return 0; }
+    @Override public long getFileSize() { return 0L; }
+    @Override public long getFinishedLengthSoFar() { return 0L; }
+    @Override public long getLength() { return 0L; }
+    @Override public long getOutputSize() { return 0L; }
+    @Override public long getTotalLength() { return 0L; }
+    @Override public double getStartTime() { return 0; }
+    @Override public double getFinishTime() { return 0; }
+    @Override public Startable setFinishTime(double stopTime) { return this; }
+    @Override public double getLastBusyTime() { return 0; }
+    @Override public Startable setLastBusyTime(double time) { return this; }
+    @Override public int getNetServiceLevel() { return 0; }
+    @Override public long getPesNumber() { return 0; }
+    @Override public List<String> getRequiredFiles() { return Collections.emptyList(); }
+    @Override public Status getStatus() { return Status.FAILED; }
     @Override public boolean isReturnedToBroker() { return false; }
     @Override public long getJobId() { return 0; }
     @Override public Cloudlet setJobId(long jobId) { return this; }
-    @Override public UtilizationModel getUtilizationModelBw() {
-        return UtilizationModel.NULL;
-    }
-    @Override public UtilizationModel getUtilizationModelCpu() {
-        return UtilizationModel.NULL;
-    }
-    @Override public UtilizationModel getUtilizationModelRam() {
-        return UtilizationModel.NULL;
-    }
+    @Override public UtilizationModel getUtilizationModelBw() { return UtilizationModel.NULL; }
+    @Override public UtilizationModel getUtilizationModelCpu() { return UtilizationModel.NULL; }
+    @Override public UtilizationModel getUtilizationModelRam() { return UtilizationModel.NULL; }
     @Override public UtilizationModel getUtilizationModel(Class<? extends ResourceManageable> resourceClass) { return UtilizationModel.NULL; }
-    @Override public double getUtilizationOfBw() {
-        return 0;
-    }
-    @Override public double getUtilizationOfBw(double time) {
-        return 0.0;
-    }
-    @Override public double getUtilizationOfCpu() {
-        return 0;
-    }
-    @Override public double getUtilizationOfCpu(double time) {
-        return 0.0;
-    }
-    @Override public double getUtilizationOfRam() {
-        return 0;
-    }
-    @Override public double getUtilizationOfRam(double time) {
-        return 0.0;
-    }
-    @Override public Vm getVm() {
-        return Vm.NULL;
-    }
-    @Override public double getWaitingTime() {
-        return 0.0;
-    }
-    @Override public boolean isFinished() {
-        return false;
-    }
-    @Override public boolean hasRequiresFiles() {
-        return false;
-    }
+    @Override public double getUtilizationOfBw() { return 0; }
+    @Override public double getUtilizationOfBw(double time) { return 0.0; }
+    @Override public double getUtilizationOfCpu() { return 0; }
+    @Override public double getUtilizationOfCpu(double time) { return 0.0; }
+    @Override public double getUtilizationOfRam() { return 0; }
+    @Override public double getUtilizationOfRam(double time) { return 0.0; }
+    @Override public Vm getVm() { return Vm.NULL; }
+    @Override public double getStartWaitTime() { return 0.0; }
+    @Override public boolean isFinished() { return false; }
+    @Override public boolean hasRequiresFiles() { return false; }
     @Override public Cloudlet setPriority(int priority) { return this; }
-    @Override public Cloudlet setLength(long length) {
-        return Cloudlet.NULL;
-    }
-    @Override public Cloudlet setFileSize(long fileSize) {
-        return Cloudlet.NULL;
-    }
-    @Override public Cloudlet setOutputSize(long outputSize) {
-        return Cloudlet.NULL;
-    }
+    @Override public Cloudlet setLength(long length) { return this; }
+    @Override public Cloudlet setFileSize(long fileSize) { return this; }
+    @Override public Cloudlet setOutputSize(long outputSize) { return this; }
     @Override public Cloudlet setSizes(long size) { return this; }
-    @Override public boolean setStatus(Status newStatus) {
-        return false;
-    }
+    @Override public boolean setStatus(Status newStatus) { return false; }
     @Override public Cloudlet setNetServiceLevel(int netServiceLevel) { return this; }
-    @Override public Cloudlet setPesNumber(long pesNumber) {
-        return Cloudlet.NULL;
-    }
+    @Override public Cloudlet setPesNumber(long pesNumber) { return this; }
     @Override public Cloudlet setBroker(DatacenterBroker broker) { return this; }
-    @Override public DatacenterBroker getBroker() {
-        return DatacenterBroker.NULL;
-    }
-    @Override public Cloudlet setUtilizationModel(UtilizationModel utilizationModel) {
-        return Cloudlet.NULL;
-    }
+    @Override public DatacenterBroker getBroker() { return DatacenterBroker.NULL; }
+    @Override public Cloudlet setUtilizationModel(UtilizationModel utilizationModel) { return this; }
     @Override public Cloudlet setUtilizationModelBw(UtilizationModel utilizationModelBw) { return this; }
     @Override public Cloudlet setUtilizationModelCpu(UtilizationModel utilizationModelCpu) { return this; }
     @Override public Cloudlet setUtilizationModelRam(UtilizationModel utilizationModelRam) { return this; }
@@ -179,32 +118,25 @@ final class CloudletNull implements Cloudlet {
     }
     @Override public Cloudlet setLastTriedDatacenter(Datacenter lastTriedDatacenter) { return this; }
     @Override public Datacenter getLastTriedDatacenter() { return Datacenter.NULL; }
-    @Override public double getArrivedTime() { return 0; }
-    @Override public void setArrivedTime(double time) { /**/ }
+    @Override public double getBrokerArrivalTime() { return 0; }
+    @Override public CustomerEntity setBrokerArrivalTime(double time) { return this; }
     @Override public double getCreationTime() { return 0; }
-    @Override public double getWaitTime() { return 0; }
+    @Override public double getCreationWaitTime() { return 0; }
     @Override public boolean removeOnUpdateProcessingListener(EventListener<CloudletVmEventInfo> listener) { return false; }
     @Override public Cloudlet addOnUpdateProcessingListener(EventListener<CloudletVmEventInfo> listener) { return Cloudlet.NULL; }
     @Override public double getSubmissionDelay() { return 0; }
     @Override public boolean isDelayed() { return false; }
     @Override public void setSubmissionDelay(double submissionDelay) {/**/}
     @Override public boolean isBoundToVm() { return false; }
-    @Override public int compareTo(Cloudlet cloudlet) {
-        return 0;
-    }
-    @Override public String toString() {
-        return "Cloudlet.NULL";
-    }
-    @Override public boolean addFinishedLengthSoFar(long partialFinishedMI) {
-        return false;
-    }
-    @Override public void setExecStartTime(double clockTime) {/**/}
+    @Override public int compareTo(Cloudlet cloudlet) { return 0; }
+    @Override public String toString() { return "Cloudlet.NULL"; }
+    @Override public boolean addFinishedLengthSoFar(long partialFinishedMI) { return false; }
+    @Override public Startable setStartTime(double time) { return this; }
     @Override public Cloudlet addOnStartListener(EventListener<CloudletVmEventInfo> listener) { return this; }
     @Override public boolean removeOnStartListener(EventListener<CloudletVmEventInfo> listener) { return false; }
-    @Override public double registerArrivalInDatacenter() {
-        return -1;
-    }
+    @Override public double registerArrivalInDatacenter() { return -1; }
     @Override public Cloudlet reset() { return this; }
     @Override public Cloudlet setLifeTime(final double lifeTime) { return this; }
     @Override public double getLifeTime() { return -1; }
+    @Override public boolean isLifeTimeReached() { return true; }
 }

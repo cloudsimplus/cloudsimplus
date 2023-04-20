@@ -34,12 +34,12 @@ import java.util.stream.Stream;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Toolkit 1.0
  */
-@Accessors(makeFinal = false) // non-final required for Mockito
+@Accessors(makeFinal = false) // non-final acessors required for Mockito
 abstract class CloudSim implements Simulation {
     /**
      * CloudSim Plus current version.
      */
-    public static final String VERSION = "CloudSim Plus 8.1.0";
+    public static final String VERSION = "CloudSim Plus 8.2.0";
 
     public static final Logger LOGGER = LoggerFactory.getLogger(CloudSim.class.getSimpleName());
 

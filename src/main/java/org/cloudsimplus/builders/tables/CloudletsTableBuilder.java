@@ -113,9 +113,9 @@ public class CloudletsTableBuilder extends TableBuilderAbstract<Cloudlet> {
         addColumn(getTable().newColumn("CloudletLen", MI, lengthFormat), Cloudlet::getLength);
         addColumn(getTable().newColumn("FinishedLen", MI, lengthFormat), Cloudlet::getFinishedLengthSoFar);
         addColumn(getTable().newColumn("CloudletPEs", CPU_CORES, peFormat), Cloudlet::getPesNumber);
-        addColumn(getTable().newColumn("StartTime", SECONDS, timeFormat), Cloudlet::getExecStartTime);
+        addColumn(getTable().newColumn("StartTime", SECONDS, timeFormat), Cloudlet::getStartTime);
         addColumn(getTable().newColumn("FinishTime", SECONDS, timeFormat), Cloudlet::getFinishTime);
-        addColumn(getTable().newColumn("ExecTime", SECONDS, timeFormat), Cloudlet::getActualCpuTime);
+        addColumn(getTable().newColumn("ExecTime", SECONDS, timeFormat), Cloudlet::getTotalExecutionTime);
     }
 
     /**

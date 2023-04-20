@@ -11,10 +11,7 @@ import org.cloudsimplus.autoscaling.HorizontalVmScaling;
 import org.cloudsimplus.autoscaling.VerticalVmScaling;
 import org.cloudsimplus.brokers.DatacenterBroker;
 import org.cloudsimplus.cloudlets.Cloudlet;
-import org.cloudsimplus.core.AbstractMachine;
-import org.cloudsimplus.core.CustomerEntity;
-import org.cloudsimplus.core.ResourceStatsComputer;
-import org.cloudsimplus.core.UniquelyIdentifiable;
+import org.cloudsimplus.core.*;
 import org.cloudsimplus.datacenters.Datacenter;
 import org.cloudsimplus.datacenters.TimeZoned;
 import org.cloudsimplus.hosts.Host;
@@ -692,16 +689,6 @@ public interface Vm extends AbstractMachine<Resource>, UniquelyIdentifiable, Com
     CustomerEntity setBroker(DatacenterBroker broker);
 
     /**
-     * Gets the time the VM was destroyed into the last Host it executed (in seconds).
-     * The value -1 means the VM has not stopped or has not even
-     * started yet.
-     *
-     * @return
-     * @see #isCreated()
-     */
-    double getStopTime();
-
-    /**
      * Gets the total time (in seconds) the Vm spent executing.
      * It considers the entire VM execution even if in different Hosts
      * it has possibly migrated.
@@ -710,18 +697,8 @@ public interface Vm extends AbstractMachine<Resource>, UniquelyIdentifiable, Com
      *         the time executed so far if the VM is running yet,
      *         or 0 if it hasn't started.
      */
+    @Override
     double getTotalExecutionTime();
-
-    /**
-     * Sets the time the VM was destroyed into the last Host it executed (in seconds).
-     * The value -1 means the VM has not stopped or has not even
-     * started yet.
-     *
-     * @param stopTime the stop time to set (in seconds)
-     * @return
-     * @see #isCreated()
-     */
-    Vm setStopTime(double stopTime);
 
     /**
      * {@inheritDoc}
@@ -747,4 +724,26 @@ public interface Vm extends AbstractMachine<Resource>, UniquelyIdentifiable, Com
      */
     @Override
     Vm setTimeZone(double timeZone);
+
+    /**
+     * Gets the Vm {@inheritDoc}.
+     * @return {@inheritDoc}
+     * @see #setLifeTime(double)
+     */
+    @Override
+    double getLifeTime();
+
+    /**
+     * Sets the Vm {@inheritDoc}.
+     * <p>The Vm will finish execution as soon as possible, after the given lifeTime has passed,
+     * since its {@link #getStartTime()} start time}.
+     * </p>
+     * <p><b>NOTE:</b> If the VM has a lifeTime set, and it's smaller than the Cloudlet lifeTime,
+     * the VM lifeTime is used instead of the Cloudlet one.</p>
+     *
+     * @param lifeTime {@inheritDoc}
+     * @return {@inheritDoc}
+     */
+    @Override
+    Lifetimed setLifeTime(double lifeTime);
 }

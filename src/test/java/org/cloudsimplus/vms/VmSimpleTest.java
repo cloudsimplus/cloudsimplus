@@ -43,7 +43,7 @@ public class VmSimpleTest {
 
     @Test
     public void testGetWaitTimeForNonCreateVmWithZeroArrivedTime() {
-        assertEquals(0, vm.getWaitTime());
+        assertEquals(0, vm.getCreationWaitTime());
     }
 
     @Test
@@ -55,8 +55,8 @@ public class VmSimpleTest {
 
         final Vm vm = new VmSimple(this.vm);
         vm.setBroker(broker);
-        vm.setArrivedTime(arrivedTime);
-        assertEquals(clock, vm.getWaitTime());
+        vm.setBrokerArrivalTime(arrivedTime);
+        assertEquals(clock, vm.getCreationWaitTime());
     }
 
     @Test
@@ -68,26 +68,26 @@ public class VmSimpleTest {
 
         final Vm vm = new VmSimple(this.vm);
         vm.setBroker(broker);
-        vm.setArrivedTime(arrivedTime);
-        assertEquals(8, vm.getWaitTime());
+        vm.setBrokerArrivalTime(arrivedTime);
+        assertEquals(8, vm.getCreationWaitTime());
     }
 
     @Test
     public void testGetWaitTimeForCreateVmWithNonZeroClockAndZeroArrivedTime() {
         final int clock = 10;
-        vm.setArrivedTime(0);
+        vm.setBrokerArrivalTime(0);
         vm.setCreated(true);
         vm.setCreationTime(clock);
-        assertEquals(clock, vm.getWaitTime());
+        assertEquals(clock, vm.getCreationWaitTime());
     }
 
     @Test
     public void testGetWaitTimeForCreateVmWithNonZeroClockAndArrivedTime() {
         final int clock = 10;
-        vm.setArrivedTime(2);
+        vm.setBrokerArrivalTime(2);
         vm.setCreated(true);
         vm.setCreationTime(clock);
-        assertEquals(8, vm.getWaitTime());
+        assertEquals(8, vm.getCreationWaitTime());
     }
 
     @Test
@@ -118,13 +118,6 @@ public class VmSimpleTest {
         final int expected = 1;
         vm.setStartTime(expected);
         assertEquals(expected, vm.getStartTime());
-    }
-
-    @Test
-    public void testSetStartTimeInvalid() {
-        final int invalid = -2;
-        assertThrows(IllegalArgumentException.class, () -> vm.setStartTime(invalid));
-        assertNotEquals(invalid, vm.getStartTime());
     }
 
     @Test

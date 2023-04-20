@@ -53,9 +53,6 @@ public class CloudletExecution {
     /** @see #getCloudletArrivalTime() */
     private final double arrivalTime;
 
-    /** @see #getFinishTime() */
-    private double finishedTime;
-
     /** @see #getOverSubscriptionDelay() */
     private double overSubscriptionDelay;
 
@@ -84,16 +81,6 @@ public class CloudletExecution {
 	/** @see #getLastProcessingTime() */
 	private double lastProcessingTime;
 
-    /**
-     * The total time the Cloudlet spent in the last state
-     * at the current Datacenter.
-     * For instance, if the last state was paused and now
-     * the cloudlet was resumed (it is running),
-     * this time represents the time the cloudlet
-     * stayed paused.
-     */
-    private double totalCompletionTime;
-
     /** @see #getVirtualRuntime() */
     private double virtualRuntime;
 
@@ -115,9 +102,7 @@ public class CloudletExecution {
     public CloudletExecution(final Cloudlet cloudlet) {
         this.cloudlet = cloudlet;
         this.arrivalTime = cloudlet.registerArrivalInDatacenter();
-        this.finishedTime = Cloudlet.NOT_ASSIGNED;
         this.lastProcessingTime = Cloudlet.NOT_ASSIGNED;
-        this.totalCompletionTime = 0.0;
         this.startExecTime = 0.0;
         this.virtualRuntime = 0;
 
@@ -150,16 +135,13 @@ public class CloudletExecution {
             return false;
         }
 
-        final double clock = cloudlet.getSimulation().clock();
         cloudlet.setStatus(newStatus);
 
         if (prevStatus == Cloudlet.Status.INEXEC && isNotRunning(newStatus)) {
-            totalCompletionTime += clock - startExecTime;
             return true;
         }
 
         if (prevStatus == Cloudlet.Status.RESUMED && newStatus == Cloudlet.Status.SUCCESS) {
-            totalCompletionTime += clock - startExecTime;
             return true;
         }
 
@@ -178,8 +160,8 @@ public class CloudletExecution {
         final double clock = cloudlet.getSimulation().clock();
         if (newStatus == Cloudlet.Status.INEXEC || isTryingToResumePausedCloudlet(newStatus, oldStatus)) {
             startExecTime = clock;
-            if(cloudlet.getExecStartTime() == 0) {
-                cloudlet.setExecStartTime(startExecTime);
+            if(cloudlet.getStartTime() <= Cloudlet.NOT_ASSIGNED) {
+                cloudlet.setStartTime(startExecTime);
             }
         }
     }
@@ -268,7 +250,6 @@ public class CloudletExecution {
      */
     public void updateProcessing(final double partialFinishedInstructions) {
         final var simulation = cloudlet.getSimulation();
-        setLastProcessingTime(simulation.clock());
 
         final boolean terminate = simulation.isTimeToTerminateSimulationUnderRequest();
         if(partialFinishedInstructions == 0 && !terminate){
@@ -278,6 +259,8 @@ public class CloudletExecution {
         this.instructionsFinishedSoFar += partialFinishedInstructions;
         final double partialFinishedMI = partialFinishedInstructions / Conversion.MILLION;
         cloudlet.addFinishedLengthSoFar((long)partialFinishedMI);
+
+        setLastProcessingTime(simulation.clock());
 
         /* If a simulation termination time was defined and the length of the Cloudlet is negative
          * (to indicate that they must not finish before the termination time),
@@ -294,33 +277,6 @@ public class CloudletExecution {
      */
     public double getCloudletArrivalTime() {
         return arrivalTime;
-    }
-
-    /**
-     * Gets the time when the Cloudlet has finished completely
-     * (not just in a given Datacenter, but finished at all).
-     * If the cloudlet wasn't finished completely yet,
-     * the value is equals to {@link Cloudlet#NOT_ASSIGNED}.
-     *
-     * @return finish time of a cloudlet;
-     *         or -1 if it cannot finish in this hourly slot
-     */
-    public double getFinishTime() {
-        return finishedTime;
-    }
-
-    /**
-     * Sets the finish time for this Cloudlet.
-     * If time is negative, then it will be ignored.
-     * @param time finish time
-     */
-    public void setFinishTime(final double time) {
-        if (time < 0) {
-            return;
-        }
-
-        finishedTime = time;
-        ((CloudletAbstract)this.cloudlet).notifyOnFinishListeners();
     }
 
     /**
@@ -518,7 +474,7 @@ public class CloudletExecution {
      * @see #getOverSubscriptionDelay()
      */
     public double getExpectedFinishTime() {
-        return getCloudlet().getActualCpuTime() - overSubscriptionDelay;
+        return getCloudlet().getTotalExecutionTime() - overSubscriptionDelay;
     }
 
     /**
@@ -550,7 +506,7 @@ public class CloudletExecution {
 			return Double.MAX_VALUE;
 		}
 
-		return Math.max(cloudlet.getLifeTime() - cloudlet.getActualCpuTime(), 0);
+		return Math.max(cloudlet.getLifeTime() - cloudlet.getTotalExecutionTime(), 0);
 	}
 
     /**

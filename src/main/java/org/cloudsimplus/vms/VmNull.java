@@ -27,7 +27,10 @@ import org.cloudsimplus.autoscaling.HorizontalVmScaling;
 import org.cloudsimplus.autoscaling.VerticalVmScaling;
 import org.cloudsimplus.brokers.DatacenterBroker;
 import org.cloudsimplus.cloudlets.Cloudlet;
+import org.cloudsimplus.core.CustomerEntity;
+import org.cloudsimplus.core.Lifetimed;
 import org.cloudsimplus.core.Simulation;
+import org.cloudsimplus.core.Startable;
 import org.cloudsimplus.datacenters.Datacenter;
 import org.cloudsimplus.hosts.Host;
 import org.cloudsimplus.listeners.EventListener;
@@ -145,12 +148,14 @@ class VmNull implements Vm {
     }
     @Override public Vm setBroker(DatacenterBroker broker) { return this; }
     @Override public double getStartTime() { return 0; }
+    @Override public boolean isFinished() { return true; }
     @Override public Vm setStartTime(double startTime) { return this; }
-    @Override public double getStopTime() { return 0; }
-    @Override public double getWaitTime() { return 0; }
+    public double getFinishTime() { return 0; }
+    @Override public double getCreationWaitTime() { return 0; }
     @Override public double getTotalExecutionTime() { return 0; }
-    @Override public Vm setStopTime(double stopTime) { return this; }
+    @Override public Vm setFinishTime(double stopTime) { return this; }
     @Override public double getLastBusyTime() { return 0; }
+    @Override public Startable setLastBusyTime(double time) { return this; }
     @Override public double getIdleInterval() { return 0; }
     @Override public boolean isIdle() { return false; }
     @Override public boolean isIdleEnough(double time) { return false; }
@@ -197,8 +202,8 @@ class VmNull implements Vm {
     }
     @Override public Vm setLastTriedDatacenter(Datacenter lastTriedDatacenter) { return this; }
     @Override public Datacenter getLastTriedDatacenter() { return Datacenter.NULL; }
-    @Override public double getArrivedTime() { return 0; }
-    @Override public void setArrivedTime(double time) { /**/ }
+    @Override public double getBrokerArrivalTime() { return 0; }
+    @Override public CustomerEntity setBrokerArrivalTime(double time) { return this; }
     @Override public double getCreationTime() { return 0; }
     @Override public String toString() { return "Vm.NULL"; }
     @Override public HorizontalVmScaling getHorizontalScaling() { return HorizontalVmScaling.NULL; }
@@ -216,4 +221,7 @@ class VmNull implements Vm {
     @Override public double getTimeZone() { return Integer.MAX_VALUE; }
     @Override public Vm setTimeZone(double timeZone) { return this; }
     @Override public List<ResourceManageable> getResources() { return Collections.emptyList(); }
+    @Override public double getLifeTime() { return 0; }
+    @Override public Lifetimed setLifeTime(double lifeTime) { return this; }
+    @Override public boolean isLifeTimeReached() { return false; }
 }
