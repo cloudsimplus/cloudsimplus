@@ -317,11 +317,9 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
     }
 
     @Override
-    public void setExecStartTime(final double clockTime) {
-        final boolean isStartingInSomeVm = this.execStartTime <= 0 && clockTime > 0 && vm != Vm.NULL && vm != null;
-        this.execStartTime = clockTime;
-        if(isStartingInSomeVm){
-            onStartListeners.forEach(listener -> listener.update(CloudletVmEventInfo.of(listener, clockTime, this)));
+    protected void onStart(final double time) {
+        if(vm != Vm.NULL){
+            onStartListeners.forEach(listener -> listener.update(CloudletVmEventInfo.of(listener, time, this)));
         }
     }
 
