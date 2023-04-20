@@ -98,7 +98,7 @@ public class CloudletSimpleTest {
     }
 
     @Test
-    public void testGetExecStartTime() {
+    public void testGetStartTime() {
         final CloudletSimple cloudlet = CloudletTestUtil.createCloudlet();
         assertEquals(Cloudlet.NOT_ASSIGNED, cloudlet.getStartTime());
 
