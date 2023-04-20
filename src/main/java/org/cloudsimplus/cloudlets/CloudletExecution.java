@@ -53,9 +53,6 @@ public class CloudletExecution {
     /** @see #getCloudletArrivalTime() */
     private final double arrivalTime;
 
-    /** @see #getFinishTime() */
-    private double finishedTime;
-
     /** @see #getOverSubscriptionDelay() */
     private double overSubscriptionDelay;
 
@@ -84,16 +81,6 @@ public class CloudletExecution {
 	/** @see #getLastProcessingTime() */
 	private double lastProcessingTime;
 
-    /**
-     * The total time the Cloudlet spent in the last state
-     * at the current Datacenter.
-     * For instance, if the last state was paused and now
-     * the cloudlet was resumed (it is running),
-     * this time represents the time the cloudlet
-     * stayed paused.
-     */
-    private double totalCompletionTime;
-
     /** @see #getVirtualRuntime() */
     private double virtualRuntime;
 
@@ -115,9 +102,7 @@ public class CloudletExecution {
     public CloudletExecution(final Cloudlet cloudlet) {
         this.cloudlet = cloudlet;
         this.arrivalTime = cloudlet.registerArrivalInDatacenter();
-        this.finishedTime = Cloudlet.NOT_ASSIGNED;
         this.lastProcessingTime = Cloudlet.NOT_ASSIGNED;
-        this.totalCompletionTime = 0.0;
         this.startExecTime = 0.0;
         this.virtualRuntime = 0;
 
@@ -150,16 +135,13 @@ public class CloudletExecution {
             return false;
         }
 
-        final double clock = cloudlet.getSimulation().clock();
         cloudlet.setStatus(newStatus);
 
         if (prevStatus == Cloudlet.Status.INEXEC && isNotRunning(newStatus)) {
-            totalCompletionTime += clock - startExecTime;
             return true;
         }
 
         if (prevStatus == Cloudlet.Status.RESUMED && newStatus == Cloudlet.Status.SUCCESS) {
-            totalCompletionTime += clock - startExecTime;
             return true;
         }
 
