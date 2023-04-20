@@ -24,7 +24,6 @@
 package org.cloudsimplus.integrationtests;
 
 import org.cloudsimplus.brokers.DatacenterBroker;
-import org.cloudsimplus.builders.BrokerBuilderDecorator;
 import org.cloudsimplus.builders.HostBuilder;
 import org.cloudsimplus.builders.SimulationScenarioBuilder;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
@@ -39,7 +38,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -68,92 +66,91 @@ public final class CheckCloudletStartDelayForTransferRequiredFilesTest {
     private static final int VM_PES = HOST_PES/2;
     private static final int CLOUDLET_PES = VM_PES;
     private static final int CLOUDLET_LENGTH = HOST_MIPS*5;
-	private static final int FILE_SIZE_MB = 100;
-	private static final int NUMBER_OF_FILES_TO_CREATE = 2;
-	private static final double SAN_BANDWIDTH_MBITS_PER_SEC = 100;
+    private static final int FILE_SIZE_MB = 100;
+    private static final int NUMBER_OF_FILES_TO_CREATE = 2;
+    private static final double SAN_BANDWIDTH_MBITS_PER_SEC = 100;
 
     private DatacenterBroker broker;
-	private List<File> files;
-	private SanStorage storage;
+    private List<File> files;
+    private SanStorage storage;
     private CloudSimPlus simulation;
 
-	@BeforeEach
+    @BeforeEach
     public void setUp() {
-		createStorage();
+        createStorage();
 
         this.simulation = new CloudSimPlus();
-        final SimulationScenarioBuilder scenario = new SimulationScenarioBuilder(simulation);
+        final var scenario = new SimulationScenarioBuilder(simulation);
         scenario.getDatacenterBuilder()
-	        .setSchedulingInterval(1)
-	        .addStorageToList(storage)
-	        .create(
-	            new HostBuilder()
-	                .setVmSchedulerSupplier(VmSchedulerSpaceShared::new)
-	                .setPes(HOST_PES).setMips(HOST_MIPS)
-	                .create()
-	                .getHosts()
-	        );
+            .setSchedulingInterval(1)
+            .addStorageToList(storage)
+            .create(
+                new HostBuilder()
+                    .setVmSchedulerSupplier(VmSchedulerSpaceShared::new)
+                    .setPes(HOST_PES).setMips(HOST_MIPS)
+                    .create()
+                    .getHosts()
+            );
 
-
-        final BrokerBuilderDecorator brokerBuilder = scenario.getBrokerBuilder().create();
-	    this.broker = brokerBuilder.getBroker();
+        final var brokerBuilder = scenario.getBrokerBuilder().create();
+        this.broker = brokerBuilder.getBroker();
         brokerBuilder.getVmBuilder()
                 .setPes(VM_PES).setMips(VM_MIPS)
-                 .setCloudletSchedulerSupplier(CloudletSchedulerTimeShared::new)
+                .setCloudletSchedulerSupplier(CloudletSchedulerTimeShared::new)
                 .createAndSubmit();
 
         brokerBuilder.getCloudletBuilder()
                 .setLength(CLOUDLET_LENGTH)
                 .setUtilizationModelCpu(new UtilizationModelFull())
                 .setPEs(CLOUDLET_PES)
-	            .setRequiredFiles(getFileNames())
+                .setRequiredFiles(getFileNames())
                 .createAndSubmit(1);
     }
 
-	private void createStorage() {
-		createListOfFiles();
-		storage = new SanStorage(100000, SAN_BANDWIDTH_MBITS_PER_SEC, 0.1);
-		files.forEach(storage::addFile);
-	}
+    private void createStorage() {
+        createListOfFiles();
+        storage = new SanStorage(100_000, SAN_BANDWIDTH_MBITS_PER_SEC, 0.1);
+        files.forEach(storage::addFile);
+    }
 
-	/**
-	 * Gets the filenames from the list of {@link #files}.
-	 */
-	private List<String> getFileNames() {
-		return files.stream().map(File::getName).collect(Collectors.toList());
-	}
+    /**
+     * Gets the filenames from the list of {@link #files}.
+     */
+    private List<String> getFileNames() {
+        return files.stream().map(File::getName).toList();
+    }
 
-	/**
-	 * List of files to be stored by the Datacenter and that will be used
-	 * by the created cloudlet.
-	 */
-	private void createListOfFiles() {
-		files = IntStream.range(0, NUMBER_OF_FILES_TO_CREATE)
+    /**
+     * List of files to be stored by the Datacenter and that will be used
+     * by the created cloudlet.
+     */
+    private void createListOfFiles() {
+        files = IntStream.range(0, NUMBER_OF_FILES_TO_CREATE)
                          .mapToObj(id -> new File("file%d".formatted(id), FILE_SIZE_MB))
-                         .collect(Collectors.toList());
-	}
+                         .toList();
+    }
 
-	@Test
+    @Test
     public void integrationTest() {
         simulation.start();
-		final List<Cloudlet> cloudlets = broker.getCloudletFinishedList();
-		/* The expected finish time considers the delay to transfer the Cloudlet
+        final var cloudlets = broker.getCloudletFinishedList();
+        /* The expected finish time considers the delay to transfer the Cloudlet
 		 * required files and the actual execution time.
 		 */
-		final long expectedFinishTime = 16+5;
+        final long expectedFinishTime = 16 + 5; //wait + exec time
         new CloudletsTableBuilder(broker.getCloudletFinishedList()).setTitle(broker.getName()).build();
 
-		for(final Cloudlet c: cloudlets) {
-			//Checks if each cloudlet finished at the expected time, considering the delay to transfer the required files
-			assertEquals(expectedFinishTime, c.getFinishTime(), 1.3, c + " expected finish time");
+        for(final Cloudlet c: cloudlets) {
+            //Checks if each cloudlet finished at the expected time, considering the delay to transfer the required files
+            assertEquals(expectedFinishTime, c.getFinishTime(), 1.3, "%s finish time".formatted(c));
 
-			/* Checks if the cloudlet length is not being changed to simulate the
+            /* Checks if the cloudlet length is not being changed to simulate the
 			 * delay to transfer the cloudlet required files to the Vm.
 			 * The transfer time has to be implemented delaying the cloudlet processing
 			 * not increasing the cloudlet length.
 			 */
-			assertEquals(CLOUDLET_LENGTH, c.getLength(), 0.1, c.toString());
-		}
+            assertEquals(CLOUDLET_LENGTH, c.getLength(), 0.1, c.toString());
+        }
     }
 
 }
