@@ -250,7 +250,6 @@ public class CloudletExecution {
      */
     public void updateProcessing(final double partialFinishedInstructions) {
         final var simulation = cloudlet.getSimulation();
-        setLastProcessingTime(simulation.clock());
 
         final boolean terminate = simulation.isTimeToTerminateSimulationUnderRequest();
         if(partialFinishedInstructions == 0 && !terminate){
@@ -260,6 +259,8 @@ public class CloudletExecution {
         this.instructionsFinishedSoFar += partialFinishedInstructions;
         final double partialFinishedMI = partialFinishedInstructions / Conversion.MILLION;
         cloudlet.addFinishedLengthSoFar((long)partialFinishedMI);
+
+        setLastProcessingTime(simulation.clock());
 
         /* If a simulation termination time was defined and the length of the Cloudlet is negative
          * (to indicate that they must not finish before the termination time),

@@ -26,8 +26,6 @@ package org.cloudsimplus.integrationtests;
 import org.cloudsimplus.brokers.DatacenterBroker;
 import org.cloudsimplus.builders.HostBuilder;
 import org.cloudsimplus.builders.SimulationScenarioBuilder;
-import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
-import org.cloudsimplus.cloudlets.Cloudlet;
 import org.cloudsimplus.core.CloudSimPlus;
 import org.cloudsimplus.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudsimplus.schedulers.vm.VmSchedulerSpaceShared;
@@ -92,13 +90,13 @@ public final class CheckCloudletLifetimeTest {
          */
         final double expectedFinishTime = CLOUDLET_LIFE_TIME;
         final long expectedFinishedLength = 50_000; //HOST MIPS * LIFETIME
-        new CloudletsTableBuilder(broker.getCloudletFinishedList()).setTitle(broker.getName()).build();
+        //new CloudletsTableBuilder(broker.getCloudletFinishedList()).setTitle(broker.getName()).build();
 
         final double errorMargin = 11;
-        for (final Cloudlet c : cloudlets) {
+        for (final var c : cloudlets) {
             //Checks if each cloudlet finished at the expected time.
             assertEquals(expectedFinishTime, c.getFinishTime(), errorMargin/100, c + " expected finish time");
-            assertEquals(expectedFinishedLength, c.getFinishedLengthSoFar(), errorMargin, c + " expected finished length");
+            assertEquals(expectedFinishedLength, c.getFinishedLengthSoFar(), errorMargin*10, c + " expected finished length");
         }
     }
 

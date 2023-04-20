@@ -673,7 +673,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
          * the CPU in this time span, because it is waiting for its required files
          * to be transferred from the Datacenter storage.
          */
-        final double processingTimeSpan = hasCloudletFileTransferTimePassed(cle, currentTime) ? timeSpan(cle, currentTime) : 0;
+        final double processingTimeSpan = hasCloudletFileTransferTimePassed(cle, currentTime) ? timeSpan(currentTime) : 0;
 
         final double vMemDelay = getVirtualMemoryDelay(cle, processingTimeSpan);
         final double reducedBwDelay = getBandwidthOverSubscriptionDelay(cle, processingTimeSpan);
@@ -866,12 +866,11 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * Computes the time span between the current simulation time and the last
      * time the processing of a cloudlet was updated.
      *
-     * @param cle the cloudlet to compute the execution time span
      * @param currentTime the current simulation time
      * @return
      */
-    protected double timeSpan(final CloudletExecution cle, final double currentTime) {
-        return currentTime - cle.getLastProcessingTime();
+    protected double timeSpan(final double currentTime) {
+        return currentTime - previousTime;
     }
 
     /**
