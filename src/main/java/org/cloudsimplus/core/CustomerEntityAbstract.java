@@ -30,7 +30,6 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.cloudsimplus.brokers.DatacenterBroker;
 import org.cloudsimplus.datacenters.Datacenter;
-import org.cloudsimplus.util.MathUtil;
 
 /**
  * A base class for {@link CustomerEntity} implementations.
@@ -68,7 +67,7 @@ public abstract class CustomerEntityAbstract extends StartableAbstract implement
     }
 
     public void setCreationTime(final double time) {
-        this.creationTime = MathUtil.nonNegative(time, "Creation time");
+        this.creationTime = time;
     }
 
     @Override
@@ -84,7 +83,7 @@ public abstract class CustomerEntityAbstract extends StartableAbstract implement
     @Override
 	public Lifetimed setLifeTime(final double lifeTime) {
 		if (lifeTime <= 0) {
-			throw new IllegalArgumentException("LifeTime must be greater than 0. If you want to indicate there is not lifeTime, set Double.MAX_VALUE");
+			throw new IllegalArgumentException("LifeTime must be greater than 0. If you want to indicate there is no lifeTime, set Double.MAX_VALUE");
 		}
 
 		this.lifeTime = lifeTime;

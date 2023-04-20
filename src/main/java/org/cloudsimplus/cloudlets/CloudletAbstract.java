@@ -172,13 +172,12 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
         this.netServiceLevel = 0;
         setBroker(DatacenterBroker.NULL);
         this.vm = Vm.NULL;
-        this.setStartTime(0);
+        this.setStartTime(NOT_ASSIGNED);
         setFinishTime(NOT_ASSIGNED); // meaning this Cloudlet hasn't finished yet
         this.status = Status.INSTANTIATED;
         this.priority = 0;
-        this.setStartTime(0.0);
-        this.setBrokerArrivalTime(0);
-        setCreationTime(0);
+        this.setBrokerArrivalTime(NOT_ASSIGNED);
+        setCreationTime(NOT_ASSIGNED);
 
         this.setLastTriedDatacenter(Datacenter.NULL);
         return this;

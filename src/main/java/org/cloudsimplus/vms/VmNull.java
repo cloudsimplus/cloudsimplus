@@ -223,5 +223,5 @@ class VmNull implements Vm {
     @Override public List<ResourceManageable> getResources() { return Collections.emptyList(); }
     @Override public double getLifeTime() { return 0; }
     @Override public Lifetimed setLifeTime(double lifeTime) { return this; }
-    @Override public boolean isLifeTimeReached() { return true; }
+    @Override public boolean isLifeTimeReached() { return false; }
 }

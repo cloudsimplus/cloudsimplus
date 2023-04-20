@@ -48,7 +48,7 @@ public class CloudletBuilder implements Builder {
     private long outputSize = 300;
     private long fileSize = 300;
     private int  pes = 1;
-    private double lifeTime = -1;
+    private double lifeTime = Double.MAX_VALUE;
     /**
      * The VM to be bind to created cloudlets.
      */

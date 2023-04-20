@@ -145,7 +145,8 @@ class FinishedEntitiesPurgeTest {
     }
 
     private void assertExecTimeEqualsToStartTime(final Cloudlet cl) {
-        final var msg = "Dynamically created %s on %s exec time must be equal to start time".formatted(cl, cl.getBroker());
+        final var msg = "Dynamically created %s on %s exec time must be equal to start time %.2f. Len %.2f"
+                                .formatted(cl, cl.getBroker(), cl.getStartTime(), cl.getLength());
         assertEquals(cl.getStartTime(), cl.getTotalExecutionTime(), MAX_TIME_DELTA, msg);
     }
 

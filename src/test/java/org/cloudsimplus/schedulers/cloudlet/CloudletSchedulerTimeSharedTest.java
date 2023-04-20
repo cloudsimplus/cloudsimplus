@@ -7,7 +7,6 @@ import org.cloudsimplus.cloudlets.CloudletTestUtil;
 import org.cloudsimplus.utilizationmodels.UtilizationModel;
 import org.cloudsimplus.utilizationmodels.UtilizationModelFull;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -123,7 +122,7 @@ public class CloudletSchedulerTimeSharedTest {
         assertTrue(instance.isThereEnoughFreePesForCloudlet(new CloudletExecution(cloudlet0)));
     }
 
-    @Test @Disabled("The test is being ignored because the tested method in fact is always returning zero. It doesn't have an actual implementation.")
+    @Test
     public void testGetTotalCurrentAllocatedMipsForCloudlet() {
         final CloudletExecution ce = new CloudletExecution(Cloudlet.NULL);
         final double time = 0.0;
@@ -132,7 +131,7 @@ public class CloudletSchedulerTimeSharedTest {
         assertEquals(expResult, result);
     }
 
-    @Test @Disabled("The test is being ignored because the tested method in fact is always returning zero. It doesn't have an actual implementation.")
+    @Test
     public void testGetTotalCurrentRequestedMipsForCloudlet() {
         final CloudletExecution ce = new CloudletExecution(Cloudlet.NULL);
         final double time = 0.0;

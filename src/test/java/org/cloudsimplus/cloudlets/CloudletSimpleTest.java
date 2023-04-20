@@ -100,7 +100,7 @@ public class CloudletSimpleTest {
     @Test
     public void testGetExecStartTime() {
         final CloudletSimple cloudlet = CloudletTestUtil.createCloudlet();
-        assertEquals(0, cloudlet.getStartTime());
+        assertEquals(Cloudlet.NOT_ASSIGNED, cloudlet.getStartTime());
 
         final int execStartTime = 10;
         cloudlet.registerArrivalInDatacenter();
@@ -114,6 +114,7 @@ public class CloudletSimpleTest {
 
         final CloudSimPlus cloudsim = CloudSimMocker.createMock(mocker -> mocker.clock(simulationClock));
         final CloudletSimple cloudlet = CloudletTestUtil.createCloudlet();
+        cloudlet.setStartTime(0);
 
         cloudlet.setBroker(MocksHelper.createMockBroker(cloudsim));
         assertEquals(simulationClock, cloudlet.getTotalExecutionTime());

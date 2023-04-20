@@ -121,13 +121,6 @@ public class VmSimpleTest {
     }
 
     @Test
-    public void testSetStartTimeInvalid() {
-        final int invalid = -2;
-        assertThrows(IllegalArgumentException.class, () -> vm.setStartTime(invalid));
-        assertNotEquals(invalid, vm.getStartTime());
-    }
-
-    @Test
     public void testSetLastBusyTimeForCreatedVm() {
         final int expected = 1;
         vm.setStartTime(expected);
