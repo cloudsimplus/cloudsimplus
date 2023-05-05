@@ -157,6 +157,11 @@ final class HostNull implements Host {
     @Override public double getLastBusyTime() { return 0; }
     @Override public Startable setLastBusyTime(double time) { return this; }
     @Override public boolean isIdle() { return true; }
+
+    @Override public double getStartupDelay() { return 0; }
+    @Override public Startable setStartupDelay(double delay) { return this; }
+    @Override public double getShutDownDelay() { return 0; }
+    @Override public Startable setShutDownDelay(double delay) { return this; }
     @Override public Host setSimulation(Simulation simulation) { return this; }
     @Override public ResourceProvisioner getProvisioner(Class<? extends ResourceManageable> clazz) { return ResourceProvisioner.NULL; }
     @Override public int getWorkingPesNumber() {

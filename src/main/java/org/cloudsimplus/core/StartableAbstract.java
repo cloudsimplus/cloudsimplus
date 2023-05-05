@@ -25,6 +25,7 @@ package org.cloudsimplus.core;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.cloudsimplus.util.MathUtil;
 
 /**
  * A base implementation for Stratable entities.
@@ -33,6 +34,9 @@ import lombok.Setter;
  */
 @Getter @Setter
 public abstract class StartableAbstract implements Startable {
+    private double startupDelay;
+    private double shutDownDelay;
+
     private double startTime = NOT_ASSIGNED;
     private double finishTime = NOT_ASSIGNED;
     private double lastBusyTime = NOT_ASSIGNED;
@@ -87,4 +91,16 @@ public abstract class StartableAbstract implements Startable {
      * @param time the new finish time
      */
     protected abstract void onFinish(double time);
+
+    @Override
+    public Startable setStartupDelay(final double delay) {
+        this.startupDelay = MathUtil.nonNegative(delay, "Startup Delay");
+        return this;
+    }
+
+    @Override
+    public Startable setShutDownDelay(final double delay) {
+        this.shutDownDelay = MathUtil.nonNegative(delay, "Shutdown Delay");
+        return this;
+    }
 }

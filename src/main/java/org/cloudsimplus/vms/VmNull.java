@@ -224,4 +224,9 @@ class VmNull implements Vm {
     @Override public double getLifeTime() { return 0; }
     @Override public Lifetimed setLifeTime(double lifeTime) { return this; }
     @Override public boolean isLifeTimeReached() { return false; }
+
+    @Override public double getStartupDelay() { return 0; }
+    @Override public Startable setStartupDelay(double delay) { return this; }
+    @Override public double getShutDownDelay() { return 0; }
+    @Override public Startable setShutDownDelay(double delay) { return this; }
 }

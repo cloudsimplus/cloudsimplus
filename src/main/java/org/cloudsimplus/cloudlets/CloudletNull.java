@@ -139,4 +139,9 @@ final class CloudletNull implements Cloudlet {
     @Override public Cloudlet setLifeTime(final double lifeTime) { return this; }
     @Override public double getLifeTime() { return -1; }
     @Override public boolean isLifeTimeReached() { return true; }
+
+    @Override public double getStartupDelay() { return 0; }
+    @Override public Startable setStartupDelay(double delay) { return this; }
+    @Override public double getShutDownDelay() { return 0; }
+    @Override public Startable setShutDownDelay(double delay) { return this; }
 }
