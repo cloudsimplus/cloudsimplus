@@ -260,6 +260,7 @@ public class HostSimple extends StartableAbstract implements Host {
      * @param storage the storage capacity in Megabytes
      * @param peList the host's {@link Pe} list
      *
+     * @see HostSimple#HostSimple(long, long, HarddriveStorage, List)
      * @see ChangeableId#setId(long)
      * @see #setRamProvisioner(ResourceProvisioner)
      * @see #setBwProvisioner(ResourceProvisioner)
@@ -269,6 +270,24 @@ public class HostSimple extends StartableAbstract implements Host {
         this(ram, bw, new HarddriveStorage(storage), peList);
     }
 
+    /**
+     * Creates and powers on a Host without a pre-defined ID.
+     * It uses a {@link ResourceProvisionerSimple}
+     * for RAM and Bandwidth and also sets a {@link VmSchedulerSpaceShared} as default.
+     * The ID is automatically set when a List of Hosts is attached
+     * to a {@link Datacenter}.
+     *
+     * @param ram the RAM capacity in Megabytes
+     * @param bw the Bandwidth (BW) capacity in Megabits/s
+     * @param storage the storage device for the Host
+     * @param peList the host's {@link Pe} list
+     *
+     * @see HostSimple#HostSimple(long, long, long, List)
+     * @see ChangeableId#setId(long)
+     * @see #setRamProvisioner(ResourceProvisioner)
+     * @see #setBwProvisioner(ResourceProvisioner)
+     * @see #setVmScheduler(VmScheduler)
+     */
     public HostSimple(
         final long ram, final long bw,
         final HarddriveStorage storage, final List<Pe> peList)
