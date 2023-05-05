@@ -28,18 +28,6 @@ public abstract class PowerModelHost implements PowerModel {
     private Host host;
 
     /**
-     * Get the delay (in seconds) for starting up the {@link Host}.
-     */
-    @Getter
-    private double startupDelay;
-
-    /**
-     * The delay (in seconds) for shutting down the {@link Host}.
-     */
-    @Getter
-    private double shutDownDelay;
-
-    /**
      * The power consumed (in Watts) for starting up the {@link Host}.
      */
     @Getter
@@ -69,6 +57,7 @@ public abstract class PowerModelHost implements PowerModel {
      * The total time (in seconds) the {@link Host} spent during startup.
      * If the Host starts up multiple times, the time spent is summed up.
      * @see #getTotalStartups()
+     * @see Host#getStartupDelay()
      */
     @Getter
     private double totalStartupTime;
@@ -76,6 +65,7 @@ public abstract class PowerModelHost implements PowerModel {
     /**
      * The total time (in seconds) the {@link Host} spent during shut down.
      * If the Host shuts down multiple times, the time spent is summed up.
+     * @see Host#getShutDownDelay()
      */
     @Getter
     private double totalShutDownTime;
@@ -124,22 +114,6 @@ public abstract class PowerModelHost implements PowerModel {
     protected abstract double getPowerInternal(double utilizationFraction);
 
     /**
-     * Set the delay (in seconds) for starting up the {@link Host}.
-     */
-    public PowerModelHost setStartupDelay(final double delay) {
-        this.startupDelay = MathUtil.nonNegative(delay, "Startup Delay");
-        return this;
-    }
-
-    /**
-     * Set the delay (in seconds) for shutting down the {@link Host}.
-     */
-    public PowerModelHost setShutDownDelay(final double delay) {
-        this.shutDownDelay = MathUtil.nonNegative(delay, "Shutdown Delay");
-        return this;
-    }
-
-    /**
      * Set the power consumed (in Watts) for starting up the {@link Host}.
      */
     public PowerModelHost setStartupPower(final double power) {
@@ -161,7 +135,7 @@ public abstract class PowerModelHost implements PowerModel {
      */
     public void addStartupTotals() {
         totalStartupPower += startupPower;
-        totalStartupTime += startupDelay;
+        totalStartupTime += host.getStartupDelay();
         totalStartups++;
     }
 
@@ -171,6 +145,6 @@ public abstract class PowerModelHost implements PowerModel {
      */
     public void addShutDownTotals() {
         totalShutDownPower += shutDownPower;
-        totalShutDownTime += shutDownDelay;
+        totalShutDownTime += host.getShutDownDelay();
     }
 }

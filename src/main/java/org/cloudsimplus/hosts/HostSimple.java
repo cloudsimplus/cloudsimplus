@@ -552,7 +552,7 @@ public class HostSimple extends StartableAbstract implements Host {
             activateOnDatacenterStartup = false;
         }
 
-        final double delay = activate ? powerModel.getStartupDelay() : powerModel.getShutDownDelay();
+        final double delay = activate ? getStartupDelay() : getShutDownDelay();
         if(this.active == activate || delay > 0 && activationChangeInProgress){
             return this;
         }
@@ -1186,7 +1186,7 @@ public class HostSimple extends StartableAbstract implements Host {
             "powerModel cannot be null. You could provide a " +
             PowerModelHost.class.getSimpleName() + ".NULL instead.");
 
-        if(powerModel.getHost() != null && powerModel.getHost() != NULL && !this.equals(powerModel.getHost())){
+        if(powerModel.getHost() != null && powerModel.getHost() != Host.NULL && !this.equals(powerModel.getHost())){
             throw new IllegalStateException("The given PowerModel is already assigned to another Host. Each Host must have its own PowerModel instance.");
         }
 

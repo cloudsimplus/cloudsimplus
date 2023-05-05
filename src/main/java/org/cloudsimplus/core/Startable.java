@@ -101,4 +101,24 @@ public interface Startable {
      * @return
      */
     double getTotalExecutionTime();
+
+    /**
+     * Get the delay (in seconds) for starting up.
+     */
+    double getStartupDelay();
+
+    /**
+     * Set the delay (in seconds) for starting up.
+     */
+    Startable setStartupDelay(double delay);
+
+    /**
+     * Get the delay (in seconds) for shutting down.
+     */
+    double getShutDownDelay();
+
+    /**
+     * Set the delay (in seconds) for shutting down.
+     */
+    Startable setShutDownDelay(double delay);
 }
