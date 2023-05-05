@@ -28,9 +28,9 @@ import lombok.NonNull;
 import lombok.Setter;
 import org.cloudsimplus.brokers.DatacenterBroker;
 import org.cloudsimplus.cloudlets.Cloudlet;
-import org.cloudsimplus.core.AbstractMachine;
 import org.cloudsimplus.core.CloudSimEntity;
 import org.cloudsimplus.core.CloudSimTag;
+import org.cloudsimplus.core.Machine;
 import org.cloudsimplus.core.events.SimEvent;
 import org.cloudsimplus.datacenters.Datacenter;
 import org.cloudsimplus.distributions.ContinuousDistribution;
@@ -838,7 +838,7 @@ public class HostFaultInjection extends CloudSimEntity {
     private long getWorkingVmsPesCount() {
         return lastFailedHost.getVmList().stream()
                 .filter(Vm::isWorking)
-                .mapToLong(AbstractMachine::getPesNumber)
+                .mapToLong(Machine::getPesNumber)
                 .sum();
     }
 

@@ -25,7 +25,7 @@ package org.cloudsimplus.vms;
 
 import lombok.NonNull;
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
-import org.cloudsimplus.core.AbstractMachine;
+import org.cloudsimplus.core.Machine;
 import org.cloudsimplus.resources.Resource;
 
 import java.util.function.Function;
@@ -38,7 +38,7 @@ import java.util.function.Function;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 6.1.0
  */
-public class ResourceStats<T extends AbstractMachine> {
+public class ResourceStats<T extends Machine> {
     private final Function<T, Double> resourceUtilizationFunction;
     private final T machine;
     private final SummaryStatistics stats;

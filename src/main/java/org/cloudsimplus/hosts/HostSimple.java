@@ -340,7 +340,7 @@ public class HostSimple extends StartableAbstract implements Host {
      * This value is used when the RAM capacity is not given in a Host constructor.
      */
     public static void setDefaultRamCapacity(final long defaultCapacity) {
-        AbstractMachine.validateCapacity(defaultCapacity);
+        Machine.validateCapacity(defaultCapacity);
         defaultRamCapacity = defaultCapacity;
     }
 
@@ -349,7 +349,7 @@ public class HostSimple extends StartableAbstract implements Host {
      * This value is used when the BW capacity is not given in a Host constructor.
      */
     public static void setDefaultBwCapacity(final long defaultCapacity) {
-        AbstractMachine.validateCapacity(defaultCapacity);
+        Machine.validateCapacity(defaultCapacity);
         defaultBwCapacity = defaultCapacity;
     }
 
@@ -358,7 +358,7 @@ public class HostSimple extends StartableAbstract implements Host {
      * This value is used when the Storage capacity is not given in a Host constructor.
      */
     public static void setDefaultStorageCapacity(final long defaultCapacity) {
-        AbstractMachine.validateCapacity(defaultCapacity);
+        Machine.validateCapacity(defaultCapacity);
         defaultStorageCapacity = defaultCapacity;
     }
 

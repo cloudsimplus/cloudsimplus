@@ -40,7 +40,7 @@ import java.util.function.Predicate;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
-public interface Vm extends AbstractMachine<Resource>, UniquelyIdentifiable, Comparable<Vm>, CustomerEntity, TimeZoned, ResourceStatsComputer<VmResourceStats> {
+public interface Vm extends Machine<Resource>, UniquelyIdentifiable, Comparable<Vm>, CustomerEntity, TimeZoned, ResourceStatsComputer<VmResourceStats> {
     Logger LOGGER = LoggerFactory.getLogger(Vm.class.getSimpleName());
 
     /**
@@ -573,7 +573,7 @@ public interface Vm extends AbstractMachine<Resource>, UniquelyIdentifiable, Com
          * To avoid that, we check if the VM has running cloudlets.
         * If the VM's lastBusyTime attribute was not set recently,
         * it may be because we have a large Datacenter's scheduling interval.*/
-        return getCloudletScheduler().getCloudletExecList().isEmpty() && AbstractMachine.super.isIdleEnough(time);
+        return getCloudletScheduler().getCloudletExecList().isEmpty() && Machine.super.isIdleEnough(time);
     }
 
     /**
