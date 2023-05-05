@@ -23,7 +23,7 @@
  */
 package org.cloudsimplus.resources;
 
-import org.cloudsimplus.core.AbstractMachine;
+import org.cloudsimplus.core.Machine;
 import org.cloudsimplus.hosts.Host;
 import org.cloudsimplus.vms.Vm;
 
@@ -40,7 +40,7 @@ import java.util.List;
  */
 public interface Resourceful {
     /**
-     * Gets a given {@link AbstractMachine} {@link Resource}, such as {@link Ram} or {@link Bandwidth},
+     * Gets a given {@link Machine} {@link Resource}, such as {@link Ram} or {@link Bandwidth},
      * from the List of machine resources.
      *
      * @param resourceClass the class of resource to get

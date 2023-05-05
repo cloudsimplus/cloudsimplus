@@ -7,7 +7,7 @@
  */
 package org.cloudsimplus.hosts;
 
-import org.cloudsimplus.core.Machine;
+import org.cloudsimplus.core.PhysicalMachine;
 import org.cloudsimplus.core.ResourceStatsComputer;
 import org.cloudsimplus.core.Simulation;
 import org.cloudsimplus.core.Startable;
@@ -45,7 +45,7 @@ import java.util.Set;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
-public interface Host extends Machine, Comparable<Host>, PowerAware<PowerModelHost>, ResourceStatsComputer<HostResourceStats> {
+public interface Host extends PhysicalMachine, Comparable<Host>, PowerAware<PowerModelHost>, ResourceStatsComputer<HostResourceStats> {
     Logger LOGGER = LoggerFactory.getLogger(Host.class.getSimpleName());
 
     /**

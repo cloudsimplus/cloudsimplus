@@ -23,7 +23,7 @@
  */
 package org.cloudsimplus.hosts;
 
-import org.cloudsimplus.core.AbstractMachine;
+import org.cloudsimplus.core.Machine;
 import org.cloudsimplus.core.Simulation;
 import org.cloudsimplus.core.Startable;
 import org.cloudsimplus.datacenters.Datacenter;
@@ -116,7 +116,7 @@ final class HostNull implements Host {
         return NULL;
     }
     @Override public double getStartTime() { return -1; }
-    @Override public AbstractMachine setStartTime(double startTime) { return this; }
+    @Override public Machine setStartTime(double startTime) { return this; }
     @Override public double getFirstStartTime() { return -1; }
     @Override public double getFinishTime() { return 0; }
     @Override public Startable setFinishTime(double stopTime) { return this; }

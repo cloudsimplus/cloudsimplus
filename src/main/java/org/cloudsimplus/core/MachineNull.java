@@ -30,14 +30,14 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * A class that implements the Null Object Design Pattern for {@link AbstractMachine}
+ * A class that implements the Null Object Design Pattern for {@link Machine}
  * objects.
  *
  * @author Manoel Campos da Silva Filho
- * @see AbstractMachine#NULL
+ * @see Machine#NULL
  * @since CloudSim 1.2.0
  */
-final class AbstractMachineNull implements AbstractMachine {
+final class MachineNull implements Machine {
     @Override public Resource getBw() { return Resource.NULL; }
     @Override public Resource getRam() { return Resource.NULL; }
     @Override public Resource getStorage() { return Resource.NULL; }
@@ -45,15 +45,19 @@ final class AbstractMachineNull implements AbstractMachine {
     @Override public double getMips() { return 0; }
     @Override public Simulation getSimulation() { return Simulation.NULL; }
     @Override public double getTotalExecutionTime() { return 0; }
+    @Override public double getStartupDelay() { return 0; }
+    @Override public Startable setStartupDelay(double delay) { return this; }
+    @Override public double getShutDownDelay() { return 0; }
+    @Override public Startable setShutDownDelay(double delay) { return this; }
     @Override public double getStartTime() { return -1; }
     @Override public boolean isFinished() { return true; }
-    @Override public AbstractMachine setStartTime(double startTime) { return this; }
+    @Override public Machine setStartTime(double startTime) { return this; }
     @Override public double getFinishTime() { return -1; }
     @Override public Startable setFinishTime(double stopTime) { return this; }
     @Override public double getLastBusyTime() { return 0; }
     @Override public Startable setLastBusyTime(double time) { return this; }
     @Override public boolean isIdle() { return true; }
-    @Override public AbstractMachine setId(long id) { return this; }
+    @Override public Machine setId(long id) { return this; }
     @Override public long getId() { return 0; }
     @Override public double getTotalMipsCapacity() { return 0.0; }
     @Override public List<ResourceManageable> getResources() { return Collections.emptyList(); }
