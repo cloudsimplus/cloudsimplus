@@ -1,0 +1,913 @@
+package org.cloudsimplus.vms;
+
+import lombok.NonNull;
+import lombok.Setter;
+import org.cloudsimplus.autoscaling.HorizontalVmScaling;
+import org.cloudsimplus.autoscaling.VerticalVmScaling;
+import org.cloudsimplus.autoscaling.VmScaling;
+import org.cloudsimplus.brokers.DatacenterBroker;
+import org.cloudsimplus.cloudlets.Cloudlet;
+import org.cloudsimplus.core.CustomerEntityAbstract;
+import org.cloudsimplus.core.Machine;
+import org.cloudsimplus.datacenters.Datacenter;
+import org.cloudsimplus.hosts.Host;
+import org.cloudsimplus.listeners.EventListener;
+import org.cloudsimplus.listeners.VmDatacenterEventInfo;
+import org.cloudsimplus.listeners.VmHostEventInfo;
+import org.cloudsimplus.resources.*;
+import org.cloudsimplus.schedulers.MipsShare;
+import org.cloudsimplus.schedulers.cloudlet.CloudletScheduler;
+import org.cloudsimplus.schedulers.cloudlet.CloudletSchedulerTimeShared;
+import org.cloudsimplus.util.MathUtil;
+
+import java.util.*;
+
+/**
+ * A base class for implementing {@link Vm}s.
+ *
+ * @author Manoel Campos da Silva Filho
+ * @since CloudSim Plus 8.3.0
+ */
+public abstract class VmAbstract extends CustomerEntityAbstract implements Vm {
+    /** @see #setDefaultRamCapacity(long) */
+    private static long defaultRamCapacity = 1024;
+
+    /** @see #setDefaultBwCapacity(long) */
+    private static long defaultBwCapacity = 100;
+
+    /** @see #setDefaultStorageCapacity(long) */
+    private static long defaultStorageCapacity = 1024;
+
+    protected final Processor processor;
+    /**
+     * @see #getStateHistory()
+     */
+    protected final List<VmStateHistoryEntry> stateHistory;
+    protected final List<EventListener<VmHostEventInfo>> onMigrationStartListeners;
+    protected final List<EventListener<VmHostEventInfo>> onMigrationFinishListeners;
+    protected final List<EventListener<VmHostEventInfo>> onHostAllocationListeners;
+    protected final List<EventListener<VmHostEventInfo>> onHostDeallocationListeners;
+    protected final List<EventListener<VmHostEventInfo>> onUpdateProcessingListeners;
+    protected final List<EventListener<VmDatacenterEventInfo>> onCreationFailureListeners;
+    protected List<ResourceManageable> resources;
+
+    @Setter
+    protected String description;
+    protected long freePesNumber;
+    protected long expectedFreePesNumber;
+    @Setter  @NonNull
+    protected MipsShare allocatedMips;
+    @Setter  @NonNull
+    protected MipsShare requestedMips;
+    @Setter
+    private String vmm;
+    private Host host;
+    private double timeZone;
+    private double submissionDelay;
+    @Setter @NonNull
+    private VmGroup group;
+    private boolean failed;
+    private SimpleStorage storage;
+    private Ram ram;
+    private Bandwidth bw;
+    @NonNull
+    private CloudletScheduler cloudletScheduler;
+    private boolean created;
+    @Setter
+    private boolean inMigration;
+    private HorizontalVmScaling horizontalScaling;
+    private VerticalVmScaling ramVerticalScaling;
+    private VerticalVmScaling bwVerticalScaling;
+    private VerticalVmScaling peVerticalScaling;
+    private VmResourceStats cpuUtilizationStats;
+
+    /**
+     * A copy constructor that creates a VM based on the configuration of another one.
+     * The created VM will have the same MIPS capacity, number of PEs,
+     * BW, RAM and size of the given VM, but a default CloudletScheduler and no broker.
+     * @param sourceVm the VM to be cloned
+     */
+    public VmAbstract(final Vm sourceVm) {
+        this(-1, (long)sourceVm.getMips(), sourceVm.getPesNumber());
+        this.setBw(sourceVm.getBw().getCapacity())
+            .setRam(sourceVm.getRam().getCapacity())
+            .setSize(sourceVm.getStorage().getCapacity());
+    }
+
+    protected VmAbstract(final long id, final long mipsCapacity, final long pesNumber) {
+        this(id, mipsCapacity, pesNumber, new CloudletSchedulerTimeShared());
+    }
+
+    protected VmAbstract(final long id, final long mipsCapacity, final long pesNumber, final CloudletScheduler cloudletScheduler) {
+        super();
+        setId(id);
+        setMips(mipsCapacity);
+        setPesNumber(pesNumber);
+        mutableAttributesInit();
+        setCloudletScheduler(cloudletScheduler);
+
+        this.processor = new Processor(this, pesNumber, mipsCapacity);
+        this.resources = new ArrayList<>(4);
+
+        //initiate number of free PEs as number of PEs of VM
+        this.freePesNumber = pesNumber;
+        this.expectedFreePesNumber = pesNumber;
+
+        this.allocatedMips = new MipsShare();
+        this.requestedMips = new MipsShare();
+        this.stateHistory = new LinkedList<>();
+        this.onMigrationStartListeners = new ArrayList<>();
+        this.onMigrationFinishListeners = new ArrayList<>();
+        this.onHostAllocationListeners = new ArrayList<>();
+        this.onHostDeallocationListeners = new ArrayList<>();
+        this.onUpdateProcessingListeners = new ArrayList<>();
+        this.onCreationFailureListeners = new ArrayList<>();
+    }
+
+    /**
+     * Gets the Default RAM capacity (in MB) for creating VMs.
+     * This value is used when the RAM capacity is not given in a VM constructor.
+     */
+    public static long getDefaultRamCapacity() {
+        return defaultRamCapacity;
+    }
+
+    /**
+     * Sets the Default RAM capacity (in MB) for creating VMs.
+     * This value is used when the RAM capacity is not given in a VM constructor.
+     */
+    public static void setDefaultRamCapacity(final long defaultCapacity) {
+        Machine.validateCapacity(defaultCapacity);
+        defaultRamCapacity = defaultCapacity;
+    }
+
+    /**
+     * Gets the Default Bandwidth capacity (in Mbps) for creating VMs.
+     * This value is used when the BW capacity is not given in a VM constructor.
+     */
+    public static long getDefaultBwCapacity() {
+        return defaultBwCapacity;
+    }
+
+    /**
+     * Sets the Default Bandwidth capacity (in Mbps) for creating VMs.
+     * This value is used when the BW capacity is not given in a VM constructor.
+     */
+    public static void setDefaultBwCapacity(final long defaultCapacity) {
+        Machine.validateCapacity(defaultCapacity);
+        defaultBwCapacity = defaultCapacity;
+    }
+
+    /**
+     * Gets the Default Storage capacity (in MB) for creating VMs.
+     * This value is used when the Storage capacity is not given in a VM constructor.
+     */
+    public static long getDefaultStorageCapacity() {
+        return defaultStorageCapacity;
+    }
+
+    /**
+     * Sets the Default Storage capacity (in MB) for creating VMs.
+     * This value is used when the Storage capacity is not given in a VM constructor.
+     */
+    public static void setDefaultStorageCapacity(final long defaultCapacity) {
+        Machine.validateCapacity(defaultCapacity);
+        defaultStorageCapacity = defaultCapacity;
+    }
+
+    protected void mutableAttributesInit() {
+        this.description = "";
+        setBroker(DatacenterBroker.NULL);
+        setSubmissionDelay(0);
+        setVmm("Xen");
+
+        setInMigration(false);
+        this.host = Host.NULL;
+        setCloudletScheduler(new CloudletSchedulerTimeShared());
+
+        this.setHorizontalScaling(HorizontalVmScaling.NULL);
+        this.setRamVerticalScaling(VerticalVmScaling.NULL);
+        this.setBwVerticalScaling(VerticalVmScaling.NULL);
+        this.setPeVerticalScaling(VerticalVmScaling.NULL);
+
+        cpuUtilizationStats = VmResourceStats.NULL;
+
+        setRam(new Ram(defaultRamCapacity));
+        setBw(new Bandwidth(defaultBwCapacity));
+        setStorage(new SimpleStorage(defaultStorageCapacity));
+    }
+
+    @Override
+    public double updateProcessing(MipsShare mipsShare) {
+        return updateProcessing(getSimulation().clock(), mipsShare);
+    }
+
+    @Override
+    public double updateProcessing(final double currentTime, @NonNull final MipsShare mipsShare) {
+        if (!cloudletScheduler.isEmpty()) {
+            setLastBusyTime(getSimulation().clock());
+        }
+        final double nextSimulationDelay = cloudletScheduler.updateProcessing(currentTime, mipsShare);
+        notifyOnUpdateProcessingListeners();
+
+        cpuUtilizationStats.add(currentTime);
+        getBroker().requestIdleVmDestruction(this);
+        if (nextSimulationDelay == Double.MAX_VALUE) {
+            return nextSimulationDelay;
+        }
+
+        /* If the current time is some value with the decimals greater than x.0
+         * (such as 45.1) and the next event delay is any integer number such as 5,
+         * then the next simulation time would be 50.1.
+         * At time 50.1 the utilization will be reduced due to the completion of the Cloudlet.
+         * At time 50.0 the Cloudlet is still running, so there is some CPU utilization.
+         * But since the next update would be only at time 50.1, the utilization
+         * at time 50.0 wouldn't be collected to enable knowing the exact time
+         * before the utilization drop.
+         * Condition and computation below is used to ensure VM processing occurs
+         * at time 50 and 50.1.
+         */
+        final double decimals = currentTime - (int) currentTime;
+        return nextSimulationDelay - decimals < 0 ? nextSimulationDelay : nextSimulationDelay - decimals;
+    }
+
+    /**
+     * Sets the current number of free PEs.
+     *
+     * @return the new free pes number
+     */
+    public Vm setFreePesNumber(long freePesNumber) {
+        if (freePesNumber < 0) {
+            freePesNumber = 0;
+        }
+        this.freePesNumber = Math.min(freePesNumber, getPesNumber());
+        return this;
+    }
+
+    /**
+     * Adds a given number of expected free PEs to the total number of expected free PEs.
+     * This value is updated as cloudlets are assigned to VMs but not submitted to the broker for running yet.
+     *
+     * @param pesToAdd the number of expected free PEs to add
+     */
+    public Vm addExpectedFreePesNumber(final long pesToAdd) {
+        return setExpectedFreePesNumber(expectedFreePesNumber + pesToAdd);
+    }
+
+    /**
+     * Adds a given number of expected free PEs to the total number of expected free PEs.
+     * This value is updated as cloudlets are assigned to VMs but not submitted to the broker for running yet.
+     *
+     * @param pesToRemove the number of expected free PEs to remove
+     */
+    public Vm removeExpectedFreePesNumber(final long pesToRemove) {
+        return setExpectedFreePesNumber(expectedFreePesNumber - pesToRemove);
+    }
+
+    /**
+     * Sets the expected free PEs number before the VM starts executing.
+     *
+     * @param expectedFreePes the expected free PEs number to set
+     */
+    private Vm setExpectedFreePesNumber(final long expectedFreePes) {
+        this.expectedFreePesNumber = Math.max(expectedFreePes, 0);
+        return this;
+    }
+
+    @Override
+    public double getCpuPercentUtilization() {
+        return getCpuPercentUtilization(getSimulation().clock());
+    }
+
+    @Override
+    public double getCpuPercentUtilization(final double time) {
+        return cloudletScheduler.getAllocatedCpuPercent(time);
+    }
+
+    @Override
+    public double getCpuPercentRequested() {
+        return getCpuPercentRequested(getSimulation().clock());
+    }
+
+    @Override
+    public double getCpuPercentRequested(final double time) {
+        return cloudletScheduler.getRequestedCpuPercent(time);
+    }
+
+    @Override
+    public double getHostCpuUtilization(final double time) {
+        return host.getExpectedRelativeCpuUtilization(this, getCpuPercentUtilization(time));
+    }
+
+    @Override
+    public double getExpectedHostCpuUtilization(final double vmCpuUtilizationPercent) {
+        return host.getExpectedRelativeCpuUtilization(this, vmCpuUtilizationPercent);
+    }
+
+    @Override
+    public double getHostRamUtilization() {
+        return host.getRelativeRamUtilization(this);
+    }
+
+    @Override
+    public double getHostBwUtilization() {
+        return host.getRelativeBwUtilization(this);
+    }
+
+    @Override
+    public double getTotalCpuMipsUtilization() {
+        return getTotalCpuMipsUtilization(getSimulation().clock());
+    }
+
+    @Override
+    public double getTotalCpuMipsUtilization(final double time) {
+        return getCpuPercentUtilization(time) * getTotalMipsCapacity();
+    }
+
+    @Override
+    public double getTotalCpuMipsRequested() {
+        return getCurrentRequestedMips().totalMips();
+    }
+
+    @Override
+    public MipsShare getCurrentRequestedMips() {
+        //TODO This method is confusing, since there is a getRequestedMips() (created with lombok)
+        if (isCreated()) {
+            return host.getVmScheduler().getRequestedMips(this);
+        }
+
+        return new MipsShare(processor);
+    }
+
+    @Override
+    public long getCurrentRequestedBw() {
+        if (!isCreated()) {
+            return bw.getCapacity();
+        }
+
+        return (long) (cloudletScheduler.getCurrentRequestedBwPercentUtilization() * bw.getCapacity());
+    }
+
+    @Override
+    public double getTotalMipsCapacity() {
+        return getMips() * getPesNumber();
+    }
+
+    @Override
+    public long getCurrentRequestedRam() {
+        if (isCreated()) {
+            return (long) (cloudletScheduler.getCurrentRequestedRamPercentUtilization() * ram.getCapacity());
+        }
+
+        return ram.getCapacity();
+    }
+
+    @Override
+    protected void onStart(final double time) {/**/}
+
+    @Override
+    protected void onFinish(final double time) {
+        notifyOnHostDeallocationListeners(host);
+    }
+
+    /**
+     * Checks if the VM has ever started some Cloudlet.
+     *
+     * @return
+     */
+    public boolean hasStartedSomeCloudlet() {
+        return getLastBusyTime() > NOT_ASSIGNED;
+    }
+
+    @Override
+    public double getMips() {
+        return processor.getMips();
+    }
+
+    /**
+     * Sets the individual MIPS capacity of any VM's PE, considering that all
+     * PEs have the same capacity.
+     *
+     * @param mips the new mips for every VM's PE
+     */
+    protected final void setMips(final double mips) {
+        processor.setMips(mips);
+    }
+
+    @Override
+    public long getPesNumber() {
+        return processor.getCapacity();
+    }
+
+    protected void setPesNumber(final long pesNumber) {
+        processor.setCapacity(pesNumber);
+    }
+
+    /**
+     * Sets a new {@link Ram} resource for the Vm.
+     *
+     * @param ram the Ram resource to set
+     */
+    private void setRam(@NonNull final Ram ram) {
+        this.ram = ram;
+    }
+
+    @Override
+    public final Vm setRam(final long ramCapacity) {
+        if (this.isCreated()) {
+            throw new UnsupportedOperationException("RAM capacity can just be changed when the Vm was not created inside a Host yet.");
+        }
+
+        setRam(new Ram(ramCapacity));
+        return this;
+    }
+
+    /**
+     * Sets a new {@link Bandwidth} resource for the Vm.
+     *
+     * @param bw the Bandwidth resource to set
+     */
+    private void setBw(@NonNull final Bandwidth bw) {
+        this.bw = bw;
+    }
+
+    @Override
+    public final Vm setBw(final long bwCapacity) {
+        if (this.isCreated()) {
+            throw new UnsupportedOperationException("Bandwidth capacity can just be changed when the Vm was not created inside a Host yet.");
+        }
+        setBw(new Bandwidth(bwCapacity));
+        return this;
+    }
+
+    /**
+     * Sets a new {@link SimpleStorage} resource for the Vm.
+     *
+     * @param storage the RawStorage resource to set
+     */
+    protected void setStorage(@NonNull final SimpleStorage storage) {
+        this.storage = storage;
+    }
+
+    @Override
+    public final Vm setSize(final long size) {
+        if (this.isCreated()) {
+            throw new UnsupportedOperationException("Storage size can just be changed when the Vm was not created inside a Host yet.");
+        }
+        setStorage(new SimpleStorage(size));
+        return this;
+    }
+
+    @Override
+    public Vm setHost(@NonNull final Host host) {
+        if (Host.NULL.equals(host)) {
+            setCreated(false);
+        }
+
+        this.host = host;
+        return this;
+    }
+
+    @Override
+    public final Vm setCloudletScheduler(@NonNull final CloudletScheduler cloudletScheduler) {
+        if (isCreated()) {
+            throw new UnsupportedOperationException("CloudletScheduler can just be changed when the Vm was not created inside a Host yet.");
+        }
+
+        this.cloudletScheduler = cloudletScheduler;
+        this.cloudletScheduler.setVm(this);
+        return this;
+    }
+
+    /**
+     * Notifies the listeners when the VM starts migration to a target Host.
+     *
+     * @param targetHost the Host the VM is migrating to
+     */
+    public void updateMigrationStartListeners(final Host targetHost) {
+        // TODO: Workaround - Uses indexed for to avoid ConcurrentModificationException
+        for (int i = 0; i < onMigrationStartListeners.size(); i++) {
+            final var listener = onMigrationStartListeners.get(i);
+            listener.update(VmHostEventInfo.of(listener, this, targetHost));
+        }
+    }
+
+    /**
+     * Notifies the listeners when the VM finishes migration to a target Host.
+     *
+     * @param targetHost the Host the VM has just migrated to
+     */
+    public void updateMigrationFinishListeners(final Host targetHost) {
+        // TODO: Workaround - Uses indexed for to avoid ConcurrentModificationException
+        for (int i = 0; i < onMigrationFinishListeners.size(); i++) {
+            final var listener = onMigrationFinishListeners.get(i);
+            listener.update(VmHostEventInfo.of(listener, this, targetHost));
+        }
+    }
+
+    @Override
+    public boolean isSuitableForCloudlet(final Cloudlet cloudlet) {
+        return getPesNumber() >= cloudlet.getPesNumber() &&
+            storage.getAvailableResource() >= cloudlet.getFileSize();
+    }
+
+    @Override
+    public void setCreated(final boolean created) {
+        if (!this.created && created) {
+            setCreationTime();
+        }
+
+        this.created = created;
+        this.setFailed(false);
+    }
+
+    @Override
+    public List<VmStateHistoryEntry> getStateHistory() {
+        /*
+         * @TODO Instead of using a list, this attribute would be a map, where the
+         *       key can be the history time and the value the history itself. This
+         *       way, if one wants to get the history for a given time, he/she doesn't
+         *       have to iterate over the entire list to find the desired entry.
+         */
+        return Collections.unmodifiableList(stateHistory);
+    }
+
+    @Override
+    public void addStateHistoryEntry(final VmStateHistoryEntry entry) {
+        if (!stateHistory.isEmpty()) {
+            final VmStateHistoryEntry previousState = stateHistory.get(stateHistory.size() - 1);
+            if (previousState.getTime() == entry.getTime()) {
+                stateHistory.set(stateHistory.size() - 1, entry);
+                return;
+            }
+        }
+        stateHistory.add(entry);
+    }
+
+    @Override
+    public List<ResourceManageable> getResources() {
+        if (getSimulation().isRunning() && resources.isEmpty()) {
+            resources = Arrays.asList(ram, bw, storage, processor);
+        }
+
+        return Collections.unmodifiableList(resources);
+    }
+
+    @Override
+    public ResourceManageable getResource(Class<? extends ResourceManageable> resourceClass) {
+        if (Pe.class.isAssignableFrom(resourceClass) || Processor.class.isAssignableFrom(resourceClass)) {
+            return processor;
+        }
+
+        return Vm.super.getResource(resourceClass);
+    }
+
+    @Override
+    public Vm addOnHostAllocationListener(@NonNull final EventListener<VmHostEventInfo> listener) {
+        this.onHostAllocationListeners.add(listener);
+        return this;
+    }
+
+    @Override
+    public Vm addOnMigrationStartListener(@NonNull final EventListener<VmHostEventInfo> listener) {
+        onMigrationStartListeners.add(listener);
+        return this;
+    }
+
+    @Override
+    public Vm addOnMigrationFinishListener(@NonNull final EventListener<VmHostEventInfo> listener) {
+        onMigrationFinishListeners.add(listener);
+        return this;
+    }
+
+    @Override
+    public Vm addOnHostDeallocationListener(@NonNull final EventListener<VmHostEventInfo> listener) {
+        if (listener.equals(EventListener.NULL)) {
+            return this;
+        }
+
+        this.onHostDeallocationListeners.add(listener);
+        return this;
+    }
+
+    @Override
+    public Vm addOnCreationFailureListener(@NonNull final EventListener<VmDatacenterEventInfo> listener) {
+        if (listener.equals(EventListener.NULL)) {
+            return this;
+        }
+
+        this.onCreationFailureListeners.add(listener);
+        return this;
+    }
+
+    @Override
+    public Vm addOnUpdateProcessingListener(@NonNull final EventListener<VmHostEventInfo> listener) {
+        if (listener.equals(EventListener.NULL)) {
+            return this;
+        }
+
+        this.onUpdateProcessingListeners.add(listener);
+        return this;
+    }
+
+    @Override
+    public boolean removeOnCreationFailureListener(@NonNull final EventListener<VmDatacenterEventInfo> listener) {
+        return onCreationFailureListeners.remove(listener);
+    }
+
+    @Override
+    public boolean removeOnUpdateProcessingListener(@NonNull final EventListener<VmHostEventInfo> listener) {
+        return onUpdateProcessingListeners.remove(listener);
+    }
+
+    @Override
+    public boolean removeOnHostAllocationListener(@NonNull final EventListener<VmHostEventInfo> listener) {
+        return onHostAllocationListeners.remove(listener);
+    }
+
+    @Override
+    public boolean removeOnHostDeallocationListener(@NonNull final EventListener<VmHostEventInfo> listener) {
+        return onHostDeallocationListeners.remove(listener);
+    }
+
+    @Override
+    public void setFailed(final boolean failed) {
+        this.failed = failed;
+
+        if (failed) {
+            setCloudletsToFailed();
+        }
+    }
+
+    public void setCloudletsToFailed() {
+        getBroker().getCloudletWaitingList()
+            .stream()
+            .filter(cl -> this.equals(cl.getVm()))
+            .forEach(cl -> cl.setStatus(Cloudlet.Status.FAILED_RESOURCE_UNAVAILABLE));
+    }
+
+    @Override
+    public boolean isWorking() {
+        return !isFailed();
+    }
+
+    @Override
+    public final void setSubmissionDelay(final double submissionDelay) {
+        this.submissionDelay = MathUtil.nonNegative(submissionDelay, "submissionDelay");
+    }
+
+    @Override
+    public boolean isDelayed() {
+        return submissionDelay > 0;
+    }
+
+    @Override
+    public void notifyOnHostAllocationListeners() {
+        // TODO: Workaround - Uses indexed for to avoid ConcurrentModificationException
+        for (int i = 0; i < onHostAllocationListeners.size(); i++) {
+            final var listener = onHostAllocationListeners.get(i);
+            listener.update(VmHostEventInfo.of(listener, this));
+        }
+    }
+
+    @Override
+    public void notifyOnHostDeallocationListeners(@NonNull final Host deallocatedHost) {
+        // TODO: Workaround - Uses indexed for to avoid ConcurrentModificationException
+        for (int i = 0; i < onHostDeallocationListeners.size(); i++) {
+            final var listener = onHostDeallocationListeners.get(i);
+            listener.update(VmHostEventInfo.of(listener, this, deallocatedHost));
+        }
+    }
+
+    /**
+     * Notifies all registered listeners when the processing of the Vm is updated in its {@link Host}.
+     */
+    public void notifyOnUpdateProcessingListeners() {
+        // TODO: Workaround - Uses indexed for to avoid ConcurrentModificationException
+        for (int i = 0; i < onUpdateProcessingListeners.size(); i++) {
+            final var listener = onUpdateProcessingListeners.get(i);
+            listener.update(VmHostEventInfo.of(listener, this));
+        }
+    }
+
+    @Override
+    public void notifyOnCreationFailureListeners(@NonNull final Datacenter failedDatacenter) {
+        // TODO: Workaround - Uses indexed for to avoid ConcurrentModificationException
+        for (int i = 0; i < onCreationFailureListeners.size(); i++) {
+            final var listener = onCreationFailureListeners.get(i);
+            listener.update(VmDatacenterEventInfo.of(listener, this, failedDatacenter));
+        }
+    }
+
+    @Override
+    public boolean removeOnMigrationStartListener(@NonNull final EventListener<VmHostEventInfo> listener) {
+        return onMigrationStartListeners.remove(listener);
+    }
+
+    @Override
+    public boolean removeOnMigrationFinishListener(@NonNull final EventListener<VmHostEventInfo> listener) {
+        return onMigrationFinishListeners.remove(listener);
+    }
+
+    @Override
+    public final Vm setHorizontalScaling(final HorizontalVmScaling horizontalScaling) throws IllegalArgumentException {
+        this.horizontalScaling = validateAndConfigureVmScaling(horizontalScaling);
+        return this;
+    }
+
+    @Override
+    public final Vm setRamVerticalScaling(final VerticalVmScaling ramVerticalScaling) throws IllegalArgumentException {
+        this.ramVerticalScaling = validateAndConfigureVmScaling(ramVerticalScaling);
+        return this;
+    }
+
+    @Override
+    public final Vm setBwVerticalScaling(final VerticalVmScaling bwVerticalScaling) throws IllegalArgumentException {
+        this.bwVerticalScaling = validateAndConfigureVmScaling(bwVerticalScaling);
+        return this;
+    }
+
+    @Override
+    public final Vm setPeVerticalScaling(final VerticalVmScaling peVerticalScaling) throws IllegalArgumentException {
+        this.peVerticalScaling = validateAndConfigureVmScaling(peVerticalScaling);
+        return this;
+    }
+
+    private <T extends VmScaling> T validateAndConfigureVmScaling(@NonNull final T vmScaling) {
+        if (vmScaling.getVm() != null && vmScaling.getVm() != NULL && vmScaling.getVm() != this) {
+            final String name = vmScaling.getClass().getSimpleName();
+            throw new IllegalArgumentException(
+                "The " + name + " given is already linked to a Vm. " +
+                    "Each Vm must have its own " + name + " object or none at all. " +
+                    "Another " + name + " has to be provided for this Vm.");
+        }
+
+        vmScaling.setVm(this);
+        this.addOnUpdateProcessingListener(vmScaling::requestUpScalingIfPredicateMatches);
+        return vmScaling;
+    }
+
+    @Override
+    public void enableUtilizationStats() {
+        if (cpuUtilizationStats == null || cpuUtilizationStats == VmResourceStats.NULL) {
+            this.cpuUtilizationStats = new VmResourceStats(this, vm -> vm.getCpuPercentUtilization(getSimulation().clock()));
+        }
+    }
+
+    @Override
+    public Vm setTimeZone(final double timeZone) {
+        this.timeZone = validateTimeZone(timeZone);
+        return this;
+    }
+
+    @Override
+    public boolean isFinished() {
+        return !created;
+    }
+
+    public String getDescription() {
+        return this.description;
+    }
+
+    public String getVmm() {
+        return this.vmm;
+    }
+
+    public Host getHost() {
+        return this.host;
+    }
+
+    public double getTimeZone() {
+        return this.timeZone;
+    }
+
+    public double getSubmissionDelay() {
+        return this.submissionDelay;
+    }
+
+    public VmGroup getGroup() {
+        return this.group;
+    }
+
+    public boolean isFailed() {
+        return this.failed;
+    }
+
+    public SimpleStorage getStorage() {
+        return this.storage;
+    }
+
+    public Ram getRam() {
+        return this.ram;
+    }
+
+    public Bandwidth getBw() {
+        return this.bw;
+    }
+
+    public Processor getProcessor() {
+        return this.processor;
+    }
+
+    public CloudletScheduler getCloudletScheduler() {
+        return this.cloudletScheduler;
+    }
+
+    public boolean isCreated() {
+        return this.created;
+    }
+
+    public boolean isInMigration() {
+        return this.inMigration;
+    }
+
+    public long getFreePesNumber() {
+        return this.freePesNumber;
+    }
+
+    public long getExpectedFreePesNumber() {
+        return this.expectedFreePesNumber;
+    }
+
+    public HorizontalVmScaling getHorizontalScaling() {
+        return this.horizontalScaling;
+    }
+
+    public VerticalVmScaling getRamVerticalScaling() {
+        return this.ramVerticalScaling;
+    }
+
+    public VerticalVmScaling getBwVerticalScaling() {
+        return this.bwVerticalScaling;
+    }
+
+    public VerticalVmScaling getPeVerticalScaling() {
+        return this.peVerticalScaling;
+    }
+
+    public MipsShare getAllocatedMips() {
+        return this.allocatedMips;
+    }
+
+    public MipsShare getRequestedMips() {
+        return this.requestedMips;
+    }
+
+    public VmResourceStats getCpuUtilizationStats() {
+        return this.cpuUtilizationStats;
+    }
+
+    public List<EventListener<VmHostEventInfo>> getOnMigrationStartListeners() {
+        return this.onMigrationStartListeners;
+    }
+
+    public List<EventListener<VmHostEventInfo>> getOnMigrationFinishListeners() {
+        return this.onMigrationFinishListeners;
+    }
+
+    public List<EventListener<VmHostEventInfo>> getOnHostAllocationListeners() {
+        return this.onHostAllocationListeners;
+    }
+
+    public List<EventListener<VmHostEventInfo>> getOnHostDeallocationListeners() {
+        return this.onHostDeallocationListeners;
+    }
+
+    public List<EventListener<VmHostEventInfo>> getOnUpdateProcessingListeners() {
+        return this.onUpdateProcessingListeners;
+    }
+
+    public List<EventListener<VmDatacenterEventInfo>> getOnCreationFailureListeners() {
+        return this.onCreationFailureListeners;
+    }
+
+    public Vm setDescription(String description) {
+        this.description = description;
+        return this;
+    }
+
+    public Vm setVmm(String vmm) {
+        this.vmm = vmm;
+        return this;
+    }
+
+    public Vm setGroup(VmGroup group) {
+        this.group = group;
+        return this;
+    }
+
+    public Vm setInMigration(boolean inMigration) {
+        this.inMigration = inMigration;
+        return this;
+    }
+
+    public Vm setAllocatedMips(MipsShare allocatedMips) {
+        this.allocatedMips = allocatedMips;
+        return this;
+    }
+
+    public Vm setRequestedMips(MipsShare requestedMips) {
+        this.requestedMips = requestedMips;
+        return this;
+    }
+}
