@@ -21,6 +21,7 @@ import org.cloudsimplus.listeners.VmHostEventInfo;
 import org.cloudsimplus.resources.*;
 import org.cloudsimplus.schedulers.MipsShare;
 import org.cloudsimplus.schedulers.cloudlet.CloudletScheduler;
+import org.cloudsimplus.utilizationmodels.BootModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -732,6 +733,23 @@ public interface Vm extends Machine<Resource>, UniquelyIdentifiable, Comparable<
      */
     @Override
     double getLifeTime();
+
+    /**
+     * {@return the VM boot model} It defines how the VM uses resources such as RAM, CPU and BW during the boot process.
+     * @see #setBootModel(BootModel)
+     */
+    BootModel getBootModel();
+
+    /**
+     * Sets a model which defines how the VM uses resources
+     * such as RAM, CPU and BW during the boot process.
+     *
+     * <p>If a model is not set, no resources are used during the boot time,
+     * which is just simulated if a {@link #setStartupDelay(double) startup delay} is set.</p>
+     * @param model the boot model to set
+     * @return this
+     */
+    Vm setBootModel(BootModel model);
 
     /**
      * Sets the Vm {@inheritDoc}.

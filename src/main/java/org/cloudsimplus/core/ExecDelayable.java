@@ -10,7 +10,7 @@ public interface ExecDelayable extends Startable {
      * Get the time (in seconds) for the entity to finish starting up
      * or {@link #NOT_ASSIGNED} if not set (meaning the entity starts up rightaway).
      * @see #setStartupDelay(double)
-     * @see #hasStartupDelay()
+     * @see #isStartupDelayed()
      */
     double getStartupDelay();
 
@@ -21,6 +21,22 @@ public interface ExecDelayable extends Startable {
         final double timeToCompleteStartup = getStartupCompletionTime();
         return hasStarted() && getSimulation().clock() < timeToCompleteStartup;
     }
+
+    /**
+     * {@return true of false} That indicates if the entity is shutting down or not.
+     */
+    boolean isShuttingDown();
+
+    /**
+     * {@return the shutdown time} That indicates the time entity began shutting down
+     * or -1 to indicate it has not started shutting down.
+     */
+    double getShutdownBeginTime();
+
+
+    /** Sets the time the VM shutdown has begun.
+     * @param shutdownBeginTime value to set */
+    ExecDelayable setShutdownBeginTime(double shutdownBeginTime);
 
     /**
      * {@return the relative time the entity is expected to finish starting up}.
@@ -45,13 +61,13 @@ public interface ExecDelayable extends Startable {
     default double getRemainingStartupTime(){
         final double readyTime = getStartupCompletionTime();
         final double remainingTime = Math.max(readyTime - getSimulation().clock(), 0);
-        return hasStartupDelay() ? remainingTime : 0;
+        return isStartupDelayed() ? remainingTime : 0;
     }
 
     /** {@return true or false} whether the entity has a startup delay set or not.
      * @see #getStartupDelay()
      */
-    default boolean hasStartupDelay(){
+    default boolean isStartupDelayed(){
         return getStartupDelay() > 0;
     }
 

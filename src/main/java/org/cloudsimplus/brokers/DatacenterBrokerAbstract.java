@@ -871,8 +871,10 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         if (vm.isCreated()) {
             if(isFinished() || vm.isLifeTimeReached() || isVmIdleEnough(vm)) {
                 final var lifeTimeMsg = vm.isLifeTimeReached() ? " after reaching defined lifetime" : "";
-                LOGGER.info("{}: {}: Requesting {} destruction{}.", getSimulation().clockStr(), getName(), vm, lifeTimeMsg);
-                sendNow(getDatacenter(vm), CloudSimTag.VM_DESTROY, vm);
+                final var shutDownMsg = vm.isShutDownDelayed() ? "expected to finish in %.2f seconds".formatted(vm.getShutDownDelay()) : "will finish immediately (since no Vm shutDownDelay was set)";
+                vm.setShutdownBeginTime(getSimulation().clock());
+                LOGGER.info("{}: {}: Requesting {} destruction{}. Shutdown {}.", getSimulation().clockStr(), getName(), vm, lifeTimeMsg, shutDownMsg);
+                send(getDatacenter(vm), vm.getShutDownDelay(), CloudSimTag.VM_DESTROY, vm);
             }
 
             if(isVmIdlenessVerificationRequired((VmSimple)vm)) {
@@ -1001,10 +1003,11 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
 
             ((VmSimple) lastSelectedVm).removeExpectedFreePesNumber(cloudlet.getPesNumber());
 
-            logCloudletCreationRequest(cloudlet);
             cloudlet.setVm(lastSelectedVm);
+            logCloudletCreationRequest(cloudlet);
             final Datacenter dc = getDatacenter(lastSelectedVm);
-            send(dc, cloudlet.getSubmissionDelay(), CloudSimTag.CLOUDLET_SUBMIT, cloudlet);
+            final double totalDelay = cloudlet.getSubmissionDelay() + cloudlet.getVm().getStartupDelay();
+            send(dc, totalDelay, CloudSimTag.CLOUDLET_SUBMIT, cloudlet);
             cloudlet.setLastTriedDatacenter(dc);
             cloudletCreatedList.add(cloudlet);
             iterator.remove();
@@ -1040,13 +1043,18 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     }
 
     private void logCloudletCreationRequest(final Cloudlet cloudlet) {
-        final String delayMsg =
-            cloudlet.getSubmissionDelay() > 0 ?
-                " with a requested delay of %.0f seconds".formatted(cloudlet.getSubmissionDelay()) :
-                "";
+        final double submission = cloudlet.getSubmissionDelay();
+        final double startup = cloudlet.getVm().getStartupDelay();
+        final double totalDelay = submission + startup;
+
+        final var submissionStr = submission > 0 ? "requested submission delay" : "";
+        final var connector = submission > 0 && startup > 0 ? " + " : "";
+        final var startupStr = startup > 0 ? "VM boot up time" : "";
+
+        final var delayMsg = " in %.2f seconds (%s%s%s)".formatted(totalDelay, submissionStr, connector, startupStr);
 
         LOGGER.info(
-            "{}: {}: Sending Cloudlet {} to {} in {}{}.",
+            "{}: {}: Sending Cloudlet {} to {} inside {}{}.",
             getSimulation().clockStr(), getName(), cloudlet.getId(),
             lastSelectedVm, lastSelectedVm.getHost(), delayMsg);
     }

@@ -1,6 +1,7 @@
 package org.cloudsimplus.core;
 
 import lombok.Getter;
+import lombok.Setter;
 import org.cloudsimplus.util.MathUtil;
 
 /**
@@ -12,6 +13,14 @@ import org.cloudsimplus.util.MathUtil;
 public abstract class ExecDelayableAbstract extends StartableAbstract implements ExecDelayable {
     private double startupDelay;
     private double shutDownDelay;
+
+    @Setter
+    private double shutdownBeginTime = NOT_ASSIGNED;
+
+    @Override
+    public boolean isShuttingDown() {
+        return !isFinished() && shutdownBeginTime > 0;
+    }
 
     @Override
     public ExecDelayable setStartupDelay(final double delay) {
