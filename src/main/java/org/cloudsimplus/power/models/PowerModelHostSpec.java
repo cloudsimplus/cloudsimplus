@@ -31,7 +31,7 @@ import java.util.Arrays;
  * @author Anton Beloglazov
  * @since CloudSim Plus 6.0.0
  */
-public class PowerModelHostSpec extends PowerModelHost {
+public class PowerModelHostSpec extends PowerModelHostAbstract {
     /**
      * Since {@link #powerSpecs} represents the power consumption data
      * according to CPU utilization, as shorter the size of such a List,

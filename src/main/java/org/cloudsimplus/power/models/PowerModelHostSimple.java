@@ -33,7 +33,7 @@ import org.cloudsimplus.power.PowerMeter;
  * @see PowerMeter
  */
 @Getter
-public class PowerModelHostSimple extends PowerModelHost {
+public class PowerModelHostSimple extends PowerModelHostAbstract {
     /**
      * The maximum power (in watts) the host consumes under full load.
      */
