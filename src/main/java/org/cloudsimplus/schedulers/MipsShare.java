@@ -27,6 +27,7 @@ import lombok.NonNull;
 import org.cloudsimplus.resources.Pe;
 import org.cloudsimplus.resources.Processor;
 import org.cloudsimplus.util.MathUtil;
+import org.cloudsimplus.utilizationmodels.BootModel;
 
 /**
  * Represents the requested or allocated MIPS capacity for a given number of {@link Pe}s from a VM.
@@ -78,6 +79,15 @@ public class MipsShare {
      */
     public MipsShare(@NonNull final MipsShare share) {
         this(share.pes, share.mips);
+    }
+
+    /**
+     * Creates a MipsShare object indicating the amount of PEs and MIPS using during a VM boot process.
+     * @param processor the VM processor
+     * @param bootModel the VM boot model
+     */
+    public MipsShare(@NonNull final Processor processor, @NonNull final BootModel bootModel) {
+        this(processor.getCapacity(), processor.getMips()*bootModel.getCpuPercentUtilization());
     }
 
     public double mips() {

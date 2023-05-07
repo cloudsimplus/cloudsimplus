@@ -46,6 +46,9 @@ final class MachineNull implements Machine {
     @Override public Simulation getSimulation() { return Simulation.NULL; }
     @Override public double getTotalExecutionTime() { return 0; }
     @Override public double getStartupDelay() { return 0; }
+    @Override public boolean isShuttingDown() { return false; }
+    @Override public double getShutdownBeginTime() { return -1; }
+    @Override public ExecDelayable setShutdownBeginTime(double shutdownBeginTime) { return this; }
     @Override public ExecDelayable setStartupDelay(double delay) { return this; }
     @Override public double getShutDownDelay() { return 0; }
     @Override public ExecDelayable setShutDownDelay(double delay) { return this; }

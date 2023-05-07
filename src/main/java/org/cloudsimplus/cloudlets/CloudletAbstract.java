@@ -433,7 +433,7 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
 
     @Override
     public UtilizationModel getUtilizationModel(final Class<? extends ResourceManageable> resourceClass) {
-        if(resourceClass.isAssignableFrom(Ram.class)){
+        if(resourceClass.isAssignableFrom(VmRam.class)){
             return utilizationModelRam;
         }
 

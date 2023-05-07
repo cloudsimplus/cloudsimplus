@@ -1,5 +1,6 @@
 package org.cloudsimplus.vms;
 
+import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import org.cloudsimplus.autoscaling.HorizontalVmScaling;
@@ -7,6 +8,7 @@ import org.cloudsimplus.autoscaling.VerticalVmScaling;
 import org.cloudsimplus.autoscaling.VmScaling;
 import org.cloudsimplus.brokers.DatacenterBroker;
 import org.cloudsimplus.cloudlets.Cloudlet;
+import org.cloudsimplus.core.CloudSimTag;
 import org.cloudsimplus.core.CustomerEntityAbstract;
 import org.cloudsimplus.core.Machine;
 import org.cloudsimplus.datacenters.Datacenter;
@@ -19,6 +21,7 @@ import org.cloudsimplus.schedulers.MipsShare;
 import org.cloudsimplus.schedulers.cloudlet.CloudletScheduler;
 import org.cloudsimplus.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudsimplus.util.MathUtil;
+import org.cloudsimplus.utilizationmodels.BootModel;
 
 import java.util.*;
 
@@ -28,6 +31,7 @@ import java.util.*;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 8.3.0
  */
+@Getter
 public abstract class VmAbstract extends CustomerEntityAbstract implements Vm {
     /** @see #setDefaultRamCapacity(long) */
     private static long defaultRamCapacity = 1024;
@@ -49,6 +53,9 @@ public abstract class VmAbstract extends CustomerEntityAbstract implements Vm {
     protected final List<EventListener<VmHostEventInfo>> onHostDeallocationListeners;
     protected final List<EventListener<VmHostEventInfo>> onUpdateProcessingListeners;
     protected final List<EventListener<VmDatacenterEventInfo>> onCreationFailureListeners;
+
+    @Setter @NonNull
+    private BootModel bootModel;
     protected List<ResourceManageable> resources;
 
     @Setter
@@ -68,7 +75,7 @@ public abstract class VmAbstract extends CustomerEntityAbstract implements Vm {
     private VmGroup group;
     private boolean failed;
     private SimpleStorage storage;
-    private Ram ram;
+    private VmRam ram;
     private Bandwidth bw;
     @NonNull
     private CloudletScheduler cloudletScheduler;
@@ -107,6 +114,7 @@ public abstract class VmAbstract extends CustomerEntityAbstract implements Vm {
         setCloudletScheduler(cloudletScheduler);
 
         this.resources = new ArrayList<>(4);
+        this.bootModel = BootModel.NULL;
 
         //initiate number of free PEs as number of PEs of VM
         this.freePesNumber = pesNumber;
@@ -192,7 +200,7 @@ public abstract class VmAbstract extends CustomerEntityAbstract implements Vm {
 
         cpuUtilizationStats = VmResourceStats.NULL;
 
-        setRam(new Ram(defaultRamCapacity));
+        setRam(new VmRam(this, defaultRamCapacity));
         setBw(new Bandwidth(defaultBwCapacity));
         setStorage(new SimpleStorage(defaultStorageCapacity));
     }
@@ -204,11 +212,35 @@ public abstract class VmAbstract extends CustomerEntityAbstract implements Vm {
 
     @Override
     public double updateProcessing(final double currentTime, @NonNull final MipsShare mipsShare) {
-        if (!cloudletScheduler.isEmpty()) {
+        if (!cloudletScheduler.isEmpty() || isStartingUp()) {
             setLastBusyTime(getSimulation().clock());
         }
-        final double nextSimulationDelay = cloudletScheduler.updateProcessing(currentTime, mipsShare);
+
+        if(isStartupDelayed() && currentTime == getStartupCompletionTime())
+            LOGGER.info("{}: {}: {} has completed booting up.", getSimulation().clockStr(), getClass().getSimpleName(), this);
+
+        return isShuttingDown() ? Double.MAX_VALUE : processing(currentTime, mipsShare);
+    }
+
+    private double processing(final double currentTime, final MipsShare mipsShare) {
         notifyOnUpdateProcessingListeners();
+        return isStartingUp() ? bootProcessing() : cloudletsProcessing(currentTime, mipsShare);
+    }
+
+    /**
+     * Process the VM boot up.
+     * @return the remaining startup time that indicates how longer the boot process will take
+     * so that the vm processing is updated after that time.
+     */
+    private double bootProcessing() {
+        final var dc = host.getDatacenter();
+        final double nextProcessingTime = dc.getSchedulingInterval() > -1 ? dc.getSchedulingInterval() : getRemainingStartupTime();
+        dc.schedule(nextProcessingTime, CloudSimTag.VM_UPDATE_CLOUDLET_PROCESSING);
+        return nextProcessingTime;
+    }
+
+    private double cloudletsProcessing(final double currentTime, final MipsShare mipsShare) {
+        final double nextSimulationDelay = cloudletScheduler.updateProcessing(currentTime, mipsShare);
 
         cpuUtilizationStats.add(currentTime);
         getBroker().requestIdleVmDestruction(this);
@@ -281,7 +313,7 @@ public abstract class VmAbstract extends CustomerEntityAbstract implements Vm {
 
     @Override
     public double getCpuPercentUtilization(final double time) {
-        return cloudletScheduler.getAllocatedCpuPercent(time);
+        return isStartingUp() ? bootModel.getCpuPercentUtilization() : cloudletScheduler.getAllocatedCpuPercent(time);
     }
 
     @Override
@@ -333,7 +365,7 @@ public abstract class VmAbstract extends CustomerEntityAbstract implements Vm {
     public MipsShare getCurrentRequestedMips() {
         //TODO This method is confusing, since there is a getRequestedMips() (created with lombok)
         if (isCreated()) {
-            return host.getVmScheduler().getRequestedMips(this);
+            return isStartingUp() ? new MipsShare(processor, bootModel) : host.getVmScheduler().getRequestedMips(this);
         }
 
         return new MipsShare(processor);
@@ -342,7 +374,7 @@ public abstract class VmAbstract extends CustomerEntityAbstract implements Vm {
     @Override
     public long getCurrentRequestedBw() {
         if (isCreated()) {
-            return (long) (cloudletScheduler.getCurrentRequestedBwPercentUtilization() * bw.getCapacity());
+            return (long)(cloudletScheduler.getCurrentRequestedBwPercentUtilization() * bw.getCapacity());
         }
 
         return bw.getCapacity();
@@ -356,7 +388,8 @@ public abstract class VmAbstract extends CustomerEntityAbstract implements Vm {
     @Override
     public long getCurrentRequestedRam() {
         if (isCreated()) {
-            return (long) (cloudletScheduler.getCurrentRequestedRamPercentUtilization() * ram.getCapacity());
+            final double percent = isStartingUp() ? bootModel.getRamPercentUtilization() : cloudletScheduler.getCurrentRequestedRamPercentUtilization();
+            return (long)(percent * ram.getCapacity());
         }
 
         return ram.getCapacity();
@@ -408,7 +441,7 @@ public abstract class VmAbstract extends CustomerEntityAbstract implements Vm {
      *
      * @param ram the Ram resource to set
      */
-    private void setRam(@NonNull final Ram ram) {
+    private void setRam(@NonNull final VmRam ram) {
         this.ram = ram;
     }
 
@@ -418,7 +451,7 @@ public abstract class VmAbstract extends CustomerEntityAbstract implements Vm {
             throw new UnsupportedOperationException("RAM capacity can just be changed when the Vm was not created inside a Host yet.");
         }
 
-        setRam(new Ram(ramCapacity));
+        setRam(new VmRam(this, ramCapacity));
         return this;
     }
 
@@ -516,7 +549,16 @@ public abstract class VmAbstract extends CustomerEntityAbstract implements Vm {
         if (!this.created && create) {
             setCreationTime();
             setStartTime(getSimulation().clock());
+            setShutdownBeginTime(NOT_ASSIGNED);
             this.setFailed(false);
+            if(isStartupDelayed())
+                LOGGER.info(
+                    "{}: {}: {} is booting up in {} and it's expected to be ready in {} seconds.",
+                    getSimulation().clockStr(), getClass().getSimpleName(), this, host, getStartupDelay());
+            else
+                LOGGER.info(
+                "{}: {}: {} is booting up right away in {} since no startup delay (boot time) was set.",
+                getSimulation().clockStr(), getClass().getSimpleName(), this, host);
         }
 
         this.created = create;

@@ -38,6 +38,7 @@ import org.cloudsimplus.resources.Resource;
 import org.cloudsimplus.resources.ResourceManageable;
 import org.cloudsimplus.schedulers.MipsShare;
 import org.cloudsimplus.schedulers.cloudlet.CloudletScheduler;
+import org.cloudsimplus.utilizationmodels.BootModel;
 
 import java.util.Collections;
 import java.util.List;
@@ -221,8 +222,12 @@ class VmNull implements Vm {
     @Override public double getLifeTime() { return 0; }
     @Override public Lifetimed setLifeTime(double lifeTime) { return this; }
     @Override public boolean isLifeTimeReached() { return false; }
-
+    @Override public BootModel getBootModel() { return BootModel.NULL; }
+    @Override public Vm setBootModel(BootModel model) { return this; }
     @Override public double getStartupDelay() { return 0; }
+    @Override public boolean isShuttingDown() { return false; }
+    @Override  public double getShutdownBeginTime() { return -1; }
+    @Override public ExecDelayable setShutdownBeginTime(double shutdownBeginTime) { return this; }
     @Override public ExecDelayable setStartupDelay(double delay) { return this; }
     @Override public double getShutDownDelay() { return 0; }
     @Override public ExecDelayable setShutDownDelay(double delay) { return this; }

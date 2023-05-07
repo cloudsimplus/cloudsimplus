@@ -467,6 +467,7 @@ public abstract class HostAbstract extends ExecDelayableAbstract implements Host
         final boolean wasActive = this.active;
         if (activate) {
             setStartTime(getSimulation().clock());
+            setShutdownBeginTime(NOT_ASSIGNED);
             powerModel.addStartupTotals();
         } else {
             this.setFinishTime(getSimulation().clock());
@@ -524,7 +525,6 @@ public abstract class HostAbstract extends ExecDelayableAbstract implements Host
         }
 
         destroyVmInternal(vm);
-        vm.setFinishTime(getSimulation().clock());
     }
 
     @Override
@@ -532,10 +532,11 @@ public abstract class HostAbstract extends ExecDelayableAbstract implements Host
         destroyVmInternal(vm);
     }
 
-    private void destroyVmInternal(final Vm vm) {
-        deallocateResourcesOfVm(requireNonNull(vm));
+    private void destroyVmInternal(@NonNull final Vm vm) {
+        deallocateResourcesOfVm(vm);
         vmList.remove(vm);
         vm.getBroker().getVmExecList().remove(vm);
+        vm.setFinishTime(getSimulation().clock());
     }
 
     /**
