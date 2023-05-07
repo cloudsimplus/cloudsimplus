@@ -170,8 +170,8 @@ public abstract class HostAbstract extends ExecDelayableAbstract implements Host
         final List<Pe> peList, final boolean activate)
     {
         this.setId(-1);
-        this.activateOnDatacenterStartup = activate;
         this.powerModel = PowerModelHost.NULL;
+        this.activateOnDatacenterStartup = activate;
         this.ram = new Ram(ram);
         this.bw = new Bandwidth(bw);
         this.disk = storage;
@@ -186,6 +186,8 @@ public abstract class HostAbstract extends ExecDelayableAbstract implements Host
         this.provisioners = new ArrayList<>();
         this.vmCreatedList = new ArrayList<>();
         this.lazySuitabilityEvaluation = true;
+        this.setSimulation(Simulation.NULL);
+
         setPeList(peList);
         this.setFailed(false);
 
@@ -195,8 +197,6 @@ public abstract class HostAbstract extends ExecDelayableAbstract implements Host
         this.setVmScheduler(new VmSchedulerSpaceShared());
 
         this.idleShutdownDeadline = DEF_IDLE_SHUTDOWN_DEADLINE;
-        this.setSimulation(Simulation.NULL);
-
     }
 
     /**
