@@ -101,12 +101,11 @@ public abstract class VmAbstract extends CustomerEntityAbstract implements Vm {
     protected VmAbstract(final long id, final long mipsCapacity, final long pesNumber, final CloudletScheduler cloudletScheduler) {
         super();
         setId(id);
+        this.processor = new Processor(this, pesNumber, mipsCapacity);
         setMips(mipsCapacity);
         setPesNumber(pesNumber);
-        mutableAttributesInit();
         setCloudletScheduler(cloudletScheduler);
 
-        this.processor = new Processor(this, pesNumber, mipsCapacity);
         this.resources = new ArrayList<>(4);
 
         //initiate number of free PEs as number of PEs of VM
@@ -122,6 +121,7 @@ public abstract class VmAbstract extends CustomerEntityAbstract implements Vm {
         this.onHostDeallocationListeners = new ArrayList<>();
         this.onUpdateProcessingListeners = new ArrayList<>();
         this.onCreationFailureListeners = new ArrayList<>();
+        mutableAttributesInit();
     }
 
     /**
@@ -198,7 +198,7 @@ public abstract class VmAbstract extends CustomerEntityAbstract implements Vm {
     }
 
     @Override
-    public double updateProcessing(MipsShare mipsShare) {
+    public double updateProcessing(final MipsShare mipsShare) {
         return updateProcessing(getSimulation().clock(), mipsShare);
     }
 
