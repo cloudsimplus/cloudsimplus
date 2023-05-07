@@ -512,13 +512,14 @@ public abstract class VmAbstract extends CustomerEntityAbstract implements Vm {
     }
 
     @Override
-    public void setCreated(final boolean created) {
-        if (!this.created && created) {
+    public void setCreated(final boolean create) {
+        if (!this.created && create) {
             setCreationTime();
+            setStartTime(getSimulation().clock());
+            this.setFailed(false);
         }
 
-        this.created = created;
-        this.setFailed(false);
+        this.created = create;
     }
 
     @Override

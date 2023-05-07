@@ -274,12 +274,11 @@ public abstract class HostAbstract extends ExecDelayableAbstract implements Host
 
     @Override
     public HostSuitability createVm(final Vm vm) {
-        final HostSuitability suitability = createVmInternal(vm);
+        final var suitability = createVmInternal(vm);
         if (suitability.fully()) {
             addVmToCreatedList(vm);
             vm.setHost(this);
             vm.setCreated(true);
-            vm.setStartTime(getSimulation().clock());
         }
 
         return suitability;
