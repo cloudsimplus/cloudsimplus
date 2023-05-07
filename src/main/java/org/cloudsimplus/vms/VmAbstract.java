@@ -657,7 +657,7 @@ public abstract class VmAbstract extends CustomerEntityAbstract implements Vm {
     }
 
     @Override
-    public boolean isDelayed() {
+    public boolean isSubmissionDelayed() {
         return submissionDelay > 0;
     }
 

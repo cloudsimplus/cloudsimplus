@@ -43,6 +43,13 @@ public interface Startable {
     double getStartTime();
 
     /**
+     * {@return true of false} to indicate whether the entity has started and it's not finished yet.
+     */
+    default boolean hasStarted(){
+        return !isFinished() && getStartTime() > NOT_ASSIGNED;
+    }
+
+    /**
      * Checks whether this entity has finished executing or not.
      *
      * @return true if this entity has finished execution; false otherwise
@@ -102,23 +109,4 @@ public interface Startable {
      */
     double getTotalExecutionTime();
 
-    /**
-     * Get the delay (in seconds) for starting up.
-     */
-    double getStartupDelay();
-
-    /**
-     * Set the delay (in seconds) for starting up.
-     */
-    Startable setStartupDelay(double delay);
-
-    /**
-     * Get the delay (in seconds) for shutting down.
-     */
-    double getShutDownDelay();
-
-    /**
-     * Set the delay (in seconds) for shutting down.
-     */
-    Startable setShutDownDelay(double delay);
 }

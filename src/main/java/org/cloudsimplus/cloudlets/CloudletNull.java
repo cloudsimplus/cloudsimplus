@@ -25,6 +25,7 @@ package org.cloudsimplus.cloudlets;
 
 import org.cloudsimplus.brokers.DatacenterBroker;
 import org.cloudsimplus.core.CustomerEntity;
+import org.cloudsimplus.core.ExecDelayable;
 import org.cloudsimplus.core.Simulation;
 import org.cloudsimplus.core.Startable;
 import org.cloudsimplus.datacenters.Datacenter;
@@ -125,7 +126,7 @@ final class CloudletNull implements Cloudlet {
     @Override public boolean removeOnUpdateProcessingListener(EventListener<CloudletVmEventInfo> listener) { return false; }
     @Override public Cloudlet addOnUpdateProcessingListener(EventListener<CloudletVmEventInfo> listener) { return Cloudlet.NULL; }
     @Override public double getSubmissionDelay() { return 0; }
-    @Override public boolean isDelayed() { return false; }
+    @Override public boolean isSubmissionDelayed() { return false; }
     @Override public void setSubmissionDelay(double submissionDelay) {/**/}
     @Override public boolean isBoundToVm() { return false; }
     @Override public int compareTo(Cloudlet cloudlet) { return 0; }
@@ -141,7 +142,7 @@ final class CloudletNull implements Cloudlet {
     @Override public boolean isLifeTimeReached() { return true; }
 
     @Override public double getStartupDelay() { return 0; }
-    @Override public Startable setStartupDelay(double delay) { return this; }
+    @Override public ExecDelayable setStartupDelay(double delay) { return this; }
     @Override public double getShutDownDelay() { return 0; }
-    @Override public Startable setShutDownDelay(double delay) { return this; }
+    @Override public ExecDelayable setShutDownDelay(double delay) { return this; }
 }

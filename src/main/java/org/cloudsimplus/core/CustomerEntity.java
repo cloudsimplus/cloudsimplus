@@ -33,7 +33,7 @@ import org.cloudsimplus.vms.Vm;
  * namely {@link Vm} and {@link Cloudlet}.
  * @author raysaoliveira
  */
-public interface CustomerEntity extends UniquelyIdentifiable, ChangeableId, Delayable, Lifetimed, Startable {
+public interface CustomerEntity extends UniquelyIdentifiable, ChangeableId, SubmissionDelayable, Lifetimed, ExecDelayable {
 
     /**
      * Gets the time the entity was finished (in seconds).

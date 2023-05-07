@@ -739,4 +739,22 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
      */
     @Override
     Lifetimed setLifeTime(double lifeTime);
+
+    /**
+     * {@inheritDoc}.
+     * <p><b>WARNING:</b>  the method currently has no effect on Cloudlets.</p>
+     * @param delay {@inheritDoc}
+     * @return {@inheritDoc}
+     */
+    @Override
+    ExecDelayable setStartupDelay(double delay);
+
+    /**
+     * {@inheritDoc}.
+     * <p><b>WARNING:</b>  the method currently has no effect on Cloudlets.</p>
+     * @param delay {@inheritDoc}
+     * @return {@inheritDoc}
+     */
+    @Override
+    ExecDelayable setShutDownDelay(double delay);
 }

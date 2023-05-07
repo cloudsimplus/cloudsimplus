@@ -746,4 +746,24 @@ public interface Vm extends Machine<Resource>, UniquelyIdentifiable, Comparable<
      */
     @Override
     Lifetimed setLifeTime(double lifeTime);
+
+    /**
+     * {@inheritDoc}
+     * This is the time the VM takes to boot up.
+     *
+     * <p><b>INFO:</b> When setting this attribute, call {@link #setBootModel(BootModel)} first.</p>
+     * @param delay {@inheritDoc}
+     * @return {@inheritDoc}
+     * @see #getStartupDelay()
+     */
+    @Override
+    ExecDelayable setStartupDelay(double delay);
+
+    /**
+     * {@return true or false} whether the VM is booting up or not.
+     */
+    @Override
+    default boolean isStartingUp(){
+        return Machine.super.isStartingUp();
+    }
 }
