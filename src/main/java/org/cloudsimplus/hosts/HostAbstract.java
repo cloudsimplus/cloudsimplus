@@ -162,7 +162,7 @@ public abstract class HostAbstract extends ExecDelayableAbstract implements Host
     }
 
     public HostAbstract(final List<Pe> peList, final boolean activate) {
-        this(defaultBwCapacity, defaultStorageCapacity, new HarddriveStorage(defaultRamCapacity), peList, activate);
+        this(defaultRamCapacity, defaultBwCapacity, new HarddriveStorage(defaultStorageCapacity), peList, activate);
     }
 
     protected HostAbstract(
