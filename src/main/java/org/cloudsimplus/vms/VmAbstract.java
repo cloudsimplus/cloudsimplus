@@ -341,11 +341,11 @@ public abstract class VmAbstract extends CustomerEntityAbstract implements Vm {
 
     @Override
     public long getCurrentRequestedBw() {
-        if (!isCreated()) {
-            return bw.getCapacity();
+        if (isCreated()) {
+            return (long) (cloudletScheduler.getCurrentRequestedBwPercentUtilization() * bw.getCapacity());
         }
 
-        return (long) (cloudletScheduler.getCurrentRequestedBwPercentUtilization() * bw.getCapacity());
+        return bw.getCapacity();
     }
 
     @Override
