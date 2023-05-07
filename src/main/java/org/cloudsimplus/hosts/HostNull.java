@@ -23,6 +23,7 @@
  */
 package org.cloudsimplus.hosts;
 
+import org.cloudsimplus.core.ExecDelayable;
 import org.cloudsimplus.core.Machine;
 import org.cloudsimplus.core.Simulation;
 import org.cloudsimplus.core.Startable;
@@ -159,9 +160,9 @@ final class HostNull implements Host {
     @Override public boolean isIdle() { return true; }
 
     @Override public double getStartupDelay() { return 0; }
-    @Override public Startable setStartupDelay(double delay) { return this; }
+    @Override public ExecDelayable setStartupDelay(double delay) { return this; }
     @Override public double getShutDownDelay() { return 0; }
-    @Override public Startable setShutDownDelay(double delay) { return this; }
+    @Override public ExecDelayable setShutDownDelay(double delay) { return this; }
     @Override public Host setSimulation(Simulation simulation) { return this; }
     @Override public ResourceProvisioner getProvisioner(Class<? extends ResourceManageable> clazz) { return ResourceProvisioner.NULL; }
     @Override public int getWorkingPesNumber() {

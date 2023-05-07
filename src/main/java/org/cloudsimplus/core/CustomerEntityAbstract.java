@@ -37,7 +37,7 @@ import org.cloudsimplus.datacenters.Datacenter;
  * @since CloudSim Plus 4.0.3
  */
 @Accessors @Getter @Setter @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
-public abstract class CustomerEntityAbstract extends StartableAbstract implements CustomerEntity {
+public abstract class CustomerEntityAbstract extends ExecDelayableAbstract implements CustomerEntity {
     @EqualsAndHashCode.Include
     private long id;
 

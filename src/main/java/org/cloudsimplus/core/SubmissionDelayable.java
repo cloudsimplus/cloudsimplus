@@ -37,7 +37,7 @@ import org.cloudsimplus.vms.Vm;
  *
  * @author Manoel Campos da Silva Filho
  */
-public interface Delayable {
+public interface SubmissionDelayable extends ExecDelayable {
     /**
      * Gets the time (in seconds) that a {@link DatacenterBroker} will wait
      * to submit the entity to a Datacenter, in order to request the creation of the object.
@@ -61,5 +61,5 @@ public interface Delayable {
      * Checks if this object has a submission delay or not
      * @return
      */
-    boolean isDelayed();
+    boolean isSubmissionDelayed();
 }

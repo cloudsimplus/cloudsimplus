@@ -27,10 +27,7 @@ import org.cloudsimplus.autoscaling.HorizontalVmScaling;
 import org.cloudsimplus.autoscaling.VerticalVmScaling;
 import org.cloudsimplus.brokers.DatacenterBroker;
 import org.cloudsimplus.cloudlets.Cloudlet;
-import org.cloudsimplus.core.CustomerEntity;
-import org.cloudsimplus.core.Lifetimed;
-import org.cloudsimplus.core.Simulation;
-import org.cloudsimplus.core.Startable;
+import org.cloudsimplus.core.*;
 import org.cloudsimplus.datacenters.Datacenter;
 import org.cloudsimplus.hosts.Host;
 import org.cloudsimplus.listeners.EventListener;
@@ -60,7 +57,7 @@ class VmNull implements Vm {
     @Override public double getSubmissionDelay() {
         return 0;
     }
-    @Override public boolean isDelayed() { return false; }
+    @Override public boolean isSubmissionDelayed() { return false; }
     @Override public void setSubmissionDelay(double submissionDelay) {/**/}
     @Override public void addStateHistoryEntry(VmStateHistoryEntry entry) {/**/}
     @Override public Resource getBw() {
@@ -226,7 +223,7 @@ class VmNull implements Vm {
     @Override public boolean isLifeTimeReached() { return false; }
 
     @Override public double getStartupDelay() { return 0; }
-    @Override public Startable setStartupDelay(double delay) { return this; }
+    @Override public ExecDelayable setStartupDelay(double delay) { return this; }
     @Override public double getShutDownDelay() { return 0; }
-    @Override public Startable setShutDownDelay(double delay) { return this; }
+    @Override public ExecDelayable setShutDownDelay(double delay) { return this; }
 }

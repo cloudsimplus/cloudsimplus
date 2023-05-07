@@ -488,7 +488,7 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
     }
 
     @Override
-    public boolean isDelayed() {
+    public boolean isSubmissionDelayed() {
         return submissionDelay > 0;
     }
 
