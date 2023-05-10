@@ -34,7 +34,7 @@ import static java.util.stream.Collectors.*;
  * An abstract VM allocation policy that dynamically optimizes the
  * VM allocation (placement) using migration.
  * <b>It's a Best Fit policy which selects the Host with most efficient power usage to place a given VM.</b>
- * Such a behaviour can be overridden by sub-classes.
+ * Such a behaviour can be overridden by subclasses.
  *
  * <p>If you are using any algorithms, policies or workload included in the
  * power package please cite the following paper:
@@ -56,6 +56,7 @@ import static java.util.stream.Collectors.*;
  */
 @Accessors @Getter @Setter
 public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPolicyAbstract implements VmAllocationPolicyMigration {
+    /** Default CPU utilization percentage ([0..1]) that indicates a Host is underloaded. */
     public static final double DEF_UNDERLOAD_THRESHOLD = 0.35;
 
     /** @see #getUnderUtilizationThreshold() */
