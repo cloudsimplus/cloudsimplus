@@ -124,8 +124,8 @@ public interface Host extends PhysicalMachine, Comparable<Host>, PowerAware<Powe
 
     /**
      * Requests the Host to be powered on or off.
-     * If there is no {@link PowerModelHost#getStartupDelay()}
-     * or {@link PowerModelHost#getShutDownDelay()} (which is the default),
+     * If there is no {@link #getStartupDelay()}
+     * or {@link #getShutDownDelay()} (which is the default),
      * those operations will happen immediately.
      *
      * <p>If the Host is set to be powered off while it has running VMs,
