@@ -870,11 +870,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     public DatacenterBroker requestIdleVmDestruction(final Vm vm) {
         if (vm.isCreated()) {
             if(isFinished() || vm.isLifeTimeReached() || isVmIdleEnough(vm)) {
-                final var lifeTimeMsg = vm.isLifeTimeReached() ? " after reaching defined lifetime" : "";
-                final var shutDownMsg = vm.isShutDownDelayed() ? "expected to finish in %.2f seconds".formatted(vm.getShutDownDelay()) : "will finish immediately (since no Vm shutDownDelay was set)";
-                vm.setShutdownBeginTime(getSimulation().clock());
-                LOGGER.info("{}: {}: Requesting {} destruction{}. Shutdown {}.", getSimulation().clockStr(), getName(), vm, lifeTimeMsg, shutDownMsg);
-                send(getDatacenter(vm), vm.getShutDownDelay(), CloudSimTag.VM_DESTROY, vm);
+                vm.shutdown();
             }
 
             if(isVmIdlenessVerificationRequired((VmSimple)vm)) {

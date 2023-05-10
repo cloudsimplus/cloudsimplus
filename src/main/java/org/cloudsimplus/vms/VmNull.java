@@ -229,6 +229,7 @@ class VmNull implements Vm {
     @Override  public double getShutdownBeginTime() { return -1; }
     @Override public ExecDelayable setShutdownBeginTime(double shutdownBeginTime) { return this; }
     @Override public ExecDelayable setStartupDelay(double delay) { return this; }
+    @Override public void shutdown() {/**/}
     @Override public double getShutDownDelay() { return 0; }
     @Override public ExecDelayable setShutDownDelay(double delay) { return this; }
 }

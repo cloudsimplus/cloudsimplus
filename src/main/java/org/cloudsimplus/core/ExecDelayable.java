@@ -33,6 +33,11 @@ public interface ExecDelayable extends Startable {
      */
     double getShutdownBeginTime();
 
+    /**
+     * Sends a request to shut down the entity.
+     * @see #setShutDownDelay(double)
+     */
+    void shutdown();
 
     /** Sets the time the VM shutdown has begun.
      * @param shutdownBeginTime value to set */

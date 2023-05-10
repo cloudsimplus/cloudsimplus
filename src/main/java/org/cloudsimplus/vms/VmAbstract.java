@@ -954,4 +954,16 @@ public abstract class VmAbstract extends CustomerEntityAbstract implements Vm {
         this.requestedMips = requestedMips;
         return this;
     }
+
+    @Override
+    public void shutdown() {
+        final var lifeTimeMsg = this.isLifeTimeReached() ? " after reaching defined lifetime" : "";
+        final var shutDownMsg = this.isShutDownDelayed()
+                                        ? "expected to finish in %.2f seconds".formatted(this.getShutDownDelay())
+                                        : "will finish immediately (since no Vm shutDownDelay was set)";
+        this.setShutdownBeginTime(getSimulation().clock());
+        LOGGER.info("{}: {}: Requesting {} destruction{}. Shutdown {}.", getSimulation().clockStr(), getClass().getSimpleName(), this, lifeTimeMsg, shutDownMsg);
+        final var dc = host.getDatacenter();
+        dc.schedule(dc, this.getShutDownDelay(), CloudSimTag.VM_DESTROY, this);
+    }
 }

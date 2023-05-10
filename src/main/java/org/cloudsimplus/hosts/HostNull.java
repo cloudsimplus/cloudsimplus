@@ -128,6 +128,7 @@ final class HostNull implements Host {
     @Override public boolean isFinished() { return true; }
     @Override public boolean hasEverStarted() { return false; }
     @Override public Host setActive(boolean activate) { return this; }
+    @Override public void shutdown() {/**/}
     @Override public <T extends Vm> Set<T> getVmsMigratingIn() {
         return Collections.emptySet();
     }
