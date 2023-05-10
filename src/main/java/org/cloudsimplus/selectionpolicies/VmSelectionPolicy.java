@@ -15,19 +15,10 @@ import java.util.Optional;
 
 /**
  * An interface to be used to implement VM selection policies for a list of migratable VMs.
- * The selection is defined by sub-classes.
- *
- * <br>If you are using any algorithms, policies or workload included in the power package please cite
- * the following paper:<br>
- *
- * <ul>
- * <li><a href="https://doi.org/10.1002/cpe.1867">Anton Beloglazov, and Rajkumar Buyya, "Optimal Online Deterministic Algorithms and Adaptive
- * Heuristics for Energy and Performance Efficient Dynamic Consolidation of Virtual Machines in
- * Cloud Data Centers", Concurrency and Computation: Practice and Experience (CCPE), Volume 24,
- * Issue 13, Pages: 1397-1420, John Wiley and Sons, Ltd, New York, USA, 2012</a>
- * </ul>
+ * The selection is defined by subclasses.
  *
  * @author Anton Beloglazov
+ * @author Manoel Campos da Silva Filho
  * @since CloudSim Toolkit 3.0
  */
 public interface VmSelectionPolicy {
