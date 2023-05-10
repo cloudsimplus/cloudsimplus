@@ -924,32 +924,32 @@ public abstract class VmAbstract extends CustomerEntityAbstract implements Vm {
         return this.onCreationFailureListeners;
     }
 
-    public Vm setDescription(String description) {
+    public Vm setDescription(final String description) {
         this.description = description;
         return this;
     }
 
-    public Vm setVmm(String vmm) {
+    public Vm setVmm(final String vmm) {
         this.vmm = vmm;
         return this;
     }
 
-    public Vm setGroup(VmGroup group) {
+    public Vm setGroup(final VmGroup group) {
         this.group = group;
         return this;
     }
 
-    public Vm setInMigration(boolean inMigration) {
+    public Vm setInMigration(final boolean inMigration) {
         this.inMigration = inMigration;
         return this;
     }
 
-    public Vm setAllocatedMips(MipsShare allocatedMips) {
+    public Vm setAllocatedMips(final MipsShare allocatedMips) {
         this.allocatedMips = allocatedMips;
         return this;
     }
 
-    public Vm setRequestedMips(MipsShare requestedMips) {
+    public Vm setRequestedMips(final MipsShare requestedMips) {
         this.requestedMips = requestedMips;
         return this;
     }
