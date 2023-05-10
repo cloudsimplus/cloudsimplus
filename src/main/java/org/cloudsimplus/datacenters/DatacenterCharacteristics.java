@@ -7,6 +7,7 @@
  */
 package org.cloudsimplus.datacenters;
 
+import org.cloudsimplus.allocationpolicies.VmAllocationPolicy;
 import org.cloudsimplus.core.Identifiable;
 
 /**
@@ -22,10 +23,35 @@ import org.cloudsimplus.core.Identifiable;
  */
 public interface DatacenterCharacteristics extends Identifiable {
     /**
+     * Identifies different datacenter distribution models, just for classification purposes.
+     * For instance, a {@link VmAllocationPolicy} may prioritize placing VMs into
+     * a private Datacenter first, instead of trying a public one.
+     */
+    enum Distribution {
+        /** Indicates a datacenter in a public Cloud. */
+        PUBLIC,
+        /** Indicates a datacenter in a private Cloud. */
+        PRIVATE
+    }
+
+    /**
      * An attribute that implements the Null Object Design Pattern for {@link Datacenter}
      * objects.
      */
     DatacenterCharacteristics NULL = new DatacenterCharacteristicsNull();
+
+    /**
+     * {@return the distribution type of the datacenter} That is used for classification purposes.
+     * @see Distribution
+     */
+    Distribution getDistribution();
+
+    /**
+     * Sets the distribution type of the datacenter, which is used for classification purposes.
+     * @param distribution the distribution type to set
+     * @return
+     */
+    DatacenterCharacteristics setDistribution(Distribution distribution);
 
     /**
      * Gets the Datacenter id.

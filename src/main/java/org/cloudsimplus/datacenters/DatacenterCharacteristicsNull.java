@@ -44,11 +44,11 @@ final class DatacenterCharacteristicsNull implements DatacenterCharacteristics {
         return 0;
     }
     @Override public DatacenterCharacteristics setCostPerSecond(double cost) { return this;}
-
     @Override public Datacenter getDatacenter() {
         return Datacenter.NULL;
     }
-
+    @Override public Distribution getDistribution() { return Distribution.PRIVATE; }
+    @Override public DatacenterCharacteristics setDistribution(Distribution distribution) { return this; }
     @Override public long getId() {
         return 0;
     }
@@ -59,7 +59,6 @@ final class DatacenterCharacteristicsNull implements DatacenterCharacteristics {
     @Override public int getPesNumber() {
         return 0;
     }
-
     @Override public boolean isWorking() {
         return false;
     }

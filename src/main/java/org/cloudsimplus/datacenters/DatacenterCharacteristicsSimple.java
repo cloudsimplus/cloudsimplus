@@ -24,12 +24,16 @@ import org.cloudsimplus.hosts.Host;
  * @author Rajkumar Buyya
  * @author Rodrigo N. Calheiros
  * @author Anton Beloglazov
+ * @author Manoel Campos da Silva Filho
  * @since CloudSim Toolkit 1.0
  */
 @Accessors @Getter @Setter
 public class DatacenterCharacteristicsSimple implements DatacenterCharacteristics {
     @NonNull
     private Datacenter datacenter = Datacenter.NULL;
+
+    @NonNull
+    private Distribution distribution = Distribution.PRIVATE;
 
     private double costPerSecond;
     private double costPerMem;
@@ -40,6 +44,7 @@ public class DatacenterCharacteristicsSimple implements DatacenterCharacteristic
      * Creates a DatacenterCharacteristics with no costs for
      * {@link #getCostPerBw() BW},
      * {@link #getCostPerMem() RAM} and {@link #getCostPerStorage() Storage}.
+     * The datacenter {@link #getDistribution() distribution} type is set as {@link Distribution#PRIVATE} by default.
      *
      * @see DatacenterCharacteristicsSimple#DatacenterCharacteristicsSimple(double, double, double)
      * @see DatacenterCharacteristicsSimple#DatacenterCharacteristicsSimple(double, double, double, double)
@@ -51,6 +56,7 @@ public class DatacenterCharacteristicsSimple implements DatacenterCharacteristic
 
     /**
      * Creates a DatacenterCharacteristics with no cost for {@link #getCostPerBw() BW}.
+     * The datacenter {@link #getDistribution() distribution} type is set as {@link Distribution#PRIVATE} by default.
      *
      * @see DatacenterCharacteristicsSimple#DatacenterCharacteristicsSimple(Datacenter)
      * @see DatacenterCharacteristicsSimple#DatacenterCharacteristicsSimple(double, double, double, double)
@@ -63,12 +69,13 @@ public class DatacenterCharacteristicsSimple implements DatacenterCharacteristic
 
     /**
      * Creates a DatacenterCharacteristics.
+     * The datacenter {@link #getDistribution() distribution} type is set as {@link Distribution#PRIVATE} by default.
      *
      * @see DatacenterCharacteristicsSimple#DatacenterCharacteristicsSimple(Datacenter)
      * @see DatacenterCharacteristicsSimple#DatacenterCharacteristicsSimple(double, double, double)
      */
     public DatacenterCharacteristicsSimple(
-        final double costPerSecond, final double costPerMem,
+        final double costPerSecond,  final double costPerMem,
         final double costPerStorage, final double costPerBw)
     {
         setCostPerSecond(costPerSecond);
