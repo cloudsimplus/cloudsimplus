@@ -7,7 +7,6 @@
  */
 package org.cloudsimplus.allocationpolicies.migration;
 
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
@@ -40,28 +39,30 @@ import static java.util.stream.Collectors.*;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Toolkit 3.0
  */
-@Accessors @Getter @Setter
+@Accessors
 public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPolicyAbstract implements VmAllocationPolicyMigration {
     /** Default CPU utilization percentage ([0..1]) that indicates a Host is underloaded. */
     public static final double DEF_UNDERLOAD_THRESHOLD = 0.35;
 
     /** @see #getUnderUtilizationThreshold() */
+    @Getter @Setter
     private double underUtilizationThreshold;
 
     /** @see #getVmSelectionPolicy() */
-    @NonNull
+    @NonNull @Getter @Setter
     private VmSelectionPolicy vmSelectionPolicy;
 
     /** @see #isUnderloaded() */
+    @Getter
     private boolean underloaded;
 
     /** @see #isOverloaded() */
+    @Getter
     private boolean overloaded;
 
     /**
      * A map between a VM and the host where it is placed.
      */
-    @Getter(AccessLevel.NONE)
     private final Map<Vm, Host> savedAllocation;
 
     /**
@@ -70,7 +71,6 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
      * policy is linked to, so that the policy tries
      * inter-datacenter VM migration before a different datacenter.
      */
-    @Getter(AccessLevel.NONE) @Setter(AccessLevel.NONE)
     private Datacenter targetMigrationDc;
 
     /**
@@ -80,7 +80,6 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
      * This is just used when the {@link #getDatacenter()} linked to this policy doesn't have suitable Hosts for
      * inter-datacenter VM migration. This way, a different datacenter is tried.
      */
-    @Getter(AccessLevel.NONE) @Setter(AccessLevel.NONE)
     private int targetMigrationDcIndex;
 
     /**
