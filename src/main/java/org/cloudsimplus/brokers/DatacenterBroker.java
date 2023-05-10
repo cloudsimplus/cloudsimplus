@@ -136,15 +136,6 @@ public interface DatacenterBroker extends SimEntity {
     void requestShutdownWhenIdle();
 
     /**
-     * Destroys the passed VM.
-     *
-     * @param vm Virtual machine to be destroyed
-     * @return Cloudlets which were being queued or running on the target VM.
-     *         Such cloudlets have their state reset.
-     */
-    List<Cloudlet> destroyVm(Vm vm);
-
-    /**
      * Gets the list of all VMs created so far,
      * independently if they are running yet or were already destroyed.
      * This can be used at the end of the simulation to know

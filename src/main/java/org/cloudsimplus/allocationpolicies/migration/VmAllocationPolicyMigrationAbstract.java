@@ -16,6 +16,7 @@ import org.cloudsimplus.allocationpolicies.VmAllocationPolicyAbstract;
 import org.cloudsimplus.core.CloudInformationService;
 import org.cloudsimplus.datacenters.Datacenter;
 import org.cloudsimplus.hosts.Host;
+import org.cloudsimplus.hosts.HostAbstract;
 import org.cloudsimplus.selectionpolicies.VmSelectionPolicy;
 import org.cloudsimplus.util.TimeUtil;
 import org.cloudsimplus.vms.Vm;
