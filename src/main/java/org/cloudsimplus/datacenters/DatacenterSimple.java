@@ -328,7 +328,6 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
             case CloudSimTag.VM_CREATE_ACK -> processVmCreate(evt);
             case CloudSimTag.VM_VERTICAL_SCALING  -> requestVmVerticalScaling(evt);
             case CloudSimTag.VM_DESTROY -> processVmDestroy(evt, false);
-            case CloudSimTag.VM_DESTROY_ACK -> processVmDestroy(evt, true);
             case CloudSimTag.VM_MIGRATE -> finishVmMigration(evt, false);
             case CloudSimTag.VM_MIGRATE_ACK -> finishVmMigration(evt, true);
             case CloudSimTag.VM_UPDATE_CLOUDLET_PROCESSING -> updateCloudletProcessing() != Double.MAX_VALUE;
@@ -579,10 +578,6 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     protected boolean processVmDestroy(final SimEvent evt, final boolean ack) {
         if(evt.getData() instanceof Vm vm){
             vmAllocationPolicy.deallocateHostForVm(vm);
-
-            if (ack) {
-                sendNow(vm.getBroker(), CloudSimTag.VM_DESTROY_ACK, vm);
-            }
 
             vm.getBroker().requestShutdownWhenIdle();
             if(getSimulation().isAborted() || getSimulation().isAbortRequested()) {

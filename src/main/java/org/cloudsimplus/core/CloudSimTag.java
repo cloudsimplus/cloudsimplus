@@ -250,14 +250,6 @@ public class CloudSimTag{
     public static final int VM_DESTROY = BASE + 33;
 
     /**
-     * Denotes a request to destroy a new VM in a {@link Datacenter} with
-     * acknowledgement information sent by the Datacenter.
-     * When an event of this type is sent, the {@link SimEvent#getData()}
-     * must be a {@link Vm} object.
-     */
-    public static final int VM_DESTROY_ACK = BASE + 34;
-
-    /**
      * Denotes a request to finish the migration of a new VM in a {@link Datacenter}.
      * When an event of this type is sent, the {@link SimEvent#getData()}
      * must be a {@code Map.Entry<VmAbstract, Host>} representing to which {@link Host}
