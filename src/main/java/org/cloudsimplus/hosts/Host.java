@@ -136,8 +136,15 @@ public interface Host extends PhysicalMachine, Comparable<Host>, PowerAware<Powe
      * @return this Host instance
      * @throws IllegalStateException when trying to activate a {@link #isFailed() failed} host.
      * @see #setPowerModel(PowerModelHost)
+     * @see #shutdown()
      */
     Host setActive(boolean activate);
+
+    /**
+     * Sends a request to shut down the Host.
+     */
+    @Override
+    void shutdown();
 
     /**
      * Gets the list of VMs migrating into this host.

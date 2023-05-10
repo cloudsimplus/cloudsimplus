@@ -784,4 +784,12 @@ public interface Vm extends Machine<Resource>, UniquelyIdentifiable, Comparable<
     default boolean isStartingUp(){
         return Machine.super.isStartingUp();
     }
+
+    /**
+     * Sends a request to the Datacenter to shut down (destroy) the VM.
+     * @see #setBootModel(BootModel)
+     * @see #setShutDownDelay(double)
+     */
+    @Override
+    void shutdown();
 }

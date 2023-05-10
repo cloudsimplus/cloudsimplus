@@ -530,4 +530,8 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
         return dcArrivalTime;
     }
 
+    @Override
+    public void shutdown() {
+        throw new UnsupportedOperationException("This method is not implemented for Cloudlet yet");
+    }
 }

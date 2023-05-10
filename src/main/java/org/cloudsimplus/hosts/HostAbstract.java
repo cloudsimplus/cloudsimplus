@@ -458,6 +458,11 @@ public abstract class HostAbstract extends ExecDelayableAbstract implements Host
         return this;
     }
 
+    @Override
+    public void shutdown() {
+        setActive(false);
+    }
+
     /**
      * Process an event for actually powering the {@link Host} <b>on</b> or <b>off</b>
      * after any defined start up/shutdown delay (if some delay is set).
