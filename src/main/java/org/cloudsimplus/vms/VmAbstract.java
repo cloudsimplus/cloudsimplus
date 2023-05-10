@@ -12,6 +12,7 @@ import org.cloudsimplus.cloudlets.Cloudlet;
 import org.cloudsimplus.core.CloudSimTag;
 import org.cloudsimplus.core.CustomerEntityAbstract;
 import org.cloudsimplus.core.Machine;
+import org.cloudsimplus.core.Startable;
 import org.cloudsimplus.datacenters.Datacenter;
 import org.cloudsimplus.hosts.Host;
 import org.cloudsimplus.listeners.EventListener;
@@ -561,6 +562,12 @@ public abstract class VmAbstract extends CustomerEntityAbstract implements Vm {
         }
 
         this.created = requestCreation;
+    }
+
+    @Override
+    public Startable setStartTime(final double startTime) {
+        cloudletScheduler.setPreviousTime(startTime);
+        return super.setStartTime(startTime);
     }
 
     @Override

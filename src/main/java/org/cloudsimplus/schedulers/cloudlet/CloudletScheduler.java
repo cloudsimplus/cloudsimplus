@@ -109,6 +109,14 @@ public interface CloudletScheduler extends Serializable {
     double cloudletSubmit(Cloudlet cloudlet);
 
     /**
+     * Sets the previous time when the scheduler updated the processing of
+     * cloudlets it is managing.
+     *
+     * @param previousTime the new previous time
+     */
+    void setPreviousTime(double previousTime);
+
+    /**
      * Gets a <b>read-only</b> List of cloudlets being executed on the VM.
      *
      * @return the cloudlet execution list

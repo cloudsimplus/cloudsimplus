@@ -18,6 +18,7 @@ import org.cloudsimplus.core.CustomerEntityAbstract;
 import org.cloudsimplus.core.Simulation;
 import org.cloudsimplus.core.events.PredicateType;
 import org.cloudsimplus.core.events.SimEvent;
+import org.cloudsimplus.datacenters.DatacenterCharacteristics.Distribution;
 import org.cloudsimplus.faultinjection.HostFaultInjection;
 import org.cloudsimplus.hosts.Host;
 import org.cloudsimplus.hosts.HostSimple;
@@ -36,11 +37,13 @@ import org.cloudsimplus.vms.Vm;
 import org.cloudsimplus.vms.VmAbstract;
 
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 import static java.util.Objects.requireNonNull;
 import static java.util.function.Predicate.not;
 import static java.util.stream.Collectors.toList;
+import static org.cloudsimplus.datacenters.DatacenterCharacteristics.Distribution.PRIVATE;
 import static org.cloudsimplus.util.BytesConversion.bitsToBytes;
 
 /**
@@ -826,26 +829,51 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     @Override
     public void requestVmMigration(final Vm sourceVm, final Host targetHost) {
         final var sourceHost = sourceVm.getHost();
-        final double delay = timeToMigrateVm(sourceVm, targetHost);
+        double delay = timeToMigrateVm(sourceVm, targetHost);
+        final boolean nonLiveMigration = delay < 0;
+        final var migrationType = nonLiveMigration ? "Non-live Migration (from/to a public-cloud datacenter)" : "Live Migration (across private-cloud datacenters)";
+
+        delay = Math.abs(delay);
         final String msg1 =
             Host.NULL.equals(sourceHost) ?
                 "%s to %s".formatted(sourceVm, targetHost) :
                 "%s from %s to %s".formatted(sourceVm, sourceHost, targetHost);
 
         final String currentTime = getSimulation().clockStr();
-        final var fmt = "It's expected to finish in %.2f seconds, considering the %.0f%% of bandwidth allowed for migration and the VM allocated RAM.";
-        final String msg2 = fmt.formatted(delay, getBandwidthPercentForMigration()*100);
-        LOGGER.info("{}: {}: Migration of {} is started. {}", currentTime, getName(), msg1, msg2);
+        final var fmt = "It's expected to finish in %.2f seconds, considering the %.0f%% of bandwidth allowed for migration and the VM %s.";
+        final var vmResource = nonLiveMigration ? "disk size" : "allocated RAM";
+        final String msg2 = fmt.formatted(delay, getBandwidthPercentForMigration()*100, vmResource);
+        LOGGER.info("{}: {}: {} of {} is started. {}", currentTime, getName(), migrationType, msg1, msg2);
 
         if(targetHost.addMigratingInVm(sourceVm)) {
             sourceHost.addVmMigratingOut(sourceVm);
             send(this, delay, CloudSimTag.VM_MIGRATE, new TreeMap.SimpleEntry<>(sourceVm, targetHost));
+            shutdownVmIfNonLiveMigration(sourceVm, targetHost, delay, nonLiveMigration);
+        }
+    }
+
+    private void shutdownVmIfNonLiveMigration(final Vm sourceVm, final Host targetHost, final double delay, final boolean nonLiveMigration) {
+        if(nonLiveMigration) {
+            sourceVm.shutdown();
+            final var cloudlets = sourceVm.getCloudletScheduler().getCloudletList().stream().toList();
+            sourceVm.getCloudletScheduler().clear();
+            cloudlets.stream().map(Cloudlet::reset).forEach(c -> c.setVm(sourceVm).setBroker(sourceVm.getBroker()));
+
+            final var targerDc = targetHost.getDatacenter();
+            // Request restarting executing the Cloudlets after the VM finishes non-live migration
+            cloudlets.forEach(c -> targerDc.schedule(delay + getSimulation().getMinTimeBetweenEvents(), CloudSimTag.CLOUDLET_SUBMIT, c));
         }
     }
 
     /**
      * Computes the expected time to migrate a VM to a given Host.
      * It is computed as: VM RAM (MB)/Target Host Bandwidth (Mb/s).
+     *
+     * <p><b>WARNING: </b>If the VM is being migrated across {@link Distribution#PRIVATE} Datacenters,
+     * returns a positive value indicatig the time to migrate the VM.
+     * If the VM is being migrated across datacenters with different {@link Distribution}s,
+     * returns the time to migrate the VM as a negative value.
+     * </p>
      *
      * @param vm the VM to migrate.
      * @param targetHost the Host where tto migrate the VM
@@ -854,7 +882,19 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     private double timeToMigrateVm(final Vm vm, final Host targetHost) {
         final double ramUtilizationMB   = vm.getRam().getAllocatedResource();
         final double  vmMigrationBwMBps = getBandwidthForMigration(targetHost);
-        return ramUtilizationMB / vmMigrationBwMBps;
+        final var sourceHost = vm.getHost();
+
+        //From private to private-cloud DC, performs live migration (don't stop the VM and tranfer RAM state)
+        if (isLiveMigration(sourceHost, targetHost))
+            return ramUtilizationMB / vmMigrationBwMBps;
+
+        //Otherwise, non-live VM migration stops the VM and transfer its image
+        return -vm.getStorage().getCapacity() / vmMigrationBwMBps;
+    }
+
+    private static boolean isLiveMigration(final Host sourceHost, final Host targetHost) {
+        final Function<Host, Distribution> dist = host -> host.getDatacenter().getCharacteristics().getDistribution();
+        return dist.apply(sourceHost) == PRIVATE && dist.apply(targetHost) == PRIVATE;
     }
 
     /**
