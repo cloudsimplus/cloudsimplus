@@ -44,18 +44,11 @@ final class DatacenterCharacteristicsNull implements DatacenterCharacteristics {
         return 0;
     }
     @Override public DatacenterCharacteristics setCostPerSecond(double cost) { return this;}
-    @Override public DatacenterCharacteristics setVmm(String vmm) { return this; }
+
     @Override public Datacenter getDatacenter() {
         return Datacenter.NULL;
     }
-    @Override public String getArchitecture() {
-        return "";
-    }
-    @Override public DatacenterCharacteristics setArchitecture(String arch) { return this; }
-    @Override public String getOs() {
-        return "";
-    }
-    @Override public DatacenterCharacteristics setOs(String os) { return this; }
+
     @Override public long getId() {
         return 0;
     }
@@ -66,9 +59,7 @@ final class DatacenterCharacteristicsNull implements DatacenterCharacteristics {
     @Override public int getPesNumber() {
         return 0;
     }
-    @Override public String getVmm() {
-        return "";
-    }
+
     @Override public boolean isWorking() {
         return false;
     }
