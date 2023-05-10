@@ -14,6 +14,7 @@ import lombok.experimental.Accessors;
 import org.cloudsimplus.autoscaling.VerticalVmScaling;
 import org.cloudsimplus.datacenters.Datacenter;
 import org.cloudsimplus.hosts.Host;
+import org.cloudsimplus.hosts.HostAbstract;
 import org.cloudsimplus.hosts.HostSuitability;
 import org.cloudsimplus.resources.Pe;
 import org.cloudsimplus.resources.Processor;
@@ -292,7 +293,7 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
 
     @Override
     public void deallocateHostForVm(final Vm vm) {
-        vm.getHost().destroyVm(vm);
+        ((HostAbstract)vm.getHost()).destroyVm(vm);
     }
 
     /**

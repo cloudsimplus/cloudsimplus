@@ -518,7 +518,12 @@ public abstract class HostAbstract extends ExecDelayableAbstract implements Host
         }
     }
 
-    @Override
+    /**
+     * Destroys a VM running in the host and removes it from the {@link #getVmList()}.
+     * If the VM was not created yet, this method has no effect.
+     *
+     * @param vm the VM to be destroyed
+     */
     public void destroyVm(final Vm vm) {
         if (!vm.isCreated()) {
             return;
@@ -527,12 +532,18 @@ public abstract class HostAbstract extends ExecDelayableAbstract implements Host
         destroyVmInternal(vm);
     }
 
-    @Override
+    /**
+     * Destroys a temporary VM created into the Host to book resources.
+     *
+     * @param vm the VM
+     * @see #createTemporaryVm(Vm)
+     * @TODO: https://github.com/cloudsimplus/cloudsimplus/issues/94
+     */
     public void destroyTemporaryVm(final Vm vm) {
         destroyVmInternal(vm);
     }
 
-    private void destroyVmInternal(@NonNull final Vm vm) {
+    public void destroyVmInternal(@NonNull final Vm vm) {
         deallocateResourcesOfVm(vm);
         vmList.remove(vm);
         vm.getBroker().getVmExecList().remove(vm);
@@ -552,7 +563,9 @@ public abstract class HostAbstract extends ExecDelayableAbstract implements Host
         disk.getStorage().deallocateResource(vm.getStorage());
     }
 
-    @Override
+    /**
+     * Destroys all VMs running in the host and remove them from the {@link #getVmList()}.
+     */
     public void destroyAllVms() {
         final var peProvisioner = getPeList().get(0).getPeProvisioner();
         for (final Vm vm : vmList) {

@@ -142,9 +142,6 @@ final class HostNull implements Host {
         return HostSuitability.NULL;
     }
     @Override public HostSuitability createTemporaryVm(Vm vm) { return HostSuitability.NULL; }
-    @Override public void destroyTemporaryVm(Vm vm) {/**/}
-    @Override public void destroyVm(Vm vm) {/**/}
-    @Override public void destroyAllVms() {/**/}
     @Override public Host addOnStartupListener(EventListener<HostEventInfo> listener) { return this; }
     @Override public boolean removeOnStartupListener(EventListener<HostEventInfo> listener) { return false; }
     @Override public Host addOnShutdownListener(EventListener<HostEventInfo> listener) { return this; }
