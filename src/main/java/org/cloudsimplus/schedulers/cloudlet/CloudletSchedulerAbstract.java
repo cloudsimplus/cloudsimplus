@@ -110,13 +110,8 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
         resourceAllocationFailListeners = new ArrayList<>();
     }
 
-    /**
-     * Sets the previous time when the scheduler updated the processing of
-     * cloudlets it is managing.
-     *
-     * @param previousTime the new previous time
-     */
-    protected final void setPreviousTime(final double previousTime) {
+    @Override
+    public final void setPreviousTime(final double previousTime) {
         this.previousTime = previousTime;
     }
 

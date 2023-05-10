@@ -40,6 +40,7 @@ final class CloudletSchedulerNull implements CloudletScheduler {
     @Override public double cloudletSubmit(Cloudlet cloudlet) {
         return 0.0;
     }
+    @Override public void setPreviousTime(double previousTime) {/**/}
     @Override public List<CloudletExecution> getCloudletExecList() {
         return Collections.emptyList();
     }

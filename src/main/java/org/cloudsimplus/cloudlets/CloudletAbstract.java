@@ -174,6 +174,7 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
         this.vm = Vm.NULL;
         this.setStartTime(NOT_ASSIGNED);
         setFinishTime(NOT_ASSIGNED); // meaning this Cloudlet hasn't finished yet
+        this.finishedLengthSoFar = 0;
         this.status = Status.INSTANTIATED;
         this.priority = 0;
         this.setBrokerArrivalTime(NOT_ASSIGNED);
@@ -230,7 +231,6 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
 
     @Override
     public void notifyOnUpdateProcessingListeners(final double time) {
-        setFinishTime();
         onUpdateProcessingListeners.forEach(listener -> listener.update(CloudletVmEventInfo.of(listener, time, this)));
     }
 
@@ -304,6 +304,7 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
                                     partialFinishedMI :
                                     Math.min(partialFinishedMI, absLength()-getFinishedLengthSoFar());
         finishedLengthSoFar += maxLengthToAdd;
+        setFinishTime();
         returnToBrokerIfFinished();
         return true;
     }

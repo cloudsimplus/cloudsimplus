@@ -278,6 +278,7 @@ public abstract class HostAbstract extends ExecDelayableAbstract implements Host
     public HostSuitability createVm(final Vm vm) {
         final var suitability = createVmInternal(vm);
         if (suitability.fully()) {
+            ((VmAbstract)vm).setHost(this);
             if(isStartupDelayed())
                 LOGGER.info(
                     "{}: {}: {} is booting up in {} and it's expected to be ready in {} seconds.",
@@ -304,7 +305,6 @@ public abstract class HostAbstract extends ExecDelayableAbstract implements Host
 
         final HostSuitability suitability = allocateResourcesForVm(vm, false);
         if (suitability.fully()) {
-            ((VmAbstract)vm).setHost(this);
             vmList.add(vm);
         }
         ((VmAbstract)vm).setCreated(suitability.fully());

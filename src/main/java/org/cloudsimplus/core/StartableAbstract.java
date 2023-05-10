@@ -54,7 +54,7 @@ public abstract class StartableAbstract implements Startable {
     }
 
     @Override
-    public final Startable setStartTime(final double startTime) {
+    public Startable setStartTime(final double startTime) {
         final var previousTime = this.startTime;
         this.startTime = startTime;
         if(previousTime <= 0 && startTime > 0) {
