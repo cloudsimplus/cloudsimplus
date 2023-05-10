@@ -833,7 +833,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
                 "%s from %s to %s".formatted(sourceVm, sourceHost, targetHost);
 
         final String currentTime = getSimulation().clockStr();
-        final var fmt = "It's expected to finish in %.2f seconds, considering the %.0f%% of bandwidth allowed for migration and the VM RAM size.";
+        final var fmt = "It's expected to finish in %.2f seconds, considering the %.0f%% of bandwidth allowed for migration and the VM allocated RAM.";
         final String msg2 = fmt.formatted(delay, getBandwidthPercentForMigration()*100);
         LOGGER.info("{}: {}: Migration of {} is started. {}", currentTime, getName(), msg1, msg2);
 
@@ -852,9 +852,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      * @return the time (in seconds) that is expected to migrate the VM
      */
     private double timeToMigrateVm(final Vm vm, final Host targetHost) {
-        /* TODO It must compute the migration time based on the current RAM usage, not the capacity.
-         * It should also consider the VM size.*/
-        return vm.getRam().getCapacity() / bitsToBytes(targetHost.getBw().getCapacity() * getBandwidthPercentForMigration());
+        return vm.getRam().getAllocatedResource() / bitsToBytes(targetHost.getBw().getCapacity() * getBandwidthPercentForMigration());
     }
 
     @Override
