@@ -33,7 +33,7 @@ import org.cloudsimplus.resources.SanStorage;
 import org.cloudsimplus.util.InvalidEventDataTypeException;
 import org.cloudsimplus.util.MathUtil;
 import org.cloudsimplus.vms.Vm;
-import org.cloudsimplus.vms.VmSimple;
+import org.cloudsimplus.vms.VmAbstract;
 
 import java.util.*;
 import java.util.stream.Stream;
@@ -630,12 +630,11 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      */
     protected boolean finishVmMigration(final SimEvent evt, final boolean ack) {
         if (!(evt.getData() instanceof Map.Entry<?, ?>)) {
-            throw new InvalidEventDataTypeException(evt, "VM_MIGRATE", "Map.Entry<Vm, Host>");
+            throw new InvalidEventDataTypeException(evt, "VM_MIGRATE", "Map.Entry<VmAbstract, Host>");
         }
 
-        final var entry = (Map.Entry<Vm, Host>) evt.getData();
-
-        final Vm vm = entry.getKey();
+        final var entry = (Map.Entry<VmAbstract, Host>) evt.getData();
+        final var vm = entry.getKey();
         final Host sourceHost = vm.getHost();
         final Host targetHost = entry.getValue();
 
@@ -648,7 +647,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         targetHost.removeMigratingInVm(vm);
         final HostSuitability suitability = vmAllocationPolicy.allocateHostForVm(vm, targetHost);
         if(suitability.fully()) {
-            ((VmSimple)vm).updateMigrationFinishListeners(targetHost);
+            vm.updateMigrationFinishListeners(targetHost);
             /*When the VM is destroyed from the source host, it's removed from the vmExecList.
             After migration, we need to add it again.*/
             vm.getBroker().getVmExecList().add(vm);
@@ -791,8 +790,8 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         }
 
         lastMigrationMap = vmAllocationPolicy.getOptimizedAllocationMap(getVmList());
-        for (final Map.Entry<Vm, Host> entry : lastMigrationMap.entrySet()) {
-            requestVmMigration(entry.getKey(), entry.getValue());
+        for (final var vmHostEntry : lastMigrationMap.entrySet()) {
+            requestVmMigration(vmHostEntry.getKey(), vmHostEntry.getValue());
         }
 
         if(areThereUnderOrOverloadedHostsAndMigrationIsSupported()){
@@ -820,22 +819,17 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
 
     @Override
     public void requestVmMigration(final Vm sourceVm) {
-        requestVmMigration(sourceVm, Host.NULL);
-    }
-
-    @Override
-    public void requestVmMigration(final Vm sourceVm, Host targetHost) {
-        //If Host.NULL is given, it must try to find a target host
-        if(Host.NULL.equals(targetHost)){
-            targetHost = vmAllocationPolicy.findHostForVm(sourceVm).orElse(Host.NULL);
-        }
-
-        //If a host couldn't be found yet
+        final var targetHost = vmAllocationPolicy.findHostForVm(sourceVm).orElse(Host.NULL);
         if(Host.NULL.equals(targetHost)) {
             LOGGER.warn("{}: {}: No suitable host found for {} in {}", sourceVm.getSimulation().clockStr(), getClass().getSimpleName(), sourceVm, this);
             return;
         }
 
+        requestVmMigration(sourceVm, targetHost);
+    }
+
+    @Override
+    public void requestVmMigration(final Vm sourceVm, final Host targetHost) {
         final var sourceHost = sourceVm.getHost();
         final double delay = timeToMigrateVm(sourceVm, targetHost);
         final String msg1 =
