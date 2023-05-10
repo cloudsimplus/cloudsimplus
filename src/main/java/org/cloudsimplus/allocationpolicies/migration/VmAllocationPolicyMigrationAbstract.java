@@ -291,7 +291,7 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
 
         final double usagePercent = getHostCpuPercentRequested(host);
         final boolean notOverloadedAfterAllocation = !isHostOverloaded(host, usagePercent);
-        host.destroyTemporaryVm(tempVm);
+        ((HostAbstract)host).destroyTemporaryVm(tempVm);
         return notOverloadedAfterAllocation;
     }
 
@@ -525,7 +525,7 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
             vmsToMigrateList.add(vm);
             /*Temporarily destroys the selected VM into the overloaded Host so that
             the loop gets VMs from such a Host until it is not overloaded anymore.*/
-            host.destroyTemporaryVm(vm);
+            ((HostAbstract)host).destroyTemporaryVm(vm);
             if (!isOverloaded(host)) {
                 break;
             }
@@ -658,7 +658,7 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
      * @see #savedAllocation
      */
     private void restoreAllocation() {
-        for (final var host : getHostList()) {
+        for (final var host : this.<HostAbstract>getHostList()) {
             host.destroyAllVms();
             host.reallocateMigratingInVms();
         }
