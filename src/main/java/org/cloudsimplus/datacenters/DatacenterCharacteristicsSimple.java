@@ -31,28 +31,15 @@ public class DatacenterCharacteristicsSimple implements DatacenterCharacteristic
     @NonNull
     private Datacenter datacenter = Datacenter.NULL;
 
-    @NonNull
-    private String architecture = DEFAULT_ARCH;
-
-    @NonNull
-    private String os = DEFAULT_OS;
-
-    @NonNull
-    private String vmm = DEFAULT_VMM;
-
     private double costPerSecond;
     private double costPerMem;
     private double costPerStorage;
     private double costPerBw;
 
     /**
-     * Creates a DatacenterCharacteristics with default values
-     * for {@link #getArchitecture() architecture}, {@link #getOs() OS} and
-     * {@link #getVmm() VMM}.
-     *
-     * <p>The costs for {@link #getCostPerBw() BW},
-     * {@link #getCostPerMem()} () RAM} and {@link #getCostPerStorage()} () Storage} are set to zero.
-     * </p>
+     * Creates a DatacenterCharacteristics with no costs for
+     * {@link #getCostPerBw() BW},
+     * {@link #getCostPerMem() RAM} and {@link #getCostPerStorage() Storage}.
      *
      * @see DatacenterCharacteristicsSimple#DatacenterCharacteristicsSimple(double, double, double)
      * @see DatacenterCharacteristicsSimple#DatacenterCharacteristicsSimple(double, double, double, double)
@@ -63,9 +50,7 @@ public class DatacenterCharacteristicsSimple implements DatacenterCharacteristic
     }
 
     /**
-     * Creates a DatacenterCharacteristics with default values
-     * for {@link #getArchitecture() architecture}, {@link #getOs() OS} and
-     * {@link #getVmm() VMM} and the given costs.
+     * Creates a DatacenterCharacteristics with no cost for {@link #getCostPerBw() BW}.
      *
      * @see DatacenterCharacteristicsSimple#DatacenterCharacteristicsSimple(Datacenter)
      * @see DatacenterCharacteristicsSimple#DatacenterCharacteristicsSimple(double, double, double, double)
@@ -77,9 +62,7 @@ public class DatacenterCharacteristicsSimple implements DatacenterCharacteristic
     }
 
     /**
-     * Creates a DatacenterCharacteristics with default values
-     * for {@link #getArchitecture() architecture}, {@link #getOs() OS} and
-     * {@link #getVmm() VMM} and the given costs.
+     * Creates a DatacenterCharacteristics.
      *
      * @see DatacenterCharacteristicsSimple#DatacenterCharacteristicsSimple(Datacenter)
      * @see DatacenterCharacteristicsSimple#DatacenterCharacteristicsSimple(double, double, double)

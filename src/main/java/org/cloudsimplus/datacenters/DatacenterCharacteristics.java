@@ -21,22 +21,6 @@ import org.cloudsimplus.core.Identifiable;
  * @since CloudSim Plus 1.0
  */
 public interface DatacenterCharacteristics extends Identifiable {
-
-    /**
-     * The default Virtual Machine Monitor to be used if not one is set.
-     */
-    String DEFAULT_VMM = "Xen";
-
-    /**
-     * The default architecture of Datacenter Hosts to be used if not one is set.
-     */
-    String DEFAULT_ARCH = "x86";
-
-    /**
-     * The default Operating System of Datacenter Hosts to be used if not one is set.
-     */
-    String DEFAULT_OS = "Linux";
-
     /**
      * An attribute that implements the Null Object Design Pattern for {@link Datacenter}
      * objects.
@@ -55,47 +39,6 @@ public interface DatacenterCharacteristics extends Identifiable {
      * @return
      */
     Datacenter getDatacenter();
-
-    /**
-     * Gets the Virtual Machine Monitor (VMM), also called hypervisor, used in the Datacenter.
-     *
-     * @return the VMM name
-     */
-    String getVmm();
-
-    /**
-     * Sets the VMM.
-     * @param vmm the new VMM
-     */
-    DatacenterCharacteristics setVmm(String vmm);
-
-    /**
-     * Gets the architecture of the Datacenter.
-     *
-     * @return the architecture
-     */
-    String getArchitecture();
-
-    /**
-     * Sets the architecture of the Datacenter.
-     *
-     * @param architecture the new architecture
-     */
-    DatacenterCharacteristics setArchitecture(String architecture);
-
-    /**
-     * Gets the Operating System (OS) used by the Hosts in the Datacenter.
-     *
-     * @return the Operating System (OS)
-     */
-    String getOs();
-
-    /**
-     * Sets the Operating System (OS).
-     *
-     * @param os the new Operating System (OS)
-     */
-    DatacenterCharacteristics setOs(String os);
 
     /**
      * Gets the total MIPS rating, which is the sum of MIPS rating of all Hosts in
