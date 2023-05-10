@@ -30,7 +30,8 @@ public interface DatacenterCharacteristics extends Identifiable {
     enum Distribution {
         /** Indicates a datacenter in a public Cloud. */
         PUBLIC,
-        /** Indicates a datacenter in a private Cloud. */
+
+        /** Indicates a datacenter in a private (sometimes local) Cloud. */
         PRIVATE
     }
 
