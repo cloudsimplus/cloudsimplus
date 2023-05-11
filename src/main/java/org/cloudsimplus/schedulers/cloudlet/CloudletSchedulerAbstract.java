@@ -71,7 +71,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     /** {@return the list} of currently paused cloudlets. */
     private final List<CloudletExecution> cloudletPausedList;
 
-    /** @return the list} of cloudlets that failed executing. */
+    /** {@return the list} of cloudlets that failed executing. */
     private final List<CloudletExecution> cloudletFailedList;
 
     /** @see #getCloudletExecList() */
@@ -885,7 +885,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
         final List<CloudletExecution> finishedCloudlets
             = cloudletExecList.stream()
             .filter(cle -> cle.getCloudlet().isFinished())
-            .collect(toList());
+            .toList();
 
         for (final CloudletExecution c : finishedCloudlets) {
             addCloudletToFinishedList(c);
