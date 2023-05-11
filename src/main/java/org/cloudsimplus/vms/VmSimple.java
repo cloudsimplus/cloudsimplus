@@ -7,7 +7,6 @@
 package org.cloudsimplus.vms;
 
 import lombok.NonNull;
-import lombok.experimental.Accessors;
 import org.apache.commons.lang3.StringUtils;
 import org.cloudsimplus.brokers.DatacenterBroker;
 import org.cloudsimplus.cloudlets.Cloudlet;
@@ -29,7 +28,6 @@ import org.cloudsimplus.schedulers.cloudlet.CloudletSchedulerTimeShared;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Toolkit 1.0
  */
-@Accessors(makeFinal = false)
 public class VmSimple extends VmAbstract {
 
     /**

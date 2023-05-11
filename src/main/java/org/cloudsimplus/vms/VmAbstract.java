@@ -3,6 +3,7 @@ package org.cloudsimplus.vms;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.cloudsimplus.autoscaling.HorizontalVmScaling;
 import org.cloudsimplus.autoscaling.VerticalVmScaling;
 import org.cloudsimplus.autoscaling.VmScaling;
@@ -31,7 +32,7 @@ import java.util.*;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 8.3.0
  */
-@Getter
+@Accessors(makeFinal = false) @Getter
 public abstract class VmAbstract extends CustomerEntityAbstract implements Vm {
     /** @see #setDefaultRamCapacity(long) */
     private static long defaultRamCapacity = 1024;
