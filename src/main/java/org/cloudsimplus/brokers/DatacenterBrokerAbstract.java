@@ -827,7 +827,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         final var cloudlet = (Cloudlet) evt.getData();
         cloudletFinishedList.add(cloudlet);
         ((VmSimple) cloudlet.getVm()).addExpectedFreePesNumber(cloudlet.getPesNumber());
-        final String lifeTime = cloudlet.getLifeTime() == -1 ? "" : " (after defined lifetime expired)";
+        final String lifeTime = cloudlet.getLifeTime() == Double.MAX_VALUE ? "" : " (after defined lifetime expired)";
         LOGGER.info(
             "{}: {}: {} finished{} in {} and returned to broker.",
             getSimulation().clockStr(), getName(), cloudlet, lifeTime, cloudlet.getVm());
