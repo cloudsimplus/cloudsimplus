@@ -997,7 +997,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
 
     @Override
     public String toString() {
-        return "Datacenter %d".formatted(getId());
+        return "%cDatacenter %d".formatted(getCharacteristics().getDistribution().symbol(), getId());
     }
 
     @Override
