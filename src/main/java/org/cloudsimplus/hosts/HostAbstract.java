@@ -563,24 +563,22 @@ public abstract class HostAbstract extends ExecDelayableAbstract implements Host
      * @param vm the VM to deallocate resources from
      */
     protected void deallocateResourcesOfVm(final Vm vm) {
-        vm.setCreated(false);
+        final var peProvisioner = getPeList().get(0).getPeProvisioner();
+
         ramProvisioner.deallocateResourceForVm(vm);
         bwProvisioner.deallocateResourceForVm(vm);
         vmScheduler.deallocatePesFromVm(vm);
+        peProvisioner.deallocateResourceForVm(vm);
         disk.getStorage().deallocateResource(vm.getStorage());
+        vm.setCreated(false);
     }
 
     /**
      * Destroys all VMs running in the host and remove them from the {@link #getVmList()}.
      */
     public void destroyAllVms() {
-        final var peProvisioner = getPeList().get(0).getPeProvisioner();
         for (final Vm vm : vmList) {
-            ramProvisioner.deallocateResourceForVm(vm);
-            bwProvisioner.deallocateResourceForVm(vm);
-            peProvisioner.deallocateResourceForVm(vm);
-            vm.setCreated(false);
-            disk.getStorage().deallocateResource(vm.getStorage());
+            deallocateResourcesOfVm(vm);
         }
 
         vmList.clear();
