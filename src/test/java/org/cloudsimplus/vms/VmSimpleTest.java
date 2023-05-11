@@ -300,7 +300,7 @@ public class VmSimpleTest {
         Mockito.when(scheduler.getCurrentRequestedBwPercentUtilization())
                .thenReturn(currentBwUsagePercent);
 
-        final Vm vm0 = VmTestUtil.createVm(scheduler);
+        final var vm0 = VmTestUtil.createVm(scheduler);
         vm0.setCreated(true);
 
         final long expectedCurrentBwUtilization = (long)(currentBwUsagePercent* VmTestUtil.BANDWIDTH);
@@ -309,7 +309,7 @@ public class VmSimpleTest {
 
     @Test
     public void testGetCurrentRequestedBwWhenVmWasNotCreatedInsideHost() {
-        final Vm vm0 = VmTestUtil.createVm(CloudletScheduler.NULL);
+        final var vm0 = VmTestUtil.createVm(CloudletScheduler.NULL);
         vm0.setCreated(false);
         final long expectedCurrentBwUsage = VmTestUtil.BANDWIDTH;
         assertEquals(expectedCurrentBwUsage, vm0.getCurrentRequestedBw());
@@ -325,7 +325,7 @@ public class VmSimpleTest {
         Mockito.when(scheduler.getCurrentRequestedRamPercentUtilization())
                 .thenReturn(currentRamUsagePercent);
 
-        final Vm vm0 = VmTestUtil.createVm(scheduler);
+        final var vm0 = VmTestUtil.createVm(scheduler);
         vm0.setCreated(true);
         assertEquals(expectedCurrentRamUsage, vm0.getCurrentRequestedRam());
         Mockito.verify(scheduler).getCurrentRequestedRamPercentUtilization();
@@ -333,7 +333,7 @@ public class VmSimpleTest {
 
     @Test
     public void testGetCurrentRequestedRamWhenVmWasNotCreatedInsideHost() {
-        final Vm vm0 = VmTestUtil.createVm(CloudletScheduler.NULL);
+        final var vm0 = VmTestUtil.createVm(CloudletScheduler.NULL);
         vm0.setCreated(false);
         final long expectedCurrentRamUsage = VmTestUtil.RAM;
         assertEquals(expectedCurrentRamUsage, vm0.getCurrentRequestedRam());
@@ -342,7 +342,7 @@ public class VmSimpleTest {
     @Test
     public void testGetCurrentRequestedMipsTimeSharedSchedulerWhenVmWasCreatedInsideHost() {
         final CloudletScheduler cloudletScheduler = new CloudletSchedulerTimeShared();
-        final Vm vm = VmTestUtil.createVm(cloudletScheduler);
+        final var vm = VmTestUtil.createVm(cloudletScheduler);
         vm.setCreated(true);
 
         assertTrue(vm.getCurrentRequestedMips().isEmpty());

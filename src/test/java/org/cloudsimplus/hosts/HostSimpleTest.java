@@ -158,7 +158,7 @@ public class HostSimpleTest {
 
         final List<Vm> vms = new ArrayList<>();
         IntStream.range(0, 2).forEach(i -> {
-            final Vm vm = VmTestUtil.createVm(
+            final var vm = VmTestUtil.createVm(
                     i, MIPS /numberOfVms, 1, RAM/numberOfVms, BW/numberOfVms, STORAGE/numberOfVms,
                     new CloudletSchedulerTimeShared());
             vm.setHost(Host.NULL);
@@ -583,7 +583,7 @@ public class HostSimpleTest {
         final CloudSimPlus cloudsim = new CloudSimPlus();
 
         final DatacenterBroker broker = new DatacenterBrokerSimple(cloudsim);
-        final Vm vm = VmTestUtil.createVm(0, 2);
+        final var vm = VmTestUtil.createVm(0, 2);
         vm.setBroker(broker);
         host.createVm(vm);
         vm.setCreated(true);

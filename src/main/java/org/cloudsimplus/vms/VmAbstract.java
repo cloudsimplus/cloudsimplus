@@ -492,12 +492,13 @@ public abstract class VmAbstract extends CustomerEntityAbstract implements Vm {
         return this;
     }
 
-    @Override
+    /**
+     * Sets the PM that hosts the VM.
+     *
+     * @param host Host to run the VM
+     * @return
+     */
     public Vm setHost(@NonNull final Host host) {
-        if (Host.NULL.equals(host)) {
-            setCreated(false);
-        }
-
         this.host = host;
         return this;
     }
@@ -545,32 +546,21 @@ public abstract class VmAbstract extends CustomerEntityAbstract implements Vm {
             storage.getAvailableResource() >= cloudlet.getFileSize();
     }
 
-    @Override
+    /**
+     * Changes the created status of the Vm inside the Host.
+     *
+     * @param requestCreation true to indicate the VM was created inside the Host; false otherwise
+     * @see #isCreated()
+     */
     public void setCreated(final boolean requestCreation) {
-        if (requestCreation && createInternal()) {
-            if(isStartupDelayed())
-                LOGGER.info(
-                    "{}: {}: {} is booting up in {} and it's expected to be ready in {} seconds.",
-                    getSimulation().clockStr(), getClass().getSimpleName(), this, host, getStartupDelay());
-            else
-                LOGGER.info(
-                "{}: {}: {} is booting up right away in {}, since no startup delay (boot time) was set.",
-                getSimulation().clockStr(), getClass().getSimpleName(), this, host);
-        }
-
-        this.created = requestCreation;
-    }
-
-    public boolean createInternal() {
-        if (!this.created) {
+        if (requestCreation && !this.created) {
             setCreationTime();
             setStartTime(getSimulation().clock());
             setShutdownBeginTime(NOT_ASSIGNED);
             this.setFailed(false);
-            return true;
         }
 
-        return false;
+        this.created = requestCreation;
     }
 
     @Override

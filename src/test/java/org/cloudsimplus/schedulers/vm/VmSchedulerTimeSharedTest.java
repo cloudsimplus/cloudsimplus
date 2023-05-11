@@ -15,6 +15,7 @@ import org.cloudsimplus.resources.Pe;
 import org.cloudsimplus.resources.PeSimple;
 import org.cloudsimplus.schedulers.MipsShare;
 import org.cloudsimplus.vms.Vm;
+import org.cloudsimplus.vms.VmSimple;
 import org.cloudsimplus.vms.VmTestUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -33,8 +34,8 @@ public class VmSchedulerTimeSharedTest {
     private static final double MIPS = 1000;
     private static final int VM_PES_NUMBER = 2;
     private VmScheduler vmScheduler;
-    private Vm vm0;
-    private Vm vm1;
+    private VmSimple vm0;
+    private VmSimple vm1;
 
     private VmScheduler createVmScheduler(final double mips, final int pesNumber) {
         final VmSchedulerTimeShared scheduler = new VmSchedulerTimeShared();
@@ -66,7 +67,7 @@ public class VmSchedulerTimeSharedTest {
 
     @Test
     public void testIsSuitableForVm0() {
-        final Vm vm0 = VmTestUtil.createVm(0, MIPS / 4, 2);
+        final var vm0 = VmTestUtil.createVm(0, MIPS / 4, 2);
         vmScheduler.getHost().getVmList().add(vm0);
 
         vm0.setCreated(false);
@@ -75,7 +76,7 @@ public class VmSchedulerTimeSharedTest {
 
     @Test
     public void testIsSuitableForVm1() {
-        final Vm vm1 = VmTestUtil.createVm(1, MIPS / 2, 2);
+        final var vm1 = VmTestUtil.createVm(1, MIPS / 2, 2);
         vmScheduler.getHost().getVmList().add(vm1);
 
         vm1.setCreated(false);
@@ -84,7 +85,7 @@ public class VmSchedulerTimeSharedTest {
 
     @Test
     public void testIsSuitableForVm2() {
-        final Vm vm2 = VmTestUtil.createVm(2, MIPS * 2, 2);
+        final var vm2 = VmTestUtil.createVm(2, MIPS * 2, 2);
         vmScheduler.getHost().getVmList().add(vm2);
 
         vm2.setCreated(false);
@@ -146,7 +147,7 @@ public class VmSchedulerTimeSharedTest {
     public void testDeallocatePartialPesFromVm() {
         final int HOST_PES = 8;
         final int VM_PES = 4;
-        final Vm vm = VmTestUtil.createVm(0, MIPS, VM_PES);
+        final var vm = VmTestUtil.createVm(0, MIPS, VM_PES);
         vmScheduler = createVmScheduler(MIPS, HOST_PES);
         vmScheduler.getHost().getVmList().add(vm);
 
