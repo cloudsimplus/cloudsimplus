@@ -169,11 +169,9 @@ class VmNull implements Vm {
     @Override public boolean isInMigration() {
         return false;
     }
-    @Override public void setCreated(boolean created) {/**/}
     @Override public Vm setBw(long bwCapacity) {
         return this;
     }
-    @Override public Vm setHost(Host host) { return this; }
     @Override public Vm setInMigration(boolean migrating) {return this;}
     @Override public Vm setRam(long ramCapacity) {
         return this;

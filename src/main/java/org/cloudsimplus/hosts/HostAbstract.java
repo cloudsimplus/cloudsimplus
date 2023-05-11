@@ -278,9 +278,15 @@ public abstract class HostAbstract extends ExecDelayableAbstract implements Host
     public HostSuitability createVm(final Vm vm) {
         final var suitability = createVmInternal(vm);
         if (suitability.fully()) {
+            if(isStartupDelayed())
+                LOGGER.info(
+                    "{}: {}: {} is booting up in {} and it's expected to be ready in {} seconds.",
+                    getSimulation().clockStr(), getClass().getSimpleName(), vm, this, getStartupDelay());
+            else
+                LOGGER.info(
+                    "{}: {}: {} is booting up right away in {}, since no startup delay (boot time) was set.",
+                    getSimulation().clockStr(), getClass().getSimpleName(), vm, this);
             addVmToCreatedList(vm);
-            vm.setHost(this);
-            vm.setCreated(true);
         }
 
         return suitability;
@@ -298,8 +304,10 @@ public abstract class HostAbstract extends ExecDelayableAbstract implements Host
 
         final HostSuitability suitability = allocateResourcesForVm(vm, false);
         if (suitability.fully()) {
+            ((VmAbstract)vm).setHost(this);
             vmList.add(vm);
         }
+        ((VmAbstract)vm).setCreated(suitability.fully());
 
         return suitability;
     }
@@ -570,7 +578,7 @@ public abstract class HostAbstract extends ExecDelayableAbstract implements Host
         vmScheduler.deallocatePesFromVm(vm);
         peProvisioner.deallocateResourceForVm(vm);
         disk.getStorage().deallocateResource(vm.getStorage());
-        vm.setCreated(false);
+        ((VmAbstract)vm).setCreated(false);
     }
 
     /**

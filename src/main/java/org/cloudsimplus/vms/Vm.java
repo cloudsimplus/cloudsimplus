@@ -457,14 +457,6 @@ public interface Vm extends Machine<Resource>, UniquelyIdentifiable, Comparable<
     boolean isSuitableForCloudlet(Cloudlet cloudlet);
 
     /**
-     * Changes the created status of the Vm inside the Host.
-     *
-     * @param created true to indicate the VM was created inside the Host; false otherwise
-     * @see #isCreated()
-     */
-    void setCreated(boolean created);
-
-    /**
      * Checks if the VM is in migration process or not,
      * that is, if it is migrating in or out of a Host.
      *
@@ -486,14 +478,6 @@ public interface Vm extends Machine<Resource>, UniquelyIdentifiable, Comparable<
      * @return
      */
     Vm setBw(long bwCapacity);
-
-    /**
-     * Sets the PM that hosts the VM.
-     *
-     * @param host Host to run the VM
-     * @return
-     */
-    Vm setHost(Host host);
 
     /**
      * Sets RAM capacity in Megabytes.
