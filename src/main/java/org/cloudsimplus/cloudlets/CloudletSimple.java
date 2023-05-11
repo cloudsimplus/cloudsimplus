@@ -19,6 +19,7 @@ import org.cloudsimplus.vms.Vm;
  *
  * @author Rodrigo N. Calheiros
  * @author Anton Beloglazov
+ * @author Manoel Campos da Silva Filho
  * @since CloudSim Toolkit 1.0
  * @see DatacenterBroker
  */

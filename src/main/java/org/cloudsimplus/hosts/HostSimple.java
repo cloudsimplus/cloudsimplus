@@ -30,6 +30,7 @@ import static java.util.Objects.requireNonNull;
  *
  * @author Rodrigo N. Calheiros
  * @author Anton Beloglazov
+ * @author Manoel Campos da Silva Filho
  * @since CloudSim Toolkit 1.0
  */
 public class HostSimple extends HostAbstract {
