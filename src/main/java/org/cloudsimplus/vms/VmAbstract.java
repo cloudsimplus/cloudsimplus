@@ -960,7 +960,9 @@ public abstract class VmAbstract extends CustomerEntityAbstract implements Vm {
                                         ? "expected to finish in %.2f seconds".formatted(this.getShutDownDelay())
                                         : "will finish immediately (since no Vm shutDownDelay was set)";
         this.setShutdownBeginTime(getSimulation().clock());
-        LOGGER.info("{}: {}: Requesting {} destruction{}. Shutdown {}.", getSimulation().clockStr(), getClass().getSimpleName(), this, lifeTimeMsg, shutDownMsg);
+        LOGGER.info(
+            "{}: {}: Requesting {} destruction on {}{}. Shutdown {}.",
+            getSimulation().clockStr(), getClass().getSimpleName(), this, this.host, lifeTimeMsg, shutDownMsg);
         final var dc = host.getDatacenter();
         dc.schedule(dc, this.getShutDownDelay(), CloudSimTag.VM_DESTROY, this);
     }
