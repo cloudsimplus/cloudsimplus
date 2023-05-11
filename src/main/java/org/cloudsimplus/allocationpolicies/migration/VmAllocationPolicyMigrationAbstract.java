@@ -414,8 +414,8 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
             sortByCpuUtilization(vmsToMigrateList, getDatacenter().getSimulation().clock());
 
             final var builder = new StringBuilder();
-            final VmAllocationPolicy targetVmAllocationPolicy = targetMigrationDc.getVmAllocationPolicy();
-            for (final Vm vm : vmsToMigrateList) {
+            final var targetVmAllocationPolicy = targetMigrationDc.getVmAllocationPolicy();
+            for (final var vm : vmsToMigrateList) {
                 targetVmAllocationPolicy.findHostForVm(vm).ifPresent(targetHost -> {
                     addVmToMigrationMap(migrationMap, vm, targetHost);
                     appendVmMigrationMsgToStringBuilder(builder, vm, targetHost);
