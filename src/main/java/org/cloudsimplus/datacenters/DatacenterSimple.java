@@ -602,7 +602,9 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
 
     private String generateNotFinishedCloudletsWarning(final Vm vm) {
         final int cloudletsNoFinished = vm.getCloudletScheduler().getCloudletList().size();
-        if(cloudletsNoFinished == 0) {
+        /* If the VM is in migration and was destroyed, it's a non-live migration from/to a public-cloud DC.
+         * This way, it's forced to be shutdown and no warning must be shown. */
+        if(cloudletsNoFinished == 0 || vm.isInMigration()) {
             return "";
         }
 
