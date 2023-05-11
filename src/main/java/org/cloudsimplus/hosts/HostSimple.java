@@ -175,9 +175,10 @@ public class HostSimple extends HostAbstract {
 
     @Override
     public String toString() {
+        final char dist = datacenter.getCharacteristics().getDistribution().symbol();
         final String dc =
                 datacenter == null || Datacenter.NULL.equals(datacenter) ? "" :
-                "/DC %d".formatted(datacenter.getId());
+                "/%cDC %d".formatted(dist, datacenter.getId());
         return "Host %d%s".formatted(getId(), dc);
     }
 

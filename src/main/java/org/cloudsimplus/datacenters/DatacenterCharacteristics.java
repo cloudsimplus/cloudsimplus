@@ -7,6 +7,9 @@
  */
 package org.cloudsimplus.datacenters;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.experimental.Accessors;
 import org.cloudsimplus.allocationpolicies.VmAllocationPolicy;
 import org.cloudsimplus.core.Identifiable;
 
@@ -27,12 +30,18 @@ public interface DatacenterCharacteristics extends Identifiable {
      * For instance, a {@link VmAllocationPolicy} may prioritize placing VMs into
      * a private Datacenter first, instead of trying a public one.
      */
+    @Getter @Accessors(fluent = true) @AllArgsConstructor
     enum Distribution {
         /** Indicates a datacenter in a public Cloud. */
-        PUBLIC,
+        PUBLIC('+'),
 
         /** Indicates a datacenter in a private (sometimes local) Cloud. */
-        PRIVATE
+        PRIVATE('#');
+
+        /**
+         * A character used as a representation of the distribution name.
+         */
+        private final char symbol;
     }
 
     /**
