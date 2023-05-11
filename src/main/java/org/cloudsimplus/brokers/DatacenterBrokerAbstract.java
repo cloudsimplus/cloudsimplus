@@ -776,11 +776,11 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         if(vm.getSubmissionDelay() == 0)
             LOGGER.info(
                 "{}: {}: Trying to create {} in {}{}",
-                getSimulation().clockStr(), getName(), vm, datacenter.getName(), fallbackMsg);
+                getSimulation().clockStr(), getName(), vm, datacenter, fallbackMsg);
         else
             LOGGER.info(
                 "{}: {}: Creation of {} in {}{} will be requested in {} seconds",
-                getSimulation().clockStr(), getName(), vm, datacenter.getName(),
+                getSimulation().clockStr(), getName(), vm, datacenter,
                 fallbackMsg, vm.getSubmissionDelay());
     }
 
@@ -1061,7 +1061,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
 
     @Override
     public void startInternal() {
-        LOGGER.info("{} is starting...", getName());
+        LOGGER.info("{} is starting...", this);
         schedule(getSimulation().getCis(), 0, CloudSimTag.DC_LIST_REQUEST);
     }
 
