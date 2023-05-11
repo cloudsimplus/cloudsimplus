@@ -270,7 +270,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
             this.addHost(host);
             LOGGER.info(
                 "{}: {}: Host {} added to {} during simulation runtime",
-                getSimulation().clockStr(), getClass().getSimpleName(), host.getId(), this);
+                getSimulation().clockStr(), this, host.getId(), this);
             //Notification must be sent only for Hosts added during simulation runtime
             notifyOnHostAvailableListeners(host);
         });
@@ -286,7 +286,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         if(Host.NULL.equals(host)) {
             LOGGER.warn(
                 "{}: {}: Host {} was not found to be removed from {}.",
-                getSimulation().clockStr(), getClass().getSimpleName(), hostId, this);
+                getSimulation().clockStr(), this, hostId, this);
             return;
         }
 
@@ -294,7 +294,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         try {
             LOGGER.error(
                 "{}: {}: Host {} removed from {} due to injected failure.",
-                getSimulation().clockStr(), getClass().getSimpleName(), host.getId(), this);
+                getSimulation().clockStr(), this, host.getId(), this);
             fault.generateHostFault(host);
         } finally{
             fault.shutdown();
@@ -590,7 +590,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
             final String warningMsg = generateNotFinishedCloudletsWarning(vm);
             final String msg =
                 "%s: %s: %s destroyed on %s. %s"
-                    .formatted(getSimulation().clockStr(), getClass().getSimpleName(), vm, vm.getHost(), warningMsg);
+                    .formatted(getSimulation().clockStr(), this, vm, vm.getHost(), warningMsg);
             if(warningMsg.isEmpty() || getSimulation().isTerminationTimeSet())
                 LOGGER.info(msg);
             else LOGGER.warn(msg);
@@ -821,7 +821,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     public void requestVmMigration(final Vm sourceVm) {
         final var targetHost = vmAllocationPolicy.findHostForVm(sourceVm).orElse(Host.NULL);
         if(Host.NULL.equals(targetHost)) {
-            LOGGER.warn("{}: {}: No suitable host found for {} in {}", sourceVm.getSimulation().clockStr(), getClass().getSimpleName(), sourceVm, this);
+            LOGGER.warn("{}: {}: No suitable host found for {} in {}", sourceVm.getSimulation().clockStr(), this, sourceVm, this);
             return;
         }
 
@@ -845,7 +845,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         final var fmt = "It's expected to finish in %.2f seconds, considering the %.0f%% of bandwidth allowed for migration and the VM %s.";
         final var vmResource = nonLiveMigration ? "disk size" : "allocated RAM";
         final String msg2 = fmt.formatted(delay, getBandwidthPercentForMigration()*100, vmResource);
-        LOGGER.info("{}: {}: {} of {} is started. {}", currentTime, getName(), migrationType, msg1, msg2);
+        LOGGER.info("{}: {}: {} of {} is started. {}", currentTime, this, migrationType, msg1, msg2);
 
         if(targetHost.addMigratingInVm(sourceVm)) {
             sourceHost.addVmMigratingOut(sourceVm);
@@ -911,12 +911,12 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     @Override
     public void shutdown() {
         super.shutdown();
-        LOGGER.info("{}: {} is shutting down...", getSimulation().clockStr(), getName());
+        LOGGER.info("{}: {} is shutting down...", getSimulation().clockStr(), this);
     }
 
     @Override
     protected void startInternal() {
-        LOGGER.info("{}: {} is starting...", getSimulation().clockStr(), getName());
+        LOGGER.info("{}: {} is starting...", getSimulation().clockStr(), this);
         hostList.stream()
                 .filter(not(Host::isActive))
                 .map(host -> (HostSimple)host)
@@ -1077,7 +1077,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         if(!vmAllocationPolicy.isVmMigrationSupported()){
             LOGGER.warn(
                 "{}: {}: It was requested to enable VM migrations but the {} doesn't support that.",
-                getSimulation().clockStr(), getName(), vmAllocationPolicy.getClass().getSimpleName());
+                getSimulation().clockStr(), this, vmAllocationPolicy.getClass().getSimpleName());
             return this;
         }
 
