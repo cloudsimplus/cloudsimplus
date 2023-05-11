@@ -1169,7 +1169,10 @@ public abstract class HostAbstract extends ExecDelayableAbstract implements Host
 
     @Override
     public List<Vm> getMigratableVms() {
-        return vmList.stream().filter(vm -> !vm.isInMigration()).collect(toList());
+        return vmList.stream()
+                    .filter(Vm::isCreated)
+                    .filter(vm -> !vm.isInMigration())
+                    .toList();
     }
 
     protected boolean canEqual(Object other) {
