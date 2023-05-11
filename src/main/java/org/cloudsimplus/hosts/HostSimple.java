@@ -6,8 +6,6 @@
  */
 package org.cloudsimplus.hosts;
 
-import lombok.EqualsAndHashCode;
-import lombok.experimental.Accessors;
 import org.cloudsimplus.core.ChangeableId;
 import org.cloudsimplus.datacenters.Datacenter;
 import org.cloudsimplus.provisioners.ResourceProvisioner;
@@ -34,7 +32,6 @@ import static java.util.Objects.requireNonNull;
  * @author Anton Beloglazov
  * @since CloudSim Toolkit 1.0
  */
-@Accessors @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
 public class HostSimple extends HostAbstract {
 
     /**

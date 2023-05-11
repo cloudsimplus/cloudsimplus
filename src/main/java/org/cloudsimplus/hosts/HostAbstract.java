@@ -4,6 +4,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.cloudsimplus.core.*;
 import org.cloudsimplus.datacenters.Datacenter;
 import org.cloudsimplus.datacenters.DatacenterSimple;
@@ -34,6 +35,7 @@ import static java.util.stream.Collectors.toList;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 8.3.0
  */
+@Accessors @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
 public abstract class HostAbstract extends ExecDelayableAbstract implements Host {
     /**
      * The Default RAM capacity (in MB) for creating Hosts.
