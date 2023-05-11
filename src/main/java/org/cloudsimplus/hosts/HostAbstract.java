@@ -364,7 +364,7 @@ public abstract class HostAbstract extends ExecDelayableAbstract implements Host
 
     @Override
     public void reallocateMigratingInVms() {
-        for (final Vm vm : getVmsMigratingIn()) {
+        for (final Vm vm : vmsMigratingIn) {
             if (!vmList.contains(vm)) {
                 vmList.add(vm);
             }
