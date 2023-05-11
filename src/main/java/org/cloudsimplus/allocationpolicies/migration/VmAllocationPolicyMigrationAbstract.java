@@ -20,6 +20,7 @@ import org.cloudsimplus.hosts.HostAbstract;
 import org.cloudsimplus.selectionpolicies.VmSelectionPolicy;
 import org.cloudsimplus.util.TimeUtil;
 import org.cloudsimplus.vms.Vm;
+import org.cloudsimplus.vms.VmAbstract;
 import org.cloudsimplus.vms.VmSimple;
 
 import java.util.*;
@@ -64,7 +65,7 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
     /**
      * A map between a VM and the host where it is placed.
      */
-    private final Map<Vm, Host> savedAllocation;
+    private final Map<VmAbstract, Host> savedAllocation;
 
     /**
      * The datacenter to try migrating VMs to.
@@ -635,7 +636,7 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
     private void saveAllocation() {
         savedAllocation.clear();
         for (final var host : getHostList()) {
-            for (final var vm : host.getVmList()) {
+            for (final var vm : host.<VmAbstract>getVmList()) {
                 /* TODO: this VM loop has a quadratic wost-case complexity (when
                     all Vms already in the VM list are migrating into this Host).
                 *  Instead of looping over the vmsMigratingIn list for every VM,
@@ -667,7 +668,7 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
         for (final var vm : savedAllocation.keySet()) {
             final var host = savedAllocation.get(vm);
             if (host.createTemporaryVm(vm).fully())
-                vm.setCreated(true);
+                vm.createInternal();
             else LOGGER.error("VmAllocationPolicy: Couldn't restore {} on {}", vm, host);
         }
     }

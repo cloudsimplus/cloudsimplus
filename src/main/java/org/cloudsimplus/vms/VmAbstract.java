@@ -546,23 +546,31 @@ public abstract class VmAbstract extends CustomerEntityAbstract implements Vm {
     }
 
     @Override
-    public void setCreated(final boolean create) {
-        if (!this.created && create) {
-            setCreationTime();
-            setStartTime(getSimulation().clock());
-            setShutdownBeginTime(NOT_ASSIGNED);
-            this.setFailed(false);
+    public void setCreated(final boolean requestCreation) {
+        if (requestCreation && createInternal()) {
             if(isStartupDelayed())
                 LOGGER.info(
                     "{}: {}: {} is booting up in {} and it's expected to be ready in {} seconds.",
                     getSimulation().clockStr(), getClass().getSimpleName(), this, host, getStartupDelay());
             else
                 LOGGER.info(
-                "{}: {}: {} is booting up right away in {} since no startup delay (boot time) was set.",
+                "{}: {}: {} is booting up right away in {}, since no startup delay (boot time) was set.",
                 getSimulation().clockStr(), getClass().getSimpleName(), this, host);
         }
 
-        this.created = create;
+        this.created = requestCreation;
+    }
+
+    public boolean createInternal() {
+        if (!this.created) {
+            setCreationTime();
+            setStartTime(getSimulation().clock());
+            setShutdownBeginTime(NOT_ASSIGNED);
+            this.setFailed(false);
+            return true;
+        }
+
+        return false;
     }
 
     @Override
