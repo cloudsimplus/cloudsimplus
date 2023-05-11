@@ -404,7 +404,7 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
      */
     private Map<Vm, Host> getMigrationMapFromOverloadedHosts(final Set<Host> overloadedHosts) {
         if(overloadedHosts.isEmpty()) {
-            return  Collections.emptyMap();
+            return Collections.emptyMap();
         }
 
         saveAllocation();
