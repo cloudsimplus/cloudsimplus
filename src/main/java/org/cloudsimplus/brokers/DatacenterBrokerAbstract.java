@@ -28,6 +28,7 @@ import org.cloudsimplus.traces.google.GoogleTaskEventsTraceReader;
 import org.cloudsimplus.util.InvalidEventDataTypeException;
 import org.cloudsimplus.utilizationmodels.UtilizationModel;
 import org.cloudsimplus.vms.Vm;
+import org.cloudsimplus.vms.VmAbstract;
 import org.cloudsimplus.vms.VmGroup;
 import org.cloudsimplus.vms.VmSimple;
 
@@ -60,6 +61,8 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     private static final Function<Vm, Double> DEF_VM_DESTRUCTION_DELAY_FUNC = vm -> DEF_VM_DESTRUCTION_DELAY;
 
     private boolean selectClosestDatacenter;
+
+    private boolean batchVmCreation;
 
     /**
      * A List of registered event listeners for the onVmsCreatedListeners event.
@@ -613,27 +616,45 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      * Process the ack received from a Datacenter to a broker's request for
      * creation of a Vm in that Datacenter.
      *
+     * <p>Uses indexed regressive for to avoid ConcurrentModificationException.
+     * The issue happens because the broker sends its vmWaitingList to the Datacenter,
+     * which returns back the same list in this event.
+     * This way, the local vmList points to the vmWaitingList.
+     * Since we are iterating over vmList and removing Vms from vmWaitingList,
+     * the issue happens.
+     * A solution is to make the broker send a copy of the vmWaitingList to the Datacenter,
+     * but that imposes a performance and memory consumption penault.
+     * Using a foward indexed loop causes some VM to be missed when a VM is removed from
+     * the vmWaitingList.
+     * </p>
+     *
      * @param evt a SimEvent object
      * @return true if the VM was created successfully, false otherwise
      */
     private boolean processVmCreateResponseFromDatacenter(final SimEvent evt) {
-        final var vm = (Vm) evt.getData();
+        //Data can be a single Vm or List<Vm> (in the former situation, gets the single Vm as a List)
+        final var vmList = VmAbstract.getList(evt.getData());
 
-        //if the VM was successfully created in the requested Datacenter
-        if (vm.isCreated()) {
-            processSuccessVmCreationInDatacenter(vm);
-            vm.notifyOnHostAllocationListeners();
-        } else {
-            vm.setFailed(true);
-            if(!vmCreation.isRetryFailedVms()){
-                vmWaitingList.remove(vm);
-                vmFailedList.add(vm);
-                LOGGER.warn(
-                    "{}: {}: {} has been moved to the failed list because creation retry is not enabled.",
-                    getSimulation().clockStr(), getName(), vm);
+        int createdVms = 0;
+        for (int i = vmList.size()-1; i >= 0; i--) {
+            var vm = vmList.get(i);
+            //if the VM was successfully created in the requested Datacenter
+            if (vm.isCreated()) {
+                createdVms++;
+                processSuccessVmCreationInDatacenter(vm);
+                vm.notifyOnHostAllocationListeners();
+            } else {
+                vm.setFailed(true);
+                if (!vmCreation.isRetryFailedVms()) {
+                    vmWaitingList.remove(vm);
+                    vmFailedList.add(vm);
+                    LOGGER.warn(
+                        "{}: {}: {} has been moved to the failed list because creation retry is not enabled.",
+                        getSimulation().clockStr(), getName(), vm);
+                }
+
+                vm.notifyOnCreationFailureListeners(lastSelectedDc);
             }
-
-            vm.notifyOnCreationFailureListeners(lastSelectedDc);
         }
 
         //Decreases to indicate an ack for the request was received (either if the VM was created or not)
@@ -647,7 +668,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
             requestDatacentersToCreateWaitingCloudlets();
         }
 
-        return vm.isCreated();
+        return createdVms > 0;
     }
 
     /**
@@ -733,12 +754,25 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      * @see #submitVmList(java.util.List)
      */
     private boolean requestDatacenterToCreateWaitingVms(final boolean isFallbackDatacenter, final boolean creationRetry) {
-        for (final Vm vm : vmWaitingList) {
-            this.lastSelectedDc = getLastSelectedDc(isFallbackDatacenter, vm);
+        if(vmWaitingList.isEmpty())
+            return false;
+
+        for (final var vm : vmWaitingList) {
             if(creationRetry) {
                 vm.setLastTriedDatacenter(Datacenter.NULL);
             }
-            vmCreation.incCreationRequests(requestVmCreation(lastSelectedDc, isFallbackDatacenter, vm));
+
+            if(!batchVmCreation) {
+                this.lastSelectedDc = getLastSelectedDc(isFallbackDatacenter, vm);
+                vmCreation.incCreationRequests(requestSingleVmCreation(lastSelectedDc, isFallbackDatacenter, vm));
+            }
+        }
+
+        //Sends a single VM creation request to the first selected DC for a List of Vms
+        if(batchVmCreation) {
+            //In batch VM creation, sends all VMs to the same DC selected for the first VM
+            this.lastSelectedDc = getLastSelectedDc(isFallbackDatacenter, vmWaitingList.get(0));
+            vmCreation.incCreationRequests(requestVmCreation(lastSelectedDc, isFallbackDatacenter, vmWaitingList));
         }
 
         return lastSelectedDc != Datacenter.NULL;
@@ -751,36 +785,65 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     }
 
     /**
-     * Try to request the creation of a VM into a given datacenter
-     * @param dc the target Datacenter to try creating the VM
-     *           (or {@link Datacenter#NULL} if not Datacenter is available)
+     * Try to request the creation of a single VM into a given datacenter
+     * @param dc the target Datacenter to try creating the VM (or {@link Datacenter#NULL} if not DC is available)
      * @param isFallbackDatacenter indicate if the given Datacenter was selected when
      *                             a previous one don't have enough capacity to place the requested VM
      * @param vm the VM to be placed
      * @return 1 to indicate a VM creation request was sent to the datacenter,
      *         0 to indicate the request was not sent due to lack of available datacenter
+     * @see #requestVmCreation(Datacenter, boolean, Object)
      */
-    private int requestVmCreation(final Datacenter dc, final boolean isFallbackDatacenter, final Vm vm) {
+    private int requestSingleVmCreation(final Datacenter dc, final boolean isFallbackDatacenter, final Vm vm) {
+        /* It was not passed List.of(vm) to the calling method,
+           after declaring the last parameter as List<Vm>,
+           to avoid creation of a new object and possible pressure on memory consumption
+           and performance degradation. */
+        return requestVmCreation(dc, isFallbackDatacenter, vm);
+    }
+
+    /**
+     * Try to request the creation of a single VM or a {@code List<Vm>} into the datacenter of the first Vm.
+     * @param dc the target Datacenter to try creating the VM (or {@link Datacenter#NULL} if not DC is available)
+     * @param isFallbackDatacenter
+     * @param vmOrList a single Vm object or a {@code List<Vm>}
+     * @return 1 to indicate a VM creation request was sent to the datacenter,
+     *         0 to indicate the request was not sent due to lack of available datacenter
+     */
+    private <T> int requestVmCreation(final Datacenter dc, final boolean isFallbackDatacenter, final T vmOrList) {
+        if(vmOrList instanceof List<?> list && list.isEmpty() )
+            return 0;
+
+        final var vm = VmAbstract.getFirstVm(vmOrList);
+
         if (dc == Datacenter.NULL || dc.equals(vm.getLastTriedDatacenter())) {
             return 0;
         }
 
-        logVmCreationRequest(dc, isFallbackDatacenter, vm);
-        send(dc, vm.getSubmissionDelay(), CloudSimTag.VM_CREATE_ACK, vm);
+        logVmCreationRequest(dc, isFallbackDatacenter, vmOrList);
+        send(dc, vm.getSubmissionDelay(), CloudSimTag.VM_CREATE_ACK, vmOrList);
         vm.setLastTriedDatacenter(dc);
         return 1;
     }
 
-    private void logVmCreationRequest(final Datacenter datacenter, final boolean isFallbackDatacenter, final Vm vm) {
+    /**
+     *
+     * @param dc
+     * @param isFallbackDatacenter
+     * @param vmOrList a single Vm object or a {@code List<Vm>}
+     */
+    private <T> void logVmCreationRequest(final Datacenter dc, final boolean isFallbackDatacenter, final T vmOrList) {
         final var fallbackMsg = isFallbackDatacenter ? " (due to lack of a suitable Host in previous one)" : "";
+        final var vm = VmAbstract.getFirstVm(vmOrList);
+        final var vmMsg = VmAbstract.isVmList(vmOrList) ? "%d Vms in batch".formatted(VmAbstract.getVmCount(vmOrList)) : vm;
         if(vm.getSubmissionDelay() == 0)
             LOGGER.info(
-                "{}: {}: Trying to create {} in {}{}",
-                getSimulation().clockStr(), getName(), vm, datacenter, fallbackMsg);
+                "{}: {}: Trying to create {} inside {}{}",
+                getSimulation().clockStr(), getName(), vmMsg, dc, fallbackMsg);
         else
             LOGGER.info(
-                "{}: {}: Creation of {} in {}{} will be requested in {} seconds",
-                getSimulation().clockStr(), getName(), vm, datacenter,
+                "{}: {}: Creation of {} inside {}{} will be requested in {} seconds",
+                getSimulation().clockStr(), getName(), vmMsg, dc,
                 fallbackMsg, vm.getSubmissionDelay());
     }
 

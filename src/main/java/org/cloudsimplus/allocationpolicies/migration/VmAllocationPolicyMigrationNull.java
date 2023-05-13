@@ -22,10 +22,10 @@ final class VmAllocationPolicyMigrationNull implements VmAllocationPolicyMigrati
     @Override public Datacenter getDatacenter() { return Datacenter.NULL; }
     @Override public VmAllocationPolicy setDatacenter(Datacenter datacenter) { return this; }
     @Override public HostSuitability allocateHostForVm(Vm vm) { return HostSuitability.NULL; }
+    @Override public Set<HostSuitability> allocateHostForVm(List<Vm> vmList) { return Collections.emptySet(); }
     @Override public HostSuitability allocateHostForVm(Vm vm, Host host) {
         return HostSuitability.NULL;
     }
-    @Override public <T extends Vm> List<T> allocateHostForVm(Collection<T> vmCollection) { return Collections.emptyList(); }
     @Override public boolean scaleVmVertically(VerticalVmScaling scaling) {
         return false;
     }

@@ -50,10 +50,10 @@ final class VmAllocationPolicyNull implements VmAllocationPolicy {
     @Override public HostSuitability allocateHostForVm(Vm vm) {
         return HostSuitability.NULL;
     }
+    @Override public Set<HostSuitability> allocateHostForVm(List<Vm> vmList) { return Collections.emptySet(); }
     @Override public HostSuitability allocateHostForVm(Vm vm, Host host) {
         return HostSuitability.NULL;
     }
-    @Override public <T extends Vm> List<T> allocateHostForVm(Collection<T> vmCollection) { return Collections.emptyList(); }
     @Override public void deallocateHostForVm(Vm vm) {/**/}
     @Override public List<Host> getHostList() { return Collections.emptyList(); }
     @Override public Map<Vm, Host> getOptimizedAllocationMap(List<? extends Vm> vmList) { return Collections.emptyMap(); }

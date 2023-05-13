@@ -26,7 +26,7 @@ import org.cloudsimplus.vms.VmGroup;
 import java.util.*;
 import java.util.function.BiFunction;
 
-import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
 
 /**
  * An abstract class that represents the policy
@@ -217,6 +217,24 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
 
     }
 
+    @Override
+    public final Set<HostSuitability> allocateHostForVm(@NonNull final List<Vm> vmList) {
+        if (datacenterHasNoHosts())
+            return Collections.emptySet();
+
+        return allocateHostForVmInternal(vmList);
+    }
+
+    /**
+     * If you override this method, you must call {@link #allocateHostForVm(Vm, Host)}
+     * for each suitable Host you have found that want to create a VM.
+     * @see #allocateHostForVm(List)
+     * @see Host#getSuitabilityFor(Vm)
+     */
+    protected Set<HostSuitability> allocateHostForVmInternal(final @NonNull List<Vm> vmList) {
+        return vmList.stream().map(this::allocateHostForVm).collect(toSet());
+    }
+
     /**
      * Allocates the host with less PEs in use for a given VM.
      *
@@ -225,15 +243,12 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
      */
     @Override
     public HostSuitability allocateHostForVm(final Vm vm) {
-        if (getHostList().isEmpty()) {
-            LOGGER.error(
-                "{}: {}: {} could not be allocated because there isn't any Host for Datacenter {}",
-                vm.getSimulation().clockStr(), getClass().getSimpleName(), vm, getDatacenter().getId());
-            return new HostSuitability("Datacenter has no host.");
+        if (datacenterHasNoHosts(vm)) {
+            return new HostSuitability(vm, "Datacenter has no host.");
         }
 
         if (vm.isCreated()) {
-            return new HostSuitability("VM is already created");
+            return new HostSuitability(vm, "VM is already created");
         }
 
         final var optionalHost = findHostForVm(vm);
@@ -241,13 +256,35 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
             return allocateHostForVm(vm, optionalHost.get());
         }
 
-        LOGGER.warn("{}: {}: No suitable host found for {} in {}", vm.getSimulation().clockStr(), getClass().getSimpleName(), vm, datacenter);
-        return new HostSuitability("No suitable host found");
+        LOGGER.warn(
+            "{}: {}: No suitable host found for {} in {}",
+            vm.getSimulation().clockStr(), getClass().getSimpleName(), vm, datacenter);
+        return new HostSuitability(vm, "No suitable host found");
     }
 
-    @Override
-    public <T extends Vm> List<T> allocateHostForVm(@NonNull final Collection<T> vmCollection) {
-        return vmCollection.stream().filter(vm -> !allocateHostForVm(vm).fully()).collect(toList());
+    /**
+     * Checks if a datacenter is empty (has no hosts).
+     * @return
+     */
+    private boolean datacenterHasNoHosts() {
+        return datacenterHasNoHosts(null);
+    }
+
+    /**
+     * Checks if a datacenter is empty (has no hosts).
+     * @param vm the Vm requested to be created
+     * @return
+     */
+    private boolean datacenterHasNoHosts(final Vm vm) {
+        final var vmStr = vm == null ? "Vm" : vm;
+        if (getHostList().isEmpty()) {
+            LOGGER.error(
+                "{}: {}: There is no Hosts in {} for requesting {} creation.",
+                datacenter.getSimulation().clockStr(), getClass().getSimpleName(), datacenter, vmStr);
+            return true;
+        }
+
+        return false;
     }
 
     @Override
@@ -261,7 +298,7 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
 
     private HostSuitability createVmsFromGroup(final VmGroup vmGroup, final Host host) {
         int createdVms = 0;
-        final var hostSuitabilityForVmGroup = new HostSuitability();
+        final var hostSuitabilityForVmGroup = new HostSuitability(host, vmGroup);
         for (final Vm vm : vmGroup.getVmList()) {
             final var hostSuitability = createVm(vm, host);
             hostSuitabilityForVmGroup.setSuitability(hostSuitability);
