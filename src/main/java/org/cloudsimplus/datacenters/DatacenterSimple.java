@@ -31,6 +31,7 @@ import org.cloudsimplus.power.models.PowerModelDatacenter;
 import org.cloudsimplus.power.models.PowerModelDatacenterSimple;
 import org.cloudsimplus.resources.DatacenterStorage;
 import org.cloudsimplus.resources.SanStorage;
+import org.cloudsimplus.util.Conversion;
 import org.cloudsimplus.util.InvalidEventDataTypeException;
 import org.cloudsimplus.util.MathUtil;
 import org.cloudsimplus.vms.Vm;
@@ -545,28 +546,51 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
 
     /**
      * Process the event for a Broker which wants to create a VM in this
-     * Datacenter. This Datacenter will then send the status back to
-     * the Broker.
+     * Datacenter. This Datacenter will then send the status back to the Broker.
      *
      * @param evt information about the event just happened
      * acknowledge message when the event finishes to be processed
-     * @return true if a host was allocated to the VM; false otherwise
+     * @return true if some requested VMs were created into some host; false otherwise
+     * @see CloudSimTag#VM_CREATE_ACK
      */
+    @SuppressWarnings("unchecked")
     private boolean processVmCreate(final SimEvent evt) {
+        boolean created = false;
         if(evt.getData() instanceof Vm vm){
-            final boolean hostAllocatedForVm = vmAllocationPolicy.allocateHostForVm(vm).fully();
-            if (hostAllocatedForVm) {
-                vm.updateProcessing(vm.getHost().getVmScheduler().getAllocatedMips(vm));
-            }
-
-            /* Acknowledges that the request was received by the Datacenter,
-            (the broker is expecting that if the Vm was created or not). */
-            send(vm.getBroker(), getSimulation().getMinTimeBetweenEvents(), CloudSimTag.VM_CREATE_ACK, vm);
-
-            return hostAllocatedForVm;
+            vmAllocationPolicy.allocateHostForVm(vm);
+            created = updateVmProcessing(vm);
         }
+        else if(evt.getData() instanceof List<?> list){
+            if(list.isEmpty())
+                return false;
 
-        throw new InvalidEventDataTypeException(evt, "VM_CREATE Tags", Vm.class.getName());
+            if((list.get(0) instanceof Vm)) { // ensures safe cast
+                final var suitabilities = vmAllocationPolicy.allocateHostForVm((List<Vm>)list);
+                //Cannot use short-circuit stream operations (such as anyMatch) since all VMs must send an ack
+                created = suitabilities
+                        .stream()
+                        .map(HostSuitability::getVm)
+                        .map(this::updateVmProcessing)
+                        .mapToInt(Conversion::boolToInt).sum() > 0;
+            }
+        } else throw new InvalidEventDataTypeException(evt, "VM_CREATE Tags", "Vm or List<Vm>");
+
+        final var vm = VmAbstract.getFirstVm(evt.getData());
+        /* Acknowledges that the request was received by the Datacenter,
+        (the broker is expecting that if the Vm was created or not). */
+        send(vm.getBroker(), getSimulation().getMinTimeBetweenEvents(), CloudSimTag.VM_CREATE_ACK, evt.getData());
+        return created;
+    }
+
+    /**
+     * Returns an ack to the broker which may confirm if the VM was created ot not by checking its created attribute.
+     * @param vm the VM which creation request was processed
+     * @return true or false to indicate if the VM was created or not
+     */
+    private boolean updateVmProcessing(final Vm vm) {
+        if(vm.isCreated())
+            vm.updateProcessing(vm.getHost().getVmScheduler().getAllocatedMips(vm));
+        return vm.isCreated();
     }
 
     /**

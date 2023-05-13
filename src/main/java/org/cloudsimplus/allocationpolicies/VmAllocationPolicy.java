@@ -16,10 +16,10 @@ import org.cloudsimplus.vms.VmGroup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.BiFunction;
 
 /**
@@ -75,6 +75,21 @@ public interface VmAllocationPolicy {
     HostSuitability allocateHostForVm(Vm vm);
 
     /**
+     * Tries to allocate a host for a each {@link Vm} or {@link VmGroup} into a given List.
+     * The method should define how it will find a {@link Host#getSuitabilityFor(Vm) suitable Host}
+     * for each Vm and then call {@link #allocateHostForVm(Vm, Host)} to actually
+     * create the VM inside the selected Host.
+     *
+     * @param vmList the List of {@link Vm}s or {@link VmGroup}s to allocate a host to
+     * @return a Set of {@link HostSuitability} to indicate if a Vm was placed into the host or not,
+     * containing a HostSuitability object for the last Host where the VM was tried to be created;
+     * or an empty set if the Datacenter has no hosts.
+     *
+     * @see VmGroup
+     */
+    Set<HostSuitability> allocateHostForVm(List<Vm> vmList);
+
+    /**
      * Tries to allocate a specified host for a given {@link Vm} or {@link VmGroup}.
      *
      * @param vm the {@link Vm} or {@link VmGroup} to allocate a host to
@@ -84,16 +99,6 @@ public interface VmAllocationPolicy {
      * @see VmGroup
      */
     HostSuitability allocateHostForVm(Vm vm, Host host);
-
-    /**
-     * Tries to allocate hosts for a collection of {@link Vm}s or {@link VmGroup}s.
-     *
-     * @param vmCollection the {@link Vm} or {@link VmGroup} collection to allocate hosts to
-     * @return an empty list if hosts were allocated to all VMs
-     *         or a list of Vms that a suitable host couldn't be found.
-     * @see VmGroup
-     */
-    <T extends Vm> List<T> allocateHostForVm(Collection<T> vmCollection);
 
     /**
      * Try to scale some Vm's resource vertically up or down, respectively if:
@@ -154,7 +159,7 @@ public interface VmAllocationPolicy {
     Map<Vm, Host> getOptimizedAllocationMap(List<? extends Vm> vmList);
 
     /**
-     * Finds a suitable host that has enough resources to place a given VM.
+     * Finds a suitable Host that has enough resources to place a given VM.
      * Internally it may use a default implementation or one set in runtime.
      *
      * @param vm the vm to find a host for it

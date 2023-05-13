@@ -300,7 +300,7 @@ public abstract class HostAbstract extends ExecDelayableAbstract implements Host
 
     private HostSuitability createVmInternal(final Vm vm) {
         if (vm instanceof VmGroup) {
-            return new HostSuitability("Just internal VMs inside a VmGroup can be created, not the VmGroup itself.");
+            return new HostSuitability(vm, "Just internal VMs inside a VmGroup can be created, not the VmGroup itself.");
         }
 
         final HostSuitability suitability = allocateResourcesForVm(vm, false);
@@ -393,7 +393,7 @@ public abstract class HostAbstract extends ExecDelayableAbstract implements Host
      * @see #isLazySuitabilityEvaluation()
      */
     private HostSuitability isSuitableForVm(final Vm vm, final boolean inMigration, final boolean showFailureLog) {
-        final var suitability = new HostSuitability();
+        final var suitability = new HostSuitability(this, vm);
 
         suitability.setForStorage(disk.isAmountAvailable(vm.getStorage()));
         if (!suitability.forStorage()) {

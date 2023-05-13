@@ -81,10 +81,10 @@ final class DatacenterBrokerNull implements DatacenterBroker, SimEntityNullBase 
     @Override public List<Cloudlet> getCloudletSubmittedList() { return Collections.emptyList(); }
     @Override public <T extends Vm> List<T> getVmFailedList() { return Collections.emptyList(); }
     @Override public VmCreation getVmCreation() { return VmCreation.ofZero(); }
-
     @Override public DatacenterBroker setLastSelectedDc(Datacenter lastSelectedDc) { return this; }
     @Override public Datacenter getLastSelectedDc() { return Datacenter.NULL; }
-
+    @Override public boolean isBatchVmCreation() { return false; }
+    @Override public DatacenterBroker setBatchVmCreation(boolean enable) { return this; }
     @Override public boolean isShutdownWhenIdle() { return false; }
     @Override public DatacenterBroker setShutdownWhenIdle(boolean shutdownWhenIdle) { return this; }
     @Override public DatacenterBroker setVmComparator(Comparator<Vm> comparator) { return this; }

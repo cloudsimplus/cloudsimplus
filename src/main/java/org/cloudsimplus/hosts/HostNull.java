@@ -123,7 +123,7 @@ final class HostNull implements Host {
     @Override public Startable setFinishTime(double stopTime) { return this; }
     @Override public boolean isFailed() { return false; }
     @Override public boolean isSuitableForVm(Vm vm) { return false; }
-    @Override public HostSuitability getSuitabilityFor(Vm vm) { return new HostSuitability(); }
+    @Override public HostSuitability getSuitabilityFor(Vm vm) { return HostSuitability.NULL; }
     @Override public boolean isActive() { return false; }
     @Override public boolean isFinished() { return true; }
     @Override public boolean hasEverStarted() { return false; }

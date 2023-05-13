@@ -185,6 +185,47 @@ public abstract class VmAbstract extends CustomerEntityAbstract implements Vm {
         defaultStorageCapacity = defaultCapacity;
     }
 
+    /**
+     * Accepts a Vm or {@code List<Vm>}. If a Vm is given, returns it.
+     * If a List is given, returns the first VM in that List.
+     * @param vmOrList a single Vm object or a {@code List<Vm>}
+     * @return the Vm object or the first Vm inside the List (according to the given parameter)
+     * @param <T>
+     */
+    public static <T> VmAbstract getFirstVm(final T vmOrList) {
+        return isVmList(vmOrList) ? ((List<VmAbstract>) vmOrList).get(0) : (VmAbstract) vmOrList;
+    }
+
+    /**
+     * Accepts a Vm or {@code List<Vm>} and return a {@code List<Vm>}
+     * @param vmOrList a single Vm object or a {@code List<Vm>}
+     * @return a List with 1 Vm object if a Vm instance is given; or a {@code List<Vm>} if a List is given
+     * @param <T>
+     */
+    public static <T> List<Vm> getList(final T vmOrList) {
+        return isVmList(vmOrList) ? ((List<Vm>) vmOrList) : List.of((Vm) vmOrList);
+    }
+
+    /**
+     * Checks if an object is a Vm or {@code List<Vm>}.
+     * @param vmOrList a Vm {@code List<Vm>}
+     * @return true if it's a {@code List<Vm>}, false otherwise
+     * @param <T>
+     */
+    public static <T> boolean isVmList(final T vmOrList) {
+        return vmOrList instanceof List<?>;
+    }
+
+    /**
+     * Accepts a single Vm object or a {@code List<Vm>} and returns the number of Vms in the given object.
+     * @param vmOrList a Vm {@code List<Vm>}
+     * @return 1 if the given object is a single Vm object, {@link List#size()} if it's a List.
+     * @param <T>
+     */
+    public static <T> int getVmCount(final T vmOrList) {
+        return isVmList(vmOrList) ? ((List<Vm>)vmOrList).size() : 1;
+    }
+
     protected void mutableAttributesInit() {
         this.description = "";
         setBroker(DatacenterBroker.NULL);

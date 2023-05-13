@@ -462,4 +462,18 @@ public interface DatacenterBroker extends SimEntity {
      * Gets the last selected datacenter attempted to place arriving VMs.
      */
     Datacenter getLastSelectedDc();
+
+    /**
+     * {@return true of false} Checks if batch VM creation is enabled or not,
+     * to indicate if VM creation will be requested to a Datacenter one-by-one
+     * of in batch (in a single VM creation request).
+     */
+    boolean isBatchVmCreation();
+
+    /**
+     * Enables or disables batch VM creation.
+     * @param enable true of false to enable or disable
+     * @see #isBatchVmCreation()
+     */
+    DatacenterBroker setBatchVmCreation(boolean enable);
 }

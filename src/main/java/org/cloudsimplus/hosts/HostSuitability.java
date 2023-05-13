@@ -23,12 +23,13 @@
  */
 package org.cloudsimplus.hosts;
 
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NonNull;
 import lombok.Setter;
 import org.cloudsimplus.resources.Pe;
 import org.cloudsimplus.vms.Vm;
 import org.cloudsimplus.vms.VmGroup;
-
-import java.util.Objects;
 
 /**
  * A class that stores information about the suitability of
@@ -39,8 +40,9 @@ import java.util.Objects;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 6.0.2
  */
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public final class HostSuitability {
-    public static final HostSuitability NULL = new HostSuitability();
+    public static final HostSuitability NULL = new HostSuitability(Vm.NULL, "");
 
     /** Indicates if the Host has enough storage for running a VM. */
     @Setter
@@ -58,20 +60,37 @@ public final class HostSuitability {
     @Setter
     private boolean forPes;
 
+    @Getter @EqualsAndHashCode.Include
+    private final Vm vm;
+
+    @Getter
+    private final Host host;
+
     /**
      * The reason the Host is not suitable for a VM.
      */
     private String reason;
 
-    public HostSuitability(){/**/}
+    public HostSuitability(final Vm vm, final String reason){
+        this(Host.NULL, vm, reason);
+    }
+
+    public HostSuitability(final Host host, final Vm vm){
+        this(host, vm, "");
+    }
 
     /**
      * Creates a HostSuitability object.
+     *
+     * @param host the Host evaluated for placing a given Vm
+     * @param vm the Vm being requested to be placed in the given Host
      * @param reason the reason the Host is not suitable for a VM.
      * @see #toString()
      */
-    public HostSuitability(final String reason){
-        this.reason = Objects.requireNonNull(reason);
+    public HostSuitability(@NonNull Host host, @NonNull final Vm vm, @NonNull final String reason){
+        this.host = host;
+        this.vm = vm;
+        this.reason = reason;
     }
 
     /**
@@ -131,7 +150,7 @@ public final class HostSuitability {
     }
 
     /**
-     * Checks if the Host is totally suitable or not for the given Vm
+     * Checks if the Host is totally suitable for the given Vm
      * in terms of required storage, ram, bandwidth and number of PEs.
      * If any of the requirements is not met, it means the host is not suitable at all.
      * @return true if all resource requirements are met, false otherwise.
@@ -147,7 +166,7 @@ public final class HostSuitability {
     @Override
     public String toString(){
         if(fully())
-            return "Host is fully suitable for the last requested VM";
+            return host + " is fully suitable for " + vm;
 
         if(reason != null)
             return reason;
@@ -162,6 +181,7 @@ public final class HostSuitability {
         if(!forBw)
             builder.append(" BW,");
 
-        return builder.substring(0, builder.length()-1);
+        final var hostStr = host == Host.NULL ? "" : " in " + host;
+        return "%s for %s".formatted(builder.substring(0, builder.length()-1), hostStr, vm);
     }
 }

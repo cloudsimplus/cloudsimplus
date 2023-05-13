@@ -232,8 +232,9 @@ public class CloudSimTag{
     public static final int VM_CREATE_RETRY = BASE + 31;
 
     /**
-     * Denotes a request to create a new VM in a {@link Datacenter}
-     * where the {@link SimEvent#getData()} of the reply event is a {@link Vm} object.
+     * Denotes a request to create a new {@link Vm} or List of Vms in a {@link Datacenter},
+     * where the {@link SimEvent#getData()} of the reply event is either a {@link Vm}
+     * or <b>Vm List</b> object (depending on how the broker submits VMs to the Datacenter).
      *
      * <p>Using this tag, the Datacenter acknowledges the reception of the request.
      * To check if the VM was in fact created inside the requested Datacenter
