@@ -68,19 +68,6 @@ public class CloudSimTag{
     public static final int DC_LIST_REQUEST = BASE + 4;
 
     /**
-     * Denotes a request to register a {@link CloudInformationService} entity as a regional CIS.
-     * When such a {@link SimEvent} is sent, the {@link SimEvent#getData()}
-     * must be a {@link CloudInformationService} object.
-     */
-    public static final int REGISTER_REGIONAL_CIS = BASE + 13;
-
-    /**
-     * Denotes a request to get a list of other regional CIS entities from the
-     * system CIS entity.
-     */
-    public static final int REQUEST_REGIONAL_CIS = BASE + 14;
-
-    /**
      * This tag is used by an entity to send ping requests.
      */
     public static final int ICMP_PKT_SUBMIT = NET_BASE + 5;
@@ -89,6 +76,20 @@ public class CloudSimTag{
      * This tag is used to return the ping request back to sender.
      */
     public static final int ICMP_PKT_RETURN = NET_BASE + 6;
+
+    /**
+     * Denotes a request to register a {@link CloudInformationService} entity as a regional CIS.
+     * When such a {@link SimEvent} is sent, the {@link SimEvent#getData()}
+     * must be a {@link CloudInformationService} object.
+     */
+    public static final int REGISTER_REGIONAL_CIS = BASE + 12;
+
+    /**
+     * Denotes a request to get a list of other regional CIS entities from the
+     * system CIS entity.
+     */
+    public static final int REQUEST_REGIONAL_CIS = BASE + 13;
+
 
     /**
      * Denotes a broker request to schedule creation of waiting cloudlets.
