@@ -46,7 +46,14 @@ public class CloudSimTagTest {
     }
 
     public static String msgFieldsWithDuplicatedValue(final Field field, final Field anotherField) {
-        return "The constant " + field.getName() + " has the same value of the constant " + anotherField.getName();
+        String value = "";
+        try {
+            value = ": " + field.get(CloudSim.class).toString();
+        } catch (IllegalAccessException e) {
+        }
+
+        return "The constant %s has the same value of the constant %s%s"
+            .formatted(field.getName(), anotherField.getName(), value);
     }
 
     /**
