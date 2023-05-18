@@ -438,6 +438,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
 
     private boolean processCloudletEvents(final SimEvent evt) {
         return switch (evt.getTag()) {
+            case CloudSimTag.CLOUDLET_CREATION -> createWaitingCloudlets();
             case CloudSimTag.CLOUDLET_RETURN -> processCloudletReturn(evt);
             case CloudSimTag.CLOUDLET_READY -> processCloudletReady(evt);
             /* The data of such a kind of event is a Runnable that has all
@@ -1019,6 +1020,10 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      * @see #submitCloudletList(java.util.List)
      */
     protected void requestDatacentersToCreateWaitingCloudlets() {
+        schedule(CloudSimTag.CLOUDLET_CREATION);
+    }
+
+    private boolean createWaitingCloudlets() {
         /* Uses Iterator to remove Cloudlets from the waiting list
          * while iterating over that List. This avoids the collection of successfully
          * created Cloudlets into a separate list.
@@ -1052,6 +1057,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         }
 
         allWaitingCloudletsSubmittedToVm(createdCloudlets);
+        return createdCloudlets > 0;
     }
 
     private void logPostponingCloudletExecution(final Cloudlet cloudlet) {

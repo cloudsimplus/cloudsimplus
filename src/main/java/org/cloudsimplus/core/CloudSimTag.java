@@ -91,6 +91,11 @@ public class CloudSimTag{
     public static final int ICMP_PKT_RETURN = NET_BASE + 6;
 
     /**
+     * Denotes a broker request to schedule creation of waiting cloudlets.
+     */
+    public static final int CLOUDLET_CREATION = BASE + 14;
+
+    /**
      * Denotes the return of a finished Cloudlet back to the sender.
      * This tag is normally used by Datacenter entity.
      * When an event of this type is sent, the {@link SimEvent#getData()}
