@@ -99,6 +99,9 @@ public class DatacenterBrokerSimple extends DatacenterBrokerAbstract {
             throw new IllegalStateException("You don't have any Datacenter created.");
         }
 
+        if(getDatacenterList().size() == 1)
+            return getDatacenterList().get(0);
+
         if (lastDatacenter != Datacenter.NULL) {
             return nextDatacenter(lastDatacenter);
         }
