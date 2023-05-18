@@ -91,8 +91,8 @@ to advanced features for simulating more realistic cloud scenarios:
 1. [Enables running the simulation synchronously, making it easier to interact with it and collect data inside a loop, as the simulation goes on](https://github.com/cloudsimplus/cloudsimplus-examples/blob/master/src/main/java/org/cloudsimplus/examples/synchronous/SynchronousSimulationExample1.java). This brings freedom to implement your simulations ([#205](https://github.com/cloudsimplus/cloudsimplus/issues/205)).
 1. [Allows placing a group of VMs into the same Host.](https://github.com/cloudsimplus/cloudsimplus-examples/blob/master/src/main/java/org/cloudsimplus/examples/VmGroupPlacementExample1.java) ([#90](https://github.com/cloudsimplus/cloudsimplus/issues/90)).
 1. [Enables Broker to try selecting the closest Datacenter to place VMs, according to their time zone.](https://github.com/cloudsimplus/cloudsimplus-examples/blob/master/src/main/java/org/cloudsimplus/examples/brokers/DatacenterSelectionByTimeZoneExample.java) ([#212](https://github.com/cloudsimplus/cloudsimplus/issues/212)).
-1. Non-Live VM migration from/to public-cloud datacenters (#437).
-1. Support VM startup/shutdown delay and boot overhead (#435)
+1. Non-Live VM migration from/to public-cloud datacenters ([#437](https://github.com/cloudsimplus/cloudsimplus/issues/437)).
+1. Support VM startup/shutdown delay and boot overhead ([#435](https://github.com/cloudsimplus/cloudsimplus/issues/435))
 1. It outperforms CloudSim 4, as can be seen [here](docs/performance.md).
 
 <a id="structure"></a>
