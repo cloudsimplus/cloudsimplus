@@ -189,7 +189,7 @@ on Linux/macOS
 on Windows
 
 ```bash
-./mvnw.cmd clean install
+mvnw.cmd clean install
 ```
 
 # 7. A Minimal but Complete Simulation Example ⚙️
