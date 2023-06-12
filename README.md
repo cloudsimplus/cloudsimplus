@@ -178,10 +178,18 @@ Open the project on your favorite IDE and click the build button and that is it.
 
 ## 6.2 Using a terminal
 
-First, make sure you have an updated Maven version installed (such as 3.8.6+), open a terminal at the project root directory and type:
+Open a terminal at the project root directory and type one of the following commands: 
+
+on Linux/macOS 
 
 ```bash
-mvn clean install
+./mvnw clean install
+```
+
+on Windows
+
+```bash
+./mvnw.cmd clean install
 ```
 
 # 7. A Minimal but Complete Simulation Example ⚙️
