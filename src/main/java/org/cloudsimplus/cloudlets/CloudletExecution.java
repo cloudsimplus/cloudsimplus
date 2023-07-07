@@ -252,7 +252,7 @@ public class CloudletExecution {
         }
 
         this.partialFinishedMI += partialFinishedMI;
-        cloudlet.addFinishedLengthSoFar(this.partialFinishedMI);
+        cloudlet.addFinishedLengthSoFar(partialFinishedMI);
 
         setLastProcessingTime(simulation.clock());
 
