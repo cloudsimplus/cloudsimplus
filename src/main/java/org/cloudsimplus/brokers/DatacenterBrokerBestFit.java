@@ -52,9 +52,6 @@ public class DatacenterBrokerBestFit extends DatacenterBrokerSimple {
 
     /**
      * Selects the VM with the lowest number of PEs that is able to run a given Cloudlet.
-     * In case the algorithm can't find such a VM, it uses the
-     * default DatacenterBroker VM mapper as a fallback.
-     *
      * @param cloudlet the Cloudlet to find a VM to run it
      * @return the VM selected for the Cloudlet or {@link Vm#NULL} if no suitable VM was found
      */
