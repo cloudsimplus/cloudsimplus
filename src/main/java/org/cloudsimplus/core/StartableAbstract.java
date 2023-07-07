@@ -69,9 +69,9 @@ public abstract class StartableAbstract implements Startable {
 
     @Override
     public final Startable setFinishTime(final double finishTime) {
-        final var finishTimeNotSet = this.finishTime <= 0;
+        final var finishTimeWaNotSet = this.finishTime < 0;
         this.finishTime = finishTime;
-        if (isFinished() && finishTimeNotSet && finishTime > 0)
+        if (finishTimeWaNotSet && finishTime > 0)
             onFinish(finishTime);
         return this;
     }
