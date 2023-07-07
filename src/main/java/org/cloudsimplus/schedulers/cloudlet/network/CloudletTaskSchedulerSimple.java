@@ -64,17 +64,19 @@ public class CloudletTaskSchedulerSimple implements CloudletTaskScheduler {
 
     @Override
     public void processCloudletTasks(final Cloudlet cloudlet, final long partialFinishedMI) {
-        if(cloudlet.isRunning() && cloudlet instanceof NetworkCloudlet netCloudlet){
-            if (!netCloudlet.isTasksStarted()) {
-                scheduleNextTaskIfCurrentIsFinished(netCloudlet);
-                return;
-            }
-
-            //TODO Needs to use polymorphism to avoid these ifs
-            if (isTimeToUpdateCloudletProcessing(netCloudlet))
-                updateExecutionTask(netCloudlet, partialFinishedMI);
-            else updateNetworkTasks(netCloudlet);
+        if (cloudlet.isFinished() || !(cloudlet instanceof NetworkCloudlet netCloudlet)) {
+            return;
         }
+
+        if (!netCloudlet.isTasksStarted()) {
+            scheduleNextTaskIfCurrentIsFinished(netCloudlet);
+            return;
+        }
+
+        //TODO Needs to use polymorphism to avoid these ifs
+        if (isTimeToUpdateCloudletProcessing(netCloudlet))
+            updateExecutionTask(netCloudlet, partialFinishedMI);
+        else updateNetworkTasks(netCloudlet);
     }
 
     private void updateExecutionTask(final NetworkCloudlet cloudlet, final long partialFinishedMI) {
