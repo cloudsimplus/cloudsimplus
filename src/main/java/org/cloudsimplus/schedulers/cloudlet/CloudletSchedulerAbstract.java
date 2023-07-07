@@ -21,7 +21,6 @@ import org.cloudsimplus.resources.Ram;
 import org.cloudsimplus.resources.ResourceManageable;
 import org.cloudsimplus.schedulers.MipsShare;
 import org.cloudsimplus.schedulers.cloudlet.network.CloudletTaskScheduler;
-import org.cloudsimplus.util.Conversion;
 import org.cloudsimplus.utilizationmodels.UtilizationModel;
 import org.cloudsimplus.vms.Vm;
 import org.cloudsimplus.vms.VmSimple;
@@ -532,11 +531,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * @param currentTime current simulation time
      */
     private void updateCloudletProcessingAndPacketsDispatch(final CloudletExecution cle, final double currentTime) {
-        long partialFinishedMI = 0;
-        if (taskScheduler.isTimeToUpdateCloudletProcessing(cle.getCloudlet())) {
-            partialFinishedMI = updateCloudletProcessing(cle, currentTime);
-        }
-
+        final long partialFinishedMI = updateCloudletProcessing(cle, currentTime);
         taskScheduler.processCloudletTasks(cle.getCloudlet(), partialFinishedMI);
     }
 
@@ -544,17 +539,19 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * Updates the processing of a specific cloudlet of the Vm using this
      * scheduler.
      *
-     * @param cle The cloudlet to be its processing updated
+     * @param cle         The cloudlet to be its processing updated
      * @param currentTime current simulation time
-     * @return the executed length, in <b>Million Instructions (MI)</b>, since the last time cloudlet was processed.
      */
     protected long updateCloudletProcessing(final CloudletExecution cle, final double currentTime) {
-        final double partialFinishedInstructions = cloudletExecutedInstructionsForTimeSpan(cle, currentTime);
-        cle.updateProcessing(partialFinishedInstructions);
+        if(!taskScheduler.isTimeToUpdateCloudletProcessing(cle.getCloudlet()))
+            return 0;
+
+        final long partialFinishedMI = cloudletTimeSpanExecutedMI(cle, currentTime);
+        cle.updateProcessing(partialFinishedMI);
         updateVmResourceAbsoluteUtilization(cle, ((VmSimple)vm).getRam());
         updateVmResourceAbsoluteUtilization(cle, ((VmSimple)vm).getBw());
 
-        return (long)(partialFinishedInstructions/ Conversion.MILLION);
+        return partialFinishedMI;
     }
 
     /**
@@ -653,7 +650,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      *
      * @param cle the Cloudlet to compute the executed length
      * @param currentTime current simulation time
-     * @return the executed length, in Number of Instructions (I), since the last time cloudlet was processed.
+     * @return the executed length, in Million Instructions (MI), since the last time cloudlet was processed.
      * @see #updateCloudletsProcessing(double)
      *
      * TODO This method is being called 2 times more than required.
@@ -662,7 +659,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      *      method is being called 4 times instead of just 2 (1 for each cloudlet for
      *      that time).
      */
-    private double cloudletExecutedInstructionsForTimeSpan(final CloudletExecution cle, final double currentTime) {
+    private long cloudletTimeSpanExecutedMI(final CloudletExecution cle, final double currentTime) {
         /* The time the Cloudlet spent executing in fact, since the last time Cloudlet update was
          * called by the scheduler. If it is zero, indicates that the Cloudlet didn't use
          * the CPU in this time span, because it is waiting for its required files
@@ -681,7 +678,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
 
         final double cloudletUsedMips = getAllocatedMipsForCloudlet(cle, currentTime, true);
         final double actualProcessingTime = processingTimeSpan - (validateDelay(vMemDelay) + validateDelay(reducedBwDelay));
-        return cloudletUsedMips * actualProcessingTime * Conversion.MILLION;
+        return (long)(cloudletUsedMips * actualProcessingTime);
     }
 
     /**

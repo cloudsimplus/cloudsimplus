@@ -12,7 +12,6 @@ import org.cloudsimplus.core.CloudSimTag;
 import org.cloudsimplus.core.events.CloudSimEvent;
 import org.cloudsimplus.datacenters.Datacenter;
 import org.cloudsimplus.schedulers.cloudlet.CloudletScheduler;
-import org.cloudsimplus.util.Conversion;
 import org.cloudsimplus.util.MathUtil;
 
 import java.util.Objects;
@@ -64,12 +63,12 @@ public class CloudletExecution {
     private double finishRequestTime;
 
     /**
-     * The length of Cloudlet finished so far, in number of Instructions (I).
+     * The length of Cloudlet finished so far, in number of Million Instructions (MI).
      * The attribute stores the execution length of the cloudlet
      * in previous datacenters. Thus, it represents the actual executed
      * length of the cloudlet (not just the executed length in the current Datacenter).
      */
-    private long instructionsFinishedSoFar;
+    private long partialFinishedMI;
 
     /**
      * Latest cloudlet execution start time in the current Datacenter.
@@ -107,7 +106,7 @@ public class CloudletExecution {
         this.virtualRuntime = 0;
 
         //In case a Cloudlet has been executed partially by some other Host
-        this.instructionsFinishedSoFar = cloudlet.getFinishedLengthSoFar() * Conversion.MILLION;
+        this.partialFinishedMI = cloudlet.getFinishedLengthSoFar();
     }
 
     /**
@@ -190,10 +189,8 @@ public class CloudletExecution {
      */
     public long getRemainingCloudletLength() {
         final long absLength = Math.abs(cloudlet.getLength());
-        final double miFinishedSoFar = instructionsFinishedSoFar / (double) Conversion.MILLION;
-
         if(cloudlet.getLength() > 0){
-            return (long)Math.max(absLength - miFinishedSoFar, 0);
+            return Math.max(absLength - partialFinishedMI, 0);
         }
 
         /**
@@ -209,7 +206,7 @@ public class CloudletExecution {
          * If the length is negative, that doesn't mean it is finished.
          * In this case, we just return the absolute length to make the
          * Cloudlet keep running. */
-        if(absLength-miFinishedSoFar == 0) {
+        if(absLength-partialFinishedMI == 0) {
             return absLength;
         }
 
@@ -220,7 +217,7 @@ public class CloudletExecution {
          * it execute as little instructions as possible before checking
          * if a message to finish the cloudlet was sent.
          */
-        return (long)Math.min(Math.abs(absLength-miFinishedSoFar), absLength);
+        return Math.min(Math.abs(absLength-partialFinishedMI), absLength);
     }
 
     /**
@@ -237,28 +234,25 @@ public class CloudletExecution {
         // Sets the wall clock time and actual CPU time
         this.wallClockTime = cloudlet.getSimulation().clock() - arrivalTime;
 
-        final long finishedLengthMI = instructionsFinishedSoFar / Conversion.MILLION;
-        cloudlet.addFinishedLengthSoFar(finishedLengthMI - cloudlet.getFinishedLengthSoFar());
+        cloudlet.addFinishedLengthSoFar(partialFinishedMI - cloudlet.getFinishedLengthSoFar());
     }
 
     /**
      * Updates the length of cloudlet that has executed so far.
      *
-     * @param partialFinishedInstructions the partial amount of instructions just executed, to be
-     *        added to the {@link #instructionsFinishedSoFar},
-     *        in <b>Number of Instructions (instead of Million Instructions)</b>
+     * @param partialFinishedMI the partial amount of Million Instructions (MI) just executed,
+     *                          to be added to the {@link #partialFinishedMI}</b>
      */
-    public void updateProcessing(final double partialFinishedInstructions) {
+    public void updateProcessing(final double partialFinishedMI) {
         final var simulation = cloudlet.getSimulation();
 
         final boolean terminate = simulation.isTimeToTerminateSimulationUnderRequest();
-        if(partialFinishedInstructions == 0 && !terminate){
+        if(partialFinishedMI == 0 && !terminate){
             return;
         }
 
-        this.instructionsFinishedSoFar += partialFinishedInstructions;
-        final double partialFinishedMI = partialFinishedInstructions / Conversion.MILLION;
-        cloudlet.addFinishedLengthSoFar((long)partialFinishedMI);
+        this.partialFinishedMI += partialFinishedMI;
+        cloudlet.addFinishedLengthSoFar(this.partialFinishedMI);
 
         setLastProcessingTime(simulation.clock());
 
