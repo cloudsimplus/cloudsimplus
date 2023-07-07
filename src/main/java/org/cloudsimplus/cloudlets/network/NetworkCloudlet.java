@@ -150,7 +150,7 @@ public class NetworkCloudlet extends CloudletSimple {
 
     @Override
     public boolean isFinished() {
-        final boolean allTasksFinished = tasks.stream().allMatch(CloudletTask::isFinished);
+        final boolean allTasksFinished = tasks == null || tasks.stream().allMatch(CloudletTask::isFinished);
         return super.isFinished() && allTasksFinished;
     }
 
