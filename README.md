@@ -331,7 +331,6 @@ CloudSim Plus supports modeling and simulation of:
 Here, it's presented a list of some projects based on CloudSim Plus, which trust in its accuracy, performance, maintainability and extensibility.
 If you want your project to be listed here, send us a Pull Request. Make sure your project has a descriptive README.
 
-1. [PureEdgeSim](https://github.com/CharafeddineMechalikh/PureEdgeSim): A simulation toolkit for performance evaluation of Fog and pure Edge computing environments.
 1. [CloudSim Plus Py4j gateway](https://github.com/pkoperek/cloudsimplus-gateway): building CloudSim Plus simulations in Python
 1. [PySDNSim](https://github.com/ulfaric/PySDNSim): a Python simulation tool for microservice-based SDN using CloudSim Plus as the underlying framework.
 1. [RECAP Discrete Event Simulation Framework:](https://bitbucket.org/RECAP-DES/recap-des/) an extension for CloudSimPlus
