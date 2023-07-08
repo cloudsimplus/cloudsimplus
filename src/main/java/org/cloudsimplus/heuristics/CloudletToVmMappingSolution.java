@@ -83,8 +83,7 @@ public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudl
      * Creates a new solution for mapping a set of cloudlets to VMs using
      * a given heuristic implementation.
      *
-     * @param heuristic the heuristic implementation used to find the solution
-     * being created.
+     * @param heuristic the heuristic implementation used to find the solution being created.
      */
     public CloudletToVmMappingSolution(final Heuristic heuristic){
         this(heuristic, new HashMap<>(), 0);
