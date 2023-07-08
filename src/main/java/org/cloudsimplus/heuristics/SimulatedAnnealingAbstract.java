@@ -136,7 +136,7 @@ public abstract class SimulatedAnnealingAbstract<S extends HeuristicSolution<?>>
      * {@inheritDoc}
      *
      * Cools the system at a defined {@link #getCoolingRate() cooling rate}.
-     * @see #getCurrentTemperature() ()
+     * @see #getCurrentTemperature()
      */
     @Override
     public void updateSystemState() {

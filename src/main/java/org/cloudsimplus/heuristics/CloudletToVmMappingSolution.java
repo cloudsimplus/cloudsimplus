@@ -57,7 +57,7 @@ public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudl
     private final Map<Cloudlet, Vm> cloudletVmMap;
 
     /**
-     * Indicates if the {@link #getCost() ()} has to be recomputed
+     * Indicates if the {@link #getCost()} has to be recomputed
      * due to changes in {@link #cloudletVmMap}.
      * When it is computed, its value is stored to be used
      * in subsequent calls, until the map is changed again, in order to
