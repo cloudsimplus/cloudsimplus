@@ -46,6 +46,11 @@ public class CloudletToVmMappingSimulatedAnnealing
       extends SimulatedAnnealingAbstract<CloudletToVmMappingSolution>
       implements CloudletToVmMappingHeuristic
 {
+    /**
+     * Number of {@link CloudletToVmMappingSolution} created so far.
+     */
+    private static int solutions = 0;
+
     private CloudletToVmMappingSolution initialSolution;
 
     @Getter @Setter @NonNull
@@ -65,11 +70,11 @@ public class CloudletToVmMappingSimulatedAnnealing
     public CloudletToVmMappingSimulatedAnnealing(final double initialTemperature, final ContinuousDistribution random) {
         super(random, CloudletToVmMappingSolution.class);
 	    setCurrentTemperature(initialTemperature);
-        initialSolution = new CloudletToVmMappingSolution(this);
+        initialSolution = new CloudletToVmMappingSolution(this, ++solutions);
     }
 
     private CloudletToVmMappingSolution generateRandomSolution() {
-        final var solution = new CloudletToVmMappingSolution(this);
+        final var solution = new CloudletToVmMappingSolution(this, ++solutions);
         cloudletList.forEach(cloudlet -> solution.bindCloudletToVm(cloudlet, getRandomVm()));
         return solution;
     }
@@ -101,8 +106,16 @@ public class CloudletToVmMappingSimulatedAnnealing
 
     @Override
     public CloudletToVmMappingSolution createNeighbor(final CloudletToVmMappingSolution source) {
-        final var clone = new CloudletToVmMappingSolution(source);
+        final var clone = new CloudletToVmMappingSolution(source, ++solutions);
         clone.swapVmsOfTwoRandomSelectedMapEntries();
         return clone;
+    }
+
+    /**
+     * {@return the number of solutions created so far}
+     * At the end of the simulations, it indicates the total number of solutions created.
+     */
+    public static int getSolutions() {
+        return solutions;
     }
 }

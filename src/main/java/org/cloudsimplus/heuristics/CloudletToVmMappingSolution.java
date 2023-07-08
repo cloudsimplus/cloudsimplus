@@ -56,6 +56,9 @@ public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudl
      */
     private final Map<Cloudlet, Vm> cloudletVmMap;
 
+    /** @see #getId() */
+    private final int id;
+
     /**
      * Indicates if the {@link #getCost()} has to be recomputed
      * due to changes in {@link #cloudletVmMap}.
@@ -84,24 +87,45 @@ public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudl
      * being created.
      */
     public CloudletToVmMappingSolution(final Heuristic heuristic){
-        this(heuristic, new HashMap<>());
+        this(heuristic, new HashMap<>(), 0);
     }
 
-    private CloudletToVmMappingSolution(@NonNull final Heuristic heuristic, @NonNull final Map<Cloudlet, Vm> cloudletVmMap){
+    /**
+     * Creates a new solution for mapping a set of cloudlets to VMs using
+     * a given heuristic implementation.
+     *
+     * @param heuristic the heuristic implementation used to find the solution being created.
+     * @param id unique solution id to identify the index of the solution inside the set of all solutions created
+     */
+    public CloudletToVmMappingSolution(final Heuristic heuristic, final int id){
+        this(heuristic, new HashMap<>(), id);
+    }
+
+    private CloudletToVmMappingSolution(@NonNull final Heuristic heuristic, @NonNull final Map<Cloudlet, Vm> cloudletVmMap, final int id){
         this.heuristic = heuristic;
         this.cloudletVmMap = cloudletVmMap;
+        this.id = id;
     }
 
     /**
      * Clones a given solution.
      *
      * @param solution the solution to be cloned
+     * @param id unique solution id to identify the index of the solution inside the set of all solutions created
      */
-    public CloudletToVmMappingSolution(@NonNull final CloudletToVmMappingSolution solution){
-        this(solution.heuristic, new HashMap<>(solution.cloudletVmMap));
+    public CloudletToVmMappingSolution(@NonNull final CloudletToVmMappingSolution solution, final int id){
+        this(solution.heuristic, new HashMap<>(solution.cloudletVmMap), id);
         this.recomputeCost = solution.recomputeCost;
         this.lastCost = solution.lastCost;
         this.cloudletVmMap.putAll(solution.cloudletVmMap);
+    }
+
+    /**
+     * {@return unique solution id}
+     * It's used to identify the index of the solution inside the set of all solutions created.
+     */
+    public int getId() {
+        return id;
     }
 
     /**
