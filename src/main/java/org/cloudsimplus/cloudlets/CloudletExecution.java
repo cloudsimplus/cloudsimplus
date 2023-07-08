@@ -243,7 +243,7 @@ public class CloudletExecution {
      * @param partialFinishedMI the partial amount of Million Instructions (MI) just executed,
      *                          to be added to the {@link #partialFinishedMI}</b>
      */
-    public void updateProcessing(final double partialFinishedMI) {
+    public void updateProcessing(final long partialFinishedMI) {
         final var simulation = cloudlet.getSimulation();
 
         final boolean terminate = simulation.isTimeToTerminateSimulationUnderRequest();

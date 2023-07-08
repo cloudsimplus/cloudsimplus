@@ -303,7 +303,7 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
         final long maxLengthToAdd = getLength() < 0 ?
                                     partialFinishedMI :
                                     Math.min(partialFinishedMI, absLength()-getFinishedLengthSoFar());
-        finishedLengthSoFar += maxLengthToAdd;
+        this.finishedLengthSoFar += maxLengthToAdd;
         setFinishTime();
         returnToBrokerIfFinished();
         return true;
