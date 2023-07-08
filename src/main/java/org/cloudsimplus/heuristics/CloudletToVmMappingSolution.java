@@ -291,7 +291,7 @@ public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudl
         entries.get(0).setValue(vm1);
         entries.get(1).setValue(vm0);
 
-        return true;
+        return recomputeCost = true;
     }
 
     /**
