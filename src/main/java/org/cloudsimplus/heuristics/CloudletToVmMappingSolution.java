@@ -199,7 +199,7 @@ public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudl
         return entriesList
             .stream()
             .map(Map.Entry::getKey)
-            .collect(Collectors.toList());
+            .toList();
     }
 
     /**
