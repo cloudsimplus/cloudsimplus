@@ -468,7 +468,7 @@ public class CloudletExecution {
      * @see #getOverSubscriptionDelay()
      */
     public double getExpectedFinishTime() {
-        return getCloudlet().getTotalExecutionTime() - overSubscriptionDelay;
+        return cloudlet.getTotalExecutionTime() - overSubscriptionDelay;
     }
 
     /**
