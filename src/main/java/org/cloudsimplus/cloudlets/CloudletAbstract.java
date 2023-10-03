@@ -235,7 +235,8 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
     }
 
     private void setFinishTime(){
-        if(isLifeTimeReached() || length > 0 && finishedLengthSoFar >= length)
+        final long len = getLength();
+        if(isLifeTimeReached() || len > 0 && finishedLengthSoFar >= len)
             setFinishTime(getSimulation().clock());
     }
 
@@ -358,7 +359,7 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
 
     @Override
     public long getTotalLength() {
-        return length * pesNumber;
+        return getLength() * pesNumber;
     }
 
     /**

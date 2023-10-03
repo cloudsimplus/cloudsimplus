@@ -56,23 +56,23 @@ public class NetworkCloudlet extends CloudletSimple {
 
     /**
      * Creates a NetworkCloudlet with no priority and file size and output size equal to 1.
+     * The length of the Cloudlet is determined by the sum of its {@link #getTasks() tasks} length.
      *
-     * @param length the length or size (in MI) of this cloudlet to be executed in a VM (check out {@link #setLength(long)})
      * @param pesNumber the number of PEs this Cloudlet requires
      */
-    public NetworkCloudlet(final long length, final int pesNumber) {
-        this(-1, length, pesNumber);
+    public NetworkCloudlet(final int pesNumber) {
+        this(-1, pesNumber);
     }
 
     /**
      * Creates a NetworkCloudlet with no priority and file size and output size equal to 1.
+     * The length of the Cloudlet is determined by the sum of its {@link #getTasks() tasks} length.
      *
-     * @param id the unique ID of this cloudlet
-     * @param length the length or size (in MI) of this cloudlet to be executed in a VM (check out {@link #setLength(long)})
+     * @param id        the unique ID of this cloudlet
      * @param pesNumber the pes number
      */
-    public NetworkCloudlet(final int id,  final long length, final int pesNumber) {
-        super(id, length, pesNumber);
+    public NetworkCloudlet(final int id, final int pesNumber) {
+        super(id, -1, pesNumber);
         this.currentTaskNum = -1;
         this.tasks = new ArrayList<>();
     }
