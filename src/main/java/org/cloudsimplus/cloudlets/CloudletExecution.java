@@ -7,6 +7,7 @@
  */
 package org.cloudsimplus.cloudlets;
 
+import lombok.Getter;
 import org.cloudsimplus.core.CloudSimPlus;
 import org.cloudsimplus.core.CloudSimTag;
 import org.cloudsimplus.core.events.CloudSimEvent;
@@ -43,16 +44,31 @@ public class CloudletExecution {
      */
     public static final CloudletExecution NULL = new CloudletExecution(Cloudlet.NULL);
 
-    /** @see #getCloudlet() */
+    /**
+     * {@return the Cloudlet for which the execution information is related to}
+     * @see #getCloudlet()
+     */
+    @Getter
     private final Cloudlet cloudlet;
 
-	/** @see #getFileTransferTime() */
-	private double fileTransferTime;
+	/**
+     *  {@return the time to transfer the list of files required by the Cloudlet
+     *  from the Datacenter storage (such as a Storage Area Network)
+     *  to the Vm of the Cloudlet}
+     */
+	@Getter
+    private double fileTransferTime;
 
     /** @see #getCloudletArrivalTime() */
     private final double arrivalTime;
 
-    /** @see #getOverSubscriptionDelay() */
+    /**
+     *  {@return the total processing delay imposed to the cloudlet processing
+     *  due to over-subscription of RAM and/or BW}.
+     *  If there is resource over-subscription,
+     *  the already includes the imposed delay.
+     */
+    @Getter
     private double overSubscriptionDelay;
 
     /**
@@ -77,19 +93,58 @@ public class CloudletExecution {
      */
     private double startExecTime;
 
-	/** @see #getLastProcessingTime() */
-	private double lastProcessingTime;
+	/**
+     *  {@return the last time the Cloudlet was processed at the Datacenter
+     *  where this execution information is related to.}.
+     *  Returns zero when it has never been processed yet.
+     */
+	@Getter
+    private double lastProcessingTime;
 
-    /** @see #getVirtualRuntime() */
+    /**
+     *  {@return the virtual runtime (vruntime) that indicates how long the Cloudlet
+     *  has been executing by a (in seconds).}
+     *  <p>The default value of this attribute is zero. Each scheduler
+     *  implementation might set a value to such attribute
+     *  to use it for context switch,
+     *  preempting running Cloudlets to enable other ones to start executing.
+     *  This way, the attribute is just used internally by specific CloudletSchedulers.
+     *  </p>
+     */
+    @Getter
     private double virtualRuntime;
 
-    /** @see #getTimeSlice() */
+    /**
+     *  {@return the time-slice assigned by a for a Cloudlet, which is
+     *  the amount of time (in seconds) that such a Cloudlet will have to use the PEs of a Vm.}
+     *  <p>Each CloudletScheduler implementation can make use of this attribute or not.
+     *  CloudletSchedulers that use it, are in charge to compute the time-slice to
+     *  assign to each Cloudlet.
+     *  </p>
+     */
+    @Getter
     private double timeSlice;
 
-    /** @see #getLastAllocatedMips() */
+    /**
+     *  {@return the last actually allocated MIPS for the Cloudlet.}
+     *  That means if no MIPS was allocated for a given time,
+     *  it is not stored.
+     *  <p>This value is used to compute the expected finish time
+     *  of a Cloudlet. If the allocated MIPS is zero,
+     *  we don't have how to compute that.
+     *  </p>
+     */
+    @Getter
     private double lastAllocatedMips;
 
-    /** @see #getWallClockTime() */
+    /**
+     *  {@return the wall clock time the cloudlet spent executing.}
+     *  The wall clock time is the total time the Cloudlet resides in a Datacenter
+     *  (from arrival time until departure time, that may include waiting time).
+     *  This value is set by the Datacenter before departure or sending back to
+     *  the original Cloudlet's owner.
+     */
+    @Getter
     private double wallClockTime;
 
     /**
@@ -274,15 +329,6 @@ public class CloudletExecution {
     }
 
     /**
-     * Gets the Cloudlet for which the execution information is related to.
-     *
-     * @return cloudlet for this execution information object
-     */
-    public Cloudlet getCloudlet() {
-        return cloudlet;
-    }
-
-    /**
      * Gets the ID of the Cloudlet this execution info is related to.
      * @return
      */
@@ -290,17 +336,7 @@ public class CloudletExecution {
         return cloudlet.getId();
     }
 
-	/**
-	 * Gets the time to transfer the list of files required by the Cloudlet
-	 * from the Datacenter storage (such as a Storage Area Network)
-	 * to the Vm of the Cloudlet.
-     * @return
-	 */
-	public double getFileTransferTime() {
-		return fileTransferTime;
-	}
-
-	/**
+    /**
 	 * Sets the time to transfer the list of files required by the Cloudlet
 	 * from the Datacenter storage (such as a Storage Area Network)
 	 * to the Vm of the Cloudlet.
@@ -311,17 +347,7 @@ public class CloudletExecution {
 		this.fileTransferTime = fileTransferTime;
 	}
 
-	/**
-	 * Gets the last time the Cloudlet was processed at the Datacenter
-     * where this execution information is related to.
-     *
-	 * @return the last time the Cloudlet was processed or zero when it has never been processed yet
-	 */
-	public double getLastProcessingTime() {
-		return lastProcessingTime;
-	}
-
-	/**
+    /**
 	 * Sets the last time this Cloudlet was processed at a Datacenter.
 	 * @param lastProcessingTime the last processing time to set
 	 */
@@ -329,23 +355,6 @@ public class CloudletExecution {
 		this.lastProcessingTime = lastProcessingTime;
         cloudlet.notifyOnUpdateProcessingListeners(lastProcessingTime);
 	}
-
-    /**
-     * Gets the virtual runtime (vruntime) that indicates how long the Cloudlet
-     * has been executing by a {@link CloudletScheduler} (in seconds).
-     *
-     * <p>The default value of this attribute is zero. Each scheduler
-     * implementation might set a value to such attribute
-     * to use it for context switch,
-     * preempting running Cloudlets to enable other ones to start executing.
-     * This way, the attribute is just used internally by specific CloudletSchedulers.
-     * </p>
-     *
-     * @return
-     */
-    public double getVirtualRuntime(){
-        return virtualRuntime;
-    }
 
     /**
      * Adds a given time to the {@link #getVirtualRuntime() virtual runtime}.
@@ -371,22 +380,6 @@ public class CloudletExecution {
      */
     public void setVirtualRuntime(final double virtualRuntime){
         this.virtualRuntime = virtualRuntime;
-    }
-
-    /**
-     * Gets the time-slice assigned by a {@link CloudletScheduler} for a Cloudlet, which is
-     * the amount of time (in seconds) that such a Cloudlet will have to use the PEs of a Vm.
-     *
-     * <p>Each CloudletScheduler implementation can make use of this attribute or not.
-     * CloudletSchedulers that use it, are in charge to compute the time-slice to
-     * assign to each Cloudlet.
-     * </p>
-     *
-     * @return Cloudlet time-slice (in seconds)
-     *
-     */
-    public double getTimeSlice() {
-        return timeSlice;
     }
 
     /**
@@ -421,22 +414,6 @@ public class CloudletExecution {
     }
 
     /**
-     * Gets the last actually allocated MIPS for the Cloudlet.
-     * That means if no MIPS was allocated for a given time,
-     * it is not stored.
-     *
-     * <p>This value is used to compute the expected finish time
-     * of a Cloudlet. If the allocated MIPS is zero,
-     * we don't have how to compute that.
-     * </p>
-     *
-     * @return
-     */
-    public double getLastAllocatedMips() {
-        return lastAllocatedMips;
-    }
-
-    /**
      * Sets the last actually allocated MIPS for the Cloudlet.
      * That means if no MIPS was allocated for a given time,
      * it is not stored.
@@ -454,17 +431,8 @@ public class CloudletExecution {
         }
     }
 
-    /** Gets the total processing delay imposed to the cloudlet processing
-     * due to over-subscription of RAM and/or BW.
-     * If there is resource over-subscription,
-     * the {@see #getFinishTime finish time} already includes the imposed delay. */
-    public double getOverSubscriptionDelay() {
-        return overSubscriptionDelay;
-    }
-
     /**
-     * Gets the expected cloudlet finish time (in seconds) if no RAM or BW over-subscription occurs.
-     * @return
+     * {@return the expected cloudlet finish time (in seconds) if no RAM or BW over-subscription occurs.}
      * @see #getOverSubscriptionDelay()
      */
     public double getExpectedFinishTime() {
@@ -502,17 +470,4 @@ public class CloudletExecution {
 
 		return Math.max(cloudlet.getLifeTime() - cloudlet.getTotalExecutionTime(), 0);
 	}
-
-    /**
-     * Gets the wall clock time the cloudlet spent executing.
-     * The wall clock time is the total time the Cloudlet resides in a Datacenter
-     * (from arrival time until departure time, that may include waiting time).
-     * This value is set by the Datacenter before departure or sending back to
-     * the original Cloudlet's owner.
-     *
-     * @see <a href="https://en.wikipedia.org/wiki/Elapsed_real_time">Elapsed real time (wall-clock time)</a>
-     */
-    public double getWallClockTime() {
-        return wallClockTime;
-    }
 }
