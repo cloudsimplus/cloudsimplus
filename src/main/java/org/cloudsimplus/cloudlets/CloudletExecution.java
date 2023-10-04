@@ -59,7 +59,10 @@ public class CloudletExecution {
 	@Getter
     private double fileTransferTime;
 
-    /** @see #getCloudletArrivalTime() */
+    /**
+     *  {@return the time the cloudlet arrived for execution inside the Datacenter}
+     */
+    @Getter
     private final double arrivalTime;
 
     /**
@@ -318,14 +321,6 @@ public class CloudletExecution {
             finishRequestTime = simulation.clock();
             simulation.sendFirst(new CloudSimEvent(cloudlet.getBroker(), CloudSimTag.CLOUDLET_FINISH, cloudlet));
         }
-    }
-
-    /**
-     * Gets the time the cloudlet arrived for execution inside the Datacenter.
-     * @return
-     */
-    public double getCloudletArrivalTime() {
-        return arrivalTime;
     }
 
     /**

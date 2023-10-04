@@ -850,7 +850,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      */
     private boolean hasCloudletFileTransferTimePassed(final CloudletExecution cle, final double currentTime) {
         return cle.getFileTransferTime() == 0 ||
-               currentTime - cle.getCloudletArrivalTime() > cle.getFileTransferTime() ||
+               currentTime - cle.getArrivalTime() > cle.getFileTransferTime() ||
                cle.getCloudlet().getFinishedLengthSoFar() > 0;
     }
 
