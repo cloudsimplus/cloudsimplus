@@ -363,7 +363,7 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
     }
 
     @Override
-    public long updateCloudletProcessing(final CloudletExecution cle, final double currentTime) {
+    protected double updateCloudletProcessing(final CloudletExecution cle, final double currentTime) {
         /*
         Cloudlet has never been executed yet, so it will start executing now,
         sets its actual virtual runtime. The negative value was used so far
@@ -374,10 +374,10 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
         }
 
         final double cloudletTimeSpan = currentTime - cle.getLastProcessingTime();
-        final long partialFinishedMI = super.updateCloudletProcessing(cle, currentTime);
+        final double totalDelay = super.updateCloudletProcessing(cle, currentTime);
 
         cle.addVirtualRuntime(cloudletTimeSpan);
-        return partialFinishedMI;
+        return totalDelay;
     }
 
     /**

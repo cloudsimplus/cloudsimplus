@@ -72,7 +72,10 @@ public class CloudletExecution {
      *  the already includes the imposed delay.
      */
     @Getter
-    private double overSubscriptionDelay;
+    private double totalOverSubscriptionDelay;
+
+    @Getter
+    private double lastOverSubscriptionDelay;
 
     /**
      * The time a request was sent to the broker to finish the Cloudlet
@@ -428,10 +431,10 @@ public class CloudletExecution {
 
     /**
      * {@return the expected cloudlet finish time (in seconds) if no RAM or BW over-subscription occurs.}
-     * @see #getOverSubscriptionDelay()
+     * @see #getTotalOverSubscriptionDelay()
      */
     public double getExpectedFinishTime() {
-        return cloudlet.getTotalExecutionTime() - overSubscriptionDelay;
+        return cloudlet.getTotalExecutionTime() - totalOverSubscriptionDelay;
     }
 
     /**
@@ -440,15 +443,7 @@ public class CloudletExecution {
      * @return returns the over-subscription delay or 0 if there was no over-subscription up to now.
      */
     public boolean hasOverSubscription(){
-        return overSubscriptionDelay > 0;
-    }
-
-    /**
-     * Increments the total delay caused by RAM/BW over-subscription
-     * @param newDelay the new delay to add (in seconds)
-     */
-    public void incOverSubscriptionDelay(final double newDelay) {
-        this.overSubscriptionDelay += MathUtil.nonNegative(newDelay, "Over-subscription delay");
+        return totalOverSubscriptionDelay > 0;
     }
 
     /**
@@ -465,4 +460,35 @@ public class CloudletExecution {
 
 		return Math.max(cloudlet.getLifeTime() - cloudlet.getTotalExecutionTime(), 0);
 	}
+
+    /**
+     * Checks if the last BW or RAM oversubscription delay has passed,
+     * so that the cloudlet can start processing again.
+     * @param currentTime
+     * @return
+     */
+    public boolean lastOverSubscriptionDelayNotPassed(final double currentTime){
+        return remainingOverSubscriptionDelay(currentTime) > 0;
+    }
+
+    /**
+     * Gets the time remaining to finish the last over subscription delay
+     * so that the Cloudlet will have the required resources
+     * (network and RAM data) to start processing again.
+     * @param currentTime
+     * @return
+     */
+    public double remainingOverSubscriptionDelay(final double currentTime){
+        return Math.max(lastOverSubscriptionDelay - (currentTime - lastProcessingTime), 0);
+    }
+
+    public void setLastOverSubscriptionDelay(final double overSubscriptionDelay) {
+        if(overSubscriptionDelay == 0){
+            lastProcessingTime = cloudlet.getSimulation().clock();
+        }
+        this.lastOverSubscriptionDelay = MathUtil.nonNegative(overSubscriptionDelay, "Over-subscription delay");
+        this.totalOverSubscriptionDelay += this.lastOverSubscriptionDelay;
+    }
+
+    public boolean hasLastOverSubscriptionDelay(){ return lastOverSubscriptionDelay > 0; }
 }
