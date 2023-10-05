@@ -202,7 +202,7 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
         }
 
         final long priorityDiff = c1.getCloudlet().getPriority() - c2.getCloudlet().getPriority();
-        final long idDiff = c1.getCloudletId() - c2.getCloudletId();
+        final long idDiff = c1.getId() - c2.getId();
         /* Since the computed value is long but the comparator return must be int,
         rounds the value to the closest int. */
         return Math.round(priorityDiff == 0 ? idDiff : priorityDiff);
@@ -407,7 +407,7 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
         can be understood as resulting in "higher negative" values, that is,
         extreme negative values.
         */
-        final double inverseCloudletId = Integer.MAX_VALUE/(cloudlet.getCloudletId()+1.0);
+        final double inverseCloudletId = Integer.MAX_VALUE/(cloudlet.getId()+1.0);
 
         return -Math.abs(cloudlet.getCloudlet().getPriority() + inverseCloudletId);
     }

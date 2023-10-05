@@ -324,10 +324,10 @@ public class CloudletExecution {
     }
 
     /**
-     * Gets the ID of the Cloudlet this execution info is related to.
+     * Gets the ID of the executing Cloudlet.
      * @return
      */
-    public long getCloudletId(){
+    public long getId(){
         return cloudlet.getId();
     }
 

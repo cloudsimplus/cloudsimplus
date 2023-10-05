@@ -29,7 +29,7 @@ final class CloudletSchedulerTimeSharedTestUtil {
      */
     /* default */ static CloudletExecution createCloudletExecInfo(final long id){
         final CloudletExecution cloudlet = Mockito.mock(CloudletExecution.class);
-        Mockito.when(cloudlet.getCloudletId()).thenReturn(id);
+        Mockito.when(cloudlet.getId()).thenReturn(id);
         return cloudlet;
     }
 

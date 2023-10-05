@@ -293,7 +293,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
         //returning the first Cloudlet with the given id
         return cloudletExecInfoListStream
             .flatMap(List::stream)
-            .filter(cle -> cle.getCloudletId() == cloudletId)
+            .filter(cle -> cle.getId() == cloudletId)
             .findFirst();
     }
 
@@ -307,7 +307,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      */
     protected Optional<CloudletExecution> findCloudletInList(final Cloudlet cloudlet, final List<CloudletExecution> list) {
         return list.stream()
-            .filter(cle -> cle.getCloudletId() == cloudlet.getId())
+            .filter(cle -> cle.getId() == cloudlet.getId())
             .findFirst();
     }
 
