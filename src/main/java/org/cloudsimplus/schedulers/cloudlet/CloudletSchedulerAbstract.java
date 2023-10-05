@@ -694,7 +694,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     }
 
     /**
-     * Gets the processing delay considering possible access to virtual memory (VMem / swap), if required
+     * Gets the processing delay (in seconds) considering possible access to virtual memory (VMem / swap), if required
      * when there is no enough available RAM due to over-subscription.
      * Use of VMem is performed by swapping memory data, belonging to processes not currently using CPU,
      * from RAM to disk to open up RAM space. Since the disk is way slower than the RAM, that causes
@@ -705,8 +705,8 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      *     <ul>
      *         <li>doesn't consider the time to get data from RAM (supposed inactive memory pages
      *         which aren't being used by some process) and write in the disk;</li>
-     *         <li>just considers the time to read supposed data from the disk back to the RAM.</li>
-     *         <li>just considers the first cloudlets (processes) to use virtual memory
+     *         <li>just considers that the time to read supposed data from the disk back to the RAM.</li>
+     *         <li>just considers that the first cloudlets (processes) to use virtual memory
      *         will always be the ones to have its performed impacted by delayed processing.
      *         In real operating systems, if a process B requests VMem, inactive memory pages
      *         from a process A will be swapped out to disk. If process A further request
@@ -719,9 +719,9 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      *
      * @param cle the cloudlet being processed
      * @param processingTimeSpan the current cloudlet processing time span
-     * @return (i) the processing delay in seconds (considering VMem access);
-     * (ii) 0 if there is available physical RAM (no over-subscription);
-     * (iii) or {@link Double#MIN_VALUE} if the cloudlet is requesting more RAM then the total VM capacity.
+     * @return (i) the processing delay in seconds (considering vMem access);
+     * (ii) 0 if there is available physical RAM (no over-subscription), therefore no vMem is required;
+     * (iii) or {@link Double#MIN_VALUE} if the cloudlet is requesting more RAM than the total VM capacity.
      * @see <a href="https://www.kernel.org/doc/gorman/html/understand/understand014.html">Linux Kernel Swap Management</a>
      * @see #getResourceOverSubscriptionDelay(CloudletExecution, double, ResourceManageable, BiPredicate, BiFunction)
      */
@@ -730,7 +730,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
             cle, processingTimeSpan, ((VmSimple)vm).getRam(),
 
             /*
-             * Since using VMem requires some portion of the RAM to be swapped between the disk
+             * Since using vMem requires some portion of the RAM to be swapped between the disk
              * to open up RAM space, the required RAM cannot be higher than the RAM capacity
              * neither than the available disk space.
              */
@@ -754,7 +754,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     }
 
     /**
-     * Gets the processing delay considering possible reduction BW allocation, if required
+     * Gets the processing delay (in seconds) considering possible reduction BW allocation, if required
      * when there is no enough available BW due to over-subscription.
      * If a Cloudlet requests a given amount of BW and a smaller amount is allocated,
      * its processing will be delayed because the simulated data transfer
@@ -764,7 +764,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * @param processingTimeSpan the current cloudlet processing time span
      * @return (i) the processing delay in seconds (considering reduction in BW allocation);
      * (ii) 0 if there is available BW (no over-subscription);
-     * (iii) or {@link Double#MIN_VALUE} if the cloudlet is requesting more BW then the total VM capacity.
+     * (iii) or {@link Double#MIN_VALUE} if the cloudlet is requesting more BW than the total VM capacity.
      * @see #getResourceOverSubscriptionDelay(CloudletExecution, double, ResourceManageable, BiPredicate, BiFunction)
      */
     private double getBandwidthOverSubscriptionDelay(final CloudletExecution cle, final double processingTimeSpan) {
@@ -818,8 +818,8 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
         final double requestedResource = getCloudletResourceAbsoluteUtilization(cle.getCloudlet(), vmResource);
 
         /* If the requested resource is not suitable (even for over-subscription),
-        considering the total VM capacity.
-        Returns a negative value to indicate the allocation was not possible*/
+        considering the total VM capacity, returns a negative value to indicate the allocation was not possible.
+        */
         if(!suitableCapacityPredicate.test(vmResource, requestedResource)) {
             cle.incOverSubscriptionDelay(processingTimeSpan);
             return Double.MIN_VALUE;
