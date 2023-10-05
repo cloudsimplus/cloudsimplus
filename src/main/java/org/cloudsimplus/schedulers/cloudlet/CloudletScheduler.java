@@ -270,7 +270,7 @@ public interface CloudletScheduler extends Serializable {
      *
      * @param currentTime current simulation time
      * @param mipsShare list with MIPS share of each Pe available to the scheduler
-     * @return the predicted completion time of the earliest finishing cloudlet
+     * @return the next time to update cloudlets processing
      * (which is a relative delay from the current simulation time),
      * or {@link Double#MAX_VALUE} if there is no next Cloudlet to execute
      */
