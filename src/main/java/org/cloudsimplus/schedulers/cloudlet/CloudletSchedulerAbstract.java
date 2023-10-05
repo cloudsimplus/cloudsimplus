@@ -541,6 +541,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      *
      * @param cle         The cloudlet to be its processing updated
      * @param currentTime current simulation time
+     * @return the number of MIPS executed in the time span
      */
     protected long updateCloudletProcessing(final CloudletExecution cle, final double currentTime) {
         if(!taskScheduler.isTimeToUpdateCloudletProcessing(cle.getCloudlet()))
