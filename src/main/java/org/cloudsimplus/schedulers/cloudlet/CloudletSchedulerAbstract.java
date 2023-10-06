@@ -548,7 +548,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
          * to be transferred from the Datacenter storage.
          */
         final double processingTimeSpan = hasCloudletFileTransferTimePassed(cle, currentTime) ?
-                                                timeSpan(currentTime)  - cle.getLastOverSubscriptionDelay():
+                                                cle.timeSpan(currentTime)  - cle.getLastOverSubscriptionDelay():
                                                 0;
 
         if(cle.hasLastOverSubscriptionDelay())
@@ -835,17 +835,6 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
         return cle.getFileTransferTime() == 0 ||
                currentTime - cle.getArrivalTime() > cle.getFileTransferTime() ||
                cle.getCloudlet().getFinishedLengthSoFar() > 0;
-    }
-
-    /**
-     * Computes the time span between the current simulation time and the last
-     * time the processing of a cloudlet was updated.
-     *
-     * @param currentTime the current simulation time
-     * @return
-     */
-    protected double timeSpan(final double currentTime) {
-        return currentTime - previousTime;
     }
 
     /**

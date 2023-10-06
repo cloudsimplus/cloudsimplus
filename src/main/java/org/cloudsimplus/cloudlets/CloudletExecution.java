@@ -355,6 +355,17 @@ public class CloudletExecution {
 	}
 
     /**
+     * Computes the time span between the current simulation time and the last
+     * time the processing of a cloudlet was updated.
+     *
+     * @param currentTime the current simulation time
+     * @return
+     */
+    public double timeSpan(final double currentTime) {
+        return currentTime - lastProcessingTime;
+    }
+
+    /**
      * Adds a given time to the {@link #getVirtualRuntime() virtual runtime}.
      *
      * @param timeToAdd time to add to the virtual runtime  (in seconds)
