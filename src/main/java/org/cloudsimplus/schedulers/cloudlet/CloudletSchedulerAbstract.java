@@ -563,7 +563,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
             return 0;
         }
 
-        final double totalDelay = validateDelay(vMemDelaySecs) + validateDelay(reducedBwDelaySecs);
+        final double maxDelay = getMaxOversubscriptionDelay(vMemDelaySecs, reducedBwDelaySecs);
         final long partialFinishedMI = (long)(cloudletUsedMips * processingTimeSpan);
         cle.updateProcessing(partialFinishedMI);
         updateVmResourceAbsoluteUtilization(cle, ((VmSimple)vm).getRam());
@@ -571,8 +571,25 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
 
         taskScheduler.processCloudletTasks(cle.getCloudlet(), partialFinishedMI);
         final double estimatedFinishTime = cloudletEstimatedFinishTime(cle, currentTime);
-        cle.setLastOverSubscriptionDelay(totalDelay);
-        return totalDelay == 0 ? estimatedFinishTime : Math.min(totalDelay, estimatedFinishTime);
+        cle.setLastOverSubscriptionDelay(maxDelay);
+        return maxDelay == 0 ? estimatedFinishTime : Math.min(maxDelay, estimatedFinishTime);
+    }
+
+    /**
+     * Bandwidth and memory demand will happen at the same time, unless
+     * either the {@link Cloudlet#getUtilizationModelBw()} or {@link Cloudlet#getUtilizationModelRam()}
+     * return 0, indicating some of these resources are not required at the current time.
+     * This way, BW and RAM requests will happen at the same time (parallel) in the first scenario.
+     * Therefore, when there is oversubscription of both resources, since requests are sent
+     * in parallel, the total time the Cloudlet will wait when there is BW and/or RAM oversuscription
+     * is the max delay caused by either BW reduction or virtual memory utilization in
+     * oversubscription scenarios.
+     * @param vMemDelaySecs the delay caused by virtual memory utilization due to RAM oversubscription
+     * @param reducedBwDelaySecs the delay caused by BW reduction due to BW oversubscription
+     * @return
+     */
+    private double getMaxOversubscriptionDelay(final double vMemDelaySecs, final double reducedBwDelaySecs) {
+        return validateDelay(Math.max(vMemDelaySecs, reducedBwDelaySecs));
     }
 
     /**
