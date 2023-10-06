@@ -547,9 +547,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
          * the CPU in this time span, because it is waiting for its required files
          * to be transferred from the Datacenter storage.
          */
-        final double processingTimeSpan = hasCloudletFileTransferTimePassed(cle, currentTime) ?
-                                                cle.timeSpan(currentTime)  - cle.getLastOverSubscriptionDelay():
-                                                0;
+        final double processingTimeSpan = cle.processingTimeSpan(currentTime);
 
         if(cle.hasLastOverSubscriptionDelay())
             cle.setLastOverSubscriptionDelay(0);
@@ -819,22 +817,6 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
         }
 
         return 0;
-    }
-
-    /**
-     * Checks if the time to transfer the files required by a Cloudlet to
-     * execute has already passed, in order to start executing the Cloudlet in
-     * fact.
-     *
-     * @param cle         Cloudlet to check if the time to transfer the files has passed
-     * @param currentTime the current simulation time
-     * @return true if the time to transfer the files has passed, false
-     * otherwise
-     */
-    private boolean hasCloudletFileTransferTimePassed(final CloudletExecution cle, final double currentTime) {
-        return cle.getFileTransferTime() == 0 ||
-               currentTime - cle.getArrivalTime() > cle.getFileTransferTime() ||
-               cle.getCloudlet().getFinishedLengthSoFar() > 0;
     }
 
     /**

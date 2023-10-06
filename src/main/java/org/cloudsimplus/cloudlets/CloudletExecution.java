@@ -355,14 +355,29 @@ public class CloudletExecution {
 	}
 
     /**
-     * Computes the time span between the current simulation time and the last
-     * time the processing of a cloudlet was updated.
+     * Computes the actual processing time span between the current simulation time and the last
+     * time the processing of a cloudlet was updated,
+     * subtracting the oversubscription wait time.
      *
      * @param currentTime the current simulation time
      * @return
      */
-    public double timeSpan(final double currentTime) {
-        return currentTime - lastProcessingTime;
+    public double processingTimeSpan(final double currentTime) {
+        final double totalTimeSpan = currentTime - lastProcessingTime;
+        return hasCloudletFileTransferTimePassed(currentTime) ? totalTimeSpan - getLastOverSubscriptionDelay(): 0;
+    }
+
+    /**
+     * Checks if the time to transfer the files required by a Cloudlet to
+     * execute has already passed, in order to start executing the Cloudlet in
+     * fact.
+     *
+     * @param currentTime the current simulation time
+     * @return true if the time to transfer the files has passed, false
+     * otherwise
+     */
+    public boolean hasCloudletFileTransferTimePassed(final double currentTime) {
+        return fileTransferTime == 0 || currentTime - arrivalTime > fileTransferTime || cloudlet.getFinishedLengthSoFar() > 0;
     }
 
     /**
