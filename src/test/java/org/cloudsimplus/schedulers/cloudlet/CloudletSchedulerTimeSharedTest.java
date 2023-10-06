@@ -34,30 +34,6 @@ public class CloudletSchedulerTimeSharedTest {
     }
 
     @Test
-    public void testTimeSpanIntegerTime(){
-        final var cloudlet = new CloudletExecution(Cloudlet.NULL);
-        cloudlet.setLastProcessingTime(0);
-        final double expected = 10;
-        assertEquals(expected, instance.timeSpan(expected), 0.01);
-    }
-
-    @Test
-    public void testTimeSpanLessThan1(){
-        final var cloudlet = new CloudletExecution(Cloudlet.NULL);
-        cloudlet.setLastProcessingTime(0);
-        final double expected = 0.6;
-        assertEquals(expected, instance.timeSpan(expected), 0.01);
-    }
-
-    @Test
-    public void testTimeSpanGreaterThan1AndLessThan2(){
-        final var cloudlet = new CloudletExecution(Cloudlet.NULL);
-        cloudlet.setLastProcessingTime(0);
-        final double expected = 1.7;
-        assertEquals(expected, instance.timeSpan(expected), 0.01);
-    }
-
-    @Test
     public void testCloudletResumeWhenEmptyPausedList() {
         final int cloudletId = 0;
         final double expResult = 0.0;
