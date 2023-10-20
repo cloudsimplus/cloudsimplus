@@ -1048,7 +1048,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
             cloudlet.setVm(lastSelectedVm);
             logCloudletCreationRequest(cloudlet);
             final Datacenter dc = getDatacenter(lastSelectedVm);
-            final double totalDelay = cloudlet.getSubmissionDelay() + cloudlet.getVm().getStartupDelay();
+            final double totalDelay = cloudlet.getSubmissionDelay() + getVmStartupDelay(cloudlet);
             send(dc, totalDelay, CloudSimTag.CLOUDLET_SUBMIT, cloudlet);
             cloudlet.setLastTriedDatacenter(dc);
             cloudletCreatedList.add(cloudlet);
@@ -1058,6 +1058,15 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
 
         allWaitingCloudletsSubmittedToVm(createdCloudlets);
         return createdCloudlets > 0;
+    }
+
+    /**
+     *
+     * {@return the startup time of a VM running a given Cloudlet if the VM is booting up or 0 if it's already running.}
+     * @param cloudlet
+     */
+    private static double getVmStartupDelay(final Cloudlet cloudlet) {
+        return cloudlet.getVm().isStartingUp() ? cloudlet.getVm().getStartupDelay() : 0;
     }
 
     private void logPostponingCloudletExecution(final Cloudlet cloudlet) {
@@ -1087,14 +1096,14 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
 
     private void logCloudletCreationRequest(final Cloudlet cloudlet) {
         final double submission = cloudlet.getSubmissionDelay();
-        final double startup = cloudlet.getVm().getStartupDelay();
+        final double startup = getVmStartupDelay(cloudlet);
         final double totalDelay = submission + startup;
 
         final var submissionStr = submission > 0 ? "requested submission delay" : "";
         final var connector = submission > 0 && startup > 0 ? " + " : "";
         final var startupStr = startup > 0 ? "VM boot up time" : "";
 
-        final var delayMsg = " in %.2f seconds (%s%s%s)".formatted(totalDelay, submissionStr, connector, startupStr);
+        final var delayMsg = totalDelay == 0 ? "" : " in %.2f seconds (%s%s%s)".formatted(totalDelay, submissionStr, connector, startupStr);
 
         LOGGER.info(
             "{}: {}: Sending Cloudlet {} to {} inside {}{}.",
