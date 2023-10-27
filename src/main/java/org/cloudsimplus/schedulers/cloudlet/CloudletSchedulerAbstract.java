@@ -241,7 +241,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * Receives the execution information of a Cloudlet to be executed in the VM managed by this scheduler.
      *
      * @param cle the submitted cloudlet
-     * @param fileTransferTime time required to move the required files from the SAN to the VM
+     * @param fileTransferTime time required to move the required files from the SAN to the VM (in seconds)
      * @return expected finish time of this cloudlet (considering the time to transfer required
      * files from the Datacenter to the Vm), or 0 if it is in a waiting queue
      * @see #cloudletSubmit(Cloudlet, double)
@@ -252,13 +252,23 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
             cle.setFileTransferTime(fileTransferTime);
             addCloudletToExecList(cle);
 
-            return Math.min(cle.getCloudlet().getLifeTime(),
-                      fileTransferTime + Math.abs(cle.getCloudletLength()/getPeCapacity()));
+            return getEstimatedFinishTime(cle.getCloudlet(), fileTransferTime);
         }
 
         // No enough free PEs, then add Cloudlet to the waiting queue
         addCloudletToWaitingList(cle);
         return 0.0;
+    }
+
+    /**
+     * {@return the Cloudlet estimated finish time}
+     * @param cloudlet the Cloudlet to check
+     * @param fileTransferTime time required to move the required files from the SAN to the VM (in seconds)
+     */
+    private double getEstimatedFinishTime(final Cloudlet cloudlet, final double fileTransferTime) {
+        //Estimated total time if no lifetime is set
+        final double estimatedTotalTime = fileTransferTime + Math.abs(cloudlet.getLength() / getPeCapacity());
+        return Math.min(cloudlet.getLifeTime(), estimatedTotalTime);
     }
 
     /**
