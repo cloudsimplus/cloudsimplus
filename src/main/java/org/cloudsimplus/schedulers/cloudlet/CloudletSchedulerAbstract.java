@@ -251,7 +251,9 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
             cle.setStatus(Cloudlet.Status.INEXEC);
             cle.setFileTransferTime(fileTransferTime);
             addCloudletToExecList(cle);
-            return fileTransferTime + Math.abs(cle.getCloudletLength()/getPeCapacity()) ;
+
+            return Math.min(cle.getCloudlet().getLifeTime(),
+                      fileTransferTime + Math.abs(cle.getCloudletLength()/getPeCapacity()));
         }
 
         // No enough free PEs, then add Cloudlet to the waiting queue
