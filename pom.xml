@@ -494,7 +494,7 @@
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-core</artifactId>
-            <version>1.4.6</version>
+            <version>1.4.12</version>
         </dependency>
         <dependency>
             <!-- Automatically includes slf4j-api 2.0 -->
