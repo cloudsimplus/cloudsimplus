@@ -100,7 +100,7 @@ public class ResourceProvisionerSimple extends ResourceProvisionerAbstract {
         vmResource.deallocateAllResources();
 
         //De-allocates the virtual resource to make it free on the physical machine
-        getPmResource().deallocateResource(vmAllocatedResource);
+        getPmResource().deallocateResource(vmResource.getCapacity());
         return vmAllocatedResource;
     }
 
