@@ -50,7 +50,7 @@ import java.util.List;
  * This one is just used by the JSON parsing library.</p>
  *
  * <p>For more details, check
- * <a href="http://www.di.ubi.pt/~mario/files/MScDissertation-RaysaOliveira.pdf">Raysa Oliveira's Master Thesis (only in Portuguese)</a>.</p>
+ * <a href="https://ubibliorum.ubi.pt/handle/10400.6/7839">Raysa Oliveira's Master Thesis (only in Portuguese)</a>.</p>
  *
  * @author raysaoliveira
  */
