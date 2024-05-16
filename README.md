@@ -1,33 +1,5 @@
 <a id="top"></a>
 
-<p align="center">
-<b><a href="#overview">Overview</a></b>
-|
-<b><a href="#exclusive-features">Exclusive Features</a></b>
-|
-<b><a href="#structure">Structure</a></b>
-|
-<b><a href="#usage">How to use</a></b>
-|
-<b><a href="#example">Example</a></b>
-|
-<b><a href="#docs-help">Docs and Help</a></b>
-|
-<b><a href="#consulting">Consulting</a></b>
-|
-<b><a href="#general-features">General Features</a></b>
-|
-<b><a href="#publications">Publications</a></b>
-|
-<b><a href="#projects">Related Projects</a></b>
-|
-<b><a href="#license">License</a></b>
-|
-<b><a href="#contributing">Contributing</a></b>
-</p>
-
-<a id="overview"></a>
-
 # 1. Overview
 
 [![Consulting](https://img.shields.io/badge/Consulting-Click%20here-brightgreen)](#consulting) [![Build Status](https://github.com/cloudsimplus/cloudsimplus/actions/workflows/build.yml/badge.svg)](https://github.com/cloudsimplus/cloudsimplus/actions/workflows/build.yml) [![Codacy Badge](https://app.codacy.com/project/badge/Grade/9aaa4b031c1d4143bdd39c4eedf49562)](https://www.codacy.com/gh/cloudsimplus/cloudsimplus/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=cloudsimplus/cloudsimplus&amp;utm_campaign=Badge_Grade) [![Codacy Code Coverage](https://app.codacy.com/project/badge/Coverage/9aaa4b031c1d4143bdd39c4eedf49562)](https://www.codacy.com/gh/manoelcampos/cloudsimplus/dashboard?utm_source=github.com&utm_medium=referral&utm_content=manoelcampos/cloudsimplus&utm_campaign=Badge_Coverage) [![Maven Central](https://img.shields.io/maven-central/v/org.cloudsimplus/cloudsimplus.svg?label=Maven%20Central)](https://central.sonatype.com/search?q=cloudsimplus&namespace=org.cloudsimplus) [![Documentation Status](https://readthedocs.org/projects/cloudsimplus/badge/?version=latest)](http://cloudsimplus.rtfd.io/en/latest/?badge=latest) [![GPL licensed](https://img.shields.io/badge/license-GPL-blue.svg)](http://www.gnu.org/licenses/gpl-3.0) [![GitHub Repo stars](https://img.shields.io/github/stars/cloudsimplus/cloudsimplus?label=Contribute.%20Star%20it.)](https://github.com/cloudsimplus/cloudsimplus) [![Twitter Follow](https://img.shields.io/twitter/follow/cloudsimplus?style=social)](http://twitter.com/cloudsimplus)
