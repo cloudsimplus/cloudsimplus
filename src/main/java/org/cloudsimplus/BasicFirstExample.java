@@ -1,5 +1,3 @@
-//Modified BasicFirstExample class to test the Latex Table implementation on the list of cloudlets
-
 /*
  * CloudSim Plus: A modern, highly-extensible and easier-to-use Framework for
  * Modeling and Simulation of Cloud Computing Infrastructures and Services.
@@ -28,7 +26,7 @@ package org.cloudsimplus;
 import org.cloudsimplus.brokers.DatacenterBroker;
 import org.cloudsimplus.brokers.DatacenterBrokerSimple;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
-import org.cloudsimplus.builders.tables.LatexTableColumn;
+import org.cloudsimplus.builders.tables.LatexTable;
 import org.cloudsimplus.cloudlets.Cloudlet;
 import org.cloudsimplus.cloudlets.CloudletSimple;
 import org.cloudsimplus.core.CloudSimPlus;
@@ -38,10 +36,11 @@ import org.cloudsimplus.hosts.Host;
 import org.cloudsimplus.hosts.HostSimple;
 import org.cloudsimplus.resources.Pe;
 import org.cloudsimplus.resources.PeSimple;
+import org.cloudsimplus.util.Log;
 import org.cloudsimplus.utilizationmodels.UtilizationModelDynamic;
 import org.cloudsimplus.vms.Vm;
 import org.cloudsimplus.vms.VmSimple;
-import org.cloudsimplus.builders.tables.LatexTableBuilder;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -84,7 +83,7 @@ public class BasicFirstExample {
     private BasicFirstExample() {
         /*Enables just some level of log messages.
           Make sure to import org.cloudsimplus.util.Log;*/
-        //Log.setLevel(ch.qos.logback.classic.Level.WARN);
+        Log.setLevel(ch.qos.logback.classic.Level.WARN);
 
         simulation = new CloudSimPlus();
         datacenter0 = createDatacenter();
@@ -94,50 +93,15 @@ public class BasicFirstExample {
 
         vmList = createVms();
         cloudletList = createCloudlets();
+        
         broker0.submitVmList(vmList);
         broker0.submitCloudletList(cloudletList);
 
         simulation.start();
 
         final var cloudletFinishedList = broker0.getCloudletFinishedList();
-        new CloudletsTableBuilder(cloudletFinishedList).build();
-
-        var latexTable = new LatexTableBuilder()
-            .addColumn(new LatexTableColumn("Cloudlet","c"))
-            .addColumn(new LatexTableColumn("Status","c"))
-            .addColumn(new LatexTableColumn("DC","c"))
-            .addColumn(new LatexTableColumn("Host","c"))
-            .addColumn(new LatexTableColumn("Host PEs","c"))
-            .addColumn(new LatexTableColumn("VM","c"))
-            .addColumn(new LatexTableColumn("VM PEs","c"))
-            .addColumn(new LatexTableColumn("CloudletLen","c"))
-            .addColumn(new LatexTableColumn("FinishedLen","c"))
-            .addColumn(new LatexTableColumn("CloudletPEs","c"))
-            .addColumn(new LatexTableColumn("StartTime","c"))
-            .addColumn(new LatexTableColumn("FinishTime","c"))
-            .addColumn(new LatexTableColumn("ExecTime","c"));
-
-        for (var cloudlet : cloudletFinishedList) {
-            List<Object> rowData = new ArrayList<>();
-            rowData.add(cloudlet.getId());
-            rowData.add(cloudlet.getStatus().name());
-            rowData.add(cloudlet.getVm().getHost().getDatacenter().getId());
-            rowData.add(cloudlet.getVm().getHost().getId());
-            rowData.add(cloudlet.getVm().getHost().getWorkingPesNumber());
-            rowData.add(cloudlet.getVm().getId());
-            rowData.add(cloudlet.getVm().getPesNumber());
-            rowData.add(cloudlet.getLength());
-            rowData.add(cloudlet.getFinishedLengthSoFar());
-            rowData.add(cloudlet.getPesNumber());
-            rowData.add(cloudlet.getStartTime());
-            rowData.add(cloudlet.getFinishTime());
-            rowData.add(cloudlet.getTotalExecutionTime());
-
-            latexTable.addRow(rowData);
-        }
-        latexTable.build("Simulation Results");
-
-
+        LatexTable t = new LatexTable("results");
+        new CloudletsTableBuilder(cloudletFinishedList,t).build();
     }
 
     /**
@@ -201,8 +165,4 @@ public class BasicFirstExample {
 
         return cloudletList;
     }
-
-
 }
-
-

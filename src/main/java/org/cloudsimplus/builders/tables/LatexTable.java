@@ -1,63 +1,80 @@
 package org.cloudsimplus.builders.tables;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class LatexTable {
-    private final List<List<Object>> rows;
-    private final List<LatexTableColumn> columns;
+public class LatexTable extends AbstractTable {
+   //private final List<List<Object>> rows;
+    //private final List<LatexTableColumn> columns;
 
     public LatexTable() {
-        this.rows = new ArrayList<>();
-        this.columns = new ArrayList<>();
+        super();
+    }
+    public LatexTable(final String title){
+        super(title);
+    }
+    @Override
+    protected void printTableOpening(){
+        getPrintStream().printf("\\begin{table}[H]");
+        getPrintStream().printf("\\centering");
+        //getPrintStream().printf("\\begin{tabular}{");
+
     }
 
-    public LatexTable addColumn(LatexTableColumn column) {
-        columns.add(column);
-        return this;
+    @Override
+    protected void printTitle() {
+        
+        getPrintStream().printf(" \\caption{%s}",getTitle());
+        printTabularStart();
+    }
+    protected void printTabularStart(){
+        getPrintStream().printf(" \\begin{tabular}{ ");
+        colNbSpecifier();//nb of cols must be specified before building the table
+        getPrintStream().printf("}");
+
     }
 
-    public LatexTable addRow(List<Object> rowData) {
-        rows.add(rowData);
-        return this;
-    }
-
-    public void print(String title) {
-        // Table opening
-        System.out.println("\\begin{table}[H]");
-        System.out.println("\\centering");
-        System.out.print("\\begin{tabular}{");
-
+    public void colNbSpecifier() {
         // Adding column specifiers
-        for (LatexTableColumn column : columns) {
-            System.out.print("|" + column.getSpecifier());
-        }
-        System.out.println("|}");
-        System.out.println("\\hline");
+        int x = this.colCount();
+        String columnSpecs = "|c".repeat(x);
+        getPrintStream().printf("%s", columnSpecs);
 
-        // Adding column headers
-        for (LatexTableColumn column : columns) {
-            System.out.print(column.getName() + " & ");
+        for (TableColumn column : getColumns()) {
+            getPrintStream().printf("|c");
+            
         }
-        System.out.println("\\\\");
-        System.out.println("\\hline");
-
-        // Adding rows
-        for (List<Object> row : rows) {
-            for (Object data : row) {
-                System.out.print(data + " & ");
-            }
-            // Removing the last "&" and adding a line break
-            System.out.println("\\\\");
-        }
-
-        // Table closing
-        System.out.println("\\hline");
-        System.out.println("\\end{tabular}");
-        System.out.println("\\caption{"+title+"}");
-        System.out.println("\\end{table}");
     }
+    
+    @Override
+    protected String rowClosing(){
+        return " \\\\ ";
+    }
+    protected void printTabularEnd(){
+        getPrintStream().printf(" \\hline \\end{tabular} ");
+    }
+    @Override
+    protected void printTableClosing(){
+        printTabularEnd();
+        getPrintStream().printf(" \\end{table} ");
+
+    };
+    @Override
+    protected List<List<Object>> getRows() {
+        //Auto-generated method stub
+        return super.getRows();
+    }
+
+    @Override
+    public TableColumn newColumn(final String title, final String subtitle, final String format) {
+        return new LatexTableColumn(title, subtitle, format);
+    }
+    @Override
+    protected String rowOpening() {
+        return "\\hline ";
+        
+    }
+    @Override
+    protected String subtitleHeaderOpening() {
+        return "";}
+    
 }
