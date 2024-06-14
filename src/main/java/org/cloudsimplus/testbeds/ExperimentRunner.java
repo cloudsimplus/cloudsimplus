@@ -24,6 +24,7 @@
 package org.cloudsimplus.testbeds;
 
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
@@ -169,7 +170,7 @@ public abstract class ExperimentRunner<T extends Experiment<T>> extends Abstract
      */
     @Setter
     private boolean latexTableResultsGeneration;
-    private List<Experiment> experiments;
+    private List<Experiment<T>> experiments;
 
     /**
      * Creates an experiment runner with a given {@link #getBaseSeed() base seed}
@@ -355,9 +356,8 @@ public abstract class ExperimentRunner<T extends Experiment<T>> extends Abstract
             batchMeans.add(getBatchAverage(samples, i));
         }
 
-        System.out.printf(
-            "\tBatch Means Method applied. The number of samples was reduced to %d after computing the mean for each batch.%n",
-            getBatchesNumber());
+        var s = "\tBatch Means Method applied. Number of samples reduced to %d after computing the mean for each batch.%n";
+        System.out.printf(s, getBatchesNumber());
 
         return batchMeans;
     }
@@ -415,12 +415,12 @@ public abstract class ExperimentRunner<T extends Experiment<T>> extends Abstract
     /**
      * Adjusts the current number of simulations to be equal to its closer
      * multiple of the number of batches.
-     * @return
+     * @return this ExperimentRunner object
      */
-    private ExperimentRunner setSimulationRunsAsMultipleOfBatchNumber() {
+    private ExperimentRunner<T> setSimulationRunsAsMultipleOfBatchNumber() {
         final double batches = getBatchesNumber();
         simulationRuns = (int)(batches * Math.ceil(simulationRuns / batches));
-         return this;
+        return this;
     }
 
     public long getSeed(final int experimentIndex) {
@@ -447,12 +447,10 @@ public abstract class ExperimentRunner<T extends Experiment<T>> extends Abstract
      * @see UniformDistr#isApplyAntitheticVariates()
      * @see #createRandomGen(int, double, double)
      */
-    public <S extends StatisticalDistribution> S createRandomGen(final int experimentIndex, final Function<Long, S> randomGenCreator) {
-        Objects.requireNonNull(randomGenCreator, "The Function to instantiate the Random Number Generator cannot be null.");
-
+    public <S extends StatisticalDistribution> S createRandomGen(final int experimentIndex, @NonNull final Function<Long, S> randomGenCreator) {
         if(seeds.isEmpty()){
-            throw new IllegalStateException(
-                "You have to create at least 1 SimulationExperiment before requesting a ExperimentRunner to create a pseudo random number generator (PRNG)!");
+            var s = "You have to create at least 1 %s before requesting a %s to create a pseudo random number generator (PRNG)!";
+            throw new IllegalStateException(s.formatted(Experiment.class.getSimpleName(), ExperimentRunner.class.getSimpleName()));
         }
 
         if (isToReuseSeedFromFirstHalfOfExperiments(experimentIndex)) {
@@ -551,8 +549,9 @@ public abstract class ExperimentRunner<T extends Experiment<T>> extends Abstract
         System.out.printf(
             "%nFinal simulation results for %d metrics in %d simulation runs -------------------%n",
             metricsMap.size(), simulationRuns);
+        var s = "Batch means method wasn't applied since the no. of simulation runs isn't greater than the no. of batches.";
         if (batchesNumber > 1 && !isApplyBatchMeansMethod()) {
-            System.out.println("Batch means method was not be applied because the number of simulation runs is not greater than the number of batches.");
+            System.out.println(s);
         }
         computeAndPrintFinalResults();
 
@@ -584,7 +583,7 @@ public abstract class ExperimentRunner<T extends Experiment<T>> extends Abstract
         table.buildCsvResultsTable();
     }
 
-    private Stream<Experiment> getStream(final List<Experiment> experiments) {
+    private Stream<Experiment<T>> getStream(final List<Experiment<T>> experiments) {
         return parallel ? experiments.stream().parallel() : experiments.stream();
     }
 
@@ -595,7 +594,7 @@ public abstract class ExperimentRunner<T extends Experiment<T>> extends Abstract
      * @return the created experiment
      * @see #createExperimentInternal(int)
      */
-    private Experiment createExperiment(final int index) {
+    private Experiment<T> createExperiment(final int index) {
         print((index + 1) % 100 == 0 ? ". Run #%d%n".formatted(index + 1) : ".");
         setFirstExperimentCreated(index);
         return createExperimentInternal(index);
