@@ -10,10 +10,10 @@
     "node": "~4.1.1"
   },
   "dependencies": {
-    "express": "~4.19.2",
+    "express": "~4.21.1",
     "grunt-cli": "~1.4.3",
     "mustache": "~2.2.1",
-    "socket.io": ">=2.4.0"
+    "socket.io": ">=4.8.0"
   },
   "license": "MIT"
 }
