@@ -825,11 +825,11 @@ public abstract class VmAbstract extends CustomerEntityAbstract implements Vm {
 
     private <T extends VmScaling> T validateAndConfigureVmScaling(@NonNull final T vmScaling) {
         if (vmScaling.getVm() != null && vmScaling.getVm() != NULL && vmScaling.getVm() != this) {
-            final String name = vmScaling.getClass().getSimpleName();
-            throw new IllegalArgumentException(
-                "The " + name + " given is already linked to a Vm. " +
-                    "Each Vm must have its own " + name + " object or none at all. " +
-                    "Another " + name + " has to be provided for this Vm.");
+            final var name = vmScaling.getClass().getSimpleName();
+            final var msg = "The %1$s given is already linked to a Vm. " +
+                            "Each Vm must have its own %1$s object or none at all. " +
+                            "Another %1$s has to be provided for this Vm.";
+            throw new IllegalArgumentException(msg.formatted(name));
         }
 
         vmScaling.setVm(this);
