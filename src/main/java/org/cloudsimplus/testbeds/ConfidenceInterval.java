@@ -29,7 +29,6 @@ import org.apache.commons.math3.distribution.TDistribution;
 import org.apache.commons.math3.exception.MathIllegalArgumentException;
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 
-import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -78,7 +77,7 @@ public final class ConfidenceInterval {
     private final double criticalValue;
 
     /**
-     * The CI error margin, which defines the size of the interval in which
+     * The CI error margin (±), which defines the size of the interval in which
      * results may lay between.
      * The interval is between {@link #getLowerLimit()} and {@link #getUpperLimit()}.
      */
@@ -145,9 +144,8 @@ public final class ConfidenceInterval {
      * The Harry Perros' book states that if less than 30 samples are collected,
      * the t-Distribution has to be used to that purpose.
      *
-     * However, this
-     * <a href="https://en.wikipedia.org/wiki/Confidence_interval#Basic_Steps">Wikipedia
-     * article</a>
+     * <p>However, this
+     * <a href="https://en.wikipedia.org/wiki/Confidence_interval#Basic_Steps">Wikipedia article</a>
      * says that if the standard deviation of the real population is known, it
      * has to be used the z-value from the Standard Normal Distribution.
      * Otherwise, it has to be used the t-value from the t-Distribution to
@@ -155,22 +153,19 @@ public final class ConfidenceInterval {
      * standard error). The book "Numeric Computation and Statistical Data
      * Analysis on the Java Platform" confirms the last statement and such
      * approach was followed.
+     * </p>
      *
      * @param stats the statistic object with the values to compute the error
-     * margin of the confidence interval
-     * @return the error margin to compute the lower and upper bound of the
-     * confidence interval
+     *              margin of the confidence interval
+     * @return the error margin to compute the lower and upper bound of the confidence interval
      *
-     * @see
-     * <a href="http://www.itl.nist.gov/div898/handbook/eda/section3/eda3672.htm">Critical
-     * Values of the Student's t Distribution</a>
-     * @see
-     * <a href="https://en.wikipedia.org/wiki/Student%27s_t-distribution">t-Distribution</a>
-     * @see <a href="http://www4.ncsu.edu/~hp/files/simulation.pdf">Harry
-     * Perros, "Computer Simulation Techniques: The definitive introduction!,"
-     * 2009</a>
-     * @see <a href="http://www.springer.com/gp/book/9783319285290">Numeric
-     * Computation and Statistical Data Analysis on the Java Platform</a>
+     * @see <a href="http://www.itl.nist.gov/div898/handbook/eda/section3/eda3672.htm">
+     *     Critical Values of the Student's t Distribution</a>
+     * @see <a href="https://en.wikipedia.org/wiki/Student%27s_t-distribution">t-Distribution</a>
+     * @see <a href="http://www4.ncsu.edu/~hp/files/simulation.pdf">
+     *     Harry Perros, "Computer Simulation Techniques: The definitive introduction!," 2009</a>
+     * @see <a href="http://www.springer.com/gp/book/9783319285290">
+     *     Numeric Computation and Statistical Data Analysis on the Java Platform</a>
      */
     public static Optional<Double> errorMargin(@NonNull final SummaryStatistics stats) {
         final long samples = stats.getN();
@@ -190,7 +185,7 @@ public final class ConfidenceInterval {
      * Computes the Confidence Interval (CI) critical value for a given
      * number of samples and confidence level.
      * @param samples number of collected samples
-     * @return
+     * @return the Confidence Interval (CI) critical value
      */
     private static double computeCriticalValue(final long samples) {
         /* Creates a T-Distribution with N-1 degrees of freedom
