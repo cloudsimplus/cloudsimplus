@@ -147,7 +147,7 @@ public abstract class VerticalVmScalingAbstract extends VmScalingAbstract implem
             return false;
         }
 
-        final boolean requestedScaling = (isVmUnderloaded() || isVmOverloaded()) && requestUpScaling(evt.getTime());
+        final boolean requestedScaling = (isVmUnderloaded() || isVmOverloaded()) && requestScaling(evt.getTime());
         setLastProcessingTime(evt.getTime());
         return requestedScaling;
     }
@@ -200,7 +200,7 @@ public abstract class VerticalVmScalingAbstract extends VmScalingAbstract implem
     }
 
     @Override
-    protected boolean requestUpScaling(final double time) {
+    protected boolean requestScaling(final double time) {
         final var broker = this.getVm().getBroker();
         broker.getSimulation().sendNow(broker, broker, CloudSimTag.VM_VERTICAL_SCALING, this);
         return true;
