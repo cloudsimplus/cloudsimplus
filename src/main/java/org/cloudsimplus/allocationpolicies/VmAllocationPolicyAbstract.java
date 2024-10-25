@@ -194,6 +194,9 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
         final var resourceManageableClass = scaling.getResourceClass();
         final var vmResource = scaling.getVm().getResource(resourceManageableClass);
         final double amountToDeallocate = scaling.getResourceAmountToScale();
+        if(amountToDeallocate == 0)
+            return false;
+
         final var resourceProvisioner = scaling.getVm().getHost().getProvisioner(resourceManageableClass);
         final double newTotalVmResource = vmResource.getCapacity() - amountToDeallocate;
         if (resourceProvisioner.allocateResourceForVm(scaling.getVm(), newTotalVmResource)) {

@@ -600,6 +600,10 @@ public abstract class VmAbstract extends CustomerEntityAbstract implements Vm {
             setStartTime(getSimulation().clock());
             setShutdownBeginTime(NOT_ASSIGNED);
             this.setFailed(false);
+            validateAndConfigureVmScaling(peVerticalScaling);
+            validateAndConfigureVmScaling(ramVerticalScaling);
+            validateAndConfigureVmScaling(bwVerticalScaling);
+            validateAndConfigureVmScaling(horizontalScaling);
         }
 
         this.created = requestCreation;
@@ -801,29 +805,29 @@ public abstract class VmAbstract extends CustomerEntityAbstract implements Vm {
 
     @Override
     public final Vm setHorizontalScaling(final HorizontalVmScaling horizontalScaling) throws IllegalArgumentException {
-        this.horizontalScaling = validateAndConfigureVmScaling(horizontalScaling);
+        this.horizontalScaling = horizontalScaling;
         return this;
     }
 
     @Override
     public final Vm setRamVerticalScaling(final VerticalVmScaling ramVerticalScaling) throws IllegalArgumentException {
-        this.ramVerticalScaling = validateAndConfigureVmScaling(ramVerticalScaling);
+        this.ramVerticalScaling = ramVerticalScaling;
         return this;
     }
 
     @Override
     public final Vm setBwVerticalScaling(final VerticalVmScaling bwVerticalScaling) throws IllegalArgumentException {
-        this.bwVerticalScaling = validateAndConfigureVmScaling(bwVerticalScaling);
+        this.bwVerticalScaling = bwVerticalScaling;
         return this;
     }
 
     @Override
     public final Vm setPeVerticalScaling(final VerticalVmScaling peVerticalScaling) throws IllegalArgumentException {
-        this.peVerticalScaling = validateAndConfigureVmScaling(peVerticalScaling);
+        this.peVerticalScaling = peVerticalScaling;
         return this;
     }
 
-    private <T extends VmScaling> T validateAndConfigureVmScaling(@NonNull final T vmScaling) {
+    private void validateAndConfigureVmScaling(@NonNull final VmScaling vmScaling) {
         if (vmScaling.getVm() != null && vmScaling.getVm() != NULL && vmScaling.getVm() != this) {
             final var name = vmScaling.getClass().getSimpleName();
             final var msg = "The %1$s given is already linked to a Vm. " +
@@ -834,7 +838,6 @@ public abstract class VmAbstract extends CustomerEntityAbstract implements Vm {
 
         vmScaling.setVm(this);
         this.addOnUpdateProcessingListener(vmScaling::requestUpScalingIfPredicateMatches);
-        return vmScaling;
     }
 
     @Override
