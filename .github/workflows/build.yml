@@ -1,4 +1,4 @@
-name: Build
+name: build
 on:
   push:
     branches: [ master, main ]
@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-20.04
     name: Java 17 Build
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Setup Java
         uses: actions/setup-java@v3
         with:
