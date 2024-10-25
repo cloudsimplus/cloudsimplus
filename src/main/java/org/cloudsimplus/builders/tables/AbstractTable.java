@@ -30,6 +30,8 @@ import lombok.Setter;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 
 /**
@@ -124,10 +126,10 @@ public abstract class AbstractTable implements Table {
                 .limit(Math.min(columns.size(), row.size()))
                 .toList();
 
-        int idxCol = 0;
-        for(final TableColumn col: cols){
-            printStream.print(col.generateData(row.get(idxCol++)));
-        }
+        final String rowData = IntStream.range(0, cols.size())
+                                        .mapToObj(i -> cols.get(i).generateData(row.get(i)))
+                                        .collect(Collectors.joining(columnSeparator));
+        printStream.print(rowData);
         printStream.printf(rowClosing());
     }
 
@@ -143,17 +145,24 @@ public abstract class AbstractTable implements Table {
 
     protected void printColumnHeaders(){
         printStream.printf(rowOpening());
-        columns.forEach(col -> printStream.print(col.generateTitleHeader()));
+        final String headerData = columns.stream()
+                                         .map(TableColumn::generateTitleHeader)
+                                         .collect(Collectors.joining(columnSeparator));
+        printStream.print(headerData);
         printStream.printf(rowClosing());
-        if(isThereAnySubtitledColumn()){
-            printSubtitleHeaders();
-        }
+        printSubtitleHeaders();
     }
 
     private void printSubtitleHeaders() {
+        if(!isThereAnySubtitledColumn())
+            return;
+
         printStream.printf(subtitleHeaderOpening());
         printStream.printf(rowOpening());
-        columns.forEach(col -> printStream.printf(col.generateSubtitleHeader()));
+        final String subTitlesData = columns.stream()
+                                            .map(TableColumn::generateSubtitleHeader)
+                                            .collect(Collectors.joining(columnSeparator));
+        printStream.print(subTitlesData);
         printStream.printf(rowClosing());
     }
 

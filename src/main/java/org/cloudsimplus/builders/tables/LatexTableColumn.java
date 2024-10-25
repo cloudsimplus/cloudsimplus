@@ -27,12 +27,12 @@ public class LatexTableColumn extends AbstractTableColumn {
 
     @Override
     protected String generateHeader(final String str) {
-        return str + " & ";
+        return "\\textbf{%s}".formatted(str);
     }
 
     @Override
     public String generateData(final Object data) {
-        return data.toString() + " & ";
+        return data.toString();
     }
 
 }
