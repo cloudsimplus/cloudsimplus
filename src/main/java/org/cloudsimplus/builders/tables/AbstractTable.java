@@ -97,7 +97,7 @@ public abstract class AbstractTable implements Table {
 
     /**
      * {@return the data to be printed}, where each row contains
-     * a list of data columns.
+     * a list of columns data.
      */
     protected List<List<Object>> getRows() {
         return rows;
@@ -119,6 +119,10 @@ public abstract class AbstractTable implements Table {
         return columns.stream().anyMatch(col -> !col.getSubTitle().isBlank());
     }
 
+    /**
+     * Prints a row of the table.
+     * @param row a row containing the data for each column.
+     */
     private void printRow(final List<Object> row) {
         printStream.printf(rowOpening());
         final List<TableColumn> cols =
