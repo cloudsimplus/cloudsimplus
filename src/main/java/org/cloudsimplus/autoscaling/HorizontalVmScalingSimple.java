@@ -80,7 +80,7 @@ public class HorizontalVmScalingSimple extends VmScalingAbstract implements Hori
     }
 
     @Override
-    protected boolean requestUpScaling(final double time) {
+    protected boolean requestScaling(final double time) {
         if(!haveNewCloudletsArrived()){
             return false;
         }
@@ -109,7 +109,7 @@ public class HorizontalVmScalingSimple extends VmScalingAbstract implements Hori
     public final boolean requestUpScalingIfPredicateMatches(final VmHostEventInfo evt) {
         if (isTimeToCheckPredicate(evt.getTime())) {
             setLastProcessingTime(evt.getTime());
-            return overloadPredicate.test(getVm()) && requestUpScaling(evt.getTime());
+            return overloadPredicate.test(getVm()) && requestScaling(evt.getTime());
         }
 
         return false;
