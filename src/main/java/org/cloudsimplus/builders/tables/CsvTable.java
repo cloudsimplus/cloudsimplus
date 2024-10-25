@@ -99,7 +99,7 @@ public class CsvTable extends AbstractTable {
     }
 
     /**
-     * Creates a copy of the a string repeated a given number of times.
+     * Creates a copy of a string repeated a given number of times.
      * @param str The string to repeat
      * @param timesToRepeat The number of times to repeat the string
      * @return The string repeated the given number of times
