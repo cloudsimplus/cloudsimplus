@@ -35,7 +35,7 @@ public class LatexTableColumn extends AbstractTableColumn {
 
     @Override
     public String generateData(final Object data) {
-        return data.toString();
+        return data == null ? "" : data.toString();
     }
 
 }
