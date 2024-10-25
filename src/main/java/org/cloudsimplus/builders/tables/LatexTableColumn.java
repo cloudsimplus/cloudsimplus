@@ -1,11 +1,10 @@
 package org.cloudsimplus.builders.tables;
 
 import lombok.Getter;
-import lombok.NonNull;
 
 @Getter
 public class LatexTableColumn extends AbstractTableColumn {
-    public LatexTableColumn(final String title, final String subtitle ) {
+    public LatexTableColumn(final String title, final String subtitle) {
         this(title, subtitle, "");
     }
 
