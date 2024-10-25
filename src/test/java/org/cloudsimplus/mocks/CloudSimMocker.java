@@ -132,6 +132,12 @@ public final class CloudSimMocker {
             .thenReturn(false);
     }
 
+    public OngoingStubbing<Boolean> isRunning() {
+        return Mockito
+            .when(mock.isRunning())
+            .thenReturn(true);
+    }
+
     public OngoingStubbing<Integer> getNumEntities() {
         return Mockito
             .when(mock.getNumEntities())
