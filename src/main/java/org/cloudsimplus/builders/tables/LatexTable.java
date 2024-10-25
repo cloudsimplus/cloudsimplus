@@ -1,5 +1,9 @@
 package org.cloudsimplus.builders.tables;
 
+/**
+ * Generates tabular data in LaTeX format.
+ * @author marwenbenhajhassine
+ */
 public class LatexTable extends AbstractTable {
     public LatexTable() {
         super();
