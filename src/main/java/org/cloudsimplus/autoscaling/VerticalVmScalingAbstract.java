@@ -265,10 +265,10 @@ public abstract class VerticalVmScalingAbstract extends VmScalingAbstract implem
     private void logResourceAllocated(){
         final Vm vm = getVm();
         LOGGER.info(
-            "{}: {}: {} more {} allocated to {}: new capacity is {}. Current resource usage is {}%",
+            "{}: {}: {} {} more {} allocated to {}: new capacity is {}. Current resource usage is {}%",
             vm.getSimulation().clockStr(),
             getClass().getSimpleName(),
-            (long) getResourceAmountToScale(), resourceClassToScale.getSimpleName(),
+            (long) getResourceAmountToScale(), vmResource.getUnit(), resourceClassToScale.getSimpleName(),
             vm, vmResource.getCapacity(),
             vmResource.getPercentUtilization() * 100);
     }

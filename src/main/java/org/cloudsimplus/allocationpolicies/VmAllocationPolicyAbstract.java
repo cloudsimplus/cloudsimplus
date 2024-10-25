@@ -198,11 +198,11 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
         final double newTotalVmResource = vmResource.getCapacity() - amountToDeallocate;
         if (resourceProvisioner.allocateResourceForVm(scaling.getVm(), newTotalVmResource)) {
             LOGGER.info(
-                "{}: {}: {} {} deallocated from {}: new capacity is {}. Current resource usage is {}%",
+                "{}: {}: {} {} of {} deallocated from {}: new capacity is {} {}. Current resource usage is {}%",
                 scaling.getVm().getSimulation().clockStr(),
                 scaling.getClass().getSimpleName(),
-                (long) amountToDeallocate, resourceManageableClass.getSimpleName(),
-                scaling.getVm(), vmResource.getCapacity(),
+                (long) amountToDeallocate, vmResource.getUnit(), resourceManageableClass.getSimpleName(),
+                scaling.getVm(), vmResource.getCapacity(), vmResource.getUnit(),
                 vmResource.getPercentUtilization() * 100);
             return true;
         }
