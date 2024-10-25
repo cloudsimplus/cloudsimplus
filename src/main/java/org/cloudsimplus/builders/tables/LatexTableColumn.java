@@ -32,10 +32,4 @@ public class LatexTableColumn extends AbstractTableColumn {
     protected String generateHeader(final String str) {
         return "\\textbf{%s}".formatted(str);
     }
-
-    @Override
-    public String generateData(final Object data) {
-        return data == null ? "" : data.toString();
-    }
-
 }
