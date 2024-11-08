@@ -545,9 +545,6 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * If no delay is incurred, returns the expected cloudlet completion time.
      */
     protected double updateCloudletProcessing(final CloudletExecution cle, final double currentTime) {
-        if(!taskScheduler.isTimeToUpdateCloudletProcessing(cle.getCloudlet()))
-            return 0;
-
         if(cle.lastOverSubscriptionDelayNotPassed(currentTime)){
             return cle.remainingOverSubscriptionDelay(currentTime);
         }
@@ -575,9 +572,12 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
 
         final double maxDelay = getMaxOversubscriptionDelay(vMemDelaySecs, reducedBwDelaySecs);
         final long partialFinishedMI = (long)(cloudletUsedMips * processingTimeSpan);
-        cle.updateProcessing(partialFinishedMI);
-        updateVmResourceAbsoluteUtilization(cle, ((VmSimple)vm).getRam());
-        updateVmResourceAbsoluteUtilization(cle, ((VmSimple)vm).getBw());
+
+        if(taskScheduler.isTimeToUpdateCloudletProcessing(cle.getCloudlet())){
+            cle.updateProcessing(partialFinishedMI);
+            updateVmResourceAbsoluteUtilization(cle, ((VmSimple)vm).getRam());
+            updateVmResourceAbsoluteUtilization(cle, ((VmSimple)vm).getBw());
+        }
 
         taskScheduler.processCloudletTasks(cle.getCloudlet(), partialFinishedMI);
         final double estimatedFinishTime = cloudletEstimatedFinishTime(cle, currentTime);
