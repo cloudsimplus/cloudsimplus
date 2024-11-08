@@ -82,7 +82,8 @@ public interface Heuristic<S extends HeuristicSolution<?>> {
     int getRandomValue(int maxValue);
 
     /**
-     * Checks if the solution search can be stopped.
+     * Checks if the solution search can be stopped,
+     * since a suitable solution was found or the number of iterations desired was reached.
      *
      * @return true if the solution search can be stopped, false otherwise.
      */
