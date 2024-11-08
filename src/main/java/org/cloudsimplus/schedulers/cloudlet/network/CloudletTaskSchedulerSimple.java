@@ -68,11 +68,6 @@ public class CloudletTaskSchedulerSimple implements CloudletTaskScheduler {
             return;
         }
 
-        if (!netCloudlet.isTasksStarted()) {
-            scheduleNextTaskIfCurrentIsFinished(netCloudlet);
-            return;
-        }
-
         //TODO Needs to use polymorphism to avoid these ifs
         if (isTimeToUpdateCloudletProcessing(netCloudlet))
             updateExecutionTask(netCloudlet, partialFinishedMI);
@@ -109,11 +104,11 @@ public class CloudletTaskSchedulerSimple implements CloudletTaskScheduler {
         }
 
         if (cloudlet instanceof NetworkCloudlet nc) {
-            return nc.getCurrentTask().filter(CloudletTask::isExecutionTask).isPresent();
+            final boolean isExecutionTaskRunning = nc.isTasksStarted() && nc.getCurrentTask().filter(CloudletTask::isExecutionTask).isPresent();
+            return isExecutionTaskRunning || scheduleNextTaskIfCurrentIsFinished(nc);
         }
 
         return true;
-
     }
 
     /**
@@ -200,14 +195,17 @@ public class CloudletTaskSchedulerSimple implements CloudletTaskScheduler {
 
     /**
      * Schedules the execution of the next task of a given cloudlet.
+     * @return true if the current task is finished and the next one has started;
+     * false if current task is not finished or there aren't any more tasks to be executed.
      */
-    private void scheduleNextTaskIfCurrentIsFinished(final NetworkCloudlet cloudlet) {
+    private boolean scheduleNextTaskIfCurrentIsFinished(final NetworkCloudlet cloudlet) {
         if(!cloudlet.startNextTaskIfCurrentIsFinished(cloudlet.getSimulation().clock())){
-            return;
+            return false;
         }
 
         final var dc = getVm().getHost().getDatacenter();
         dc.schedule(dc, dc.getSimulation().getMinTimeBetweenEvents(), CloudSimTag.VM_UPDATE_CLOUDLET_PROCESSING);
+        return true;
     }
 
     @Override
