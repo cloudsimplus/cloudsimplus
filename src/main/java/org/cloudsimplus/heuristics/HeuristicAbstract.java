@@ -74,7 +74,7 @@ public abstract class HeuristicAbstract<S extends HeuristicSolution<?>>  impleme
 	 * @param random a random number generator
 	 * @param solutionClass reference to the generic class that will be used to instantiate heuristic solutions
 	 */
-	HeuristicAbstract(@NonNull final ContinuousDistribution random, @NonNull final Class<S> solutionClass){
+	public HeuristicAbstract(@NonNull final ContinuousDistribution random, @NonNull final Class<S> solutionClass){
         this.random = random;
         this.solutionClass = solutionClass;
 		this.searchesByIteration = 1;
