@@ -57,7 +57,7 @@ public class NetworkHost extends HostSimple {
     private static final Logger LOGGER = LoggerFactory.getLogger(NetworkHost.class.getSimpleName());
 
     @Getter
-    private int totalDataTransferBytes;
+    private long totalDataTransferBytes;
 
     /**
      * A buffer of packets to send for VMs inside this Host.
