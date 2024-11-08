@@ -102,7 +102,8 @@ public class NetworkCloudlet extends CloudletSimple {
      * to start executing it, if the current task is finished.
      *
      * @param nextTaskStartTime the time that the next task will start
-     * @return true if the current task finished and the next one was started, false otherwise
+     * @return true if the current task is finished and the next one has started;
+     * false if current task is not finished or there aren't any more tasks to be executed.
      */
     public boolean startNextTaskIfCurrentIsFinished(final double nextTaskStartTime){
         return
