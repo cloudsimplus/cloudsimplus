@@ -30,38 +30,6 @@ import org.cloudsimplus.resources.Pe;
  * @author Manoel Campos da Silva Filho
  *
  * @since CloudSim Toolkit 1.0
- *
- * TODO Each execution task must use just a single core.
- * It may represent a thread (so the name of the class would be changed).
- * By this way, a execution task should use only one core.
- * However, tasks may be executed in parallel (considering there are multiple cores)
- * and/or sequentially.
- * This feature has to be included in the class. One proposal is
- * to create a int group attribute. All tasks (not only execution tasks)
- * that have the group equals to zero are executed sequentially (that means they
- * aren't grouped). The tasks that have the same group have to be executed
- * in parallel, one in each CPU core (PE).
- * All tasks into a group will be executed together. The next group
- * starts only when all the tasks in the prior finishes (each task
- * can have a different length, so may finish in different times).
- * The value of the group define the tasks execution order.
- * Tasks with lower group number are executed first.
- * You can have single tasks (that are not grouped) between
- * grouped tasks (defining the order that this single task executes)
- * just assigning a group number to it and making sure to not
- * add other tasks with the same group. For instance, consider the
- * tasks below, represented by their group number, for a NetworkCloudlet with 4 cores:
- * 0 0 1 1 1 1 2 3 3
- *
- * there are 2 ungrouped tasks (0) that will be executed sequentially,
- * 4 tasks of group 1 that will be executed in parallel after all ungrouped tasks,
- * there is a single task at group 2 that will be executed after the group 1
- * and finally there is 2 tasks at group 2 to be executed in parallel at the end.
- *
- * When adding a task to a NetworkCloudlet, the addTask method
- * has to check if the current number of tasks for the group (that represents parallel tasks)
- * is lower than the number of NetworkCloudlet's PEs.
- *
  */
 public class CloudletExecutionTask extends CloudletTask {
 
