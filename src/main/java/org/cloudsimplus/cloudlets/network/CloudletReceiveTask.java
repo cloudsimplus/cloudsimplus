@@ -50,16 +50,15 @@ import java.util.List;
  * the web server runs indefinitely. However, the simulation
  * has to have a time interval. For instance, it may be simulated
  * the operation of this distributed app for 24 hours.
- * By this way, the receiver task could have a specific amount
+ * This way, the receiver task could have a specific amount
  * of time to run. In the web app scenario, the web server just
  * keep running, waiting for any client to send packets to it,
  * but it is not required that a client do that. The web app
  * may not be accessed during this time.
- * By other hand, the client may send packets to the server
- * and require a response. It will so wait for this response
- * and has to have a timeout period so that the client can
- * skip waiting to receive an answer and move to the next task
- * or finish.
+ * On other hand, the client may send packets to the server
+ * and require a response. It then waits for this response
+ * and must have a timeout period, so that the client can:
+ * (i) stop waiting a reply, (ii) then move to the next task or finish.
  *
  * Each task has to have a status (such as the Cloudlet itself)
  * to define if it was executed successfully or not.
