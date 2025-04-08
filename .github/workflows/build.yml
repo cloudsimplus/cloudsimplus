@@ -14,7 +14,7 @@ jobs:
       - name: Setup Java
         uses: actions/setup-java@v3
         with:
-          distribution: 'adopt'
+          distribution: 'corretto'
           java-version: 17
           cache: 'maven'
       - name: Maven Build
