@@ -35,7 +35,7 @@ import java.util.Set;
  * Starts and manages cloud computing simulations running in the CloudSim Plus framework.
  * @author Manoel Campos da Silva Filho
  */
-public final class CloudSimPlus extends CloudSim {
+public class CloudSimPlus extends CloudSim {
 
     /** Default value for {@link #getMinTimeBetweenEvents()} (in seconds) */
     private static final double DEF_MIN_TIME_BETWEEN_EVENTS = 0.1;
