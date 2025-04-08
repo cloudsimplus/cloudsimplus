@@ -1180,7 +1180,7 @@ public abstract class HostAbstract extends ExecDelayableAbstract implements Host
         return vmList.stream()
                     .filter(Vm::isCreated)
                     .filter(vm -> !vm.isInMigration())
-                    .toList();
+                    .collect(toList());
     }
 
     protected boolean canEqual(Object other) {
