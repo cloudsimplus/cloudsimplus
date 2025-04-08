@@ -29,6 +29,8 @@
         <license-maven-plugin.version>3.0</license-maven-plugin.version>
         <!-- License file to be used by the com.mycila.license-maven-plugin -->
         <copyrightfile>COPYRIGHT</copyrightfile>
+        <logback.version>1.5.16</logback.version>
+        <junit.version>5.12.1</junit.version>
     </properties>
 
     <developers>
@@ -469,13 +471,13 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
-            <version>5.12.1</version>
+            <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
-            <version>5.12.1</version>
+            <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -494,13 +496,13 @@
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-core</artifactId>
-            <version>1.5.16</version>
+            <version>${logback.version}</version>
         </dependency>
         <dependency>
             <!-- Automatically includes slf4j-api 2.0 -->
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-            <version>1.5.16</version>
+            <version>${logback.version}</version>
         </dependency>
     </dependencies>
 
