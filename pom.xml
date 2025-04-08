@@ -494,13 +494,13 @@
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-core</artifactId>
-            <version>1.5.13</version>
+            <version>1.5.16</version>
         </dependency>
         <dependency>
             <!-- Automatically includes slf4j-api 2.0 -->
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-            <version>1.4.6</version>
+            <version>1.5.16</version>
         </dependency>
     </dependencies>
 
