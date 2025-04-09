@@ -7,6 +7,8 @@
 package org.cloudsimplus.vms;
 
 import org.cloudsimplus.brokers.DatacenterBroker;
+import org.cloudsimplus.brokers.DatacenterBrokerSimple;
+import org.cloudsimplus.core.CloudSimPlus;
 import org.cloudsimplus.core.Simulation;
 import org.cloudsimplus.hosts.HostSimple;
 import org.cloudsimplus.hosts.HostSimpleTest;
@@ -20,6 +22,7 @@ import org.cloudsimplus.schedulers.cloudlet.CloudletScheduler;
 import org.cloudsimplus.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.platform.commons.util.Preconditions;
 import org.mockito.Mockito;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -346,5 +349,45 @@ public class VmSimpleTest {
         vm.setCreated(true);
 
         assertTrue(vm.getCurrentRequestedMips().isEmpty());
+    }
+
+    /**
+     * Idle time just starts to count when the VM is created.
+     */
+    @Test
+    void testGetIdleIntervalIsZeroWhenVmWasNotCreatedToIndicateItWasNeverIdle() {
+        final var vm = VmTestUtil.createVm(0, 2);
+        Preconditions.condition(vm.getLastBusyTime() == -1, "Vm should be idle");
+        assertEquals(0, vm.getIdleInterval());
+    }
+
+    @Test
+    void testGetIdleInterval() {
+        final double clockTime = 5.0;
+        final double lastBusyTime = 1.0;
+        final double expectedIdleInterval = 4.0;
+
+        final CloudSimPlus simulation = CloudSimMocker.createMock(mocker -> mocker.clock(clockTime));
+        final var broker = new DatacenterBrokerSimple(simulation);
+
+        final var vm = VmTestUtil.createVm(0, 2);
+        vm.setLastBusyTime(lastBusyTime);
+        vm.setBroker(broker);
+
+        assertEquals(expectedIdleInterval, vm.getIdleInterval());
+    }
+
+    @Test
+    void testGetNoIdleIntervalWhenClockIsNotZero() {
+        final double clockTime = 5.0;
+        final double expectedIdleInterval = 0;
+
+        final CloudSimPlus simulation = CloudSimMocker.createMock(mocker -> mocker.clock(clockTime));
+        final var broker = new DatacenterBrokerSimple(simulation);
+
+        final var vm = VmTestUtil.createVm(0, 2);
+        vm.setBroker(broker);
+
+        assertEquals(expectedIdleInterval, vm.getIdleInterval());
     }
 }

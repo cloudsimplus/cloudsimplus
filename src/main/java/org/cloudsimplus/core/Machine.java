@@ -119,7 +119,13 @@ public interface Machine<T extends Resource> extends ChangeableId, Resourceful, 
      * @return the idle time interval (in seconds) or 0 if the Machine is not idle
      */
     default double getIdleInterval() {
-        return getSimulation().clock() - getLastBusyTime();
+        final double clock = getSimulation().clock();
+
+        /* If the busy time is negative, the machine was never busy.
+        * This way, get the current clock instead, so that the difference will be zero,
+        * indicating there is no idle time. */
+        final double lastBusyTime = getLastBusyTime() > NOT_ASSIGNED ? getLastBusyTime() : clock;
+        return clock - lastBusyTime;
     }
 
     /**
