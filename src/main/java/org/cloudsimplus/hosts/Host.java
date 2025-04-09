@@ -708,9 +708,7 @@ public interface Host extends PhysicalMachine, Comparable<Host>, PowerAware<Powe
     List<Vm> getFinishedVms();
 
     /**
-     * Gets the list of migratable VMs from a given host.
-     *
-     * @return the list of migratable VMs
+     * {@return the list of VMs which can be migrated from the host}
      */
     List<Vm> getMigratableVms();
 
