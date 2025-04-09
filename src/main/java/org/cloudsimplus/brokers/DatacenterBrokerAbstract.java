@@ -933,7 +933,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     @Override
     public DatacenterBroker requestIdleVmDestruction(final Vm vm) {
         if (vm.isCreated()) {
-            if(isFinished() || vm.isLifeTimeReached() || isVmIdleEnough(vm)) {
+            if(this.isFinished() || vm.isLifeTimeReached() || isVmIdleEnough(vm)) {
                 vm.shutdown();
             }
 
