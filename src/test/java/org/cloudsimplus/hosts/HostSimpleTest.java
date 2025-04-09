@@ -619,6 +619,15 @@ public class HostSimpleTest {
     }
 
     /**
+     * It is expected a mutable list since that list is sorted during VM migration process.
+     */
+    @Test
+    void testGetMigratableVmsReturnsMutableList() {
+        final Host host = createHostSimple(0, 2);
+        assertDoesNotThrow(() -> host.getMigratableVms().add(Vm.NULL));
+    }
+
+    /**
      * Creates a mock VM to test the utilization of some resource
      * @param vmResource a new instance of a resource to be attached to the VM and to be tested
      * @param vmResourceFunction the VM function that is able to get the provided resource stored on the VM
