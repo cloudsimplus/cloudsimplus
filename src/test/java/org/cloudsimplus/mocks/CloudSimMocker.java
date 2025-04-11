@@ -23,6 +23,7 @@
  */
 package org.cloudsimplus.mocks;
 
+import lombok.NonNull;
 import org.cloudsimplus.core.CloudSimPlus;
 import org.mockito.Mockito;
 import org.mockito.stubbing.OngoingStubbing;
@@ -113,11 +114,14 @@ public final class CloudSimMocker {
      * to return each one of the values inside the given List for each
      * time it is called.
      *
-     * @param clockTimesToReturn the values that the {@link CloudSimPlus#clock()}
+     * @param clockTimesToReturns the values that the {@link CloudSimPlus#clock()}
      * method will return in each call
      */
-    public void clock(final List<Integer> clockTimesToReturn) {
-        clockTimesToReturn.stream().mapToDouble(time -> time).forEach(t -> Mockito.when(mock.clock()).thenReturn(t));
+    public void clock(@NonNull final List<Double> clockTimesToReturns) {
+        final var size = clockTimesToReturns.size();
+        final var firstElement = clockTimesToReturns.get(0);
+        final var lastElements = clockTimesToReturns.subList(1, size).toArray(Double[]::new);
+        Mockito.when(mock.clock()).thenReturn(firstElement, lastElements);
     }
 
     public OngoingStubbing<String> clockStr() {

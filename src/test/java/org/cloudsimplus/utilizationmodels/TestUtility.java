@@ -27,10 +27,8 @@ import org.cloudsimplus.core.CloudSimPlus;
 import org.cloudsimplus.mocks.CloudSimMocker;
 import org.cloudsimplus.util.Conversion;
 
-import java.util.List;
 import java.util.stream.IntStream;
 
-import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
@@ -61,9 +59,7 @@ final class TestUtility {
         final double initUsage,
         final int initSimulationTime)
     {
-        final List<Integer> times = IntStream.rangeClosed(initSimulationTime, NUM_TIMES_TEST_USAGE)
-            .boxed()
-            .collect(toList());
+        final var times = IntStream.rangeClosed(initSimulationTime, NUM_TIMES_TEST_USAGE).mapToObj(v -> v*1.0).toList();
         final CloudSimPlus simulation = CloudSimMocker.createMock(mocker -> mocker.clock(times));
 
         final var um = new UtilizationModelDynamic(initUsage);
