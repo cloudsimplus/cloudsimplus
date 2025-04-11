@@ -11,7 +11,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import static org.cloudsimplus.schedulers.cloudlet.CloudletSchedulerTimeSharedTestUtil.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -260,7 +259,7 @@ public class CloudletSchedulerTimeSharedTest {
     }
 
     private static DatacenterBrokerSimple createBroker() {
-        final var simulation = CloudSimMocker.createMock(cloudsim -> cloudsim.clock(List.of(2)));
+        final var simulation = CloudSimMocker.createMock(cloudsim -> cloudsim.clock(2));
         final var broker = new DatacenterBrokerSimple(simulation);
         return broker;
     }
