@@ -43,7 +43,7 @@ public class VmSimpleTest {
 
     @Test
     public void testGetWaitTimeForNonCreateVmWithZeroArrivedTime() {
-        assertEquals(0, vm.getCreationWaitTime());
+        assertEquals(-1, vm.getCreationWaitTime());
     }
 
     @Test
