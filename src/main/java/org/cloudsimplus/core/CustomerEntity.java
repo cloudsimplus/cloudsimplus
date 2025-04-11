@@ -36,7 +36,7 @@ import org.cloudsimplus.vms.Vm;
 public interface CustomerEntity extends UniquelyIdentifiable, ChangeableId, SubmissionDelayable, Lifetimed, ExecDelayable {
 
     /**
-     * Gets the time the entity was finished (in seconds).
+     * Gets the last time the entity was finished (in seconds).
      * The value -1 means it has not stopped or has not even started yet.
      *
      * @return
@@ -67,26 +67,26 @@ public interface CustomerEntity extends UniquelyIdentifiable, ChangeableId, Subm
     Datacenter getLastTriedDatacenter();
 
     /**
-     * Gets the absolute time the entity arrived at the broker, before being
+     * Gets the last time the entity arrived at the broker, before being
      * submitted to a Datacenter.
      *
-     * @return the arrived time (in seconds)
+     * @return the absolute arrived time (in seconds)
      * @see #getSubmissionDelay()
      */
     double getBrokerArrivalTime();
 
     /**
-     * Sets the absolute time the entity arrived at the broker, before being
+     * Sets the last time the entity arrived at the broker, before being
      * submitted to a Datacenter.
      *
-     * @param time the time to set
+     * @param time the absolute time to set
      */
     CustomerEntity setBrokerArrivalTime(double time);
 
     /**
-     * Gets the absolute time the entity was created into a Datacenter.
+     * Gets the last time the entity was created into a Datacenter.
      *
-     * @return the creation time (in seconds)
+     * @return the absolute creation time (in seconds)
      * @see #getSubmissionDelay()
      */
     double getCreationTime();
@@ -96,7 +96,7 @@ public interface CustomerEntity extends UniquelyIdentifiable, ChangeableId, Subm
      * either due to a given {@link #getSubmissionDelay() submission delay}
      * or because there was no suitable Host available after the VM submission.
      *
-     * @return the total wait time (in seconds)
+     * @return the total wait time (in seconds) or {@link #NOT_ASSIGNED} if the entity was not created yet.
      * @see #getSubmissionDelay()
      */
     double getCreationWaitTime();

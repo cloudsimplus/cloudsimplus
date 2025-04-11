@@ -55,6 +55,7 @@ public abstract class CustomerEntityAbstract extends ExecDelayableAbstract imple
         lastTriedDatacenter = Datacenter.NULL;
         creationTime = NOT_ASSIGNED;
         lifeTime = Double.MAX_VALUE;
+        this.brokerArrivalTime = NOT_ASSIGNED;
     }
 
     @Override
@@ -72,7 +73,22 @@ public abstract class CustomerEntityAbstract extends ExecDelayableAbstract imple
 
     @Override
     public double getCreationWaitTime() {
-        return creationTime > NOT_ASSIGNED ? creationTime - brokerArrivalTime : getSimulation().clock() - brokerArrivalTime;
+        /* It must be ensured the creationTime is checked first.
+        * After the entity is created, the brokerArrivalTime will
+        * have a value too. If the creation is the last event,
+        * we need to start checking the creation time.
+        * Inverting the order makes the wait time
+        * be computed based on the current clock when the entity was already created,
+        * but we need to use the creation time instead */
+        if (creationTime > NOT_ASSIGNED) {
+            return creationTime - brokerArrivalTime;
+        }
+
+        if (brokerArrivalTime > NOT_ASSIGNED) {
+            return getSimulation().clock() - brokerArrivalTime;
+        }
+
+        return NOT_ASSIGNED;
     }
 
     @Override

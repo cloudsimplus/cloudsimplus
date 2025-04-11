@@ -253,6 +253,9 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         for (final var entity : customerEntities) {
             entity.setBroker(this);
             entity.setBrokerArrivalTime(getSimulation().clock());
+            /* If the finished entity is submitted again, clear the last tried datacenter
+            * to indicate that, this time, it wasn't tried any datacenter yet. */
+            entity.setLastTriedDatacenter(Datacenter.NULL);
             if(entity instanceof VmGroup vmGroup) {
                 configureEntities(vmGroup.getVmList());
             }
