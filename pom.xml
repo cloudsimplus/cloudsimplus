@@ -280,8 +280,6 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
-                    <!-- There is some problem with the version 2.19.1 or with
-                    Netbeans 8.0.2 that the JUnit GUI is not shown at the IDE-->
                     <version>3.5.2</version>
                 </plugin>
 
@@ -320,7 +318,7 @@
 							<classpathLayoutType>repository</classpathLayoutType>
 
 							<!-- Defines the root folder where the dependencies are. In this case
-							 is the the root of the local maven repository. !-->
+							 is the root of the local maven repository. !-->
 							<classpathPrefix>${user.home}/.m2/repository/</classpathPrefix>
 						</manifest>
 					</archive>
