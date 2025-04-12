@@ -184,11 +184,6 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-surefire-plugin</artifactId>
-                        <configuration>
-                            <!-- Forking the process was causing runtime exceptions
-                             when running tests with Java 10+ -->
-                            <forkCount>0</forkCount>
-                        </configuration>
                     </plugin>
 
                     <plugin>
