@@ -38,14 +38,14 @@ import java.util.function.Supplier;
  * Cloudlets, in order to enable load balancing.
  *
  * <p>Since Cloudlets can be created and submitted to a broker in runtime,
- * the number of arrived Cloudlets can be to much to existing VMs,
+ * the number of arrived Cloudlets can be too much to the existing VMs,
  * requiring the creation of new VMs to balance the load.
  * A HorizontalVmScaling implementation performs
  * such up scaling by creating VMs as needed.</p>
  *
  * <br>
  * <p>
- * To enable horizontal down scaling to destroy idle VMs, the {@link DatacenterBroker} has to be used
+ * To enable horizontal down-scaling to destroy idle VMs, the {@link DatacenterBroker} has to be used
  * by setting a {@link DatacenterBroker#setVmDestructionDelayFunction(Function)}.
  * Since there is no Cloudlet migration mechanism (and it isn't intended to have),
  * if a VM becomes underloaded, there is nothing that can be done until all Cloudlets
@@ -66,23 +66,21 @@ public interface HorizontalVmScaling extends VmScaling {
     HorizontalVmScaling NULL = new HorizontalVmScalingNull();
 
     /**
-     * Gets a {@link Supplier} that will be used to create VMs when
-     * the Load Balancer detects that the current Broker's VMs are overloaded.
-     *
-     * @return
+     * {@return a Supplier that will be used to create VMs when
+     * the Load Balancer detects that the current Broker's VMs are overloaded}
      */
     Supplier<Vm> getVmSupplier();
 
     /**
      * Sets a {@link Supplier} that will be used to create VMs when
-     * the Load Balancer detects that Broker's VMs are overloaded.
+     * the Load Balancer detects that the current Broker's VMs are overloaded.
      *
      * @param supplier the supplier to set
      */
     HorizontalVmScaling setVmSupplier(Supplier<Vm> supplier);
 
     /**
-     * Requests a horizontal scale if the Vm is overloaded, according to the
+     * Requests a horizontal scale if a Vm is overloaded, according to the
      * {@link #getOverloadPredicate()} predicate.
      * The scaling is performed by creating a new Vm using the {@link #getVmSupplier()} method
      * and submitting it to the broker.
@@ -97,16 +95,16 @@ public interface HorizontalVmScaling extends VmScaling {
      * new Cloudlets were submitted to the broker.
      * </b></p>
      *
-     * @param evt current simulation time
+     * @param evt event information, including the current simulation time and the VM to be scaled
      * @return {@inheritDoc}
      */
     @Override
     boolean requestUpScalingIfPredicateMatches(VmHostEventInfo evt);
 
     /**
-     * Gets a {@link Predicate} that defines when {@link #getVm() Vm} is overloaded or not,
+     * Gets the {@link Predicate} that defines when a {@link #getVm() Vm} is overloaded or not,
      * that will make the Vm's {@link DatacenterBroker} to up scale the VM.
-     * The up scaling is performed by creating new VMs to attend new arrived Cloudlets
+     * The up scaling is performed by creating new VMs to run new arrived Cloudlets
      * and then balance the load.
      *
      * @return
@@ -115,16 +113,16 @@ public interface HorizontalVmScaling extends VmScaling {
     Predicate<Vm> getOverloadPredicate();
 
     /**
-     * Sets a {@link Predicate} that defines when the {@link #getVm() Vm} is overloaded or not,
+     * Sets a {@link Predicate} that defines when a {@link #getVm() Vm} is overloaded or not,
      * making the {@link DatacenterBroker} to up scale the VM.
-     * The up scaling is performed by creating new VMs to attend new arrived Cloudlets
+     * The up scaling is performed by creating new VMs to run new arrived Cloudlets
      * in order to balance the load.
      *
      * @param predicate a predicate that checks certain conditions
      *                  to define a {@link #getVm() Vm} as overloaded.
      *                  The predicate receives the Vm that has to be checked.
      *                  Such a condition can be defined, for instance,
-     *                  based on Vm's {@link Vm#getCpuPercentUtilization(double)} CPU usage}
+     *                  based on Vm's {@link Vm#getCpuPercentUtilization(double) CPU usage}
      *                  and/or any other VM resource usage.
      *                  Despite the VmScaling is already linked to a {@link #getVm() Vm},
      *                  the Vm parameter for the {@link Predicate} enables reusing the same predicate

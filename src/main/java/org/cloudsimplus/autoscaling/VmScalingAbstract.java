@@ -48,10 +48,8 @@ public abstract class VmScalingAbstract implements VmScaling {
     }
 
     /**
-     * Checks if it is time to evaluate weather the Vm is under or overloaded.
-     *
+     * {@return true if it's time to check weather the Vm is over and underloaded, false otherwise}
      * @param time current simulation time
-     * @return true if it's time to check weather the Vm is over and underloaded, false otherwise
      */
     protected boolean isTimeToCheckPredicate(final double time) {
         return time > lastProcessingTime && (long) time % getVm().getHost().getDatacenter().getSchedulingInterval() == 0;
@@ -71,7 +69,7 @@ public abstract class VmScalingAbstract implements VmScaling {
 
     /**
      * Sets the last time the scheduler checked for VM overload.
-     * @param lastProcessingTime the processing time to set
+     * @param lastProcessingTime the current simulation time will be set as the last processing time
      */
     protected void setLastProcessingTime(final double lastProcessingTime) {
         this.lastProcessingTime = lastProcessingTime;

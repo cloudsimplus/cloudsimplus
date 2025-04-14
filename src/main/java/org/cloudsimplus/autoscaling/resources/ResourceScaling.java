@@ -54,11 +54,9 @@ public interface ResourceScaling {
     ResourceScaling NULL = scalingInstance -> 0;
 
     /**
-     * Computes the amount of resource to scale up or down,
-     * depending if the resource is over or underloaded, respectively.
-     *
+     * {@return the computed amount of resource to scale up or down,
+     * depending on if the resource is over or underloaded, respectively}
      * @param vmScaling the {@link VerticalVmScaling} object that is in charge to scale a resource.
-     * @return
      */
     double getResourceAmountToScale(VerticalVmScaling vmScaling);
 }

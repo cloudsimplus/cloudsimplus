@@ -29,6 +29,9 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.cloudsimplus.brokers.DatacenterBroker;
 import org.cloudsimplus.listeners.VmHostEventInfo;
+import org.cloudsimplus.resources.Bandwidth;
+import org.cloudsimplus.resources.Pe;
+import org.cloudsimplus.resources.Ram;
 import org.cloudsimplus.vms.Vm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,9 +41,9 @@ import java.util.function.Supplier;
 
 /**
  * <p>
- * A {@link HorizontalVmScaling} implementation that allows defining the condition
+ * A HorizontalVmScaling implementation that allows defining the condition
  * to identify an overloaded VM, based on any desired criteria, such as
- * current RAM, CPU and/or Bandwidth utilization.
+ * current {@link Ram}, {@link Pe CPU} or {@link Bandwidth} utilization.
  * A {@link DatacenterBroker} monitors the VMs that have
  * an HorizontalVmScaling object in order to create or destroy VMs on demand.
  * </p>
@@ -64,9 +67,9 @@ public class HorizontalVmScalingSimple extends VmScalingAbstract implements Hori
     private Supplier<Vm> vmSupplier;
 
     /**
-     * The last number of cloudlet creation requests
+     * The last number of Cloudlet creation requests
      * received by the broker. This is not related to the VM,
-     * but the overall Cloudlets creation requests.
+     * but the overall Cloudlet creation requests.
      */
     private long cloudletCreationRequests;
 
@@ -98,8 +101,8 @@ public class HorizontalVmScalingSimple extends VmScalingAbstract implements Hori
     }
 
     /**
-     * {@return true or false} to indicate if new Cloudlets were submitted
-     * to the broker since the last time this method was called.
+     * {@return true to indicate if new Cloudlets were submitted
+     * to the broker since the last time this method was called, false otherwise}
      */
     private boolean haveNewCloudletsArrived(){
         return getVm().getBroker().getCloudletCreatedList().size() > cloudletCreationRequests;
