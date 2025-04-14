@@ -8,7 +8,7 @@ import org.cloudsimplus.hosts.Host;
 import org.cloudsimplus.selectionpolicies.VmSelectionPolicy;
 
 /**
- * An abstract class that is the base for implementation of VM allocation policies which use
+ * An abstract class that is the base for implementation of {@link VmAllocationPolicyMigration VM allocation policies} which use
  * a dynamic over utilization threshold.
  *
  * @author Manoel Campos da Silva Filho
@@ -17,30 +17,30 @@ import org.cloudsimplus.selectionpolicies.VmSelectionPolicy;
 public abstract class VmAllocationPolicyMigrationDynamicUpperThresholdFirstFit extends VmAllocationPolicyMigrationAbstract
     implements VmAllocationPolicyMigrationDynamicUpperThreshold {
 
-    /** @see #getSafetyParameter() */
+    /** @see VmAllocationPolicyMigrationDynamicUpperThreshold#getSafetyParameter() */
     private double safetyParameter;
 
-    /** @see #getFallbackVmAllocationPolicy() */
+    /** @see VmAllocationPolicyMigrationDynamicUpperThreshold#getFallbackVmAllocationPolicy() */
     @NonNull
     private VmAllocationPolicyMigration fallbackVmAllocationPolicy;
 
     /**
-     * Creates a VmAllocationPolicyMigrationDynamicUpperThreshold
-     * with a {@link #getSafetyParameter() safety parameter} equals to 0
+     * Creates a VmAllocationPolicy with a {@link #getSafetyParameter() safety parameter} equals to 0
      * and no {@link #getFallbackVmAllocationPolicy() fallback policy}.
      *
-     * @param vmSelectionPolicy the policy that defines how VMs are selected for migration
+     * @param vmSelectionPolicy the {@link VmAllocationPolicyMigration#getVmSelectionPolicy() policy}
+     *                          that defines how VMs are selected for migration
      */
     public VmAllocationPolicyMigrationDynamicUpperThresholdFirstFit(final VmSelectionPolicy vmSelectionPolicy) {
         this(vmSelectionPolicy, 0, VmAllocationPolicyMigration.NULL);
     }
 
     /**
-     * Creates a VmAllocationPolicyMigrationDynamicUpperThreshold.
+     * Creates a VmAllocationPolicy.
      *
-     * @param vmSelectionPolicy          the policy that defines how VMs are selected for migration
-     * @param safetyParameter            the safety parameter
-     * @param fallbackVmAllocationPolicy the fallback VM allocation policy to be used when
+     * @param vmSelectionPolicy the {@link VmAllocationPolicyMigration#getVmSelectionPolicy() policy} that defines how VMs are selected for migration
+     * @param safetyParameter            {@link VmAllocationPolicyMigrationDynamicUpperThreshold#getSafetyParameter() the safety parameter}
+     * @param fallbackVmAllocationPolicy {@link VmAllocationPolicyMigrationDynamicUpperThreshold#getFallbackVmAllocationPolicy() the fallback VM allocation policy} to be used when
      * the over utilization host detection doesn't have data to be computed
      */
     public VmAllocationPolicyMigrationDynamicUpperThresholdFirstFit(
@@ -54,7 +54,7 @@ public abstract class VmAllocationPolicyMigrationDynamicUpperThresholdFirstFit e
     }
 
     /**
-     * Checks if a host is over utilized based on the CPU over utilization threshold computed using
+     * Checks if a host is over-utilized based on the CPU over utilization threshold computed using
      * the statistical method defined in {@link #computeHostUtilizationMeasure(Host)}.
      *
      * @param host {@inheritDoc}
@@ -70,7 +70,7 @@ public abstract class VmAllocationPolicyMigrationDynamicUpperThresholdFirstFit e
     }
 
     /**
-     * Gets a dynamically computed Host over utilization threshold based on the
+     * Gets a dynamically computed Host over-utilization threshold based on the
      * Host CPU utilization history.
      *
      * @param host {@inheritDoc}

@@ -33,8 +33,7 @@ import java.util.*;
 import java.util.function.BiFunction;
 
 /**
- * A class that implements the Null Object Design Pattern for the {@link VmAllocationPolicy}
- * class.
+ * A class that implements the Null Object Design Pattern for the {@link VmAllocationPolicy} class.
  *
  * @author Manoel Campos da Silva Filho
  * @see VmAllocationPolicy#NULL

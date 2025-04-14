@@ -41,7 +41,7 @@ import java.util.Optional;
  *     <ul>
  *         <li>This policy doesn't perform optimization of VM allocation by means of VM migration.</li>
  *         <li>It has a low computational complexity (high time-efficient) but may return
- *         and inactive Host that will be activated, while there may be active Hosts
+ *         an inactive Host that will be activated, while there may be active Hosts
  *         suitable for the VM.</li>
  *         <li>Despite the low computational complexity, such a policy may increase the number of active Hosts,
  *         that increases power consumption.</li>
@@ -54,11 +54,12 @@ import java.util.Optional;
 public class VmAllocationPolicyRandom extends VmAllocationPolicyAbstract implements VmAllocationPolicy {
     /**
      * A Pseudo-Random Number Generator (PRNG) used to select a Host.
+     * The PRNG must return values between 0 and 1.
      */
     private final ContinuousDistribution random;
 
     /**
-     * Instantiates a VmAllocationPolicyRandom.
+     * Creates a VmAllocationPolicy.
      *
      * @param random a Pseudo-Random Number Generator (PRNG) used to select a Host.
      *               The PRNG must return values between 0 and 1.

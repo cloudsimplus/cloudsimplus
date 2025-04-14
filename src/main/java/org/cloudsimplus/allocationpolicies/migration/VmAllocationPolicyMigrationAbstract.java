@@ -34,8 +34,10 @@ import static java.util.stream.Collectors.*;
 /**
  * An abstract VM allocation policy that dynamically optimizes the
  * VM allocation (placement) using migration.
- * <b>It's a Best Fit policy which selects the Host with most efficient power usage to place a given VM.</b>
+ * <b>It's a Best Fit policy that selects the Host with most efficient power usage to place a given VM.</b>
  * Such a behaviour can be overridden by subclasses.
+ *
+ * <p>Any {@link VmAllocationPolicyMigration} implementation must be based on this class.</p>
  *
  * @author Anton Beloglazov
  * @author Manoel Campos da Silva Filho
@@ -43,22 +45,25 @@ import static java.util.stream.Collectors.*;
  */
 @Accessors
 public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPolicyAbstract implements VmAllocationPolicyMigration {
-    /** Default CPU utilization percentage ([0..1]) that indicates a Host is underloaded. */
-    public static final double DEF_UNDERLOAD_THRESHOLD = 0.35;
+    /**
+     * Default CPU utilization percentage ([0..1]) that indicates a Host is underloaded.
+     * @see #setUnderUtilizationThreshold(double)
+     */
+    public static final double DEF_UNDER_UTILIZATION_THRESHOLD = 0.35;
 
-    /** @see #getUnderUtilizationThreshold() */
-    @Getter @Setter
+    /** @see VmAllocationPolicyMigration#getUnderUtilizationThreshold() */
+    @Getter
     private double underUtilizationThreshold;
 
     /** @see #getVmSelectionPolicy() */
     @NonNull @Getter @Setter
     private VmSelectionPolicy vmSelectionPolicy;
 
-    /** @see #isUnderloaded() */
+    /** @see VmAllocationPolicyMigration#isUnderloaded() */
     @Getter
     private boolean underloaded;
 
-    /** @see #isOverloaded() */
+    /** @see VmAllocationPolicyMigration#isOverloaded() */
     @Getter
     private boolean overloaded;
 
@@ -69,26 +74,25 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
 
     /**
      * The datacenter to try migrating VMs to.
-     * The initial value is the {@link #getDatacenter()} this
-     * policy is linked to, so that the policy tries
-     * inter-datacenter VM migration before a different datacenter.
+     * The initial value is the {@link #getDatacenter() datacenter} this policy is linked to,
+     * so that the policy tries migrating VMs inside the datacenter (inter-datacenter migration)
+     * before looking for a different one.
      */
     private Datacenter targetMigrationDc;
 
     /**
      * The index of the datacenter from the entire {@link CloudInformationService}
-     * datacenter list to try migrating VMs to if the {@link #targetMigrationDc}
-     * has no suitable Hosts.
-     * This is just used when the {@link #getDatacenter()} linked to this policy doesn't have suitable Hosts for
-     * inter-datacenter VM migration. This way, a different datacenter is tried.
+     * datacenter list to try migrating VMs to, if the {@link #targetMigrationDc} has no suitable Hosts.
+     * This is just used when the {@link #getDatacenter() datacenter} linked to this policy
+     * doesn't have suitable Hosts for inter-datacenter VM migration. This way, a different datacenter is tried.
      */
     private int targetMigrationDcIndex;
 
     /**
-     * Creates a VmAllocationPolicy.
-     * It uses a {@link #DEF_UNDERLOAD_THRESHOLD default under utilization threshold}.
+     * Creates a VmAllocationPolicy using a {@link #DEF_UNDER_UTILIZATION_THRESHOLD default under utilization threshold}.
      *
-     * @param vmSelectionPolicy the policy that defines how VMs are selected for migration
+     * @param vmSelectionPolicy the {@link VmAllocationPolicyMigration#getVmSelectionPolicy() policy}
+     *                          that defines how VMs are selected for migration
      */
     public VmAllocationPolicyMigrationAbstract(final VmSelectionPolicy vmSelectionPolicy) {
         this(vmSelectionPolicy, null);
@@ -96,9 +100,10 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
 
     /**
      * Creates a new VmAllocationPolicy, changing the {@link Function} to select a Host for a Vm.
-     * It uses a {@link #DEF_UNDERLOAD_THRESHOLD default under utilization threshold}.
+     * It uses a {@link #DEF_UNDER_UTILIZATION_THRESHOLD default under utilization threshold}.
      *
-     * @param vmSelectionPolicy the policy that defines how VMs are selected for migration
+     * @param vmSelectionPolicy the {@link VmAllocationPolicyMigration#getVmSelectionPolicy() policy}
+     *                          that defines how VMs are selected for migration
      * @param findHostForVmFunction a {@link Function} to select a Host for a given Vm.
      *                              Passing null makes the Function to be set as the default {@link #findHostForVm(Vm)}.
      * @see VmAllocationPolicy#setFindHostForVmFunction(java.util.function.BiFunction)
@@ -109,7 +114,7 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
         final BiFunction<VmAllocationPolicy, Vm, Optional<Host>> findHostForVmFunction)
     {
         super(findHostForVmFunction);
-        this.underUtilizationThreshold = DEF_UNDERLOAD_THRESHOLD;
+        this.underUtilizationThreshold = DEF_UNDER_UTILIZATION_THRESHOLD;
         this.savedAllocation = new HashMap<>();
         setVmSelectionPolicy(vmSelectionPolicy);
     }
@@ -240,9 +245,9 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
     }
 
     /**
-     * Prints the over utilized hosts.
+     * Prints the over-utilized hosts.
      *
-     * @param overloadedHosts the over utilized hosts
+     * @param overloadedHosts the over-utilized hosts
      */
     private void printOverUtilizedHosts(final Set<Host> overloadedHosts) {
         if (!overloadedHosts.isEmpty() && LOGGER.isWarnEnabled()) {
@@ -259,13 +264,12 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
     }
 
     /**
-     * Gets the power consumption different after the supposed placement of a VM into a given Host
-     * and the original Host power consumption.
+     * Gets the difference between the power consumption after and before the supposed placement of a VM into a given Host.
      *
      * @param host the host to check the power consumption
      * @param vm the candidate vm
-     * @return the host power consumption different after the supposed VM placement or 0 if the power
-     * consumption could not be determined
+     * @return the host power consumption difference (in Watts) after the supposed VM placement;
+     * or 0 if the power consumption could not be determined
      */
     protected double powerDiffAfterAllocation(final Host host, final Vm vm){
         final double powerAfterAllocation = getPowerAfterAllocation(host, vm);
@@ -277,12 +281,11 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
     }
 
     /**
-     * Checks if a host will be over utilized after placing of a candidate VM.
+     * Checks if a host will be over-utilized after placing a candidate VM.
      *
      * @param host the host to verify
      * @param vm the candidate vm
-     * @return true, if the host will be over utilized after VM placement;
-     *         false otherwise
+     * @return true, if the host will be over utilized after VM placement; false otherwise
      */
     private boolean isNotHostOverloadedAfterAllocation(final Host host, final Vm vm) {
         final var tempVm = new VmSimple(vm);
@@ -299,10 +302,7 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
 
     /**
      * {@inheritDoc}
-     * It's based on current CPU usage.
-     *
-     * @param host {@inheritDoc}
-     * @return {@inheritDoc}
+     * It's based on the current CPU usage.
      */
     @Override
     public boolean isOverloaded(final Host host) {
@@ -310,14 +310,14 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
     }
 
     /**
-     * Checks if a Host is overloaded based on the given CPU utilization percent.
+     * Checks if a Host is overloaded based on the given CPU utilization percent (between 0 and 1).
      * @param host the Host to check
      * @param cpuUsagePercent the Host's CPU utilization percent. The values may be:
      *                        <ul>
-     *                          <li>the current CPU utilization if you want to check if the Host is overloaded right now;</li>
-     *                          <li>the requested CPU utilization after temporarily placing a VM into the Host
+     *                          <li>the current CPU utilization, in case you want to check if the Host is overloaded right now;</li>
+     *                          <li>the requested CPU utilization after temporarily placing a VM into the Host,
      *                          just to check if it supports that VM without being overloaded.
-     *                          In this case, if the Host doesn't support the already placed temporary VM,
+     *                          In this case, if the Host doesn't support the already temporarily placed VM,
      *                          the method will return true to indicate the Host will be overloaded
      *                          if the VM is actually placed into it.
      *                          </li>
@@ -329,10 +329,10 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
     }
 
     /**
-     * Checks if a host is under utilized, based on current CPU usage.
+     * Checks if a host is under-utilized, based on current CPU usage.
      *
-     * @param host the host
-     * @return true, if the host is under utilized; false otherwise
+     * @param host the host to check
+     * @return true, if the host is underloaded; false otherwise
      */
     @Override
     public boolean isUnderloaded(final Host host) {
@@ -347,15 +347,15 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
     /**
      * Finds a Host that has enough resources to place a given VM and that will not
      * be overloaded after the placement. The selected Host will be that
-     * one with most efficient power usage for the given VM.
+     * one with the most efficient power usage for the given VM.
      *
      * <p>This method performs the basic filtering and delegates additional ones
      * and the final selection of the Host to other method.</p>
      *
-     * @param vm the VM
-     * @param predicate an additional {@link Predicate} to be used to filter
-     *                  the Host to place the VM
-     * @return an {@link Optional} containing a suitable Host to place the VM or an empty {@link Optional} if not found
+     * @param vm the VM to find a host for
+     * @param predicate an additional {@link Predicate} to be used to filter the Host to place the VM,
+     *                  or {@code host -> true} if no additional filtering is needed.
+     * @return an {@link Optional} containing a suitable Host to place the VM, or an empty {@link Optional} if not found
      * @see #findHostForVmInternal(Vm, Predicate)
      */
     private Optional<Host> findHostForVm(final Vm vm, final Predicate<Host> predicate) {
@@ -370,11 +370,11 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
 
     /**
      * Applies additional filters to the Hosts Stream and performs the actual Host selection.
-     * It can be overridden by sub-classes to change the way to select the Host for a given VM.
+     * It can be overridden by subclasses to change the way to select the Host for a given VM.
      *
      * @param vm the VM to find a Host to be placed into
      * @param predicate a {@link Predicate} to filter suitable Hosts
-     * @return an {@link Optional} containing a suitable Host to place the VM or an empty {@link Optional} if not found
+     * @return an {@link Optional} containing a suitable Host to place the VM, or an empty {@link Optional} if not found
      * @see #findHostForVm(Vm, Predicate)
      */
     protected Optional<Host> findHostForVmInternal(final Vm vm, final Predicate<Host> predicate){
@@ -383,25 +383,22 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
     }
 
     /**
-     * Extracts the host list from a migration map.
-     *
+     * {@return the host list from a migration map}
      * @param migrationMap the migration map
-     * @return the list
      */
     private List<Host> extractHostListFromMigrationMap(final Map<Vm, Host> migrationMap) {
         return new ArrayList<>(migrationMap.values());
     }
 
     /**
-     * Gets a new VM placement considering the list of VM to migrate
-     * from overloaded Hosts.
+     * Gets a new VM placement considering the list of VMs to migrate from overloaded Hosts.
      *
      * @param overloadedHosts the list of overloaded Hosts
      * @return the new VM placement map where each key is a VM
      * and each value is the Host to place it;
      * an empty map if no suitable target Hosts were found
      * or if there is no overloaded host.
-     * TODO See issue in {@link #getVmsToMigrateFromOverloadedHost(Host)}
+     * TODO: See issue in {@link #getVmsToMigrateFromOverloadedHost(Host)}
      */
     private Map<Vm, Host> getMigrationMapFromOverloadedHosts(final Set<Host> overloadedHosts) {
         if(overloadedHosts.isEmpty()) {
@@ -444,12 +441,9 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
     }
 
     /**
-     * Gets a new placement for VMs from an underloaded host.
-     *
+     * {@return a new vm placement for the given VMs, or an empty Map if no suitable Host was found}
      * @param vmsToMigrate the list of VMs to migrate from the underloaded Host
-     * @param excludedHosts the list of hosts that aren't selected as
-     * destination hosts
-     * @return the new vm placement for the given VMs or an empty Map if no suitable Host was found
+     * @param excludedHosts the list of hosts that aren't selected as destination hosts
      */
     private Map<Vm, Host> getNewVmPlacementFromUnderloadedHost(
         final List<? extends Vm> vmsToMigrate,
@@ -496,10 +490,10 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
     }
 
     /**
-     * Gets the VMs to migrate from Hosts.
+     * Gets the VMs to migrate from overloaded Hosts.
      *
-     * @param overloadedHosts the List of overloaded Hosts
-     * @return the VMs to migrate from hosts
+     * @param overloadedHosts the List of overloaded Hosts to migrate VMs from
+     * @return the VMs to be migrated from the given hosts
      */
     private List<Vm> getVmsToMigrateFromOverloadedHosts(final Set<Host> overloadedHosts) {
         final var vmsToMigrateList = new LinkedList<Vm>();
@@ -537,19 +531,17 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
     }
 
     /**
-     * Gets the VMs to migrate from under utilized host.
+     * Gets the VMs to migrate from an under-utilized host.
      *
-     * @param host the host
-     * @return the vms to migrate from under utilized host
+     * @param host an underloaded host
+     * @return the vms to migrate from under-utilized host
      */
     protected List<? extends Vm> getVmsToMigrateFromUnderUtilizedHost(final Host host) {
         return host.getMigratableVms();
     }
 
     /**
-     * Gets the switched off hosts.
-     *
-     * @return the switched off hosts
+     * {@return hosts that are switched off}
      */
     protected List<Host> getSwitchedOffHosts() {
         return this.getHostList().stream()
@@ -562,11 +554,10 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
     }
 
     /**
-     * Gets the List of overloaded hosts.
-     * If a Host is overloaded but it has VMs migrating out,
-     * then it's not included in the returned List
-     * because the VMs to be migrated to move the Host from
-     * the overload state already are in migration.
+     * Gets a Set of overloaded hosts.
+     * If a Host is overloaded, but it has VMs migrating out,
+     * then it's not included in the returned Set.
+     * That is because the outgoing VMs will take the Host out of the overload state.
      *
      * @return the over utilized hosts
      */
@@ -579,13 +570,11 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
 
     /**
      * Gets the most underloaded Host.
-     * If a Host is underloaded but it has VMs migrating in,
-     * then it's not included in the returned List
-     * because the VMs to be migrated to move the Host from
-     * the underload state already are in migration to it.
+     * If a Host is underloaded, but it has VMs migrating in, then it's not considered.
+     * That is because the incoming VMs will take the Host out of the underload state.
      * Likewise, if all VMs are migrating out, nothing has to be
-     * done anymore. It just has to wait the VMs to finish
-     * the migration.
+     * done anymore. It has just to wait the VMs to finish the migration so that the
+     * Host can be turned off.
      *
      * @param excludedHosts the Hosts that have to be ignored when looking for the under utilized Host
      * @return the most under utilized host or {@link Host#NULL} if no Host is found
@@ -606,9 +595,8 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
     }
 
     /**
-     * Gets the total MIPS that is currently being used by all VMs inside the Host.
-     * @param host
-     * @return
+     * {@return the total MIPS that is currently being used by all VMs inside the Host}
+     * @param host the Host to get the total MIPS
      */
     private double getHostTotalRequestedMips(final Host host) {
         return host.getVmList().stream()
@@ -619,7 +607,6 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
     /**
      * Checks if all VMs of a Host are <b>NOT</b> migrating out.
      * In this case, the given Host will not be selected as an underloaded Host at the current moment.
-     * That is: not all VMs are migrating out if at least one VM isn't in migration process.
      *
      * @param host the host to check
      * @return true if at least one VM isn't migrating, false if all VMs are migrating
@@ -652,10 +639,10 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
 
     /**
      * Restore VM allocation from the allocation history.
-     *  TODO: The allocation map only needs to be restored because
-     *  VMs are destroyed in order to assess a new VM placement.
-     *  After fixing this issue, there will be no need to restore VM mapping.
-     *  https://github.com/cloudsimplus/cloudsimplus/issues/94
+     * TODO: The allocation map only needs to be restored because
+     * VMs are destroyed in order to assess a new VM placement.
+     * After fixing this issue, there will be no need to restore VM mapping.
+     * https://github.com/cloudsimplus/cloudsimplus/issues/94
      *
      * @see #savedAllocation
      */
@@ -674,14 +661,12 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
     }
 
     /**
-     * Gets the power consumption of a host after the supposed placement of a candidate VM.
+     * {@return the power consumption of a host after the supposed placement of a candidate VM,
+     * or 0 if the power consumption could not be determined}
      * The VM is not in fact placed at the host.
-     *
      * @param host the host to check the power consumption
      * @param vm the candidate vm
      *
-     * @return the host power consumption after the supposed VM placement or 0 if the power
-     * consumption could not be determined
      */
     protected double getPowerAfterAllocation(final Host host, final Vm vm) {
         try {
@@ -710,12 +695,8 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
     }
 
     /**
-     * Gets the utilization of the CPU in MIPS for the current potentially
-     * allocated VMs.
-     *
-     * @param host the host
-     *
-     * @return the utilization of the CPU in MIPS
+     * {@return the utilization of the CPU in MIPS for the current potentially allocated VMs in a given host}
+     * @param host the host to get the utilization of CPU MIPS
      */
     protected double getUtilizationOfCpuMips(final Host host) {
         double hostUtilizationMips = 0;
@@ -728,10 +709,10 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
     }
 
     /**
-     * Calculate additional potential CPU usage of a VM migrating into a given Host.
+     * {@return the additional potential CPU usage (in MIPS) the Host will use if a VM is migrating into it;
+     * 0 if the VM is not migrating}
      * @param host the Hosts that is being computed the current utilization of CPU MIPS
      * @param vm a VM from that Host
-     * @return the additional amount of MIPS the Host will use if the VM is migrating into it, 0 otherwise
      */
     private double additionalCpuUtilizationDuringMigration(final Host host, final Vm vm) {
         if (!host.getVmsMigratingIn().contains(vm)) {

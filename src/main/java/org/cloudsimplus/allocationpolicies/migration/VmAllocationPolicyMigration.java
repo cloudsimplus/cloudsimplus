@@ -27,42 +27,39 @@ public interface VmAllocationPolicyMigration extends VmAllocationPolicy {
     VmAllocationPolicyMigration NULL = new VmAllocationPolicyMigrationNull();
 
     /**
-     * Checks if there is any underloaded Host.
-     * @return
+     * {@return true if there is any underloaded Host in the datacenter, false otherwise}
      */
     boolean isUnderloaded();
 
     /**
-     * Checks if host is currently under utilized, according the
-     * conditions defined by the Allocation Policy.
+     * Checks if a host is currently under utilized, according the
+     * conditions defined by the Allocation Policy implementation.
      *
-     * @param host the host
-     * @return true, if the host is under utilized; false otherwise
+     * @param host the host to check
+     * @return true if the host is under utilized, false otherwise
      */
     boolean isUnderloaded(Host host);
 
     /**
-     * Checks if there is any overloaded Host.
-     * @return
+     * {@return true if there is any overloaded Host in the datacenter, false otherwise}
      */
     boolean isOverloaded();
 
     /**
-     * Checks if host is currently over utilized, according the
+     * Checks if a host is currently over-utilized, according to the
      * conditions defined by the Allocation Policy.
      *
      * @param host the host to check
-     * @return true, if the host is over utilized; false otherwise
+     * @return true if the host is overloaded, false otherwise
      */
     boolean isOverloaded(Host host);
 
     /**
-     * Gets the host CPU utilization threshold to detect over utilization.
-     * It is a percentage value from 0 to 1.
-     * Whether it is a static or dynamically defined threshold depends on each implementing class.
+     * Gets a host CPU utilization threshold to detect over utilization.
+     * Whether it is a static or dynamically defined threshold depends on each allocation policy implementation.
      *
      * @param host the host to get the over utilization threshold
-     * @return the over utilization threshold
+     * @return the over utilization threshold (a percentage value from 0 to 1)
      */
     double getOverUtilizationThreshold(Host host);
 
@@ -70,35 +67,33 @@ public interface VmAllocationPolicyMigration extends VmAllocationPolicy {
      * Sets the policy that defines how VMs are selected for migration.
      *
      * @param vmSelectionPolicy the new vm selection policy
+     * @return this VmAllocationPolicy object
      */
     VmAllocationPolicy setVmSelectionPolicy(VmSelectionPolicy vmSelectionPolicy);
 
     /**
-     * Gets the policy that defines how VMs are selected for migration.
-     *
-     * @return the {@link VmSelectionPolicy}.
+     * {@return the policy that defines how VMs are selected for migration}
      */
     VmSelectionPolicy getVmSelectionPolicy();
 
     /**
-     * Gets the percentage of total CPU utilization
-     * to indicate that a host is under used and its VMs have to be migrated.
+     * Gets the percentage of total Host CPU utilization
+     * to indicate when a host is under used, so that its VMs can be migrated elsewhere.
      *
-     * @return the under utilization threshold (in scale is from 0 to 1, where 1 is 100%)
+     * @return the under utilization threshold (a percentage value from 0 to 1)
      */
     double getUnderUtilizationThreshold();
 
     /**
-     * Sets the percentage of total CPU utilization
-     * to indicate that a host is under used and its VMs have to be migrated.
+     * Sets the percentage of total Host CPU utilization
+     * to indicate when a host is under used, so that its VMs can be migrated elsewhere.
      *
-     * @param underUtilizationThreshold the under utilization threshold (in scale is from 0 to 1, where 1 is 100%)
+     * @param underUtilizationThreshold the under utilization threshold (a percentage value from 0 to 1)
      */
     void setUnderUtilizationThreshold(double underUtilizationThreshold);
 
     /**
-     * Checks if there is any under or overloaded Host.
-     * @return
+     * {@return true if there is any under or overloaded Host, false otherwise}
      */
     default boolean isUnderOrOverloaded() {
         return isUnderloaded() || isOverloaded();

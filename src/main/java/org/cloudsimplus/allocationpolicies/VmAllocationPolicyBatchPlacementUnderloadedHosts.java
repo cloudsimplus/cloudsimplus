@@ -37,20 +37,20 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Alocates one different underloaded Host for each submitted VM from a List (in batch),
+ * Allocates one different underloaded Host for each submitted VM from a List (in batch),
  * if {@link DatacenterBroker#isBatchVmCreation()} is true, so that
  * the broker sends a List of VMs to be created in a single event
- * (instead of sending a new event for each VM to be created).
+ * (instead of sending a new event for each VM).
  *
- * <p>If that is not enabled this implementation will place VMs one-by-one
- * following the {VmAllocationPolicyMigrationFirstFitStaticThreshold}.</p>
+ * <p>If that is not enabled, this implementation will place VMs one-by-one
+ * following the {@link VmAllocationPolicyMigrationFirstFitStaticThreshold}.</p>
  *
  * <p>This implementation is similar to {@link VmAllocationPolicyRoundRobin},
- * but is selects active and underloaded Hosts first, then performs selection
+ * but it selects active and underloaded Hosts first, then performs selection
  * of Host to place a list of VMs in order to reduce the underload state of various Hosts at once.
  * </p>
  *
- * <p>This may not be the most reasoanable policy and is provided
+ * <p>This may not be the most reasonable policy and is provided
  * just as an example on how to implement a different policy for batch VM creation
  * when the related broker attribute is enabled.</p>
  *

@@ -33,8 +33,8 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * A <b>First Fit VM allocation policy</b>
- * which finds the first Host having suitable resources to place a given VM.
+ * A <a href="https://en.wikipedia.org/wiki/First-fit_bin_packing">First Fit VM allocation policy</a>
+ * which finds the first Host having enough resources to place a given VM.
  * This is a high time-efficient policy with a best-case complexity O(1)
  * and a worst-case complexity O(N), where N is the number of Hosts.
  * Additionally, such a policy is resource efficient, because it performs
@@ -46,7 +46,7 @@ import java.util.Optional;
  *     <ul>
  *         <li>This policy doesn't perform optimization of VM allocation by means of VM migration.</li>
  *         <li>It has a low computational complexity but may return
- *         and inactive Host that will be activated, while there may be active Hosts
+ *         an inactive Host that will be activated, while there may be active Hosts
  *         suitable for the VM.</li>
  *     </ul>
  * </p>

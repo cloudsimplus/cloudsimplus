@@ -31,8 +31,8 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 /**
- * A Best Fit VmAllocationPolicy implementation that chooses, as
- * the host for a VM, the one with the most number of PEs in use,
+ * A <a href="https://en.wikipedia.org/wiki/Best-fit_bin_packing">Best Fit</a> VmAllocationPolicy implementation that chooses, as
+ * the host for a VM, the one with the highest number of PEs in use,
  * which has enough free PEs for a VM.
  *
  * <p>This is a really computationally complex policy since the worst-case complexity
