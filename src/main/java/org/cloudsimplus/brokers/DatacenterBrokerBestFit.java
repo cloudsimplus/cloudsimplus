@@ -30,11 +30,11 @@ import org.cloudsimplus.vms.Vm;
 import java.util.Comparator;
 
 /**
- * A implementation of {@link DatacenterBroker} that uses a Best Fit
- * mapping between submitted cloudlets and Vm's, trying to place a Cloudlet
- * at the best suitable Vm which can be found (according to the required Cloudlet's PEs).
- * The Broker then places the submitted Vm's at the first Datacenter found.
- * If there isn't capacity in that one, it will try the other ones.
+ * A {@link DatacenterBroker} that uses a <a href="https://en.wikipedia.org/wiki/Best-fit_bin_packing">Best Fit</a>
+ * mapping between submitted cloudlets and VMs, trying to place a Cloudlet
+ * at the best suitable Vm that can be found (according to the required Cloudlet's PEs).
+ * The Broker then places the submitted VMs at the first Datacenter found.
+ * If there isn't capacity in that one, it will try other available ones.
  *
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 4.3.8
@@ -42,9 +42,9 @@ import java.util.Comparator;
 public class DatacenterBrokerBestFit extends DatacenterBrokerSimple {
 
     /**
-     * Creates a DatacenterBroker object.
+     * Creates a DatacenterBroker.
      *
-     * @param simulation The CloudSimPlus instance that represents the simulation the Entity is related to
+     * @param simulation The {@link CloudSimPlus} instance that represents the simulation the broker is related to
      */
     public DatacenterBrokerBestFit(final CloudSimPlus simulation) {
         super(simulation);

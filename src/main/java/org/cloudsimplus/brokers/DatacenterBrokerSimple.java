@@ -14,12 +14,13 @@ import org.cloudsimplus.datacenters.Datacenter;
 import org.cloudsimplus.vms.Vm;
 
 /**
- * A simple implementation of {@link DatacenterBroker} that try to host customer's VMs
+ * A simple implementation of {@link DatacenterBroker} that tries to host customer's VMs
  * at the first Datacenter found. If there isn't capacity in that one,
- * it will try the other ones.
+ * it will try other available ones.
  *
- * <p>The default selection of VMs for each cloudlet is based on a Round-Robin policy,
- * cyclically selecting the next VM from the broker VM list for each requesting
+ * <p>The default selection of VMs for each cloudlet is based on a
+ * <a href="https://en.wikipedia.org/wiki/Round-robin_scheduling">Round-Robin policy</a>,
+ * which cyclically selects the next VM from the broker VM list for each requesting
  * cloudlet.
  * However, when {@link #setSelectClosestDatacenter(boolean) selection of the closest datacenter}
  * is enabled, the broker will try to place each VM at the closest Datacenter as possible,
@@ -51,14 +52,14 @@ public class DatacenterBrokerSimple extends DatacenterBrokerAbstract {
     private int lastSelectedDcIndex;
 
     /**
-     * Number of datacenters tried to place VMs.
+     * Number of datacenters tried to place VMs so far.
      */
     private int triedDatacenters;
 
     /**
-     * Creates a new DatacenterBroker.
+     * Creates a DatacenterBroker.
      *
-     * @param simulation the CloudSimPlus instance that represents the simulation the Entity is related to
+     * @param simulation the {@link CloudSimPlus} instance that represents the simulation the broker is related to
      */
     public DatacenterBrokerSimple(final CloudSimPlus simulation) {
         this(simulation, "");
@@ -67,7 +68,7 @@ public class DatacenterBrokerSimple extends DatacenterBrokerAbstract {
     /**
      * Creates a DatacenterBroker giving a specific name.
      *
-     * @param simulation the CloudSimPlus instance that represents the simulation the Entity is related to
+     * @param simulation the {@link CloudSimPlus} instance that represents the simulation the broker is related to
      * @param name the DatacenterBroker name
      */
     public DatacenterBrokerSimple(final CloudSimPlus simulation, final String name) {
@@ -106,8 +107,8 @@ public class DatacenterBrokerSimple extends DatacenterBrokerAbstract {
             return nextDatacenter(lastDatacenter);
         }
 
-        /*If all Datacenter were tried already, return Datacenter.NULL to indicate
-        * there isn't a suitable Datacenter to place waiting VMs.*/
+        /* If all Datacenter were tried already, return Datacenter.NULL to indicate
+         * there isn't a suitable Datacenter to place waiting VMs.*/
         if(triedDatacenters >= getDatacenterList().size()){
             return Datacenter.NULL;
         }

@@ -36,12 +36,12 @@ import org.cloudsimplus.vms.Vm;
 import java.util.stream.Collectors;
 
 /**
- * <p>A simple implementation of {@link DatacenterBroker} that uses some heuristic
+ * <p>A {@link DatacenterBroker} that uses some {@link #setHeuristic(CloudletToVmMappingHeuristic) heuristic}
  * to get a suboptimal mapping among submitted cloudlets and Vm's.
  * Such heuristic can be, for instance, the {@link CloudletToVmMappingSimulatedAnnealing}
  * that implements a Simulated Annealing algorithm.
- * The Broker then places the submitted Vm's at the first Datacenter found.
- * If there isn't capacity in that one, it will try the other ones.</p>
+ * The Broker then places the submitted VMs at the first Datacenter found.
+ * If there isn't capacity in that one, it will try other available ones.</p>
  *
  * @author Manoel Campos da Silva Filho
  */
@@ -49,21 +49,22 @@ import java.util.stream.Collectors;
 public class DatacenterBrokerHeuristic extends DatacenterBrokerSimple {
     /**
      * A heuristic to be used to find a suboptimal mapping between
-     * Cloudlets and Vm's. <b>The list of Cloudlets and Vm's to be used by the heuristic
+     * Cloudlets and VMs. <b>The list of Cloudlets and VMs to be used by the heuristic
      * will be set automatically by the DatacenterBroker. Accordingly,
-     * the developer don't have to set these lists manually,
+     * the developer don't have to set those lists manually,
      * once they will be overridden.</b>
      *
      * <p>The time taken to find a suboptimal mapping of Cloudlets to Vm's
-     * depends on the heuristic parameters that have to be set carefully.</p>
+     * depends on the heuristic parameters that have to be set carefully.
+     * Check the {@link CloudletToVmMappingHeuristic} documentation for details.</p>
      */
     @NonNull
     private CloudletToVmMappingHeuristic heuristic;
 
     /**
-     * Creates a new DatacenterBroker object.
+     * Creates a DatacenterBroker.
      *
-     * @param simulation the CloudSimPlus instance that represents the simulation the Entity is related to
+     * @param simulation the {@link CloudSimPlus} instance that represents the simulation the broker is related to
      * @see #setHeuristic(CloudletToVmMappingHeuristic)
      */
     public DatacenterBrokerHeuristic(final CloudSimPlus simulation) {
@@ -78,7 +79,7 @@ public class DatacenterBrokerHeuristic extends DatacenterBrokerSimple {
     }
 
     /**
-     * Setups the heuristic parameters and starts the heuristic to find a suboptimal mapping for Cloudlets and Vm's.
+     * Setups some heuristic parameters and starts the heuristic to find a suboptimal mapping for Cloudlets and VMs.
      */
     private void setupAndStartHeuristic() {
         heuristic.setVmList(getVmExecList());
@@ -87,10 +88,8 @@ public class DatacenterBrokerHeuristic extends DatacenterBrokerSimple {
                         .filter(cloudlet -> !cloudlet.isBoundToVm())
                         .collect(Collectors.toList()));
         /*
-        Starts the heuristic to get a sub-optimal solution
-        for the Cloudlets to Vm's mapping.
-        Depending on the heuristic parameters, it may take a while
-        to get a solution.
+        Starts the heuristic to get a suboptimal solution for the Cloudlets to VMs mapping.
+        Depending on the heuristic parameters, it may take a while to get a solution.
         */
         LOGGER.info(
                 "{} started the heuristic to get a suboptimal solution for mapping Cloudlets to Vm's running {} neighborhood searches by iteration.{}{}",
@@ -107,12 +106,12 @@ public class DatacenterBrokerHeuristic extends DatacenterBrokerSimple {
     @Override
     public Vm defaultVmMapper(final Cloudlet cloudlet) {
         /*
-         * Defines a fallback vm in the case the heuristic solution
+         * Defines a fallback Vm in the case the heuristic solution
          * didn't assign a Vm to the given cloudlet.
          */
         final Vm fallbackVm = super.defaultVmMapper(cloudlet);
 
-        //If user didn't bind this cloudlet and it has not been executed yet,
+        //If user didn't bind this cloudlet, and it has not been executed yet,
         //gets the Vm for the Cloudlet from the heuristic solution.
         return heuristic.getBestSolutionSoFar().getResult().getOrDefault(cloudlet, fallbackVm);
     }
