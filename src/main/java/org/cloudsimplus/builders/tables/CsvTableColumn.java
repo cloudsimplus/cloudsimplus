@@ -24,8 +24,8 @@
 package org.cloudsimplus.builders.tables;
 
 /**
- * A column of an CSV table. The class generates the CSV code
- * that represents a column in a CSV table.
+ * A column of an {@link CsvTable}. The class generates the CSV code
+ * that represents a column in the table.
  *
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
@@ -71,8 +71,14 @@ public class CsvTableColumn extends AbstractTableColumn {
         return alignStringRight(str, generateTitleHeader().length());
     }
 
-    public static String alignStringRight(final String str, final int size) {
-        final String fmt = "%%%ds".formatted(size);
+    /**
+     * Align a string to the right side, based on a given length.
+     * @param str the string to be aligned
+     * @param length the length to align the string to
+     * @return the aligned string
+     */
+    public static String alignStringRight(final String str, final int length) {
+        final String fmt = "%%%ds".formatted(length);
         return fmt.formatted(str);
     }
 }

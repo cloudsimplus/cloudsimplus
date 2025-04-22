@@ -24,12 +24,11 @@
 package org.cloudsimplus.builders.tables;
 
 import lombok.Getter;
-import org.apache.commons.lang3.StringUtils;
 
 import static java.util.Objects.requireNonNullElse;
 
 /**
- * A column of a table to be generated using a {@link Table} class.
+ * An abstract column of a table to be generated using a {@link Table} class.
  * @author Manoel Campos da Silva Filho
  */
 @Getter
@@ -57,8 +56,8 @@ public abstract class AbstractTableColumn implements TableColumn {
 
     /**
      * Creates a column with a specific title.
-     * @param table The table that the column belongs to.
-     * @param title The column title.
+     * @param table the table that the column belongs to.
+     * @param title the column title.
      */
     public AbstractTableColumn(final Table table, final String title) {
         this(table, title, "");
@@ -66,9 +65,9 @@ public abstract class AbstractTableColumn implements TableColumn {
 
     /**
      * Creates a column with a specific title, subtitle and format.
-     * @param title The column title.
-     * @param subTitle The column subtitle.
-     * @param format The column format.
+     * @param title the column title.
+     * @param subTitle the column subtitle.
+     * @param format the column format.
      */
     public AbstractTableColumn(final String title, final String subTitle, final String format) {
         this.title = title;
@@ -78,8 +77,8 @@ public abstract class AbstractTableColumn implements TableColumn {
 
     /**
      * Creates a column with a specific title and subtitle for a given table.
-     * @param title The column title.
-     * @param subTitle The column subtitle.
+     * @param title the column title.
+     * @param subTitle the column subtitle.
      */
     public AbstractTableColumn(final Table table, final String title, final String subTitle) {
         this(title, subTitle);
@@ -88,8 +87,8 @@ public abstract class AbstractTableColumn implements TableColumn {
 
     /**
      * Creates a column with a specific title and subtitle.
-     * @param title The column title.
-     * @param subTitle The column subtitle.
+     * @param title the column title.
+     * @param subTitle the column subtitle.
      */
     public AbstractTableColumn(final String title, final String subTitle) {
         this(title, subTitle, "");
@@ -127,7 +126,7 @@ public abstract class AbstractTableColumn implements TableColumn {
     /**
      * Generates the string that represents the data of the column,
      * formatted according to the {@link #getFormat() format}.
-     * @param data The data of the column to be formatted
+     * @param data the data of the column to be formatted
      * @return a string containing the formatted column data
      */
     @Override

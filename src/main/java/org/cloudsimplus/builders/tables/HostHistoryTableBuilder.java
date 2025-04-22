@@ -44,8 +44,7 @@ public class HostHistoryTableBuilder extends TableBuilderAbstract<HostStateHisto
     private final Host host;
 
     /**
-     * Instantiates a builder to print the history of a Host using the a
-     * default {@link TextTable}.
+     * Instantiates a builder to print the history of a Host using the default {@link TextTable}.
      * To use a different {@link Table}, check the alternative constructors.
      *
      * @param host the Host to get the history to print

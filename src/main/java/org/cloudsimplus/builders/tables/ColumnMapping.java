@@ -28,7 +28,7 @@ import java.util.function.Function;
 import static java.util.Objects.requireNonNull;
 
 /**
- * A record that creates a mapping for adding a column into a table latter on.
+ * A record that creates a mapping for adding a column into a table later on.
  * That is used by {@link TableBuilderAbstract} objects.
  *
  * @param <T>          the type of objects printed into the table
@@ -48,7 +48,7 @@ record ColumnMapping<T>(TableColumn col, Function<T, Object> dataFunction, int i
         requireNonNull(dataFunction);
     }
 
-    public Object getColData(T object){
+    public Object getColData(final T object){
         return dataFunction.apply(object);
     }
 }

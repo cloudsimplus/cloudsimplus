@@ -44,25 +44,25 @@ public class CsvTable extends AbstractTable {
     }
 
     /**
-     * CSV files doesn't have a title.
+     * CSV files don't have a title.
      */
     @Override
     public void printTitle() {/**/}
 
     /**
-     * CSV files doesn't have a table opening line.
+     * CSV files don't have a table opening line.
      */
     @Override
     public void printTableOpening() {/**/}
 
     /**
-     * CSV files doesn't have a table closing line.
+     * CSV files don't have a table closing line.
      */
     @Override
     public void printTableClosing() {/**/}
 
     /**
-     * CSV files doesn't have a row opening line.
+     * CSV files don't have a row opening line.
      * @return
      */
     @Override
@@ -79,8 +79,7 @@ public class CsvTable extends AbstractTable {
     }
 
     /**
-     * Creates a horizontal line with the same width of the table.
-     * @return The string containing the horizontal line
+     * @return a horizontal line with the same width of the table
      */
     protected String createHorizontalLine(final boolean includeColSeparator) {
         if(includeColSeparator){
@@ -99,29 +98,25 @@ public class CsvTable extends AbstractTable {
     }
 
     /**
-     * Creates a copy of a string repeated a given number of times.
-     * @param str The string to repeat
-     * @param timesToRepeat The number of times to repeat the string
-     * @return The string repeated the given number of times
+     * {@return a string repeated a given number of times}
+     * @param str the string to repeat
+     * @param timesToRepeat the number of times to repeat the string
      */
     protected final String stringRepeat(final String str, final int timesToRepeat) {
         return new String(new char[timesToRepeat]).replace("\0", str);
     }
 
     /**
-     * Gets the number of characters of the column headers row.
-     *
-     * @return the number of characters of column headers row
+     * @return the number of characters of the column headers row
      */
     protected final int getLengthOfColumnHeadersRow(){
         return getColumns().stream().mapToInt(col -> col.generateTitleHeader().length()).sum();
     }
 
     /**
-     * Gets a given string and returns a formatted version of it
-     * that is centralized in the table width.
-     * @param str The string to be centralized
-     * @return The centralized version of the string
+     * Gets a string and returns a copy centralized along the table width.
+     * @param str the string to be centralized
+     * @return the centralized version of the string
      */
     protected String getCentralizedString(final String str) {
         final int indentationLength = (getLengthOfColumnHeadersRow() - str.length())/2;

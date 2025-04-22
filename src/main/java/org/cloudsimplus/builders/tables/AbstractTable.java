@@ -33,9 +33,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-
 /**
- * An abstract base class for implementing data tables.
+ * An abstract base class for implementing data tables to present simulation results.
  *
  * @author Manoel Campos da Silva Filho
  */
@@ -111,9 +110,7 @@ public abstract class AbstractTable implements Table {
     }
 
     /**
-     *
-     * @return true if there is at least a column with a subtitle, false if no column
-     * has a subtitle.
+     * {@return true if there is at least a column with a subtitle, false if no column has a subtitle}
      */
     private boolean isThereAnySubtitledColumn(){
         return columns.stream().anyMatch(col -> !col.getSubTitle().isBlank());
@@ -181,20 +178,17 @@ public abstract class AbstractTable implements Table {
     protected abstract void printTitle();
 
     /**
-     * Gets the string that has to precede each printed row.
-     * @return
+     * {@return the string that has to precede each printed row}
      */
     protected abstract String rowOpening();
 
     /**
-     * Gets the string to close a row.
-     * @return
+     * {@return the string to close a row}
      */
     protected abstract String rowClosing();
 
     /**
-     * Gets the string that has to precede subtitles head.
-     * @return
+     * {@return the string that has to precede the subtitle head}
      */
     protected abstract String subtitleHeaderOpening();
 
@@ -224,7 +218,7 @@ public abstract class AbstractTable implements Table {
     /**
      * Adds a column to the end of the table.
      * @param column the column to add
-     * @return
+     * @return this table instance
      */
     protected final TableColumn addColumn(final TableColumn column) {
         return addColumn(column, columns.size());
@@ -235,7 +229,7 @@ public abstract class AbstractTable implements Table {
      *
      * @param column the column to add
      * @param index  the position in the table to add the column
-     * @return
+     * @return this table instance
      */
     protected final TableColumn addColumn(final TableColumn column, final int index) {
         column.setTable(this);

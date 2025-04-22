@@ -26,7 +26,7 @@ package org.cloudsimplus.builders.tables;
 import java.util.List;
 
 /**
- * An interface for classes that generate tables from a given data set,
+ * An interface for classes that generate tables from a given data set to show simulation results,
  * following the Builder Design Pattern.
  *
  * @author Manoel Campos da Silva Filho
@@ -34,8 +34,8 @@ import java.util.List;
  */
 public interface Table {
     /**
-     * Adds a new row to the list of rows containing the data to be printed.
-     * @return
+     * Adds a new empty row to the list of rows, so that data can be added to the row further.
+     * @return the new empty row
      */
     List<Object> newRow();
 
@@ -44,7 +44,7 @@ public interface Table {
      * The created column is not added to the table.
      *
      * @param title The title of the column to create.
-     * @return The created column.
+     * @return The created column
      * @see #newColumn(String, String)
      * @see #newColumn(String, String, String)
      */
@@ -87,40 +87,36 @@ public interface Table {
     Table addColumnList(String... columnTitles);
 
     /**
-     *
-     * @return the table title
+     * {@return the table title}
      */
     String getTitle();
 
     /**
-     *
+     * {@return the table instance}
      * @param title the table title to set
-     * @return The Table instance
      */
     Table setTitle(String title);
 
     /**
-     * @return the list of columns of the table
+     * {@return the list of columns of the table}
      */
     List<TableColumn> getColumns();
 
     /**
-     * Gets the number of columns.
-     *
-     * @return
+     * {@return the number of columns}
      */
     int colCount();
 
     /**
-     * Gets the string used to separate one column from another (optional).
-     * @return
+     * {@return the string used to separate one column from another (optional)}
      */
     String getColumnSeparator();
 
     /**
-     * Sets the string used to separate one column from another (optional).
-     * @param columnSeparator the separator to set
-     * @return
+     * Sets the string used to separate one column from another.
+     * It's optional to set a column separator.
+     * @param columnSeparator the separator
+     * @return this table instance
      */
     Table setColumnSeparator(String columnSeparator);
 

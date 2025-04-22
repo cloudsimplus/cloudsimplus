@@ -33,7 +33,7 @@ public class LatexTable extends AbstractTable {
     }
 
     /**
-     * Adds column specifiers
+     * Adds column specifiers which creates columsn and define how they are aligned in the LaTex Table.
     */
     public void colNumberSpecifier() {
         final String columnSpecs = "|c".repeat(this.colCount());
