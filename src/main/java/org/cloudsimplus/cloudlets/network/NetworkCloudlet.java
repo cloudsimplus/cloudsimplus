@@ -10,6 +10,7 @@ package org.cloudsimplus.cloudlets.network;
 import lombok.NonNull;
 import lombok.experimental.Accessors;
 import org.cloudsimplus.cloudlets.CloudletSimple;
+import org.cloudsimplus.resources.Pe;
 import org.cloudsimplus.vms.Vm;
 import org.cloudsimplus.vms.network.NetworkVm;
 
@@ -55,21 +56,21 @@ public class NetworkCloudlet extends CloudletSimple {
     private final List<CloudletTask> tasks;
 
     /**
-     * Creates a NetworkCloudlet with no priority and file size and output size equal to 1.
+     * Creates a NetworkCloudlet with no priority, no file size and output size equal to 1.
      * The length of the Cloudlet is determined by the sum of its {@link #getTasks() tasks} length.
      *
-     * @param pesNumber the number of PEs this Cloudlet requires
+     * @param pesNumber the number of {@link Pe}s this Cloudlet requires
      */
     public NetworkCloudlet(final int pesNumber) {
         this(-1, pesNumber);
     }
 
     /**
-     * Creates a NetworkCloudlet with no priority and file size and output size equal to 1.
+     * Creates a NetworkCloudlet with no priority, no file size and output size equal to 1.
      * The length of the Cloudlet is determined by the sum of its {@link #getTasks() tasks} length.
      *
      * @param id        the unique ID of this cloudlet
-     * @param pesNumber the pes number
+     * @param pesNumber the number of {@link Pe}s this Cloudlet requires
      */
     public NetworkCloudlet(final int id, final int pesNumber) {
         super(id, -1, pesNumber);
@@ -98,8 +99,8 @@ public class NetworkCloudlet extends CloudletSimple {
     }
 
     /**
-     * Change the current task to the next one in order
-     * to start executing it, if the current task is finished.
+     * Change the current task to the next one to start executing it,
+     * if the current task is finished.
      *
      * @param nextTaskStartTime the time that the next task will start
      * @return true if the current task is finished and the next one has started;
@@ -118,9 +119,8 @@ public class NetworkCloudlet extends CloudletSimple {
     }
 
     /**
-     * Gets an {@link Optional} containing the current task
-     * or an {@link Optional#empty()} if there is no current task yet.
-     * @return
+     * @return an {@link Optional} containing the current task
+     * or {@link Optional#empty()} if there is no current task yet.
      */
     public Optional<CloudletTask> getCurrentTask() {
         if (currentTaskNum < 0 || currentTaskNum >= tasks.size()) {
@@ -134,7 +134,7 @@ public class NetworkCloudlet extends CloudletSimple {
      * Gets an {@link Optional} containing the next task in the list if the current task is finished.
      *
      * @return the next task if the current one is finished;
-     *         otherwise an {@link Optional#empty()} if the current task is already the last one,
+     *         otherwise {@link Optional#empty()} if the current task is already the last one,
      *         or it is not finished yet.
      */
     private Optional<CloudletTask> getNextTaskIfCurrentIfFinished(){
@@ -172,10 +172,10 @@ public class NetworkCloudlet extends CloudletSimple {
 
     /**
      * Adds a task to the {@link #getTasks() task list}
-     * and links the task to the NetworkCloudlet.
+     * and links the task to this NetworkCloudlet.
      *
      * @param task Task to be added
-     * @return the NetworkCloudlet instance
+     * @return this NetworkCloudlet instance
      */
     public NetworkCloudlet addTask(@NonNull final CloudletTask task) {
         task.setCloudlet(this);

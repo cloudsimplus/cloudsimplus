@@ -13,6 +13,7 @@ import org.cloudsimplus.network.VmPacket;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Represents a task executed by a {@link NetworkCloudlet} that sends data to a
@@ -62,9 +63,7 @@ public class CloudletSendTask extends CloudletTask {
      * @throws IllegalArgumentException when the source or destination Cloudlet doesn't have an assigned VM
      */
     public VmPacket addPacket(final NetworkCloudlet destinationCloudlet, final long bytes) {
-        if(getCloudlet() == null) {
-            throw new IllegalStateException("You must assign a NetworkCloudlet to this Task before adding packets.");
-        }
+        Objects.requireNonNull(getCloudlet(), "You must assign a NetworkCloudlet to this Task before adding packets.");
         if(!getCloudlet().isBoundToVm()) {
             throw new IllegalStateException("The source Cloudlet has to have an assigned VM.");
         }
