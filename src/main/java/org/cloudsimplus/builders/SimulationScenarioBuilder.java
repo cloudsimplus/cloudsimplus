@@ -23,16 +23,18 @@
  */
 package org.cloudsimplus.builders;
 
+import lombok.Getter;
 import org.cloudsimplus.core.CloudSimPlus;
 import org.cloudsimplus.hosts.Host;
 import org.cloudsimplus.vms.Vm;
 
 /**
- * An builder to help getting instance of other CloudSimPlus object builders.
+ * A builder to help getting instance of other CloudSimPlus object builders.
  *
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
+@Getter
 public class SimulationScenarioBuilder {
     private final DatacenterBuilder datacenterBuilder;
     private final BrokerBuilder brokerBuilder;
@@ -42,14 +44,6 @@ public class SimulationScenarioBuilder {
         this.simulation = simulation;
         this.datacenterBuilder = new DatacenterBuilder(this);
         this.brokerBuilder = new BrokerBuilder(this);
-    }
-
-    public DatacenterBuilder getDatacenterBuilder() {
-        return datacenterBuilder;
-    }
-
-    public BrokerBuilder getBrokerBuilder() {
-        return brokerBuilder;
     }
 
     public Host getHostOfDatacenter(final int hostIndex, final int datacenterIndex){
@@ -66,9 +60,5 @@ public class SimulationScenarioBuilder {
 
     public Vm getVmFromBroker(final int vmIndex, final int brokerIndex) {
         return brokerBuilder.get(brokerIndex).getWaitingVm(vmIndex);
-    }
-
-    public CloudSimPlus getSimulation() {
-        return simulation;
     }
 }

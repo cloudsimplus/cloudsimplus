@@ -23,6 +23,10 @@
  */
 package org.cloudsimplus.builders;
 
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.cloudsimplus.allocationpolicies.VmAllocationPolicySimple;
 import org.cloudsimplus.datacenters.Datacenter;
 import org.cloudsimplus.datacenters.DatacenterSimple;
@@ -31,7 +35,6 @@ import org.cloudsimplus.resources.SanStorage;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.function.Function;
 
 /**
@@ -40,21 +43,26 @@ import java.util.function.Function;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
+@Accessors(chain = true)
 public class DatacenterBuilder implements Builder {
     private static final String DC_NAME_FORMAT = "Datacenter%d";
     private final SimulationScenarioBuilder scenario;
 
-    private double costPerBwMegabit;
-    private double costPerCpuSecond = 3.0;
-    private double costPerStorage = 0.001;
-    private double costPerMem = 0.05;
-    private double schedulingInterval = -1;
-    private int    timezone;
-
-    private final List<Datacenter> datacenters;
+    @Getter @Setter private double costPerBwMegabit;
+    @Getter @Setter private double costPerCpuSecond = 3.0;
+    @Getter @Setter private double costPerStorage = 0.001;
+    @Getter @Setter private double costPerMem = 0.05;
+    @Getter @Setter private double schedulingInterval = -1;
+    @Getter @Setter private int    timezone;
+    @Getter private final List<Datacenter> datacenters;
     private int createdDatacenters;
-	private List<SanStorage> storageList;
-	private Function<List<Host>, Datacenter> datacenterCreationFunction;
+    @Setter @NonNull private List<SanStorage> storageList;
+
+    /**
+     * A {@link Function} used to create Datacenters.
+     * It must receive a list of {@link Host} for the Datacenter it will create.
+     */
+    @Setter @NonNull private Function<List<Host>, Datacenter> datacenterCreationFunction;
 
 	public DatacenterBuilder(final SimulationScenarioBuilder scenario) {
 	    super();
@@ -65,8 +73,7 @@ public class DatacenterBuilder implements Builder {
         this.datacenterCreationFunction = this::defaultDatacenterCreationFunction;
     }
 
-    public DatacenterBuilder create(final List<Host> hosts) {
-        Objects.requireNonNull(hosts);
+    public DatacenterBuilder create(@NonNull final List<Host> hosts) {
         if (hosts.isEmpty()) {
             throw new IllegalArgumentException("The hosts parameter has to have at least 1 host.");
         }
@@ -85,10 +92,6 @@ public class DatacenterBuilder implements Builder {
         datacenter.setTimeZone(timezone);
         this.datacenters.add(datacenter);
         return this;
-    }
-
-    public List<Datacenter> getDatacenters() {
-        return datacenters;
     }
 
     public Datacenter get(final int index) {
@@ -112,76 +115,8 @@ public class DatacenterBuilder implements Builder {
         return dc;
     }
 
-    public double getCostPerBwMegabit() {
-        return costPerBwMegabit;
-    }
-
-    public DatacenterBuilder setCostPerBwMegabit(final double defaultCostPerBwByte) {
-        this.costPerBwMegabit = defaultCostPerBwByte;
-        return this;
-    }
-
-    public double getCostPerCpuSecond() {
-        return costPerCpuSecond;
-    }
-
-    public DatacenterBuilder setCostPerCpuSecond(final double defaultCostPerCpuSecond) {
-        this.costPerCpuSecond = defaultCostPerCpuSecond;
-        return this;
-    }
-
-    public double getCostPerStorage() {
-        return costPerStorage;
-    }
-
-    public DatacenterBuilder setCostPerStorage(final double defaultCostPerStorage) {
-        this.costPerStorage = defaultCostPerStorage;
-        return this;
-    }
-
-    public double getCostPerMem() {
-        return costPerMem;
-    }
-
-    public DatacenterBuilder setCostPerMem(final double defaultCostPerMem) {
-        this.costPerMem = defaultCostPerMem;
-        return this;
-    }
-
-    public int getTimezone() {
-        return timezone;
-    }
-
-    public DatacenterBuilder setTimezone(final int defaultTimezone) {
-        this.timezone = defaultTimezone;
-        return this;
-    }
-
-    public double getSchedulingInterval() {
-        return schedulingInterval;
-    }
-
-    public DatacenterBuilder setSchedulingInterval(final double schedulingInterval) {
-        this.schedulingInterval = schedulingInterval;
-        return this;
-    }
-
-	public DatacenterBuilder setStorageList(final List<SanStorage> storageList) {
-		this.storageList = storageList;
-		return this;
-	}
-
 	public DatacenterBuilder addStorageToList(final SanStorage storage) {
 		this.storageList.add(storage);
 		return this;
 	}
-
-    /**
-     * Sets a {@link Function} used to create Datacenters.
-     * It must receive a list of {@link Host} for the Datacenter it will create.
-     * @param datacenterCreationFunction
-     */
-    public void setDatacenterCreationFunction(final Function<List<Host>, Datacenter> datacenterCreationFunction) {
-        this.datacenterCreationFunction = Objects.requireNonNull(datacenterCreationFunction);
-    }
 }

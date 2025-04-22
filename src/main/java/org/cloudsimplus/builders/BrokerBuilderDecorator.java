@@ -23,6 +23,7 @@
  */
 package org.cloudsimplus.builders;
 
+import lombok.Getter;
 import org.cloudsimplus.brokers.DatacenterBroker;
 import org.cloudsimplus.brokers.DatacenterBrokerSimple;
 
@@ -32,27 +33,44 @@ import java.util.function.Consumer;
 
 /**
  * <p>A class that implements the Decorator Design Pattern in order to
- * include features in a existing class.
+ * include features in an existing class.
  * It is used to ensure that specific methods are called only after
  * a given method is called.</p>
  *
  * For instance, the methods {@link #getVmBuilder()} and
  * {@link #getCloudletBuilder()} can only be called after
  * some {@link DatacenterBrokerSimple} was created by calling
- * the method {@link #create()}.<br>
- * By this way, after the method is called, it returns
+ * the {@link #create()} method.<br>
+ * This way, after the method is called, it returns
  * an instance of this decorator that allow
- * chained call to the specific decorator methods
+ * chained calls to the specific decorator methods
  * as the following example:
- * <ul><li>{@link #create() createBroker()}.{@link #getVmBuilder() getVmBuilder()}</li></ul>
+ * <ul><li>{@link #create()}.{@link #getVmBuilder()}</li></ul>
  *
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
 public class BrokerBuilderDecorator implements BrokerBuilderInterface {
     private final BrokerBuilder builder;
+
+    /**
+     * The VmBuilder in charge of creating VMs
+     * to the latest DatacenterBroker created by this BrokerBuilder
+     */
+    @Getter
     private final VmBuilder vmBuilder;
+
+    /**
+     * The CloudletBuilder in charge of creating Cloudlets
+     * to the latest DatacenterBroker created by this BrokerBuilder
+     */
+    @Getter
     private final CloudletBuilder cloudletBuilder;
+
+    /**
+     * The latest created broker
+     */
+    @Getter
     private final DatacenterBroker broker;
 
     public BrokerBuilderDecorator(final BrokerBuilder builder, final DatacenterBrokerSimple broker) {
@@ -87,28 +105,4 @@ public class BrokerBuilderDecorator implements BrokerBuilderInterface {
     public DatacenterBroker get(final int index) {
        return builder.get(index);
     }
-
-    /**
-     * @return the VmBuilder in charge of creating VMs
-     * to the latest DatacenterBroker created by this BrokerBuilder
-     */
-    public VmBuilder getVmBuilder() {
-        return vmBuilder;
-    }
-
-    /**
-     * @return the CloudletBuilder in charge of creating Cloudlets
-     * to the latest DatacenterBroker created by this BrokerBuilder
-     */
-    public CloudletBuilder getCloudletBuilder() {
-        return cloudletBuilder;
-    }
-
-    /**
-     * @return the latest created broker
-     */
-    public DatacenterBroker getBroker() {
-        return broker;
-    }
-
 }

@@ -32,7 +32,7 @@ import java.util.NoSuchElementException;
 import java.util.function.Consumer;
 
 /**
- * A Builder class to createBroker {@link DatacenterBrokerSimple} objects.
+ * A Builder class to create {@link DatacenterBrokerSimple} objects.
  *
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0

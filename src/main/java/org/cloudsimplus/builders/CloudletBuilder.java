@@ -23,6 +23,10 @@
  */
 package org.cloudsimplus.builders;
 
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.cloudsimplus.brokers.DatacenterBrokerSimple;
 import org.cloudsimplus.cloudlets.Cloudlet;
 import org.cloudsimplus.cloudlets.CloudletSimple;
@@ -43,29 +47,38 @@ import java.util.function.BiFunction;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
+@Accessors(chain = true)
 public class CloudletBuilder implements Builder {
-    private long length = 10000;
-    private long outputSize = 300;
-    private long fileSize = 300;
-    private int  pes = 1;
-    private double lifeTime = Double.MAX_VALUE;
+    @Getter @Setter private long length = 10000;
+    @Getter @Setter private long outputSize = 300;
+    @Getter @Setter private long fileSize = 300;
+    @Getter @Setter private int  pes = 1;
+    @Setter private double lifeTime = Double.MAX_VALUE;
+
     /**
      * The VM to be bind to created cloudlets.
      */
-    private Vm vm = Vm.NULL;
-    private UtilizationModel utilizationModelRam;
-    private UtilizationModel utilizationModelCpu;
-    private UtilizationModel utilizationModelBw;
+    @Setter private Vm vm = Vm.NULL;
+    @Setter @NonNull private UtilizationModel utilizationModelRam;
+    @Setter @NonNull private UtilizationModel utilizationModelCpu;
+    @Setter @NonNull private UtilizationModel utilizationModelBw;
 
+    @Getter
     private final List<Cloudlet> cloudlets;
     private int createdCloudlets;
 
+    @Getter
     private final BrokerBuilderDecorator brokerBuilder;
     private final DatacenterBrokerSimple broker;
-    private BiFunction<Long,Integer, Cloudlet> cloudletCreationFunction;
 
-    private EventListener<CloudletVmEventInfo> onCloudletFinishListener = EventListener.NULL;
-	private List<String> requiredFiles;
+    /**
+     * A {@link BiFunction} used to create Cloudlets.
+     * It must receive the length of the Cloudlet (in MI) and the number of PEs it will require.
+     */
+    @Setter private BiFunction<Long,Integer, Cloudlet> cloudletCreationFunction;
+
+    @Setter private EventListener<CloudletVmEventInfo> onCloudletFinishListener = EventListener.NULL;
+    @Setter @NonNull private List<String> requiredFiles;
 
 	public CloudletBuilder(final BrokerBuilderDecorator brokerBuilder, final DatacenterBrokerSimple broker) {
 	    super();
@@ -142,7 +155,7 @@ public class CloudletBuilder implements Builder {
      * of its capacity.
      *
      * @param utilizationModel the utilization model to set
-     * @return
+     * @return this builder
      */
     public final CloudletBuilder setUtilizationModelCpuRamAndBw(final UtilizationModel utilizationModel) {
         Objects.requireNonNull(utilizationModel);
@@ -150,92 +163,5 @@ public class CloudletBuilder implements Builder {
         this.utilizationModelRam = utilizationModel;
         this.utilizationModelBw = utilizationModel;
         return this;
-    }
-
-    public CloudletBuilder setVm(final Vm defaultVm) {
-        this.vm = defaultVm;
-        return this;
-    }
-
-    public CloudletBuilder setFileSize(final long defaultFileSize) {
-        this.fileSize = defaultFileSize;
-        return this;
-    }
-
-    public CloudletBuilder setRequiredFiles(final List<String> requiredFiles){
-	    this.requiredFiles = requiredFiles;
-	    return this;
-    }
-
-    public List<Cloudlet> getCloudlets() {
-        return cloudlets;
-    }
-
-    public CloudletBuilder setPEs(final int defaultPEs) {
-        this.pes = defaultPEs;
-        return this;
-    }
-
-    public long getLength() {
-        return length;
-    }
-
-    public long getFileSize() {
-        return fileSize;
-    }
-
-    public long getOutputSize() {
-        return outputSize;
-    }
-
-    public CloudletBuilder setOutputSize(long defaultOutputSize) {
-        this.outputSize = defaultOutputSize;
-        return this;
-    }
-
-    public int getPes() {
-        return pes;
-    }
-
-    public CloudletBuilder setLength(long defaultLength) {
-        this.length = defaultLength;
-        return this;
-    }
-    public BrokerBuilderDecorator getBrokerBuilder() {
-        return brokerBuilder;
-    }
-
-    public CloudletBuilder setOnCloudletFinishListener(final EventListener<CloudletVmEventInfo> listener) {
-        this.onCloudletFinishListener = listener;
-        return this;
-    }
-
-    public CloudletBuilder setUtilizationModelRam(final UtilizationModel utilizationModelRam) {
-        this.utilizationModelRam = Objects.requireNonNull(utilizationModelRam);
-        return this;
-    }
-
-    public CloudletBuilder setUtilizationModelCpu(final UtilizationModel utilizationModelCpu) {
-        this.utilizationModelCpu = Objects.requireNonNull(utilizationModelCpu);
-        return this;
-    }
-
-    public CloudletBuilder setUtilizationModelBw(final UtilizationModel utilizationModelBw) {
-        this.utilizationModelBw = Objects.requireNonNull(utilizationModelBw);
-        return this;
-    }
-
-    /**
-     * Sets a {@link BiFunction} used to create Cloudlets.
-     * It must length of the Cloudlet (in MI) and the number of PEs it will require.
-     * @param cloudletCreationFunction
-     */
-    public void setCloudletCreationFunction(final BiFunction<Long, Integer, Cloudlet> cloudletCreationFunction) {
-        this.cloudletCreationFunction = Objects.requireNonNull(cloudletCreationFunction);
-    }
-
-    public CloudletBuilder setLifeTime(final double lifeTime) {
-    	this.lifeTime = lifeTime;
-    	return this;
     }
 }

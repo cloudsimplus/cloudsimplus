@@ -23,13 +23,15 @@
  */
 package org.cloudsimplus.builders;
 
+import lombok.NonNull;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.cloudsimplus.provisioners.PeProvisionerSimple;
 import org.cloudsimplus.resources.Pe;
 import org.cloudsimplus.resources.PeSimple;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.function.Function;
 
 /**
@@ -38,7 +40,13 @@ import java.util.function.Function;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
+@Accessors(chain = true)
 public class PeBuilder implements Builder {
+    /**
+     * A {@link Function} that is accountable to create {@link Pe}
+     * by this builder. The Function receives the MIPS and return the created {@link Pe} .
+     */
+    @NonNull @Setter
     private Function<Double, Pe> peSupplier;
 
     public PeBuilder(){
@@ -51,17 +59,7 @@ public class PeBuilder implements Builder {
         for (int i = 0; i < amount; i++) {
             peList.add(peSupplier.apply(peMips));
         }
-        return peList;
-    }
 
-    /**
-     * Sets a {@link Function} that is accountable to create {@link Pe}
-     * by this builder.
-     * The  {@link Function} receives the MIPS for each PE.
-     *
-     * @param peSupplier
-     */
-    public void setPeSupplier(final Function<Double, Pe> peSupplier) {
-        this.peSupplier = Objects.requireNonNull(peSupplier);
+        return peList;
     }
 }
