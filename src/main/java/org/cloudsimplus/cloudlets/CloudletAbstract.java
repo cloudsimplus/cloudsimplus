@@ -81,11 +81,11 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
 
     /**
      * Creates a Cloudlet with no priority or id. The id is defined when the Cloudlet is
-     * submitted to a {@link DatacenterBroker}. The file size and output size is defined as 1.
+     * submitted to a {@link DatacenterBroker}. The file size and output size are defined as 1.
      *
-     * @param length the length or size (in MI) of this cloudlet to be executed in a
-     *               VM (check out {@link #setLength(long)})
-     * @param pesNumber number of PEs that Cloudlet will require
+     * @param length the length (in MI) of this cloudlet to be executed in a VM
+     *               (check out {@link #setLength(long)})
+     * @param pesNumber number of {@link Pe}s the Cloudlet will require
      * @param utilizationModel a {@link UtilizationModel} to define how the Cloudlet uses CPU, RAM and BW.
      *                         To define an independent utilization model for each resource,
      *                         call the respective setters.
@@ -102,15 +102,15 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
     /**
      * Creates a Cloudlet with no priority or id.
      * The id is defined when the Cloudlet is submitted to
-     * a {@link DatacenterBroker}. The file size and output size is defined as 1.
+     * a {@link DatacenterBroker}. The file size and output size are defined as 1.
      *
      * <p><b>NOTE:</b> By default, the Cloudlet will use a {@link UtilizationModelFull} to define
      * CPU utilization and a {@link UtilizationModel#NULL} for RAM and BW.
      * To change the default values, use the respective setters.</p>
      *
-     * @param length the length or size (in MI) of this cloudlet to be executed in a VM
+     * @param length the length (in MI) of this cloudlet to be executed in a VM
      *               (check out {@link #setLength(long)})
-     * @param pesNumber number of PEs that Cloudlet will require
+     * @param pesNumber number of {@link Pe}s the Cloudlet will require
      */
     public CloudletAbstract(final long length, final int pesNumber) {
         this(-1, length, pesNumber);
@@ -118,15 +118,15 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
 
     /**
      * Creates a Cloudlet with no priority or id. The id is defined when the Cloudlet is submitted to
-     * a {@link DatacenterBroker}. The file size and output size is defined as 1.
+     * a {@link DatacenterBroker}. The file size and output size are defined as 1.
      *
      * <p><b>NOTE:</b> By default, the Cloudlet will use a {@link UtilizationModelFull} to define
      * CPU utilization and a {@link UtilizationModel#NULL} for RAM and BW.
      * To change the default values, use the respective setters.</p>
      *
-     * @param length the length or size (in MI) of this cloudlet to be executed in a VM
+     * @param length the length (in MI) of this cloudlet to be executed in a VM
      *               (check out {@link #setLength(long)})
-     * @param pesNumber number of PEs that Cloudlet will require
+     * @param pesNumber number of {@link Pe}s the Cloudlet will require
      */
     public CloudletAbstract(final long length, final long pesNumber) {
         this(-1, length, pesNumber);
@@ -140,9 +140,9 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
      * To change the default values, use the respective setters.</p>
      *
      * @param id     id of the Cloudlet
-     * @param length the length or size (in MI) of this cloudlet to be executed in a VM
+     * @param length the length (in MI) of this cloudlet to be executed in a VM
      *               (check out {@link #setLength(long)})
-     * @param pesNumber number of PEs that Cloudlet will require
+     * @param pesNumber number of {@link Pe}s the Cloudlet will require
      */
     public CloudletAbstract(final long id, final long length, final long pesNumber) {
         super();
@@ -347,9 +347,8 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
     }
 
     /**
-     * Gets the absolute value of the length (without the signal).
+     * @return the absolute value of the length (without the signal).
      * Check out {@link #getLength()} for details.
-     * @return
      */
     protected long absLength(){
         /*Since the getLength is overridden by classes such as the NetworkCloudlet,
