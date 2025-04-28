@@ -16,7 +16,7 @@ import java.util.stream.Stream;
 
 /**
  * An {@link EventQueue} that stores future simulation events.
- * It uses a {@link TreeSet} in order ensure the events
+ * It uses a {@link TreeSet} to ensure the events
  * are stored ordered. Using a {@link java.util.LinkedList}
  * as defined by {@link DeferredQueue} to improve performance
  * doesn't work for this queue.
@@ -97,7 +97,7 @@ public class FutureQueue implements EventQueue {
      * Removes all the events from the queue.
      *
      * @param events the events
-     * @return true if successful; false if not event was removed
+     * @return true if successful; false if no event was removed
      */
     public boolean removeAll(final Collection<SimEvent> events) {
         return sortedSet.removeAll(events);
@@ -113,7 +113,7 @@ public class FutureQueue implements EventQueue {
     }
 
     /**
-     * Clears the queue.
+     * Clears all the events in the queue.
      */
     public void clear() {
         sortedSet.clear();
