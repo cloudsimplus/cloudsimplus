@@ -39,58 +39,44 @@ import org.cloudsimplus.vms.Vm;
  */
 public interface Machine<T extends Resource> extends ChangeableId, Resourceful, ExecDelayable {
     /**
-     * An attribute that implements the Null Object Design Pattern for {@link Machine}
-     * objects.
+     * An attribute that implements the Null Object Design Pattern for {@link Machine} objects.
      */
     Machine NULL = new MachineNull();
 
     /**
-     * Gets a resource representing the machine bandwidth (bw) in Megabits/s.
-     *
-     * @return the machine bw resource
+     * @return a resource representing the machine bandwidth (bw) in Megabits/s.
      */
     Resource getBw();
 
     /**
-     * Gets a resource representing the machine memory in Megabytes.
-     *
-     * @return the machine memory
+     * @return a resource representing the machine memory in Megabytes.
      */
     Resource getRam();
 
     /**
-     * Gets the storage device of the machine with capacity in Megabytes.
-     *
-     * @return the machine storage device
+     * @return the storage device of the machine with capacity in Megabytes.
      */
     T getStorage();
 
     /**
-     * Gets the overall number of {@link Pe}s the machine has,
-     * that include PEs of all statuses, including failed PEs.
-     *
-     * @return the machine's number of PEs
+     * @return the overall number of {@link Pe}s the machine has,
+     *         that include PEs of all statuses, including failed PEs.
      */
     long getPesNumber();
 
     /**
-     * Gets the individual MIPS capacity of any machine's {@link Pe},
-     * considering that all PEs have the same capacity.
-     *
-     * @return the MIPS capacity of a single {@link Pe}
+     * @return the individual MIPS capacity of any machine's {@link Pe},
+     *         considering that all PEs have the same capacity.
      */
     double getMips();
 
     /**
-     * Gets total MIPS capacity of all PEs of the machine.
-     *
-     * @return the total MIPS of all PEs
+     * @return total MIPS capacity across all PEs of the machine.
      */
     double getTotalMipsCapacity();
 
     /**
-     * Gets the CloudSimPlus instance that represents the simulation the Entity belongs to.
-     * @return
+     * @return the {@link CloudSimPlus} instance that represents the simulation the Entity belongs to.
      */
     Simulation getSimulation();
 
@@ -104,7 +90,7 @@ public interface Machine<T extends Resource> extends ChangeableId, Resourceful, 
      *             if idle machines might be shut down and a negative value is given,
      *             they won't).
      * @return true if the Machine has been idle as long as the given time;
-     *         false if it's active of isn't idle long enough
+     *         false if it's active or isn't idle long enough
      */
     default boolean isIdleEnough(final double time) {
         if(time < 0) {
@@ -129,14 +115,12 @@ public interface Machine<T extends Resource> extends ChangeableId, Resourceful, 
     }
 
     /**
-     * Gets the last time the Machine was running some process.
-     * @return the last busy time (in seconds)
+     * @return the last time the Machine was running some process (in seconds).
      */
     double getLastBusyTime();
 
     /**
-     * Checks if the Machine is currently idle.
-     * @return true if the Machine currently idle, false otherwise
+     * @return true if the Machine is currently idle, false otherwise
      */
     default boolean isIdle(){
         return getIdleInterval() > 0;
@@ -145,6 +129,7 @@ public interface Machine<T extends Resource> extends ChangeableId, Resourceful, 
     /**
      * Validates a capacity for a machine resource.
      * @param capacity the capacity to check
+     * @throws IllegalArgumentException if the given capacity is zero or negative
      */
     static void validateCapacity(final double capacity){
         if(capacity <= 0){

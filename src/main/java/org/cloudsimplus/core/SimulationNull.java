@@ -11,8 +11,7 @@ import java.util.List;
 import java.util.function.Predicate;
 
 /**
- * A class that implements the Null Object Design Pattern for {@link Simulation}
- * class.
+ * A class that implements the Null Object Design Pattern for {@link Simulation} class.
  *
  * @author Manoel Campos da Silva Filho
  * @see Simulation#NULL

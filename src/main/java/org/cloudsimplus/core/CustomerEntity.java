@@ -36,17 +36,14 @@ import org.cloudsimplus.vms.Vm;
 public interface CustomerEntity extends UniquelyIdentifiable, ChangeableId, SubmissionDelayable, Lifetimed, ExecDelayable {
 
     /**
-     * Gets the last time the entity was finished (in seconds).
-     * The value -1 means it has not stopped or has not even started yet.
-     *
-     * @return
+     * @return the last time the entity was finished (in seconds);
+     * or {@link #NOT_ASSIGNED} means if it has not stopped or has not even started yet.
      */
     double getFinishTime();
 
     /**
-     * Gets the {@link DatacenterBroker} that represents the owner of this object.
-     *
-     * @return the broker or <b>{@link DatacenterBroker#NULL}</b> if a broker has not been set yet
+     * @return the {@link DatacenterBroker} that represents the owner of this object;
+     *         or <b>{@link DatacenterBroker#NULL}</b> if a broker has not been set yet
      */
     DatacenterBroker getBroker();
 
@@ -58,19 +55,17 @@ public interface CustomerEntity extends UniquelyIdentifiable, ChangeableId, Subm
     CustomerEntity setBroker(DatacenterBroker broker);
 
     /**
-     * Sets the last Datacenter where entity was tried to be created.
-     * @param lastTriedDatacenter
+     * Sets the last Datacenter where the entity was tried to be created.
+     * @param lastTriedDatacenter the datacenter to set
      */
     CustomerEntity setLastTriedDatacenter(Datacenter lastTriedDatacenter);
 
-    /** Gets the last Datacenter where entity was tried to be created. */
+    /** @return the last Datacenter where the entity was tried to be created. */
     Datacenter getLastTriedDatacenter();
 
     /**
-     * Gets the last time the entity arrived at the broker, before being
-     * submitted to a Datacenter.
-     *
-     * @return the absolute arrived time (in seconds)
+     * @return the last time (in seconds) the entity arrived at the broker, before being
+     * submitted to a Datacenter; or {@link #NOT_ASSIGNED} if it has not arrived yet.
      * @see #getSubmissionDelay()
      */
     double getBrokerArrivalTime();
@@ -84,9 +79,8 @@ public interface CustomerEntity extends UniquelyIdentifiable, ChangeableId, Subm
     CustomerEntity setBrokerArrivalTime(double time);
 
     /**
-     * Gets the last time the entity was created into a Datacenter.
-     *
-     * @return the absolute creation time (in seconds)
+     * @return the last time (in seconds) the entity was created into a Datacenter,
+     *         or {@link #NOT_ASSIGNED} if it has not been created yet.
      * @see #getSubmissionDelay()
      */
     double getCreationTime();

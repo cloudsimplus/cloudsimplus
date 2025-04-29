@@ -35,78 +35,68 @@ public interface Startable {
     int NOT_ASSIGNED = -1;
 
     /**
-     * Gets the last time the machine was started up (in seconds).
-     * The value -1 means it was not started yet.
-     *
-     * @return
+     * @return the last time the machine was started up (in seconds);
+     *         or {@link #NOT_ASSIGNED} if it was not started yet.
      */
     double getStartTime();
 
     /**
-     * {@return true of false} to indicate whether the entity has started and it's not finished yet.
+     * @return true if the entity has started and it's not finished yet; false otherwise.
      */
     default boolean hasStarted(){
         return !isFinished() && getStartTime() > NOT_ASSIGNED;
     }
 
     /**
-     * Checks whether this entity has finished executing or not.
-     *
      * @return true if this entity has finished execution; false otherwise
      */
     boolean isFinished();
 
     /**
-     * Sets the current machine startup time.
-     * The value -1 means it was not started yet.
+     * Sets the current entity startup time.
+     * The value {@link #NOT_ASSIGNED} means it was not started yet.
      *
      * @param startTime the start time to set (in seconds)
-     * @return
+     * @return this entity
      */
     Startable setStartTime(double startTime);
 
     /**
-     * Gets the time the entity was stopped (in seconds).
-     * The value -1 means it has not stopped or has not even started yet.
-     *
-     * @return
+     * @return the time the entity was stopped (in seconds);
+     *         or {@link #NOT_ASSIGNED} if it has not stopped or has not even started yet.
      */
     double getFinishTime();
 
     /**
      * Sets the time the entity was stopped (in seconds).
-     * The value -1 means the VM has not stopped or has not even started yet.
+     * The value {@link #NOT_ASSIGNED} means the entity has not stopped or has not even started yet.
      *
      * @param stopTime the stop time to set (in seconds)
-     * @return
+     * @return this entity
      */
     Startable setFinishTime(double stopTime);
 
     /**
-     * Gets the last time the entity was running some process or -1 if it has not been busy yet.
+     * Gets the last time the entity was running some process or {@link #NOT_ASSIGNED} if it has not been busy yet.
      * @return the last busy time (in seconds)
      */
     double getLastBusyTime();
 
     /**
      * Set the last time the entity was running some process.
-     * @param time the time to set (-1 to indicate the entity has not been busy yet)
-     * @return
+     * @param time the time to set ({@link #NOT_ASSIGNED} to indicate the entity has not been busy yet)
+     * @return this entity
      */
     Startable setLastBusyTime(double time);
 
     /**
-     * Gets the CloudSimPlus instance that represents the simulation the Entity is related to.
-     * @return
+     * @return the {@link CloudSimPlus} instance that represents the simulation this Entity belongs to.
      */
     Simulation getSimulation();
 
     /**
-     * Gets the total execution time of the entity so far (in seconds),
-     * if the entity has finished already or not.
-     *
-     * @return
+     * @return the total execution time of the entity so far (in seconds),
+     *         if the entity has finished already or not.
      */
     double getTotalExecutionTime();
-
 }

@@ -36,9 +36,9 @@ import org.cloudsimplus.vms.Vm;
  */
 public interface PhysicalMachine extends Machine<FileStorage> {
     /**
-     * Computes the current relative percentage of the CPU the VM is using from the Machine's total MIPS capacity.
+     * Computes the current relative percentage of the CPU a VM is using from the PM's total MIPS capacity.
      * If the capacity is 1000 MIPS and the VM is using 250 MIPS, it's equivalent to 25%
-     * of the Machines' capacity.
+     * of the PM's capacity.
      *
      * @return the relative VM CPU usage percent (from 0 to 1)
      */
@@ -47,7 +47,7 @@ public interface PhysicalMachine extends Machine<FileStorage> {
     }
 
     /**
-     * Computes what would be the relative percentage of the CPU the VM is using from a Machine's total MIPS capacity,
+     * Computes what would be the relative percentage of the CPU a VM is using from a PM's total MIPS capacity,
      * considering that the VM's CPU load is at a given percentage.
      *
      * @param vm the VM to get its relative percentage of CPU utilization
@@ -59,33 +59,31 @@ public interface PhysicalMachine extends Machine<FileStorage> {
     }
 
     /**
-     * Gets the percentage of the MIPS capacity a VM represents from the total Machine's MIPS capacity.
-     *
-     * @return the VM relative MIPS capacity percentage
+     * @return the percentage of the MIPS capacity a VM represents from the total PM's MIPS capacity.
      */
     default double getRelativeMipsCapacityPercent(final Vm vm) {
-        return vm.getTotalMipsCapacity() / getTotalMipsCapacity();
+        return vm.getTotalMipsCapacity() / this.getTotalMipsCapacity();
     }
 
     /**
-     * Computes the relative percentage of the RAM a VM is using from a Machine's total capacity
+     * Computes the relative percentage of the RAM a VM is using from a PM's total capacity
      * for the current simulation time.
      *
-     * @param vm the {@link Vm} to compute the relative utilization of RAM from this machine
+     * @param vm the {@link Vm} to compute the relative utilization of RAM from this PM
      * @return the relative VM RAM usage percent (from 0 to 1)
      */
     default double getRelativeRamUtilization(final Vm vm){
-        return vm.getRam().getAllocatedResource() / (double)getRam().getCapacity();
+        return vm.getRam().getAllocatedResource() / (double)this.getRam().getCapacity();
     }
 
     /**
-     * Computes the relative percentage of the BW a VM is using from a Machine's total capacity
+     * Computes the relative percentage of the BW a VM is using from a PM's total capacity
      * for the current simulation time.
      *
-     * @param vm the {@link Vm} to compute the relative utilization of BW from this machine
+     * @param vm the {@link Vm} to compute the relative utilization of BW from this PM
      * @return the relative VM BW usage percent (from 0 to 1)
      */
     default double getRelativeBwUtilization(final Vm vm){
-        return vm.getBw().getAllocatedResource() / (double)getBw().getCapacity();
+        return vm.getBw().getAllocatedResource() / (double)this.getBw().getCapacity();
     }
 }

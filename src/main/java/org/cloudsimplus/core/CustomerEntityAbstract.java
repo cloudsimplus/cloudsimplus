@@ -105,5 +105,4 @@ public abstract class CustomerEntityAbstract extends ExecDelayableAbstract imple
 		this.lifeTime = lifeTime;
 		return this;
 	}
-
 }

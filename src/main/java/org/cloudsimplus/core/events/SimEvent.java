@@ -61,7 +61,8 @@ public interface SimEvent extends Comparable<SimEvent>, EventInfo {
     /**
      * {@return the tag that classifies this event}
      * The meaning of such a tag depends on the entities that generate and receive the event.
-     * Usually it is defined from a constant value defined in {@link CloudSimTag}.
+     * Usually it is a constant value from the {@link CloudSimTag} or some custom tag
+     * defined by new classes.
      */
     int getTag();
 

@@ -32,7 +32,7 @@ package org.cloudsimplus.core;
  */
 public interface Nameable extends Identifiable {
     /**
-     * {@return the name} of this entity
+     * @return the name of this entity
      */
     String getName();
 }

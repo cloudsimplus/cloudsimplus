@@ -30,8 +30,8 @@ import org.cloudsimplus.vms.Vm;
 
 /**
  * An interface that enables machines ({@link Vm}s or {@link Host}s)
- * to enable the computation of statistics for its resource utilization.
- * Since that computation may be computationally complex and increase memory consumption,
+ * to enable the calculation of statistics for its resource utilization.
+ * Since that may be computationally complex and increase memory consumption,
  * you have to explicitly enable that by calling {@link #enableUtilizationStats()}.
  *
  * @param <T> the class in which resource utilization will be computed and stored
@@ -47,7 +47,7 @@ public interface ResourceStatsComputer<T extends ResourceStats> {
      * <p>The time interval in which utilization is collected is defined
      * by the {@link Datacenter#getSchedulingInterval()}.</p>
      *
-     * @return
+     * @return an object containing the statistics
      */
     T getCpuUtilizationStats();
 

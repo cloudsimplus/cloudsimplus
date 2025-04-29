@@ -14,6 +14,7 @@ import lombok.experimental.Accessors;
 import org.cloudsimplus.cloudlets.Cloudlet;
 import org.cloudsimplus.core.events.*;
 import org.cloudsimplus.datacenters.Datacenter;
+import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.network.topologies.NetworkTopology;
 import org.cloudsimplus.util.TimeUtil;
 import org.cloudsimplus.util.Util;
@@ -117,18 +118,17 @@ abstract class CloudSim implements Simulation {
     private boolean aborted;
 
     /**
-     * Indicates if the simulation already run once.
-     * If yes, it can't run again.
-     * If you paused the simulation and wants to resume it,
+     * Indicates if the simulation already ran once.
+     * If so, it can't run again.
+     * If you paused the simulation and want to resume it,
      * you must use {@link #resume()} instead of {@link #start()}.
      */
     private boolean alreadyRunOnce;
 
     /**
      * Creates a CloudSim simulation.
-     * Internally it creates a CloudInformationService.
+     * Internally, it creates a {@link CloudInformationService}.
      *
-     * @see CloudInformationService
      * @see #CloudSim(double)
      */
     public CloudSim(){
@@ -138,11 +138,10 @@ abstract class CloudSim implements Simulation {
     /**
      * Creates a CloudSim simulation that tracks events happening in a time interval
      * as little as the minTimeBetweenEvents parameter.
-     * Internally it creates a {@link CloudInformationService}.
+     * Internally, it creates a {@link CloudInformationService}.
      *
      * @param minTimeBetweenEvents the minimal period between events.
      * Events within shorter periods after the last event are discarded.
-     * @see CloudInformationService
      */
     public CloudSim(final double minTimeBetweenEvents) {
         this.entityList = new ArrayList<>();
@@ -169,8 +168,8 @@ abstract class CloudSim implements Simulation {
      * Finishes execution of running entities before terminating the simulation,
      * then cleans up internal state.
      *
-     * <b>Note:</b> Should be used only in the <b>synchronous</b> mode
-     * (after starting the simulation with {@link #startSync()}).
+     * <p><b>Note:</b> Should be used only in the <b>synchronous</b> mode
+     * (after starting the simulation with {@link #startSync()}).</p>
      */
     protected void finish() {
         if(abortRequested){
@@ -232,11 +231,11 @@ abstract class CloudSim implements Simulation {
     }
 
     /**
-     * Process all the events happening up to a given time are processed.
+     * Process all events happening up to a given time.
      *
      * @param until The interval for which the events should be processed (in seconds)
-     * @return true if some event was processed, false if no event was processed
-     *         or a termination time was set and the clock reached that time
+     * @return true if some event was processed; false if no event was processed
+     *         or a termination time was set, and the clock reached that time
      */
     protected boolean processEvents(final double until) {
         if (!runClockTickAndProcessFutureEvents(until) && !isToWaitClockToReachTerminationTime()) {
@@ -284,7 +283,7 @@ abstract class CloudSim implements Simulation {
     /**
      * Notifies entities that simulation is ending,
      * enabling them to send and process their last events.
-     * Then, waits such events to be received and processed.
+     * Then, waits for such events to be received and processed.
      */
     private void notifyEndOfSimulationToEntities() {
         entityList.stream()
@@ -364,8 +363,9 @@ abstract class CloudSim implements Simulation {
 
     /**
      * Updates the simulation clock and notify listeners if the clock has changed.
-     * @param newTime simulation time to set
-     * @return the old simulation time
+     * @param newTime simulation time to set (in seconds)
+     * @return the old simulation time (in seconds)
+     * @see #addOnClockTickListener(EventListener)
      */
     protected double setClock(final double newTime){
         final double oldTime = clock;
@@ -407,9 +407,8 @@ abstract class CloudSim implements Simulation {
 
     /**
      * Run one tick of the simulation, processing and removing the
-     * events in the {@link #future future event queue} that happen
-     * up to a given time.
-     * @param until The interval for which the events should be processed (in seconds)
+     * events in the {@link #future} event queue that happen up to a given time.
+     * @param until the interval for which the events should be processed (in seconds)
      * @return true if some event was processed, false otherwise
      */
     private boolean runClockTickAndProcessFutureEvents(final double until) {
@@ -450,9 +449,6 @@ abstract class CloudSim implements Simulation {
     }
 
     /**
-     * Gets the minimum {@link Datacenter#getSchedulingInterval()} defined
-     * among all existing Datacenters.
-     *
      * @return the minimum {@link Datacenter#getSchedulingInterval()}
      *         between all Datacenters or {@link #getMinTimeBetweenEvents()}
      *         in case no Datacenter has its scheduling interval set
@@ -480,7 +476,7 @@ abstract class CloudSim implements Simulation {
     }
 
     /**
-     * Gets the list of entities that are in {@link SimEntity.State#RUNNABLE}
+     * Gets the list of entities that are in {@link SimEntity.State#RUNNABLE} state
      * and execute them.
      */
     @SuppressWarnings("ForLoopReplaceableByForEach")
@@ -553,11 +549,11 @@ abstract class CloudSim implements Simulation {
 
     /**
      * Gets a stream of events inside a specific queue that match a given predicate
-     * and are targeted to an specific entity.
+     * and are targeted to a specific entity.
      *
      * @param queue the queue to get the events from
      * @param predicate the event selection predicate
-     * @param dest id of entity that the event has to be sent to
+     * @param dest entity that the event has to be sent to
      * @return a Stream of events from the queue
      */
     private Stream<SimEvent> filterEventsToDestinationEntity(final EventQueue queue, final Predicate<SimEvent> predicate, final SimEntity dest) {
@@ -599,7 +595,6 @@ abstract class CloudSim implements Simulation {
 
     /**
      * Processes an event.
-     *
      * @param evt the event to be processed
      */
     protected void processEvent(final SimEvent evt) {
@@ -626,10 +621,7 @@ abstract class CloudSim implements Simulation {
     }
 
     /**
-     * Internal method used to add a new entity to the simulation when the
-     * simulation is running.
-     * <b>It should not be called from user simulations.</b>
-     *
+     * Add a new entity to the simulation when the simulation is running.
      * @param entity the new entity to add
      */
     private void addEntityDynamically(@NonNull final SimEntity entity) {
@@ -721,7 +713,7 @@ abstract class CloudSim implements Simulation {
 
     /**
      * Holds an entity for some time.
-     * @param src   id of entity to be held
+     * @param src   entity to be held
      * @param delay How many seconds after the current time the entity has to be held
      */
     protected void holdEntity(final SimEntity src, final long delay) {
@@ -738,7 +730,7 @@ abstract class CloudSim implements Simulation {
     /**
      * Effectively pauses the simulation after a pause request.
      * @return true if the simulation was paused
-     *        (the simulation is running and was not paused yet);
+     *        (it was running and not paused yet);
      *        false otherwise
      * @see #pause()
      * @see #pause(double)
@@ -799,18 +791,21 @@ abstract class CloudSim implements Simulation {
     }
 
     /**
-     * Gets the maximum number of events that have ever existed at the same time
+     * @return the maximum number of events that have ever existed at the same time
      * inside the {@link FutureQueue}.
      */
     public long getMaxEventsNumber() {
         return future.getMaxEventsNumber();
     }
 
-    /** Gets the total number of events generated in the {@link FutureQueue} */
+    /** @return the total number of events generated in the {@link FutureQueue} */
     public long getGeneratedEventsNumber() {
         return future.getSerial();
     }
 
+    /**
+     * @return true if there are no future events (the future queue is empty), false otherwise
+     */
     public boolean noFutureEvents(){
         return future.isEmpty();
     }

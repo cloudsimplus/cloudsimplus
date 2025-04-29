@@ -49,7 +49,7 @@ public class CloudSimPlus extends CloudSim {
 
     /**
      * Creates a CloudSim Plus simulation.
-     * Internally it creates a CloudInformationService.
+     * Internally, it creates a {@link CloudInformationService}.
      *
      * @see CloudInformationService
      * @see #CloudSimPlus(double)
@@ -114,8 +114,6 @@ public class CloudSimPlus extends CloudSim {
 
     /**
      * {@inheritDoc}
-     * @param newTime {@inheritDoc}
-     * @return {@inheritDoc}
      * @see #onClockTickListeners
      */
     @Override

@@ -20,11 +20,11 @@ import java.util.*;
  * registration, indexing and discovery services. The Cloud datacenters tell their
  * readiness to process Cloudlets by registering themselves with this entity.
  * Other entities such as the broker can contact this class for
- * resource discovery service, which returns a list of registered resource.
+ * resource discovery service, which returns a list of registered resources.
  *
  * <p>
  * In summary, it acts like a yellow page service.
- * An instance of this class is automatically created by CloudSimPlus upon initialisation of the simulation.
+ * An instance of this class is automatically created by {@link CloudSimPlus} upon initialization of the simulation.
  * </p>
  *
  * @author Manzur Murshed
@@ -49,7 +49,7 @@ public class CloudInformationService extends CloudSimEntity {
     /**
      * Instantiates a new CloudInformationService object.
      *
-     * @param simulation CloudSimPlus instance that represents the simulation the Entity belongs to
+     * @param simulation {@link CloudSimPlus} instance that represents the simulation the Entity belongs to
      */
     CloudInformationService(final CloudSim simulation) {
         super(simulation);
@@ -58,7 +58,7 @@ public class CloudInformationService extends CloudSimEntity {
     }
 
     /**
-     * The method has no effect at the current class.
+     * The method has no effect on the current class.
      */
     @Override
     protected void startInternal() {/**/}
@@ -88,10 +88,9 @@ public class CloudInformationService extends CloudSimEntity {
     }
 
     /**
-     * Sends a {@link CloudSimTag#SIMULATION_END} signal to all entity IDs
-     * mentioned in the given list.
+     * Sends a {@link CloudSimTag#SIMULATION_END} signal to all entities in the given list.
      *
-     * @param list List of entities to notify about simulation end
+     * @param list List of entities to notify about simulation termination
      */
     private void signalShutdown(final Collection<? extends SimEntity> list) {
         if (list == null) {

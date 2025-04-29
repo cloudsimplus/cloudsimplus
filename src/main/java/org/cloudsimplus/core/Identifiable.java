@@ -31,7 +31,7 @@ package org.cloudsimplus.core;
  */
 public interface Identifiable {
     /**
-     * {@return the id number} assigned to this entity.
+     * @return the id number assigned to this entity.
      */
     long getId();
 }

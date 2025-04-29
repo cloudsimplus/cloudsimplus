@@ -35,22 +35,22 @@ import org.cloudsimplus.vms.Vm;
  */
 public interface Lifetimed extends Startable {
     /**
-     * LifeTime which indicates the maximum execution time
+     * Gets lifetime which indicates the maximum execution time
      * @see #setLifeTime(double)
      * @return the lifeTime (in seconds) or {@link Double#MAX_VALUE} indicating no lifeTime is set
      */
     double getLifeTime();
 
     /**
-     * LifeTime which indicates the maximum execution time.
-     * LifeTime must be larger than {@link Datacenter#getSchedulingInterval()}.
+     * Sets the lifetime which indicates the maximum execution time.
+     * The lifetime must be larger than {@link Datacenter#getSchedulingInterval()}.
      *
      * @param lifeTime lifeTime to set (in seconds) or {@link Double#MAX_VALUE} to indicate there is no lifeTime
      */
     Lifetimed setLifeTime(double lifeTime);
 
     /**
-     * {@return true or false} to indicate wether the lifetime is reached or not.
+     * @return true to indicate the lifetime is reached, false otherwise.
      * @see #setLifeTime(double)
      */
     default boolean isLifeTimeReached(){

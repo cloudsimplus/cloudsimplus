@@ -10,8 +10,8 @@ import lombok.NonNull;
 import org.cloudsimplus.core.events.SimEvent;
 
 /**
- * An interface that represents a simulation entity. An entity handles events and can
- * send events to other entities.
+ * An interface that represents a simulation entity.
+ * An entity handles events and can send events to other entities.
  *
  * @author Marcos Dias de Assuncao
  * @author Manoel Campos da Silva Filho
@@ -25,29 +25,23 @@ public interface SimEntity extends Nameable, Runnable, Comparable<SimEntity> {
     enum State {RUNNABLE, WAITING, HOLDING, FINISHED}
 
     /**
-     * An attribute that implements the Null Object Design Pattern for {@link SimEntity}
-     * objects.
+     * An attribute that implements the Null Object Design Pattern for {@link SimEntity} objects.
      */
     SimEntity NULL = (SimEntityNullBase) (comparable) -> 0;
 
     /**
-     * Gets the time the entity was started.
-     * @return the entity start time or -1 if it haven't started yet.
+     * @return the time the entity was started (in seconds) or -1 if it hasn't started yet.
      */
     double getStartTime();
 
     /**
-     * Gets the time the entity was shutdown (in seconds).
-     * If the entity {@link #isAlive()} yet,
-     * the method returns -1.
-     * @return
+     * @return the time the entity was shutdown (in seconds),
+     *         or -1 if the entity {@link #isAlive()} yet.
      */
     double getShutdownTime();
 
     /**
-     * Gets the entity state.
-     *
-     * @return the state
+     * @return the entity state.
      */
     State getState();
 
@@ -59,33 +53,30 @@ public interface SimEntity extends Nameable, Runnable, Comparable<SimEntity> {
     SimEntity setState(@NonNull State state);
 
     /**
-     * Checks if the entity already was started or not.
-     * @return
+     * @return true if the entity already was started, false otherwise.
      */
     boolean isStarted();
 
     /**
-     * Checks if the entity is alive, i.e, it's not finished.
-     * @return
+     * @return true if the entity is alive, i.e, it's not finished; false otherwise.
      */
+    // TODO: isStarted and isAlive seems to be redundant
     boolean isAlive();
 
     /**
-     * Checks if the entity is finished or not.
-     * @return
+     * @return true if the entity is finished, false otherwise.
      */
     boolean isFinished();
 
     /**
-     * Gets the CloudSimPlus instance that represents the simulation to each the Entity belongs to.
-     * @return
+     * @return the {@link CloudSimPlus} instance that represents the simulation to which the Entity belongs to.
      */
     Simulation getSimulation();
 
     /**
      * Processes events or services that are available for the entity. This
-     * method is invoked by the {@link CloudSimPlus} class whenever there is an
-     * event in the deferred queue, which needs to be processed by the entity.
+     * method is invoked, by the {@link CloudSimPlus} class, whenever there is an
+     * event in the deferred queue that needs to be processed by the entity.
      *
      * @param evt information about the event just happened
      */
@@ -100,7 +91,7 @@ public interface SimEntity extends Nameable, Runnable, Comparable<SimEntity> {
 
     /**
      * Sends an event from the entity to itself with no delay.
-     * @param tag   a tag representing the type of event.
+     * @param tag   a tag representing the type of event, according to the {@link CloudSimTag} or some custom one.
      * @return true if the event was sent; false if the simulation was not started yet
      */
     default boolean schedule(int tag) {
@@ -110,8 +101,8 @@ public interface SimEntity extends Nameable, Runnable, Comparable<SimEntity> {
     /**
      * Sends an event from the entity to itself.
      * @param delay How many seconds after the current simulation time the event should be sent
-     * @param tag   a tag representing the type of event.
-     * @param data  The data to be sent with the event.
+     * @param tag   a tag representing the type of event, according to the {@link CloudSimTag} or some custom one.
+     * @param data  The data to be sent with the event, according to the tag
      * @return true if the event was sent; false if the simulation was not started yet
      */
     boolean schedule(double delay, int tag, Object data);
@@ -119,7 +110,7 @@ public interface SimEntity extends Nameable, Runnable, Comparable<SimEntity> {
     /**
      * Sends an event from the entity to itself with no data.
      * @param delay How many seconds after the current simulation time the event should be sent
-     * @param tag   a tag representing the type of event.
+     * @param tag   a tag representing the type of event, according to the {@link CloudSimTag} or some custom one.
      * @return true if the event was sent; false if the simulation was not started yet
      */
     boolean schedule(double delay, int tag);
@@ -128,8 +119,8 @@ public interface SimEntity extends Nameable, Runnable, Comparable<SimEntity> {
      * Sends an event to another entity.
      * @param dest  the destination entity
      * @param delay How many seconds after the current simulation time the event should be sent
-     * @param tag   a tag representing the type of event.
-     * @param data  The data to be sent with the event.
+     * @param tag   a tag representing the type of event, according to the {@link CloudSimTag} or some custom one.
+     * @param data  The data to be sent with the event, according to the tag
      * @return true if the event was sent; false if the simulation was not started yet
      */
     boolean schedule(SimEntity dest, double delay, int tag, Object data);
@@ -138,25 +129,23 @@ public interface SimEntity extends Nameable, Runnable, Comparable<SimEntity> {
      * Sends an event to another entity with <b>no</b> attached data.
      * @param dest the destination entity
      * @param delay How many seconds after the current simulation time the event should be sent
-     * @param tag   a tag representing the type of event.
+     * @param tag   a tag representing the type of event, according to the {@link CloudSimTag} or some custom one.
      * @return true if the event was sent; false if the simulation was not started yet
      */
     boolean schedule(SimEntity dest, double delay, int tag);
 
     /**
      * Sends an event from the entity to itself with <b>no</b> delay.
-     * @param tag   a tag representing the type of event.
-     * @param data  The data to be sent with the event.
+     * @param tag   a tag representing the type of event, according to the {@link CloudSimTag} or some custom one.
+     * @param data  The data to be sent with the event, according to the tag
      * @return true if the event was sent; false if the simulation was not started yet
      */
     boolean schedule(int tag, Object data);
 
     /**
-     * The run loop to process events fired during the simulation. The events
+     * Starts the run loop to process events fired during the simulation. The events
      * that will be processed are defined in the
      * {@link #processEvent(SimEvent)} method.
-     *
-     * @see #processEvent(SimEvent)
      */
     @Override void run();
 
@@ -168,9 +157,9 @@ public interface SimEntity extends Nameable, Runnable, Comparable<SimEntity> {
     boolean start();
 
     /**
-     * Shuts down the entity. This method is invoked by the {@link CloudSimPlus}
-     * before the simulation finishes. If you want to save data in log files
-     * this is the method in which the corresponding code would be placed.
+     * Shuts down the entity. This method is invoked by {@link CloudSimPlus}
+     * before the simulation finishes. If you want to save data in log files,
+     * this is the method in which the corresponding code may be placed.
      */
     void shutdown();
 
@@ -178,7 +167,7 @@ public interface SimEntity extends Nameable, Runnable, Comparable<SimEntity> {
      * Sets the Entity name.
      *
      * @param newName the new name
-     * @return
+     * @return this entity instance
      * @throws IllegalArgumentException when the entity name is null or empty
      */
     SimEntity setName(String newName) throws IllegalArgumentException;

@@ -38,8 +38,7 @@ public interface Simulation {
     Predicate<SimEvent> ANY_EVT = evt -> true;
 
     /**
-     * An attribute that implements the Null Object Design Pattern for {@link Simulation}
-     * objects.
+     * An attribute that implements the Null Object Design Pattern for {@link Simulation} objects.
      */
     Simulation NULL = new SimulationNull();
 
@@ -49,7 +48,7 @@ public interface Simulation {
      * {@link Vm} or any object that implements {@link ChangeableId}.
      *
      * @param <T> the type of entities to define an ID
-     * @param list list of objects to define an ID
+     * @param list list of entities to define an ID
      * @return the last entity that had an id set
      */
     static <T extends ChangeableId> T setIdForEntitiesWithoutOne(final List<? extends T> list){
@@ -62,7 +61,7 @@ public interface Simulation {
      * {@link Vm} or any object that implements {@link ChangeableId}.
      *
      * @param <T> the type of entities to define an ID
-     * @param list list of objects to define an ID
+     * @param list list of entities to define an ID
      * @param lastEntity the last created Entity which its ID will be used
      *        as the base for the next IDs
      * @return the last entity that had an id set
@@ -99,13 +98,12 @@ public interface Simulation {
      * of entities in the {@link #getEntityList() entities list},
      * <b>which may give unexpected results</b>.
      *
-     * <p><b>Use this method just if you want to abandon the simulation an usually ignore the results.</b></p>
+     * <p><b>Use this method just if you want to abandon the simulation and usually ignore the results.</b></p>
      */
     void abort();
 
     /**
-     * Check if the simulation has been aborted.
-     * @return
+     * @return true if the simulation has been aborted, false otherwise
      */
     boolean isAborted();
 
@@ -113,104 +111,90 @@ public interface Simulation {
      * Adds a new entity to the simulation. Each {@link CloudSimEntity} object
      * register itself when it is instantiated.
      *
-     * @param entity The new entity
+     * @param entity the new entity to add
      */
     void addEntity(CloudSimEntity entity);
 
     /**
-     * Cancels the first event from the future event queue that matches a given predicate
+     * Cancels the first event from the future event queue that matches a given {@link Predicate}
      * and was sent by a given entity, then removes it from the queue.
      *
-     * @param src Id of entity that scheduled the event
+     * @param src entity that scheduled the event
      * @param predicate   the event selection predicate
      * @return the removed event or {@link SimEvent#NULL} if not found
      */
     SimEvent cancel(SimEntity src, Predicate<SimEvent> predicate);
 
     /**
-     * Cancels all events from the future event queue that matches a given predicate
-     * and were sent by a given entity, then removes those ones from the queue.
+     * Cancels all events from the future event queue that matches a given {@link Predicate}
+     * and were sent by a given entity, then removes those from the queue.
      *
-     * @param src id of entity that scheduled the event
+     * @param src entity that scheduled the event
      * @param predicate   the event selection predicate
-     * @return true if at least one event has been cancelled; false otherwise
+     * @return true if at least one event has been canceled; false otherwise
      */
     boolean cancelAll(SimEntity src, Predicate<SimEvent> predicate);
 
     /**
-     * Gets the current simulation time in seconds.
-     *
-     * @return
+     * @return the current simulation time in seconds.
+     * @see #clockInMinutes()
+     * @see #clockInHours()
      * @see #isRunning()
      */
     double clock();
 
     /**
-     * Gets the current simulation time in seconds as a formatted String.
-     *
-     * @return
+     * @return the current simulation time in seconds as a formatted String.
      * @see #clock()
      */
     String clockStr();
 
     /**
-     * Gets the current simulation time in minutes.
-     *
-     * @return
+     * @return the current simulation time in minutes.
+     * @see #clockInHours()
      * @see #isRunning()
      */
     double clockInMinutes();
 
     /**
-     * Gets the current simulation time in hours.
-     *
-     * @return
+     * @return the current simulation time in hours.
+     * @see #clockInMinutes()
      * @see #isRunning()
      */
     double clockInHours();
 
     /**
-     * Find first deferred event matching a predicate.
+     * Find the first-deferred event matching a {@link Predicate}.
      *
-     * @param dest id of entity that the event has to be sent to
+     * @param dest entity that the event has to be sent to
      * @param predicate    the event selection predicate
      * @return the first matched event or {@link SimEvent#NULL} if not found
      */
     SimEvent findFirstDeferred(SimEntity dest, Predicate<SimEvent> predicate);
 
     /**
-     * Gets a new copy of initial simulation Calendar.
-     *
-     * @return a new copy of Calendar object
+     * @return the simulation Calendar
      */
     Calendar getCalendar();
 
     /**
-     * Gets the {@link CloudInformationService}.
-     *
-     * @return the Entity
+     * @return the {@link CloudInformationService}
      */
     CloudInformationService getCis();
 
     /**
-     * Returns a <b>read-only</b> list of entities created for the simulation.
-     *
-     * @return
+     * @return a <b>read-only</b> list of entities created for the simulation.
      */
     List<SimEntity> getEntityList();
 
     /**
-     * Gets the minimum time between events (in seconds).
-     * Events within shorter periods after the last event are discarded.
-     *
      * @return the minimum time between events (in seconds).
+     *         Events within shorter periods after the last event are discarded.
      */
     double getMinTimeBetweenEvents();
 
     /**
-     * Get the current number of entities in the simulation.
-     *
-     * @return The number of entities
+     * @return the current number of entities in the simulation.
      */
     int getNumEntities();
 
@@ -229,10 +213,10 @@ public interface Simulation {
      *
      * <p>This object is just information about the event
      * that happened. In fact, it isn't generated an actual {@link SimEvent} for a pause event
-     * because there is not need for that.</p>
+     * because there is no need for that.</p>
      *
      * @param listener the event listener to add
-     * @return
+     * @returnn this simulation
      */
     Simulation addOnSimulationPauseListener(EventListener<EventInfo> listener);
 
@@ -252,20 +236,20 @@ public interface Simulation {
      * the {@link SimEvent} that was processed.
      *
      * @param listener the event listener to add
-     * @return
+     * @return this simulation
      */
     Simulation addOnEventProcessingListener(EventListener<SimEvent> listener);
 
     /**
      * Adds a {@link EventListener} object that will be notified every time when the
      * simulation clock advances.
-     * Notifications are sent in a second interval to avoid notification flood.
+     * <b>WARNING:</b> Notifications are sent in an integer interval to avoid notification flood.
      * Thus, if the clock changes, for instance, from 1.0, to 1.1, 2.0, 2.1, 2.2, 2.5 and then 3.2,
      * notifications will just be sent for the times 1, 2 and 3 that represent the integer
      * part of the simulation time.
      *
      * @param listener the event listener to add
-     * @return
+     * @return this simulation
      */
     Simulation addOnClockTickListener(EventListener<EventInfo> listener);
 
@@ -279,14 +263,13 @@ public interface Simulation {
 
     /**
      * Pauses an entity for some time.
-     * @param src   id of entity to be paused
+     * @param src   entity to be paused
      * @param delay the time period for which the entity will be inactive
      */
     void pauseEntity(SimEntity src, double delay);
 
     /**
-     * Checks if the simulation is paused.
-     * @return
+     * @return true if the simulation is paused, false otherwise.
      */
     boolean isPaused();
 
@@ -302,7 +285,7 @@ public interface Simulation {
      * The method schedules the pause request and then returns immediately.
      *
      * @param time the time at which the simulation has to be paused
-     * @return true if pause request was successfully received (the given time
+     * @return true if a pause request was successfully received (the given time
      * is greater than or equal to the current simulation time), false otherwise.
      */
     boolean pause(double time);
@@ -317,7 +300,7 @@ public interface Simulation {
     /**
      * Check if the simulation is still running.
      * Even if the simulation {@link #isPaused() is paused},
-     * the method returns true to indicate that the simulation is in fact active yet.
+     * the method returns true to indicate that the simulation is in fact active already.
      *
      * <p>
      * This method should be used by entities to check if they should continue executing.
@@ -347,28 +330,28 @@ public interface Simulation {
      * Sends an event from one entity to another.
      * @param src  entity that scheduled the event
      * @param dest  entity that the event will be sent to
-     * @param delay How many seconds after the current simulation time the event should be sent
+     * @param delay how many seconds after the current simulation time the event should be sent
      * @param tag   the {@link SimEvent#getTag() tag} that classifies the event
-     * @param data  the {@link SimEvent#getData() data} to be sent inside the event
+     * @param data  the {@link SimEvent#getData() data} to be sent inside the event, according to the tag
      */
     void send(SimEntity src, SimEntity dest, double delay, int tag, Object data);
 
     /**
      * Sends an event where all data required is defined inside the event instance,
-     * adding it to the beginning of the queue in order to give priority to it.
+     * adding it to the beginning of the queue to give priority to it.
      * @param evt the event to send
      */
     void sendFirst(SimEvent evt);
 
     /**
      * Sends an event from one entity to another,
-     * adding it to the beginning of the queue in order to give priority to it.
+     * adding it to the beginning of the queue to give priority to it.
      *
      * @param src  entity that scheduled the event
      * @param dest  entity that the event will be sent to
-     * @param delay How many seconds after the current simulation time the event should be sent
+     * @param delay how many seconds after the current simulation time the event should be sent
      * @param tag   the {@link SimEvent#getTag() tag} that classifies the event
-     * @param data  the {@link SimEvent#getData() data} to be sent inside the event
+     * @param data  the {@link SimEvent#getData() data} to be sent inside the event, according to the tag
      */
     void sendFirst(SimEntity src, SimEntity dest, double delay, int tag, Object data);
 
@@ -378,33 +361,32 @@ public interface Simulation {
      * @param src  entity that scheduled the event
      * @param dest entity that the event will be sent to
      * @param tag  the {@link SimEvent#getTag() tag} that classifies the event
-     * @param data the {@link SimEvent#getData() data} to be sent inside the event
+     * @param data the {@link SimEvent#getData() data} to be sent inside the event, according to the tag
      */
     void sendNow(SimEntity src, SimEntity dest, int tag, Object data);
 
     /**
      * Runs the simulation for a specific period of time and then immediately returns.
-     * In order to complete the whole simulation you need to invoke this method multiple times
+     * You need to invoke this method multiple times to complete the whole simulation.
      *
-     * <b>Note:</b> Should be used only in the <b>synchronous</b> mode
-     * (after starting the simulation with {@link #startSync()}).
+     * <p><b>NOTE:</b> Should be used only in the <b>synchronous</b> mode
+     * (after starting the simulation with {@link #startSync()}).</p>
      *
-     * @param interval The interval for which the simulation should be run (in seconds)
-     * @return Clock at the end of simulation interval (in seconds)
+     * @param interval the interval for which the simulation should be run (in seconds)
+     * @return clock at the end of the simulation interval (in seconds)
      */
     double runFor(double interval);
 
     /**
      * Starts simulation execution and <b>waits for all entities to finish</b>,
-     * i.e. until all entities threads reach
-     * non-RUNNABLE state or there are no more events in the future event queue.
+     * i.e., until all entities reach the non-RUNNABLE state or there are no more events in the future event queue.
      *
      * <p>
-     * <b>Note</b>: This method should be called only after all the entities
-     * have been setup and added. The method blocks until the simulation is ended.
+     * <b>NOTE</b>: This method should be called only after all entities
+     * have been set up and added. The method blocks until the simulation is ended.
      * </p>
      *
-     * @return the last clock time
+     * @return the last clock time (in seconds)
      * @throws UnsupportedOperationException When the simulation has already run once.
      * If you paused the simulation and wants to resume it,
      * you must use {@link #resume()} instead of calling the current method.
@@ -417,7 +399,7 @@ public interface Simulation {
      * Starts simulation execution in synchronous mode, retuning immediately.
      * You need to call {@link #runFor(double)} method subsequently to actually process simulation steps.
      *
-     * <b>Note</b>: This method should be called only after all entities have been set up and added.
+     * <p><b>NOTE</b>: This method should be called only after all entities have been set up and added.
      * The method returns immediately after preparing the internal state of the simulation.
      * </p>
      *
@@ -449,7 +431,7 @@ public interface Simulation {
      * If no event happens, the clock is increased to simulate time passing.
      * The clock increment is defined according to:
      * <ul>
-     *   <li>the lower {@link Datacenter#getSchedulingInterval()} between existing Datacenters;
+     *   <li>the lowest {@link Datacenter#getSchedulingInterval()} between existing Datacenters;
      *   <li>or {@link #getMinTimeBetweenEvents()} in case
      *   no {@link Datacenter} has its schedulingInterval set.</li>
      * </ul>
@@ -472,48 +454,45 @@ public interface Simulation {
     void wait(CloudSimEntity src, Predicate<SimEvent> predicate);
 
     /**
-     * Gets the network topology used for Network simulations.
-     * @return
+     * @return the {@link NetworkTopology} used for Network simulations.
      */
     NetworkTopology getNetworkTopology();
 
     /**
-     * Sets the network topology used for Network simulations.
+     * Sets the {@link NetworkTopology} used for Network simulations.
      *
      * @param networkTopology the network topology to set
+     * @return this simulation
      */
     Simulation setNetworkTopology(NetworkTopology networkTopology);
 
     /**
-     * Gets the number of events in the future queue which match a given predicate.
-     *
+     * {@return the number of events in the future queue which match a given predicate}
      * @param predicate the predicate to filter the list of future events.
-     * @return the number of future events which match the predicate
      */
     long getNumberOfFutureEvents(Predicate<SimEvent> predicate);
 
     /**
      * Checks if there is any event in the future queue that matches a given predicate.
      *
-     * @param predicate the predicate to selected the desired events
+     * @param predicate the predicate to select the desired events
      * @return true if any event matching the given predicate is found, false otherwise
      */
     boolean isThereAnyFutureEvt(Predicate<SimEvent> predicate);
 
     /**
-     * Gets the last time (in seconds) some Cloudlet was processed in the simulation.
+     * @return the last time (in seconds) some Cloudlet was processed in the simulation.
      */
     double getLastCloudletProcessingUpdate();
 
     /**
-     * Sets the last time (in seconds) some Cloudlet was processed in the simulation.
+     * Sets the last time some Cloudlet was processed in the simulation.
      * @param lastCloudletProcessingUpdate the time to set (in seconds)
      */
     Simulation setLastCloudletProcessingUpdate(double lastCloudletProcessingUpdate);
 
     /**
-     * Checks if a request to abort the simulation was already sent.
-     * @return
+     * @return true if a request to abort the simulation was already sent, false otherwise.
      */
     boolean isAbortRequested();
 }

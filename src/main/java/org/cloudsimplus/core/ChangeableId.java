@@ -33,7 +33,7 @@ package org.cloudsimplus.core;
 public interface ChangeableId extends Identifiable {
     /**
      * Sets the id of the object.
-     * -1 indicates the object has no id.
+     * -1 indicates the object has no initial ID and one may be provided further on by some other entity.
      * @param id the id to set
      */
     ChangeableId setId(long id);

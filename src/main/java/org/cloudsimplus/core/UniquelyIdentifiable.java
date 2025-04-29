@@ -45,10 +45,8 @@ public interface UniquelyIdentifiable extends Identifiable {
     }
 
     /**
-     * Gets the Unique Identifier (UID) for the entity, that is compounded by the id
-     * of a {@link DatacenterBroker} and the object id.
-     *
-     * @return
+     * @return the Unique Identifier (UID) for the entity, that is compounded by the id
+     *         of a {@link DatacenterBroker} and the object id.
      */
     String getUid();
 }
