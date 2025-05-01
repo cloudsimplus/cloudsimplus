@@ -12,10 +12,7 @@ import org.cloudsimplus.allocationpolicies.VmAllocationPolicySimple;
 import org.cloudsimplus.allocationpolicies.migration.VmAllocationPolicyMigration;
 import org.cloudsimplus.autoscaling.VerticalVmScaling;
 import org.cloudsimplus.cloudlets.Cloudlet;
-import org.cloudsimplus.core.CloudSimEntity;
-import org.cloudsimplus.core.CloudSimTag;
-import org.cloudsimplus.core.CustomerEntityAbstract;
-import org.cloudsimplus.core.Simulation;
+import org.cloudsimplus.core.*;
 import org.cloudsimplus.core.events.PredicateType;
 import org.cloudsimplus.core.events.SimEvent;
 import org.cloudsimplus.datacenters.DatacenterCharacteristics.Distribution;
@@ -43,14 +40,12 @@ import java.util.stream.Stream;
 
 import static java.util.Objects.requireNonNull;
 import static java.util.function.Predicate.not;
-import static java.util.stream.Collectors.toList;
 import static org.cloudsimplus.datacenters.DatacenterCharacteristics.Distribution.PRIVATE;
 import static org.cloudsimplus.util.BytesConversion.bitsToBytes;
 
 /**
- * Implements the basic features of a Virtualized Cloud Datacenter. It deals
- * with processing of VM queries (i.e., handling of VMs) instead of processing
- * Cloudlet-related queries.
+ * Implements the basic features of a Virtualized Cloud Datacenter,
+ * processing VM queries (i.e., handling of VMs).
  *
  * @author Rodrigo N. Calheiros
  * @author Anton Beloglazov
@@ -84,7 +79,8 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     /**
      * The last time some Host on the Datacenter was under or overloaded.
      *
-     * <p>Double.MIN_VALUE is surprisingly not a negative number.
+     * <p>{@link Double#MIN_VALUE} is surprisingly not a negative number
+     * (you can confirm that using {@link Math#signum(double)}).
      * Initializing this attribute with a too small value makes that the first
      * time an under or overload condition is detected,
      * it will try immediately to find suitable Hosts for migration.</p>
@@ -99,7 +95,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     private double lastProcessTime;
 
     /**
-     * Indicates if migrations are disabled or not.
+     * Indicates if migrations are enabled or not.
      */
     private boolean migrationsEnabled;
 
@@ -117,7 +113,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      *
      * <p><b>NOTE:</b> To change such attributes, just call the respective setters.</p>
      *
-     * @param simulation the CloudSimPlus instance that represents the simulation the Entity belongs
+     * @param simulation the {@link CloudSimPlus} instance that represents the simulation the Entity belongs
      * @param hostList list of {@link Host}s that will compound the Datacenter
      * @see #DatacenterSimple(Simulation, List, VmAllocationPolicy, DatacenterStorage)
      */
@@ -128,9 +124,9 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     /**
      * Creates a Datacenter with an empty {@link #getDatacenterStorage() storage}.
      *
-     * @param simulation the CloudSimPlus instance that represents the simulation the Entity belongs
+     * @param simulation the {@link CloudSimPlus} instance that represents the simulation the Entity belongs
      * @param hostList list of {@link Host}s that will compound the Datacenter
-     * @param vmAllocationPolicy the policy to be used to allocate VMs into hosts
+     * @param vmAllocationPolicy the policy to be used to allocate {@link Vm}s into {@link Host}s
      * @see #DatacenterSimple(Simulation, List, VmAllocationPolicy, DatacenterStorage)
      */
     public DatacenterSimple(
@@ -145,8 +141,8 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      * Creates a Datacenter with an empty {@link #getDatacenterStorage() storage}
      * and no Hosts.
      *
-     * @param simulation the CloudSimPlus instance that represents the simulation the Entity belongs
-     * @param vmAllocationPolicy the policy to be used to allocate VMs into hosts
+     * @param simulation the {@link CloudSimPlus} instance that represents the simulation the Entity belongs
+     * @param vmAllocationPolicy the policy to be used to allocate {@link Vm}s into {@link Host}s
      * @see #DatacenterSimple(Simulation, List, VmAllocationPolicy)
      * @see #DatacenterSimple(Simulation, List, VmAllocationPolicy, DatacenterStorage)
      * @see #addHost(Host)
@@ -162,10 +158,10 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     /**
      * Creates a Datacenter attaching a given storage list to its {@link #getDatacenterStorage() storage}.
      *
-     * @param simulation the CloudSimPlus instance that represents the simulation the Entity belongs
+     * @param simulation the {@link CloudSimPlus} instance that represents the simulation the Entity belongs
      * @param hostList list of {@link Host}s that will compound the Datacenter
-     * @param vmAllocationPolicy the policy to be used to allocate VMs into hosts
-     * @param storageList the storage list to attach to the {@link #getDatacenterStorage() datacenter storage}
+     * @param vmAllocationPolicy the policy to be used to allocate {@link Vm}s into {@link Host}s
+     * @param storageList the {@link SanStorage} list to attach to the {@link #getDatacenterStorage() datacenter storage}
      */
     public DatacenterSimple(
         final Simulation simulation,
@@ -179,7 +175,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     /**
      * Creates a Datacenter with a given {@link #getDatacenterStorage() storage}.
      *
-     * @param simulation the CloudSimPlus instance that represents the simulation the Entity belongs
+     * @param simulation the {@link CloudSimPlus} instance that represents the simulation the Entity belongs
      * @param hostList list of {@link Host}s that will compound the Datacenter
      * @param vmAllocationPolicy the policy to be used to allocate VMs into hosts
      * @param storage the {@link #getDatacenterStorage() storage} for this Datacenter
@@ -264,6 +260,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
 
     /**
      * Process a Host addition request received during simulation runtime.
+     * This way, a new Host can be made available to the Datacenter, expanding its capacity.
      * @param evt the event to process
      */
     private void processHostAdditionRequest(final SimEvent evt) {
@@ -279,6 +276,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
 
     /**
      * Process a Host removal request received during simulation runtime.
+     * This way, the Datacenter capacity is decreased by removing one Host.
      * @param srcEvt the event to process
      */
     private void processHostRemovalRequest(final SimEvent srcEvt) {
@@ -331,7 +329,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         return switch (evt.getTag()) {
             case CloudSimTag.VM_CREATE_ACK -> processVmCreate(evt);
             case CloudSimTag.VM_VERTICAL_SCALING  -> requestVmVerticalScaling(evt);
-            case CloudSimTag.VM_DESTROY -> processVmDestroy(evt, false);
+            case CloudSimTag.VM_DESTROY -> processVmDestroy(evt);
             case CloudSimTag.VM_MIGRATE -> finishVmMigration(evt, false);
             case CloudSimTag.VM_MIGRATE_ACK -> finishVmMigration(evt, true);
             case CloudSimTag.VM_UPDATE_CLOUDLET_PROCESSING -> updateCloudletProcessing() != Double.MAX_VALUE;
@@ -438,7 +436,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     }
 
     /**
-     * Submits a cloudlet to be executed inside its bind VM.
+     * Submits a cloudlet to be executed inside its VM.
      *
      * @param cloudlet the cloudlet to the executed
      * @param ack indicates if the Broker is waiting for an ACK after the Datacenter
@@ -462,16 +460,14 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     }
 
     /**
-     * Gets the time when the next update of cloudlets has to be performed.
+     * {@return the next time Cloudlets processing will be updated (a relative delay from the current simulation time)}
      * This is the minimum value between the {@link #getSchedulingInterval()} and the given time
-     * (if the scheduling interval is enabled, i.e. if it's greater than 0),
-     * which represents when the next update of Cloudlets processing
-     * has to be performed.
+     * (if the scheduling interval is enabled, i.e., if it's greater than 0),
+     * which indicates when the next update of Cloudlets processing has to be performed.
      *
      * @param nextFinishingCloudletTime the predicted completion time of the earliest finishing cloudlet
      * (which is a relative delay from the current simulation time),
      * or {@link Double#MAX_VALUE} if there is no next Cloudlet to execute
-     * @return next time cloudlets processing will be updated (a relative delay from the current simulation time)
      *
      * @see #updateCloudletProcessing()
      */
@@ -483,7 +479,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         final double time = Math.floor(clock());
         final double mod = time % schedulingInterval;
         /* If a scheduling interval is set, ensures the next time that Cloudlets' processing
-         * are updated is multiple of the scheduling interval.
+         * is updated is multiple of the scheduling interval.
          * If there is an event happening before such a time, then the event
          * will be scheduled as usual. Otherwise, the update
          * is scheduled to the next time multiple of the scheduling interval.*/
@@ -498,8 +494,8 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     /**
      * Processes a Cloudlet resume request.
      * @param cloudlet cloudlet to be resumed
-     * @param ack indicates if the event's sender expects to receive an
-     * @return
+     * @param ack indicates if the event's sender expects to receive a confirmation (ack) message
+     * @return true to indicate the event was processed
      */
     protected boolean processCloudletResume(final Cloudlet cloudlet, final boolean ack) {
         final double estimatedFinishTime = cloudlet.getVm().getCloudletScheduler().cloudletResume(cloudlet);
@@ -522,9 +518,9 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
 
     /**
      * Processes a Cloudlet pause request.
-     *  @param cloudlet cloudlet to be paused
-     * @param ack indicates if the event's sender expects to receive an
-     * @return
+     * @param cloudlet cloudlet to be paused
+     * @param ack indicates if the event's sender expects to receive a confirmation (ack) message
+     * @return true to indicate the event was processed
      */
     protected boolean processCloudletPause(final Cloudlet cloudlet, final boolean ack) {
         cloudlet.getVm().getCloudletScheduler().cloudletPause(cloudlet);
@@ -536,7 +532,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      * Processes a Cloudlet cancel request.
      *
      * @param cloudlet cloudlet to be canceled
-     * @return
+     * @return true to indicate the event was processed
      */
     protected boolean processCloudletCancel(final Cloudlet cloudlet) {
         cloudlet.getVm().getCloudletScheduler().cloudletCancel(cloudlet);
@@ -549,8 +545,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      * Datacenter. This Datacenter will then send the status back to the Broker.
      *
      * @param evt information about the event just happened
-     * acknowledge message when the event finishes to be processed
-     * @return true if some requested VMs were created into some host; false otherwise
+     * @return true if some requested VM was created into some host; false otherwise
      * @see CloudSimTag#VM_CREATE_ACK
      */
     @SuppressWarnings("unchecked")
@@ -583,8 +578,9 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     }
 
     /**
-     * Returns an ack to the broker which may confirm if the VM was created ot not by checking its created attribute.
-     * @param vm the VM which creation request was processed
+     * Returns an ack to the broker which may confirm if the VM was created or not,
+     * by checking its `created` attribute.
+     * @param vm the VM whose creation request was processed
      * @return true or false to indicate if the VM was created or not
      */
     private boolean updateVmProcessing(final Vm vm) {
@@ -599,10 +595,9 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      * upon request, the status back to the Broker.
      *
      * @param evt information about the event just happened
-     * @param ack indicates if the event's sender expects to receive an
-     * @return
+     * @return true or false to indicate the event was processed or not
      */
-    protected boolean processVmDestroy(final SimEvent evt, final boolean ack) {
+    protected boolean processVmDestroy(final SimEvent evt) {
         if(evt.getData() instanceof Vm vm){
             vmAllocationPolicy.deallocateHostForVm(vm);
 
@@ -627,7 +622,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     private String generateNotFinishedCloudletsWarning(final Vm vm) {
         final int cloudletsNoFinished = vm.getCloudletScheduler().getCloudletList().size();
         /* If the VM is in migration and was destroyed, it's a non-live migration from/to a public-cloud DC.
-         * This way, it's forced to be shutdown and no warning must be shown. */
+         * This way, it's forced to be shut down and no warning must be shown. */
         if(cloudletsNoFinished == 0 || vm.isInMigration()) {
             return "";
         }
@@ -647,10 +642,9 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      * Finishes the process of migrating a VM.
      *
      * @param evt information about the event just happened
-     * @param ack indicates if the event's sender expects to receive an
-     * acknowledgement message when the event finishes being processed
+     * @param ack indicates if the event's sender expects to receive a confirmation (ack) message
+     * @return true or false to indicate the event was processed or not
      * @see CloudSimTag#VM_MIGRATE
-     * @return
      */
     protected boolean finishVmMigration(final SimEvent evt, final boolean ack) {
         if (!(evt.getData() instanceof Map.Entry<?, ?>)) {
@@ -703,8 +697,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      * the Cloudlet cannot be created again because it has already finished.
      *
      * @param cloudlet the finished cloudlet
-     * @param ack indicates if the Broker is waiting for an ACK after the Datacenter
-     * receives the cloudlet submission
+     * @param ack indicates if the Broker is waiting for an ACK after the Datacenter receives the cloudlet submission
      */
     private void notifyBrokerAboutAlreadyFinishedCloudlet(final Cloudlet cloudlet, final boolean ack) {
         LOGGER.warn(
@@ -714,7 +707,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         /*
          NOTE: If a Cloudlet has finished, then it won't be processed.
          So, if ack is required, this method sends back a result.
-         If ack is not required, this method don't send back a result.
+         If ack is not required, this method doesn't send back a result.
          Hence, this might cause CloudSimPlus to be hanged since waiting
          for this Cloudlet back.
         */
@@ -725,11 +718,11 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
 
     /**
      * Sends an ACK to the DatacenterBroker that submitted the Cloudlet for execution
-     * in order to respond the reception of the submission request,
+     * for responding to the reception of the submission request,
      * informing if the cloudlet was created or not.
      *
-     * The ACK is sent just if the Broker is waiting for it and that condition
-     * is indicated in the ack parameter.
+     * <p>The ACK is sent just if the Broker is waiting for it.
+     * That condition is indicated in the ack parameter.</p>
      *
      * @param cloudlet the cloudlet to respond to DatacenterBroker if it was created or not
      * @param ack indicates if the Broker is waiting for an ACK after the Datacenter
@@ -744,7 +737,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     /**
      * Updates the processing of all Hosts, meaning
      * it makes the processing of VMs running inside such hosts to be updated.
-     * Finally, the processing of Cloudlets running inside such VMs is updated too.
+     * Finally, the processing of Cloudlets, running inside such VMs, is updated too.
      *
      * @return the predicted completion time of the earliest finishing cloudlet
      * (which is a relative delay from the current simulation time),
@@ -765,17 +758,18 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     }
 
     /**
-     * Updates processing of each Host, that fires the update of VMs,
+     * Updates the processing of each Host, that fires the update of VMs,
      * which in turn updates cloudlets running in this Datacenter.
      * After that, the method schedules the next processing update.
-     * It is necessary because Hosts and VMs are simple objects, not
-     * entities. So, they don't receive events and updating cloudlets inside
+     * That is necessary because Hosts and VMs are simple objects, not
+     * entities. So, they don't receive events, therefore, updating cloudlets inside
      * them must be called from the outside.
      *
      * @return the predicted completion time of the earliest finishing cloudlet
-     * (which is a relative delay from the current simulation time),
-     * or {@link Double#MAX_VALUE} if there is no next Cloudlet to execute
-     * or it isn't time to update the cloudlets
+     * (which is a relative delay from the current simulation time);
+     * or {@link Double#MAX_VALUE} if:
+     *   (i) there is no next Cloudlet to execute, or
+     *   (ii) it isn't time to update the cloudlets.
      */
     protected double updateCloudletProcessing() {
         if (!isTimeToUpdateCloudletsProcessing()){
@@ -806,7 +800,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      * Checks if the {@link #getVmAllocationPolicy()} has defined
      * a new VM placement map, then sends the request to migrate VMs.
      *
-     * <p><b>This is an expensive operation for large scale simulations.</b></p>
+     * <p><b>This is an expensive operation for large-scale simulations.</b></p>
      */
     private void checkIfVmMigrationsAreNeeded() {
         if (!isTimeToSearchForSuitableHosts()) {
@@ -824,9 +818,8 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     }
 
     /**
-     * Indicates if it's time to check if suitable Hosts are available to migrate VMs
-     * from under or overload Hosts.
-     * @return
+     * @return true if it's time to check if suitable Hosts are available to migrate VMs
+     * from under or overload Hosts; false otherwise
      */
     private boolean isTimeToSearchForSuitableHosts(){
         final double elapsedSecs = clock() - lastUnderOrOverloadedDetection;
@@ -896,7 +889,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      * It is computed as: VM RAM (MB)/Target Host Bandwidth (Mb/s).
      *
      * <p><b>WARNING: </b>If the VM is being migrated across {@link Distribution#PRIVATE} Datacenters,
-     * returns a positive value indicatig the time to migrate the VM.
+     * returns a positive value indicating the time to migrate the VM.
      * If the VM is being migrated across datacenters with different {@link Distribution}s,
      * returns the time to migrate the VM as a negative value.
      * </p>
@@ -910,11 +903,11 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         final double  vmMigrationBwMBps = getBandwidthForMigration(targetHost);
         final var sourceHost = vm.getHost();
 
-        //From private to private-cloud DC, performs live migration (don't stop the VM and tranfer RAM state)
+        //From private to private-cloud DC, performs live migration (doesn't stop the VM and transfers RAM state)
         if (isLiveMigration(sourceHost, targetHost))
             return ramUtilizationMB / vmMigrationBwMBps;
 
-        //Otherwise, non-live VM migration stops the VM and transfer its image
+        //Otherwise, non-live VM migration stops the VM and transfers its image
         return -vm.getStorage().getCapacity() / vmMigrationBwMBps;
     }
 
@@ -924,9 +917,8 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     }
 
     /**
-     * Gets the bandwidth that will be reserved for VM migration (in MB/s)
+     * {@return the bandwidth that will be reserved for VM migration (in MB/s)}
      * @param targetHost the target Host to migrate a VM
-     * @return the VM migration BW (in MB/s)
      */
     private double getBandwidthForMigration(final Host targetHost) {
         return bitsToBytes(targetHost.getBw().getCapacity() * getBandwidthPercentForMigration());
@@ -959,9 +951,10 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     }
 
     /**
-     * Sets the policy to be used by the Datacenter to allocate VMs into hosts.
+     * Sets the policy to be used by the Datacenter to allocate {@link Vm}s into {@link Host}s.
      *
      * @param vmAllocationPolicy the new vm allocation policy
+     * @return this Datacenter
      */
     public final Datacenter setVmAllocationPolicy(final VmAllocationPolicy vmAllocationPolicy) {
         requireNonNull(vmAllocationPolicy);
@@ -981,18 +974,15 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     }
 
     /**
-     * Gets a <b>read-only</b> list all VMs from all Hosts of this Datacenter.
-     *
+     * {@return a <b>read-only</b> list containing all VMs from all Hosts of this Datacenter}
      * @param <T> the class of VMs inside the list
-     * @return the list all VMs from all Hosts
      */
     private <T extends Vm> List<T> getVmList() {
-        return (List<T>) Collections.unmodifiableList(
-                getHostList()
+        return (List<T>) getHostList()
                     .stream()
                     .map(Host::getVmList)
                     .flatMap(List::stream)
-                    .collect(toList()));
+                    .toList();
     }
 
     @Override

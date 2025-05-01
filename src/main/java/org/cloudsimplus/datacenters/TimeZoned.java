@@ -56,7 +56,7 @@ public interface TimeZoned {
      * Sets the time zone offset between [{@link #MIN_TIME_ZONE_OFFSET} and {@link #MAX_TIME_ZONE_OFFSET}].
      *
      * @param timeZone the new time zone offset
-     * @return
+     * @return this instance
      */
     TimeZoned setTimeZone(double timeZone);
 
@@ -70,10 +70,10 @@ public interface TimeZoned {
     }
 
     /**
-     * Selects the {@link Datacenter} closest to a given {@link Vm}, based on their timezone.
+     * Selects the {@link Datacenter} closest to a given {@link Vm}, based on their {@link #getTimeZone() time zone}.
      * It considers the Datacenter list is already sorted by timezone.
      *
-     * @param vm to Vm to try place into the closest Datacenter
+     * @param vm to Vm to try placing into the closest Datacenter
      * @param datacenters the list of available Datacenters, sorted by timezone
      * @return the first selected Datacenter
      */
@@ -109,7 +109,7 @@ public interface TimeZoned {
 
     /**
      * Computes the distance between this and other {@link TimeZoned} object,
-     * considering their timezone offset values.
+     * considering their time zone offset values.
      *
      * @param other the other {@link TimeZoned} object to check the distance to
      * @return a positive integer value representing the distance between the objects

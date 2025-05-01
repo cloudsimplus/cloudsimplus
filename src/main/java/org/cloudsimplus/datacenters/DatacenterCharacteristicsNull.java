@@ -24,8 +24,7 @@
 package org.cloudsimplus.datacenters;
 
 /**
- * A class that implements the Null Object Design Pattern for {@link Datacenter}
- * class.
+ * A class that implements the Null Object Design Pattern for {@link Datacenter} class.
  *
  * @author Manoel Campos da Silva Filho
  * @see DatacenterCharacteristics#NULL
