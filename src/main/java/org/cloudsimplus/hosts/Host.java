@@ -7,10 +7,7 @@
  */
 package org.cloudsimplus.hosts;
 
-import org.cloudsimplus.core.PhysicalMachine;
-import org.cloudsimplus.core.ResourceStatsComputer;
-import org.cloudsimplus.core.Simulation;
-import org.cloudsimplus.core.Startable;
+import org.cloudsimplus.core.*;
 import org.cloudsimplus.datacenters.Datacenter;
 import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.listeners.HostEventInfo;
@@ -35,10 +32,6 @@ import java.util.Set;
 /**
  * An interface to be implemented by each class that provides
  * Physical Machines (Hosts) features.
- * The interface implements the Null Object Design
- * Pattern in order to start avoiding {@link NullPointerException}
- * when using the {@link Host#NULL} object instead
- * of attributing {@code null} to {@link Host} variables.
  *
  * @author Rodrigo N. Calheiros
  * @author Anton Beloglazov
@@ -55,15 +48,12 @@ public interface Host extends PhysicalMachine, Comparable<Host>, PowerAware<Powe
     double DEF_IDLE_SHUTDOWN_DEADLINE = -1;
 
     /**
-     * An attribute that implements the Null Object Design Pattern for {@link Host}
-     * objects.
+     * An attribute that implements the Null Object Design Pattern for {@link Host} objects.
      */
     Host NULL = new HostNull();
 
     /**
-     * Gets the Datacenter where the host is placed.
-     *
-     * @return the data center of the host
+     * @return the Datacenter where the host is placed.
      */
     Datacenter getDatacenter();
 
@@ -76,7 +66,7 @@ public interface Host extends PhysicalMachine, Comparable<Host>, PowerAware<Powe
 
     /**
      * Checks if the host is suitable for a Vm
-     * (if it has enough resources to attend the Vm)
+     * (if it has enough resources to meet the Vm requirements)
      * and the Host is not failed.
      *
      * @param vm the Vm to check
@@ -87,13 +77,13 @@ public interface Host extends PhysicalMachine, Comparable<Host>, PowerAware<Powe
 
     /**
      * Checks if the host is suitable for a Vm
-     * (if it has enough resources to attend the Vm)
+     * (if it has enough resources to meet the Vm requirements)
      * and the Host is not failed,
      * <b>providing fine-grained information
-     * about each individual Host's resource suitability</b>.
+     * about the suitability of each Host resource</b>.
      *
      * @param vm the Vm to check
-     * @return a {@link HostSuitability} object containing
+     * @return a {@link HostSuitability} object
      * indicating the Host's resources that
      * are suitable or not for the given Vm.
      * @see #setLazySuitabilityEvaluation(boolean)
@@ -101,24 +91,22 @@ public interface Host extends PhysicalMachine, Comparable<Host>, PowerAware<Powe
     HostSuitability getSuitabilityFor(Vm vm);
 
     /**
-     * Checks if the Host is powered-on or not.
      * @return true if the Host is powered-on, false otherwise.
      * @see #isFinished()
      */
     boolean isActive();
 
     /**
-     * Check if the host is powered-off
-     * @return
+     * @return true if the host is powered-off, false otherwise
      * @see #isActive()
      */
     @Override
     boolean isFinished();
 
     /**
-     * Checks if the Host has ever started sometime,
-     * i.e., if it was active sometime in the simulation execution.
-     * @return
+     * @return true if the Host has ever started sometime,
+     * i.e., if it was active sometime in the simulation execution;
+     * false otherwise.
      */
     boolean hasEverStarted();
 
@@ -150,82 +138,72 @@ public interface Host extends PhysicalMachine, Comparable<Host>, PowerAware<Powe
      * Gets the list of VMs migrating into this host.
      *
      * @param <T> the generic type
-     * @return the vms migrating in
+     * @return the VMs migrating in
      */
     <T extends Vm> Set<T> getVmsMigratingIn();
 
     /**
-     * Checks if there is any VMs migrating in or out this host.
-     * @return
+     * @return true if there is any VM migrating in or out this host; false otherwise.
      */
     boolean hasMigratingVms();
 
     /**
      * Try to add a VM migrating into the current host
-     * if there is enough resources for it.
+     * if there are enough resources for it.
      * In this case, the resources are allocated
-     * and the VM added to the {@link #getVmsMigratingIn()} List.
+     * and the VM are added to the {@link #getVmsMigratingIn()} List.
      * Otherwise, the VM is not added.
      *
-     * @param vm the vm
+     * @param vm the vm to add to the migrating-in list
      * @return true if the Vm was migrated in;
      *         false if the Host doesn't have enough resources to place the Vm
      */
     boolean addMigratingInVm(Vm vm);
 
     /**
-     * Gets a <b>read-only</b> list of VMs migrating out from the Host.
-     *
-     * @return
+     * @return a <b>read-only</b> list of VMs migrating out from the Host.
      */
     Set<Vm> getVmsMigratingOut();
 
     /**
-     * Adds a {@link Vm} to the list of VMs migrating out from the Host.
+     * Adds a {@link Vm} to the list of VMs migrating out this Host.
      * @param vm the vm to be added
-     * @return true if the VM wasn't into the list and was added, false otherwise
+     * @return true if the VM was added, false otherwise
      */
     boolean addVmMigratingOut(Vm vm);
 
     /**
-     * Adds a {@link Vm} to the list of VMs migrating out from the Host.
-     * @param vm the vm to be added
-     * @return
+     * Removes a {@link Vm} from the list of VMs migrating out this Host.
+     * @param vm the vm to be removed
+     * @return true if the Vm was removed, false otherwise
      */
     boolean removeVmMigratingOut(Vm vm);
 
     /**
-     * Reallocate VMs migrating into the host. Gets the VM in the migrating in queue
+     * Reallocate VMs migrating into this host. Gets the VM in the migrating-in queue
      * and allocate them on the host.
      */
     void reallocateMigratingInVms();
 
     /**
-     * Gets total MIPS capacity of PEs which are not {@link Status#FAILED}.
-     * @return the total MIPS of working PEs
+     * @return total MIPS capacity of {@link Pe}s which are not {@link Status#FAILED}.
      */
     @Override
     double getTotalMipsCapacity();
 
     /**
-     * Gets the current total amount of available MIPS at the host.
-     *
-     * @return the total available amount of MIPS
+     * @return the current total amount of available MIPS at the host.
      */
     double getTotalAvailableMips();
 
     /**
-     * Gets the total allocated MIPS at the host.
-     *
-     * @return the total allocated amount of MIPS
+     * @return the total allocated MIPS at the host.
      */
     double getTotalAllocatedMips();
 
     /**
-     * Gets the total allocated MIPS for a VM along all its PEs.
-     *
-     * @param vm the vm
-     * @return the allocated mips for vm
+     * {@return the total allocated MIPS for a VM across all its PEs}
+     * @param vm the vm to get its total allocated MIPS
      */
     double getTotalAllocatedMipsForVm(Vm vm);
 
@@ -234,76 +212,55 @@ public interface Host extends PhysicalMachine, Comparable<Host>, PowerAware<Powe
      * so that the VM can be actually placed into the Host
      * and the migration process finished.
      *
-     * @param vm the vm
+     * @param vm the vm to remove
      */
     void removeMigratingInVm(Vm vm);
 
     /**
-     * Gets the list of all Processing Elements (PEs) of the host,
-     * including failed PEs.
-     *
-     * @return the list of all Host PEs
+     * @return the list of all {@link Pe}s of the host, including failed PEs.
      * @see #getWorkingPeList()
      */
     List<Pe> getPeList();
 
     /**
-     * Gets the list of working Processing Elements (PEs) of the host.
-     * It's the list of all PEs which are not <b>FAILEd</b>.
-     *
-     * @return the list working (non-failed) Host PEs
+     * @return the list of working (non-failed) {@link Pe}s of the host.
      */
     List<Pe> getWorkingPeList();
 
     /**
-     * Gets the list of working Processing Elements (PEs) of the host,
-     * <b>which excludes failed PEs</b>.
-     *
-     * @return the list working (non-failed) Host PEs
+     * @return the list of {@link Pe}s of the host that are {@link Status#BUSY}.
      */
     List<Pe> getBusyPeList();
 
     /**
-     * Gets the list of Free Processing Elements (PEs) of the host,
-     * <b>which excludes failed PEs</b>.
-     *
-     * @return the list free (non-failed) Host PEs
+     *  @return the list of Free (non-failed) {@link Pe}s of the host.
      */
     List<Pe> getFreePeList();
 
     /**
-     * Gets the number of PEs that are free to be used by any VM.
-     *
-     * @return the free pes number
+     * @return the number of {@link Pe}s that are free to be used by any VM.
      */
     int getFreePesNumber();
 
     /**
-     * Gets the number of PEs that are working.
-     * That is, the number of PEs that aren't FAIL.
-     *
-     * @return the number of working pes
+     * @return the number of {@link Pe}s that are working (non-failed).
      */
     int getWorkingPesNumber();
 
     /**
-     * Gets the number of PEs that are {@link Pe.Status#BUSY}.
-     * That is, the number of PEs that aren't FAIL.
-     *
-     * @return the number of working pes
+     * @return the number of {@link Pe}s that are {@link Pe.Status#BUSY}.
      */
     int getBusyPesNumber();
 
     /**
-     * Gets the current percentage (from 0..1) of used (busy) PEs,
+     * @return the current percentage (from 0..1) of used (busy) {@link Pe}s,
      * according to the {@link #getPesNumber() total number of PEs}.
-     * @return
      * @see #getBusyPesPercent(boolean)
      */
     double getBusyPesPercent();
 
     /**
-     * Gets the current percentage of used (busy) PEs,
+     * Gets the current percentage of used (busy) {@link Pe}s,
      * according to the {@link #getPesNumber() total number of PEs}.
      * @param hundredScale if true, result is provided from 0..100 scale;
      *                     otherwise, it's returned in scale from 0..1.
@@ -313,23 +270,17 @@ public interface Host extends PhysicalMachine, Comparable<Host>, PowerAware<Powe
     double getBusyPesPercent(boolean hundredScale);
 
     /**
-     * Gets the number of PEs that have failed.
-     *
-     * @return the number of failed pes
+     * @return the number of {@link Pe}s that have failed.
      */
     int getFailedPesNumber();
 
     /**
-     * Gets the total free storage available at the host in Megabytes.
-     *
-     * @return the free storage
+     * @return the total free storage available at the host in Megabytes.
      */
     long getAvailableStorage();
 
     /**
-     * Gets the bandwidth (BW) provisioner with capacity in Megabits/s.
-     *
-     * @return the bw provisioner
+     * @return the bandwidth (BW) provisioner with capacity in Megabits/s.
      */
     ResourceProvisioner getBwProvisioner();
 
@@ -341,9 +292,7 @@ public interface Host extends PhysicalMachine, Comparable<Host>, PowerAware<Powe
     Host setBwProvisioner(ResourceProvisioner bwProvisioner);
 
     /**
-     * Gets the ram provisioner with capacity in Megabytes.
-     *
-     * @return the ram provisioner
+     * @return the ram provisioner with capacity in Megabytes.
      */
     ResourceProvisioner getRamProvisioner();
 
@@ -355,52 +304,48 @@ public interface Host extends PhysicalMachine, Comparable<Host>, PowerAware<Powe
     Host setRamProvisioner(ResourceProvisioner ramProvisioner);
 
     /**
-     * Gets as list of VMs currently assigned to the host.
+     * Gets a list of VMs currently assigned to the host.
      *
      * @param <T> The generic type
-     * @return the read-only current vm list
+     * @return the read-only current VM list
      */
     <T extends Vm> List<T> getVmList();
 
     /**
-     * Gets a <b>read-only</b> list of all VMs which have been created into the host
+     * Gets a <b>read-only</b> list of all VMs that have been created into the host
      * during the entire simulation.
      * This way, this method returns a historic list of created VMs,
-     * including those ones already destroyed.
+     * including those already destroyed.
      *
-     * @param <T> The generic type
-     * @return the read-only vm created historic list
+     * @param <T> The Vm generic type
+     * @return the read-only created VM historic list
      */
     <T extends Vm> List<T> getVmCreatedList();
 
     /**
-     * Gets the policy for allocation of host PEs to VMs in order to schedule VM execution.
-     *
-     * @return the {@link VmScheduler}
+     * @return the policy for allocation of host {@link Pe}s to VMs to schedule VM execution.
      */
     VmScheduler getVmScheduler();
 
     /**
-     * Sets the policy for allocation of host PEs to VMs in order to schedule VM
+     * Sets the policy for allocation of host {@link Pe}s to VMs to schedule VM
      * execution. The host also sets itself to the given scheduler.
      * It also sets the Host itself to the given scheduler.
      *
      * @param vmScheduler the vm scheduler to set
-     * @return
+     * @return this Host
      */
     Host setVmScheduler(VmScheduler vmScheduler);
 
     /**
-     * Gets the first time the Host was powered-on (in seconds).
-     * @return the first Host startup time or -1 if the Host has never been powered on
+     * @return the first Host startup time (in seconds) or -1 if the Host has never been powered on.
      * @see #getStartTime()
      * @see #setActive(boolean)
      */
     double getFirstStartTime();
 
     /**
-     * Gets the last time the Host was shut down (in seconds).
-     * @return the last shut downtime or -1 if the Host is active
+     * @return the last time the Host was shut down (in seconds) or -1 if the Host is active.
      */
     @Override
     double getFinishTime();
@@ -414,8 +359,7 @@ public interface Host extends PhysicalMachine, Comparable<Host>, PowerAware<Powe
     Startable setFinishTime(double shutdownTime);
 
     /**
-     * Gets the elapsed time since the last power on.
-     * @return the elapsed time (in seconds)
+     * @return the elapsed time (in seconds) since the last power on.
      * @see #getUpTimeHours()
      * @see #getTotalUpTime()
      * @see #getTotalUpTimeHours()
@@ -423,8 +367,7 @@ public interface Host extends PhysicalMachine, Comparable<Host>, PowerAware<Powe
     double getUpTime();
 
     /**
-     * Gets the elapsed time in hours since the last power on.
-     * @return the elapsed time (in hours)
+     * @return the elapsed time (in hours) since the last power on.
      * @see #getUpTime()
      * @see #getTotalUpTime()
      * @see #getTotalUpTimeHours()
@@ -432,12 +375,10 @@ public interface Host extends PhysicalMachine, Comparable<Host>, PowerAware<Powe
     double getUpTimeHours();
 
     /**
-     * Gets the total time the Host stayed active (powered on).
-     * Since the Host can be powered on and off according to demand,
-     * this method returns the sum of all intervals the Host
-     * was active (in seconds).
+     * @return the total time (in seconds) the Host stayed active (powered on).
+     * Since the Host can be powered on and off according to the demand,
+     * this method returns the sum of all intervals the Host was active.
      *
-     * @return the total uptime (in seconds)
      * @see #setActive(boolean)
      * @see #setIdleShutdownDeadline(double)
      * @see #getTotalUpTimeHours()
@@ -447,12 +388,10 @@ public interface Host extends PhysicalMachine, Comparable<Host>, PowerAware<Powe
     double getTotalUpTime();
 
     /**
-     * Gets the total time the Host stayed active (powered on).
-     * Since the Host can be powered on and off according to demand,
-     * this method returns the sum of all intervals the Host
-     * was active (in hours).
+     * @return the total time (in hours) the Host stayed active (powered on).
+     * Since the Host can be powered on and off according to the demand,
+     * this method returns the sum of all intervals the Host was active.
      *
-     * @return the total uptime (in hours)
      * @see #setActive(boolean)
      * @see #setIdleShutdownDeadline(double)
      * @see #getTotalUpTime()
@@ -462,20 +401,17 @@ public interface Host extends PhysicalMachine, Comparable<Host>, PowerAware<Powe
     double getTotalUpTimeHours();
 
     /**
-     * Gets the deadline to shut down the Host when it becomes idle.
-     * This is the time interval after the Host becoming idle that
-     * it will be shutdown.
+     * @return the deadline to shut down the Host (in seconds) when it becomes idle.
+     * This is the time interval after the Host becomes idle that it will be shutdown.
      * @see #DEF_IDLE_SHUTDOWN_DEADLINE
-     * @return the idle shutdown deadline (in seconds)
      */
     double getIdleShutdownDeadline();
 
     /**
-     * Sets the deadline to shut down the Host when it becomes idle.
-     * This is the time interval after the Host becoming idle that
-     * it will be shutdown.
+     * Sets the deadline to shut down the Host (in seconds) when it becomes idle.
+     * This is the time interval after the Host becomes idle that it will be shutdown.
      *
-     * @param deadline the deadline to shut down the Host after it becoming idle (in seconds).
+     * @param deadline the deadline to shut down the Host after it becomes idle (in seconds).
      *                 A negative value disables idle host shutdown.
      * @see #DEF_IDLE_SHUTDOWN_DEADLINE
      * @see #getIdleShutdownDeadline()
@@ -483,7 +419,7 @@ public interface Host extends PhysicalMachine, Comparable<Host>, PowerAware<Powe
     Host setIdleShutdownDeadline(double deadline);
 
     /**
-     * Checks if the host is working properly or has failed.
+     * Checks if the host has failed or is working properly.
      *
      * @return true, if the host PEs have failed; false otherwise
      */
@@ -499,7 +435,7 @@ public interface Host extends PhysicalMachine, Comparable<Host>, PowerAware<Powe
 
     /**
      * Updates the processing of VMs running on this Host,
-     * that makes the processing of cloudlets inside such VMs to be updated.
+     * that makes the processing of Cloudlets inside such VMs to be updated.
      *
      * @param currentTime the current time
      * @return the predicted completion time of the earliest finishing cloudlet
@@ -521,12 +457,12 @@ public interface Host extends PhysicalMachine, Comparable<Host>, PowerAware<Powe
     /**
      * Try to allocate resources to a new temporary VM in the Host.
      * The method is used only to book resources for a given VM.
-     * For instance, if Hosts are being chosen to migrate a set of VMs,
-     * when a Host is selected for a given VM, using this method,
-     * the resources are reserved and then, when the next
-     * VM is selected for the same Host, the
-     * reserved resources already were reduced from the available
-     * amount. This way, if it was possible to place just one Vm into that Host,
+     * If Hosts are being chosen to migrate a set of VMs,
+     * when a Host is selected for a given VM, using this method:
+     * - the resources are reserved,
+     * - then, when the next VM is selected for the same Host,
+     *   the previous reserved resources were already reduced from the available amount.
+     * This way, if it was possible to place just one Vm into that Host,
      * with the booking, no other VM will be selected to that Host.
      *
      * @param vm Vm being started
@@ -537,32 +473,30 @@ public interface Host extends PhysicalMachine, Comparable<Host>, PowerAware<Powe
     HostSuitability createTemporaryVm(Vm vm);
 
     /**
-     * Adds a listener object that will be notified every time
-     * the host is <b>powered on</b>.
+     * Adds a listener object that will be notified every time the host is <b>powered on</b>.
      *
      * @param listener the Listener to add
-     * @return
+     * @return this Host
      */
     Host addOnStartupListener(EventListener<HostEventInfo> listener);
 
     /**
-     * Removes a Listener object from the registered List.
+     * Removes a Listener object from the OnStartup List.
      * @param listener the Listener to remove
      * @return true if the Listener was removed, false otherwise
      */
     boolean removeOnStartupListener(EventListener<HostEventInfo> listener);
 
     /**
-     * Adds a listener object that will be notified every time
-     * the host is <b>powered off</b>.
+     * Adds a listener object that will be notified every time the host is <b>powered off</b>.
      *
      * @param listener the Listener to add
-     * @return
+     * @return this Host
      */
     Host addOnShutdownListener(EventListener<HostEventInfo> listener);
 
     /**
-     * Removes a Listener object from the registered List.
+     * Removes a Listener object from the OnShutdown List.
      * @param listener the Listener to remove
      * @return true if the Listener was removed, false otherwise
      */
@@ -573,13 +507,13 @@ public interface Host extends PhysicalMachine, Comparable<Host>, PowerAware<Powe
      * the host updates the processing of all its {@link Vm VMs}.
      *
      * @param listener the OnUpdateProcessingListener to add
-     * @return
+     * @return this Host
      * @see #updateProcessing(double)
      */
     Host addOnUpdateProcessingListener(EventListener<HostUpdatesVmsProcessingEventInfo> listener);
 
     /**
-     * Removes a Listener object from the registered List.
+     * Removes a Listener object from the OnUpdateProcessing List.
      *
      * @param listener the listener to remove
      * @return true if the listener was found and removed, false otherwise
@@ -588,14 +522,14 @@ public interface Host extends PhysicalMachine, Comparable<Host>, PowerAware<Powe
     boolean removeOnUpdateProcessingListener(EventListener<HostUpdatesVmsProcessingEventInfo> listener);
 
     /**
-     * Sets the CloudSimPlus instance that represents the simulation the Entity belongs
-     * Such attribute has to be set by the {@link Datacenter} that the host belongs to.
-     * @param simulation The CloudSimPlus instance that represents the simulation the Entity belongs
+     * Sets the {@link CloudSimPlus} instance that represents the simulation the Entity is related to.
+     * Such an attribute has to be set by the {@link Datacenter} that the host belongs.
+     * @param simulation The CloudSimPlus instance that represents the simulation the Entity is related
      */
     Host setSimulation(Simulation simulation);
 
     /**
-     * Gets the {@link ResourceProvisioner}s that manages a Host resource
+     * Gets the {@link ResourceProvisioner}s that manages a Host's resource
      * such as {@link Ram}, {@link Bandwidth} and {@link Pe}.
      * @param resourceClass the class of the resource to get its provisioner
      * @return the {@link ResourceProvisioner} for the given resource class
@@ -603,20 +537,16 @@ public interface Host extends PhysicalMachine, Comparable<Host>, PowerAware<Powe
     ResourceProvisioner getProvisioner(Class<? extends ResourceManageable> resourceClass);
 
     /**
-     * Gets the current percentage of CPU capacity (MIPS %) used by all running VMs.
+     * @return the current percentage (between [0 and 1]) of CPU capacity (MIPS) used by all running VMs.
      * It represents the actual percentage of MIPS allocated.
-     *
-     * @return total CPU utilization percentage (between [0 and 1]) for the current time
      */
     double getCpuPercentUtilization();
 
     /**
-     * Gets the percentage of CPU capacity (MIPS %) requested by all running VMs at the current time.
+     * @return the percentage (between [0 and 1]) of CPU capacity (MIPS) requested by all running VMs at the current time.
      * It represents the percentage of MIPS requested,
      * which may be higher than the percentage used (allocated)
      * due to lack of capacity.
-     *
-     * @return the percentage (between [0 and 1]) of CPU capacity requested
      */
     double getCpuPercentRequested();
 
@@ -626,46 +556,39 @@ public interface Host extends PhysicalMachine, Comparable<Host>, PowerAware<Powe
      * However, for this method to return any data, you need to enable
      * the statistics computation for every VM it owns.
      * @return {@inheritDoc}
+     * @see #enableUtilizationStats()
      */
     HostResourceStats getCpuUtilizationStats();
 
     /**
      * {@inheritDoc}
-     * It iterates over all existing VMs enabling the statistics computation on every one.
-     * But keep in mind that when a Host is created, it has no VM.
+     * It iterates over all existing VMs, enabling the statistics computation on everyone.
+     * Keep in mind that when a Host is created, it has no VMs.
      * Therefore, you need to call this method for every VM if you are enabling
      * the computation before the simulation starts and VM placement is performed.
+     * @see Vm#enableUtilizationStats()
      */
     void enableUtilizationStats();
 
     /**
-     * Gets the current total utilization of CPU in MIPS,
+     * @return the current total utilization of CPU in MIPS,
      * considering the usage of all its PEs.
-     *
-     * @return
      */
     double getCpuMipsUtilization();
 
     /**
-     * Gets the current utilization of bw (in Megabits/s).
-     *
-     * @return
+     * @return the current utilization of bw (in Megabits/s).
      */
     long getBwUtilization();
 
     /**
-     * Gets the current utilization of memory (in Megabytes).
-     *
-     * @return
+     * @return the current utilization of memory (in Megabytes).
      */
     long getRamUtilization();
 
     /**
-     * Gets the {@link PowerModelHost} used by the host
-     * to define how it consumes power.
+     * @return the {@link PowerModelHost} used by the host to define how it consumes power.
      * A Host just provides power usage data if a PowerModel is set.
-     *
-     * @return the Host's {@link PowerModelHost}
      */
     PowerModelHost getPowerModel();
 
@@ -680,45 +603,39 @@ public interface Host extends PhysicalMachine, Comparable<Host>, PowerAware<Powe
     PowerAware<PowerModelHost> setPowerModel(PowerModelHost powerModel);
 
     /**
-     * Enables or disables storage of Host state history.
+     * Enables or disables the storage of Host state history.
      * @param enable true to enable, false to disable
      * @see #getStateHistory()
      */
     Host setStateHistoryEnabled(boolean enable);
 
     /**
-     * Checks if Host state history is being collected and stored.
-     * @return
+     * @return if Host state history is being collected and stored.
      */
     boolean isStateHistoryEnabled();
 
     /**
-     * Gets a <b>read-only</b> host state history.
+     * @return a <b>read-only</b> host state history.
      * This List is just populated if {@link #isStateHistoryEnabled()}
      *
-     * @return the state history
      * @see #setStateHistoryEnabled(boolean)
      */
     List<HostStateHistoryEntry> getStateHistory();
 
     /**
-     * Gets the List of VMs that have finished executing.
-     * @return
+     * @return the List of VMs that have finished executing.
      */
     List<Vm> getFinishedVms();
 
     /**
-     * {@return the list of VMs which can be migrated from the host}
+     * @return the list of VMs that can be migrated from the host.
      */
     List<Vm> getMigratableVms();
 
     /**
      * Checks if the suitability evaluation of this Host for a given Vm
      * is to be performed lazily by methods such as {@link #isSuitableForVm(Vm)}.
-     * It means that the method will return as soon as some resource requirement is not met
-     * and the suitability for other VM requirements is not evaluated.
-     * This laziness improves performance but provides less information
-     * when calling {@link #getSuitabilityFor(Vm)}.
+     * See {@link #setLazySuitabilityEvaluation(boolean)} for important details.
      *
      * @return true if the lazy evaluation is enabled, false otherwise
      */
@@ -727,10 +644,11 @@ public interface Host extends PhysicalMachine, Comparable<Host>, PowerAware<Powe
     /**
      * Defines if the suitability evaluation of this Host for a given Vm
      * is to be performed lazily by methods such as {@link #isSuitableForVm(Vm)}.
-     * It means that the method will return as soon as some resource requirement is not met
-     * and the suitability for other VM requirements is not evaluated.
+     * It means that the method will return as soon as some resource requirement is not met.
+     * This way, the suitability for other VM requirements is not evaluated.
      * This laziness improves performance but provides less information
      * when calling {@link #getSuitabilityFor(Vm)}.
+     * @param lazySuitabilityEvaluation true to enable lazy evaluation, false to disable
      */
     Host setLazySuitabilityEvaluation(boolean lazySuitabilityEvaluation);
 }

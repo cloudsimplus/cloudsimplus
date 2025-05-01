@@ -32,10 +32,10 @@ import org.cloudsimplus.vms.Vm;
 import org.cloudsimplus.vms.VmGroup;
 
 /**
- * A class that stores information about the suitability of
+ * A class that stores data about the suitability of
  * a {@link Host} for placing a {@link Vm}.
- * It provides fine-grained information to indicates if the Host is suitable in
- * storage, ram, bandwidth and number of PEs required by the given Vm.
+ * It provides fine-grained data to indicate if the Host is suitable in
+ * storage, ram, bandwidth and number of {@link Pe}s required by the given {@link Vm}.
  *
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 6.0.2
@@ -69,7 +69,7 @@ public final class HostSuitability {
     /**
      * The reason the Host is not suitable for a VM.
      */
-    private String reason;
+    private final String reason;
 
     public HostSuitability(final Vm vm, final String reason){
         this(Host.NULL, vm, reason);
@@ -80,14 +80,19 @@ public final class HostSuitability {
     }
 
     /**
-     * Creates a HostSuitability object.
+     * Creates a HostSuitability object where, by default, indicates that the Host is not suitable for the given Vm.
      *
      * @param host the Host evaluated for placing a given Vm
      * @param vm the Vm being requested to be placed in the given Host
      * @param reason the reason the Host is not suitable for a VM.
+     * @see #setForBw(boolean)
+     * @see #setForPes(boolean)
+     * @see #setForRam(boolean)
+     * @see #setForStorage(boolean)
+     * @see #setSuitability(HostSuitability)
      * @see #toString()
      */
-    public HostSuitability(@NonNull Host host, @NonNull final Vm vm, @NonNull final String reason){
+    public HostSuitability(final @NonNull Host host, @NonNull final Vm vm, @NonNull final String reason){
         this.host = host;
         this.vm = vm;
         this.reason = reason;
@@ -95,12 +100,12 @@ public final class HostSuitability {
 
     /**
      * Update the Host suitability based on another instance,
-     * making this object represent a combined suitability of
-     * different VMs for a single Host.
+     * making this object represent a combined {@link HostSuitability} of different VMs for a single Host.
      * If at the end the {@link #fully() suitability} is false,
      * that means the Host was not suitable for some VM(s) from other suitability instances.
-     * @param other other object to copy attribute values from
+     * @param other another object to copy attribute values from
      * @see VmGroup
+     * @see #fully()
      */
     public void setSuitability(final HostSuitability other){
         this.forPes     &= other.forPes;
@@ -111,8 +116,8 @@ public final class HostSuitability {
 
     /** Checks if the Host has enough storage for running a VM.
      * @return true if it's suitable;
-     *         false if it's unsuitable or this specific requirement
-     *         was not even evaluated since other one was already not met.
+     *         false if it's unsuitable, or this specific requirement
+     *         was not even evaluated since another one was already not met.
      * @see Host#setLazySuitabilityEvaluation(boolean)
      */
     public boolean forStorage() {
@@ -121,8 +126,8 @@ public final class HostSuitability {
 
     /** Checks if the Host has enough RAM for running a VM.
      * @return true if it's suitable;
-     *         false if it's unsuitable or this specific requirement
-     *         was not even evaluated since other one was already not met.
+     *         false if it's unsuitable, or this specific requirement
+     *         was not even evaluated since another one was already not met.
      * @see Host#setLazySuitabilityEvaluation(boolean)
      */
     public boolean forRam() {
@@ -131,8 +136,8 @@ public final class HostSuitability {
 
     /** Checks if the Host has enough Bandwidth for running a VM.
      * @return true if it's suitable;
-     *         false if it's unsuitable or this specific requirement
-     *         was not even evaluated since other one was already not met.
+     *         false if it's unsuitable, or this specific requirement
+     *         was not even evaluated since another one was already not met.
      * @see Host#setLazySuitabilityEvaluation(boolean)
      */
     public boolean forBw() {
@@ -141,8 +146,8 @@ public final class HostSuitability {
 
     /** Checks if the Host has enough {@link Pe}s for running a VM.
      * @return true if it's suitable;
-     *         false if it's unsuitable or this specific requirement
-     *         was not even evaluated since other one was already not met.
+     *         false if it's unsuitable, or this specific requirement
+     *         was not even evaluated since another one was already not met.
      * @see Host#setLazySuitabilityEvaluation(boolean)
      */
     public boolean forPes() {
@@ -151,8 +156,8 @@ public final class HostSuitability {
 
     /**
      * Checks if the Host is totally suitable for the given Vm
-     * in terms of required storage, ram, bandwidth and number of PEs.
-     * If any of the requirements is not met, it means the host is not suitable at all.
+     * in terms of required storage, ram, bandwidth and number of {@link Pe}s.
+     * If any requirement is not met, it means the host is not suitable at all.
      * @return true if all resource requirements are met, false otherwise.
      */
     public boolean fully(){
@@ -160,14 +165,15 @@ public final class HostSuitability {
     }
 
     /**
-     * Gets the reason the VM cannot be allocated to a host.
-     * @return the reason or a empty string if the VM can be allocated.
+     * Gets the reason a Host is not suitable for a VM.
+     * @return the reason or an empty string if the Host is suitable.
      */
     @Override
     public String toString(){
         if(fully())
             return host + " is fully suitable for " + vm;
 
+        // TODO It may return a reason even when the host is suitable for the VM (since forPes and so on can be changed)
         if(reason != null)
             return reason;
 
@@ -182,6 +188,6 @@ public final class HostSuitability {
             builder.append(" BW,");
 
         final var hostStr = host == Host.NULL ? "" : " in " + host;
-        return "%s for %s".formatted(builder.substring(0, builder.length()-1), hostStr, vm);
+        return "%s%s for %s".formatted(builder.substring(0, builder.length()-1), hostStr, vm);
     }
 }

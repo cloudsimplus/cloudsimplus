@@ -8,7 +8,7 @@
 package org.cloudsimplus.hosts;
 
 /**
- * Keeps historic CPU utilization data about a host.
+ * Keeps historic CPU utilization data about a {@link Host}.
  *
  * @author Anton Beloglazov
  * @since CloudSim Toolkit 2.1.2
@@ -20,36 +20,28 @@ package org.cloudsimplus.hosts;
 public record HostStateHistoryEntry(double time, double allocatedMips, double requestedMips, boolean active) {
 
     /**
-     * Gets the time the data in this history entry is related to.
-     *
-     * @return
+     * @return the time the data in this history entry is related to.
      */
     public double time() {
         return time;
     }
 
     /**
-     * Gets the total MIPS allocated from all PEs of the Host, to running VMs, at the recorded time.
-     *
-     * @return the allocated mips
+     * @return the total MIPS allocated from all PEs of the Host, to running VMs, at the recorded time.
      */
     public double allocatedMips() {
         return allocatedMips;
     }
 
     /**
-     * Gets the total MIPS requested by running VMs to all PEs of the Host at the recorded time.
-     *
-     * @return the requested mips
+     * @return the total MIPS requested by running VMs to all PEs of the Host at the recorded time.
      */
     public double requestedMips() {
         return requestedMips;
     }
 
     /**
-     * Gets the percentage (in scale from 0 to 1) of allocated MIPS from the total requested.
-     *
-     * @return
+     * @return the percentage (in scale from 0 to 1) of allocated MIPS from the total requested.
      */
     public double percentUsage() {
         return requestedMips > 0 ? allocatedMips / requestedMips : 0;
@@ -58,7 +50,7 @@ public record HostStateHistoryEntry(double time, double allocatedMips, double re
     /**
      * Checks if the Host is/was active at the recorded time.
      *
-     * @return true if is active, false otherwise
+     * @return true if active, false otherwise
      */
     public boolean active() {
         return active;
