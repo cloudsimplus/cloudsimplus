@@ -29,14 +29,15 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.cloudsimplus.cloudlets.Cloudlet;
 import org.cloudsimplus.distributions.ContinuousDistribution;
+import org.cloudsimplus.resources.Pe;
 import org.cloudsimplus.vms.Vm;
 
 import java.util.List;
 
 /**
  * A heuristic that uses <a href="http://en.wikipedia.org/wiki/Simulated_annealing">Simulated Annealing</a>
- * to find a suboptimal mapping among a set of Cloudlets and VMs in order to reduce
- * the number of idle or overloaded Vm Pe's.
+ * to find a suboptimal mapping between a set of Cloudlets and VMs to reduce
+ * the number of idle or overloaded Vm {@link Pe}s.
  *
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
@@ -48,7 +49,9 @@ public class CloudletToVmMappingSimulatedAnnealing
 {
     /**
      * Number of {@link CloudletToVmMappingSolution} created so far.
+     * At the end of the simulations, it indicates the total number of solutions created.
      */
+    @Getter
     private static int solutions = 0;
 
     private CloudletToVmMappingSolution initialSolution;
@@ -60,10 +63,10 @@ public class CloudletToVmMappingSimulatedAnnealing
     private List<Cloudlet> cloudletList;
 
     /**
-     * Creates a new Simulated Annealing Heuristic for solving Cloudlets to Vm's mapping.
+     * Creates a Simulated Annealing Heuristic for solving Cloudlets to VMs mapping.
      *
      * @param initialTemperature the system initial temperature
-     * @param random a random number generator
+     * @param random a pseudo-random number generator
      * @see #setColdTemperature(double)
      * @see #setCoolingRate(double)
      */
@@ -97,7 +100,7 @@ public class CloudletToVmMappingSimulatedAnnealing
     }
 
     /**
-     * @return a random Vm from the {@link #getVmList() available Vm's list}.
+     * @return a random Vm from the {@link #getVmList() available VMs list}.
      */
     private Vm getRandomVm() {
         final int idx = getRandomValue(vmList.size());
@@ -109,13 +112,5 @@ public class CloudletToVmMappingSimulatedAnnealing
         final var clone = new CloudletToVmMappingSolution(source, ++solutions);
         clone.swapVmsOfTwoRandomSelectedMapEntries();
         return clone;
-    }
-
-    /**
-     * {@return the number of solutions created so far}
-     * At the end of the simulations, it indicates the total number of solutions created.
-     */
-    public static int getSolutions() {
-        return solutions;
     }
 }

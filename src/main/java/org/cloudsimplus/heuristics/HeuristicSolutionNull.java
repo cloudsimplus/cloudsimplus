@@ -24,8 +24,7 @@
 package org.cloudsimplus.heuristics;
 
 /**
- * A class that implements the Null Object Design Pattern for {@link HeuristicSolution}
- * class.
+ * A class that implements the Null Object Design Pattern for {@link HeuristicSolution} class.
  *
  * @author Manoel Campos da Silva Filho
  * @see HeuristicSolution#NULL

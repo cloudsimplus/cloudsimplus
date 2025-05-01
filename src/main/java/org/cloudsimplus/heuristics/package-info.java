@@ -1,9 +1,9 @@
 /**
  * Provides a set of interfaces and classes to develop heuristics to
- * find sub-optimal solutions for problems, considering some
+ * find suboptimal solutions for problems, considering some
  * utility function that has to be minimized or maximized.
- * Such a function is also called a fitness function and as higher is the fitness
- * better the found solution is.
+ * Such a function is also called a fitness function, and as the higher the fitness,
+ * the better the found solution is.
  *
  * <p>
  * Different heuristics include
