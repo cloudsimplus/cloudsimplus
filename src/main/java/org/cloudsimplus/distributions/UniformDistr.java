@@ -33,13 +33,12 @@ public class UniformDistr extends UniformRealDistribution implements ContinuousD
     private long seed;
 
     /**
-     * Creates a uniform Pseudo-Random Number Generator (RNG)
+     * Creates a uniform Pseudo-Random Number Generator (PRNG)
      * that generates values between [0 and 1[ using the current time as seed.
      *
      * <p>Internally, it relies on the {@link JDKRandomGenerator},
      * a wrapper for the {@link java.util.Random} class
-     * that doesn't have high-quality randomness properties
-     * but is very fast.</p>
+     * that doesn't have high-quality randomness properties but is very fast.</p>
      *
      * @see #UniformDistr(double, double, long, RandomGenerator)
      */
@@ -48,13 +47,12 @@ public class UniformDistr extends UniformRealDistribution implements ContinuousD
     }
 
     /**
-     * Creates a uniform Pseudo-Random Number Generator (RNG)
+     * Creates a uniform Pseudo-Random Number Generator (PRNG)
      * that generates values between [0 and 1[ using a given seed.
      *
      * <p>Internally, it relies on the {@link JDKRandomGenerator},
      * a wrapper for the {@link java.util.Random} class
-     * that doesn't have high-quality randomness properties
-     * but is very fast.</p>
+     * that doesn't have high-quality randomness properties but is very fast.</p>
      *
      * @param seed the seed to initialize the Pseudo-Random Number Generator.
      *
@@ -65,13 +63,12 @@ public class UniformDistr extends UniformRealDistribution implements ContinuousD
     }
 
     /**
-     * Creates a uniform Pseudo-Random Number Generator (RNG)
+     * Creates a uniform Pseudo-Random Number Generator (PRNG)
      * that generates values between [0 and 1[ using a given seed.
      *
      * <p>Internally, it relies on the {@link JDKRandomGenerator},
      * a wrapper for the {@link java.util.Random} class
-     * that doesn't have high-quality randomness properties
-     * but is very fast.</p>
+     * that doesn't have high-quality randomness properties but is very fast.</p>
      *
      * @param seed the seed <b>already used</b> to initialize the Pseudo-Random Number Generator
      * @param rng the actual Pseudo-Random Number Generator that will be the base
@@ -84,14 +81,13 @@ public class UniformDistr extends UniformRealDistribution implements ContinuousD
     }
 
     /**
-     * Creates a uniform Pseudo-Random Number Generator (RNG)
+     * Creates a uniform Pseudo-Random Number Generator (PRNG)
      * that produces values between a given {@link Range},
      * using the current time as seed.
      *
      * <p>Internally, it relies on the {@link JDKRandomGenerator},
      * a wrapper for the {@link java.util.Random} class
-     * that doesn't have high-quality randomness properties
-     * but is very fast.</p>
+     * that doesn't have high-quality randomness properties but is very fast.</p>
      *
      * @param range the {@link Range} to generate random values in between
      *
@@ -102,13 +98,12 @@ public class UniformDistr extends UniformRealDistribution implements ContinuousD
     }
 
     /**
-     * Creates a uniform Pseudo-Random Number Generator (RNG)
+     * Creates a uniform Pseudo-Random Number Generator (PRNG)
      * that produces values between a given {@link Range}.
      *
      * <p>Internally, it relies on the {@link JDKRandomGenerator},
      * a wrapper for the {@link java.util.Random} class
-     * that doesn't have high-quality randomness properties
-     * but is very fast.</p>
+     * that doesn't have high-quality randomness properties but is very fast.</p>
      *
      * @param range the {@link Range} to generate random values in between
      * @param seed the seed to initialize the Pseudo-Random Number Generator
@@ -120,14 +115,13 @@ public class UniformDistr extends UniformRealDistribution implements ContinuousD
     }
 
     /**
-     * Creates a uniform Pseudo-Random Number Generator (RNG)
+     * Creates a uniform Pseudo-Random Number Generator (PRNG)
      * that produces values between a min (inclusive) and max (exclusive),
      * using the current time as seed.
      *
      * <p>Internally, it relies on the {@link JDKRandomGenerator},
      * a wrapper for the {@link java.util.Random} class
-     * that doesn't have high-quality randomness properties
-     * but is very fast.</p>
+     * that doesn't have high-quality randomness properties but is very fast.</p>
      *
      * @param minInclusive minimum value to generate (inclusive)
      * @param maxExclusive maximum value to generate (exclusive)
@@ -139,12 +133,11 @@ public class UniformDistr extends UniformRealDistribution implements ContinuousD
     }
 
     /**
-     * Creates a uniform Pseudo-Random Number Generator (RNG).
+     * Creates a uniform Pseudo-Random Number Generator (PRNG).
      *
      * <p>Internally, it relies on the {@link JDKRandomGenerator},
      * a wrapper for the {@link java.util.Random} class
-     * that doesn't have high-quality randomness properties
-     * but is very fast.</p>
+     * that doesn't have high-quality randomness properties but is very fast.</p>
      *
      * @param minInclusive minimum value to generate (inclusive)
      * @param maxExclusive maximum value to generate (exclusive)
@@ -157,7 +150,7 @@ public class UniformDistr extends UniformRealDistribution implements ContinuousD
     }
 
     /**
-     * Creates a uniform Pseudo-Random Number Generator (RNG).
+     * Creates a uniform Pseudo-Random Number Generator (PRNG).
      * @param minInclusive minimum value to generate (inclusive)
      * @param maxExclusive maximum value to generate (exclusive)
      * @param seed the seed <b>already used</b> to initialize the Pseudo-Random Number Generator

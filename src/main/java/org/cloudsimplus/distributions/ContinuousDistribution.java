@@ -19,8 +19,7 @@ import org.apache.commons.math3.distribution.RealDistribution;
  */
 public interface ContinuousDistribution extends StatisticalDistribution, RealDistribution {
     /**
-     * An attribute that implements the Null Object Design Pattern for {@link ContinuousDistribution}
-     * objects.
+     * An attribute that implements the Null Object Design Pattern for {@link ContinuousDistribution} objects.
      */
     ContinuousDistribution NULL = new ContinuousDistributionNull();
 

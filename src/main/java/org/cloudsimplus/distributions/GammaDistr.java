@@ -15,8 +15,7 @@ import java.io.Serial;
 
 /**
  * A Pseudo-Random Number Generator following the
- * <a href="https://en.wikipedia.org/wiki/Gamma_distribution">Gamma</a>
- * distribution.
+ * <a href="https://en.wikipedia.org/wiki/Gamma_distribution">Gamma distribution</a>.
  *
  * @author Marcos Dias de Assuncao
  * @author Manoel Campos da Silva Filho
@@ -32,12 +31,11 @@ public class GammaDistr extends GammaDistribution implements ContinuousDistribut
     private long seed;
 
     /**
-     * Creates a Gamma Pseudo-Random Number Generator (RNG) using the current time as seed.
+     * Creates a Gamma Pseudo-Random Number Generator (PRNG) using the current time as seed.
      *
      * <p>Internally, it relies on the {@link JDKRandomGenerator},
      * a wrapper for the {@link java.util.Random} class
-     * that doesn't have high-quality randomness properties
-     * but is very fast.</p>
+     * that doesn't have high-quality randomness properties but is very fast.</p>
      *
      * @param shape the shape parameter of this distribution
      * @param scale the scale parameter of this distribution
@@ -53,7 +51,7 @@ public class GammaDistr extends GammaDistribution implements ContinuousDistribut
      *
      * @param shape the shape parameter of this distribution
      * @param scale the scale parameter of this distribution
-     * @param seed the seed
+     * @param seed the seed to initialize the generator
      *
      * @see #GammaDistr(int, double, long, RandomGenerator)
      */
@@ -67,7 +65,7 @@ public class GammaDistr extends GammaDistribution implements ContinuousDistribut
      * @param scale the scale parameter of this distribution
      * @param seed the seed <b>already used</b> to initialize the Pseudo-Random Number Generator
      * @param rng the actual Pseudo-Random Number Generator that will be the base
-*                  to generate random numbers following a continuous distribution.
+*                 to generate random numbers following a continuous distribution.
      */
     public GammaDistr(final int shape, final double scale, final long seed, final RandomGenerator rng) {
         super(rng, shape, scale);

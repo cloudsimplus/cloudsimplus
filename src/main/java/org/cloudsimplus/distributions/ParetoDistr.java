@@ -15,8 +15,7 @@ import java.io.Serial;
 
 /**
  * A Pseudo-Random Number Generator following the
- * <a href="https://en.wikipedia.org/wiki/Pareto_distribution">Pareto</a>
- * distribution.
+ * <a href="https://en.wikipedia.org/wiki/Pareto_distribution">Pareto distribution</a>.
  *
  * @author Marcos Dias de Assuncao
  * @author Manoel Campos da Silva Filho
@@ -48,8 +47,7 @@ public class ParetoDistr extends ParetoDistribution implements ContinuousDistrib
      *
      * @param shape the shape parameter of this distribution
      * @param location the location parameter of this distribution
-     *
-     * @param seed the seed
+     * @param seed the seed to initialize the generator
      * @see #ParetoDistr(double, double, long, RandomGenerator)
      */
     public ParetoDistr(final double shape, final double location, final long seed) {
