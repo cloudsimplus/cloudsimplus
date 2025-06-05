@@ -22,9 +22,9 @@ import java.util.List;
 /**
  * A Host class that implements the most basic features of a Physical Machine
  * (PM) inside a {@link Datacenter}. It executes actions related to the management
- * of virtual machines (e.g., creation and destruction). A host has a defined
+ * of virtual machines (e.g., creation and destruction). A Host has a defined
  * policy for provisioning memory and bw, as well as an allocation policy for
- * {@link Pe}s to {@link Vm Virtual Machines}. A host is associated with a Datacenter and
+ * {@link Pe}s to {@link Vm Virtual Machines}. A Host is associated with a Datacenter and
  * can run virtual machines.
  *
  * @author Rodrigo N. Calheiros
@@ -35,11 +35,11 @@ import java.util.List;
 public class HostSimple extends HostAbstract {
 
     /**
-     * Creates and instantaneously powers on a Host without a pre-defined ID,
-     * 10 GB of RAM, 1000 Mbps of Bandwidth and 500 GB of Storage.
+     * Creates and instantaneously powers on a Host without a pre-defined ID.
+     * It sets 10 GB of RAM, 1000 Mbps of Bandwidth and 500 GB of Storage.
      * It uses a {@link ResourceProvisionerSimple} for RAM and Bandwidth.
      * Finally, it sets a {@link VmSchedulerSpaceShared} as default.
-     * The ID is automatically set when a List of Hosts is attached
+     * The ID is automatically assigned when a List of Hosts is attached
      * to a {@link Datacenter}.
      *
      * @param peList the host's {@link Pe} list
@@ -64,7 +64,7 @@ public class HostSimple extends HostAbstract {
      *
      * <p>It creates a {@link ResourceProvisionerSimple}
      * for RAM and Bandwidth. Finally, it sets a {@link VmSchedulerSpaceShared} as default.
-     * The ID is automatically set when a List of Hosts is attached
+     * The ID is automatically assigned when a List of Hosts is attached
      * to a {@link Datacenter}.</p>
      *
      * @param peList the host's {@link Pe} list
@@ -107,7 +107,7 @@ public class HostSimple extends HostAbstract {
      * Creates and instantaneously powers on a Host without a pre-defined ID.
      * It uses a {@link ResourceProvisionerSimple}
      * for RAM and Bandwidth and also sets a {@link VmSchedulerSpaceShared} as default.
-     * The ID is automatically set when a List of Hosts is attached
+     * The ID is automatically assigned when a List of Hosts is attached
      * to a {@link Datacenter}.
      *
      * @param ram the RAM capacity in Megabytes
@@ -130,7 +130,7 @@ public class HostSimple extends HostAbstract {
      * Creates and instantaneously powers on a Host without a pre-defined ID.
      * It uses a {@link ResourceProvisionerSimple}
      * for RAM and Bandwidth and also sets a {@link VmSchedulerSpaceShared} as default.
-     * The ID is automatically set when a List of Hosts is attached
+     * The ID is automatically assigned when a List of Hosts is attached
      * to a {@link Datacenter}.
      *
      * @param ram the RAM capacity in Megabytes
@@ -155,7 +155,7 @@ public class HostSimple extends HostAbstract {
     /**
      * Creates a Host without a pre-defined ID. It uses a {@link ResourceProvisionerSimple}
      * for RAM and Bandwidth and also sets a {@link VmSchedulerSpaceShared} as default.
-     * The ID is automatically set when a List of Hosts is attached
+     * The ID is automatically assigned when a List of Hosts is attached
      * to a {@link Datacenter}.
      *
      * @param ram the RAM capacity in Megabytes

@@ -91,7 +91,7 @@ public abstract class HostAbstract extends ExecDelayableAbstract implements Host
     protected long id;
 
     /**
-     * {@return true or false} to indicate the Host must be automatically started up when the assigned Datacenter is initialized or not.
+     * Indicate whether the Host must be automatically started up when the assigned Datacenter is initialized or not.
      */
     @Getter
     protected boolean activateOnDatacenterStartup;
@@ -267,7 +267,7 @@ public abstract class HostAbstract extends ExecDelayableAbstract implements Host
 
         double nextSimulationDelay = Double.MAX_VALUE;
 
-        /* Uses an indexed for to avoid ConcurrentModificationException,
+        /* Uses an indexed loop to avoid ConcurrentModificationException,
          * e.g., in cases when Vm is destroyed during simulation execution.*/
         for (int i = 0; i < vmList.size(); i++) {
             nextSimulationDelay = updateVmProcessing(vmList.get(i), currentTime, nextSimulationDelay);
@@ -397,17 +397,17 @@ public abstract class HostAbstract extends ExecDelayableAbstract implements Host
     }
 
     /**
-     * Checks if the host is suitable for a Vm
-     * (if it has enough resources to meet the VM requirements)
-     * and the Host is not failed.
+     * Checks if the Host is suitable for a Vm
+     * (if it has enough resources to meet the Vm requirements)
+     * and the Host has not failed.
      *
-     * @param vm             the VM to check
-     * @param inMigration    indicates whether the VM is migrating into the Host
+     * @param vm             the Vm to check
+     * @param inMigration    indicates whether the Vm is migrating into the Host
      *                       or it is being just created for the first time
-     *                       (in the last case, just for logging purposes).
+     *                       (in this last case, just for logging purposes).
      * @param showFailureLog indicates if an error log must be shown when the Host is not suitable
      * @return a {@link HostSuitability} object that indicate for which resources the Host
-     * is suitable or not for the given VM
+     * is suitable or not for the given Vm
      * @see #isLazySuitabilityEvaluation()
      */
     private HostSuitability isSuitableForVm(final Vm vm, final boolean inMigration, final boolean showFailureLog) {
@@ -464,7 +464,7 @@ public abstract class HostAbstract extends ExecDelayableAbstract implements Host
         }
 
         if (delay == 0) {
-            // If there is no delay, start up or shutdown the Host right away.
+            // If there is no delay, starts up or shuts down the Host right away.
             processActivation(activate);
             return this;
         }
@@ -552,8 +552,8 @@ public abstract class HostAbstract extends ExecDelayableAbstract implements Host
     }
 
     /**
-     * Destroys a VM running in the host and removes it from the {@link #getVmList()}.
-     * If the VM was not created yet, this method has no effect.
+     * Destroys a Vm running in the Host and removes it from the {@link #getVmList()}.
+     * If the Vm was not created yet, this method has no effect.
      *
      * @param vm the VM to be destroyed
      */
@@ -566,9 +566,9 @@ public abstract class HostAbstract extends ExecDelayableAbstract implements Host
     }
 
     /**
-     * Destroys a temporary VM created into the Host to book resources.
+     * Destroys a temporary Vm created into the Host to book resources.
      *
-     * @param vm the VM to be destroyed
+     * @param vm the Vm to be destroyed
      * @see #createTemporaryVm(Vm)
      * TODO https://github.com/cloudsimplus/cloudsimplus/issues/94
      */
@@ -584,7 +584,7 @@ public abstract class HostAbstract extends ExecDelayableAbstract implements Host
     }
 
     /**
-     * Deallocate all resources that a VM was using.
+     * Deallocate all resources that a Vm was using.
      *
      * @param vm the VM to deallocate resources from
      */
@@ -600,7 +600,7 @@ public abstract class HostAbstract extends ExecDelayableAbstract implements Host
     }
 
     /**
-     * Destroys all VMs running in the host and removes them from the {@link #getVmList()}.
+     * Destroys all Vm's running in the Host and removes them from the {@link #getVmList()}.
      */
     public void destroyAllVms() {
         for (final Vm vm : vmList) {
@@ -670,7 +670,7 @@ public abstract class HostAbstract extends ExecDelayableAbstract implements Host
     /**
      * Gets the MIPS share of each {@link Pe} that is allocated to a given {@link Vm}.
      *
-     * @param vm the vm to get the MIPS share
+     * @param vm the Vm to get the MIPS share
      * @return an array containing the MIPS amount from each {@link Pe} that is available to the {@link Vm}
      */
     protected MipsShare getAllocatedMipsForVm(final Vm vm) {
@@ -1110,11 +1110,11 @@ public abstract class HostAbstract extends ExecDelayableAbstract implements Host
     }
 
     /**
-     * Adds the VM resource usage to the History if the VM is not migrating into the Host.
+     * Adds the Vm resource usage to the History if the Vm is not migrating into the Host.
      *
-     * @param vm          the VM to add its usage to the history
+     * @param vm          the Vm to add its usage to the history
      * @param currentTime the current simulation time
-     * @return the total allocated MIPS for the given VM
+     * @return the total allocated MIPS for the given Vm
      */
     private double addVmResourceUseToHistoryIfNotMigratingIn(final Vm vm, final double currentTime) {
         double totalAllocatedMips = getVmScheduler().getTotalAllocatedMipsForVm(vm);
@@ -1162,7 +1162,7 @@ public abstract class HostAbstract extends ExecDelayableAbstract implements Host
     }
 
     /**
-     * Adds a host state history entry.
+     * Adds a Host state history entry.
      *
      * @param time          the current simulation time
      * @param allocatedMips the total MIPS allocated from all PEs of the Host

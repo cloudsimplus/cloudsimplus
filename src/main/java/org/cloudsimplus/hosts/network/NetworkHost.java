@@ -12,6 +12,7 @@ import lombok.NonNull;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.cloudsimplus.core.CloudSimTag;
+import org.cloudsimplus.datacenters.Datacenter;
 import org.cloudsimplus.hosts.HostSimple;
 import org.cloudsimplus.hosts.HostSuitability;
 import org.cloudsimplus.network.HostPacket;
@@ -29,11 +30,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * NetworkHost class extends {@link HostSimple} to support simulation of
- * networked datacenters. It executes actions related to the management of packets
+ * A Host that support simulation of networked {@link Datacenter}s. It executes actions related to the management of packets
  * (sent and received) besides {@link Vm} management (e.g., creation and destruction).
- * A host has a defined policy for provisioning memory and bw, as
- * well as an allocation policy for PE's to virtual machines.
+ * A Host has a defined policy for provisioning memory and bw, as
+ * well as an allocation policy for {@link Pe}'s to virtual machines.
  *
  * <p>Please refer to the following publication for more details:
  * <ul>
@@ -114,7 +114,7 @@ public class NetworkHost extends HostSimple {
     }
 
     /**
-     * Receives packets and forwards them to targeting VMs and respective Cloudlets.
+     * Receives packets and forwards them to target VMs and respective Cloudlets.
      */
     private void receivePackets() {
         for (final HostPacket hostPkt : hostPktsReceived) {
@@ -154,7 +154,7 @@ public class NetworkHost extends HostSimple {
     }
 
     /**
-     * Gets all packet lists from all VMs placed into the host and sends them all.
+     * Gets all packet lists from all VMs placed into the Host and sends them all.
      * It checks whether a packet belongs to a local VM or to a VM hosted on another machine.
      */
     private void sendAllPacketListsOfAllVms() {
@@ -226,7 +226,7 @@ public class NetworkHost extends HostSimple {
     }
 
     /**
-     * Collects all packets inside a specific packet list from a Vm so that those packets can be sent further on.
+     * Collects all packets inside a specific packet list from a Vm, so that those packets can be sent further on.
      *
      * @param sourceVm the VM from where the packets will be sent
      */

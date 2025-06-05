@@ -32,7 +32,7 @@ import org.cloudsimplus.vms.Vm;
 import org.cloudsimplus.vms.VmGroup;
 
 /**
- * A class that stores data about the suitability of
+ * Stores data about the suitability of
  * a {@link Host} for placing a {@link Vm}.
  * It provides fine-grained data to indicate if the Host is suitable in
  * storage, ram, bandwidth and number of {@link Pe}s required by the given {@link Vm}.
@@ -67,7 +67,7 @@ public final class HostSuitability {
     private final Host host;
 
     /**
-     * The reason the Host is not suitable for a VM.
+     * The reason the Host is not suitable for a VM (if any).
      */
     private final String reason;
 
@@ -80,7 +80,7 @@ public final class HostSuitability {
     }
 
     /**
-     * Creates a HostSuitability object where, by default, indicates that the Host is not suitable for the given Vm.
+     * Creates a {@code HostSuitability} object where, by default, indicates that the Host is not suitable for the given Vm.
      *
      * @param host the Host evaluated for placing a given Vm
      * @param vm the Vm being requested to be placed in the given Host
@@ -165,8 +165,7 @@ public final class HostSuitability {
     }
 
     /**
-     * Gets the reason a Host is not suitable for a VM.
-     * @return the reason or an empty string if the Host is suitable.
+     * @return the reason Host is not suitable for a VM, or an empty string if the Host is suitable.
      */
     @Override
     public String toString(){

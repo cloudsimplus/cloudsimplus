@@ -9,6 +9,7 @@ package org.cloudsimplus.network.switches;
 
 import org.cloudsimplus.core.CloudSimPlus;
 import org.cloudsimplus.core.events.SimEvent;
+import org.cloudsimplus.datacenters.Datacenter;
 import org.cloudsimplus.datacenters.network.NetworkDatacenter;
 import org.cloudsimplus.network.HostPacket;
 import org.cloudsimplus.util.BytesConversion;
@@ -18,8 +19,8 @@ import org.slf4j.LoggerFactory;
 import java.util.Optional;
 
 /**
- * Allows simulating a Root switch which connects Datacenters to
- * an external network. It interacts with other Datacenter in order to exchange
+ * Allows simulating a Root switch that connects {@link Datacenter}s to
+ * an external network. It interacts with another Datacenter to exchange
  * packets.
  *
  * <p>Please refer to the following publication for more details:
@@ -50,7 +51,7 @@ public class RootSwitch extends AbstractSwitch {
 
     /**
      * Default number of root switch ports that defines the number of
-     * {@link AggregateSwitch} that can be connected to it.
+     * {@link AggregateSwitch}es that can be connected to it.
      */
     public static final int PORTS = 1;
 
@@ -66,11 +67,11 @@ public class RootSwitch extends AbstractSwitch {
     public static final long DOWNLINK_BW = (long) BytesConversion.gigaToMega(40 * 8); // 40000 Megabits (40 Gigabits)
 
     /**
-     * Instantiates a Root Switch specifying what other Datacenter are connected
-     * to its downlink ports, and corresponding bandwidths.
+     * Instantiates a Root Switch, specifying which another Datacenter is connected
+     * to its downlink ports and corresponding bandwidths.
      *
-     * @param simulation the CloudSimPlus instance that represents the simulation the Entity belongs
-     * @param dc the Datacenter where the switch is connected to
+     * @param simulation the CloudSimPlus instance that represents the simulation the Switch belongs to
+     * @param dc the Datacenter where the Switch is connected to
      */
     public RootSwitch(final CloudSimPlus simulation, final NetworkDatacenter dc) {
         super(simulation, dc);
@@ -93,11 +94,10 @@ public class RootSwitch extends AbstractSwitch {
     }
 
     /**
-     * Finds which aggregate switch is connected to a given edge switch
-     * @param edgeSwitch the id of the edge switch to find the aggregate switch
-     * that it is connected to
-     * @return an {@link Optional} with the aggregate switch that is connected to the given
-     * edge switch; or an empty Optional if not found.
+     * Finds which {@link AggregateSwitch} is connected to a given {@link EdgeSwitch}
+     * @param edgeSwitch the edge switch to find the AggregateSwitch that it is connected to
+     * @return an {@link Optional} with the AggregateSwitch that is connected to the given
+     * EdgeSwitch; or an empty Optional if not found.
      */
     private Optional<Switch> findAggregateConnectedToEdgeSwitch(final Switch edgeSwitch) {
         //List of Aggregate Switches connected to this Root Switch

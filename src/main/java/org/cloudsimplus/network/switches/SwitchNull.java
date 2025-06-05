@@ -30,18 +30,18 @@ import org.cloudsimplus.core.Simulation;
 import org.cloudsimplus.datacenters.network.NetworkDatacenter;
 import org.cloudsimplus.network.HostPacket;
 
-import java.util.Collections;
 import java.util.List;
 
+import static java.util.Collections.emptyList;
+
 /**
- * A class that implements the Null Object Design Pattern for {@link Switch}
- * class.
+ * A class that implements the Null Object Design Pattern for {@link Switch} class.
  *
  * @author Manoel Campos da Silva Filho
  * @see Switch#NULL
  */
 final class SwitchNull implements Switch, SimEntityNullBase {
-    private static final NetworkDatacenter DATACENTER = new NetworkDatacenter(Simulation.NULL, Collections.emptyList(), VmAllocationPolicy.NULL);
+    private static final NetworkDatacenter DATACENTER = new NetworkDatacenter(Simulation.NULL, emptyList(), VmAllocationPolicy.NULL);
 
     @Override public double downlinkTransferDelay(HostPacket packet, int simultaneousPackets) { return 0; }
     @Override public double uplinkTransferDelay(HostPacket packet, int simultaneousPackets) { return 0; }
@@ -62,10 +62,10 @@ final class SwitchNull implements Switch, SimEntityNullBase {
     }
     @Override public void setSwitchingDelay(double switchingDelay) {/**/}
     @Override public List<Switch> getUplinkSwitches() {
-        return Collections.emptyList();
+        return emptyList();
     }
     @Override public List<Switch> getDownlinkSwitches() {
-        return Collections.emptyList();
+        return emptyList();
     }
     @Override public NetworkDatacenter getDatacenter() {
         return DATACENTER;
