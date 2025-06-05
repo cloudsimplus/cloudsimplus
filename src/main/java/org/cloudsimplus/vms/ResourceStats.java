@@ -26,15 +26,16 @@ package org.cloudsimplus.vms;
 import lombok.NonNull;
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 import org.cloudsimplus.core.Machine;
+import org.cloudsimplus.hosts.Host;
 import org.cloudsimplus.resources.Resource;
 
 import java.util.function.Function;
 
 /**
  * A base class for computing statistics about {@link Resource} utilization
- * for a given machine (VM or Host). Such a resource can be, for instance, CPU, RAM or BW.
+ * for a given machine ({@link Vm} or {@link Host}). Such a resource can be, for instance, CPU, RAM or BW.
  *
- * @param <T> The kind of machine to collect resource utilization statistics
+ * @param <T> The kind of machine to collect resource utilization statistics, such as {@link Vm} or {@link Host}
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 6.1.0
  */
@@ -47,7 +48,7 @@ public class ResourceStats<T extends Machine> {
 
     /**
      * Creates a ResourceStats to collect resource utilization statistics.
-     * @param machine the machine where the statistics will be collected (which can be a Vm or Host)
+     * @param machine the machine where the statistics will be collected from (which can be a Vm or Host)
      * @param resourceUtilizationFunction a {@link Function} that receives a Machine
      *                                    and returns the current resource utilization for that machine
      */
@@ -73,7 +74,7 @@ public class ResourceStats<T extends Machine> {
             /*If (i) the previous utilization is not zero and the current utilization is zero
             * and (ii) those values don't change, it means the machine has finished
             * and this utilization must not be collected.
-            * If that happens, it may reduce accuracy of the utilization mean.
+            * If that happens, it may reduce the accuracy of the utilization mean.
             * For instance, if a machine uses 100% of a resource all the time,
             * when it finishes, the utilization will be zero.
             * If that utilization is collected, the mean won't be 100% anymore.*/
@@ -91,80 +92,73 @@ public class ResourceStats<T extends Machine> {
     }
 
     /**
-     * Gets the minimum resource utilization percentage (from 0 to 1).
-     * @return
+     * @return the minimum resource utilization percentage (from 0 to 1).
      */
     public double getMin(){
         return stats.getMin();
     }
 
     /**
-     * Gets the maximum resource utilization percentage (from 0 to 1).
-     * @return
+     * @return the maximum resource utilization percentage (from 0 to 1).
      */
     public double getMax(){
         return stats.getMax();
     }
 
     /**
-     * Gets the average resource utilization percentage (from 0 to 1).
-     * @return
+     * @return the average resource utilization percentage (from 0 to 1).
      */
     public double getMean(){
         return stats.getMean();
     }
 
     /**
-     * Gets the Standard Deviation of resource utilization percentage (from 0 to 1).
-     * @return
+     * @return the Standard Deviation of resource utilization percentage (from 0 to 1).
      */
     public double getStandardDeviation(){
         return stats.getStandardDeviation();
     }
 
     /**
-     * Gets the (sample) variance of resource utilization percentage (from 0 to 1).
-     * @return
+     * @return the (sample) variance of resource utilization percentage (from 0 to 1).
      */
     public double getVariance(){
         return stats.getVariance();
     }
 
     /**
-     * Gets the number of collected resource utilization samples.
-     * @return
+     * @return the number of collected resource utilization samples.
      */
     public double count(){
         return stats.getN();
     }
 
     /**
-     * Indicates if no resource utilization sample was collected.
-     * @return
+     * @return true if no resource utilization sample was collected, false otherwise.
      */
     public boolean isEmpty(){ return count() == 0; }
 
     /**
-     * Checks if it isn't time to add a value to the utilization history.
-     * The utilization history is not updated in any one of the following conditions is met:
+     * {@return true if it's time to add utilization history, false otherwise}
+     * The utilization history is not updated if any one of the following conditions is met:
      * <ul>
-     * <li>the simulation clock was not changed yet;</li>
-     * <li>the time passed is smaller than one second and the VM is not idle;</li>
-     * <li>the floor time is equal to the previous time and VM is not idle.</li>
+     *  <li>the simulation clock was not changed yet;</li>
+     *  <li>the time passed is smaller than one second and the machine is not idle;</li>
+     *  <li>the floor time is equal to the previous time and the machine is not idle.</li>
      * </ul>
      *
-     * <p>If the time is smaller than one second and the VM became idle,
-     * the history will be added so that we know what is the resource
-     * utilization when the VM became idle.
-     * This way, we can see clearly in the history when the VM was busy
+     * <p>If the time is smaller than one second and the machine became idle,
+     * the history will be added so that we know what the resource
+     * utilization was when the VM became idle.
+     * This way, we can see clearly in the history when the machine was busy
      * and when it became idle.</p>
      *
-     * <p>If the floor time is equal to the previous time and VM is not idle,
+     * <p>If the floor time is equal to the previous time and the machine is not idle,
      * that means not even a second has passed. This way,
      * that utilization will not be stored.</p>
      *
      * @param time the current simulation time
-     * @return true if it's time to add utilization history, false otherwise
+     *
      */
     protected final boolean isNotTimeToAddHistory(final double time) {
         return time <= 0 ||
@@ -185,8 +179,7 @@ public class ResourceStats<T extends Machine> {
     }
 
     /**
-     * Gets the previous time that resource statistics were computed.
-     * @return
+     * @return the previous time that resource statistics were computed.
      */
     protected double getPreviousTime() {
         return previousTime;

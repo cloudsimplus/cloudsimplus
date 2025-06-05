@@ -17,7 +17,7 @@ import org.cloudsimplus.util.BytesConversion;
  * This class represents an Aggregate Switch in a Datacenter network.
  * It interacts with other Datacenter in order to exchange packets.
  *
- * <p>Please refer to following publication for more details:
+ * <p>Please refer to the following publication for more details:
  * <ul>
  * <li>
  * <a href="https://doi.org/10.1109/UCC.2011.24">

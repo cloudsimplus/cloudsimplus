@@ -16,7 +16,7 @@ import org.cloudsimplus.resources.Pe;
  * in a single {@link Pe}.
  * The tasks currently just execute in a sequential manner.
  *
- * <p>Please refer to following publication for more details:
+ * <p>Please refer to the following publication for more details:
  * <ul>
  * <li>
  * <a href="https://doi.org/10.1109/UCC.2011.24">

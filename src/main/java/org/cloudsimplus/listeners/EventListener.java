@@ -24,15 +24,14 @@
 package org.cloudsimplus.listeners;
 
 import org.cloudsimplus.cloudlets.Cloudlet;
+import org.cloudsimplus.hosts.Host;
 import org.cloudsimplus.vms.Vm;
 
 /**
- *
  * An interface to define Observers (Listeners) that listen to specific changes in
  * the state of a given observable object (Subject).
- * By this way, the EventListener gets notified when
+ * This way, the EventListener gets notified when
  * the observed object has its state changed.
- *
  *
  * <p>The interface was defined allowing the Subject object to have more than one state
  * to be observable. If the subject directly implements
@@ -42,8 +41,8 @@ import org.cloudsimplus.vms.Vm;
  * to allow multiple events to be observed.
  * </p>
  *
- * <p>Such Listeners are used for many simulation entities such as {@link Vm} and {@link Cloudlet}.
- * Check the documentation of such interfaces that provides some Listeners.
+ * <p>Such Listeners are used for many simulation entities such as {@link Host}, {@link Vm} and {@link Cloudlet}.
+ * Check the documentation of those interfaces above that provides some Listeners.
  * </p>
  *
  * @param <T> The class of the object containing information to be given to the
@@ -56,10 +55,10 @@ import org.cloudsimplus.vms.Vm;
 public interface EventListener<T extends EventInfo> {
 
     /**
-     * A implementation of Null Object pattern that makes nothing (it doesn't
+     * An implementation of Null Object Pattern that makes nothing (it doesn't
      * perform any operation on each existing method). The pattern is used to
-     * avoid NullPointerException's and checking everywhere if a listener object
-     * is not null in order to call its methods.
+     * avoid {@link NullPointerException}'s and checking everywhere if a listener object
+     * is not null to call its methods.
      */
     EventListener NULL = (EventListener<? extends EventInfo>) (EventInfo info) -> {};
 
@@ -68,8 +67,7 @@ public interface EventListener<T extends EventInfo> {
      * observation) has changed. This method has to be called by the observed
      * objects to notify its state change to the listener.
      *
-     * @param info The data about the happened event.
+     * @param info the data about the happened event.
      */
     void update(T info);
-
 }

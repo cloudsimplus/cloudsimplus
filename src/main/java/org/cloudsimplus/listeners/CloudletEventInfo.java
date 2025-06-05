@@ -37,8 +37,7 @@ import org.cloudsimplus.cloudlets.Cloudlet;
  */
 public interface CloudletEventInfo extends EventInfo {
     /**
-     * Gets the {@link Cloudlet} for which the event happened.
-     * @return
+     * @return the {@link Cloudlet} for which the event happened.
      */
     Cloudlet getCloudlet();
 }

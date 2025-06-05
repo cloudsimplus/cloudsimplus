@@ -28,7 +28,7 @@ import java.util.List;
  * It executes actions related to management of packets
  * (sent and received).
  *
- * <p>Please refer to following publication for more details:
+ * <p>Please refer to the following publication for more details:
  * <ul>
  * <li>
  * <a href="https://doi.org/10.1109/UCC.2011.24">

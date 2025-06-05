@@ -25,11 +25,12 @@ package org.cloudsimplus.listeners;
 
 import org.cloudsimplus.cloudlets.Cloudlet;
 import org.cloudsimplus.hosts.Host;
+import org.cloudsimplus.vms.Vm;
 
 /**
  * An interface that represents data to be passed
  * to {@link EventListener} objects that are registered to be notified
- * after a Host updates the processing of its VMs.
+ * after a {@link Host} updates the processing of its {@link Vm}s.
  *
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
@@ -38,8 +39,7 @@ import org.cloudsimplus.hosts.Host;
  */
 public interface HostUpdatesVmsProcessingEventInfo extends HostEventInfo  {
     /**
-     * Gets the expected completion time of the next finishing cloudlet.
-     * @return
+     * @return the expected completion time of the next finishing cloudlet
      */
     double getNextCloudletCompletionTime();
 
@@ -48,7 +48,7 @@ public interface HostUpdatesVmsProcessingEventInfo extends HostEventInfo  {
      *
      * @param listener the listener to be notified about the event
      * @param host the {@link Host} where the event happened
-     * @param nextCloudletCompletionTime the expected time for completion of the next {@link Cloudlet}
+     * @param nextCloudletCompletionTime the expected time for completion of the next {@link Cloudlet} (in seconds)
      */
     static HostUpdatesVmsProcessingEventInfo of(final EventListener<HostUpdatesVmsProcessingEventInfo> listener, final Host host, final double nextCloudletCompletionTime) {
         final double time = host.getSimulation().clock();

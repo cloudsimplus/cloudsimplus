@@ -20,7 +20,7 @@ import org.cloudsimplus.vms.network.NetworkVm;
  * within a {@link NetworkHost}. It contains information about {@link NetworkCloudlet}s which are
  * communicating.
  *
- * <p>Please refer to following publication for more details:
+ * <p>Please refer to the following publication for more details:
  * <ul>
  * <li>
  * <a href="https://doi.org/10.1109/UCC.2011.24">

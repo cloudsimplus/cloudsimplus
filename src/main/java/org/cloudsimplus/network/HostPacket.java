@@ -19,7 +19,7 @@ import org.cloudsimplus.network.switches.EdgeSwitch;
  * Each packet contains: IDs of the sender VM into the source Host and receiver VM into the destination Host which are
  * communicating; the time at which it is sent and received; type and virtual IDs of tasks.
  *
- * <p>Please refer to following publication for more details:
+ * <p>Please refer to the following publication for more details:
  * <ul>
  *   <li>
  *   <a href="https://doi.org/10.1109/UCC.2011.24">

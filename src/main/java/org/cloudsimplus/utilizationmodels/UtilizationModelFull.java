@@ -18,6 +18,9 @@ import static org.cloudsimplus.util.Conversion.HUNDRED_PERCENT;
  *
  * @author Anton Beloglazov
  * @since CloudSim Toolkit 2.0
+ * @see UtilizationModelDynamic
+ * @see UtilizationModelStochastic
+ * @see UtilizationModelPlanetLab
  */
 public class UtilizationModelFull extends UtilizationModelAbstract {
     /**

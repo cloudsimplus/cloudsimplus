@@ -32,9 +32,9 @@ import org.cloudsimplus.vms.Vm;
  * when some events happen for a given {@link Vm} that is related to
  * some {@link Host}.
  *
- * <p>It can be used to notify Listeners when a Host is {@link Vm#addOnHostAllocationListener(EventListener)}  allocated} to or
- * {@link Vm#addOnHostDeallocationListener(EventListener)}  deallocated} from a given Vm,
- * when a Vm has its {@link Vm#addOnUpdateProcessingListener(EventListener)}  processing updated by its Host},
+ * <p>It can be used to notify Listeners when a Host is {@link Vm#addOnHostAllocationListener(EventListener)  allocated} to or
+ * {@link Vm#addOnHostDeallocationListener(EventListener) deallocated} from a given Vm,
+ * when a Vm has its {@link Vm#addOnUpdateProcessingListener(EventListener) processing updated by its Host},
  * etc.
  * </p>
  **
@@ -47,7 +47,7 @@ import org.cloudsimplus.vms.Vm;
  */
 public interface VmHostEventInfo extends VmEventInfo, HostEventInfo {
     /**
-     * Gets a VmHostEventInfo instance from the given parameters.
+     * Gets a {@code VmHostEventInfo} instance from the given parameters.
      * The {@link #getHost() Host} attribute is defined as the {@link Host} where the {@link Vm}
      * is running and the {@link #getTime()} is the current simulation time.
      *
@@ -59,17 +59,17 @@ public interface VmHostEventInfo extends VmEventInfo, HostEventInfo {
     }
 
     /**
-     * Gets a VmHostEventInfo instance from the given parameters.
+     * Gets a {@code VmHostEventInfo} instance from the given parameters.
      * The {@link #getTime()} is the current simulation time.
      *
      * @param listener the listener to be notified about the event
      * @param vm {@link Vm} that fired the event
      * @param host {@link Host} the {@link Vm} is related to.
      *             Such a Host can be that one where the Vm is or was placed,
-     *             or where the Vm was tried to be be created,
-     *             depending on the fired event, such as the
-     *             {@link Vm#addOnHostAllocationListener(EventListener)} OnHostAllocation} or
-     *             {@link Vm#addOnHostDeallocationListener(EventListener)} OnHostDeallocation}
+     *             or where the Vm was tried to be created.
+     *             It depends on the fired event, such as the
+     *             {@link Vm#addOnHostAllocationListener(EventListener) OnHostAllocation} or
+     *             {@link Vm#addOnHostDeallocationListener(EventListener) OnHostDeallocation}
      */
     static VmHostEventInfo of(final EventListener<VmHostEventInfo> listener, final Vm vm, final Host host) {
         final double time = vm.getSimulation().clock();

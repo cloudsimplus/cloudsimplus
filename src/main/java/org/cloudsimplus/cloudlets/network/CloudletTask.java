@@ -18,7 +18,7 @@ import org.cloudsimplus.core.Identifiable;
 /**
  * An abstract class to be implemented by tasks that can be executed by a {@link NetworkCloudlet}.
  *
- * <p>Please refer to following publication for more details:
+ * <p>Please refer to the following publication for more details:
  * <ul>
  * <li>
  * <a href="https://doi.org/10.1109/UCC.2011.24">

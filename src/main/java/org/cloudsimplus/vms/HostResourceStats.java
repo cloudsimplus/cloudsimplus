@@ -37,18 +37,18 @@ public class HostResourceStats extends ResourceStats<Host> {
     public static final HostResourceStats NULL = new HostResourceStats(Host.NULL, host -> 0.0) { @Override public boolean add(double time) { return false; }};
 
     /**
-     * Creates a HostResourceStats to collect resource utilization statistics for a Host.
-     * @param machine the Host where the statistics will be collected
+     * Creates a HostResourceStats to collect resource utilization statistics for a {@link Host}.
+     * @param host the Host where the statistics will be collected
      * @param resourceUtilizationFunction a {@link Function} that receives a Host
      *                                    and returns the current resource utilization for that Host
      */
-    public HostResourceStats(final Host machine, final Function<Host, Double> resourceUtilizationFunction) {
-        super(machine, resourceUtilizationFunction);
+    public HostResourceStats(final Host host, final Function<Host, Double> resourceUtilizationFunction) {
+        super(host, resourceUtilizationFunction);
     }
 
     /**
      * {@inheritDoc}.
-     * The method is automatically called when the Host processing is updated.
+     * The method is automatically called when the {@link Host} processing is updated.
      * @param time {@inheritDoc}
      * @return {@inheritDoc}
      */

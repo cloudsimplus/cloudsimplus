@@ -25,7 +25,7 @@ import java.util.Optional;
  * for performing different kinds of processing.
  *
  * <p>
- * Please refer to following publication for more details:
+ * Please refer to the following publication for more details:
  * <ul>
  * <li>
  * <a href="https://doi.org/10.1109/UCC.2011.24">

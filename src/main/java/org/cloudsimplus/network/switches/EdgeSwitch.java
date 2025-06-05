@@ -23,7 +23,7 @@ import java.util.List;
  * Represents an Edge Switch in a Datacenter network, which can be connected to {@link NetworkHost}s.
  * It interacts with other Datacenter in order to exchange packets.
  *
- * <br>Please refer to following publication for more details:<br>
+ * <br>Please refer to the following publication for more details:<br>
  * <ul>
  * <li>
  * <a href="https://doi.org/10.1109/UCC.2011.24">

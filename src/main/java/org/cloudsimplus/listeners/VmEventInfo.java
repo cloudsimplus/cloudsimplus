@@ -39,8 +39,7 @@ import org.cloudsimplus.vms.Vm;
 public interface VmEventInfo extends EventInfo {
 
     /**
-     * Gets the {@link Vm} for which the event happened.
-     * @return
+     * @return the {@link Vm} for which the event happened.
      */
     Vm getVm();
 }
