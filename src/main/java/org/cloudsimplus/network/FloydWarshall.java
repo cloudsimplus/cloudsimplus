@@ -17,16 +17,14 @@ import java.util.stream.IntStream;
 
 import static java.util.stream.Collectors.toList;
 
-/**
- * <a href="https://en.wikipedia.org/wiki/Floyd-Warshall_algorithm">Floyd-Warshall algorithm</a>
- * to calculate the predecessor matrix and the delay between all pairs of nodes.
- * The delay represents the distance between the two vertices,
- * working as the weight for the Floyd-Warshall algorithm.
- *
- * @author Rahul Simha
- * @author Weishuai Yang
- * @since CloudSim Toolkit 1.0
- */
+/// An implementation of the [Floyd-Warshall algorithm](https://en.wikipedia.org/wiki/Floyd-Warshall_algorithm)
+/// to calculate the predecessor matrix and the delay between all pairs of nodes in a network.
+/// The delay represents the distance between the two vertices,
+/// working as the weight for the Floyd-Warshall algorithm.
+///
+/// @author Rahul Simha
+/// @author Weishuai Yang
+/// @since CloudSim Toolkit 1.0
 public class FloydWarshall {
 
     /**
@@ -41,8 +39,7 @@ public class FloydWarshall {
     private final List<Integer> vertices;
 
     /**
-     * Weights when k is equal to -1.
-     * (used for dynamic programming).
+     * Weights when k is equal to -1 (used for dynamic programming).
      */
     private final double[][] dkMinusOne;
 
@@ -72,7 +69,7 @@ public class FloydWarshall {
     /**
      * Computes the shortest path between a vertex to all the other ones,
      * for all existing vertices.
-     * This is represented by the delay between all pairs vertices.
+     * This is represented by the delay between every pair of vertices.
      *
      * @param originalDelayMatrix original delay matrix
      * @return the new delay matrix (dk)
@@ -85,7 +82,7 @@ public class FloydWarshall {
     /**
      * Computes the shortest path between a vertex to all the other ones,
      * for all existing vertices.
-     * This is represented by the delay between all pairs vertices.
+     * This is represented by the delay between every pair of vertices.
      *
      * @return the new delay matrix (dk)
      */
@@ -102,7 +99,7 @@ public class FloydWarshall {
     /**
      * Computes the shortest path between a vertex to all the other ones,
      * for all existing vertices, limited to a maximum number of hops.
-     * This is represented by the delay between all pairs vertices.
+     * This is represented by the delay between every pair of vertices.
      *
      * @param dk the delay matrix to be updated
      * @param k maximum number of hops to try finding the shortest path between each vertex i and j
@@ -120,7 +117,7 @@ public class FloydWarshall {
 
     /**
      * Iterates over the path from one vertex to all the other ones, for all existing vertices,
-     * updating some matrices as defined by a  {@link BiConsumer}.
+     * updating some matrices as defined by a {@link BiConsumer}.
      *
      * @param updater a {@link BiConsumer} that updates all elements of any matrices, where the parameters
      *                that this BiConsumer receives are the index i and j representing the path
@@ -137,7 +134,7 @@ public class FloydWarshall {
     /**
      * Computes the shortest path between only a specific vertex to all the other ones,
      * limited to a maximum number of hops, and then updating the delay matrix.
-     * This is represented by the delay between all pairs vertices.
+     * This is represented by the delay between every pair of vertices.
      *
      * @param dk the delay matrix to be updated
      * @param k maximum number of hops to try finding the shortest path between each vertex i and j
@@ -178,9 +175,7 @@ public class FloydWarshall {
     }
 
     /**
-     * Gets a <b>copy</b> of the predecessor matrix.
-     *
-     * @return the predecessor matrix copy
+     * @return a <b>copy</b> of the predecessor matrix.
      */
     public int[][] getPk() {
         return Arrays.copyOf(pk, pk.length);

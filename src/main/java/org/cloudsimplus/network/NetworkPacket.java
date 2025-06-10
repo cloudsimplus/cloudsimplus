@@ -32,29 +32,24 @@ import org.cloudsimplus.vms.Vm;
  */
 public interface NetworkPacket<T extends Identifiable> {
     /**
-     * Gets the size of the packet in bytes.
-     *
      * @return size of the packet in bytes.
      */
     long getSize();
 
     /**
-     * Gets the entity that this packet is coming from (the sender).
-     *
-     * @return
+     * @return the entity that this packet is coming from (the sender).
      */
     T getSource();
 
     /**
      * Sets the entity that this packet is coming from (the sender).
      * @param source the source ID to set
+     * @return this packet
      */
     NetworkPacket setSource(T source);
 
     /**
-     * Gets the entity that the packet is going to.
-     *
-     * @return
+     * @return the entity that the packet is going to.
      */
     T getDestination();
 
@@ -62,30 +57,31 @@ public interface NetworkPacket<T extends Identifiable> {
      * Sets the entity that the packet is going to (the receiver).
      *
      * @param destination the destination to set
+     * @return this packet
      */
     NetworkPacket setDestination(T destination);
 
     /**
-     * Gets the time (in seconds) when the packet was sent.
-     * @return
+     * @return the time (in seconds) when the packet was sent.
      */
     double getSendTime();
 
     /**
      * Sets the time when the packet was sent.
      * @param time the time to set (in seconds)
+     * @return this packet
      */
     NetworkPacket setSendTime(double time);
 
     /**
-     * Gets the time (in seconds) when the packet was received.
-     * @return
+     * @return the time (in seconds) when the packet was received.
      */
     double getReceiveTime();
 
     /**
      * Sets the time when the packet was received.
      * @param time the time to set (in seconds)
+     * @return this packet
      */
     NetworkPacket setReceiveTime(double time);
 }

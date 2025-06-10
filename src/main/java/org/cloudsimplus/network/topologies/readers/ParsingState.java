@@ -35,7 +35,7 @@ import org.cloudsimplus.network.topologies.TopologicalNode;
  */
 enum ParsingState {
     /**
-     * Represents the state indicating to just find the start of the node-declaration.
+     * A state indicating to just find the start of the node-declaration.
      */
     NOTHING {
         @Override
@@ -47,7 +47,7 @@ enum ParsingState {
     },
 
     /**
-     * Represents the state indicating to retrieve all node-information.
+     * A state indicating to retrieve all node-information.
      */
     NODES {
         @Override
@@ -59,7 +59,7 @@ enum ParsingState {
             }
 
             // List of fields in the line to parse
-            // NodeID, xpos, ypos, inDegree, outDegree, AS_id, type(router/AS)
+            // NodeID, xpos, ypos, inDegree, outDegree, AS_id, type (router/AS)
             final Integer[] parsedFields = {0, 0, 0};
             if (!reader.parseLine(line, parsedFields, Integer::valueOf)) {
                 return;
@@ -72,7 +72,7 @@ enum ParsingState {
     },
 
     /**
-     * Represents the state indicating to retrieve all edges-information.
+     * A state indicating to retrieve all edges-information.
      */
     EDGES {
         @Override
@@ -94,7 +94,7 @@ enum ParsingState {
     };
 
     /**
-     * Parses a line from the trace file
+     * Parses a line from the trace file.
      *
      * @param reader the reader processing the file
      * @param line   current line read from the file

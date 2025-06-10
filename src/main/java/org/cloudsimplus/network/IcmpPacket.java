@@ -19,7 +19,6 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
-import org.cloudsimplus.core.CloudSimPlus;
 import org.cloudsimplus.core.CloudSimTag;
 import org.cloudsimplus.core.SimEntity;
 import org.cloudsimplus.util.MathUtil;
@@ -32,13 +31,13 @@ import java.util.List;
 /**
  * Represents a ping (ICMP protocol) packet that can be used to gather information from the network layer.
  * An IcmpPacket traverses the network topology similar to a {@link HostPacket},
- * but it collects information like bandwidths, and Round Trip Time etc.
+ * but it collects information like bandwidths, Round Trip Time (RTT), etc.
  *
  * <p>
  * You can set all the parameters to an IcmpPacket that can be applied to a
  * HostPacket. So if you want to find out the kind of information that a
  * particular type of HostPacket is experiencing, set the size and network class
- * of an IcmpPacket to the same as the HostPacket, and send it to the same
+ * of an IcmpPacket to the same as the HostPacket. Then, send it to the same
  * destination from the same source.
  * </p>
  *
@@ -67,7 +66,7 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
     private final String name;
 
     /**
-     * The size of the packet  (in bytes).
+     * The size of the packet (in bytes).
      */
     private long size;
 
@@ -100,13 +99,12 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
     private double baudRate;
 
     /**
-     * The baud rate (in bits/s) of each output link of entities where the packet traverses.
+     * The baud rate (in bits/s) of each output link from entities where the packet traverses.
      */
     private final List<Double> baudRateList;
 
     /**
-     * The list of entities where the packet
-     * traverses, such as Routers or Datacenters.
+     * The list of entities where the packet traverses, such as Routers or Datacenters.
      */
     private final List<SimEntity> entities;
 
@@ -125,7 +123,7 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
     /**
      * Creates an ICMP packet.
      *
-     * @param name            Name of this packet
+     * @param name            name of this packet
      * @param packetID        the ID of this packet
      * @param size            size of the packet
      * @param source          the entity that sends out this packet
@@ -155,17 +153,14 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
     }
 
     /**
-     * Gets the ID of this packet
-     * @return
+     * @return the ID of this packet
      */
     public int getId() {
         return packetId;
     }
 
     /**
-     * Gets human-readable information of this packet.
-     *
-     * @return description of this packet
+     * @return human-readable description of this packet.
      */
     @Override
     public String toString() {
@@ -204,11 +199,11 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
     }
 
     /**
-     * Gets the data of a given index in a list.
+     * Gets the element at a given index in a list.
      *
-     * @param dataList  a list containing the data
-     * @param index the location in the list
-     * @return the data from a given index
+     * @param dataList  a list containing some data
+     * @param index the location of the element in the list
+     * @return the element from a given index
      */
     private String getData(final List<Double> dataList, final int index) {
         try {
@@ -229,10 +224,8 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
     }
 
     /**
-     * Gets the number of hops that the packet has traversed. Since the
-     * packet takes a round trip, the same router may have been traversed twice.
-     *
-     * @return
+     * {@return the number of hops that the packet has traversed}
+     * Since the packet takes a round trip, the same router may have been traversed twice.
      */
     public int getNumberOfHops() {
         final int PAIR = 2;
@@ -245,7 +238,7 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
      * Dividing this by half should be the approximate latency.
      * RTT is taken as the "final entry time" - "first exit time".
      *
-     * @return total round-trip time (in seconds)
+     * @return total Round-Trip Time (RTT) in seconds
      */
     public double getTotalResponseTime() {
         try {
@@ -259,8 +252,8 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
 
     /**
      * Add an entity where the IcmpPacket traverses. This method should be
-     * called by network entities that count as hops, for instance Routers or
-     * CloudResources. It should not be called by links etc.
+     * called by network entities that count as hops, for instance, Routers or
+     * CloudResources. It should not be called by network links and other elements.
      *
      * @param entity the id of the hop that this IcmpPacket is traversing
      */
@@ -269,25 +262,22 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
     }
 
     /**
-     * Register the time the packet arrives at an entity such as a Router or
-     * CloudResource. This method should be called by routers and other entities
+     * Register the time the packet arrives at an entity such as a Router.
+     * This method should be called by routers and other entities
      * when the IcmpPacket reaches them along with the current simulation time.
      *
-     * @param time current simulation time, use
-     *             {@link CloudSimPlus#clock()} to obtain this
+     * @param time the current simulation time (in seconds)
      */
     public void addEntryTime(final double time) {
         entryTimes.add(Math.min(time, 0));
     }
 
     /**
-     * Register the time the packet leaves an entity such as a Router or
-     * CloudResource. This method should be called by routers and other entities
-     * when the IcmpPacket is leaving them. It should also supply the current
-     * simulation time.
+     * Register the time the packet leaves an entity such as a Router.
+     * This method should be called by routers and other entities
+     * when the IcmpPacket is leaving them.
      *
-     * @param time current simulation time, use
-     *             {@link CloudSimPlus#clock()} to obtain this
+     * @param time the current simulation time (in seconds)
      */
     public void addExitTime(final double time) {
         exitTimes.add(Math.min(time, 0));
@@ -309,45 +299,38 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
     }
 
     /**
-     * Gets a <b>read-only</b> list of all the bandwidths (in bits/s) that this packet has traversed.
-     *
-     * @return
+     * @return a <b>read-only</b> list of all the bandwidths (in bits/s) that this packet has traversed.
      */
     public List<Double> getDetailBaudRate() {
         return Collections.unmodifiableList(baudRateList);
     }
 
     /**
-     * Gets a <b>read-only</b> list of all entities that this packet has traversed,
+     * @return a <b>read-only</b> list of all entities that this packet has traversed,
      * that defines the hops it has made.
-     *
-     * @return
      */
     public List<SimEntity> getHopsList() {
         return Collections.unmodifiableList(entities);
     }
 
     /**
-     * Gets a <b>read-only</b> list containing the time (in seconds) the packet arrived at every entity it has traversed.
-     *
-     * @return
+     * @return a <b>read-only</b> list containing the time (in seconds)
+     * the packet arrived at every entity it has traversed.
      */
     public List<Double> getDetailEntryTimes() {
         return Collections.unmodifiableList(entryTimes);
     }
 
     /**
-     * Gets a <b>read-only</b> list of all exit times (in seconds) from all entities that the packet has
-     * traversed.
-     *
-     * @return
+     * @return a <b>read-only</b> list of all exit times (in seconds) from all entities
+     * that the packet has traversed.
      */
     public List<Double> getDetailExitTimes() {
         return Collections.unmodifiableList(exitTimes);
     }
 
     /**
-     * Sets the packet direction that indicates if it is going or returning.
+     * Sets the direction that indicates if the packet is going or returning.
      * The direction can be {@link CloudSimTag#ICMP_PKT_SUBMIT}
      * or {@link CloudSimTag#ICMP_PKT_RETURN}.
      *

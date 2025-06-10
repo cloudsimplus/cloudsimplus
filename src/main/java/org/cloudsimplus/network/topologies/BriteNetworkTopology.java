@@ -21,29 +21,24 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Implements a network layer by reading the topology from a file in the
- * <a href="http://www.cs.bu.edu/brite/user_manual/node29.html">BRITE
- * format</a>, the <b>B</b>oston university
- * <b>R</b>epresentative <b>I</b>nternet <b>T</b>opology g<b>E</b>nerator,
- * and generates a topological network
- * from it. Information of this network is used to simulate latency in network
- * traffic of CloudSim.
- *
- * <p>The topology file may contain more nodes than the number of entities in the
- * simulation. It allows users to increase the scale of the simulation without
- * changing the topology file. Nevertheless, each CloudSim entity must be mapped
- * to one (and only one) BRITE node to allow proper work of the network
- * simulation. Each BRITE node can be mapped to only one entity at a time.</p>
- *
- * @author Rodrigo N. Calheiros
- * @author Anton Beloglazov
- * @author Manoel Campos da Silva Filho
- * @since CloudSim Toolkit 1.0
- * @see #getInstance(String)
- * @see <a href="http://www.cs.bu.edu/brite/">Brite Oficial Website (shut down)</a>
- * @see <a href="https://web.archive.org/web/20200119144536/http://www.cs.bu.edu:80/brite/">Web archieve of Brite Oficial Website</a>
- */
+/// Implements a network layer by reading the topology from a file in the
+/// [BRITE format](http://www.cs.bu.edu/brite/user_manual/node29.html),
+/// the **B**oston university **R**epresentative **I**nternet **T**opology g**E**nerator,
+/// and generates a topological network from it.
+/// Information of this network is used to simulate latency in network traffic of CloudSim.
+///
+/// The topology file may contain more nodes than the number of entities in the
+/// simulation. It allows users to increase the scale of the simulation without
+/// changing the topology file. Nevertheless, each CloudSim entity must be mapped
+/// to one (and only one) BRITE node to allow proper work of the network simulation.
+/// Each BRITE node can be mapped to only one entity at a time.
+///
+/// @author Rodrigo N. Calheiros
+/// @author Anton Beloglazov
+/// @author Manoel Campos da Silva Filho
+/// @since CloudSim Toolkit 1.0
+/// @see #getInstance(String)
+/// @see [Brite Oficial Website](http://www.cs.bu.edu/brite/)
 public final class BriteNetworkTopology implements NetworkTopology {
     private static final Logger LOGGER = LoggerFactory.getLogger(BriteNetworkTopology.class.getSimpleName());
 
@@ -54,7 +49,7 @@ public final class BriteNetworkTopology implements NetworkTopology {
 
     /**
      * Checks if the network simulation is working. If there were some problem
-     * during creation of network (e.g., during parsing of BRITE file) that does
+     * during creation of the network (e.g., during parsing of a BRITE file) that does
      * not allow a proper simulation of the network, this method returns false.
      */
     @Getter
@@ -76,7 +71,7 @@ public final class BriteNetworkTopology implements NetworkTopology {
 
     /**
      * The map between CloudSim entities and BRITE entities.
-     * Each key is a CloudSim entity and each value the corresponding BRITE entity ID.
+     * Each key is a CloudSim entity, and each value is the corresponding BRITE entity ID.
      */
     private Map<SimEntity, Integer> entitiesMap;
 
@@ -104,9 +99,9 @@ public final class BriteNetworkTopology implements NetworkTopology {
     }
 
     /**
-     * Instantiates a Network Topology if a given file exists and can be successfully
-     * parsed. File is written in the BRITE format and contains
-     * topological information on simulation entities.
+     * Instantiates a Network Topology if a given file exists and can be successfully parsed.
+     * The file is written in the BRITE format and contains
+     * topological information of simulation entities.
      *
      * @param filePath the path of the BRITE file
      * @see #BriteNetworkTopology()
@@ -121,7 +116,7 @@ public final class BriteNetworkTopology implements NetworkTopology {
     /**
      * Creates a network topology from a given input stream reader.
      * The file is written in the BRITE format and contains
-     * topological information on simulation entities.
+     * topological information of simulation entities.
      *
      * @param reader the reader for the topology file
      * @see #BriteNetworkTopology()
@@ -136,8 +131,7 @@ public final class BriteNetworkTopology implements NetworkTopology {
     }
 
     /**
-     * Generates the matrices used internally to set latency and bandwidth
-     * between elements.
+     * Generates the matrices used internally to set latency and bandwidth between elements.
      */
     private void generateMatrices() {
         delayMatrix = new DelayMatrix(graph, false);
@@ -146,8 +140,7 @@ public final class BriteNetworkTopology implements NetworkTopology {
     }
 
     /**
-     * Creates the matrix containing the available bandwidth between every pair
-     * of nodes.
+     * Creates the matrix containing the available bandwidth between every pair of nodes.
      *
      * @param graph topological graph describing the topology
      * @param directed true if the graph is directed; false otherwise
@@ -204,7 +197,7 @@ public final class BriteNetworkTopology implements NetworkTopology {
     /**
      * Maps a {@link SimEntity} to a BRITE node in the network topology.
      * @param entity {@link SimEntity} being mapped
-     * @param briteID ID of the BRITE node that corresponds to the CloudSim
+     * @param briteID ID of the BRITE node that corresponds to the CloudSim entity
      */
     public void mapNode(final SimEntity entity, final int briteID) {
         if (!networkEnabled) {
@@ -225,10 +218,8 @@ public final class BriteNetworkTopology implements NetworkTopology {
     }
 
     /**
-     * Un-maps a previously mapped {@link SimEntity} to a BRITE node in the network
-     * topology.
-     *
-     * @param entity {@link SimEntity} being unmapped
+     * Removes a previous map between a {@link SimEntity} and a BRITE node in the network topology.
+     * @param entity {@link SimEntity} to unmap
      */
     public void unmapNode(final SimEntity entity) {
         if (!networkEnabled) {

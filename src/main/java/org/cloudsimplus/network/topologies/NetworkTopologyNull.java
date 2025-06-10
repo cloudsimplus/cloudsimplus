@@ -26,8 +26,7 @@ package org.cloudsimplus.network.topologies;
 import org.cloudsimplus.core.SimEntity;
 
 /**
- * A class that implements the Null Object Design Pattern for {@link NetworkTopology}
- * class.
+ * A class that implements the Null Object Design Pattern for {@link NetworkTopology} class.
  *
  * @author Manoel Campos da Silva Filho
  * @see NetworkTopology#NULL

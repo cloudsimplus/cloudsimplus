@@ -14,29 +14,24 @@ import org.cloudsimplus.hosts.Host;
 import org.cloudsimplus.hosts.network.NetworkHost;
 import org.cloudsimplus.network.switches.EdgeSwitch;
 
-/**
- * Represents a packet which travels from one {@link Host} to another.
- * Each packet contains: IDs of the sender VM into the source Host and receiver VM into the destination Host which are
- * communicating; the time at which it is sent and received; type and virtual IDs of tasks.
- *
- * <p>Please refer to the following publication for more details:
- * <ul>
- *   <li>
- *   <a href="https://doi.org/10.1109/UCC.2011.24">
- *   Saurabh Kumar Garg and Rajkumar Buyya, NetworkCloudSim: Modelling Parallel
- *   Applications in Cloud Simulations, Proceedings of the 4th IEEE/ACM
- *    International Conference on Utility and Cloud Computing (UCC 2011, IEEE CS
- *    Press, USA), Melbourne, Australia, December 5-7, 2011.
- *    </a>
- *    </li>
- * </ul>
- * </p>
- *
- * @author Saurabh Kumar Garg
- * @author Manoel Campos da Silva Filho
- *
- * @since CloudSim Toolkit 1.0
- */
+/// Represents a packet which travels from one [Host] to another.
+/// Each packet contains the:
+///
+/// - sender VM into the source Host and the receiver VM into the destination Host which are communicating;
+/// - time at which it is sent and received;
+/// - type and virtual IDs of tasks.
+///
+/// Please refer to the following publication for more details:
+///
+/// - [Saurabh Kumar Garg and Rajkumar Buyya, NetworkCloudSim: Modelling Parallel
+///   Applications in Cloud Simulations, Proceedings of the 4th IEEE/ACM
+///   International Conference on Utility and Cloud Computing (UCC 2011, IEEE CS
+///   Press, USA), Melbourne, Australia, December 5-7, 2011.](https://doi.org/10.1109/UCC.2011.24)
+///
+/// @author Saurabh Kumar Garg
+/// @author Manoel Campos da Silva Filho
+///
+/// @since CloudSim Toolkit 1.0
 @Getter @Setter
 public final class HostPacket implements NetworkPacket<NetworkHost> {
 

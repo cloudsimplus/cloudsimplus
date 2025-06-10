@@ -29,12 +29,12 @@ import java.util.Objects;
  */
 public class TopologicalGraph {
     /**
-     * The list of links (edges) of the network graph.
+     * The links (edges) of the network graph.
      */
     private final List<TopologicalLink> linksList;
 
     /**
-     * The list of nodes (vertices) of the network graph.
+     * The nodes (vertices) of the network graph.
      */
     private final List<TopologicalNode> nodeList;
 
@@ -65,34 +65,28 @@ public class TopologicalGraph {
     }
 
     /**
-     * Gets the number of nodes contained inside the topological-graph.
-     *
-     * @return number of nodes
+     * @return the number of nodes contained inside the topological-graph.
      */
     public int getNumberOfNodes() {
         return nodeList.size();
     }
 
     /**
-     * Gets the number of links contained inside the topological-graph.
-     *
-     * @return number of links
+     * @return the number of links contained inside the topological-graph.
      */
     public int getNumberOfLinks() {
         return linksList.size();
     }
 
     /**
-     * Gets a <b>read-only</b> List of all network-graph links.
-     *
-     * @return the List of network-graph links
+     * @return a <b>read-only</b> List of all network-graph links.
      */
     public List<TopologicalLink> getLinksList() {
         return Collections.unmodifiableList(linksList);
     }
 
     /**
-     * Gets a <b>read-only</b> list of nodes of the network graph.
+     * @return a <b>read-only</b> list of nodes from the network graph.
      */
     public List<TopologicalNode> getNodeList() {
         return Collections.unmodifiableList(nodeList);

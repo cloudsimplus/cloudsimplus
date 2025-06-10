@@ -15,7 +15,7 @@ import lombok.Setter;
 
 /**
  * Represents a topological network node that retrieves its information from a
- * topological-generated file (e.g. topology-generator)
+ * topological-generated file (e.g., topology-generator).
  *
  * @author Thomas Hohnstein
  * @author Manoel Campos da Silva Filho
@@ -30,13 +30,13 @@ public final class TopologicalNode {
     private int id;
 
     /**
-     * The name of the node
+     * The name of the node.
      */
     @NonNull
     private String nodeName;
 
     /**
-     * The x,y world coordinates of this network-node.
+     * The x,y world coordinates of this network node.
      */
     @NonNull
     private Point2D worldCoordinates;
@@ -58,21 +58,21 @@ public final class TopologicalNode {
     }
 
     /**
-     * Creates a network topology node including world-coordinates.
+     * Creates a network topology node including world coordinates.
      *
      * @param id The BRITE id of the node inside the network
-     * @param worldCoordinates  the x,y world-coordinates of the Node
+     * @param worldCoordinates  the x,y world coordinates of the node
      */
     public TopologicalNode(final int id, final Point2D worldCoordinates) {
         this(id, String.valueOf(id), worldCoordinates);
     }
 
     /**
-     * Creates a network topology node including world-coordinates and the nodeName.
+     * Creates a network topology node including world coordinates and the node name.
      *
-     * @param id   The BRITE id of the node inside the network
-     * @param nodeName The name of the node inside the network
-     * @param worldCoordinates    the x,y world-coordinates of the Node
+     * @param id   the BRITE id of the node inside the network
+     * @param nodeName the name of the node inside the network
+     * @param worldCoordinates    the x,y world coordinates of the node
      */
     public TopologicalNode(final int id, final String nodeName, final Point2D worldCoordinates) {
         this.setId(id);
