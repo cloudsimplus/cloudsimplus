@@ -20,8 +20,7 @@ import java.util.Objects;
 
 
 /**
- * Stores related information related to a
- * {@link File} entity.
+ * Stores information related to a {@link File}.
  *
  * @author Uros Cibej
  * @author Anthony Sulistio
@@ -42,7 +41,7 @@ public class FileAttribute {
     private String ownerName;
 
     /**
-     * The file type just for tagging purposes.
+     * The file type (just for tagging purposes).
      */
     @Setter
     private int type;
@@ -64,19 +63,18 @@ public class FileAttribute {
     private double lastUpdateTime;
 
     /**
-     * Gets real the file creation time,
-     * according to the current computer time.
+     * The real file creation time, according to the current computer time.
      */
     @Setter
     private LocalDateTime creationTime;
 
     /**
-     * The cost ($) of this file.
+     * The monetary cost ($) of storing this file on the cloud infrastructure.
      */
     private double cost;
 
     /**
-     * Checks whether the file is a master copy or replica.
+     * Checks whether the file is a master-copy or replica.
      */
     @Setter
     private boolean masterCopy;
@@ -91,7 +89,7 @@ public class FileAttribute {
      * Creates a new FileAttribute object.
      *
      * @param file the file that this attribute object is related to
-     * @param fileSize the size for the File
+     * @param fileSize the size for the File (in MBytes)
      */
     public FileAttribute(final File file, final int fileSize) {
         this.file = file;
@@ -106,10 +104,10 @@ public class FileAttribute {
     }
 
     /**
-     * Copy the values of the object into a given FileAttribute instance.
+     * Copy the values of this instance into a given FileAttribute object.
      *
      * @param destinationAttr the destination FileAttribute object to copy the
-     * current object to
+     * current object data to
      */
     public void copyValue(final FileAttribute destinationAttr) {
         Objects.requireNonNull(destinationAttr);
@@ -125,11 +123,9 @@ public class FileAttribute {
     }
 
     /**
-     * Gets the size of the object (in byte). <br>
-     * NOTE: This object size is NOT the actual file size. Moreover, this size
-     * is used for transferring this object over a network.
-     *
-     * @return the object size (in byte)
+     * {@return the size of the object (in bytes)}<br>
+     * <b>NOTE</b>: This object size is NOT the actual file size.
+     * Moreover, this size is used for transferring this object over a network.
      */
     public int getAttributeSize() {
         int length = DataCloudTags.PKT_SIZE;
@@ -143,7 +139,7 @@ public class FileAttribute {
     }
 
     /**
-     * Sets the file size (in MBytes).
+     * Sets the file size.
      *
      * @param fileSize the file size (in MBytes)
      */
@@ -155,8 +151,6 @@ public class FileAttribute {
     }
 
     /**
-     * Gets the file size (in bytes).
-     *
      * @return the file size (in bytes)
      */
     public int getFileSizeInByte() {
@@ -166,7 +160,7 @@ public class FileAttribute {
 
     /**
      * Sets the last update time of the file (in seconds). <br>
-     * NOTE: This time is relative to the start time. Preferably use
+     * <b>NOTE</b>: This time is relative to the start time. Preferably use
      * {@link CloudSimPlus#clock()} method.
      *
      * @param time the last update time (in seconds)
@@ -185,7 +179,7 @@ public class FileAttribute {
     /**
      * Sets the file registration ID (published by a Replica Catalogue entity).
      *
-     * @param id registration ID
+     * @param id the registration ID to set
      * @return true if successful, false otherwise
      */
     public boolean setRegistrationId(final long id) {
@@ -198,18 +192,16 @@ public class FileAttribute {
     }
 
     /**
-     * Gets the file registration ID.
-     *
-     * @return registration ID
+     * @return the file registration ID.
      */
     public long getRegistrationID() {
         return id;
     }
 
     /**
-     * Sets the cost ($) associated with the file.
+     * Sets the monetary cost ($) of storing this file on the cloud infrastructure.
      *
-     * @param cost cost of this file
+     * @param cost monetary cost ($) to set
      */
     public void setCost(final double cost) {
         this.cost = MathUtil.nonNegative(cost, "cost");

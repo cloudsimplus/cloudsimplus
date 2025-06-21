@@ -1,8 +1,7 @@
 package org.cloudsimplus.resources;
 
 /**
- * A class that implements the Null Object Design Pattern for {@link Resource}
- * class.
+ * A class that implements the Null Object Design Pattern for {@link Resource} class.
  *
  * @author Manoel Campos da Silva Filho
  * @see Resource#NULL

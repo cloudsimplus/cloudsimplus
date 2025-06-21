@@ -23,8 +23,11 @@
  */
 package org.cloudsimplus.resources;
 
+import org.cloudsimplus.hosts.Host;
+import org.cloudsimplus.vms.Vm;
+
 /**
- * Represents the Bandwidth (BW) capacity of a PM or VM in Megabits/s.
+ * Represents the Bandwidth (BW) capacity of a {@link Host} or {@link Vm} in Megabits/s.
  * Such a class allows managing the BW capacity and allocation.
  *
  * @author Manoel Campos da Silva Filho
@@ -33,7 +36,7 @@ package org.cloudsimplus.resources;
 public final class Bandwidth extends ResourceManageableAbstract {
     /**
      * Creates a new Bandwidth resource.
-     * @param capacity the bandwidth capacity in in Megabits/s
+     * @param capacity the bandwidth capacity in Megabits/s
      */
     public Bandwidth(final long capacity) {
         super(capacity, "Mbps");

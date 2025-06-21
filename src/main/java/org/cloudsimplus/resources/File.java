@@ -11,14 +11,13 @@ package org.cloudsimplus.resources;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
-import org.cloudsimplus.core.CloudSimPlus;
 import org.cloudsimplus.datacenters.Datacenter;
 import org.cloudsimplus.util.MathUtil;
 
 import java.time.LocalDateTime;
 
 /**
- * A class for representing a physical file in a DataCloud environment
+ * Represents a file stored in a local disk or a {@link DatacenterStorage}.
  *
  * @author Uros Cibej
  * @author Anthony Sulistio
@@ -37,7 +36,7 @@ public class File {
     public static final int TYPE_UNKNOWN = 0;
 
     /**
-     * The file name.
+     * The name of the file that is used for lookup.
      */
     private String name;
 
@@ -56,9 +55,9 @@ public class File {
     private FileAttribute attribute;
 
     /**
-     * The last time (in second) operations were performed over this file.
-     * This transaction time can be
-     * related to the operation of adding, deleting, renaming or getting the file on a Datacenter's storage.
+     * The last time (in second) in which operations were performed over this file.
+     * This transaction time can be related to the operation of
+     * adding, deleting, renaming or getting the file on a Datacenter's storage.
      */
     private double transactionTime;
 
@@ -67,18 +66,14 @@ public class File {
      */
     private boolean deleted;
 
-    /**
-     * Creates a new DataCloud file with a given size (in MBytes). <br>
-     * NOTE: By default, a newly-created file is set to a <b>master</b> copy.
-     *
-     * @param fileName file name
-     * @param fileSize file size in MBytes
-     * @throws IllegalArgumentException when one of the following scenarios occur:
-     *                                  <ul>
-     *                                  <li>the file name is empty or null
-     *                                  <li>the file size is zero or negative numbers
-     *                                  </ul>
-     */
+    /// Creates a new file with a given size (in MBytes).
+    /// **NOTE**: By default, a newly created file is set to a **master** copy.
+    ///
+    /// @param fileName file name
+    /// @param fileSize file size in MBytes
+    /// @throws IllegalArgumentException when one of the following scenarios occurs:
+    ///                                (i) the file name is empty or null;
+    ///                                (ii) the file size is zero or negative numbers.
     public File(final String fileName, final int fileSize) {
         datacenter = Datacenter.NULL;
         setName(fileName);
@@ -87,7 +82,7 @@ public class File {
     }
 
     /**
-     * Copy constructor that creates a clone from a source file and set the given file
+     * Copy constructor that creates a clone from a source file and sets the given file
      * as a <b>replica</b>.
      *
      * @param file the source file to create a copy and that will be set as a replica
@@ -156,9 +151,9 @@ public class File {
     }
 
     /**
-     * Clone the current file and make the new file as a <b>master</b> copy as well.
+     * Clone the current file and make the new file a <b>master</b> copy as well.
      *
-     * @return a clone of the current file (as a master copy) or null if an error occurs
+     * @return a clone of the current file (as a master-copy) or null if an error occurs
      */
     public File makeMasterCopy() {
         return makeCopy().setMasterCopy(true);
@@ -179,11 +174,11 @@ public class File {
     }
 
     /**
-     * Gets the size of this object (in byte). <br>
-     * NOTE: This object size is NOT the actual file size. Moreover, this size is used for
+     * Gets the size of this object (in bytes). <br>
+     * <b>NOTE</b>: This object size is NOT the actual file size. Moreover, this size is used for
      * transferring this object over a network.
      *
-     * @return the object size (in byte)
+     * @return the object size (in bytes)
      */
     public int getAttributeSize() {
         return attribute.getAttributeSize();
@@ -208,17 +203,13 @@ public class File {
     }
 
     /**
-     * Gets the owner name of this file.
-     *
-     * @return the owner name or null if empty
+     * @return the owner name of this file or null if empty
      */
     public String getOwnerName() {
         return attribute.getOwnerName();
     }
 
     /**
-     * Gets the file size (in MBytes).
-     *
      * @return the file size (in MBytes)
      */
     public int getSize() {
@@ -226,8 +217,6 @@ public class File {
     }
 
     /**
-     * Gets the file size (in bytes).
-     *
      * @return the file size (in bytes)
      */
     public int getSizeInByte() {
@@ -235,7 +224,7 @@ public class File {
     }
 
     /**
-     * Sets the file size (in MBytes).
+     * Sets the file size.
      *
      * @param fileSize the file size (in MBytes)
      */
@@ -245,8 +234,6 @@ public class File {
 
     /**
      * Sets the last update time of this file (in seconds). <br>
-     * NOTE: This time is relative to the start time. Preferably use
-     * {@link CloudSimPlus#clock()} method.
      *
      * @param time the last update time (in seconds)
      * @return true if successful, false otherwise
@@ -256,8 +243,6 @@ public class File {
     }
 
     /**
-     * Gets the last update time (in seconds).
-     *
      * @return the last update time (in seconds)
      */
     public double getLastUpdateTime() {
@@ -275,16 +260,14 @@ public class File {
     }
 
     /**
-     * Gets the file registration ID.
-     *
-     * @return registration ID
+     * @return the file registration ID.
      */
     public long getRegistrationID() {
         return attribute.getRegistrationID();
     }
 
     /**
-     * Sets the file type (for instance, raw, tag, etc).
+     * Sets the file type (for instance, raw, tag, etc.).
      *
      * @param type a file type
      */
@@ -293,9 +276,7 @@ public class File {
     }
 
     /**
-     * Gets the file type.
-     *
-     * @return file type
+     * @return the file type
      */
     public int getType() {
         return attribute.getType();
@@ -304,16 +285,14 @@ public class File {
     /**
      * Sets the checksum of the file.
      *
-     * @param checksum the checksum of this file
+     * @param checksum the checksum to set
      */
     public void setChecksum(final int checksum) {
         attribute.setChecksum(checksum);
     }
 
     /**
-     * Gets the file checksum.
-     *
-     * @return file checksum
+     * @return the file checksum
      */
     public int getChecksum() {
         return attribute.getChecksum();
@@ -329,16 +308,14 @@ public class File {
     }
 
     /**
-     * Gets the cost associated with the file.
-     *
-     * @return the cost of this file
+     * @return the cost associated with the file.
      */
     public double getCost() {
         return attribute.getCost();
     }
 
     /**
-     * {@return the real file creation time} according to the current computer time.
+     * @return the real file creation time, according to the current computer time.
      */
     public LocalDateTime getCreationTime() {
         return attribute.getCreationTime();
@@ -354,19 +331,18 @@ public class File {
     }
 
     /**
-     * Checks whether the file is a master copy or replica.
+     * Checks whether the file is a master-copy or replica.
      *
-     * @return true if it is a master copy or false otherwise
+     * @return true if it is a master-copy; false if it's a replica.
      */
     public boolean isMasterCopy() {
         return attribute.isMasterCopy();
     }
 
     /**
-     * Marks the file as a master copy or replica.
+     * Marks the file as a master-copy or replica.
      *
-     * @param masterCopy a flag denotes true for master copy or false for a
-     *                   replica
+     * @param masterCopy true for master-copy, false for a replica
      */
     public File setMasterCopy(final boolean masterCopy) {
         attribute.setMasterCopy(masterCopy);
@@ -374,9 +350,9 @@ public class File {
     }
 
     /**
-     * Sets the last time (in second) operations were performed over this file.
-     * This transaction time can be
-     * related to the operation of adding, deleting, renaming or getting the file on a Datacenter's storage.
+     * Sets the last time in which operations were performed over this file.
+     * This transaction time can be related to the operation of adding,
+     * deleting, renaming or getting the file on a Datacenter's storage.
      *
      * @param time the transaction time (in second)
      */

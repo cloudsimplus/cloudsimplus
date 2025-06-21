@@ -26,7 +26,7 @@ package org.cloudsimplus.resources;
 import org.cloudsimplus.vms.Vm;
 
 /**
- * Represents the RAM resource of a VM in Megabytes.
+ * Represents the RAM resource of a {@link Vm} in Megabytes.
  * Such a class allows managing the RAM capacity and allocation.
  *
  * @author Manoel Campos da Silva Filho

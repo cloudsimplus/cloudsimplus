@@ -12,52 +12,46 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import org.cloudsimplus.hosts.Host;
 import org.cloudsimplus.provisioners.PeProvisioner;
 import org.cloudsimplus.provisioners.PeProvisionerSimple;
 
-/**
- * Pe (Processing Element) class represents a CPU core of a physical machine (PM),
- * defined in terms of Millions Instructions Per Second (MIPS) rating.
- * Such a class allows managing the Pe capacity and allocation.
- *
- * <p>
- * <b>ASSUMPTION:</b> All PEs under the same Machine have the same MIPS rating.
- * </p>
- * TODO: This assumption is not being assured on different classes (where other TODOs were included)
- *
- * @author Manzur Murshed
- * @author Rajkumar Buyya
- * @since CloudSim Toolkit 1.0
- */
+/// A [Pe] (Processing Element) implementation representing a **CPU core** of a physical machine
+/// ([Host]), defined in terms of [Millions Instructions Per Second (MIPS)](https://en.wikipedia.org/wiki/Instructions_per_second).
+/// Such a class allows managing the Pe capacity and allocation.
+///
+/// **ASSUMPTION:** All PEs under the same Machine have the same MIPS rating.
+///
+/// TODO: This assumption is not being assured on different classes (where other TODOs were included)
+///
+/// @author Manzur Murshed
+/// @author Rajkumar Buyya
+/// @since CloudSim Toolkit 1.0
 @Accessors @Getter @Setter
 public class PeSimple extends ResourceManageableAbstract implements Pe {
-    /** @see #setDefaultMips(double) */
+    /** The default MIPS capacity to be used to create PEs when the no-args constructor is called. */
     private static double defaultMips = 1000;
 
     private long id;
     private Status status;
     private PeProvisioner peProvisioner;
 
-    /**
-     * Creates a PE object with the {@link #getDefaultMips() default MIPS capacity} and using a {@link PeProvisionerSimple}.
-     * The id of the PE is just set when a List of PEs is assigned to a Host.
-     *
-     * @see #PeSimple(double, PeProvisioner)
-     * @see #PeSimple(double)
-     * @see #setDefaultMips(double)
-     */
+    /// Creates a PE object with the [default MIPS capacity][#getDefaultMips()] and using a [PeProvisionerSimple].
+    /// The id of the PE is just set when a List of PEs is assigned to a Host.
+    ///
+    /// @see #PeSimple(double, PeProvisioner)
+    /// @see #PeSimple(double)
+    /// @see #setDefaultMips(double)
     public PeSimple() {
         this(PeSimple.defaultMips);
     }
 
-    /**
-     * Creates a PE object using a {@link PeProvisionerSimple}.
-     * The id of the PE is just set when a List of PEs is assigned to a Host.
-     *
-     * @param mipsCapacity the capacity of the PE in MIPS (Million Instructions per Second)
-     * @see #PeSimple(double, PeProvisioner)
-     * @see #PeSimple()
-     */
+    /// Creates a PE object using a [PeProvisionerSimple].
+    /// The id of the PE is just set when a List of PEs is assigned to a Host.
+    ///
+    /// @param mipsCapacity the capacity of the PE in MIPS (Million Instructions per Second)
+    /// @see #PeSimple(double, PeProvisioner)
+    /// @see #PeSimple()
     public PeSimple(final double mipsCapacity) {
         this(mipsCapacity, new PeProvisionerSimple());
     }
@@ -92,13 +86,6 @@ public class PeSimple extends ResourceManageableAbstract implements Pe {
     public PeSimple(final int id, final double mipsCapacity, final PeProvisioner peProvisioner) {
         this(mipsCapacity, peProvisioner);
         this.setId(id);
-    }
-
-    /**
-     * {@return the default MIPS capacity} to be used to create PEs when the no-args constructor is used.
-     */
-    public static double getDefaultMips() {
-        return defaultMips;
     }
 
     /**
