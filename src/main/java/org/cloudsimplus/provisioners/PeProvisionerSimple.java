@@ -13,28 +13,23 @@ import org.cloudsimplus.resources.Pe;
 import org.cloudsimplus.resources.ResourceManageable;
 import org.cloudsimplus.vms.Vm;
 
-/**
- * A best-effort {@link PeProvisioner} policy used by a {@link Host} to provide virtual PEs to VMs from its physical PEs:
- * <ul>
- *   <li>if there is available MIPS on the physical PE, it allocates to a virtual PE;</li>
- *   <li>otherwise, it fails.</li>
- * </ul>
- *
- * <p>
- * Each host's PE must have its own instance of a PeProvisioner. When extending this class,
- * care must be taken to guarantee that the field availableMips will always
- * contain the amount of free MIPS available for future allocations.
- * </p>
- *
- * @author Anton Beloglazov
- * @author Manoel Campos da Silva Filho
- * @since CloudSim Toolkit 2.0
- */
+/// A best-effort [PeProvisioner] policy used by a [Host] to provide its physical [Pe]s as virtual PEs to [Vm]s:
+///
+/// - if there are MIPS available on the physical PE, it allocates to a virtual PE;
+/// - otherwise, it fails.
+///
+/// Each Host's PE must have its own instance of a PeProvisioner. When extending this class,
+/// you must ensure that the field `availableMips` will always
+/// contain the amount of free MIPS available for future allocations.
+///
+/// @author Anton Beloglazov
+/// @author Manoel Campos da Silva Filho
+/// @since CloudSim Toolkit 2.0
 public class PeProvisionerSimple extends ResourceProvisionerSimple implements PeProvisioner {
 
     /**
      * Instantiates a new PeProvisionerSimple. The {@link Pe} it will manage will be set
-     * just at Pe instantiation.
+     * just at the Pe instantiation.
      */
     public PeProvisionerSimple() {
         super(Pe.NULL, vm -> ResourceManageable.NULL);
@@ -43,7 +38,7 @@ public class PeProvisionerSimple extends ResourceProvisionerSimple implements Pe
     /**
      * Instantiates a new PeProvisionerSimple for a given {@link Pe}.
      *
-     * @param pe
+     * @param pe the PE that will be managed by the provisioner
      */
     public PeProvisionerSimple(final Pe pe){
         super(pe, Vm::getProcessor);
@@ -68,7 +63,8 @@ public class PeProvisionerSimple extends ResourceProvisionerSimple implements Pe
      * different from the current one.
      *
      * @param pe the Pe to check
-     * @return
+     * @return {@code true} if the Pe has a PeProvisioner different then the current one,
+     *         {@code false} otherwise.
      */
     private boolean isOtherProvisionerAssignedToPe(@NonNull final Pe pe) {
         return pe.getPeProvisioner() != null &&

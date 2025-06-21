@@ -18,7 +18,7 @@ import java.util.function.Function;
 
 /**
  * An abstract class that implements the basic features of a provisioning policy used by a {@link Host}
- * to provide a given resource to its virtual machines.
+ * to provide a given resource to its Virtual Machines ({@link Vm}s).
  *
  * @see ResourceProvisioner
  * @author Rodrigo N. Calheiros
@@ -45,7 +45,7 @@ public abstract class ResourceProvisionerAbstract implements ResourceProvisioner
     /**
      * Creates a ResourceManageable Provisioner.
      *
-     * @param pmResource The physical resource to be managed by the provisioner
+     * @param pmResource the physical resource to be managed by the provisioner
      * @param vmResourceFunction a {@link Function} that receives a {@link Vm} and returns
      *                           the virtual resource corresponding to the {@link #getPmResource() PM resource}
      */
@@ -81,7 +81,7 @@ public abstract class ResourceProvisionerAbstract implements ResourceProvisioner
 
     /**
      * A {@link Function} that receives a {@link Vm} and returns
-     * the virtual resource corresponding to the {@link #pmResource}.
+     * the virtual resource corresponding to the {@link #getPmResource() PM resource}.
      */
     protected Function<Vm, ResourceManageable> getVmResourceFunction() {
         return vmResourceFunction;
