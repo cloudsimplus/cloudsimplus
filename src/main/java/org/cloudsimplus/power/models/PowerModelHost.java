@@ -4,15 +4,14 @@ import org.cloudsimplus.hosts.Host;
 import org.cloudsimplus.power.PowerMeter;
 
 /**
- * Provides a model for host power consumption.
+ * Provides a model for defining {@link Host} power consumption.
  *
  * @since CloudSim Plus 6.0.0
  * @see PowerMeter
  */
 public interface PowerModelHost extends PowerModel{
     /**
-     * An attribute that implements the Null Object Design Pattern for {@link PowerModelHost}
-     * objects.
+     * An attribute that implements the Null Object Design Pattern for {@link PowerModelHost} objects.
      */
     PowerModelHost NULL = new PowerModelHostNull();
 

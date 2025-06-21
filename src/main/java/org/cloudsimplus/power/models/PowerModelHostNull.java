@@ -4,8 +4,7 @@ import org.cloudsimplus.hosts.Host;
 import org.cloudsimplus.power.PowerMeasurement;
 
 /**
- * A class that implements the Null Object Design Pattern for
- * {@link PowerModelHost} objects.
+ * A class that implements the Null Object Design Pattern for {@link PowerModelHost} objects.
  * @since CloudSim Plus 6.0.0
  */
 class PowerModelHostNull implements PowerModelHost {

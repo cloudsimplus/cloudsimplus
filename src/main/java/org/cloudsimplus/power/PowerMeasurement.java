@@ -30,10 +30,10 @@ import org.cloudsimplus.power.models.PowerModel;
 /**
  * Power consumption measurement produced by a {@link PowerModel},
  * consisting of a static and a dynamic fraction (in Watts).
- * This measurement is performed on the entity the PowerModel is assigned to.
+ * This measurement is performed on the entity that the PowerModel assigned to.
  *
  * <p>This is an <b>immutable</b> class providing operations
- * such as {@link #add(PowerMeasurement)} and {@link #multiply(double)} that returns a new instance.</p>
+ * such as {@link #add(PowerMeasurement)} and {@link #multiply(double)} that return a new instance.</p>
  * @since CloudSim Plus 6.0.0
  */
 @Getter
@@ -45,14 +45,14 @@ public class PowerMeasurement {
     private final double staticPower;
 
     /**
-     * The dynamic power the entity consumes according to its load (in Watts).
+     * The dynamic power the entity consumes, according to its CPU load (in Watts).
      */
     private final double dynamicPower;
 
     /**
-     * Instantiates a power measurement with a given static and dynamic power consumption.
+     * Instantiates a power measurement with given static and dynamic power consumption.
      * @param staticPower power (in watts) the entity consumes when idle
-     * @param dynamicPower power (in watts) the entity consumes according to its load
+     * @param dynamicPower power (in watts) the entity consumes, according to its CPU load
      */
     public PowerMeasurement(final double staticPower, final double dynamicPower) {
         this.staticPower = staticPower;
@@ -67,8 +67,7 @@ public class PowerMeasurement {
     }
 
     /**
-     * Gets the total power consumed by the entity (in Watts)
-     * @return
+     * @return the total power consumed by the entity (in Watts)
      */
     public double getTotalPower() {
         return staticPower + dynamicPower;

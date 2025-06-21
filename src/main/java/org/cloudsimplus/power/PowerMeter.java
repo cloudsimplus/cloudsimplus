@@ -29,6 +29,8 @@ import org.cloudsimplus.core.CloudSimEntity;
 import org.cloudsimplus.core.CloudSimTag;
 import org.cloudsimplus.core.Simulation;
 import org.cloudsimplus.core.events.SimEvent;
+import org.cloudsimplus.datacenters.Datacenter;
+import org.cloudsimplus.hosts.Host;
 import org.cloudsimplus.power.models.PowerModel;
 
 import java.util.LinkedList;
@@ -38,12 +40,16 @@ import java.util.function.Supplier;
 /**
  * Periodically measures the current power usage of one or more {@link PowerAware} entities,
  * according to a defined {@link #getMeasurementInterval() interval}, storing the results.
+ * PowerAware entities include {@link Host}s and {@link Datacenter}s.
  *
  * @see #getPowerMeasurements()
  * @since CloudSim Plus 6.0.0
  */
 public class PowerMeter extends CloudSimEntity {
 
+    /**
+     * A {@link Supplier} that provides a list of entities to have their combined power consumption measured.
+     */
     private final Supplier<List<? extends PowerAware<? extends PowerModel>>> powerAwareEntitiesSupplier;
 
     /**
@@ -55,7 +61,7 @@ public class PowerMeter extends CloudSimEntity {
     /**
      * The list of all measurements collected up to now.
      * Each entry is a measurement collected in the defined {@link #measurementInterval}.
-     * If you provided a list of entities on the class constructor,
+     * If you have provided a list of entities on the class constructor,
      * an entry is the combined measurement for those entities.
      */
     @Getter
@@ -63,7 +69,7 @@ public class PowerMeter extends CloudSimEntity {
 
     /**
      * Initializes a {@link PowerMeter} to periodically measure power consumption of a single {@link PowerAware} entity.
-     * @param simulation The simulation instance the Entity is related to
+     * @param simulation the simulation instance the Entity is related to
      * @param powerAwareEntity an entity to have its power consumption measured
      */
     public PowerMeter(final Simulation simulation, final PowerAware<? extends PowerModel> powerAwareEntity) {
@@ -76,7 +82,7 @@ public class PowerMeter extends CloudSimEntity {
      *
      * <p>If you want to compute power consumption individually for each entity,
      * check {@link #PowerMeter(Simulation, PowerAware)}.</p>
-     * @param simulation The simulation instance the Entity is related to
+     * @param simulation the simulation instance the Entity is related to
      * @param powerAwareEntities a list of entities to have their combined power consumption measured
      */
     public PowerMeter(final Simulation simulation, final List<? extends PowerAware<? extends PowerModel>> powerAwareEntities) {
@@ -90,7 +96,7 @@ public class PowerMeter extends CloudSimEntity {
      *
      * <p>If you want to compute power consumption individually for each entity,
      * check {@link #PowerMeter(Simulation, PowerAware)}.</p>
-     * @param simulation The simulation instance the Entity is related to
+     * @param simulation the simulation instance the Entity is related to
      * @param powerAwareEntitiesSupplier a {@link Supplier} that provides a list of entities
      *                                   to have their combined power consumption measured
      */
@@ -115,9 +121,8 @@ public class PowerMeter extends CloudSimEntity {
 
     /**
      * Measures the power consumption of entities and schedules next measurement.
-     * If the entities list contains a single element,
-     * the measurement is related to that entity.
-     * If the list has multiples entities,
+     * If the entity list contains a single element, the measurement is related to that entity.
+     * If the list has multiple entities,
      * it's returned the combined power consumption of such entities.
      */
     private void measurePowerConsumption() {
@@ -144,7 +149,7 @@ public class PowerMeter extends CloudSimEntity {
     /**
      * Sets the time interval to collect power measurements.
      * @param measurementInterval the value to set (in seconds)
-     * @return
+     * @return this object
      */
     public PowerMeter setMeasurementInterval(final double measurementInterval) {
         if(measurementInterval <= 0){
