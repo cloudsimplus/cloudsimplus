@@ -10,21 +10,24 @@ package org.cloudsimplus.schedulers.cloudlet;
 import org.cloudsimplus.cloudlets.Cloudlet;
 import org.cloudsimplus.cloudlets.CloudletExecution;
 import org.cloudsimplus.resources.Pe;
+import org.cloudsimplus.vms.Vm;
 
 import java.io.Serial;
 
 /**
  * Implements a policy of scheduling performed by a
- * virtual machine to run its {@link Cloudlet Cloudlets}. It considers there
+ * {@link Vm} to run its {@link Cloudlet}s. It considers there
  * will be only one Cloudlet per VM. Other Cloudlets will be in a waiting list.
  * It also considers that the time to transfer Cloudlets to the Vm happens
- * before Cloudlet starts executing. I.e., even though Cloudlets must wait for
+ * before the Cloudlets start executing. That is, even though Cloudlets must wait for
  * CPU, data transfer happens as soon as Cloudlets are submitted.
  *
  * <p>
  * <b>This scheduler does not consider Cloudlets priorities to define execution
  * order. If actual priorities are defined for Cloudlets, they are just ignored
- * by the scheduler.</b></p>
+ * by the scheduler.</b>
+ * Check {@link CloudletSchedulerCompletelyFair} for a more realistic, priority-aware scheduler,
+ * but also more computationally complex.</p>
  *
  * @author Rodrigo N. Calheiros
  * @author Anton Beloglazov

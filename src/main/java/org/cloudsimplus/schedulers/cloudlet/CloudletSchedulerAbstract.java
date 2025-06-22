@@ -40,7 +40,7 @@ import static org.cloudsimplus.listeners.CloudletResourceAllocationFailEventInfo
 
 /**
  * An abstract class for implementing {@link CloudletScheduler}s representing
- * scheduling policies performed by a virtual machine to run its
+ * scheduling policies performed by a {@link Vm} to run its
  * {@link Cloudlet Cloudlets}. Each VM must have its own instance of a CloudletScheduler.
  *
  * @author Rodrigo N. Calheiros
@@ -115,8 +115,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     }
 
     /**
-     * Sets current MIPS share available for the VM using the
-     * scheduler.
+     * Sets current MIPS share available for the VM using the scheduler.
      *
      * @param currentMipsShare the new current MIPS share
      * @see #getCurrentMipsShare()
@@ -133,13 +132,12 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * Gets the amount of MIPS available (free) for each Processor PE,
      * considering the currently executing cloudlets in this processor
      * and the number of PEs these cloudlets require.
-     * This is the amount of MIPS that each Cloudlet is allowed to used,
-     * since the processor is shared among all executing
-     * cloudlets.
+     * This is the amount of MIPS that each Cloudlet is allowed to use,
+     * since the processor is shared among all executing cloudlets.
      *
      * <p>In the case of space shared schedulers,
      * there is no concurrency for PEs because some cloudlets
-     * may wait in a queue until there is available PEs to be used
+     * may wait in a queue until there are available PEs to be used
      * exclusively by them.</p>
      *
      * @return the amount of available MIPS for each Processor PE.
@@ -166,8 +164,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     }
 
     /**
-     * Gets the total number of PEs of all cloudlets currently executing in this processor.
-     * @return
+     * @return the total number of PEs from all cloudlets currently executing in this scheduler.
      */
     private long totalAllExecCloudletsPes() {
         return cloudletExecList.stream()
@@ -186,8 +183,9 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
 
     @Override
     public <T extends Cloudlet> List<T> getCloudletSubmittedList() {
+        final var msg = "{}: The list of submitted Cloudlets for {} is empty maybe because you didn't enabled it by calling enableCloudletSubmittedList().";
         if(cloudletSubmittedList.isEmpty() && !cloudletSubmittedListEnabled) {
-            LOGGER.warn("{}: The list of submitted Cloudlets for {} is empty maybe because you didn't enabled it by calling enableCloudletSubmittedList().", getClass().getSimpleName(), vm);
+            LOGGER.warn(msg, getClass().getSimpleName(), vm);
         }
 
         return (List<T>) cloudletSubmittedList;
@@ -266,14 +264,13 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * @param fileTransferTime time required to move the required files from the SAN to the VM (in seconds)
      */
     private double getEstimatedFinishTime(final Cloudlet cloudlet, final double fileTransferTime) {
-        //Estimated total time if no lifetime is set
+        // Estimated total time if no lifetime is set
         final double estimatedTotalTime = fileTransferTime + Math.abs(cloudlet.getLength() / getPeCapacity());
         return Math.min(cloudlet.getLifeTime(), estimatedTotalTime);
     }
 
     /**
      * Adds a Cloudlet to the list of cloudlets in execution.
-     *
      * @param cle the Cloudlet to be added
      */
     protected void addCloudletToExecList(final CloudletExecution cle) {
@@ -301,8 +298,8 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
             cloudletFinishedList, cloudletFailedList
         );
 
-        //Gets all elements in each list and makes them a single full list,
-        //returning the first Cloudlet with the given id
+        // Gets all elements in each list and makes them a single full list,
+        // returning the first Cloudlet with the given id
         return cloudletExecInfoListStream
             .flatMap(List::stream)
             .filter(cle -> cle.getId() == cloudletId)
@@ -325,8 +322,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
 
     /**
      * Processes a finished cloudlet.
-     *
-     * @param cle finished cloudlet
+     * @param cle the finished cloudlet to process
      */
     protected void cloudletFinish(final CloudletExecution cle) {
         cle.setStatus(Cloudlet.Status.SUCCESS);
@@ -433,7 +429,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     /**
      * Changes the status of a given cloudlet.
      *
-     * @param cle      Cloudlet to set its status
+     * @param cle      Cloudlet to change its status
      * @param currentStatus the current cloudlet status
      * @param newStatus     the new status to set
      * TODO The parameter currentStatus only exists
@@ -452,12 +448,12 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     }
 
     /**
-     * Search for a cloudlet into a given list in order to change its status and
+     * Search for a cloudlet into a given list to change its status and
      * remove it from that list.
      *
-     * @param cloudletList                  the list where to search the cloudlet
+     * @param cloudletList                the list where to search the cloudlet
      * @param cloudlet                    the id of the cloudlet to have its status changed
-     * @param cloudletStatusUpdaterConsumer the {@link Consumer} that will apply
+     * @param cloudletStatusUpdaterConsumer a {@link Consumer} that will apply
      *                                      the change in the status of the found cloudlet
      * @return true if the Cloudlet was found, false otherwise
      */
@@ -499,7 +495,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     }
 
     /**
-     * Deallocates total used capacity from VM RAM and Bandwidth
+     * Deallocates the total used capacity from VM RAM and Bandwidth
      * so that the allocation can be updated when running Cloudlets are processed.
      */
     private void deallocateVmResources() {
@@ -508,10 +504,10 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     }
 
     /**
-     * Updates the processing of all cloudlets of the Vm using this scheduler
+     * Updates the processing of all cloudlets from the Vm using this scheduler
      * that are in the {@link #getCloudletExecList() cloudlet execution list}.
      *
-     * @param currentTime current simulation time
+     * @param currentTime the current simulation time
      * @return the next time to update cloudlets processing
      * (which is a relative delay from the current simulation time),
      * or {@link Double#MAX_VALUE} if there is no next Cloudlet to execute
@@ -520,8 +516,8 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     private double updateCloudletsProcessing(final double currentTime) {
         double nextProcessing = Double.MAX_VALUE;
         long usedPes = 0;
-        /* Uses an indexed for to avoid ConcurrentModificationException,
-         * e.g., in cases when Cloudlet is cancelled during simulation execution. */
+        /* Uses an indexed loop to avoid ConcurrentModificationException,
+         * e.g., in cases when the Cloudlet is canceled during simulation execution. */
         for (int i = 0; i < cloudletExecList.size(); i++) {
             final CloudletExecution cle = cloudletExecList.get(i);
             nextProcessing = Math.min(nextProcessing, updateCloudletProcessing(cle, currentTime));
@@ -534,15 +530,14 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     }
 
     /**
-     * Updates the processing of a specific cloudlet of the Vm using this
-     * scheduler.
+     * Updates the processing of a specific cloudlet from the Vm using this scheduler.
      *
-     * @param cle         The cloudlet to be its processing updated
+     * @param cle         the cloudlet to be its processing updated
      * @param currentTime current simulation time
      * @return the next time to update the cloudlet processing
      * (which is a relative delay from the current simulation time)
      * This will be the delay incurred in cloudlet processing caused by (i) vMem usage or (ii) BW reduction due to oversubscription.
-     * If no delay is incurred, returns the expected cloudlet completion time.
+     * If no delay is incurred, it returns the expected cloudlet completion time.
      */
     protected double updateCloudletProcessing(final CloudletExecution cle, final double currentTime) {
         if(cle.lastOverSubscriptionDelayNotPassed(currentTime)){
@@ -551,8 +546,8 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
 
         final long cloudletUsedMips = (long)getAllocatedMipsForCloudlet(cle, currentTime, true);
 
-        /* The time the Cloudlet spent executing in fact, since the last time Cloudlet update was
-         * called by the scheduler. If it is zero, indicates that the Cloudlet didn't use
+        /* The time the Cloudlet spent actually executing, since the last time Cloudlet update was
+         * called by the scheduler. If it is zero, that indicates the Cloudlet didn't use
          * the CPU in this time span, because it is waiting for its required files
          * to be transferred from the Datacenter storage.
          */
@@ -563,9 +558,9 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
 
         final double vMemDelaySecs = getVirtualMemoryDelay(cle, processingTimeSpan);
         final double reducedBwDelaySecs = getBandwidthOverSubscriptionDelay(cle, processingTimeSpan);
-        /*If delay is negative, resource was not allocated.
+        /* If delay is negative, resource was not allocated.
         If RAM and BW could not be allocated, just returns 0 to indicate no processing was performed
-        due to lack of other resources.*/
+        due to lack of other resources. */
         if(vMemDelaySecs == Double.MIN_VALUE && reducedBwDelaySecs == Double.MIN_VALUE) {
             return 0;
         }
@@ -586,27 +581,24 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     }
 
     /**
-     * Bandwidth and memory demand will happen at the same time, unless
-     * either the {@link Cloudlet#getUtilizationModelBw()} or {@link Cloudlet#getUtilizationModelRam()}
-     * return 0, indicating some of these resources are not required at the current time.
-     * This way, BW and RAM requests will happen at the same time (parallel) in the first scenario.
-     * Therefore, when there is oversubscription of both resources, since requests are sent
-     * in parallel, the total time the Cloudlet will wait when there is BW and/or RAM oversuscription
+     * {@return the maximum delay caused by oversubscription of resources}
+     * We have two scenarios: (i) Bandwidth and memory demand will happen at the same time or (ii) they happen separately.
+     * Consider there is oversubscription on both resources. Since requests are sent
+     * in parallel, the total time the Cloudlet will wait when there is BW and/or RAM oversubscription
      * is the max delay caused by either BW reduction or virtual memory utilization in
      * oversubscription scenarios.
      * @param vMemDelaySecs the delay caused by virtual memory utilization due to RAM oversubscription
      * @param reducedBwDelaySecs the delay caused by BW reduction due to BW oversubscription
-     * @return
      */
     private double getMaxOversubscriptionDelay(final double vMemDelaySecs, final double reducedBwDelaySecs) {
         return validateDelay(Math.max(vMemDelaySecs, reducedBwDelaySecs));
     }
 
     /**
-     * Updates the VM utilization of given resource, based on the current utilization of a
-     * running Cloudlet, that depends on the Cloudlet's {@link UtilizationModel} for that resource.
+     * Updates the VM utilization of a given resource, based on the current utilization of a
+     * running Cloudlet, which depends on the Cloudlet's {@link UtilizationModel} for that resource.
      *
-     * @param vmResource the kind of resource to updates its utilization (usually {@link Ram} or {@link Bandwidth}).
+     * @param vmResource the kind of resource to update its utilization (usually {@link Ram} or {@link Bandwidth}).
      */
     private void updateVmResourceAbsoluteUtilization(final CloudletExecution cle, final ResourceManageable vmResource) {
         final var cloudlet = cle.getCloudlet();
@@ -638,7 +630,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
         final ResourceManageable resource, final Cloudlet cloudlet,
         final long requested, final long available)
     {
-        //Uses reversed indexed for to avoid ConcurrentModificationException if some Listener is de-registered during loop
+        // Uses reversed indexed loop to avoid ConcurrentModificationException if some Listener is deregistered during loop
         for (int i = resourceAllocationFailListeners.size()-1; i >= 0; i--) {
             final var listener = resourceAllocationFailListeners.get(i);
             listener.update(of(listener, cloudlet, resource.getClass(), requested, available, vm.getSimulation().clock()));
@@ -689,47 +681,40 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
         return delay == Double.MIN_VALUE ? 0 : delay;
     }
 
-    /**
-     * Gets the processing delay (in seconds) considering possible access to virtual memory (VMem / swap), if required
-     * when there is no enough available RAM due to over-subscription.
-     * Use of VMem is performed by swapping memory data, belonging to processes not currently using CPU,
-     * from RAM to disk to open up RAM space. Since the disk is way slower than the RAM, that causes
-     * the process to wait for that swap to complete.
-     *
-     * <p>
-     *     <b>IMPORTANT - This is a simplified implementation of memory swapping which:</b>
-     *     <ul>
-     *         <li>doesn't consider the time to get data from RAM (supposed inactive memory pages
-     *         which aren't being used by some process) and write in the disk;</li>
-     *         <li>just considers that the time to read supposed data from the disk back to the RAM.</li>
-     *         <li>just considers that the first cloudlets (processes) to use virtual memory
-     *         will always be the ones to have its performed impacted by delayed processing.
-     *         In real operating systems, if a process B requests VMem, inactive memory pages
-     *         from a process A will be swapped out to disk. If process A further request
-     *         those pages, inactive pages from process B or any other one may be swapped out
-     *         to disk. This way, different process may be impacted by swapping overhead.
-     *         But here, if process A is the first to use CPU at any time interval,
-     *         it will never be impacted by this overhead, but just the process that requests VMem.</li>
-     *     </ul>
-     * </p>
-     *
-     * @param cle the cloudlet being processed
-     * @param processingTimeSpan the current cloudlet processing time span
-     * @return (i) the processing delay in seconds (considering vMem access);
-     * (ii) 0 if there is available physical RAM (no over-subscription), therefore no vMem is required;
-     * (iii) or {@link Double#MIN_VALUE} if the cloudlet is requesting more RAM than the total VM capacity.
-     * @see <a href="https://www.kernel.org/doc/gorman/html/understand/understand014.html">Linux Kernel Swap Management</a>
-     * @see #getResourceOverSubscriptionDelay(CloudletExecution, double, ResourceManageable, BiPredicate, BiFunction)
-     */
+    /// Gets the processing delay (in seconds) considering possible access to virtual memory (VMem / swap), if required
+    /// when there is no enough available RAM due to over-subscription.
+    /// Use of VMem is performed by swapping memory data, belonging to processes not currently using CPU,
+    /// from RAM to disk to open up RAM space. Since the disk is way slower than the RAM, that causes
+    /// the process to wait for that swap to complete.
+    ///
+    /// **IMPORTANT: This is a simplified implementation of memory swapping which:**
+    ///
+    /// - doesn't consider the time to get data from RAM (supposed inactive memory pages
+    /// which aren't being used by some process) and write in the disk;
+    /// - just considers that the time to read supposed data from the disk back to the RAM.
+    /// - just considers that the first cloudlets (processes) to use virtual memory
+    /// will always be the ones to have its performed impacted by delayed processing.
+    /// In real operating systems, if a process Y requests VMem, inactive memory pages
+    /// from a process X will be swapped out to disk. If process A further request
+    /// those pages, inactive pages from process Y or any other one may be swapped out
+    /// to disk. This way, different processes may be impacted by swapping overhead.
+    /// But here, if a process X is the first to use CPU at any time interval,
+    /// it will never be impacted by this overhead, but just the process that requests VMem.
+    ///
+    /// @param cle the cloudlet being processed
+    /// @param processingTimeSpan the current cloudlet processing time span
+    /// @return (i) the processing delay in seconds (considering vMem access);
+    /// (ii) 0 if there is available physical RAM (no over-subscription), therefore no vMem is required;
+    /// (iii) or [#MIN_VALUE] if the cloudlet is requesting more RAM than the total VM capacity.
+    /// @link [Linux Kernel Swap Management](https://www.kernel.org/doc/gorman/html/understand/understand014.html)
+    /// @see #getResourceOverSubscriptionDelay(CloudletExecution, double, ResourceManageable, BiPredicate, BiFunction)
     private double getVirtualMemoryDelay(final CloudletExecution cle, final double processingTimeSpan) {
         return getResourceOverSubscriptionDelay(
             cle, processingTimeSpan, ((VmSimple)vm).getRam(),
 
-            /*
-             * Since using vMem requires some portion of the RAM to be swapped between the disk
+            /* Since using vMem requires some portion of the RAM to be swapped between the disk
              * to open up RAM space, the required RAM cannot be higher than the RAM capacity
-             * neither than the available disk space.
-             */
+             * neither than the available disk space. */
             (vmRam, requestedRam) -> requestedRam <= vmRam.getCapacity() && requestedRam <= vm.getStorage().getAvailableResource(),
 
             /* Amount of RAM that was not allocated to the Cloudlet due to lack of VM capacity.
@@ -739,11 +724,10 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     }
 
     /**
-     * Gets the time to transfer hard drive from the Host where the VM running a cloudlet is placed.
+     * @return the time to transfer hard drive from the Host where the VM running a cloudlet is placed.
      * @param cle Cloudlet being processed
      * @param dataSize the size of the data to read from the VM disk (in MB),
      *                 considering the read speed of the underlying Host disk.
-     * @return
      */
     private double diskTransferTime(final CloudletExecution cle, final Double dataSize) {
         return cle.getCloudlet().getVm().getHost().getStorage().getTransferTime(dataSize.intValue());
@@ -774,7 +758,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
             For instance, if the required bandwidth is 10mbps, that means
             the cloudlet is willing to transfer 10 mbits in one second.
             If just 8 mbps is allocated to the cloudlet,
-            to transfer the same 10 mbits it will take 0,25 second more. */
+            to transfer the same 10 mbits it will take 0.25 second more. */
             (notAllocatedBw, requestedBw) -> requestedBw/(requestedBw-notAllocatedBw) - 1);
     }
 
@@ -782,10 +766,9 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * Gets the cloudlet processing delay, including a delay when a given
      * resource is oversubscribed, which will cause overhead for cloudlet processing,
      * delaying its completion.
-     * If the resource the cloudlet is request is RAM and it's oversubscribed, that
-     * will activate virtual memory (swap).
+     * If the cloudlet is requesting RAM and that is oversubscribed, it will activate virtual memory (swap).
      * If the resource is bandwidth, less data is supposed to be transferred
-     * (the bandwidth for cloudlets doesn't transfer actual data, just simulate bandwidth requirements)
+     * (the bandwidth for cloudlets doesn't transfer actual data, just simulate bandwidth requirement),
      * and the cloudlet execution is delayed too, since the data transfer will take longer.
      *
      * @param cle the Cloudlet being processed
@@ -831,14 +814,11 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
         return 0;
     }
 
-    /**
-     * Removes finished cloudlets from the
-     * {@link #getCloudletExecList() list of cloudlets to execute}
-     * and adds them to finished list.
-     *
-     * @return the number of finished cloudlets removed from the
-     * {@link #getCloudletExecList() execution list}
-     */
+    /// Removes finished cloudlets from the
+    /// [list of cloudlets to execute][#getCloudletExecList()]
+    /// and adds them to the finished list.
+    ///
+    /// @return the number of finished cloudlets removed from the [execution list][#getCloudletExecList()]
     private int addCloudletsToFinishedList() {
         final List<CloudletExecution> finishedCloudlets
             = cloudletExecList.stream()
@@ -869,8 +849,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     }
 
     /**
-     * Sets the finish time of a cloudlet and adds it to the
-     * finished list.
+     * Sets the finish time of a cloudlet and adds it to the finished list.
      *
      * @param cle the cloudlet to set the finish time
      */
@@ -881,8 +860,8 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     }
 
     /**
-     * Gets the estimated time when a given cloudlet is supposed to finish
-     * executing. It considers the amount of Vm PES and the sum of PEs required
+     * Gets the estimated time when a given cloudlet is supposed to finish executing.
+     * It considers the amount of Vm PES and the total of PEs required
      * by all VMs running inside the VM.
      *
      * @param cle         cloudlet to get the estimated finish time
@@ -897,7 +876,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
 
         /* If no MIPS were currently allocated for the Cloudlet,
          * it would cause a division by zero when trying to compute the estimated finish time.
-         * In such a case, gets the last allocated MIPS to compute that.
+         * In such a case, it gets the last allocated MIPS to compute that.
          * That value will be the current allocated MIPS if some MIPS were
          * actually allocated or the previous allocated MIPS otherwise.*/
         final double finishTimeForRemainingLen = cle.getRemainingCloudletLength() / cle.getLastAllocatedMips();
@@ -906,32 +885,28 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
         return Math.max(estimatedFinishTime, vm.getSimulation().getMinTimeBetweenEvents());
     }
 
-    /**
-     * Selects the next Cloudlets in the waiting list to move to the execution
-     * list in order to start executing them. While there is enough free PEs,
-     * the method try to find a suitable Cloudlet in the list, until it reaches
-     * the end of such a list.
-     *
-     * <p>
-     * The method might also exchange some cloudlets in the execution list with
-     * some in the waiting list. Thus, some running cloudlets may be preempted
-     * to give opportunity to previously waiting cloudlets to run. This is a
-     * process called
-     * <a href="https://en.wikipedia.org/wiki/Context_switch">context switch</a>.
-     * However, each CloudletScheduler implementation decides how
-     * such a process is implemented. For instance, Space-Shared schedulers may
-     * perform context switch just after the currently running Cloudlets
-     * completely finish executing.
-     * <p>
-     * <p>
-     * This method is called internally by the
-     * {@link CloudletScheduler#updateProcessing(double, MipsShare)}.</p>
-     * @param currentTime current simulation time
-     * @return the next time to update the cloudlet processing
-     * (which is a relative delay from the current simulation time)
-     * This will be the delay incurred in cloudlet processing caused by (i) vMem usage or (ii) BW reduction due to oversubscription.
-     * If no delay is incurred, returns the expected cloudlet completion time.
-     */
+    /// Selects the next Cloudlets in the waiting list to move to the execution
+    /// list to start executing them. While there are enough free PEs,
+    /// the method tries to find a suitable Cloudlet in the list, until it reaches
+    /// the end of such a list.
+    ///
+    /// The method might also exchange some cloudlets in the execution list with
+    /// some in the waiting list. Thus, some running cloudlets may be preempted
+    /// to give opportunity to previously waiting cloudlets to run. This is a
+    /// process called [context switch](https://en.wikipedia.org/wiki/Context_switch).
+    /// However, each CloudletScheduler implementation decides how
+    /// such a process is implemented. For instance, Space-Shared schedulers may
+    /// perform context switch just after the currently running Cloudlets
+    /// completely finish executing.
+    ///
+    ///
+    /// This method is called internally by the
+    /// [#updateProcessing(double,MipsShare)].
+    /// @param currentTime current simulation time
+    /// @return the next time to update the cloudlet processing
+    /// (which is a relative delay from the current simulation time)
+    /// This will be the delay incurred in cloudlet processing caused by (i) vMem usage or (ii) BW reduction due to oversubscription.
+    /// If no delay is incurred, it returns the expected cloudlet completion time.
     protected double moveNextCloudletsFromWaitingToExecList(final double currentTime) {
         Optional<CloudletExecution> optional = Optional.of(CloudletExecution.NULL);
         double nextCloudletFinishTime = Double.MAX_VALUE;
@@ -964,23 +939,23 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     }
 
     /**
-     * Checks if the amount of PEs required by a given Cloudlet is free to use.
+     * Checks if the number of PEs required by a given Cloudlet is free to use.
      *
      * @param cle the Cloudlet to get the number of required PEs
-     * @return true if there is the amount of free PEs, false otherwise
+     * @return true if there is the number of free PEs, false otherwise
      */
     protected boolean isThereEnoughFreePesForCloudlet(final CloudletExecution cle) {
         return vm.getProcessor().getAvailableResource() >= cle.getPesNumber();
     }
 
     /**
-     * Removes a Cloudlet from waiting list and adds it to the exec list.
-     * @param cle the cloudlet to add to to exec list
+     * Removes a Cloudlet from the waiting list and adds it to the exec list.
+     * @param cle the cloudlet to add to the exec list
      * @return the given cloudlet
      */
     protected CloudletExecution addWaitingCloudletToExecList(final CloudletExecution cle) {
-        /*If the Cloudlet is not found in the waiting List, there is no problem.
-        * Just add it to the exec List.*/
+        /* If the Cloudlet is not found in the waiting List, there is no problem.
+         * It just adds it to the exec List. */
         cloudletWaitingList.remove(cle);
         addCloudletToExecList(cle);
         return cle;
@@ -1001,7 +976,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * different from the given one
      *
      * @param vm the Vm to check if assigned scheduler's Vm is different from
-     * @return
+     * @return true if the assigned Vm is different from the given one, false otherwise
      */
     private boolean isOtherVmAssigned(final Vm vm) {
         return this.vm != null && this.vm != Vm.NULL && !vm.equals(this.vm);
@@ -1013,9 +988,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     }
 
     /**
-     * Gets the number of PEs currently not being used.
-     *
-     * @return
+     * @return the number of PEs currently not being used.
      */
     @Override
     public long getFreePes() {
@@ -1023,18 +996,18 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     }
 
     /**
-     * Adds a given number of PEs to the amount of currently used PEs.
+     * Adds a given number of PEs to the number of currently used PEs.
      *
-     * @param usedPesToAdd number of PEs to add to the amount of used PEs
+     * @param usedPesToAdd number of PEs to add to the number of used PEs
      */
     private void addUsedPes(final long usedPesToAdd) {
         vm.getProcessor().allocateResource(usedPesToAdd);
     }
 
     /**
-     * Subtracts a given number of PEs from the amount of currently used PEs.
+     * Subtracts a given number of PEs from the number of currently used PEs.
      *
-     * @param usedPesToRemove number of PEs to subtract from the amount of used PEs
+     * @param usedPesToRemove number of PEs to subtract from the number of used PEs
      */
     private void removeUsedPes(final long usedPesToRemove) {
         vm.getProcessor().deallocateResource(usedPesToRemove);
@@ -1087,9 +1060,9 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     /**
      * Gets the current requested MIPS for a given cloudlet.
      *
-     * @param cle the ce
-     * @param time the time
-     * @return the current requested mips for the given cloudlet
+     * @param cle the Cloudlet to get the requested MIPS
+     * @param time the current simulation time
+     * @return the current requested MIPS for the given cloudlet
      */
     protected double getRequestedMipsForCloudlet(final CloudletExecution cle, final double time) {
         final Cloudlet cloudlet = cle.getCloudlet();
@@ -1097,10 +1070,10 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     }
 
     /**
-     * Gets the current allocated MIPS for cloudlet.
+     * Gets the current allocated MIPS for a cloudlet.
      *
-     * @param cle the ce
-     * @param time the time
+     * @param cle the cloudlet to get the allocated MIPS
+     * @param time the current simulation time
      * @return the current allocated mips for cloudlet
      */
     public double getAllocatedMipsForCloudlet(final CloudletExecution cle, final double time) {
@@ -1110,8 +1083,8 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     /**
      * Gets the current allocated MIPS for cloudlet.
      *
-     * @param cle the ce
-     * @param time the time
+     * @param cle the cloudlet to get the allocated MIPS
+     * @param time the current simulation time
      * @param log Indicate if a log should be issued when the requested resource is larger than the capacity
      * @return the current allocated mips for cloudlet
      */
@@ -1139,7 +1112,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
 
     /**
      * Computes the absolute amount of a resource used by a given Cloudlet
-     * for the current simulation time, based on the maximum amount of resource that the Cloudlet can use
+     * at the current simulation time. That is based on the maximum amount of resource that the Cloudlet can use
      * this time.
      *
      * @param cloudlet Cloudlet requesting the resource
@@ -1157,12 +1130,12 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
 
     /**
      * Computes the absolute amount of a resource used or requested by a given Cloudlet
-     * for a given time, based on the maximum amount of resource that the Cloudlet can use
+     * for a given time. That is based on the maximum amount of resource that the Cloudlet can use
      * this time.
      *
      * @param cloudlet Cloudlet requesting the resource
      * @param model                   the {@link UtilizationModel} to get the absolute amount of resource used by the Cloudlet
-     * @param time                    the simulation time
+     * @param time                    the current simulation time
      * @param maxResourceAllowedToUse the maximum absolute resource that the Cloudlet will be allowed to use
      * @param resourceName name of the resource being requested. If an empty string is given, no
      *                     warning is issued if the requested amount of resource is larger than its capacity
@@ -1200,7 +1173,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     }
 
     /**
-     * {@return a <b>read-only</b> list of Cloudlets}  that finished executing and were returned to the broker.
+     * {@return a <b>read-only</b> list of Cloudlets that finished executing and were returned to the broker}
      * A Cloudlet is returned to notify the broker about the end of its execution.
      */
     protected Set<Cloudlet> getCloudletReturnedList() {
@@ -1237,8 +1210,8 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
 	 *
 	 * <p>For instance, time-shared implementations can put all
 	 * Cloudlets in the execution list, once it uses a preemptive policy
-	 * that shares the CPU time between all running Cloudlets,
-	 * even there are more Cloudlets than the number of CPUs.
+	 * that shares the CPU time between all running Cloudlets.
+	 * It happens even when there are more Cloudlets than the number of CPUs.
 	 * That is, it might always add new Cloudlets to the execution list.
 	 * </p>
 	 *

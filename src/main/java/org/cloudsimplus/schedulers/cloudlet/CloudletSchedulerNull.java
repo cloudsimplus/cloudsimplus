@@ -13,16 +13,13 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * A class that implements the Null Object Design Pattern for {@link CloudletScheduler}
- * class.
+ * A class that implements the Null Object Design Pattern for {@link CloudletScheduler} class.
  *
  * @author Manoel Campos da Silva Filho
  * @see CloudletScheduler#NULL
  */
 final class CloudletSchedulerNull implements CloudletScheduler {
-    @Serial
-    private static final long serialVersionUID = -3167964772291527087L;
-
+    @Serial   private static final long serialVersionUID = -3167964772291527087L;
     @Override public Cloudlet cloudletFail(Cloudlet cloudlet) { return Cloudlet.NULL; }
     @Override public Cloudlet cloudletCancel(Cloudlet cloudlet) {
         return Cloudlet.NULL;

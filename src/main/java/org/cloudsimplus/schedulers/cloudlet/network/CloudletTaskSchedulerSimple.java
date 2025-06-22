@@ -23,13 +23,12 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * A scheduling policy performed by a
- * virtual machine to process {@link CloudletTask}s
+ * A scheduling policy performed by a {@link Vm} to process {@link CloudletTask}s
  * belonging to a {@link NetworkCloudlet}.
  *
- * <p>It also schedules the network communication between cloudlets,
- * managing the time a cloudlet stays blocked waiting
- * the response of a network package sent to another cloudlet.</p>
+ * <p>It also schedules the network communication between Cloudlets,
+ * managing the time a Cloudlet stays blocked waiting
+ * the response of a network packet sent to another cloudlet.</p>
  *
  * @author Saurabh Kumar Garg
  * @author Manoel Campos da Silva Filho
@@ -48,7 +47,7 @@ public class CloudletTaskSchedulerSimple implements CloudletTaskScheduler {
 
     /**
      * A map of {@link VmPacket}'s received, where each key is the
-     * sender VM and each value is the list of packets sent by that VM
+     * sender {@link Vm} and each value is the list of packets sent by that VM
      * targeting the VM of this scheduler.
      */
     private final Map<Vm, List<VmPacket>> vmPacketsReceivedMap;
@@ -68,7 +67,7 @@ public class CloudletTaskSchedulerSimple implements CloudletTaskScheduler {
             return;
         }
 
-        //TODO Needs to use polymorphism to avoid these ifs
+        // TODO Needs to use polymorphism to avoid these ifs
         if (isTimeToUpdateCloudletProcessing(netCloudlet))
             updateExecutionTask(netCloudlet, partialFinishedMI);
         else updateNetworkTasks(netCloudlet);
@@ -76,9 +75,9 @@ public class CloudletTaskSchedulerSimple implements CloudletTaskScheduler {
 
     private void updateExecutionTask(final NetworkCloudlet cloudlet, final long partialFinishedMI) {
         /*
-         * @TODO It has to be checked if the task execution
-         *       is considering only one cloudlet PE or all PEs.
-         *       Each execution task is supposed to use just one PE.
+         * TODO It has to be checked if the task execution
+         *      is considering only one cloudlet PE or all PEs.
+         *      Each execution task is supposed to use just one PE.
          */
         final Optional<CloudletExecutionTask> optional = getCloudletCurrentTask(cloudlet);
         optional.ifPresent(task -> {
@@ -88,7 +87,7 @@ public class CloudletTaskSchedulerSimple implements CloudletTaskScheduler {
     }
 
     private void updateNetworkTasks(final NetworkCloudlet cloudlet) {
-        //TODO Needs to use polymorphism to avoid these ifs
+        // TODO Needs to use polymorphism to avoid these ifs
         cloudlet.getCurrentTask().ifPresent(task -> {
             if (task instanceof CloudletSendTask sendTask)
                addPacketsToBeSentFromVm(cloudlet, sendTask);
@@ -139,19 +138,19 @@ public class CloudletTaskSchedulerSimple implements CloudletTaskScheduler {
      */
     private void receivePackets(final NetworkCloudlet destinationCloudlet, final CloudletReceiveTask task) {
         final List<VmPacket> receivedPkts = getPacketsSentToCloudlet(task);
-        // Assumption: packet will not arrive in the same cycle
+        // Assumption: the packet will not arrive in the same cycle
         receivedPkts.forEach(task::receivePacket);
         receivedPkts.forEach(pkt -> logReceivedPacket(destinationCloudlet, pkt));
 
-        /*Removes the received packets from the list of sent packets of the VM,
-        to indicate they were in fact received and have to be removed
-        from the list of the sender VM*/
+        /* Removes the received packets from the list of packets sent from the VM,
+         to indicate they were in fact received and have to be removed
+         from the list of the sender VM */
         getListOfPacketsSentFromVm(task.getSourceVm()).removeAll(receivedPkts);
 
         /*
-         * @TODO author: manoelcampos The task has to wait the reception
-         *       of the expected packets up to a given timeout.
-         *       After that, the task has to stop waiting and fail.
+         * TODO The task has to wait the reception
+         *      of the expected packets up to a given timeout.
+         *      After that, the task has to stop waiting and fail.
          */
         scheduleNextTaskIfCurrentIsFinished(destinationCloudlet);
     }
@@ -180,8 +179,8 @@ public class CloudletTaskSchedulerSimple implements CloudletTaskScheduler {
      * delivered for that Cloudlet.
      *
      * @param receiveTask the {@link CloudletReceiveTask} that is waiting for packets
-     * @return the list of packets targeting the {@link NetworkCloudlet} or an empty list
-     *         if there are no packets received that are targeting such a Cloudlet.
+     * @return the list of packets targeting the {@link NetworkCloudlet}; or an empty list
+     *         if there are no packets received targeting such a Cloudlet.
      */
     private List<VmPacket> getPacketsSentToCloudlet(final CloudletReceiveTask receiveTask) {
         final List<VmPacket> pktsFromExpectedSenderVm = getListOfPacketsSentFromVm(receiveTask.getSourceVm());
@@ -194,9 +193,10 @@ public class CloudletTaskSchedulerSimple implements CloudletTaskScheduler {
     }
 
     /**
-     * Schedules the execution of the next task of a given cloudlet.
+     * Schedules the execution of the next Cloudlet task.
+     * @param cloudlet the Cloudlet whose next task is to be scheduled
      * @return true if the current task is finished and the next one has started;
-     * false if current task is not finished or there aren't any more tasks to be executed.
+     * false if the current task is not finished, or there aren't any more tasks to be executed.
      */
     private boolean scheduleNextTaskIfCurrentIsFinished(final NetworkCloudlet cloudlet) {
         if(!cloudlet.startNextTaskIfCurrentIsFinished(cloudlet.getSimulation().clock())){

@@ -34,104 +34,87 @@ import org.cloudsimplus.util.MathUtil;
 import java.io.Serial;
 import java.util.List;
 import java.util.Optional;
+import java.util.TreeSet;
 import java.util.function.Predicate;
 
-/**
- * A simplified implementation of the <a href="https://en.wikipedia.org/wiki/Completely_Fair_Scheduler">Completely Fair Scheduler (CFS)</a>
- * that is the default scheduler used for most tasks on recent Linux Kernel. It is a time-shared
- * scheduler that shares CPU cores between running applications by preempting
- * them after a time period (time-slice) to allow other ones to start executing
- * during their time-slices.
- *
- * <p><b>This scheduler supposes that Cloudlets priorities are in the range from [-20 to 19],
- * as used in <a href="http://man7.org/linux/man-pages/man1/nice.1.html">Linux Kernel</a></b>. Despite setting
- * Cloudlets priorities with values outside this interval will work as well, one has to
- * realize that lower priorities are defined by negative values.
- * </p>
- *
- * <p>
- * It is a basic implementation that covers the following features:
- * <ul>
- *     <li>Defines a general run-queue (the waiting list which defines which Cloudlets to run next) for all CPU cores ({@link Pe}) instead
- *     of one for each core. More details in the listing below.
- *     </li>
- *     <li>Computes process ({@link Cloudlet}) niceness based on its priority: {@code niceness = -priority}.
- *     The nice value (niceness) defines how nice a process is to the other ones.
- *     Lower niceness (negative values) represents higher priority and consequently higher weight, while
- *     higher niceness (positive values) represent lower priority and lower weight.
- *     </li>
- *     <li>Computes process time-slice based on its weight, that in turn is computed based on its niceness.
- *     The time-slice is the amount of time that a process is allowed to use the CPU before be preempted to make
- *     room for other process to run.
- *     The CFS scheduler uses a dynamic defined time-slice.
- *     </li>
- * </ul>
- *
- * And it currently <b>DOES NOT</b> implement the following features:
- * <ul>
- *     <li>Additional overhead for CPU context switch: the context switch
- *     is the process of removing an application that is using a CPU core
- *     to allow another one to start executing. This is the task preemption
- *     process that allows a core to be shared between several applications.
- *     </li>
- *
- *     <li>Since this scheduler does not consider
- *     <a href="https://en.wikipedia.org/wiki/Context_switch">context switch</a>
- *     overhead, there is only one run-queue (waiting list) for all CPU cores because
- *     each application is not in fact assigned to a specific CPU core.
- *     The scheduler just computes how much computing power (in MIPS)
- *     and number of cores each application can use and that MIPS capacity
- *     is multiplied by the number of cores the application requires.
- *     Such an approach then enables the application to execute that number of instructions
- *     per second. Once the {@link Pe PEs} do not in fact run the application,
- *     (application execution is simulated just computing the amount of instructions
- *     that can be run), it doesn't matter which PEs are "running" the application.
- *     </li>
- *	   <li>It doesn't use a Red-Black tree (such as the TreeSet), as in real implementations of CFS,
- *	   to sort waiting Cloudlets (run-queue list) increasingly, based on their virtual runtime (vruntime or VRT)
- *	   (placing the Cloudlets that have run the least at the top of the tree).
- *	   Furthermore, the use of such a data structure added some complexity to the implementation.
- *	   Since different Cloudlets may have the same virtual runtime, this introduced some issues when adding or
- *	   removing elements in a structure such as the TreeSet, that requires
- *	   each value (the virtual runtime in this case) used to sort the Set to be unique.
- *	   </li>
- * </ul>
- * </p>
- *
- * <p>
- *     <b>NOTES:</b>
- *     <ul>
- *         <li>The time interval for updating cloudlets execution in this scheduler is not primarily defined by the
- *         {@link Datacenter#getSchedulingInterval()}, but by the
- *         {@link #computeCloudletTimeSlice(CloudletExecution) timeslice}
- *         computed based on the defined {@link #getLatency()}. Each time the computed time-slice is greater than
- *         the Datacenter scheduling interval, then the next update of Cloudlets processing will follow
- *         the {@link Datacenter#getSchedulingInterval()}.
- *         </li>
- *         <li>The implementation was based on the book of Robert Love: Linux Kernel Development, 3rd ed. Addison-Wesley, 2010
- *         and some other references listed below.
- *         </li>
- *     </ul>
- * </p>
- *
- *
- * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 1.0
- *
- * @see <a href="http://www.ibm.com/developerworks/library/l-completely-fair-scheduler/">Inside the Linux 2.6 Completely Fair Scheduler</a>
- * @see <a href="http://www.ibm.com/developerworks/library/l-lpic1-103-6/index.html">Learn Linux, 101: Process execution priorities</a>
- * @see <a href="https://doi.org/10.1145/1400097.1400102">Towards achieving fairness in the Linux scheduler</a>
- * @see <a href="https://doi.org/10.1145/10.1145/2901318.2901326">The Linux scheduler</a>
- * @see <a href="https://www.kernel.org/doc/Documentation/scheduler/sched-design-CFS.txt">kernel.org: CFS Scheduler Design</a>
- * @see <a href="https://oakbytes.wordpress.com/linux-scheduler/">Linux Scheduler FAQ</a>
- */
+/// A simplified implementation of the [Completely Fair Scheduler (CFS)](https://en.wikipedia.org/wiki/Completely_Fair_Scheduler)
+/// that is the default scheduler used for most tasks on recent Linux Kernel. It is a time-shared
+/// scheduler that shares CPU cores between running applications by preempting
+/// them after a time period (time-slice), allowing other apps to start executing during their time-slices.
+///
+/// **This scheduler supposes that [Cloudlet]s' priorities are in the range from [-20 to 19],
+/// as used in [Linux Kernel](http://man7.org/linux/man-pages/man1/nice.1.html)**.
+/// Despite setting priorities with values outside this interval will work as well,
+/// you have to realize that negative values indicate lower priorities.
+///
+/// ## Features
+///
+/// This is a basic implementation that covers the following features:
+///
+///   - Defines a general **run-queue** (the waiting list which indicates which Cloudlets to run next) for all CPU cores ([Pe]s)
+///     instead of one queue for each core. More details in the listing below.
+///   - Computes the process's ([Cloudlet]) **niceness** based on its priority: `niceness = -priority`.
+///     The nice value (niceness) defines how nice a process is to the other ones.
+///     Lower niceness (negative values) represents higher priority and consequently higher weight, while
+///     higher niceness (positive values) represents lower priority and lower weight.
+///   - Computes the process' **time-slice** based on its weight, that in turn is computed based on its niceness.
+///     The time-slice is the amount of time that a process is allowed to use the CPU,
+///     before being preempted to make room for other processes to run.
+///     The CFS scheduler uses a dynamic defined time-slice.
+///
+/// ## Limitations
+///
+/// This class currently **DOES NOT** implement the following features:
+///
+///   - Additional overhead for CPU context switch: context switch
+///     is the process of removing an application that is using a CPU core
+///     to allow another one to start executing. This is the task preemption
+///     process that allows a core to be shared between several applications.
+///   - Since this scheduler does not consider
+///     [context switch](https://en.wikipedia.org/wiki/Context_switch) overhead,
+///     there is only one **run-queue** (waiting list) for all CPU cores, because
+///     each application is not in fact assigned to a specific CPU core.
+///     The scheduler just computes how much computing power (in MIPS)
+///     and number of cores each application can use. That MIPS capacity
+///     is multiplied by the number of cores the application requires.
+///     Such an approach enables the application to execute that number of instructions
+///     per second. Once the [Pe]s do not in fact run the application,
+///     (application execution is simulated just computing the number of instructions
+///     that can be run), it doesn't matter which PEs are "running" the app.
+///	  - It doesn't use a **Red-Black tree** (such as the {@link TreeSet}), as in real implementations of CFS,
+///     to sort waiting Cloudlets (**run-queue** list) increasingly, based on their virtual runtime (`vruntime` or `VRT`)
+///     (placing the Cloudlets that have run the least at the top of the tree).
+///     Furthermore, the use of such a data structure added some complexity to the implementation.
+///     Since different Cloudlets may have the same virtual runtime, this introduced some issues when adding or
+///     removing elements in a structure such as the TreeSet. That data structure requires
+///     each value (the virtual runtime in this case) used to sort the Set to be unique.
+///
+/// ## Notes
+///
+///     - The time interval for updating Cloudlets' execution in this scheduler is not primarily defined by the
+///     [Datacenter#getSchedulingInterval()], but by the [timeslice][#computeCloudletTimeSlice(CloudletExecution)]
+///     computed based on the defined [#getLatency()]. Each time the computed time-slice is greater than
+///     the Datacenter scheduling interval, the next update of Cloudlets processing will follow
+///     the [Datacenter#getSchedulingInterval()].
+///     - The implementation was based on the book of Robert Love: Linux Kernel Development, 3rd ed. Addison-Wesley, 2010
+///     and some other references listed below.
+///
+/// @author Manoel Campos da Silva Filho
+/// @since CloudSim Plus 1.0
+///
+/// @link [Inside the Linux 2.6 Completely Fair Scheduler](http://www.ibm.com/developerworks/library/l-completely-fair-scheduler/)
+/// @link [Learn Linux, 101: Process execution priorities](http://www.ibm.com/developerworks/library/l-lpic1-103-6/index.html)
+/// @link [Towards achieving fairness in the Linux scheduler](https://doi.org/10.1145/1400097.1400102)
+/// @link [The Linux scheduler](https://doi.org/10.1145/10.1145/2901318.2901326)
+/// @link [kernel.org: CFS Scheduler Design](https://www.kernel.org/doc/Documentation/scheduler/sched-design-CFS.txt)
+/// @link [Linux Scheduler FAQ](https://oakbytes.wordpress.com/linux-scheduler/)
 @Getter
 public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTimeShared {
     @Serial
     private static final long serialVersionUID = 9077807080812191007L;
 
     /**
-     * {@return the minimum granularity}: the minimum amount of
+     * The minimum granularity: the minimum amount of
      * time (in seconds) that is assigned to each
      * Cloudlet to execute.
      *
@@ -148,10 +131,10 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
 	private int minimumGranularity = 2;
 
     /**
-     * {@return  the latency}: the amount of time (in seconds)
+     * The latency: the amount of time (in seconds)
      * the scheduler will allow the execution of running Cloudlets
      * in the available PEs, before checking which are the next
-     * Cloudlets to execute. The latency time is divided by the number of
+     * Cloudlets to execute. The latency time is divided by
      * the number of Cloudlets that can be executed at the current time.
      * If there are 4 Cloudlets by just 2 PEs, the latency is divided
      * by 2, because only 2 Cloudlets can be concurrently executed
@@ -185,10 +168,9 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
 
     /**
      * A comparator used to increasingly sort Cloudlets into the waiting list
-     * based on their virtual runtime (vruntime or VRT). By this way, the Cloudlets in the beginning
-     * of such a list will be that ones which have run the least and have to be
-     * prioritized when getting Cloudlets from this list to add to the execution
-     * list.
+     * based on their virtual runtime (vruntime or VRT). This way, the Cloudlets inside the beginning
+     * of such a list will be those which have run the least and have to be
+     * prioritized when getting Cloudlets from this list to add to the execution list.
      *
      * @param c1 first Cloudlet to compare
      * @param c2 second Cloudlet to compare
@@ -229,8 +211,8 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
 	}
 
     /**
-     * {@return a <b>read-only</b> list of Cloudlets which are waiting to run},
-     * the so called <a href="https://en.wikipedia.org/wiki/Run_queue">run queue</a>.
+     * {@return a <b>read-only</b> list of Cloudlets which are waiting to run}
+     * This list is called <a href="https://en.wikipedia.org/wiki/Run_queue">run queue</a>.
      *
      * <p>
      * <b>NOTE:</b> Different from real implementations, this scheduler uses just one run queue
@@ -245,7 +227,7 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
 
     /**
      * {@inheritDoc}
-     * The cloudlet waiting list (runqueue) is sorted according to the virtual runtime (vruntime or VRT),
+     * The cloudlet waiting list (run queue) is sorted according to the virtual runtime (vruntime or VRT),
      * which indicates the amount of time the Cloudlet has run.
      * This runtime increases as the Cloudlet executes.
      *
@@ -258,9 +240,9 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
     }
 
 	/**
-     * {@return the weight of the Cloudlet to use the CPU},
-     * which is defined based on its niceness. As higher is the weight,
-	 * more time the Cloudlet will have to use the PEs.
+     * {@return the weight of the Cloudlet to use the CPU}
+     * This is defined based on the Cloudlet (application) niceness.
+     * As higher is the weight, more time the Cloudlet will have to use the PEs.
 	 *
      * <p>As the {@link #computeCloudletTimeSlice(CloudletExecution) timelice} assigned to a Cloudlet to use the CPU is defined
      * exponentially instead of linearly according to its niceness,
@@ -292,8 +274,8 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
     }
 
     /**
-	 * {@return the weight of the cloudlet (in percentage from [0 to 1])},
-     * compared to the weight sum of all Cloudlets in the execution list.
+	 * {@return the weight of the cloudlet (in percentage from [0 to 1])}
+     * This is computed based on the weight sum of all Cloudlets in the execution list.
 	 *
 	 * @param cloudlet Cloudlet to get its weight percentage
 	 */
@@ -302,7 +284,7 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
 	}
 
 	/**
-	 * {@return the weight sum} of all cloudlets in the executing list.
+	 * @return the weight sum of all cloudlets in the executing list.
 	 */
 	private double getWeightSumOfRunningCloudlets() {
 		return getCloudletExecList()
@@ -331,7 +313,7 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
      * {@inheritDoc}
      *
      * <p>It also sets the initial virtual runtime for the given Cloudlet
-     * in order to define how long the Cloudlet has executed yet.<br>
+     *  to define how long the Cloudlet has executed already.<br>
      *
      * See {@link #computeCloudletInitialVirtualRuntime(CloudletExecution)}
      * for more details.</p>
@@ -352,7 +334,8 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
      * @param currentTime {@inheritDoc}
      * @param mipsShare {@inheritDoc}
      * @return the shorter time-slice assigned to the running cloudlets (which defines
-     * the time of the next expiring Cloudlet, enabling the preemption process), or Double.MAX_VALUE if there is no next events
+     * the time of the next expiring Cloudlet, enabling the preemption process),
+     * or {@link Double#MAX_VALUE} if there aren't next events
      */
     @Override
     public double updateProcessing(final double currentTime, final MipsShare mipsShare) {
@@ -382,7 +365,7 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
 
     /**
      * {@return the computed initial virtual runtime for a Cloudlet}
-     * that will be added to the execution list.
+     * That Cloudlet will be added to the execution list.
      * This virtual runtime is updated as long as the Cloudlet is executed.
      * The initial value is negative to indicate the Cloudlet hasn't started
      * executing yet. It is computed based on the Cloudlet priority.
@@ -400,7 +383,7 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
 
         /*
         Inverses the Cloudlet ID dividing the Integer.MAX_VALUE by it,
-        because the ID is in fact int. This will make that the lower
+        because the ID is in fact an int. This will make that the lower
         ID return higher values. It ensures that as lower is the ID,
         lower is the negative value returned.
         Inverting the cloudlet ID to get a higher value for lower IDs
@@ -416,7 +399,7 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
      * Checks if a Cloudlet can be submitted to the execution list.
      *
      * <p>This scheduler, different from its time-shared parent, only adds
-     * submitted Cloudlets to the execution list if there is enough free PEs.
+     * submitted Cloudlets to the execution list if there aren't enough free PEs.
      * Otherwise, such Cloudlets are added to the waiting list,
      * really enabling time-sharing between running Cloudlets.
      * By this way, some Cloudlets have to be preempted to allow other ones
@@ -438,17 +421,16 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
      * it can use the CPU), it is removed from this list and added
      * back to the {@link #getCloudletWaitingList()}.</p>
      *
-     * <p>The sum of the PEs of Cloudlets into this list cannot exceeds
+     * <p>The sum of the PEs of Cloudlets into this list cannot exceed
      * the number of PEs available for the scheduler. If the sum of PEs of such Cloudlets
      * is less than the number of existing PEs, there are
      * idle PEs. Since the CPU context switch overhead is not regarded
-     * in this implementation and as result, it doesn't matter which
-     * PEs are running which Cloudlets, there is not such information
-     * in anywhere. As an example, if the first Cloudlet requires 2 PEs,
+     * in this implementation and as a result, it doesn't matter which
+     * PEs are running every Cloudlet, there is no such information anywhere.
+     * As an example, if the first Cloudlet requires 2 PEs,
      * then one can say that it is using the first 2 PEs.
-     * But if at the next simulation time the same Cloudlet can be
-     * at the 3º position in this Collection, indicating that now it is using
-     * the 3º and 4º Pe, which doesn't change anything. In real schedulers,
+     * But if at the next simulation time, the same Cloudlet is at the 3º position in this Collection,
+     * that indicates it's now using the 3º and 4º Pe, which doesn't change anything. In real schedulers,
      * usually a process is pinned to a specific set of cores until it
      * finishes executing, to avoid the overhead of changing processes from
      * a run queue to another unnecessarily.</p>
@@ -457,15 +439,14 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
      */
     @Override
     public List<CloudletExecution> getCloudletExecList() {
-        //The method was overridden here just to extend its JavaDoc.
+        // The method was overridden here just to extend its JavaDoc.
         return super.getCloudletExecList();
     }
 
     /**
      * Checks which Cloudlets in the execution list have the virtual runtime
      * equals to their allocated time slice and preempt them, getting
-     * the most priority Cloudlets in the waiting list (i.e., those ones
-     * in the beginning of the list).
+     * the most priority Cloudlets in the waiting list (i.e., those at the beginning of the list).
      *
      * @see #preemptExecCloudletsWithExpiredVRuntimeAndMoveToWaitingList()
      * @param currentTime {@inheritDoc}
@@ -476,11 +457,11 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
         final List<CloudletExecution> preemptedCloudlets = preemptExecCloudletsWithExpiredVRuntimeAndMoveToWaitingList();
         final double nextCloudletFinishTime = super.moveNextCloudletsFromWaitingToExecList(currentTime);
 
-        /*After preempted Cloudlets are moved to the waiting list
+        /* After preempted Cloudlets are moved to the waiting list
         and next Cloudlets on the beginning of this list are moved
         to the execution list, the virtual runtime of these preempted Cloudlets
-        is reset so that they can compete with other waiting Cloudlets to use
-        the processor again.*/
+        is reset. This way, they can compete with other waiting Cloudlets to use
+        the processor again. */
         for(final CloudletExecution c: preemptedCloudlets) {
             c.setVirtualRuntime(computeCloudletInitialVirtualRuntime(c));
         }
@@ -493,10 +474,9 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
      * runtime (that have reached the execution time slice) and
      * preempts its execution, moving them to the waiting list.
      *
-     * @return The list of preempted Cloudlets, that were removed from the execution list
+     * @return the list of preempted Cloudlets, which were removed from the execution list
      * and must have their virtual runtime (VRT) reset after the next cloudlets are put into
      * the execution list.
-     *
      */
     private List<CloudletExecution> preemptExecCloudletsWithExpiredVRuntimeAndMoveToWaitingList() {
         final Predicate<CloudletExecution> vrtReachedTimeSlice = cle -> cle.getVirtualRuntime() >= cle.getTimeSlice();
@@ -509,6 +489,5 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
         expiredVrtCloudlets.forEach(cle -> addCloudletToWaitingList(removeCloudletFromExecList(cle)));
         return expiredVrtCloudlets;
     }
-
 }
 
