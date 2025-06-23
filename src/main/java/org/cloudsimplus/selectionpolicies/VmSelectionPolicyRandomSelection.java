@@ -17,7 +17,7 @@ import org.cloudsimplus.vms.Vm;
 import java.util.Optional;
 
 /**
- * A VM selection policy that randomly select VMs to migrate from a host.
+ * A VM selection policy that randomly selects {@link Vm}s to migrate from a host.
  * It uses a uniform Pseudo Random Number Generator (PRNG) as default to select VMs.
  *
  * @author Anton Beloglazov

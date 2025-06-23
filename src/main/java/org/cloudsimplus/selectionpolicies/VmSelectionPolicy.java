@@ -14,8 +14,9 @@ import org.cloudsimplus.vms.Vm;
 import java.util.Optional;
 
 /**
- * An interface to be used to implement VM selection policies for a list of migratable VMs.
- * The selection is defined by subclasses.
+ * An interface to be used to implement {@link Vm} selection policies for a list of migratable VMs
+ * (VMs that can be migrated to another {@link Host}).
+ * The selection policy is defined by implementing classes.
  *
  * @author Anton Beloglazov
  * @author Manoel Campos da Silva Filho
@@ -25,9 +26,9 @@ public interface VmSelectionPolicy {
     VmSelectionPolicy NULL = new VmSelectionPolicyNull();
 
     /**
-     * Gets a VM to migrate from a given host.
+     * Gets a VM to migrate from a given Host.
      *
-     * @param host the host to get a Vm to migrate from
+     * @param host the Host to get a Vm to migrate from
      * @return a {@link Optional} containing the selected vm to migrate;
      *         or empty Optional if there is not Vm to migrate
      */
