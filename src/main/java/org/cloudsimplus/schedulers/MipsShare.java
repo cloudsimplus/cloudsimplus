@@ -30,7 +30,7 @@ import org.cloudsimplus.util.MathUtil;
 import org.cloudsimplus.utilizationmodels.BootModel;
 
 /**
- * Represents the requested or allocated MIPS capacity for a given number of {@link Pe}s from a VM.
+ * Represents the requested or allocated MIPS (Million Instructions Per Second) capacity for a given number of {@link Pe}s from a VM.
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 6.2.0
  */
@@ -41,7 +41,7 @@ public class MipsShare {
     private double mips;
 
     /**
-     * Creates an empty MIPS share, with no PEs.
+     * Creates an empty MIPS share, with no PEs and therefore no MIPS capacity.
      */
     public MipsShare() {
         this(0,0);
@@ -65,7 +65,7 @@ public class MipsShare {
 
     /**
      * Creates a MIPS share with a defined number of PEs and MIPS capacity for each PE.
-     * @param pes the number of PEs shared.
+     * @param pes the number of PEs shared
      * @param mips the allocated or requested MIPS capacity for every {@link Pe}
      */
     public MipsShare(final long pes, final double mips){
@@ -74,7 +74,7 @@ public class MipsShare {
     }
 
     /**
-     * A clone constructor.
+     * A clone constructor that creates a MipsShare based on another one.
      * @param share the MIPS share to clone
      */
     public MipsShare(@NonNull final MipsShare share) {
@@ -82,14 +82,17 @@ public class MipsShare {
     }
 
     /**
-     * Creates a MipsShare object indicating the amount of PEs and MIPS using during a VM boot process.
+     * Creates a MipsShare object indicating the MIPS capacity and the number of PEs used during a VM boot process.
      * @param processor the VM processor
-     * @param bootModel the VM boot model
+     * @param bootModel the VM boot model that defines how the boot process uses resources
      */
     public MipsShare(@NonNull final Processor processor, @NonNull final BootModel bootModel) {
         this(processor.getCapacity(), processor.getMips()*bootModel.getCpuPercentUtilization());
     }
 
+    /**
+     * @return the MIPS capacity for each {@link Pe}.
+     */
     public double mips() {
         return mips;
     }
@@ -99,23 +102,24 @@ public class MipsShare {
     }
 
     /**
-     * {@return  the number of allocated/requested PEs},
-     * which indicates the size of the MIPS share.
+     * {@return  the number of allocated/requested PEs}
+     * It indicates the size of the MIPS share.
      */
     public long pes(){
         return pes;
     }
 
     /**
-     * {@return true or false} respectively if there isn't MIPS capacity allocated to any PE,
+     * Checks if there isn't MIPS capacity allocated to any PE,
      * or if some capacity was already allocated.
+     * @return true if the MIPS share has no capacity, false otherwise
      */
     public boolean isEmpty(){
         return pes == 0 || mips == 0;
     }
 
     /**
-     * {@return the total MIPS capacity} sum across all PEs.
+     * @return the total MIPS capacity sum across all PEs.
      */
     public double totalMips(){
         return pes * mips;
@@ -136,9 +140,6 @@ public class MipsShare {
 
     @Override
     public String toString() {
-        return "MipsShare{" +
-            "pes=" + pes +
-            ", mips=" + mips +
-            '}';
+        return "MipsShare{pes=%d, mips=%s}".formatted(pes, mips);
     }
 }
