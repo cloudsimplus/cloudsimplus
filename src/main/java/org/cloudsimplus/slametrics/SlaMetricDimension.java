@@ -27,19 +27,17 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 
-/**
- * Represents a value for a specific metric of an SLA contract,
- * following the format defined by the
- * <a href="http://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/viewing_metrics_with_cloudwatch.html">AWS CloudWatch</a>.
- *
- * <p>Each dimension contains the name of the metric, the minimum and maximum
- * acceptable values, and the metric unit. Each metric may have multiple dimensions.</p>
- *
- * <p>For more details, check
- * <a href="https://ubibliorum.ubi.pt/handle/10400.6/7839">Raysa Oliveira's Master Thesis (only in Portuguese)</a>.</p>
- *
- * @author raysaoliveira
- */
+/// Represents a value for a specific metric of an SLA contract,
+/// following the format defined by the
+/// [AWS CloudWatch](http://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/viewing_metrics_with_cloudwatch.html).
+///
+/// Each dimension contains the name of the metric, the minimum and maximum
+/// acceptable values, and the metric unit. Each metric may have multiple dimensions.
+///
+/// For more details, check
+/// [Raysa Oliveira's Master Thesis (only in Portuguese)](https://ubibliorum.ubi.pt/handle/10400.6/7839).
+///
+/// @author raysaoliveira
 @Getter @Setter
 public final class SlaMetricDimension {
     private static final String MAX_VALUE_NAME ="maxValue";
@@ -52,8 +50,8 @@ public final class SlaMetricDimension {
      * The unit of the dimension, if "Percent" or "Absolute".
      * When the unit is "Percent", the values are defined
      * in scale from 0 to 100%, but they are stored in this class
-     * in scale from 0 to 1, because everywhere percentage values
-     * are defined in this scale.
+     * in scale from 0 to 1, because percentage values
+     * are defined in this scale everywhere.
      */
     @NonNull
     private String unit;
@@ -70,14 +68,13 @@ public final class SlaMetricDimension {
     }
 
     /**
-     * {@return the value of the dimension},
-     * in absolute or percentage, according to the
-     * {@link #getUnit()}.
+     * {@return the value of the dimension in absolute or percentage}
+     * The unit is according to the {@link #getUnit()}.
      *
      * <p>When the unit is "Percent", the values are defined
      * in scale from 0 to 100%, but they are stored in this class
-     * in scale from 0 to 1, because everywhere percentage values
-     * are defined in this scale.</p>
+     * in scale from 0 to 1, because percentage values
+     * are defined in this scale everywhere.</p>
      */
     public double getValue() {
         return isPercent() ? value/100.0 : value;
@@ -93,7 +90,7 @@ public final class SlaMetricDimension {
 
     /**
      * Checks if the unit is defined in percentage values.
-     * @return
+     * @return true if the unit is "Percent", false it's "Absolute"
      */
     public boolean isPercent() {
         return "Percent".equalsIgnoreCase(unit);

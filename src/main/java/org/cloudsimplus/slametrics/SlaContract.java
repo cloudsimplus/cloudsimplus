@@ -34,26 +34,25 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
-/**
- * Represents an SLA Contract containing a list of metrics.
- * It follows the standard used by
- * <a href="http://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/viewing_metrics_with_cloudwatch.html">Amazon Cloudwatch</a>.
- * <p>The constants inside the class define the names
- * of SLA Metrics supported in the JSON SLA Contract format.</p>
- *
- * <p>Instances of this class can be created from a JSON file
- * using the {@link #getInstanceInternal(InputStream)} or
- * {@link #getInstance(String)} methods.
- * This way, one doesn't need to create instances
- * of this class using its default constructor.
- * This one is just used by the JSON parsing library.</p>
- *
- * <p>For more details, check
- * <a href="https://ubibliorum.ubi.pt/handle/10400.6/7839">Raysa Oliveira's Master Thesis (only in Portuguese)</a>.</p>
- *
- * @author raysaoliveira
- */
+/// Represents an SLA Contract containing a list of metrics.
+/// It follows the standard used by
+/// [AWS Cloudwatch](http://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/viewing_metrics_with_cloudwatch.html).
+///
+/// The constants inside the class define the names
+/// of SLA Metrics supported in the JSON SLA Contract format.
+///
+/// Instances of this class can be created from a JSON file
+/// using the [#getInstance(String)] method.
+/// This way, one doesn't need to create instances
+/// of this class using its default constructor
+/// (which is just used by the JSON parsing library).
+///
+/// For more details, check
+/// [Raysa Oliveira's Master Thesis (only in Portuguese)](https://ubibliorum.ubi.pt/handle/10400.6/7839).
+///
+/// @author raysaoliveira
 @ToString(onlyExplicitlyIncluded = true)
 public class SlaContract {
     private static final String AVAILABILITY = "Availability";
@@ -70,13 +69,10 @@ public class SlaContract {
      * Creates a {@link SlaContract}.
      * If you want to get a contract from a JSON file,
      * you shouldn't call the constructor directly.
-     * Instead, use some methods of the class methods.
+     * Instead, use the {@link #getInstance(String)} instead.
      *
      * <p>This constructor is just provided to enable the {@link Gson} object
      * to use reflection to instantiate a SlaContract.</p>
-     *
-     * @see #getInstance(String)
-     *
      */
     public SlaContract() {
         this.metrics = new ArrayList<>();
@@ -94,7 +90,6 @@ public class SlaContract {
 
     /**
      * Gets an {@link SlaContract} from a JSON file.
-     * Use the available constructors if you want to load a file outside the resource directory.
      *
      * @param inputStream a {@link InputStream} to read the file
      * @return a {@link SlaContract} read from the JSON file
@@ -104,13 +99,12 @@ public class SlaContract {
     }
 
     /**
+     * Sets the list of metrics for this SLA contract.
      * @param metrics the metrics to set
      */
     public void setMetrics(final List<SlaMetric> metrics) {
-        /* Since the contract can be read from a file, the metrics
-        *  can be in fact null. This way, instantiates an empty list
-        *  instead of using Objects.requiredNonNull(). */
-        this.metrics = metrics == null ? new ArrayList<>() : metrics;
+        // Since the contract can be read from a file, the metrics can be in fact null.
+        this.metrics = Objects.requireNonNullElse(metrics, new ArrayList<>());
     }
 
     private SlaMetric getSlaMetric(@NonNull final String metricName) {
@@ -146,20 +140,17 @@ public class SlaContract {
     }
 
     /**
-     * Gets the maximum price a customer expects to pay hourly for all his/her running VMs.
-     * @return
+     * @return the maximum price a customer expects to pay hourly for all his/her running VMs.
      */
     public double getMaxPrice() {
         return getPriceMetric().getMaxDimension().getValue();
     }
 
-    /**
-     * Gets the expected maximum price a single VM can cost, considering
-     * the {@link #getMinFaultToleranceLevel() Fault Tolerance Level}.
-     *
-     * @return the expected maximum price a single VM can cost for the given customer
-     * {@link AwsEc2Template} for the customer's expected price
-     */
+    /// Gets the expected maximum price a single VM can cost, considering
+    /// the [Fault Tolerance Level][#getMinFaultToleranceLevel()].
+    ///
+    /// @return the expected maximum price a single VM can cost for the given customer
+    ///         [AwsEc2Template] for the customer's expected price
     public double getExpectedMaxPriceForSingleVm() {
         return getMaxPrice() / getFaultToleranceLevel().getMinDimension().getValue();
     }
