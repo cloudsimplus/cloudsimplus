@@ -33,20 +33,17 @@ import java.io.InputStreamReader;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-/**
- * Represents an
- * <a href="http://aws.amazon.com/ec2/">Amazon EC2 VM Instance</a> template.
- * This class enables reading a template from a JSON file,
- * containing actual configurations for VMs
- * available in <a href="http://aws.amazon.com/">Amazon Web Services</a>.
- * Such templates can be used to create {@link Vm} instances.
- *
- * <p>For more details, check
- * <a href="https://ubibliorum.ubi.pt/handle/10400.6/7839">Raysa Oliveira's Master Thesis (only in Portuguese)</a>.</p>
- *
- * @author raysaoliveira
- * @see #getInstance(String)
- */
+/// Represents an [Amazon EC2 VM Instance](http://aws.amazon.com/ec2/) template.
+/// This class enables reading a template from a JSON file
+/// containing actual configurations for VMs
+/// available in [Amazon Web Services](http://aws.amazon.com).
+/// Such templates can be used to create [Vm] instances.
+///
+/// For more details, check
+/// [Raysa Oliveira's Master Thesis (only in Portuguese)](https://ubibliorum.ubi.pt/handle/10400.6/7839).
+///
+/// @author raysaoliveira
+/// @see #getInstance(String)
 @Data
 @Builder
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
@@ -55,6 +52,7 @@ public class AwsEc2Template implements Comparable<AwsEc2Template> {
 
     @ToString.Exclude
     private Path path;
+
     /**
      * The name of the template.
      */
@@ -75,10 +73,8 @@ public class AwsEc2Template implements Comparable<AwsEc2Template> {
      */
     private double pricePerHour;
 
-    /**
-     * The AWS Region in which the instance is run.
-     * @see <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html">AWS Regions, Availability Zones, and Local Zones</a>
-     */
+    /// The AWS Region in which the instance is run.
+    /// @link [AWS Regions, Availability Zones, and Local Zones](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html)
     private String region;
 
     /**
@@ -89,7 +85,6 @@ public class AwsEc2Template implements Comparable<AwsEc2Template> {
      * <p>This constructor is just provided to enable the {@link Gson} object
      * to use reflection to instantiate a AwsEc2Template.</p>
      * @see #getInstance(String)
-     * @see AwsEc2TemplateBuilder
      */
     public AwsEc2Template(){
         super();
@@ -155,17 +150,15 @@ public class AwsEc2Template implements Comparable<AwsEc2Template> {
     }
 
     /**
-     * Gets the full path to the JSON template file used to create this template.
-     * @return
+     * @return the full path to the JSON template file used to create this template.
      */
     public String getFilePath() {
         return path.toAbsolutePath().toString();
     }
 
     /**
-     * Gets only the name of the JSON template file used to create this template,
+     * @return only the name of the JSON template file used to create this template,
      * without the path.
-     * @return
      */
     public String getFileName(){
         return path.getFileName().toString();
