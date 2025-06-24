@@ -23,20 +23,18 @@
  */
 package org.cloudsimplus.traces.google;
 
-/**
- * An interface to be implemented by {@link Enum}s representing
- * a field in a Google Trace File.
- * Each enum instance is used to get values from fields
- * of the trace in the correct generic type T and possibly making
- * some unit conversions (if required by the specific field
- * represented by the enum instance).
- *
- * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 4.0.0
- */
+/// An interface to be implemented by [Enum]s representing
+/// a field in a Google Trace File.
+/// Each enum instance is used to get values from fields
+/// of the trace in the correct generic type `T` and possibly making
+/// some unit conversions (if required by the specific field
+/// represented by the enum instance).
+///
+/// @author Manoel Campos da Silva Filho
+/// @since CloudSim Plus 4.0.0
 public interface TraceField <R extends GoogleTraceReaderAbstract>{
     /**
-     * Gets the value (from a line read from a trace file) of the field associated to the enum instance.
+     * Gets the value (from a line read from a trace file) of the field associated with the enum instance.
      * @param reader the reader for the trace file
      * @param <T> the type to convert the value read from the trace to
      * @return the field value converted to a specific type

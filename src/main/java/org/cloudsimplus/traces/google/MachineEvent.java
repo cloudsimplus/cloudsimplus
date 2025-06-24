@@ -32,30 +32,27 @@ import org.cloudsimplus.schedulers.vm.VmScheduler;
 
 import java.util.function.Function;
 
-/**
- * A data class to store the attributes to create a {@link Host},
- * according to the data read from a line inside a "machine events" trace file.
- * Instance of this class are created by the {@link GoogleMachineEventsTraceReader}
- * and provided to the user's simulation.
- *
- * <p>In order to create such Hosts, the {@link GoogleMachineEventsTraceReader} requires
- * the developer to provide a {@link Function}
- * that creates Hosts according to the developer needs.</p>
- *
- * <p>The {@link GoogleMachineEventsTraceReader} cannot create the Hosts itself
- * by hard-coding some simulation specific parameters such as the {@link VmScheduler}
- * or {@link ResourceProvisioner}. This way, it request a {@link Function} implemented
- * by the developer using the {@link GoogleMachineEventsTraceReader} class
- * that has the custom logic to create Hosts.
- * However, this developer's {@link Function} needs to receive
- * the host parameters read from the trace file.
- * To avoid passing so many parameters to the developer's
- * Function, an instance of this class that wraps all these
- * parameters is used instead.</p>
- *
- * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 4.0.0
- */
+/// A data class to store the attributes to create a [Host],
+/// according to the data read from a line inside a "machine events" trace file.
+/// Instances of this class are created by the [GoogleMachineEventsTraceReader]
+/// and provided to the user's simulation.
+///
+/// The [GoogleMachineEventsTraceReader] requires the developer to provide a [Function]
+/// that creates Hosts according to the developer needs.
+///
+/// The [GoogleMachineEventsTraceReader] cannot create Hosts itself
+/// by hard-coding some simulation-specific parameters such as the [VmScheduler]
+/// or [ResourceProvisioner]. This way, it requests a [Function] implemented
+/// by the developer using the [GoogleMachineEventsTraceReader] class
+/// that has the custom logic to create Hosts.
+/// However, this developer's [Function] needs to receive
+/// the host parameters read from the trace file.
+/// To avoid passing so many parameters to the developer's
+/// Function, an instance of this class that wraps all these
+/// parameters is used instead.
+///
+/// @author Manoel Campos da Silva Filho
+/// @since CloudSim Plus 4.0.0
 @Getter @Setter
 public final class MachineEvent extends MachineDataBase {
     /**

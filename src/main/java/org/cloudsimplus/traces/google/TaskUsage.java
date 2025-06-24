@@ -31,7 +31,7 @@ import org.cloudsimplus.traces.google.GoogleTaskUsageTraceReader.FieldIndex;
 /**
  * A data class to store the attributes representing the resource usage of a {@link Cloudlet},
  * according to the data read from a line inside a "task usage" trace file.
- * Instance of this class are created by the {@link GoogleTaskUsageTraceReader}
+ * Instances of this class are created by the {@link GoogleTaskUsageTraceReader}
  * and provided to the user's simulation.
  *
  * @author Manoel Campos da Silva Filho
@@ -59,7 +59,7 @@ public final class TaskUsage extends TaskData {
 
     /**
      * The canonical memory usage,
-     * i.e., the number of user accessible pages,
+     * i.e., the number of user-accessible pages,
      * including page cache but excluding some pages marked as stale.
      * @see FieldIndex#CANONICAL_MEMORY_USAGE
      */
@@ -92,8 +92,7 @@ public final class TaskUsage extends TaskData {
     /**
      * The mean local disk space used.
      * Represents runtime local disk capacity usage.
-     * Disk usage required for binaries and other read-only,
-     * pre-staged runtime files is not included.
+     * Disk usage required for binaries and other read-only pre-staged runtime files is not included.
      * Additionally, most disk space used by distributed, persistent storage (e.g. GFS, Colossus)
      * is not accounted for in this trace.
      * @see FieldIndex#MEAN_LOCAL_DISK_SPACE_USED

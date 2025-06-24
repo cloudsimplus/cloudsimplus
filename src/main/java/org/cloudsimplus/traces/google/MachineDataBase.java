@@ -30,8 +30,8 @@ import lombok.Setter;
 
 /**
  * A base class that stores data to identify a machine.
- * It has to be extended by classes that read trace files containing some machine
- * data (such as the ID of a machine to be created or the ID of a machine where a task should run).
+ * It has to be extended by classes that read trace files containing some machine data
+ * (such as the ID of a machine to be created or the ID of a machine where a task should run).
  *
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 4.0.0
@@ -46,7 +46,7 @@ class MachineDataBase {
     private long machineId;
 
     /**
-     * A protected construtor to avoid directly instantiation of this base class.
+     * A protected construtor to avoid direct instantiation of this base class.
      */
     protected MachineDataBase(){/**/}
 }

@@ -52,7 +52,7 @@ public final class BrokerManager {
 
     /**
      * A map of brokers created according to the username from the trace file,
-     * representing a customer. Each key is the username field and the value the created broker.
+     * representing a customer. Each key is the username field and the value is the created broker.
      * If a default {@link #defaultBroker} is set, the map is empty.
      * @see #getBrokers()
      */
@@ -66,36 +66,32 @@ public final class BrokerManager {
     }
 
     /**
-     * Gets the List of brokers created according to the username from the trace file,
+     * @return the List of brokers created according to the username from the trace file,
      * representing a customer.
-     * @return
+     *
      * @see #setDefaultBroker(DatacenterBroker)
      */
     public List<DatacenterBroker> getBrokers() {
         return defaultBroker == null ? new ArrayList<>(brokersMap.values()) : singletonList(defaultBroker);
     }
 
-    /**
-     * Defines a default broker to will be used for all created Cloudlets.
-     * This way, the username field inside the trace file won't be used
-     * to dynamically create brokers.
-     * The {@link #getBrokers()} will only return a unitary list containing this broker.
-     *
-     * @param broker the broker for all created cloudlets, representing a single username (customer)
-     */
+    /// Defines a default broker to will be used for all created Cloudlets.
+    /// This way, the username field inside the trace file won't be used
+    /// to dynamically create brokers.
+    /// The [#getBrokers()] will only return a unitary list containing this broker.
+    ///
+    /// @param broker the broker for all created cloudlets, representing a single username (customer)
     public void setDefaultBroker(final DatacenterBroker broker) {
         this.defaultBroker = broker;
         this.brokersMap.clear();
     }
 
 
-    /**
-     * Gets a {@link #setDefaultBroker(DatacenterBroker) default broker (if ones was set)}
-     * or the one with the specified username (creating it if not yet).
-     * @param username the username of the broker
-     * @return (i) an already existing broker with the given username or a new one if not created yet;
-     *         (ii) the default broker if one was set.
-     */
+    /// Gets a [default broker (if ones was set)][#setDefaultBroker(DatacenterBroker)]
+    /// or the one with the specified username (creating it if not yet).
+    /// @param username the username of the broker
+    /// @return (i) an already existing broker with the given username or a new one if not created yet;
+    ///         (ii) the default broker if one was set.
     DatacenterBroker getOrCreateBroker(final String username){
         return getBroker(() -> brokersMap.computeIfAbsent(username, this::createBroker));
     }
@@ -105,8 +101,7 @@ public final class BrokerManager {
     }
 
     /**
-     * Gets an {@link DatacenterBroker} instance representing the username from the last trace line read.
-     * @return the {@link DatacenterBroker} instance
+     * @return a {@link DatacenterBroker} instance representing the username from the last trace line read.
      */
     DatacenterBroker getBroker(){
         final String value = TaskEventField.USERNAME.getValue(reader);
@@ -114,21 +109,19 @@ public final class BrokerManager {
     }
 
     /**
-     * Gets an {@link DatacenterBroker} instance represented by a given username.
+     * {@return a DatacenterBroker instance represented by a given username}
      * If a {@link #setDefaultBroker(DatacenterBroker) default broker was set to be used for all created Cloudlets},
      * that one is returned, ignoring the username given.
      *
      * @param username the name of the user read from a trace line
-     * @return the {@link DatacenterBroker} instance for the given username or the default broker (if it was set)
      */
     DatacenterBroker getBroker(final String username){
         return getBroker(() -> brokersMap.get(username));
     }
 
     /**
-     * Gets the default broker or the one returned by the provided supplier
+     * {@return the default broker or the one returned by the provided supplier}
      * @param supplier a broker {@link Supplier} Function.
-     * @return
      */
     DatacenterBroker getBroker(final Supplier<DatacenterBroker> supplier){
         return defaultBroker == null ? supplier.get() : defaultBroker;

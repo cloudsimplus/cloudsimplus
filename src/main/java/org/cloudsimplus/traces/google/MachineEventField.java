@@ -69,7 +69,8 @@ public enum MachineEventField implements TraceField<GoogleMachineEventsTraceRead
     },
 
     /**
-     * 3: The platform ID is an opaque string representing the micro-architecture and chipset version of the machine.
+     * 3: The index of the platform ID, which is an opaque string representing
+     * the micro-architecture and chipset version of the machine.
      */
     PLATFORM_ID {
         @Override

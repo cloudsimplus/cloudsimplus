@@ -26,27 +26,19 @@ package org.cloudsimplus.traces;
 import lombok.NonNull;
 import lombok.experimental.Accessors;
 
-/**
- * An abstract class to implement trace file readers for specific file formats.
- *
- * <p>
- * <b>NOTES:</b>
- * <ul>
- *   <li>This class can only read trace files in the following format:
- *       <b>ASCII text, zip, gz.</b>
- *   </li>
- *   <li>If you need to load multiple trace files, create multiple instances of this class.</li>
- *   <li>If size of the trace reader is huge or contains lots of traces, please
- *       increase the JVM heap size accordingly by using <b>java -Xmx</b> option
- *       when running the simulation. For instance, you can use <b>java -Xmx200M</b>
- *       to define the JVM heap size will be 200MB.
- *   </li>
- * </ul>
- * </p>
- *
- * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 4.0.0
- */
+/// An abstract class to implement trace file readers for specific file formats.
+///
+/// ## NOTES
+///
+/// - This class can only read trace files in the following format: **ASCII text, zip, gz.**
+/// - If you need to load multiple trace files, create multiple instances of this class.
+/// - If the size of the trace reader is huge or contains lots of traces, please
+///   increase the JVM heap size accordingly by using **java -Xmx** option
+///   when running the simulation. For instance, you can use **java -Xmx200M**
+///   to define the JVM heap size will be 200MB.
+///
+/// @author Manoel Campos da Silva Filho
+/// @since CloudSim Plus 4.0.0
 @Accessors
 public abstract class TraceReaderAbstract extends FileReader implements TraceReader {
 
@@ -77,8 +69,8 @@ public abstract class TraceReaderAbstract extends FileReader implements TraceRea
     /**
      * Gets a field's value from the {@link #getLastParsedLineArray() last parsed line} as String.
      *
-     * @param field a enum value representing the index of the field to get the value
-     * @return
+     * @param field an enum value representing the index of the field to get the value
+     * @return the field value as String
      */
     public <T extends Enum> String getFieldValue(final T field){
         return lastParsedLineArray[field.ordinal()];
@@ -88,7 +80,7 @@ public abstract class TraceReaderAbstract extends FileReader implements TraceRea
      * Gets a field's value from the {@link #getLastParsedLineArray() last parsed line} as double.
      *
      * @param field an enum value representing the index of the field to get the value
-     * @return
+     * @return the field value as double
      */
     public <T extends Enum> double getFieldDoubleValue(final T field){
         return Double.parseDouble(getFieldValue(field));
@@ -99,7 +91,7 @@ public abstract class TraceReaderAbstract extends FileReader implements TraceRea
      *
      * @param field an enum value representing the index of the field to get the value
      * @param defaultValue the default value to be returned if the field value is not a number
-     * @return
+     * @return the field value as double
      */
     public <T extends Enum> double getFieldDoubleValue(final T field, final double defaultValue){
         final String value = getFieldValue(field);
@@ -110,7 +102,7 @@ public abstract class TraceReaderAbstract extends FileReader implements TraceRea
      * Gets a field's value from the {@link #getLastParsedLineArray() last parsed line} as an int.
      *
      * @param field an enum value representing the index of the field to get the value
-     * @return
+     * @return the field value as int
      */
     public <T extends Enum> int getFieldIntValue(final T field){
         return Integer.parseInt(getFieldValue(field));
@@ -121,7 +113,7 @@ public abstract class TraceReaderAbstract extends FileReader implements TraceRea
      *
      * @param field an enum value representing the index of the field to get the value
      * @param defaultValue the default value to be returned if the field value is not an int
-     * @return
+     * @return the field value as int
      */
     public <T extends Enum> int getFieldIntValue(final T field, final int defaultValue){
         final String value = getFieldValue(field);
@@ -132,7 +124,7 @@ public abstract class TraceReaderAbstract extends FileReader implements TraceRea
      * Gets a field's value from the {@link #getLastParsedLineArray() last parsed line} as an int.
      *
      * @param field an enum value representing the index of the field to get the value
-     * @return
+     * @return the field value as long
      */
     public <T extends Enum> long getFieldLongValue(final T field){
         return Long.parseLong(getFieldValue(field));
@@ -143,7 +135,7 @@ public abstract class TraceReaderAbstract extends FileReader implements TraceRea
      *
      * @param field an enum value representing the index of the field to get the value
      * @param defaultValue the default value to be returned if the field value is not an int
-     * @return
+     * @return the field value as long
      */
     public <T extends Enum> long getFieldLongValue(final T field, final long defaultValue){
         final String value = getFieldValue(field);
@@ -151,8 +143,7 @@ public abstract class TraceReaderAbstract extends FileReader implements TraceRea
     }
 
     /**
-     * Gets an array containing the field values from the last parsed trace line.
-     * @return
+     * @return an array containing the field values from the last parsed trace line.
      */
     protected String[] getLastParsedLineArray() {
         return lastParsedLineArray;

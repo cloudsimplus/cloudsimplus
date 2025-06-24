@@ -568,9 +568,8 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
      * Sets the execution length of this Cloudlet (in Million Instructions (MI))
      * that will be executed in each defined PE.
      *
-     * <p>In case the length is a negative value, it means
-     * the Cloudlet doesn't have a defined length, this way,
-     * it keeps running until a {@link CloudSimTag#CLOUDLET_FINISH}
+     * <p>A negative length means the Cloudlet in fact doesn't have a defined length.
+     * This way, it keeps running until a {@link CloudSimTag#CLOUDLET_FINISH}
      * message is sent to the {@link DatacenterBroker}.</p>
 
      * <p>According to this length and the power of the VM processor (in
@@ -581,7 +580,8 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
      * completed (that may be uninterrupted or not, depending on the scheduling policy).
      * </p>
      *
-     * @param length the length (in MI) of this Cloudlet to be executed in a Vm
+     * @param length the length (in MI) of this Cloudlet to be executed in a Vm.
+     *               A negative value means the Cloudlet in fact doesn't have a defined length.
      * @return this Cloudlet
      * @throws IllegalArgumentException when the given length is lower or equal to zero
      *

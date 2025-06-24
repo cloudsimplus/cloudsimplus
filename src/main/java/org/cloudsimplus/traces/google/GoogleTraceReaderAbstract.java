@@ -31,30 +31,22 @@ import org.cloudsimplus.traces.TraceReaderAbstract;
 
 import java.util.*;
 
-/**
- * An abstract class for creating <a href="https://github.com/google/cluster-data/blob/master/ClusterData2011_2.md">Google Cluster Trace</a>
- * readers.
- *
- * <p>Check important details at {@link TraceReaderAbstract}.</p>
- *
- * @param <T> the type of objects that will be created for each line read from the trace file
- *
- * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 4.0.0
- */
+/// An abstract class for creating
+/// [Google Cluster Trace](https://github.com/google/cluster-data/blob/master/ClusterData2011_2.md) readers.
+/// Check important details at [TraceReaderAbstract].
+///
+/// @param <T> the type of objects that will be created for each line read from the trace file
+/// @author Manoel Campos da Silva Filho
+/// @since CloudSim Plus 4.0.0
 abstract class GoogleTraceReaderAbstract<T extends Identifiable> extends TraceReaderAbstract {
     /* default */ static final String VAL_SEPARATOR = " -> ";
     /* default */ static final String COL_SEPARATOR = " | ";
 
-    /**
-     * A map of objects immediately created from the trace file,
-     * where the key is the object ID and the value is the object itself.
-     * The type <T> of the objects depends on each concrete class.
-     * For instance, the {@link GoogleMachineEventsTraceReader}
-     * creates {@link Host}s.
-     * The {@link GoogleTaskEventsTraceReader} creates
-     * {@link Cloudlet}s.
-     */
+    /// A map of objects immediately created from the trace file,
+    /// where the key is the object ID and the value is the object itself.
+    /// The type `<T>` of the objects depends on each concrete class.
+    /// For instance, the [GoogleMachineEventsTraceReader] creates [Host]s.
+    /// The [GoogleTaskEventsTraceReader] creates [Cloudlet]s.
     private final Map<Long, T> availableObjectsMap;
 
     /* default */  GoogleTraceReaderAbstract(final String filePath) {
@@ -63,17 +55,12 @@ abstract class GoogleTraceReaderAbstract<T extends Identifiable> extends TraceRe
         availableObjectsMap = new HashMap<>();
     }
 
-    /**
-     * Process the {@link #getFilePath() trace file} creating a Set of objects
-     * described in the file.
-     *
-     * <p>It returns the Set of created objects that were available at timestamp 0 inside the trace file.</p>
-     *
-     * @return the Set of created objects that were available at timestamp 0 inside the trace file.
-     */
+    /// Process the [trace file][#getFilePath()] creating a Set of objects described in the file.
+    /// @return the Set of created objects that were available at timestamp 0 inside the trace file.
     public Collection<T> process() {
         preProcess();
-        //If the file was not processed yet, process it
+
+        // If the file was not processed yet, process it
         if (availableObjectsMap.isEmpty()) {
             try {
                 readFile(this::processParsedLine);
@@ -91,7 +78,7 @@ abstract class GoogleTraceReaderAbstract<T extends Identifiable> extends TraceRe
      * Executes any pre-process before starting to read the trace file,
      * such as checking if required attributes were set.
      *
-     * TODO Such a method should be defined as a Functional attribute.
+     * @TODO Such a method should be defined as a Functional attribute.
      *       Since it won't be implemented by every subclass, by it being abstract,
      *       forces to subclasses to implement it (even if just including an empty method).
      */
@@ -100,7 +87,7 @@ abstract class GoogleTraceReaderAbstract<T extends Identifiable> extends TraceRe
     /**
      * Executes any post-process after the trace file was totally parsed.
      *
-     * TODO Such a method should be defined as a Functional attribute.
+     * @TODO Such a method should be defined as a Functional attribute.
      *       Since it won't be implemented by every subclass, by it being abstract,
      *       forces to subclasses to implement it (even if just including an empty method).
      */
@@ -141,8 +128,7 @@ abstract class GoogleTraceReaderAbstract<T extends Identifiable> extends TraceRe
     }
 
     /**
-     * Gets the number of objects available (created) so far.
-     * @return
+     * @return the number of objects available (created) so far.
      */
     protected final int availableObjectsCount(){
         return availableObjectsMap.size();
@@ -153,7 +139,7 @@ abstract class GoogleTraceReaderAbstract<T extends Identifiable> extends TraceRe
     }
 
     /**
-     * Find a object created from the trace file.
+     * Find an object created from the trace file.
      * @param id id of the object to find
      * @return an Optional containing the object if found;
      *         an empty Optional otherwise.

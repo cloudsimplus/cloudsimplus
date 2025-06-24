@@ -48,31 +48,30 @@ import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-/**
- * Process "machine events" trace files from
- * <a href="https://github.com/google/cluster-data/blob/master/ClusterData2011_2.md">Google Cluster Data</a>.
- * When a trace file is {@link #process() processed}, it creates a list of available {@link Host}s for every line with a zero timestamp
- * and the {@link #getEventType() event type} equals to {@link MachineEventType#ADD}, meaning
- * that such Hosts will be immediately available at the simulation start.
- * Hosts addition events with timestamp greater than zero will be scheduled to be added
- * just at the specified type. In the same way, Hosts removal are accordingly scheduled.
- *
- * <p>Such trace files are the ones inside the machine_events sub-directory of downloaded Google traces.
- * The instructions to download the traces are provided in the link above.
- * A spreadsheet that makes it easier to understand the structure of trace files is provided
- * in docs/google-cluster-data-samples.xlsx</p>
- *
- * <p>The documentation for fields and values were obtained from the Google Cluster trace documentation in the link above.
- * It's strongly recommended to read such a documentation before trying to use this class.</p>
- *
- * <p>Check important details at {@link TraceReaderAbstract}.</p>
- *
- * @see #getInstance(String, Function)
- * @see #process()
- *
- * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 4.0.0
- */
+/// Process "machine events" trace files from
+/// [Google Cluster Data](https://github.com/google/cluster-data/blob/master/ClusterData2011_2.md).
+///
+/// When a trace file is [processed][#process()], it creates a list of available [Host]s for every line with a zero timestamp
+/// and the [event type][#getEventType()] equals to [#ADD], meaning
+/// that such Hosts will be immediately available at the simulation start.
+/// Hosts addition events with timestamp greater than zero will be scheduled to be added
+/// just at the specified type. In the same way, Hosts removal is accordingly scheduled.
+///
+/// Such trace files are the ones inside the machine_events subdirectory of downloaded Google traces.
+/// The instructions to download the traces are provided in the link above.
+/// A spreadsheet that makes it easier to understand the structure of trace files is provided
+/// in `docs/google-cluster-data-samples.xlsx`
+///
+/// The documentation for fields and values were obtained from the Google Cluster trace documentation in the link above.
+/// It's strongly recommended to read such documentation before trying to use this class.
+///
+/// Check important details at [TraceReaderAbstract].
+///
+/// @see #getInstance(String, Function)
+/// @see #process()
+///
+/// @author Manoel Campos da Silva Filho
+/// @since CloudSim Plus 4.0.0
 @Getter
 public final class GoogleMachineEventsTraceReader extends GoogleTraceReaderAbstract<Host> {
 
@@ -97,9 +96,9 @@ public final class GoogleMachineEventsTraceReader extends GoogleTraceReaderAbstr
      * from a line inside the trace file.
      * The {@link BiFunction} will receive the number of {@link Pe}s (CPU cores)
      * and RAM capacity for the Host to be created, returning the created Host.
-     * The provided function must instantiate the Host and defines Host's CPU cores and RAM
-     * capacity according the received parameters.
-     * For other Hosts configurations (such as storage capacity), the provided
+     * The provided function must instantiate the Host and define Host's CPU cores and RAM
+     * capacity, according to the received parameters.
+     * For other Hosts' configurations (such as storage capacity), the provided
      * function must define the value as desired, since the trace file
      * doesn't have any other information for such resources.
      */
@@ -107,7 +106,7 @@ public final class GoogleMachineEventsTraceReader extends GoogleTraceReaderAbstr
     private Function<MachineEvent, Host> hostCreationFunction;
 
     /**
-     * The list of Hosts that will be available just after a given timestamp (i.e. timestamp > 0).
+     * The list of Hosts that will be available just after a given timestamp (i.e., `timestamp > 0`).
      */
     private final List<Host> laterAvailableHosts;
 
@@ -116,24 +115,22 @@ public final class GoogleMachineEventsTraceReader extends GoogleTraceReaderAbstr
      */
     private final List<Host> hostsForRemoval;
 
-    /**
-     * Gets a {@link GoogleMachineEventsTraceReader} instance to read a "machine events" trace file
-     * inside the <b>application's resource directory</b>.
-     * Created Hosts will have 16GB of maximum RAM and the maximum of 8 {@link Pe}s.
-     * Use the available constructors if you want to load a file outside the resource directory.
-     *
-     * @param filePath           the workload trace <b>relative file name</b> in one of the following formats: <i>ASCII text, zip, gz.</i>
-     * @param hostCreationFunction A {@link Function} that will be called for every {@link Host} to be created
-     *                           from a line inside the trace file.
-     *                           The {@link Function} will receive a {@link MachineEvent} object containing
-     *                           the Host data read from the trace and must return the created Host
-     *                           according to such data.
-     * @throws IllegalArgumentException when the trace file name is null or empty
-     * @throws UncheckedIOException     when the file cannot be accessed (such as when it doesn't exist)
-     * @see #setMaxRamCapacity(long)
-     * @see #setMaxCpuCores(int)
-     * @see #process()
-     */
+    /// Gets a [GoogleMachineEventsTraceReader] instance to read a "machine events" trace file
+    /// inside the **application's resource directory**.
+    /// Created Hosts will have 16GB of maximum RAM and the maximum of 8 [Pe]s.
+    /// Use the available constructors if you want to load a file outside the resource directory.
+    ///
+    /// @param filePath           the workload trace **relative file name** in one of the following formats: _ASCII text, zip, gz._
+    /// @param hostCreationFunction A [Function] that will be called for every [Host] to be created
+    ///                           from a line inside the trace file.
+    ///                           The [Function] will receive a [MachineEvent] object containing
+    ///                           the Host data read from the trace and must return the created Host
+    ///                           according to such data.
+    /// @throws IllegalArgumentException when the trace file name is null or empty
+    /// @throws UncheckedIOException     when the file cannot be accessed (such as when it doesn't exist)
+    /// @see #setMaxRamCapacity(long)
+    /// @see #setMaxCpuCores(int)
+    /// @see #process()
     public static GoogleMachineEventsTraceReader getInstance(
         final String filePath,
         final Function<MachineEvent, Host> hostCreationFunction)
@@ -142,22 +139,20 @@ public final class GoogleMachineEventsTraceReader extends GoogleTraceReaderAbstr
         return new GoogleMachineEventsTraceReader(filePath, is, hostCreationFunction);
     }
 
-    /**
-     * Instantiates a GoogleMachineEventsTraceReader to read a "machine events" trace file.
-     * Created Hosts will have 16GB of maximum RAM and the maximum of 8 {@link Pe}s.
-     *
-     * @param filePath           the path to the trace file
-     * @param hostCreationFunction A {@link Function} that will be called for every {@link Host} to be created
-     *                           from a line inside the trace file.
-     *                           The {@link Function} will receive a {@link MachineEvent} object containing
-     *                           the Host data read from the trace and must return the created Host
-     *                           according to such data.
-     * @throws FileNotFoundException    when the trace file is not found
-     * @throws IllegalArgumentException when the trace file name is null or empty
-     * @see #setMaxRamCapacity(long)
-     * @see #setMaxCpuCores(int)
-     * @see #process()
-     */
+    /// Instantiates a GoogleMachineEventsTraceReader to read a "machine events" trace file.
+    /// Created Hosts will have 16GB of maximum RAM and the maximum of 8 [Pe]s.
+    ///
+    /// @param filePath           the path to the trace file
+    /// @param hostCreationFunction A [Function] that will be called for every [Host] to be created
+    ///                           from a line inside the trace file.
+    ///                           The [Function] will receive a [MachineEvent] object containing
+    ///                           the Host data read from the trace and must return the created Host
+    ///                           according to such data.
+    /// @throws FileNotFoundException    when the trace file is not found
+    /// @throws IllegalArgumentException when the trace file name is null or empty
+    /// @see #setMaxRamCapacity(long)
+    /// @see #setMaxCpuCores(int)
+    /// @see #process()
     public GoogleMachineEventsTraceReader(
         final String filePath,
         final Function<MachineEvent, Host> hostCreationFunction) throws IOException
@@ -165,22 +160,20 @@ public final class GoogleMachineEventsTraceReader extends GoogleTraceReaderAbstr
         this(filePath, Files.newInputStream(Paths.get(filePath)), hostCreationFunction);
     }
 
-    /**
-     * Instantiates a GoogleMachineEventsTraceReader to read a "machine events" from a given InputStream.
-     * Created Hosts will have 16GB of maximum RAM and the maximum of 8 {@link Pe}s.
-     *
-     * @param filePath           the path to the trace file
-     * @param reader             a {@link InputStream} object to read the file
-     * @param hostCreationFunction A {@link Function} that will be called for every {@link Host} to be created
-     *                           from a line inside the trace file.
-     *                           The {@link Function} will receive a {@link MachineEvent} object containing
-     *                           the Host data read from the trace and must return the created Host
-     *                           according to such data.
-     * @throws IllegalArgumentException when the trace file name is null or empty
-     * @see #setMaxRamCapacity(long)
-     * @see #setMaxCpuCores(int)
-     * @see #process()
-     */
+    /// Instantiates a GoogleMachineEventsTraceReader to read a "machine events" from a given InputStream.
+    /// Created Hosts will have 16GB of maximum RAM and the maximum of 8 [Pe]s.
+    ///
+    /// @param filePath           the path to the trace file
+    /// @param reader             a [InputStream] object to read the file
+    /// @param hostCreationFunction A [Function] that will be called for every [Host] to be created
+    ///                           from a line inside the trace file.
+    ///                           The [Function] will receive a [MachineEvent] object containing
+    ///                           the Host data read from the trace and must return the created Host
+    ///                           according to such data.
+    /// @throws IllegalArgumentException when the trace file name is null or empty
+    /// @see #setMaxRamCapacity(long)
+    /// @see #setMaxCpuCores(int)
+    /// @see #process()
     private GoogleMachineEventsTraceReader(
         final String filePath,
         final InputStream reader,
@@ -194,21 +187,17 @@ public final class GoogleMachineEventsTraceReader extends GoogleTraceReaderAbstr
         this.hostsForRemoval = new ArrayList<>();
     }
 
-    /**
-     * Process the {@link #getFilePath() trace file} creating a Set of {@link Host}s
-     * described in the file.
-     *
-     * <p>It returns the Set of {@link Host}s that were available at timestamp 0 inside the trace file.
-     * Hosts available just after this initial timestamp (that represents the beginning of the simulation)
-     * will be dynamically requested to be created by sending a message to the given Datacenter.
-     * </p>
-     *
-     * <p>
-     * The Set of returned Hosts is not added to any Datacenter. The developer creating the simulation
-     * must add such Hosts to any Datacenter desired.</p>
-     *
-     * @return the Set of {@link Host}s that were available at timestamp 0 inside the trace file.
-     */
+    /// Process the [trace file][#getFilePath()] creating a Set of [Host]s
+    /// described in the file.
+    ///
+    /// It returns the Set of [Host]s that were available at timestamp 0 inside the trace file.
+    /// Hosts available just after this initial timestamp (that represents the beginning of the simulation)
+    /// will be dynamically requested to be created by sending a message to the given Datacenter.
+    ///
+    /// The Set of returned Hosts is not added to any Datacenter. The developer creating the simulation
+    /// must add such Hosts to any Datacenter desired.
+    ///
+    /// @return the Set of [Host]s that were available at timestamp 0 inside the trace file.
     @Override
     public Collection<Host> process() {
         return super.process();
@@ -222,7 +211,7 @@ public final class GoogleMachineEventsTraceReader extends GoogleTraceReaderAbstr
     }
 
     /**
-     * Process hosts events occurring for a timestamp greater than zero.
+     * Process all hosts events occurring for a timestamp greater than zero.
      */
     @Override
     protected void postProcess() {
@@ -237,7 +226,7 @@ public final class GoogleMachineEventsTraceReader extends GoogleTraceReaderAbstr
     }
 
     /**
-     * Process addition and removal of Hosts occurring for a timestamp greater than zero.
+     * Process the addition and removal of Hosts occurring for a timestamp greater than zero.
      */
     private void sendLaterHostsAdditionAndRemovalRequests() {
         final var cis = datacenterForLaterHosts.getSimulation().getCis();
@@ -272,19 +261,15 @@ public final class GoogleMachineEventsTraceReader extends GoogleTraceReaderAbstr
     }
 
     /**
-     * Gets the number of Hosts that are going to be created
+     * @return the number of Hosts that are going to be created
      * later, according to the timestamp in the trace file.
-     *
-     * @return
      */
     public int getNumberOfLaterAvailableHosts() {
         return laterAvailableHosts.size();
     }
 
     /**
-     * Gets the number of Hosts to be removed from some Datacenter.
-     *
-     * @return
+     * @return the number of Hosts to be removed from some Datacenter.
      */
     public int getNumberOfHostsForRemoval() {
         return hostsForRemoval.size();
@@ -299,12 +284,10 @@ public final class GoogleMachineEventsTraceReader extends GoogleTraceReaderAbstr
         return MachineEventType.getValue(MachineEventField.EVENT_TYPE.getValue(this));
     }
 
-    /**
-     * Creates a Host instance from the {@link #getLastParsedLineArray() last parsed line},
-     * using the given {@link #setHostCreationFunction(Function) host create function}.
-     *
-     * @return the Host instance
-     */
+    /// Creates a Host instance from the [last parsed line][#getLastParsedLineArray()],
+    /// using the given [host create function][#setHostCreationFunction(Function)].
+    ///
+    /// @return the Host instance
     Host createHostFromTraceLine() {
         final var event =
             MachineEvent.builder()
@@ -321,20 +304,18 @@ public final class GoogleMachineEventsTraceReader extends GoogleTraceReaderAbstr
     /**
      * Adds a Host to the List of Hosts to be removed from the Datacenter.
      *
-     * @param host
+     * @param host the Host to add
      */
     boolean addHostToRemovalList(final Host host) {
         return hostsForRemoval.add(host);
     }
 
-    /**
-     * Adds a Host that will become available for the Datacenter just
-     * at the time specified by the timestamp in the trace line,
-     * which is set as the host {@link Host#getStartTime() startup time}.
-     *
-     * @param host the Host to be added
-     * @return
-     */
+    /// Adds a Host that will become available for the Datacenter just
+    /// at the time specified by the timestamp in the trace line,
+    /// which is set as the host [startup time][#getStartTime()].
+    ///
+    /// @param host the Host to be added
+    /// @return true if the host was added, false otherwise
     boolean addLaterAvailableHost(final Host host) {
         return laterAvailableHosts.add(host);
     }

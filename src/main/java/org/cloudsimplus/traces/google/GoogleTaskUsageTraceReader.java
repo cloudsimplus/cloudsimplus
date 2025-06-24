@@ -43,26 +43,24 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-/**
- * Process "task usage" trace files from
- * <a href="https://github.com/google/cluster-data/blob/master/ClusterData2011_2.md">Google Cluster Data</a>
- * to change the resource utilization of {@link Cloudlet}s.
- * The trace files are the ones inside the task_usage sub-directory of downloaded Google traces.
- * The instructions to download the traces are provided in the link above.
- *
- * <p>A spreadsheet that makes it easier to understand the structure of trace files is provided
- * in docs/google-cluster-data-samples.xlsx</p>
- *
- * <p>The documentation for fields and values were obtained from the Google Cluster trace documentation in the link above.
- * It's strongly recommended to read such a documentation before trying to use this class.</p>
- *
- * <p>Check important details at {@link TraceReaderAbstract}.</p>
- *
- * @see #process()
- *
- * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 4.0.0
- */
+/// Process "task usage" trace files from
+/// [Google Cluster Data](https://github.com/google/cluster-data/blob/master/ClusterData2011_2.md)
+/// to change the resource utilization of [Cloudlet]s.
+/// The trace files are the ones inside the `task_usage` subdirectory of downloaded Google traces.
+/// The instructions to download the traces are provided in the link above.
+///
+/// A spreadsheet that makes it easier to understand the structure of trace files is provided
+/// in `docs/google-cluster-data-samples.xlsx`.
+///
+/// The documentation for fields and values were obtained from the Google Cluster trace documentation in the link above.
+/// It's strongly recommended to read such documentation before trying to use this class.
+///
+/// Check important details at [TraceReaderAbstract].
+///
+/// @see #process()
+///
+/// @author Manoel Campos da Silva Filho
+/// @since CloudSim Plus 4.0.0
 public final class GoogleTaskUsageTraceReader extends GoogleTraceReaderAbstract<Cloudlet> {
     private final List<CloudSimEvent> cloudletUsageChangeEvents;
 
@@ -81,9 +79,8 @@ public final class GoogleTaskUsageTraceReader extends GoogleTraceReaderAbstract<
          */
         START_TIME{
             /**
-             * Gets the start time converted to seconds.
+             * {@return the start time converted to seconds}
              * @param reader the reader for the trace file
-             * @return
              */
             @Override
             public Double getValue(final GoogleTaskUsageTraceReader reader) {
@@ -97,9 +94,8 @@ public final class GoogleTaskUsageTraceReader extends GoogleTraceReaderAbstract<
          */
         END_TIME{
             /**
-             * Gets the end time converted to seconds.
+             * {@return the end time converted to seconds}
              * @param reader the reader for the trace file
-             * @return
              */
             @Override
             public Double getValue(final GoogleTaskUsageTraceReader reader) {
@@ -151,7 +147,7 @@ public final class GoogleTaskUsageTraceReader extends GoogleTraceReaderAbstract<
 
         /**
          * 6: The index of the field containing the canonical memory usage,
-         * i.e., the number of user accessible pages,
+         * i.e., the number of user-accessible pages,
          * including page cache but excluding some pages marked as stale.
          */
         CANONICAL_MEMORY_USAGE {
@@ -222,8 +218,7 @@ public final class GoogleTaskUsageTraceReader extends GoogleTraceReaderAbstract<
         /**
          * 12: The index of the field containing the mean local disk space used.
          * Represents runtime local disk capacity usage.
-         * Disk usage required for binaries and other read-only,
-         * pre-staged runtime files is not included.
+         * Disk usage required for binaries and other read-only pre-staged runtime files is not included.
          * Additionally, most disk space used by distributed,
          * persistent storage (e.g. GFS, Colossus) is not accounted for in this trace.
          */
@@ -259,19 +254,17 @@ public final class GoogleTaskUsageTraceReader extends GoogleTraceReaderAbstract<
 
     private final Simulation simulation;
 
-    /**
-     * Gets a {@link GoogleTaskUsageTraceReader} instance to read a "task usage" trace file
-     * inside the <b>application's resource directory</b>.
-     *
-     * @param taskEventsReader a {@link GoogleTaskEventsTraceReader}
-     *                         used to create Cloudlets from a task events trace file
-     * @param filePath the workload trace <b>relative file name</b>
-     *                 in one of the following formats: <i>ASCII text, zip, gz.</i>
-     * @throws IllegalArgumentException when the trace file name is null or empty
-     * @throws UncheckedIOException     when the file cannot be accessed
-     * (such as when it doesn't exist)
-     * @see #process()
-     */
+    /// Gets a [GoogleTaskUsageTraceReader] instance to read a "task usage" trace file
+    /// inside the **application's resource directory**.
+    ///
+    /// @param taskEventsReader a [GoogleTaskEventsTraceReader]
+    ///                         used to create Cloudlets from a task events trace file
+    /// @param filePath the workload trace **relative file name**
+    ///                 in one of the following formats: _ASCII text, zip, gz._
+    /// @throws IllegalArgumentException when the trace file name is null or empty
+    /// @throws UncheckedIOException     when the file cannot be accessed
+    /// (such as when it doesn't exist)
+    /// @see #process()
     public static GoogleTaskUsageTraceReader getInstance(
         final GoogleTaskEventsTraceReader taskEventsReader,
         final String filePath)
@@ -280,20 +273,18 @@ public final class GoogleTaskUsageTraceReader extends GoogleTraceReaderAbstract<
         return new GoogleTaskUsageTraceReader(taskEventsReader, filePath, is);
     }
 
-    /**
-     * Instantiates a {@link GoogleTaskUsageTraceReader} to read
-     * a "task usage" from a given InputStream.
-     *
-     * @param taskEventsReader a {@link GoogleTaskEventsTraceReader}
-     *                         used to create Cloudlets from a task events trace file
-     * @param filePath         the workload trace <b>relative file name</b>
-     *                         in one of the following formats: <i>ASCII text, zip, gz.</i>
-     * @param reader           a {@link InputStream} object to read the file
-     * @throws IllegalArgumentException when the trace file name is null or empty
-     * @throws UncheckedIOException     when the file cannot be accessed
-     *                                  (such as when it doesn't exist)
-     * @see #process()
-     */
+    /// Instantiates a [GoogleTaskUsageTraceReader] to read
+    /// a "task usage" from a given InputStream.
+    ///
+    /// @param taskEventsReader a [GoogleTaskEventsTraceReader]
+    ///                         used to create Cloudlets from a task events trace file
+    /// @param filePath         the workload trace **relative file name**
+    ///                         in one of the following formats: _ASCII text, zip, gz._
+    /// @param reader           a [InputStream] object to read the file
+    /// @throws IllegalArgumentException when the trace file name is null or empty
+    /// @throws UncheckedIOException     when the file cannot be accessed
+    ///                                  (such as when it doesn't exist)
+    /// @see #process()
     private GoogleTaskUsageTraceReader(
         @NonNull final GoogleTaskEventsTraceReader taskEventsReader,
         final String filePath,
@@ -313,35 +304,31 @@ public final class GoogleTaskUsageTraceReader extends GoogleTraceReaderAbstract<
         return taskEventsReader.getBrokerManager().getBrokers();
     }
 
-    /**
-     * Process {@link #getFilePath() trace file} requests
-     * to change resource usage of {@link Cloudlet}s
-     * as described in the file. It returns the List of all processed {@link Cloudlet}s.
-     *
-     * <p>When using a {@link GoogleTaskEventsTraceReader}
-     * and you create Cloudlets with an {@link UtilizationModelFull} to define that required CPUs
-     * will be used in 100% of their capacity,
-     * if the "task usage" file is read, a different CPU usage can be set.
-     * In regular simulations, if this value is smaller,
-     * a Cloudlet will spend more time to finish.
-     * However, since the "task events" file defines the exact time to finish
-     * each Cloudlet, using less than 100% of the CPU capacity won't make the Cloudlet to finish
-     * later (as in simulations not using the Google Cluster Data).
-     * Each Cloudlet will just have a smaller length at the end of the simulation.</p>
-     *
-     * <p>These trace files don't define the length of the Cloudlet (task).
-     * This way, Cloudlets are created with an indefinite length
-     * (see {@link Cloudlet#setLength(long)}) and the length is increased
-     * as the Cloudlet is executed. Therefore, if the Cloudlet is using
-     * a higher percentage of the CPU capacity, it will execute
-     * more instructions in a given time interval.</p>
-     *
-     * <p>In conclusion, the exec and finish time of Cloudlets created
-     * from Google Cluster trace files won't change according
-     * to the percentage of CPU capacity the Cloudlets are using.</p>
-     *
-     * @return the Set of all {@link Cloudlet}s processed according to a line in the trace file
-     */
+    /// Process [trace file][#getFilePath()] requests
+    /// to change resource usage of [Cloudlet]s
+    /// as described in the file. It returns the List of all processed [Cloudlet]s.
+    ///
+    /// When using a [GoogleTaskEventsTraceReader]
+    /// and you create Cloudlets with an [UtilizationModelFull] to define that required CPUs
+    /// will be used in 100% of their capacity,
+    /// if the "task usage" file is read, a different CPU usage can be set.
+    /// In regular simulations, if this value is smaller,
+    /// a Cloudlet will spend more time to finish.
+    /// However, since the "task events" file defines the exact time to finish
+    /// each Cloudlet, using less than 100% of the CPU capacity won't make the Cloudlet to finish
+    /// later (as in simulations not using the Google Cluster Data).
+    /// Each Cloudlet will just have a smaller length at the end of the simulation.
+    ///
+    /// These trace files don't define the length of the Cloudlet (task).
+    /// This way, Cloudlets are created with an indefinite length (see [Cloudlet#setLength(long)]),
+    /// and the length is increased as the Cloudlet is executed.
+    /// Therefore, if the Cloudlet is using a higher percentage of the CPU capacity, it will execute
+    /// more instructions in a given time interval.
+    ///
+    /// In conclusion, the exec and finish time of Cloudlets created
+    /// from Google Cluster trace files won't change with the percentage of CPU capacity the Cloudlets are using.
+    ///
+    /// @return the Set of all [Cloudlet]s processed according to a line in the trace file
     @Override
     public Collection<Cloudlet> process() {
         return super.process();
@@ -357,7 +344,7 @@ public final class GoogleTaskUsageTraceReader extends GoogleTraceReaderAbstract<
     }
 
     /**
-     * Adds an event listener that is notified when the simulation starts,
+     * Adds an event listener which is notified when the simulation starts,
      * so that the messages to change Cloudlet resource usage are sent.
      *
      * @param info the simulation start event information
@@ -423,11 +410,11 @@ public final class GoogleTaskUsageTraceReader extends GoogleTraceReaderAbstract<
 
     /**
      * Creates a {@link UtilizationModel} based on another one.
-     * If the given instance is a {@link UtilizationModelDynamic},
-     * otherwise a UtilizationModelDynamic is created without cloning
+     * If the given instance is a {@link UtilizationModelDynamic}, that instance is cloned.
+     * Otherwise, a UtilizationModelDynamic is created without cloning
      * another instance (that means it won't have the configurations
      * defined by another model).
-     * Then, the initial utilization of the created {@link UtilizationModelDynamic}
+     * Anyway, the initial utilization of the created {@link UtilizationModelDynamic}
      * is set as the given parameter.
      *
      * @param source the utilization model that will be used as based to

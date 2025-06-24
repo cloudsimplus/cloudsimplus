@@ -69,8 +69,8 @@ public enum TaskEventType {
     },
 
     /**
-     * 1: A job or task was scheduled on a machine (it may not start running
-     * immediately due to code-shipping time, etc).
+     * 1: A job or task was scheduled on a machine
+     * (it may not start running immediately due to code-shipping time, etc.).
      * For jobs, this occurs the first time any task of the job is scheduled on a machine.
      */
     SCHEDULE{
@@ -115,7 +115,7 @@ public enum TaskEventType {
     },
 
     /**
-     * 5: A task or job was cancelled by the user or a driver program or because
+     * 5: A task or job was canceled by the user or a driver program or because
      * another job or task on which this job was dependent died.
      */
     KILL{

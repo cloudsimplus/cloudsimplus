@@ -49,11 +49,9 @@ public class FileReader {
     @Getter
     private final String filePath;
 
-    /**
-     * A regex defining how fields are delimited in the trace file.
-     * Usually, this can be just a String with a single character such as
-     * a space, comma, semi-colon or tab (\t).
-     */
+    /// A regex defining how fields are delimited in the trace file.
+    /// Usually, this can be just a String with a single character such as
+    /// a space, comma, semicolon or tab (`\t`).
     @Getter @Setter @NonNull
     private String fieldDelimiterRegex;
 
@@ -61,7 +59,7 @@ public class FileReader {
     private int lastLineNumber;
 
     /**
-     * The maximum number of lines of the trace reader that will be read.
+     * The maximum number of lines from the trace reader that will be read.
      * {@link Integer#MAX_VALUE} indicates that all lines will be read.
      */
     @Getter
@@ -70,7 +68,7 @@ public class FileReader {
     private String[] commentString = {";", "#"};
 
     /**
-     * Creates a file reader that consider spaces as field delimiter.
+     * Creates a file reader that considers spaces as field delimiter.
      * @param filePath path of the file to read
      * @see #getSingleLineReader(String)
      */
@@ -83,9 +81,9 @@ public class FileReader {
     }
 
     /**
-     * Creates a file reader that consider spaces as field delimiter.
+     * Creates a file reader that considers spaces as field delimiter.
      * @param filePath path of the file to read
-     * @param maxLinesToRead The maximum number of lines of the trace reader that will be read.
+     * @param maxLinesToRead The maximum number of lines from the trace reader that will be read.
      *                       {@link Integer#MAX_VALUE} indicates that all lines will be read.
      * @see #getSingleLineReader(String)
      */
@@ -98,7 +96,7 @@ public class FileReader {
      * @param fieldDelimiterRegex A regex defining how fields are delimited in the trace file.
      *                            See {@link #getFieldDelimiterRegex()} for details.
      * @param filePath path of the file to read
-     * @param maxLinesToRead The maximum number of lines of the trace reader that will be read.
+     * @param maxLinesToRead The maximum number of lines from the trace reader that will be read.
      *                       {@link Integer#MAX_VALUE} indicates that all lines will be read.
      * @see #getSingleLineReader(String)
      */
@@ -111,8 +109,8 @@ public class FileReader {
     /**
      * Gets a reader that parses only the first line inside the given file,
      * considering space as the field delimiter
-     * @param filePath
-     * @return
+     * @param filePath the path of the file to read
+     * @return the file reader
      */
     public static FileReader getSingleLineReader(@NonNull final String filePath){
         return new FileReader(filePath, 1);
@@ -126,7 +124,8 @@ public class FileReader {
         if (commentString.length == 0) {
             throw new IllegalArgumentException("A comment String is required");
         }
-        //Creates a defensive copy of the array to avoid directly change its values after storing it
+
+        // Creates a defensive copy of the array to avoid directly changes its values after storing it
         this.commentString = Arrays.copyOf(commentString, commentString.length);
         return this;
     }
@@ -140,10 +139,11 @@ public class FileReader {
     }
 
     /**
-     * Sets the maximum number of lines of the workload reader that will be read.
+     * Sets the maximum number of lines from the workload reader that will be read.
      * {@link Integer#MAX_VALUE} indicates that all lines will be read.
      *
      * @param maxLinesToRead the maximum number of lines to set
+     * @return the file reader
      */
     public final FileReader setMaxLinesToRead(final int maxLinesToRead) {
         if (maxLinesToRead <= 0) {
@@ -159,10 +159,10 @@ public class FileReader {
     }
 
     /**
-     * Reads a tracefile indicated by the {@link #getFilePath()}.
+     * Reads a trace file indicated by the {@link #getFilePath()}.
      *
      * @return the last parsed line
-     * @throws UncheckedIOException if the there was any error reading the file
+     * @throws UncheckedIOException if there was any error reading the file
      */
     public String[] readFile() {
         return readFile(parsedLine -> true);
@@ -175,7 +175,7 @@ public class FileReader {
      * @param processParsedLineFunc a {@link Function} that receives each parsed line as an array
      *                              and performs an operation over it, returning true if the operation was executed
      * @return the last parsed line
-     * @throws UncheckedIOException if the there was any error reading the file
+     * @throws UncheckedIOException if there was any error reading the file
      */
     protected String[] readFile(final Function<String[], Boolean> processParsedLineFunc) {
         try {
@@ -198,7 +198,7 @@ public class FileReader {
      * @param processParsedLineFunc a {@link Function} that receives each parsed line as an array
      *                              and performs an operation over it, returning true if the operation was executed
      * @return the last parsed line
-     * @throws IOException if the there was any error reading the file
+     * @throws IOException if there was any error reading the file
      */
     @SneakyThrows(IOException.class)
     private String[] readZipFile(
@@ -222,7 +222,7 @@ public class FileReader {
      * @param processParsedLineFunc a {@link Function} that receives each parsed line as an array
      *                              and performs an operation over it, returning true if the operation was executed.
      * @return the last parsed line
-     * @throws IOException if the there was any error reading the file
+     * @throws IOException if there was any error reading the file
      */
     @SneakyThrows(IOException.class)
     private String[] readFileInternal(
@@ -266,7 +266,7 @@ public class FileReader {
             return new String[0];
         }
 
-        //Splits the string, ensuring that empty fields won't be discarded
+        // Splits the string, ensuring that empty fields won't be discarded
         return line.trim().split(fieldDelimiterRegex, -1);
     }
 }
