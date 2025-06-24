@@ -61,7 +61,7 @@ public class ResourceStats<T extends Machine> {
     /**
      * Collects the current resource utilization percentage (in scale from 0 to 1)
      * for the given time to the statistics.
-     * @param time current simulation time
+     * @param time current simulation time (in seconds)
      * @return true if data was collected, false otherwise (meaning it's not time to collect data).
      */
     public boolean add(final double time) {
@@ -71,13 +71,14 @@ public class ResourceStats<T extends Machine> {
             }
 
             final double utilization = resourceUtilizationFunction.apply(machine);
-            /*If (i) the previous utilization is not zero and the current utilization is zero
-            * and (ii) those values don't change, it means the machine has finished
-            * and this utilization must not be collected.
-            * If that happens, it may reduce the accuracy of the utilization mean.
-            * For instance, if a machine uses 100% of a resource all the time,
-            * when it finishes, the utilization will be zero.
-            * If that utilization is collected, the mean won't be 100% anymore.*/
+
+            /* If (i) the previous utilization is not zero, and the current utilization is zero
+             * and (ii) those values don't change, it means the machine has finished
+             * and this utilization must not be collected.
+             * If that happens, it may reduce the accuracy of the utilization mean.
+             * For instance, if a machine uses 100% of a resource all the time,
+             * when it finishes, the utilization will be zero.
+             * If that utilization is collected, the average won't be 100% anymore. */
             if((previousUtilization != 0 && utilization == 0) || (machine.isIdle() && previousUtilization > 0)) {
                 this.previousUtilization = utilization;
                 return false;
@@ -138,28 +139,23 @@ public class ResourceStats<T extends Machine> {
      */
     public boolean isEmpty(){ return count() == 0; }
 
-    /**
-     * {@return true if it's time to add utilization history, false otherwise}
-     * The utilization history is not updated if any one of the following conditions is met:
-     * <ul>
-     *  <li>the simulation clock was not changed yet;</li>
-     *  <li>the time passed is smaller than one second and the machine is not idle;</li>
-     *  <li>the floor time is equal to the previous time and the machine is not idle.</li>
-     * </ul>
-     *
-     * <p>If the time is smaller than one second and the machine became idle,
-     * the history will be added so that we know what the resource
-     * utilization was when the VM became idle.
-     * This way, we can see clearly in the history when the machine was busy
-     * and when it became idle.</p>
-     *
-     * <p>If the floor time is equal to the previous time and the machine is not idle,
-     * that means not even a second has passed. This way,
-     * that utilization will not be stored.</p>
-     *
-     * @param time the current simulation time
-     *
-     */
+    /// {@return true if it's time to add utilization history, false otherwise}
+    /// The utilization history is not updated if any one of the following conditions is met:
+    ///
+    /// - The simulation clock was not changed yet.
+    /// - The time passed is smaller than one second, and the machine is not idle.
+    /// - The floor time is equal to the previous time, and the machine is not idle.
+    ///
+    /// If the time is smaller than one second and the machine became idle,
+    /// the history will be added so that we know what the resource
+    /// utilization was when the VM became idle.
+    /// This way, we can see clearly in the history when the machine was busy
+    /// and when it became idle.
+    ///
+    /// If the floor time is equal to the previous time and the machine is not idle,
+    /// that means not even a second has passed. Therefore, that utilization value will not be stored.
+    ///
+    /// @param time the current simulation time
     protected final boolean isNotTimeToAddHistory(final double time) {
         return time <= 0 ||
                isElapsedTimeSmall(time) ||

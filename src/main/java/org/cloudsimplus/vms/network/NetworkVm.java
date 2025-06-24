@@ -23,27 +23,19 @@ import org.cloudsimplus.vms.VmSimple;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * A Vm supporting simulation of network communication.
- * It executes actions related to management of packets
- * (sent and received).
- *
- * <p>Please refer to the following publication for more details:
- * <ul>
- * <li>
- * <a href="https://doi.org/10.1109/UCC.2011.24">
- * Saurabh Kumar Garg and Rajkumar Buyya, NetworkCloudSim: Modelling Parallel
- * Applications in Cloud Simulations, Proceedings of the 4th IEEE/ACM
- * International Conference on Utility and Cloud Computing (UCC 2011, IEEE CS
- * Press, USA), Melbourne, Australia, December 5-7, 2011.
- * </a>
- * </li>
- * </ul>
- * </p>
- *
- * @author Saurabh Kumar Garg
- * @since CloudSim Toolkit 3.0
- */
+/// A Vm supporting simulation of network communication.
+/// It executes actions related to management of packets
+/// (sent and received).
+///
+/// Please refer to the following publication for more details:
+///
+/// - [Saurabh Kumar Garg and Rajkumar Buyya, NetworkCloudSim: Modelling Parallel
+/// Applications in Cloud Simulations, Proceedings of the 4th IEEE/ACM
+/// International Conference on Utility and Cloud Computing (UCC 2011, IEEE CS
+/// Press, USA), Melbourne, Australia, December 5-7, 2011.](https://doi.org/10.1109/UCC.2011.24)
+///
+/// @author Saurabh Kumar Garg
+/// @since CloudSim Toolkit 3.0
 @Accessors @Getter @Setter
 public class NetworkVm extends VmSimple {
     public static final NetworkVm NULL = new NetworkVm();
@@ -63,17 +55,15 @@ public class NetworkVm extends VmSimple {
     /** Indicates if the VM is free or not. */
     private boolean free;
 
-    /**
-     * Creates a NetworkVm with 1024 MEGA of RAM, 1000 Megabits/s of Bandwidth
-     * and 1024 MEGA of Storage Size.
-     *
-     * <p>To change these values, use the respective setters. While the Vm {@link #isCreated()
-     * is not created inside a Host}, such values can be changed freely.</p>
-     *
-     * @param id unique ID of the VM
-     * @param mipsCapacity the mips capacity of each Vm {@link Pe}
-     * @param pesNumber amount of {@link Pe} (CPU cores)
-     */
+    /// Creates a NetworkVm with 1024 MEGA of RAM, 1000 Megabits/s of Bandwidth
+    /// and 1024 MEGA of Storage Size.
+    ///
+    /// To change these values, use the respective setters.
+    /// While the Vm [is not created inside a Host][#isCreated()], such values can be changed freely.
+    ///
+    /// @param id unique ID of the VM
+    /// @param mipsCapacity the mips capacity of each Vm [Pe]
+    /// @param pesNumber amount of [Pe] (CPU cores)
     public NetworkVm(final int id, final long mipsCapacity, final int pesNumber) {
         super(id, mipsCapacity, pesNumber);
         cloudletList = new ArrayList<>();
@@ -86,18 +76,15 @@ public class NetworkVm extends VmSimple {
         this(-1, 0, 1);
     }
 
-    /**
-     * Creates a NetworkVm with 1024 MEGA of RAM, 1000 Megabits/s of Bandwidth
-     * and 1024 MEGA of Storage Size.
-     * To change these values, use the respective setters. While the Vm {@link #isCreated()
-     * is not created inside a Host}, such values can be changed freely.
-     *
-     * <p>It is not defined an id for the Vm. The id is defined when the Vm is submitted to
-     * a {@link DatacenterBroker}.</p>
-     *
-     * @param mipsCapacity the mips capacity of each Vm {@link Pe}
-     * @param pesNumber amount of {@link Pe} (CPU cores)
-     */
+    /// Creates a NetworkVm with 1024 MEGA of RAM, 1000 Megabits/s of Bandwidth and 1024 MEGA of Storage Size.
+    /// To change these values, use the respective setters.
+    /// While the Vm [is not created inside a Host][#isCreated()], such values can be changed freely.
+    ///
+    /// It is not defined an `id` for the Vm. The `id` is defined when the Vm is submitted to
+    /// a [DatacenterBroker].
+    ///
+    /// @param mipsCapacity the mips capacity of each Vm [Pe]
+    /// @param pesNumber amount of [Pe] (CPU cores)
     public NetworkVm(final long mipsCapacity, final int pesNumber) {
         super(mipsCapacity, pesNumber);
         cloudletList = new ArrayList<>();

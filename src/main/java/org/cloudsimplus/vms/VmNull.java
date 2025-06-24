@@ -44,8 +44,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * A class that implements the Null Object Design Pattern for {@link Vm}
- * objects.
+ * A class that implements the Null Object Design Pattern for {@link Vm} objects.
  *
  * @author Manoel Campos da Silva Filho
  * @see Vm#NULL
@@ -148,7 +147,7 @@ class VmNull implements Vm {
     @Override public double getStartTime() { return 0; }
     @Override public boolean isFinished() { return true; }
     @Override public Vm setStartTime(double startTime) { return this; }
-    public double getFinishTime() { return 0; }
+    @Override public double getFinishTime() { return 0; }
     @Override public double getCreationWaitTime() { return 0; }
     @Override public double getTotalExecutionTime() { return 0; }
     @Override public Vm setFinishTime(double stopTime) { return this; }

@@ -19,9 +19,9 @@ import org.cloudsimplus.schedulers.cloudlet.CloudletSchedulerTimeShared;
 /**
  * Implements the basic features of a Virtual Machine (VM), which runs inside a
  * {@link Host} that may be shared among other VMs. It processes
- * {@link Cloudlet cloudlets}. This processing happens according to a policy,
- * defined by the {@link CloudletScheduler}. Each VM has an owner (user), which
- * can submit cloudlets to the VM to execute them.
+ * {@link Cloudlet}s (applications). This processing happens according to a policy,
+ * defined by the {@link CloudletScheduler}. Each VM has an owner/user represented
+ * by a {@link DatacenterBroker}, which can submit cloudlets to the VM to execute them.
  *
  * @author Rodrigo N. Calheiros
  * @author Anton Beloglazov
@@ -29,11 +29,10 @@ import org.cloudsimplus.schedulers.cloudlet.CloudletSchedulerTimeShared;
  * @since CloudSim Toolkit 1.0
  */
 public class VmSimple extends VmAbstract {
-
     /**
      * A copy constructor that creates a VM based on the configuration of another one.
      * The created VM will have the same MIPS capacity, number of PEs,
-     * BW, RAM and size of the given VM, but a default CloudletScheduler and no broker.
+     * BW, RAM and size of the given VM, but a default {@link CloudletScheduler} and no {@link DatacenterBroker}.
      * @param sourceVm the VM to be cloned
      * @see #VmSimple(double, long)
      */
@@ -41,99 +40,90 @@ public class VmSimple extends VmAbstract {
         super(sourceVm);
     }
 
-    /**
-     * Creates a Vm with 1024 MEGA of RAM, 100 Megabits/s of Bandwidth and 1024 MEGA of Storage Size.
-     * To change these values, use the respective setters. While the Vm {@link #isCreated()
-     * is being instantiated}, such values can be changed freely.
-     *
-     * <p>It is not defined an id for the Vm. The id is defined when the Vm is submitted to
-     * a {@link DatacenterBroker}.</p>
-     *
-     * <p><b>NOTE:</b> The Vm will use a {@link CloudletSchedulerTimeShared} by default. If you need to change that,
-     * just call {@link #setCloudletScheduler(CloudletScheduler)}.</p>
-     *
-     * @param mipsCapacity the mips capacity of each Vm {@link Pe}
-     * @param pesNumber  amount of {@link Pe} (CPU cores)
-     * @see #setRam(long)
-     * @see #setBw(long)
-     * @see #setStorage(SimpleStorage)
-     * @see #setDefaultRamCapacity(long)
-     * @see #setDefaultBwCapacity(long)
-     * @see #setDefaultStorageCapacity(long)
-     */
+    /// Creates a Vm with 1024 MEGA of RAM, 100 Megabits/s of Bandwidth and 1024 MEGA of Storage Size.
+    /// To change these values, use the respective setters.
+    /// While the Vm [is being instantiated][#isCreated()], such values can be changed freely.
+    ///
+    /// It is not defined an `id` for the Vm. The `id` is defined when the Vm is submitted to
+    /// a [DatacenterBroker].
+    ///
+    /// **NOTE:** The Vm will use a [CloudletSchedulerTimeShared] by default.
+    /// If you need to change that, just call [#setCloudletScheduler(CloudletScheduler)].
+    ///
+    /// @param mipsCapacity the mips capacity of each Vm [Pe]
+    /// @param pesNumber  amount of [Pe] (CPU cores)
+    /// @see #setRam(long)
+    /// @see #setBw(long)
+    /// @see #setStorage(SimpleStorage)
+    /// @see #setDefaultRamCapacity(long)
+    /// @see #setDefaultBwCapacity(long)
+    /// @see #setDefaultStorageCapacity(long)
     public VmSimple(final double mipsCapacity, final long pesNumber) {
         this(-1, mipsCapacity, pesNumber);
     }
 
-    /**
-     * Creates a Vm with 1024 MEGA of RAM, 100 Megabits/s of Bandwidth and 1024 MEGA of Storage Size.
-     * To change these values, use the respective setters. While the Vm {@link #isCreated()
-     * is being instantiated}, such values can be changed freely.
-     *
-     * <p>It is not defined an id for the Vm. The id is defined when the Vm is submitted to
-     * a {@link DatacenterBroker}.</p>
-     *
-     * @param mipsCapacity the mips capacity of each Vm {@link Pe}
-     * @param pesNumber  amount of {@link Pe} (CPU cores)
-     * @see #setRam(long)
-     * @see #setBw(long)
-     * @see #setStorage(SimpleStorage)
-     * @see #setDefaultRamCapacity(long)
-     * @see #setDefaultBwCapacity(long)
-     * @see #setDefaultStorageCapacity(long)
-     */
+    /// Creates a Vm with 1024 MEGA of RAM, 100 Megabits/s of Bandwidth and 1024 MEGA of Storage Size.
+    /// To change these values, use the respective setters.
+    /// While the Vm [is being instantiated][#isCreated()], such values can be changed freely.
+    ///
+    /// It is not defined an `id` for the Vm. The `id` is defined when the Vm is submitted to
+    /// a [DatacenterBroker].
+    ///
+    /// @param mipsCapacity the mips capacity of each Vm [Pe]
+    /// @param pesNumber  amount of [Pe] (CPU cores)
+    /// @see #setRam(long)
+    /// @see #setBw(long)
+    /// @see #setStorage(SimpleStorage)
+    /// @see #setDefaultRamCapacity(long)
+    /// @see #setDefaultBwCapacity(long)
+    /// @see #setDefaultStorageCapacity(long)
     public VmSimple(final double mipsCapacity, final long pesNumber, final CloudletScheduler cloudletScheduler) {
         super(-1, (long)mipsCapacity, pesNumber, cloudletScheduler);
     }
 
-    /**
-     * Creates a Vm with 1024 MEGA of RAM, 100 Megabits/s of Bandwidth and 1024 MEGA of Storage Size.
-     * <p>
-     * To change these values, use the respective setters. While the Vm {@link #isCreated()
-     * is being instantiated}, such values can be changed freely.
-     *
-     * <p>It receives the amount of MIPS as a double value but converts it internally
-     * to a long. The method is just provided as a handy-way to create a Vm
-     * using a double value for MIPS that usually is generated from some computations.</p>
-     *
-     * <p><b>NOTE:</b> The Vm will use a {@link CloudletSchedulerTimeShared} by default. If you need to change that,
-     * just call {@link #setCloudletScheduler(CloudletScheduler)}.</p>
-     *
-     * @param id           unique ID of the VM
-     * @param mipsCapacity the mips capacity of each Vm {@link Pe}
-     * @param pesNumber  amount of {@link Pe} (CPU cores)
-     * @see #setRam(long)
-     * @see #setBw(long)
-     * @see #setStorage(SimpleStorage)
-     * @see #setDefaultRamCapacity(long)
-     * @see #setDefaultBwCapacity(long)
-     * @see #setDefaultStorageCapacity(long)
-     */
+    /// Creates a Vm with 1024 MEGA of RAM, 100 Megabits/s of Bandwidth and 1024 MEGA of Storage Size.
+    ///
+    /// To change these values, use the respective setters.
+    /// While the Vm [is being instantiated][#isCreated()], such values can be changed freely.
+    ///
+    /// It receives the amount of MIPS as a double value but converts it internally
+    /// to a `long`. The method is just provided as a handy-way to create a Vm
+    /// using a double value for MIPS that usually is generated from some computations.
+    ///
+    /// **NOTE:** The Vm will use a [CloudletSchedulerTimeShared] by default.
+    /// If you need to change that, just call [#setCloudletScheduler(CloudletScheduler)].
+    ///
+    /// @param id           unique ID of the VM
+    /// @param mipsCapacity the mips capacity of each Vm [Pe]
+    /// @param pesNumber  amount of [Pe] (CPU cores)
+    /// @see #setRam(long)
+    /// @see #setBw(long)
+    /// @see #setStorage(SimpleStorage)
+    /// @see #setDefaultRamCapacity(long)
+    /// @see #setDefaultBwCapacity(long)
+    /// @see #setDefaultStorageCapacity(long)
     public VmSimple(final long id, final double mipsCapacity, final long pesNumber) {
         this(id, (long) mipsCapacity, pesNumber);
     }
 
-    /**
-     * Creates a Vm with 1024 MEGA of RAM, 100 Megabits/s of Bandwidth and
-     * 1024 MEGA of Storage Size.
-     *
-     * <p>
-     * To change these values, use the respective setters. While the Vm {@link #isCreated()
-     * is being instantiated}, such values can be changed freely.
-     *
-     * <p><b>NOTE:</b> The Vm will use a {@link CloudletSchedulerTimeShared} by default. If you need to change that,
-     * just call {@link #setCloudletScheduler(CloudletScheduler)}.</p>
-     *
-     * @param id           unique ID of the VM
-     * @param mipsCapacity the mips capacity of each Vm {@link Pe}
-     * @param pesNumber  amount of {@link Pe} (CPU cores)
-     * @see #setRam(long)
-     * @see #setBw(long)
-     * @see #setStorage(SimpleStorage)
-     * @see #setDefaultRamCapacity(long)
-     * @see #setDefaultBwCapacity(long)
-     * @see #setDefaultStorageCapacity(long)
-     */
+    /// Creates a Vm with 1024 MEGA of RAM, 100 Megabits/s of Bandwidth and
+    /// 1024 MEGA of Storage Size.
+    ///
+    /// To change these values, use the respective setters.
+    /// While the Vm [is being instantiated][#isCreated()], such values can be changed freely.
+    ///
+    /// **NOTE:** The Vm will use a [CloudletSchedulerTimeShared] by default.
+    /// If you need to change that, just call [#setCloudletScheduler(CloudletScheduler)].
+    ///
+    /// @param id           unique ID of the VM
+    /// @param mipsCapacity the mips capacity of each Vm [Pe]
+    /// @param pesNumber  amount of [Pe] (CPU cores)
+    /// @see #setRam(long)
+    /// @see #setBw(long)
+    /// @see #setStorage(SimpleStorage)
+    /// @see #setDefaultRamCapacity(long)
+    /// @see #setDefaultBwCapacity(long)
+    /// @see #setDefaultStorageCapacity(long)
     public VmSimple(final long id, final long mipsCapacity, final long pesNumber) {
         super(id, mipsCapacity, pesNumber);
     }

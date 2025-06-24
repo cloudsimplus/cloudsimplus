@@ -11,7 +11,8 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 /**
- * Historic data about requests and allocation of MIPS for a given VM over the time.
+ * Historic data about requests and allocation of MIPS (Million Instructions Per Second)
+ * for a given {@link Vm} over the time.
  *
  * @author Anton Beloglazov
  * @since CloudSim Toolkit 2.1.2
@@ -34,7 +35,7 @@ public class VmStateHistoryEntry {
     private double requestedMips;
 
     /**
-     * Checks if the Vm is in migration for the current history.
+     * Checks if the Vm was in migration for the current history.
      */
     private boolean inMigration;
 
@@ -42,8 +43,8 @@ public class VmStateHistoryEntry {
      * Instantiates a VmStateHistoryEntry
      *
      * @param time the time the state information is being collected.
-     * @param allocatedMips the allocated mips
-     * @param requestedMips the requested mips
+     * @param allocatedMips the allocated MIPS
+     * @param requestedMips the requested MIPS
      * @param inMigration if the VM was in migration for that time
      */
     public VmStateHistoryEntry(final double time, final double allocatedMips, final double requestedMips, final boolean inMigration) {
@@ -54,27 +55,27 @@ public class VmStateHistoryEntry {
     }
 
     /**
-     * Sets the time the state information is being collected (in seconds).
+     * Sets the time the state information is being collected.
      *
-     * @param time the new time
+     * @param time the new time (in seconds)
      */
     protected final void setTime(final double time) {
         this.time = time;
     }
 
     /**
-     * Sets the allocated mips.
+     * Sets the allocated MIPS.
      *
-     * @param allocatedMips the new allocated mips
+     * @param allocatedMips the new allocated MIPS
      */
     protected final void setAllocatedMips(final double allocatedMips) {
         this.allocatedMips = allocatedMips;
     }
 
     /**
-     * Sets the requested mips.
+     * Sets the requested MIPS.
      *
-     * @param requestedMips the new requested mips
+     * @param requestedMips the new requested MIPS
      */
     protected final void setRequestedMips(final double requestedMips) {
         this.requestedMips = requestedMips;
