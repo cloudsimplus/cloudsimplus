@@ -12,6 +12,7 @@ import lombok.NonNull;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.cloudsimplus.core.CloudSimTag;
+import org.cloudsimplus.datacenters.Datacenter;
 import org.cloudsimplus.hosts.HostSimple;
 import org.cloudsimplus.hosts.HostSuitability;
 import org.cloudsimplus.network.HostPacket;
@@ -29,13 +30,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * NetworkHost class extends {@link HostSimple} to support simulation of
- * networked datacenters. It executes actions related to management of packets
- * (sent and received) other than that of virtual machines (e.g., creation and
- * destruction). A host has a defined policy for provisioning memory and bw, as
- * well as an allocation policy for PE's to virtual machines.
+ * A Host that support simulation of networked {@link Datacenter}s. It executes actions related to the management of packets
+ * (sent and received) besides {@link Vm} management (e.g., creation and destruction).
+ * A Host has a defined policy for provisioning memory and bw, as
+ * well as an allocation policy for {@link Pe}'s to virtual machines.
  *
- * <p>Please refer to following publication for more details:
+ * <p>Please refer to the following publication for more details:
  * <ul>
  * <li>
  * <a href="https://doi.org/10.1109/UCC.2011.24">
@@ -75,8 +75,8 @@ public class NetworkHost extends HostSimple {
     private final List<HostPacket> hostPktsReceived;
 
     /**
-     * Edge Switch the Host is directly connected to.
-     * Setter is to be called only by the {@link EdgeSwitch#connectHost(NetworkHost)} method.
+     * An Edge Switch the Host is directly connected to.
+     * TODO Setter is to be called only by the {@link EdgeSwitch#connectHost(NetworkHost)} method.
      */
     @Getter @Setter @NonNull
     private EdgeSwitch edgeSwitch;
@@ -114,7 +114,7 @@ public class NetworkHost extends HostSimple {
     }
 
     /**
-     * Receives packets and forwards them to targeting VMs and respective Cloudlets.
+     * Receives packets and forwards them to target VMs and respective Cloudlets.
      */
     private void receivePackets() {
         for (final HostPacket hostPkt : hostPktsReceived) {
@@ -143,8 +143,7 @@ public class NetworkHost extends HostSimple {
     }
 
     /**
-     * Receives a packet that is targeting some VM
-     * and sets the packet receive time.
+     * Receives a packet targeting some VM and sets the packet receive time.
      *
      * @param vmPacket the {@link VmPacket} to receive
      * @return the targeting VM
@@ -155,8 +154,8 @@ public class NetworkHost extends HostSimple {
     }
 
     /**
-     * Gets all packet lists of all VMs placed into the host and send them all.
-     * It checks whether a packet belongs to a local VM or to a VM hosted on other machine.
+     * Gets all packet lists from all VMs placed into the Host and sends them all.
+     * It checks whether a packet belongs to a local VM or to a VM hosted on another machine.
      */
     private void sendAllPacketListsOfAllVms() {
         getVmList().forEach(this::collectAllPacketsToSendFromVm);
@@ -165,14 +164,13 @@ public class NetworkHost extends HostSimple {
     }
 
     /**
-     * Gets the packets from the local packets buffer and sends them
-     * to VMs inside this host.
+     * Gets the packets from the local packets buffer and sends them to VMs inside this host.
      */
     private void sendPacketsToLocalVms() {
         for (final HostPacket hostPkt : pktsToSendForLocalVms) {
             hostPkt.setSendTime(hostPkt.getReceiveTime());
             final Vm destinationVm = receiveVmPacket(hostPkt.getVmPacket());
-            // insert the packet in received list
+            // insert the packet in the received list
             getVmPacketScheduler(destinationVm).addPacketToListOfPacketsSentFromVm(hostPkt.getVmPacket());
         }
 
@@ -228,8 +226,7 @@ public class NetworkHost extends HostSimple {
     }
 
     /**
-     * Collects all packets of a specific packet list from a Vm
-     * in order to get them together to be sent.
+     * Collects all packets inside a specific packet list from a Vm, so that those packets can be sent further on.
      *
      * @param sourceVm the VM from where the packets will be sent
      */
@@ -243,8 +240,7 @@ public class NetworkHost extends HostSimple {
     }
 
     /**
-     * Collects a specific packet from a given Vm
-     * in order to get it together with other packets to be sent.
+     * Collects a specific packet from a given Vm to join with other packets to be sent.
      *
      * @param vmPkt a packet to be sent from a Vm to another one
      * @see #collectAllPacketsToSendFromVm(Vm)
@@ -253,13 +249,13 @@ public class NetworkHost extends HostSimple {
         final var hostPkt = new HostPacket(this, vmPkt);
         final var receiverVm = vmPkt.getDestination();
 
-        //If the VM is inside this Host, the packet doesn't travel through the network
+        // If the VM is inside this Host, the packet doesn't travel through the network
         final var pktsToSendList = getVmList().contains(receiverVm) ? pktsToSendForLocalVms : pktsToSendForExternalVms;
         pktsToSendList.add(hostPkt);
     }
 
     /**
-     * Adds a packet to the list of received packets in order
+     * Adds a packet to the list of received packets
      * to further submit them to the respective target VMs and Cloudlets.
      *
      * @param hostPacket received network packet

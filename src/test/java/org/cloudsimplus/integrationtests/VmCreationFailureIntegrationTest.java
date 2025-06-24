@@ -213,7 +213,7 @@ public final class VmCreationFailureIntegrationTest {
         brokerBuilder.getCloudletBuilder()
                 .setLength(10000)
                 .setUtilizationModelCpuRamAndBw(new UtilizationModelFull())
-                .setPEs(1)
+                .setPes(1)
                 .createAndSubmit(2);
     }
 

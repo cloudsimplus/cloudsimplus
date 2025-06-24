@@ -65,7 +65,7 @@ public final class MathUtil {
     }
 
     /**
-     * Gets an object to compute descriptive statistics for an list of numbers.
+     * Gets an object to compute descriptive statistics for a list of numbers.
      *
      * @param list the list of numbers. Must not be null.
      * @return descriptive statistics for the list of numbers.
@@ -132,12 +132,11 @@ public final class MathUtil {
         return Math.sqrt(variance(list));
     }
 
-    /**
-     * Gets the <a href="https://en.wikipedia.org/wiki/Median_absolute_deviation">Median Absolute Deviation (MAD)</a> from a array of numbers.
-     *
-     * @param data the array of numbers
-     * @return the mad
-     */
+    /// Gets the [Median Absolute Deviation (MAD)](https://en.wikipedia.org/wiki/Median_absolute_deviation)
+    /// from an array of numbers.
+    ///
+    /// @param data the array of numbers
+    /// @return the mad
     public static double mad(final double... data) {
         if (data.length == 0) {
             return 0;
@@ -153,7 +152,7 @@ public final class MathUtil {
     }
 
     /**
-     * Gets the <a href="https://en.wikipedia.org/wiki/Interquartile_range">Inter-quartile Range (IQR)</a>
+     * Gets the [Inter-quartile Range (IQR)](https://en.wikipedia.org/wiki/Interquartile_range
      * from an array of numbers.
      *
      * @param data the array of numbers
@@ -167,8 +166,7 @@ public final class MathUtil {
     }
 
     /**
-     * Counts the number of values different of zero at the beginning of
-     * an array.
+     * Counts the number of values different of zero at the beginning of an array.
      *
      * @param data the array of numbers
      * @return the number of values different of zero at the beginning of the array
@@ -184,7 +182,7 @@ public final class MathUtil {
     }
 
     /**
-     * Gets the absolute values of an array of values
+     * Gets the absolute values from an array of values
      *
      * @param data the array of values
      * @return a new array with the absolute value of each element in the given array.
@@ -203,13 +201,13 @@ public final class MathUtil {
      * If the double is negative, it applies {@link Math#floor(double)}
      * to round the number down. If it' a positive value, it
      * applies {@link Math#ceil(double)} to round the number up.
-     * This way, a negative double will be converted to a negative int
+     * This way, a negative double will be converted to a negative int,
      * and a positive double will be converted to a positive int.
      *
      * <p>It's different from using: {@link Math#round(double)} which always
      * rounds to the next positive integer; {@link Math#floor(double)} which
      * always rounds down; or {@link Math#ceil(double)} which always
-     * rounds up. It applies floor for negative values and ceil
+     * rounds up. It applies the floor for negative values and ceil
      * for positive ones.</p>
      *
      * <p>This method is useful to be used by {@link Comparator}s which
@@ -247,7 +245,7 @@ public final class MathUtil {
      * That is, if the different between the two numbers are lower or equal to 0.01, they are considered equal.
      * @param first the first number to check
      * @param second the second number to check
-     * @return true if the numbers are equal considering the precision error
+     * @return true if the numbers are equal considering the precision error, false otherwise
      */
     public static boolean same(final double first, final double second){
         return same(first,second, 0.01);
@@ -259,7 +257,7 @@ public final class MathUtil {
      * @param first the first number to check
      * @param second the second number to check
      * @param precisionError the precision error used to compare the numbers
-     * @return true if the numbers are equal considering the precision error
+     * @return true if the numbers are equal considering the precision error, false otherwise
      */
     public static boolean same(final double first, final double second, final double precisionError){
         return Math.abs(first-second) <= precisionError;
@@ -305,7 +303,7 @@ public final class MathUtil {
      * @param second the first value to check
      */
     public static double positive(final double first, final double second){
-        //Overloaded methods just change the types to avoid boxing
+        // Overloaded methods just change the types to avoid boxing
         return first > 0 ? first : second;
     }
 

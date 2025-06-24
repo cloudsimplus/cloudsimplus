@@ -29,40 +29,36 @@ import org.cloudsimplus.vms.Vm;
 import java.util.List;
 
 /**
- * Provides the methods to be used for implementing a heuristic to get
- * a suboptimal solution for mapping Cloudlets to Vm's.
+ * Provides methods to be used for implementing a {@link Heuristic} to get
+ * a suboptimal solution for mapping Cloudlets to VMs.
  *
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
 public interface CloudletToVmMappingHeuristic extends Heuristic<CloudletToVmMappingSolution> {
-
     /**
-     * A property that implements the Null Object Design Pattern for {@link Heuristic}
-     * objects.
+     * A property that implements the Null Object Design Pattern for {@link Heuristic} objects.
      */
     CloudletToVmMappingHeuristic NULL = new CloudletToVmMappingHeuristicNull();
 
     /**
-     *
-     * @return the list of cloudlets to be mapped to {@link #getVmList() available Vm's}.
+     * @return the list of cloudlets to be mapped to {@link #getVmList() available VMs}.
      */
     List<Cloudlet> getCloudletList();
 
     /**
-     *
-     * @return the list of available Vm's to host Cloudlets.
+     * @return the list of available VMs to run Cloudlets.
      */
     List<Vm> getVmList();
 
     /**
-     * Sets the list of Cloudlets to be mapped to {@link #getVmList() available Vm's}.
+     * Sets the list of Cloudlets to be mapped to {@link #getVmList() available VMs}.
      * @param cloudletList the list of Cloudlets to set
      */
     CloudletToVmMappingHeuristic setCloudletList(List<Cloudlet> cloudletList);
 
     /**
-     * Sets the list of available VMs to host Cloudlets.
+     * Sets the list of available VMs to run Cloudlets.
      * @param vmList the list of VMs to set
      */
     CloudletToVmMappingHeuristic setVmList(List<Vm> vmList);

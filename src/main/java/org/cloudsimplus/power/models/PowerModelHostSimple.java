@@ -28,14 +28,15 @@ import org.cloudsimplus.power.PowerMeasurement;
 import org.cloudsimplus.power.PowerMeter;
 
 /**
- * Simple power model for hosts with linear power profile.
+ * Simple power model for hosts with linear power consumption
+ * according to the CPU utilization percentage.
  * @since CloudSim Plus 6.0.0
  * @see PowerMeter
  */
 @Getter
 public class PowerModelHostSimple extends PowerModelHostAbstract {
     /**
-     * The maximum power (in watts) the host consumes under full load.
+     * The maximum power (in watts) the host consumes under a full load.
      */
     private final double maxPower;
 
@@ -47,7 +48,7 @@ public class PowerModelHostSimple extends PowerModelHostAbstract {
     /**
      * Instantiates a {@link PowerModelHostSimple} by specifying its static and max power usage.
      *
-     * @param maxPower power (in watts) the host consumes under full load.
+     * @param maxPower power (in watts) the host consumes under a full load.
      * @param staticPower power (in watts) the host consumes when idle.
      */
     public PowerModelHostSimple(final double maxPower, final double staticPower) {
@@ -77,7 +78,7 @@ public class PowerModelHostSimple extends PowerModelHostAbstract {
     }
 
     /**
-     * Computes the dynamic power consumed according to the CPU utilization percentage.
+     * Computes the dynamic power consumed, according to the CPU utilization percentage.
      * @param utilizationFraction the utilization percentage (between [0 and 1]) of the host.
      * @return the dynamic power supply in Watts (W)
      */

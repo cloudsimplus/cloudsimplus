@@ -37,8 +37,7 @@ import java.util.List;
 public interface Switch extends SimEntity {
 
     /**
-     * An attribute that implements the Null Object Design Pattern for {@link Switch}
-     * objects.
+     * An attribute that implements the Null Object Design Pattern for {@link Switch} objects.
      */
     Switch NULL = new SwitchNull();
 
@@ -91,8 +90,7 @@ public interface Switch extends SimEntity {
     void setDownlinkBandwidth(double downlinkBandwidth);
 
     /**
-     * Gets the number of ports the switch has.
-     * @return
+     * @return the number of ports the switch has.
      */
     int getPorts();
 
@@ -119,20 +117,17 @@ public interface Switch extends SimEntity {
     void setSwitchingDelay(double switchingDelay);
 
     /**
-     * Gets the list of Switches in the upper layer that this Switch is connected to.
-     * @return
+     * @return the list of Switches in the upper layer that this Switch is connected to.
      */
     List<Switch> getUplinkSwitches();
 
     /**
-     * Gets the list of Switches in the lower layer that this Switch is connected to.
-     * @return
+     * @return the list of Switches in the lower layer that this Switch is connected to.
      */
     List<Switch> getDownlinkSwitches();
 
     /**
-     * Gets the Datacenter where the switch is connected to.
-     * @return
+     * @return the Datacenter where the switch is connected to.
      */
     NetworkDatacenter getDatacenter();
 

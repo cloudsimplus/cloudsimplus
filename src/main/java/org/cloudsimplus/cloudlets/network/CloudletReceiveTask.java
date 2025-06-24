@@ -24,7 +24,7 @@ import java.util.List;
  * from just one VM.
  *
  * <p>
- * Please refer to following publication for more details:
+ * Please refer to the following publication for more details:
  * <ul>
  * <li>
  * <a href="https://doi.org/10.1109/UCC.2011.24">
@@ -42,7 +42,7 @@ import java.util.List;
  *
  * @since CloudSim Toolkit 1.0
  *
- * @TODO For how long will the task be waiting for packets?
+ * TODO For how long will the task be waiting for packets?
  * The sender task has a defined amount of packets to send, but
  * the receiver doesn't have to know how many packets to wait for.
  * Considering a real distributed app such as a web app, the sender can be
@@ -62,12 +62,11 @@ import java.util.List;
  *
  * Each task has to have a status (such as the Cloudlet itself)
  * to define if it was executed successfully or not.
- * For instance, a receive ask that is waiting to receive
+ * For instance, a CloudletReceiveTask that is waiting to receive
  * a list of packets can be configured to finish
  * after a given timeout without receiving the expected packets.
  *
  * How is the network delay being computed?
- *
  */
 @Getter @Setter
 public class CloudletReceiveTask extends CloudletTask {
@@ -75,13 +74,12 @@ public class CloudletReceiveTask extends CloudletTask {
 
     /**
      * The number of packets that are expected to be received.
-     * After this number of packets is received, the task
-     * is marked as finished.
+     * After receiving them, the task is marked as finished.
      */
     private long expectedPacketsToReceive;
 
     /**
-     * The Vm where it is expected to receive packets from.
+     * Vm from where packets are expected to be received.
      */
     @NonNull
     private final Vm sourceVm;
@@ -90,7 +88,7 @@ public class CloudletReceiveTask extends CloudletTask {
      * Creates a new task.
      *
      * @param id id to assign to the task
-     * @param sourceVm Vm where it's expected to receive packets from
+     * @param sourceVm Vm from where packets are expected to be received
      */
     public CloudletReceiveTask(final int id, final Vm sourceVm) {
         super(id);
@@ -112,8 +110,7 @@ public class CloudletReceiveTask extends CloudletTask {
     }
 
     /**
-     * Gets the list of packets received.
-     * @return a read-only received packet list
+     * @return a read-only list of received packets
      */
     public List<VmPacket> getPacketsReceived() {
         return Collections.unmodifiableList(packetsReceived);

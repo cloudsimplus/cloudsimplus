@@ -29,8 +29,7 @@ import org.cloudsimplus.listeners.EventInfo;
 import org.cloudsimplus.listeners.EventListener;
 
 /**
- * A class that implements the Null Object Design Pattern for {@link SimEvent}
- * class.
+ * A class that implements the Null Object Design Pattern for {@link SimEvent} class.
  *
  * @author Manoel Campos da Silva Filho
  * @see SimEvent#NULL

@@ -31,7 +31,7 @@ import java.util.function.Consumer;
  * A static-sized queue that removes the oldest time value when it's full.
  * It keeps track of the last two simulation events time to check whether
  * they happened at different times, meaning the simulation clock has changed
- * and the simulation Clock Tick Listeners are fired
+ * and the simulation Clock Tick Listeners must be fired
  *
  * @since CloudSim Plus 6.0.0
  * @author Manoel Campos da Silva Filho
@@ -80,9 +80,9 @@ final class CircularTimeQueue {
      * Tries to notify all Listeners about onClockTick event when the simulation clock changes.
      * If multiple events are received consecutively but for the same simulation time,
      * it will only notify the Listeners when the last event for that time is received.
-     * It ensures when Listeners receive the notification, all the events
-     * for such a simulation time were already processed and then,
-     * the Listeners will have access to the most updated simulation state.
+     * It ensures that when Listeners receive the notification, all the events
+     * for such a simulation time were already processed. This way,
+     * Listeners will have access to the most up-to-date simulation state.
      *
      * @param notifyClockTickListeners a {@link Consumer} that will receive the <b>previous clock time</b>
      *                                and update the listeners for that time.
@@ -104,30 +104,27 @@ final class CircularTimeQueue {
      * removing the first time value, then adding a new one.
      */
     private void addCurrentTime() {
-        queue[0] = queue[1];
-        queue[1] = simulation.clock();
+        queue[0] = queue[1]; // moves the previous newest time to the oldest position
+        queue[1] = simulation.clock(); // store the current simulation time as the newest one
     }
 
     /**
-     * Checks if the previous stored time is older than the newest one.
-     * @return
+     * @return true if the previous stored time is older than the newest one, false otherwise.
      */
     private boolean isPreviousTimeOlder(){
         return queue[0] < queue[1];
     }
 
     /**
-     * Gets the previous stored time
-     * @return
+     * @return the previous stored time (in seconds).
      */
     private double previous(){
         return queue[0];
     }
 
     /**
-     * Checks if the simulation current time is newer than the last Clock Tick Listener update,
-     * indicating those listeners should be updated.
-     * @return
+     * @return true if the simulation current time is newer than the last Clock Tick Listener update,
+     *         indicating those listeners should be updated; false otherwise.
      */
     private boolean isTimeToUpdateClockTickListeners(){
         return simulation.clock() > lastClockTickUpdate;

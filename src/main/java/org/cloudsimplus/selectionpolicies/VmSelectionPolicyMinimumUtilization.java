@@ -19,8 +19,7 @@ import java.util.function.Predicate;
 import static java.util.Comparator.comparingDouble;
 
 /**
- * A VM selection policy that selects for migration the VM with Minimum Utilization (MU)
- * of CPU.
+ * A VM selection policy that selects for migration the {@link Vm} with the Minimum Utilization (MU) of CPU.
  *
  * @author Anton Beloglazov
  * @author Manoel Campos da Silva Filho

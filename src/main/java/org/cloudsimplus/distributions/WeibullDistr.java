@@ -16,8 +16,7 @@ import java.io.Serial;
 
 /**
  * A Pseudo-Random Number Generator following the
- * <a href="https://en.wikipedia.org/wiki/Weibull_distribution">Weibull
- * distribution</a>.
+ * <a href="https://en.wikipedia.org/wiki/Weibull_distribution">Weibull distribution</a>.
  *
  * @author Marcos Dias de Assuncao
  * @author Manoel Campos da Silva Filho
@@ -33,12 +32,11 @@ public class WeibullDistr extends WeibullDistribution implements ContinuousDistr
     private long seed;
 
     /**
-     * Creates a Weibull Pseudo-Random Number Generator (RNG) using a given seed.
+     * Creates a Weibull Pseudo-Random Number Generator (PRNG) using a given seed.
      *
      * <p>Internally, it relies on the {@link JDKRandomGenerator},
      * a wrapper for the {@link java.util.Random} class
-     * that doesn't have high-quality randomness properties
-     * but is very fast.</p>
+     * that doesn't have high-quality randomness properties but is very fast.</p>
      *
      * @param alpha the alpha distribution parameter
      * @param beta the beta distribution parameter
@@ -50,12 +48,11 @@ public class WeibullDistr extends WeibullDistribution implements ContinuousDistr
     }
 
     /**
-     * Creates a Weibull Pseudo-Random Number Generator (RNG).
+     * Creates a Weibull Pseudo-Random Number Generator (PRNG).
      *
      * <p>Internally, it relies on the {@link JDKRandomGenerator},
      * a wrapper for the {@link java.util.Random} class
-     * that doesn't have high-quality randomness properties
-     * but is very fast.</p>
+     * that doesn't have high-quality randomness properties but is very fast.</p>
      *
      * @param alpha the alpha distribution parameter
      * @param beta the beta distribution parameter
@@ -68,7 +65,7 @@ public class WeibullDistr extends WeibullDistribution implements ContinuousDistr
     }
 
     /**
-     * Creates a Weibull Pseudo-Random Number Generator (RNG).
+     * Creates a Weibull Pseudo-Random Number Generator (PRNG).
      * @param alpha the alpha distribution parameter
      * @param beta the beta distribution parameter
      * @param seed the seed <b>already used</b> to initialize the Pseudo-Random Number Generator

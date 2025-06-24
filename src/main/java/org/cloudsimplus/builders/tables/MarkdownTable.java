@@ -37,7 +37,7 @@ public class MarkdownTable extends CsvTable {
 
     /**
      * Creates a Table
-     * @param title Title of the table
+     * @param title the title of the table
      */
     public MarkdownTable(final String title) {
         super(title);

@@ -22,51 +22,41 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
-/**
- * Reads resource traces and creates a list of ({@link Cloudlet Cloudlets}) (jobs).
- * It follows the <a href="http://www.cs.huji.ac.il/labs/parallel/workload/">Standard Workload Format (*.swf files)</a>
- * from <a href="new.huji.ac.il/en">The Hebrew University of Jerusalem</a>.
- * Check important details at {@link TraceReaderAbstract}.
- *
- * <p>
- * <b>NOTES:</b>
- * <ul>
- *   <li>The default Cloudlet reader size for sending to and receiving from a Datacenter is
- *       {@link DataCloudTags#DEFAULT_MTU}. However, you can
- *       specify the reader size by using {@link Cloudlet#setFileSize(long)}.
- *   </li>
- *   <li>A job run time considers the time spent for a single PE (since all PEs will
- *       be used for the same amount of time)<b>not</b>
- *       not the total execution time across all PEs.
- *       For example, job #1 in the trace has a run time of 100 seconds for 2
- *       processors. This means each processor runs job #1 for 100 seconds, if the
- *       processors have the same specification.
- *   </li>
- * </ul>
- * </p>
- *
- * <p>
- * <b>List of unused fields:</b>
- * <ul>
- *   <li>Required running time (index 8):
- *   This can be either runtime (measured in wall-clock seconds),
- *   or average CPU time per processor (also in seconds).
- *   The exact meaning is determined by a header comment.
- *   If a log contains a request for total CPU time, it is divided by the number of requested processors.
- *   </li>
- *
- *   <li>User who submitted the job (index 11)</li>
- *   <li>Group of the user who submitted the job (index 12)</li>
- * </ul>
- * </p>
- *
- * @see #getInstance(String, int)
- * @see #generateWorkload()
- *
- * @author Anthony Sulistio
- * @author Marcos Dias de Assuncao
- * @author Manoel Campos da Silva Filho
- */
+import static java.lang.Integer.parseInt;
+
+/// Reads resource traces and creates a list of ([Cloudlet]s) (jobs).
+/// It follows the [Standard Workload Format (*.swf files)](http://www.cs.huji.ac.il/labs/parallel/workload/)</a>
+/// from [The Hebrew University of Jerusalem](https://new.huji.ac.il/en).
+/// Check important details at [TraceReaderAbstract].
+///
+/// ## NOTES
+///
+/// - The default Cloudlet reader size for sending to and receiving from a Datacenter is
+/// [DataCloudTags#DEFAULT_MTU]. However, you can
+/// specify the reader size by using [Cloudlet#setFileSize(long)].
+/// - A job run time considers the time spent for a single PE (since all PEs will
+/// be used for the same amount of time)**not**
+/// not the total execution time across all PEs.
+/// For example, job #1 in the trace has a run time of 100 seconds for 2 processors.
+/// This means each processor runs job #1 for 100 seconds
+/// if the processors have the same specification.
+///
+/// ## List of unused fields
+///
+/// - Required running time (index 8):
+/// This can be either runtime (measured in wall-clock seconds),
+/// or average CPU time per processor (also in seconds).
+/// The exact meaning is determined by a header comment.
+/// If a log contains a request for total CPU time, it is divided by the number of requested processors.
+/// - User who submitted the job (index 11)
+/// - Group of the user who submitted the job (index 12)
+///
+/// @see #getInstance(String, int)
+/// @see #generateWorkload()
+///
+/// @author Anthony Sulistio
+/// @author Marcos Dias de Assuncao
+/// @author Manoel Campos da Silva Filho
 public final class SwfWorkloadFileReader extends TraceReaderAbstract {
 
     /**
@@ -81,20 +71,20 @@ public final class SwfWorkloadFileReader extends TraceReaderAbstract {
     private static final int SUBMIT_TIME_INDEX = 1;
 
     /**
-     * Field index of execution time of a job (in seconds).
+     * Field index of the job's execution time (in seconds).
      * The wall clock time the job was running (end time minus start time).
      */
     private static final int RUN_TIME_INDEX = 3;
 
     /**
-     * Field index of number of processors needed for a job.
-     * In most cases this is also the number of processors the job uses;
+     * Field index processors' the number needed for a job.
+     * In most cases, this is also the number of processors the job uses;
      * if the job does not use all of them, we typically don't know about it.
      */
     private static final int NUM_PROC_INDEX = 4;
 
     /**
-     * Field index of required number of processors.
+     * Field index of processors' required number.
      */
     private static final int REQ_NUM_PROC_INDEX = 7;
 
@@ -134,20 +124,18 @@ public final class SwfWorkloadFileReader extends TraceReaderAbstract {
     @Setter
     private Predicate<Cloudlet> predicate;
 
-    /**
-     * Create a SwfWorkloadFileReader object.
-     *
-     * @param filePath the workload trace file path in one of the following formats: <i>ASCII text, zip, gz.</i>
-     * @param mips     the MIPS capacity of the PEs from the VM where each created Cloudlet is supposed to run.
-     *                 Considering the workload reader provides the run time for each
-     *                 application registered inside the reader, the MIPS value will be used
-     *                 to compute the {@link Cloudlet#getLength() length of the Cloudlet (in MI)}
-     *                 so that it's expected to execute, inside the VM with the given MIPS capacity,
-     *                 for the same time as specified into the workload reader.
-     * @throws IllegalArgumentException when the workload trace file name is null or empty; or the resource PE mips is less or equal to 0
-     * @throws FileNotFoundException    when the file is not found
-     * @see #getInstance(String, int)
-     */
+    /// Create a SwfWorkloadFileReader object.
+    ///
+    /// @param filePath the workload trace file path in one of the following formats: _ASCII text, zip, gz._
+    /// @param mips     the MIPS capacity of the PEs from the VM where each created Cloudlet is supposed to run.
+    ///                 Consider the workload reader provides the run time for each
+    ///                 application registered inside the reader.
+    ///                 The MIPS value will be used to compute the [length of the Cloudlet (in MI)][Cloudlet#getLength()]
+    ///                 so that it's expected to execute inside the VM with the given MIPS capacity,
+    ///                 at the same time as specified into the workload reader.
+    /// @throws IllegalArgumentException when the workload trace file name is null or empty; or the resource PE mips is less or equal to 0
+    /// @throws FileNotFoundException    when the file is not found
+    /// @see #getInstance(String, int)
     public SwfWorkloadFileReader(@NonNull final String filePath, final int mips) {
         super(filePath);
         this.setMips(mips);
@@ -161,27 +149,25 @@ public final class SwfWorkloadFileReader extends TraceReaderAbstract {
         this.predicate = cloudlet -> true;
     }
 
-    /**
-     * {@return a new {@link SwfWorkloadFileReader} instance from a workload file}
-     * inside the <b>application's resource directory</b>.
-     * Use the available constructors if you want to load a file outside the resource directory.
-     *
-     * @param fileName the workload trace <b>relative file name</b> in one of the following formats: <i>ASCII text, zip, gz.</i>
-     * @param mips     the MIPS capacity of the PEs from the VM where each created Cloudlet is supposed to run.
-     *                 Considering the workload reader provides the run time for each
-     *                 application registered inside the reader, the MIPS value will be used
-     *                 to compute the {@link Cloudlet#getLength() length of the Cloudlet (in MI)}
-     *                 so that it's expected to execute, inside the VM with the given MIPS capacity,
-     *                 for the same time as specified into the workload reader.
-     * @throws IllegalArgumentException when the workload trace file name is null or empty; or the resource PE mips is less or equal to 0
-     * @throws UncheckedIOException     when the file cannot be accessed (such as when it doesn't exist)
-     */
+    /// {@return a new {@link SwfWorkloadFileReader} instance from a workload file}
+    /// inside the **application's resource directory**.
+    /// Use the available constructors if you want to load a file outside the resource directory.
+    ///
+    /// @param fileName the workload trace **relative file name** in one of the following formats: _ASCII text, zip, gz._
+    /// @param mips     the MIPS capacity of the PEs from the VM where each created Cloudlet is supposed to run.
+    ///                 Consider the workload reader provides the run time for each
+    ///                 application registered inside the reader.
+    ///                 The MIPS value will be used to compute the [length of the Cloudlet (in MI)][Cloudlet#getLength()]
+    ///                 so that it's expected to execute inside the VM with the given MIPS capacity,
+    ///                 at the same time as specified into the workload reader.
+    /// @throws IllegalArgumentException when the workload trace file name is null or empty; or the resource PE mips is less or equal to 0
+    /// @throws UncheckedIOException     when the file cannot be accessed (such as when it doesn't exist)
     public static SwfWorkloadFileReader getInstance(final String fileName, final int mips) {
         return new SwfWorkloadFileReader(fileName, mips);
     }
 
     /**
-     * {@return a list of Cloudlet} representing jobs to be executed.
+     * {@return a list of Cloudlet representing jobs to be executed}
      * The list is generated only if it wasn't yet.
      */
     public List<Cloudlet> generateWorkload() {
@@ -194,29 +180,27 @@ public final class SwfWorkloadFileReader extends TraceReaderAbstract {
 
     /**
      * Extracts relevant information from a given array of fields, representing
-     * a line from the trace reader, and creates a cloudlet using this
-     * information.
+     * a line from the trace reader, and creates a cloudlet using this information.
      *
      * @param parsedLineArray an array containing the field values from a parsed trace line
      * @return true if the parsed line is valid and the Cloudlet was created, false otherwise
      */
     private boolean createCloudletFromTraceLine(final String[] parsedLineArray) {
-        //If all the fields couldn't be read, don't create the Cloudlet.
+        // If all the fields couldn't be read, don't create the Cloudlet.
         if (parsedLineArray.length < FIELD_COUNT) {
             return false;
         }
 
-        final int id = JOB_NUM_INDEX <= IRRELEVANT ? cloudlets.size() + 1 : Integer.parseInt(parsedLineArray[JOB_NUM_INDEX].trim());
+        final int id = JOB_NUM_INDEX <= IRRELEVANT ? cloudlets.size() + 1 : parseInt(parsedLineArray[JOB_NUM_INDEX].trim());
 
-        /* according to the SWF manual, runtime of 0 is possible due
-         to rounding down. E.g. runtime is 0.4 seconds -> runtime = 0*/
-        final int runTime = Math.max(Integer.parseInt(parsedLineArray[RUN_TIME_INDEX].trim()), 1);
+        /* According to the SWF manual, runtime of 0 is possible due
+         to rounding down. For instance, runtime is 0.4 seconds -> runtime = 0*/
+        final int runTime = Math.max(parseInt(parsedLineArray[RUN_TIME_INDEX].trim()), 1);
 
-        /* if the required num of allocated processors field is ignored
-        or zero, then use the actual field*/
+        // If the required num of allocated processors field is ignored or zero, then use the actual field.
         final int maxNumProc = Math.max(
-                                    Integer.parseInt(parsedLineArray[REQ_NUM_PROC_INDEX].trim()),
-                                    Integer.parseInt(parsedLineArray[NUM_PROC_INDEX].trim())
+                                    parseInt(parsedLineArray[REQ_NUM_PROC_INDEX].trim()),
+                                    parseInt(parsedLineArray[NUM_PROC_INDEX].trim())
                                );
         final int numProc = Math.max(maxNumProc, 1);
 
@@ -233,7 +217,7 @@ public final class SwfWorkloadFileReader extends TraceReaderAbstract {
     }
 
     /**
-     * {@return a new Cloudlet} created with the given information.
+     * {@return a new Cloudlet created with the given information}
      *
      * @param id      a Cloudlet ID
      * @param runTime The number of seconds the Cloudlet has to run.

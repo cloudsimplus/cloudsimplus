@@ -32,6 +32,7 @@ import org.cloudsimplus.autoscaling.VerticalVmScaling;
  * This scaling type may not automatically move a Vm from an under or overload state,
  * since it will increase or decrease the resource capacity the specified fraction
  * at a time.
+ *
  * <p>This gradual resize may give the opportunity for the Vm workload to return
  * to the normal state, without requiring further scaling.
  * However, if the workload doesn't return quickly

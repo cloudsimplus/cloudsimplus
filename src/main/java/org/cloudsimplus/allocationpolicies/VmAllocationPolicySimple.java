@@ -20,7 +20,7 @@ import static java.util.Comparator.comparing;
 /**
  * A VmAllocationPolicy implementation that chooses, as
  * the host for a VM, that one with the fewest PEs in use.
- * <b>It is therefore a Worst Fit policy</b>, allocating each VM into the host with most available PEs.
+ * <b>It is therefore a Worst-Fit policy</b>, allocating each VM into the host with the highest number of available PEs.
  *
  * <p>This is a really computationally complex policy since the worst-case complexity
  * to allocate a Host for a VM is O(N), where N is the number of Hosts.
@@ -38,14 +38,14 @@ import static java.util.Comparator.comparing;
  */
 public class VmAllocationPolicySimple extends VmAllocationPolicyAbstract {
     /**
-     * Creates a VmAllocationPolicySimple.
+     * Creates a VmAllocationPolicy.
      */
     public VmAllocationPolicySimple() {
         super();
     }
 
     /**
-     * Creates a VmAllocationPolicySimple, changing the {@link Function} to select a Host for a Vm
+     * Creates a VmAllocationPolicy, changing the {@link Function} to select a Host for a Vm
      * in order to define a different policy.
      *
      * @param findHostForVmFunction a {@link Function} to select a Host for a given Vm.

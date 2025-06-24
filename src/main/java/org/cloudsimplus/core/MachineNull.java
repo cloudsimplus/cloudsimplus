@@ -30,8 +30,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * A class that implements the Null Object Design Pattern for {@link Machine}
- * objects.
+ * A class that implements the Null Object Design Pattern for {@link Machine} objects.
  *
  * @author Manoel Campos da Silva Filho
  * @see Machine#NULL

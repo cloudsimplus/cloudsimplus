@@ -39,17 +39,15 @@ import org.cloudsimplus.hosts.Host;
 public interface HostEventInfo extends EventInfo {
 
     /**
-     * Gets the {@link Host} for which the event happened.
-     * @return
+     * @return the {@link Host} for which the event happened.
      */
     Host getHost();
 
     /**
-     * Gets a EventInfo instance from the given parameters.
+     * Gets a {@code HostEventInfo} instance from the given parameters.
      *
      * @param listener the listener to be notified about the event
      * @param time the time the event happened
-     * @return
      */
     static HostEventInfo of(final EventListener<? extends EventInfo> listener, final Host host, final double time) {
         return new HostEventInfo() {

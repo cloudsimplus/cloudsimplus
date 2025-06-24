@@ -15,8 +15,7 @@ import java.io.Serial;
 
 /**
  * A Pseudo-Random Number Generator following the
- * <a href="https://en.wikipedia.org/wiki/Exponential_distribution">Exponential
- * distribution</a>.
+ * <a href="https://en.wikipedia.org/wiki/Exponential_distribution">Exponential distribution</a>.
  *
  * @author Marcos Dias de Assuncao
  * @author Manoel Campos da Silva Filho
@@ -44,7 +43,6 @@ public class ExponentialDistr extends ExponentialDistribution implements Continu
      * Creates a exponential Pseudo-Random Number Generator (PRNG).
      *
      * @param mean the mean for the distribution.
-     *
      * @param seed the seed to be used.
      * @see #ExponentialDistr(double, long, RandomGenerator)
      */
@@ -53,7 +51,7 @@ public class ExponentialDistr extends ExponentialDistribution implements Continu
     }
 
     /**
-     * Creates a exponential Pseudo-Random Number Generator (RNG).
+     * Creates a exponential Pseudo-Random Number Generator (PRNG).
      * @param mean the mean for the distribution.
      * @param seed the seed <b>already used</b> to initialize the Pseudo-Random Number Generator
      * @param rng the actual Pseudo-Random Number Generator that will be the base

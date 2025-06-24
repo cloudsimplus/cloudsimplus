@@ -4,8 +4,7 @@ import org.cloudsimplus.provisioners.PeProvisioner;
 import org.cloudsimplus.provisioners.PeProvisionerSimple;
 
 /**
- * A class that implements the Null Object Design Pattern for {@link Pe}
- * class.
+ * A class that implements the Null Object Design Pattern for {@link Pe} class.
  *
  * @author Manoel Campos da Silva Filho
  * @see Pe#NULL

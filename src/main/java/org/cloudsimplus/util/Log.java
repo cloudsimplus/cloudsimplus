@@ -51,7 +51,10 @@ public final class Log {
     public static void setLevel(final Logger logger, final Level level) {
         if (logger instanceof ch.qos.logback.classic.Logger logback)
             logback.setLevel(level);
-        else throw new IllegalArgumentException("The logger must be and instance of " + ch.qos.logback.classic.Logger.class.getName());
+        else {
+            final var msg = "The logger must be and instance of " + ch.qos.logback.classic.Logger.class.getName();
+            throw new IllegalArgumentException(msg);
+        }
     }
 
     /**

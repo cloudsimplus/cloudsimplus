@@ -37,7 +37,7 @@ public class NormalDistr extends NormalDistribution implements ContinuousDistrib
      *
 	 * @param mean the mean for the distribution.
      * @param standardDeviation the standard deviation for the distribution.
-     * @param seed the seed to be used.
+     * @param seed the seed to initialize the generator
      *
      * @see #NormalDistr(double, double, long, RandomGenerator)
      */

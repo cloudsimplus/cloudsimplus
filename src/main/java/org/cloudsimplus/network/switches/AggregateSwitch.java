@@ -15,9 +15,9 @@ import org.cloudsimplus.util.BytesConversion;
 
 /**
  * This class represents an Aggregate Switch in a Datacenter network.
- * It interacts with other Datacenter in order to exchange packets.
+ * It interacts with another Datacenter to exchange packets.
  *
- * <p>Please refer to following publication for more details:
+ * <p>Please refer to the following publication for more details:
  * <ul>
  * <li>
  * <a href="https://doi.org/10.1109/UCC.2011.24">
@@ -37,7 +37,7 @@ import org.cloudsimplus.util.BytesConversion;
  */
 public class AggregateSwitch extends AbstractSwitch {
     /**
-     * The level (layer) of the switch in the network topology.
+     * The level (layer) of the Switch in the network topology.
      */
     public static final int LEVEL = 1;
 
@@ -48,7 +48,7 @@ public class AggregateSwitch extends AbstractSwitch {
 
     /**
      * Default downlink bandwidth of {@link AggregateSwitch} in Megabits/s.
-     * It also represents the uplink bandwidth of connected edge Datacenter.
+     * It also represents the uplink bandwidth of the connected Edge Datacenter.
      */
     public static final long DOWNLINK_BW =  (long) BytesConversion.MEGA * 100 * 8;
 
@@ -59,7 +59,7 @@ public class AggregateSwitch extends AbstractSwitch {
     public static final int PORTS = 1;
 
     /**
-     * Instantiates a Aggregate AbstractSwitch specifying the Datacenter that are
+     * Instantiates an Aggregate Switch, specifying the Datacenter which is
      * connected to its downlink and uplink ports and corresponding bandwidths.
      *
      * @param simulation the CloudSimPlus instance that represents the simulation the Entity belongs
@@ -85,7 +85,7 @@ public class AggregateSwitch extends AbstractSwitch {
 
     @Override
     protected void processPacketUp(final SimEvent evt) {
-        // packet is coming from edge router, so it needs to be sent to either root or another edge switch
+        // A packet is coming from edge router, so it needs to be sent to either root or another edge switch
         super.processPacketUp(evt);
         final var netPkt = (HostPacket) evt.getData();
         final var downlinkSw = netPkt.getVmEdgeSwitch();
@@ -96,9 +96,9 @@ public class AggregateSwitch extends AbstractSwitch {
     }
 
     /**
-     * Checks if the Aggregate switch is connected to a given Edge switch.
-     * @param edgeSwitch the id of the edge switch to check if the aggregate switch is connected to
-     * @return true if the edge switch was found, false otherwise
+     * Checks if the Aggregate Switch is connected to a given {@link EdgeSwitch}.
+     * @param edgeSwitch the Edge Switch to check if the Aggregate Switch is connected to
+     * @return true if the Edge Switch was found, false otherwise
      */
     private boolean findConnectedEdgeSwitch(final Switch edgeSwitch) {
         return getDownlinkSwitches().stream().anyMatch(edgeSwitch::equals);

@@ -18,7 +18,7 @@ import org.cloudsimplus.core.Identifiable;
 /**
  * An abstract class to be implemented by tasks that can be executed by a {@link NetworkCloudlet}.
  *
- * <p>Please refer to following publication for more details:
+ * <p>Please refer to the following publication for more details:
  * <ul>
  * <li>
  * <a href="https://doi.org/10.1109/UCC.2011.24">
@@ -50,7 +50,7 @@ public abstract class CloudletTask implements Identifiable {
     /**
      * The time the task finished (in seconds) or -1 if not finished yet.
      */
-    @Setter(AccessLevel.NONE)
+    @Getter @Setter(AccessLevel.NONE)
     private double finishTime;
 
     /**
@@ -59,7 +59,7 @@ public abstract class CloudletTask implements Identifiable {
     private long memory;
 
     /**
-     * The NetworkCloudlet that the task belongs to.
+     * The {@link NetworkCloudlet} that the task belongs to.
      */
     @NonNull
     private NetworkCloudlet cloudlet;
@@ -99,7 +99,7 @@ public abstract class CloudletTask implements Identifiable {
     /**
      * Sets the task as finished or not
      * @param finished true to set the task as finished, false otherwise
-     * @throws RuntimeException when the task is already finished and you try to set it as unfinished
+     * @throws RuntimeException when the task is already finished, and you try to set it as unfinished
      */
     protected void setFinished(final boolean finished){
         if(isFinished() && !finished) {
@@ -110,13 +110,6 @@ public abstract class CloudletTask implements Identifiable {
         if(isActive() && finished) {
             finishTime = cloudlet.getSimulation().clock();
         }
-    }
-
-    /**
-     * @return the time the task finished (in seconds) or -1 if not finished yet.
-     */
-    public double getFinishTime() {
-        return finishTime;
     }
 
     public boolean isExecutionTask(){

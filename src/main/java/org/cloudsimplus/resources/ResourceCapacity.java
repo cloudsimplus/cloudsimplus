@@ -31,7 +31,7 @@ package org.cloudsimplus.resources;
  */
 public interface ResourceCapacity  {
     /**
-     * {@return the total capacity} of the resource
+     * @return the total capacity of the resource, which the unit depends on each implementing class.
      */
     long getCapacity();
 }

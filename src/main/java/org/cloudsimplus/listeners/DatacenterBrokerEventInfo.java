@@ -26,7 +26,7 @@ package org.cloudsimplus.listeners;
 import org.cloudsimplus.brokers.DatacenterBroker;
 
 /**
- * An interface that represent data to be passed
+ * An interface that represents data to be passed
  * to {@link EventListener} objects that are registered to be notified
  * when some events happen for a given {@link DatacenterBroker}.
  *
@@ -36,8 +36,7 @@ import org.cloudsimplus.brokers.DatacenterBroker;
 public interface DatacenterBrokerEventInfo extends EventInfo {
 
     /**
-     * Gets the {@link DatacenterBroker} for which the event happened.
-     * @return
+     * @return the {@link DatacenterBroker} for which the event happened.
      */
     DatacenterBroker getDatacenterBroker();
 

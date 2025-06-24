@@ -24,9 +24,9 @@ import java.util.function.Predicate;
 /**
  * A {@link VmAllocationPolicy} that uses a Static CPU utilization Threshold (THR) to
  * detect host {@link #getUnderUtilizationThreshold() under} and
- * {@link #getOverUtilizationThreshold(Host)} over} utilization.
+ * {@link #getOverUtilizationThreshold(Host) over utilization}.
  *
- * <p>It's a <b>First Fit policy</b> which selects the first Host having enought capacity for a given VM,
+ * <p>It's a <b>First Fit policy</b> which selects the first Host having enough capacity for a given VM,
  * <b>disregarding energy consumption</b>.</p>
  *
  * @author Manoel Campos da Silva Filho
@@ -37,11 +37,12 @@ public class VmAllocationPolicyMigrationFirstFitStaticThreshold extends VmAlloca
     private int lastHostIndex;
 
     /**
-     * Creates a VmAllocationPolicyMigrationFirstFitStaticThreshold.
+     * Creates a VmAllocationPolicy.
      * It uses a {@link #DEF_OVER_UTILIZATION_THRESHOLD default over utilization threshold}
-     * and a {@link #DEF_UNDERLOAD_THRESHOLD default under utilization threshold}.
+     * and a {@link #DEF_UNDER_UTILIZATION_THRESHOLD default under utilization threshold}.
      *
-     * @param vmSelectionPolicy the policy that defines how VMs are selected for migration
+     * @param vmSelectionPolicy the {@link VmAllocationPolicyMigration#getVmSelectionPolicy() policy}
+     *                          that defines how VMs are selected for migration
      * @see #setUnderUtilizationThreshold(double)
      * @see #setOverUtilizationThreshold(double)
      */
@@ -49,6 +50,15 @@ public class VmAllocationPolicyMigrationFirstFitStaticThreshold extends VmAlloca
         this(vmSelectionPolicy, DEF_OVER_UTILIZATION_THRESHOLD);
     }
 
+    /**
+     * Creates a VmAllocationPolicy with a given over utilization threshold.
+     *
+     * @param vmSelectionPolicy the {@link VmAllocationPolicyMigration#getVmSelectionPolicy() policy}
+     *                          that defines how VMs are selected for migration
+     * @param overUtilizationThreshold {@link #setOverUtilizationThreshold(double) the over utilization threshold percent (between 0 and 1)}
+     * @see #setUnderUtilizationThreshold(double)
+     * @see #setOverUtilizationThreshold(double)
+     */
     public VmAllocationPolicyMigrationFirstFitStaticThreshold(
         final VmSelectionPolicy vmSelectionPolicy,
         final double overUtilizationThreshold)
@@ -57,9 +67,9 @@ public class VmAllocationPolicyMigrationFirstFitStaticThreshold extends VmAlloca
     }
 
     /**
-     * Creates a new VmAllocationPolicy, changing the {@link Function} to select a Host for a Vm.
+     * Creates a VmAllocationPolicy, changing the {@link Function} to select a Host for a Vm.
      * @param vmSelectionPolicy the policy that defines how VMs are selected for migration
-     * @param overUtilizationThreshold the over utilization threshold
+     * @param overUtilizationThreshold {@link #setOverUtilizationThreshold(double) the over utilization threshold percent (between 0 and 1)}
      * @param findHostForVmFunction a {@link Function} to select a Host for a given Vm.
      *                              Passing null makes the Function to be set as the default {@link #findHostForVm(Vm)}.
      * @see VmAllocationPolicy#setFindHostForVmFunction(BiFunction)

@@ -19,7 +19,7 @@ import java.util.function.Predicate;
 import static java.util.Comparator.comparingLong;
 
 /**
- * A VM selection policy that selects for migration the VM with Minimum Migration Time (MMT).
+ * A VM selection policy that selects for migration the {@link Vm} with the Minimum Migration Time (MMT).
  *
  * @author Anton Beloglazov
  * @author Manoel Campos da Silva Filho

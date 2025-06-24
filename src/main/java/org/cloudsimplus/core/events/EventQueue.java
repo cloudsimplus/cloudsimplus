@@ -19,45 +19,34 @@ import java.util.stream.Stream;
  */
 public interface EventQueue {
     /**
-     * Adds a new event to the queue. Adding a new event to the queue preserves the temporal order of
-     * the events in the queue.
+     * Adds a new event to the queue, preserving the temporal order of the events.
      *
-     * @param newEvent The event to be put in the queue.
+     * @param newEvent The event to be added
      */
     void addEvent(SimEvent newEvent);
 
     /**
-     * Returns an iterator to the elements into the queue.
-     *
-     * @return the iterator
+     * @return an iterator to the elements into the queue.
      */
     Iterator<SimEvent> iterator();
 
     /**
-     * Returns a stream to the elements into the queue.
-     *
-     * @return the stream
+     * @return a stream to the elements into the queue.
      */
     Stream<SimEvent> stream();
 
     /**
-     * Returns the size of this event queue.
-     *
-     * @return the size
+     * @return the size of this event queue.
      */
     int size();
 
     /**
-     * Checks if the queue is empty.
-     *
-     * @return true if the queue is empty, false otherwise
+     * {@return true if the queue is empty, false otherwise}
      */
     boolean isEmpty();
 
     /**
-     * Gets the first element of the queue.
-     *
-     * @return the first element
+     * @return the first element of the queue.
      * @throws NoSuchElementException when the queue is empty
      */
     SimEvent first() throws NoSuchElementException;

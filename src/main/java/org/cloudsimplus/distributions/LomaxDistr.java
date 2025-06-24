@@ -14,8 +14,7 @@ import java.io.Serial;
 
 /**
  * A Pseudo-Random Number Generator following the
- * <a href="https://en.wikipedia.org/wiki/Lomax_distribution">
- * Lomax distribution</a>.
+ * <a href="https://en.wikipedia.org/wiki/Lomax_distribution">Lomax distribution</a>.
  *
  * @author Marcos Dias de Assuncao
  * @author Manoel Campos da Silva Filho
@@ -33,7 +32,7 @@ public class LomaxDistr extends ParetoDistr implements ContinuousDistribution {
     private final double shift;
 
     /**
-     * Creates a lomax Pseudo-Random Number Generator (PRNG) using the current time as seed.
+     * Creates a Lomax Pseudo-Random Number Generator (PRNG) using the current time as seed.
      *
      * @param shape the shape parameter of this distribution
      * @param location the location parameter of this distribution
@@ -46,12 +45,12 @@ public class LomaxDistr extends ParetoDistr implements ContinuousDistribution {
     }
 
     /**
-     * Creates a lomax Pseudo-Random Number Generator (PRNG).
+     * Creates a Lomax Pseudo-Random Number Generator (PRNG).
      *
      * @param shape the shape parameter of this distribution
      * @param location the location parameter of this distribution
      * @param shift the shift parameter of this distribution
-     * @param seed the seed
+     * @param seed the seed to initialize the generator
      *
      * @see #LomaxDistr(double, double, double, long, RandomGenerator)
      */
@@ -60,7 +59,7 @@ public class LomaxDistr extends ParetoDistr implements ContinuousDistribution {
     }
 
     /**
-     * Creates a lomax Pseudo-Random Number Generator (PRNG).
+     * Creates a Lomax Pseudo-Random Number Generator (PRNG).
      *
      * @param shape the shape parameter of this distribution
      * @param location the location parameter of this distribution

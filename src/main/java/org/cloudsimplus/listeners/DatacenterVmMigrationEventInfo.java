@@ -30,9 +30,9 @@ import org.cloudsimplus.hosts.HostSuitability;
 import org.cloudsimplus.vms.Vm;
 
 /**
- * An interface that represent data to be passed
+ * An interface that represents data to be passed
  * to {@link EventListener} objects that are registered to be notified
- * when a VM migration is successful or not.
+ * when a {@link Vm} migration is successful or not.
  *
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 6.0.3
@@ -70,16 +70,16 @@ public final class DatacenterVmMigrationEventInfo implements VmDatacenterEventIn
     }
 
     /**
-     * {@return true or false} to indicate if the VM was successfully migrated or not.
+     * @return true or false to indicate if the VM was successfully migrated or not.
      */
     public boolean isMigrationSuccessful() {
         return suitability.fully();
     }
 
     /**
-     * Gets a VmDatacenterEventInfo instance from the given parameters.
+     * Gets a {@code DatacenterVmMigrationEventInfo} instance from the given parameters.
      * The {@link #getDatacenter() Datacenter} attribute is defined as the {@link Datacenter} where the {@link Vm}
-     * is running and the {@link #getTime()} is the current simulation time..
+     * is running and the {@link #getTime()} is the current simulation time.
      * @param listener the listener to be notified about the event
      * @param vm the {@link Vm} that fired the event
      * @param suitability information about the suitability of the Host for the given VM.

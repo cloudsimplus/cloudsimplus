@@ -11,18 +11,16 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * Implements the storage logic for a Datacenter. It keeps a list of
- * storage devices (<a href="https://en.wikipedia.org/wiki/Disk_array">Disk Array</a>),
- * as well as all basic storage related operations.
- * This disk array can be, for instance, a list of {@link HarddriveStorage}
- * or {@link SanStorage}.
- *
- * @author Rodrigo N. Calheiros
- * @author Anton Beloglazov
- * @author Abderrahman Lahiaouni
- * @since CloudSim Plus 2.3.5
- */
+/// Implements the storage logic for a [Datacenter]. It keeps a list of
+/// storage devices ([Disk Array](https://en.wikipedia.org/wiki/Disk_array)),
+/// as well as all basic storage related operations.
+/// This disk array can be, for instance, a list of [HarddriveStorage]
+/// or [SanStorage].
+///
+/// @author Rodrigo N. Calheiros
+/// @author Anton Beloglazov
+/// @author Abderrahman Lahiaouni
+/// @since CloudSim Plus 2.3.5
 public class DatacenterStorage {
 
 	/** @see #getStorageList() */
@@ -31,18 +29,14 @@ public class DatacenterStorage {
     @Getter @Setter
 	private Datacenter datacenter;
 
-    /**
-     * Creates a DatacenterStorage with an empty {@link #getStorageList() storage list}.
-     */
-	public DatacenterStorage(){
+    /// Creates a DatacenterStorage with an empty [storage list][#getStorageList()].
+    public DatacenterStorage(){
     	this(new ArrayList<>());
     }
 
-    /**
-     * Creates a DatacenterStorage with a given {@link #getStorageList() storage list}.
-     * @param storageList the storage list to set
-     */
-	public DatacenterStorage(final List<SanStorage> storageList){
+    /// Creates a DatacenterStorage with a given [storage list][#getStorageList()].
+    /// @param storageList the storage list to set
+    public DatacenterStorage(final List<SanStorage> storageList){
     	this.setStorageList(storageList);
     }
 
@@ -70,22 +64,17 @@ public class DatacenterStorage {
         return storageList.stream().anyMatch(storage -> storage.contains(fileName));
     }
 
-    /**
-     * Gets the list of storage devices of the Datacenter,
-     * which is like a <a href="https://en.wikipedia.org/wiki/Disk_array">Disk Array</a>.
-     * @return
-     */
+    /// @return the list of storage devices from the Datacenter,
+    /// which is like a [Disk Array](https://en.wikipedia.org/wiki/Disk_array).
     public List<SanStorage> getStorageList() {
         return Collections.unmodifiableList(storageList);
     }
 
-    /**
-     * Sets the list of storage devices of the Datacenter,
-     * which is like a <a href="https://en.wikipedia.org/wiki/Disk_array">Disk Array</a>.
-     *
-     * @param storageList the new storage list
-     * @return
-     */
+    /// Sets the list of storage devices from the Datacenter,
+    /// which is like a [Disk Array](https://en.wikipedia.org/wiki/Disk_array).
+    ///
+    /// @param storageList the new storage list
+    /// @return this instance
     public final DatacenterStorage setStorageList(@NonNull final List<SanStorage> storageList) {
         this.storageList = storageList;
         setAllFilesOfAllStoragesToThisDatacenter();
@@ -94,7 +83,7 @@ public class DatacenterStorage {
     }
 
     /**
-     * Assigns all files of all storage devices to this Datacenter.
+     * Assigns all files from all storage devices to this Datacenter.
      */
     private void setAllFilesOfAllStoragesToThisDatacenter() {
         storageList.stream()
@@ -107,7 +96,7 @@ public class DatacenterStorage {
      * Predict the total time to transfer a list of files.
      *
      * @param requiredFiles the files to be transferred
-     * @return the total predicted time to transfer the files
+     * @return the total predicted time to transfer the files (in seconds)
      */
     public double predictFileTransferTime(final List<String> requiredFiles) {
         double totalTime = 0.0;
@@ -124,7 +113,7 @@ public class DatacenterStorage {
      * and computes the time to transfer it from that device.
      *
      * @param fileName the name of the file to try finding and get the transfer time
-     * @return the time to transfer the file or {@link SanStorage#FILE_NOT_FOUND} if not found.
+     * @return the time to transfer the file (in seconds) or {@link SanStorage#FILE_NOT_FOUND} if not found.
      */
     private double timeToTransferFileFromStorage(final String fileName) {
         for (final SanStorage storage: getStorageList()) {

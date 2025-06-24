@@ -14,36 +14,33 @@ import org.cloudsimplus.vms.Vm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * An interface which defines the desired functionality of a storage system in a Data Cloud
- * that performs operations on a file system, such as file inclusion, exclusion
- * and renaming.
- * Classes that implement this interface should simulate the characteristics of different storage
- * systems by setting the capacity of the storage and the maximum transfer rate. The transfer rate
- * defines the time required to execute some common operations on the storage, e.g. storing a file,
- * getting a file and deleting a file.
- *
- * @author Uros Cibej
- * @author Anthony Sulistio
- * @author Manoel Campos da Silva Filho
- * @see <a href="https://en.wikipedia.org/wiki/Hard_disk_drive_performance_characteristics#Access_time">Hard disk drive performance characteristics</a>
- */
+/// An interface which defines the desired functionality of a storage system in a cloud environment
+/// that performs operations on a file system, such as file inclusion, exclusion and renaming.
+///
+/// Classes that implement this interface should simulate the characteristics of different storage
+/// systems by setting the capacity of the storage and the maximum transfer rate. The transfer rate
+/// defines the time required to execute some common operations on the storage, e.g., storing,
+/// retrieving and deleting a file.
+///
+/// @author Uros Cibej
+/// @author Anthony Sulistio
+/// @author Manoel Campos da Silva Filho
+/// @see [Hard disk drive performance characteristics](https://en.wikipedia.org/wiki/Hard_disk_drive_performance_characteristics#Access_time)
 public interface FileStorage extends Resource {
     /**
-     * An attribute that implements the Null Object Design Pattern for {@link FileStorage}
-     * objects.
+     * An attribute that implements the Null Object Design Pattern for {@link FileStorage} objects.
      */
     FileStorage NULL = new FileStorageNull();
 
     Logger LOGGER = LoggerFactory.getLogger(HarddriveStorage.class.getSimpleName());
 
     /**
-     * Default rotational latency of this storage in seconds.
+     * Default read latency of this storage in seconds.
      */
     double DEF_LATENCY_SECS = 0.00417;
 
     /**
-     * Default average seek time of the storage in seconds.
+     * Default average seek-time of the storage in seconds.
      */
     double DEF_SEEK_TIME_SECS = 0.009;
 
@@ -73,23 +70,21 @@ public interface FileStorage extends Resource {
      *
      * @param maxTransferRate the maximum transfer rate in Mbits/sec
      * @throws IllegalArgumentException if the value is lower than 1
-     * @return
+     * @return this instance
      */
     FileStorage setMaxTransferRate(double maxTransferRate);
 
     /**
-     * Sets the rotational latency of this storage in seconds (if any).
+     * Sets the read latency of this storage in seconds.
      *
      * @param latency the new latency in seconds
      * @throws IllegalArgumentException if the value is lower than 0
-     * @return
+     * @return this instance
      */
     FileStorage setLatency(double latency);
 
     /**
-     * Gets the rotational latency of this storage in seconds  (if any).
-     *
-     * @return the read latency in seconds
+     * @return the read latency of this storage in seconds.
      */
     double getLatency();
 

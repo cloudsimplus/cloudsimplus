@@ -26,15 +26,16 @@ package org.cloudsimplus.utilizationmodels;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
+import org.cloudsimplus.cloudlets.Cloudlet;
 import org.cloudsimplus.util.Conversion;
 
 import java.util.function.Function;
 
 /**
- * A Cloudlet {@link UtilizationModel} that allows to increase the utilization of
+ * A {@link Cloudlet} {@link UtilizationModel} that allows to increase the utilization of
  * the related resource along the simulation time.
  * It accepts a Lambda Expression that defines how the utilization increment must behave.
- * This way, the class enables the developer to define such a behaviour when instantiating
+ * This way, the class enables the developer to define such a behavior when instantiating
  * objects of this class.
  *
  * <p>For instance, it is possible to use the class to arithmetically or
@@ -46,59 +47,54 @@ import java.util.function.Function;
  * @since CloudSim Plus 1.0
  */
 public class UtilizationModelDynamic extends UtilizationModelAbstract {
-    /**
-     * Indicates whether the utilization model is readonly.
-     * It's set to true when using the
-     * {@link #UtilizationModelDynamic(UtilizationModelDynamic) copy constructor}
-     * to clone the current UtilizationModel instance.
-     * Such a clone is given as parameter when the
-     * {@link #utilizationUpdateFunction} is called to inform
-     * the researcher's simulation that the utilization has changed.
-     * Check the copy constructor documentation for more details
-     * on how this attribute is used.
-     */
+    /// Indicates whether the utilization model is readonly or not.
+    /// It's set to true when using the
+    /// [copy constructor][#UtilizationModelDynamic(UtilizationModelDynamic)]
+    /// to clone the current UtilizationModel instance.
+    ///
+    /// Such a clone is given as parameter when the
+    /// [#utilizationUpdateFunction] is called to inform
+    /// the researcher's simulation that the utilization has changed.
+    /// Check the copy constructor documentation for more details on how this attribute is used.
     private boolean readOnly;
     private double currentUtilization;
 
-    /**
-     * The maximum amount of resource that will be used.
-     *
-     * <p><b>WARNING:</b> Such a value can be a percentage in scale from [0 to 1] or an absolute value,
-     * depending on the {@link #getUnit()}.</p>
-     */
+    /// The maximum amount of resource that will be used.
+    ///
+    /// **WARNING:** Such a value can be a percentage in scale from [0 to 1] or an absolute value,
+    /// depending on the [#getUnit()].
     @Getter
     private double maxResourceUtilization;
 
-    /**
-     * A function defining how the resource utilization will be
-     * incremented or decremented along the time.
-     *
-     * <p>Such a function must require one {@link UtilizationModelDynamic} parameter
-     * and return the new resource utilization.
-     * When this function is called internally by this {@code UtilizationModel},
-     * it receives a read-only {@link UtilizationModelDynamic} instance and allow
-     * the developer using this {@code UtilizationModel} to
-     * define how the utilization must be updated.
-     *
-     * <p>For instance, to define an arithmetic increment, a Lambda function
-     * to be given to this setter could be defined as below:</p>
-     * </p>
-     *
-     * <p>{@code um -> um.getUtilization() + um.getTimeSpan()*0.1}</p>
-     *
-     * <p>Considering the {@code UtilizationModel} {@link Unit} was defined in {@link Unit#PERCENTAGE},
-     * such a Lambda Expression will increment the usage in 10% for each second that has passed
-     * since the last time the utilization was computed.</p>
-     *
-     * <p>The value returned by the given Lambda Expression will be automatically validated
-     * to avoid negative utilization or utilization over 100%
-     * (when the {@code UtilizationModel} {@link #getUnit() unit} is defined in percentage).
-     * The function would be defined to decrement the utilization along the time,
-     * by just changing the plus to a minus signal.</p>
-     *
-     * <p>Defining a geometric progression for the resource utilization is as simple as
-     * changing the plus signal to a multiplication signal.</p>
-     */
+    /// A function defining how the resource utilization will be
+    /// incremented or decremented along the time.
+    ///
+    /// Such a function must require one [UtilizationModelDynamic] parameter
+    /// and return the new resource utilization.
+    /// When this function is called internally by this `UtilizationModel`,
+    /// it receives a read-only [UtilizationModelDynamic] instance and allows
+    /// the developer using this `UtilizationModel` to
+    /// define how the utilization must be updated.
+    ///
+    /// For instance, to define an arithmetic increment, a Lambda function
+    /// to be given to this setter could be defined as below:
+    ///
+    /// ```java
+    /// um -> um.getUtilization() + um.getTimeSpan()*0.1
+    /// ```
+    ///
+    /// Considering the `UtilizationModel` [Unit] was defined in [Unit#PERCENTAGE],
+    /// such a Lambda Expression will increment the usage in 10% for each second that has passed
+    /// since the last time the utilization was computed.
+    ///
+    /// The value returned by the given Lambda Expression will be automatically validated
+    /// to avoid negative utilization or utilization over 100%
+    /// (when the `UtilizationModel` [unit][#getUnit()] is defined in percentage).
+    /// The function would be defined to decrement the utilization along the time,
+    /// by just changing the plus to a minus signal.
+    ///
+    /// Implementing a geometric progression for defining resource utilization is as simple as
+    /// changing the plus signal to a multiplication signal.
     @Setter @NonNull
     private Function<UtilizationModelDynamic, Double> utilizationUpdateFunction;
 
@@ -112,86 +108,73 @@ public class UtilizationModelDynamic extends UtilizationModelAbstract {
      */
     private double currentUtilizationTime;
 
-    /**
-     * Creates a UtilizationModelDynamic with no initial utilization.
-     * The resource utilization unit is defined in {@link Unit#PERCENTAGE}.
-     *
-     * <p><b>The utilization won't be dynamically incremented
-     * until an increment function is defined by the {@link #setUtilizationUpdateFunction(Function)}.</b></p>
-     * @see #setUtilizationUpdateFunction(Function)
-     */
+    /// Creates a UtilizationModelDynamic with no initial utilization.
+    /// The resource utilization unit is defined in [Unit#PERCENTAGE].
+    ///
+    /// **The utilization won't be dynamically incremented
+    /// until an increment function is defined by the [#setUtilizationUpdateFunction(Function)].**
+    /// @see #setUtilizationUpdateFunction(Function)
     public UtilizationModelDynamic() {
         this(Unit.PERCENTAGE, 0);
     }
 
-    /**
-     * Creates a UtilizationModelDynamic with no initial utilization.
-     * The resource utilization {@link Unit} is defined according to the given parameter.
-     *
-     * <p><b>The utilization won't be dynamically incremented
-     * until that an increment function is defined by the {@link #setUtilizationUpdateFunction(Function)}.</b></p>
-     * @param unit the {@link Unit} that determines how the resource is used (for instance, if
-     *             resource usage is defined in percentage of the Vm resource or in absolute values)
-     */
+    /// Creates a UtilizationModelDynamic with no initial utilization.
+    /// The resource utilization [Unit] is defined according to the given parameter.
+    ///
+    /// **The utilization won't be dynamically incremented
+    /// until an increment function is defined by the [#setUtilizationUpdateFunction(Function)].**
+    ///
+    /// @param unit the [Unit] that determines how the resource is used (for instance, if
+    ///             resource usage is defined in percentage of the Vm resource or in absolute values)
     public UtilizationModelDynamic(final Unit unit) {
         this(unit, 0);
     }
 
-    /**
-     * Creates a UtilizationModelDynamic that the initial resource utilization
-     * will be defined according to the given parameter and the {@link Unit}
-     * will be set as {@link Unit#PERCENTAGE}.
-     *
-     * <p><b>The utilization will not be dynamically incremented
-     * until that an increment function is defined by the {@link #setUtilizationUpdateFunction(Function)}.</b></p>
-     * @param initialUtilizationPercent the initial percentage of resource utilization
-     */
+    /// Creates a UtilizationModelDynamic that the initial resource utilization
+    /// will be defined according to the given parameter and the [Unit]
+    /// will be set as [Unit#PERCENTAGE].
+    ///
+    /// **The utilization will not be dynamically incremented
+    /// until an increment function is defined by the [#setUtilizationUpdateFunction(Function)].**
+    /// @param initialUtilizationPercent the initial percentage of resource utilization
     public UtilizationModelDynamic(final double initialUtilizationPercent) {
         this(Unit.PERCENTAGE, initialUtilizationPercent);
     }
 
-    /**
-     * Creates a UtilizationModelDynamic with an initial resource utilization
-     * and max resource utilization, where the {@link Unit} is set as {@link Unit#PERCENTAGE}.
-     *
-     * <p><b>The utilization will not be dynamically incremented
-     * until that an increment function is defined by the {@link #setUtilizationUpdateFunction(Function)}.</b></p>
-     * @param initialUtilization the initial resource utilization, that the unit depends
-     *                           on the {@code unit} parameter
-     * @param maxResourceUtilization the maximum resource utilization
-     */
+    /// Creates a UtilizationModelDynamic with an initial resource utilization value
+    /// and max resource utilization, where the [Unit] is set as [Unit#PERCENTAGE].
+    ///
+    /// **The utilization will not be dynamically incremented
+    /// until an increment function is defined by the [#setUtilizationUpdateFunction(Function)].**
+    /// @param initialUtilization the initial resource utilization, that the unit depends on the `unit` parameter
+    /// @param maxResourceUtilization the maximum resource utilization
     public UtilizationModelDynamic(final double initialUtilization, final double maxResourceUtilization) {
         this(Unit.PERCENTAGE, initialUtilization, maxResourceUtilization);
     }
 
-    /**
-     * Creates a UtilizationModelDynamic that the initial resource utilization
-     * and the {@link Unit} will be defined according to the given parameters.
-     *
-     * <p><b>The utilization will not be dynamically incremented
-     * until that an increment function is defined by the {@link #setUtilizationUpdateFunction(Function)}.</b></p>
-     * @param unit the {@link Unit} that determines how the resource is used (for instance, if
-     *             resource usage is defined in percentage of the Vm resource or in absolute values)
-     * @param initialUtilization the initial resource utilization, that the unit depends
-     *                           on the {@code unit} parameter
-     */
+    /// Creates a UtilizationModelDynamic that the initial resource utilization
+    /// and the [Unit] will be defined according to the given parameters.
+    ///
+    /// **The utilization will not be dynamically incremented
+    /// until an increment function is defined by the [#setUtilizationUpdateFunction(Function)].**
+    /// @param unit the [Unit] that determines how the resource is used (for instance, if
+    ///             resource usage is defined in percentage of the Vm resource or in absolute values)
+    /// @param initialUtilization the initial resource utilization, that the unit depends
+    ///                           on the `unit` parameter
     public UtilizationModelDynamic(final Unit unit, final double initialUtilization) {
         this(unit, initialUtilization, unit == Unit.PERCENTAGE ? Conversion.HUNDRED_PERCENT : 0);
     }
 
-    /**
-     * Creates a UtilizationModelDynamic that the initial resource utilization,
-     * max resource utilization and the {@link Unit}
-     * will be defined according to the given parameters.
-     *
-     * <p><b>The utilization will not be dynamically incremented
-     * until that an increment function is defined by the {@link #setUtilizationUpdateFunction(Function)}.</b></p>
-     * @param unit the {@link Unit} that determines how the resource is used (for instance, if
-     *             resource usage is defined in percentage of the Vm resource or in absolute values)
-     * @param initialUtilization the initial resource utilization, that the unit depends
-     *                           on the {@code unit} parameter
-     * @param maxResourceUtilization the maximum resource utilization
-     */
+    /// Creates a UtilizationModelDynamic that the initial resource utilization,
+    /// max resource utilization and the [Unit]
+    /// will be defined according to the given parameters.
+    ///
+    /// **The utilization will not be dynamically incremented
+    /// until an increment function is defined by the [#setUtilizationUpdateFunction(Function)].**
+    /// @param unit the [Unit] that determines how the resource is used (for instance, if
+    ///             resource usage is defined in percentage of the Vm resource or in absolute values)
+    /// @param initialUtilization the initial resource utilization, that the unit depends on the `unit` parameter
+    /// @param maxResourceUtilization the maximum resource utilization
     public UtilizationModelDynamic(final Unit unit, final double initialUtilization, final double maxResourceUtilization) {
         super(unit);
         this.readOnly = false;
@@ -204,29 +187,28 @@ public class UtilizationModelDynamic extends UtilizationModelAbstract {
     }
 
     /**
-     * A copy constructor that creates a read-only UtilizationModelDynamic based on a source object.
+     * A copy constructor that creates a read-only UtilizationModelDynamic based on another one.
      *
      * @param source the source UtilizationModelDynamic to create an instance from
      */
     protected UtilizationModelDynamic(final UtilizationModelDynamic source){
         this(source, source.currentUtilization);
 
-        /** The copy constructor doesn't copy the utilizationUpdateFunction because
-         * when this constructor is used, it sets the copy
-         * to readonly. This way, the  {@link #getUtilization()} doesn't use such a function
-         * to return the current utilization, but the last utilization value stored
-         * in the {@link #currentUtilization} attribute.
-         * Without such a trick, if the researcher calls the {@link #getUtilization(double)}
-         * method inside the update function he/she assigned to the UtilizationModel,
-         * that will cause an infinite loop, since the {@link #getUtilization(double)} will call
-         * the given function to increase the current utilization and return the current value.
-         */
+        /// The copy constructor doesn't copy the utilizationUpdateFunction because
+        /// when this constructor is used, it sets the copy
+        /// to readonly. This way, the [#getUtilization()] doesn't use such a function
+        /// to return the current utilization, but the last utilization value stored
+        /// in the [#currentUtilization] attribute.
+        /// Without such a trick, if the researcher calls the [#getUtilization(double)]
+        /// method inside the update function he/she assigned to the UtilizationModel,
+        /// that will cause an infinite loop. This happens since the [#getUtilization(double)] will call
+        /// the given function to increase the current utilization and return the current value.
         this.utilizationUpdateFunction = modelInstance -> modelInstance.currentUtilization;
         this.readOnly = true;
     }
 
     /**
-     * A copy constructor that creates a UtilizationModelDynamic based on a source object.
+     * A copy constructor that creates a UtilizationModelDynamic based on another one.
      *
      * @param source the source UtilizationModelDynamic to create an instance from
      * @param initialUtilization the initial resource utilization (in the same unit of the given UtilizationModelDynamic instance)
@@ -259,9 +241,11 @@ public class UtilizationModelDynamic extends UtilizationModelAbstract {
         Pass a copy of this current UtilizationModel to avoid it to be changed
         and also to enable the developer to call the getUtilization() method from
         his/her given utilizationUpdateFunction on such an instance,
-        without causing infinity loop. Without passing a UtilizationModel clone,
+        without causing infinity loop.
+
+        Without passing a UtilizationModel clone,
         since the utilizationUpdateFunction function usually will call this current one,
-        that in turns calls the utilizationUpdateFunction to update the utilization progress,
+        that in turn calls the utilizationUpdateFunction to update the utilization progress,
         it would lead to an infinity loop.
         */
         currentUtilization = utilizationUpdateFunction.apply(new UtilizationModelDynamic(this));
@@ -278,34 +262,30 @@ public class UtilizationModelDynamic extends UtilizationModelAbstract {
     }
 
     /**
-     * {@return the time difference} from the current simulation time to the
+     * @return the time difference from the current simulation time to the
      * last time the resource utilization was updated.
      */
     public double getTimeSpan(){
         return currentUtilizationTime - previousUtilizationTime;
     }
 
-    /**
-     * Sets the current resource utilization.
-     *
-     * <p>Such a value can be a percentage in scale from [0 to 1] or an absolute value,
-     * depending on the {@link #getUnit()}.</p>
-     *
-     * @param currentUtilization current resource utilization
-     */
+    /// Sets the current resource utilization.
+    ///
+    /// Such a value can be a percentage in scale from [0 to 1] or an absolute value,
+    /// depending on the [#getUnit()].
+    ///
+    /// @param currentUtilization current resource utilization
     private void setCurrentUtilization(final double currentUtilization) {
         validateUtilizationField("currentUtilization", currentUtilization);
         this.currentUtilization = currentUtilization;
     }
 
-    /**
-     * Sets the maximum amount of resource that will be used.
-     *
-     * <p><b>WARNING:</b> Such a value can be a percentage in scale from [0 to 1] or an absolute value,
-     * depending on the {@link #getUnit()}.</p>
-     *
-     * @param maxResourceUsage the maximum resource usage (in percentage or absolut value)
-     */
+    /// Sets the maximum amount of resource that will be used.
+    ///
+    /// **WARNING:** Such a value can be a percentage in scale from [0 to 1] or an absolute value,
+    /// depending on the [#getUnit()].
+    ///
+    /// @param maxResourceUsage the maximum resource usage (in percentage or absolut value)
     public final UtilizationModelDynamic setMaxResourceUtilization(final double maxResourceUsage) {
         validateUtilizationField("maxResourceUtilization", maxResourceUsage, ALMOST_ZERO);
         this.maxResourceUtilization = maxResourceUsage;

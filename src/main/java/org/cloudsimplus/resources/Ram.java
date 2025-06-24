@@ -23,8 +23,11 @@
  */
 package org.cloudsimplus.resources;
 
+import org.cloudsimplus.hosts.Host;
+import org.cloudsimplus.vms.Vm;
+
 /**
- * Represents the RAM resource of a PM or VM in Megabytes.
+ * Represents the RAM resource of a {@link Host} or {@link Vm} in Megabytes (MB).
  * Such a class allows managing the RAM capacity and allocation.
  *
  * @author Manoel Campos da Silva Filho
@@ -33,7 +36,7 @@ package org.cloudsimplus.resources;
 public class Ram extends ResourceManageableAbstract {
     /**
      * Creates a RAM resource.
-     * @param capacity the RAM capacity in Megabytes
+     * @param capacity the RAM capacity in Megabytes (MB)
      */
     public Ram(final long capacity) {
         super(capacity, "MB");

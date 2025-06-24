@@ -7,12 +7,11 @@ import org.cloudsimplus.power.PowerMeasurement;
 import org.cloudsimplus.util.MathUtil;
 
 
-/**
- * Simple power model defining the power consumption of a data center.
- * It's power usage is the aggregated power usage of all hosts times the
- * <a href="https://en.wikipedia.org/wiki/Power_usage_effectiveness">Power Usage Effectiveness (PUE)</a>.
- * @since CloudSim Plus 6.0.0
- */
+/// Simple power model defining the power consumption of a {@link Datacenter}.
+/// It's power usage is the aggregated power usage of all hosts, multiplied by the
+/// [Power Usage Effectiveness (PUE)](https://en.wikipedia.org/wiki/Power_usage_effectiveness).
+///
+/// @since CloudSim Plus 6.0.0
 public class PowerModelDatacenterSimple extends PowerModelDatacenter {
     /**
      * The Power Usage Effectiveness (PUE) for this Power Model,

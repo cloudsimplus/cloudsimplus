@@ -40,7 +40,7 @@ public final class PowerConversion {
     /**
      * A private constructor to avoid class instantiation.
      */
-    private PowerConversion(){}
+    private PowerConversion(){/**/}
 
     /**
      * Converts watt-seconds (joule) to kWh.

@@ -15,8 +15,7 @@ import java.io.Serial;
 
 /**
  * A Pseudo-Random Number Generator following the
- * <a href="https://en.wikipedia.org/wiki/Log-normal_distribution">Log-normal</a>
- * distribution.
+ * <a href="https://en.wikipedia.org/wiki/Log-normal_distribution">Log-normal distribution</a>.
  *
  * @author Marcos Dias de Assuncao
  * @since CloudSim Toolkit 1.0

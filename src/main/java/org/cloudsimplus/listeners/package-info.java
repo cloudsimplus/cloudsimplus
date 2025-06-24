@@ -5,9 +5,9 @@
  * <p>These notifications are related to changes in the state of simulation entities.
  * The listeners enable, for instance, notifying when:
  * <ul>
- *     <li>a Host updates the processing of its VMs, it is allocated to a Vm or it is deallocated from a Vm;</li>
+ *     <li>a Host updates the processing of its VMs, it is allocated to a Vm, or it is deallocated from a Vm;</li>
  *     <li>a Vm has its processing updated or fails to be placed at a Host due to lack of resources;</li>
- *     <li>a Cloudlet has its processing updated, it finishes its execution inside a Vm;</li>
+ *     <li>a Cloudlet has its processing updated, or it finishes its execution inside a Vm;</li>
  *     <li>a simulation processes any kind of event.</li>
  * </ul>
  * </p>
@@ -21,7 +21,7 @@
  * by passing an anonymous class to them.
  * </p>
  *
- * <p>Listeners allow developers to perform specific tasks when different events happen and can be
+ * <p>Listeners allow developers to perform specific tasks when different events happen. They can be
  * largely used for monitoring purposes, metrics collection and dynamic creation of objects,
  * such as VMs and Cloudlets, at runtime.</p>
  *

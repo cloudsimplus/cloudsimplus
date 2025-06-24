@@ -25,20 +25,18 @@ package org.cloudsimplus.traces.google;
 
 import org.cloudsimplus.hosts.Host;
 
-/**
- * Defines the type of event (a line) in the trace file
- * that represents the operation to be performed with the {@link Host}.
- * Each enum instance is a possible value for the {@link MachineEventField#EVENT_TYPE} field.
- *
- * <p>This enum defines a some methods to move the processing logic of each event type
- * to the enum value associated to it. Since the enum includes the {@link #process(GoogleMachineEventsTraceReader)}
- * abstract method, if a new enum value is added, we just need to implement the method for that value.
- * Using such approach we avoid spreading if chains to check which event type a trace line is
- * to call the corresponding process method.</p>
- *
- * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 4.0.0
- */
+/// Defines the type of event (a line) in the trace file
+/// that represents the operation to be performed with the [Host].
+/// Each enum instance is a possible value for the [MachineEventField#EVENT_TYPE] field.
+///
+/// This enum defines some methods to move the processing logic of each event type
+/// to the enum value associated with it. Since the enum includes the [#process(GoogleMachineEventsTraceReader)]
+/// abstract method, if a new enum value is added, we just need to implement the method for that value.
+/// Using such an approach, we avoid spreading `if` chains to check which event type a trace line is
+/// and call the corresponding process method.
+///
+/// @author Manoel Campos da Silva Filho
+/// @since CloudSim Plus 4.0.0
 public enum MachineEventType {
     /**
      * 0: A {@link Host} became available to the cluster - all machines in the trace will have an ADD event.

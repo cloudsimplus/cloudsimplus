@@ -17,18 +17,15 @@ import org.cloudsimplus.vms.Vm;
 import java.util.Objects;
 import java.util.function.Function;
 
-/**
- * A best-effort {@link ResourceProvisioner} policy used by a {@link Host} to provide a resource to VMs:
- * <ul>
- *  <li>if there is available amount of the resource on the host, it provides;</li>
- *  <li>otherwise, it fails.</li>
- * </ul>
- *
- * @author Rodrigo N. Calheiros
- * @author Anton Beloglazov
- * @author Manoel Campos da Silva Filho
- * @since 3.0.4
- */
+/// A best-effort [ResourceProvisioner] policy used by a [Host] to provide a resource to VMs:
+///
+/// - if there is available amount of the resource on the Host;
+/// - otherwise, it fails.
+///
+/// @author Rodrigo N. Calheiros
+/// @author Anton Beloglazov
+/// @author Manoel Campos da Silva Filho
+/// @since 3.0.4
 public class ResourceProvisionerSimple extends ResourceProvisionerAbstract {
     /**
      * Creates a new ResourceProvisionerSimple which the {@link ResourceManageable}
@@ -60,12 +57,11 @@ public class ResourceProvisionerSimple extends ResourceProvisionerAbstract {
         }
 
         /* Stores the resource allocation before changing the current allocation,
-         * this line must be placed here and not at the end
-         * where it's in fact used.*/
+         * this line must be placed here and not at the end where it's in fact used.*/
         final ResourceManageable vmResource = getVmResourceFunction().apply(vm);
         final long prevVmResourceAllocation = vmResource.getAllocatedResource();
         if (prevVmResourceAllocation > 0) {
-            //De-allocates any amount of the resource assigned to the Vm in order to allocate a new capacity
+            //De-allocates any amount of the resource assigned to the Vm to allocate a new capacity
             deallocateResourceForVm(vm);
         }
 
@@ -79,7 +75,7 @@ public class ResourceProvisionerSimple extends ResourceProvisionerAbstract {
             return false;
         }
 
-        //Allocates the requested resource from the physical resource
+        // Allocates the requested resource from the physical resource
         getPmResource().allocateResource(newTotalVmResourceCapacity);
         vmResource.setCapacity(newTotalVmResourceCapacity);
         vmResource.setAllocatedResource(newTotalVmResourceCapacity);
@@ -96,10 +92,10 @@ public class ResourceProvisionerSimple extends ResourceProvisionerAbstract {
         final ResourceManageable vmResource = getVmResourceFunction().apply(vm);
         final long vmAllocatedResource = vmResource.getAllocatedResource();
 
-        //De-allocates the virtual resource from the VM
+        // De-allocates the virtual resource from the VM
         vmResource.deallocateAllResources();
 
-        //De-allocates the virtual resource to make it free on the physical machine
+        // De-allocates the virtual resource to make it free on the physical machine
         getPmResource().deallocateResource(vmResource.getCapacity());
         return vmAllocatedResource;
     }

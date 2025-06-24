@@ -48,7 +48,7 @@ public final class ResourceLoader {
     /**
      * A private constructor to avoid class instantiation.
      */
-    private ResourceLoader(){}
+    private ResourceLoader(){/**/}
 
     /**
      * Instantiates a {@link BufferedReader} to read a file
@@ -66,7 +66,7 @@ public final class ResourceLoader {
     /**
      * Instantiates a {@link InputStreamReader} to read a file,
      * trying to load the file from a jar file, in case the user is running simulations from a jar package.
-     * If it cant get a reader directly, the simulation is not being executed from a jar package,
+     * If it can't get a reader directly, the simulation is not being executed from a jar package,
      * so try to load the file from a directory in the filesystem.
      *
      * @param filePath the path of the file to get a reader for it
@@ -105,19 +105,19 @@ public final class ResourceLoader {
      * @throws UncheckedIOException when the file doesn't exist or can't be accessed
      */
     public static InputStream newInputStream(final String filePath, final Class klass) {
-        //Try to load the resource from the resource directory in the filesystem
+        // Try to load the resource from the resource directory in the filesystem
         var inputStream = klass.getClassLoader().getResourceAsStream(File.separator+filePath);
         if(inputStream != null){
             return inputStream;
         }
 
-        //Try to load the resource from a jar file
+        // Try to load the resource from a jar file
         inputStream = klass.getResourceAsStream(File.separator+filePath);
         if(inputStream != null){
             return inputStream;
         }
 
-        //Try to load the resource from anywhere else than the resource directory
+        // Try to load the resource from anywhere else than the resource directory
         try {
             return Files.newInputStream(Paths.get(filePath));
         } catch (IOException e) {
@@ -172,7 +172,7 @@ public final class ResourceLoader {
                      pathStream.map(path -> resourceDir + File.separator + path.getFileName().toString())
                      .collect(Collectors.toList());
 
-            //Removes the first element which is the name of the containing directory
+            // Removes the first element which is the name of the containing directory
             if(!fileNameList.isEmpty()) {
                 fileNameList.remove(0);
             }

@@ -39,8 +39,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 /**
- * A class that implements the Null Object Design Pattern for
- * {@link Datacenter} class.
+ * A class that implements the Null Object Design Pattern for {@link Datacenter} class.
  *
  * @author Manoel Campos da Silva Filho
  * @see Datacenter#NULL

@@ -20,48 +20,42 @@ public interface TraceReader {
     Logger LOGGER = LoggerFactory.getLogger(TraceReader.class.getSimpleName());
 
     /**
-     * Gets the path of the trace file.
-     * @return
+     * @return the path of the trace file.
      */
     String getFilePath();
 
     /**
-     * Gets the number of the last line read from the trace file (starting from 0).
-     * @return
+     * @return the number of the last line read from the trace file (starting from 0).
      */
     int getLastLineNumber();
 
-    /**
-     * {@return the regex defining how fields are delimited} in the trace file.
-     * Usually, this can be just a String with a single character such as
-     * a space, comma, semi-colon or tab (\t).
-     */
+    /// {@return the regex defining how fields are delimited in the trace file}
+    /// Usually, this can be just a String with a single character such as
+    /// a space, comma, semicolon or tab (`\t`).
     String getFieldDelimiterRegex();
 
-    /**
-     * Sets the regex defining how fields are delimited in the trace file.
-     * Usually, this can be just a String with a single character such as
-     * a space, comma or semi-colon or tab (\t).
-     *
-     * @param fieldDelimiterRegex the field separator regex to set
-     */
+    /// Sets the regex defining how fields are delimited in the trace file.
+    /// Usually, this can be just a String with a single character such as
+    /// a space, comma or semicolon or tab (`\t`).
+    ///
+    /// @param fieldDelimiterRegex the field separator regex to set
+    /// @return the file reader
     FileReader setFieldDelimiterRegex(String fieldDelimiterRegex);
 
     /**
-     * Gets the maximum number of lines of the workload reader that will be read.
+     * @return the maximum number of lines from the workload reader that will be read.
      * The value -1 indicates that all lines will be read, creating
-     * a cloudlet from every one.
-     *
-     * @return
+     * a cloudlet from everyone.
      */
     int getMaxLinesToRead();
 
     /**
-     * Sets the maximum number of lines of the workload reader that will be read.
+     * Sets the maximum number of lines from the workload reader that will be read.
      * The value -1 indicates that all lines will be read, creating
-     * a cloudlet from every one.
+     * a cloudlet from everyone.
      *
      * @param maxLinesToRead the maximum number of lines to set
+     * @return the file reader
      */
     FileReader setMaxLinesToRead(int maxLinesToRead);
 
@@ -77,6 +71,7 @@ public interface TraceReader {
      * the different Strings representing comments can be specified as parameters.
      *
      * @param commentString the comment Strings to set
+     * @return the file reader
      */
     FileReader setCommentString(String... commentString);
 }

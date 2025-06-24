@@ -9,6 +9,7 @@ package org.cloudsimplus.datacenters;
 
 import org.cloudsimplus.allocationpolicies.VmAllocationPolicy;
 import org.cloudsimplus.allocationpolicies.migration.VmAllocationPolicyMigration;
+import org.cloudsimplus.cloudlets.Cloudlet;
 import org.cloudsimplus.core.SimEntity;
 import org.cloudsimplus.core.Sizeable;
 import org.cloudsimplus.hosts.Host;
@@ -26,11 +27,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 /**
- * An interface to be implemented by each class that provides Datacenter
- * features. The interface implements the Null Object Design Pattern in order to
- * start avoiding {@link NullPointerException} when using the
- * {@link Datacenter#NULL} object instead of attributing {@code null} to
- * {@link Datacenter} variables.
+ * An interface to be implemented by each class that provides Datacenter features.
  *
  * @author Rodrigo N. Calheiros
  * @author Anton Beloglazov
@@ -47,8 +44,7 @@ public interface Datacenter extends SimEntity, PowerAware<PowerModelDatacenter>,
     Datacenter NULL = new DatacenterNull();
 
     /**
-     * The default percentage ([0..1]) of bandwidth allocated for VM migration,
-     * if a value is not set.
+     * The default percentage ([0..1]) of bandwidth allocated for VM migration if a value is not set.
      * @see #setBandwidthPercentForMigration(double)
      */
     double DEF_BW_PERCENT_FOR_MIGRATION = 0.5;
@@ -68,8 +64,8 @@ public interface Datacenter extends SimEntity, PowerAware<PowerModelDatacenter>,
 
     /**
      * Sends an event to request the migration of a {@link Vm} to some suitable {@link Host}
-     * on this Datacenter. A suitable Host will try to be found when the migration request message
-     * is processed by the Datacenter.
+     * on this Datacenter. A suitable Host will try to be found when the Datacenter
+     * processes the migration request message.
      * If you want VM migrations to be performed automatically,
      * use a {@link VmAllocationPolicyMigration}.
      *
@@ -80,38 +76,31 @@ public interface Datacenter extends SimEntity, PowerAware<PowerModelDatacenter>,
     void requestVmMigration(Vm sourceVm);
 
     /**
-     * Gets an <b>unmodifiable</b> host list.
-     *
+     * {@return an <b>unmodifiable</b> host list}
      * @param <T> The generic type
-     * @return the host list
      */
     <T extends Host> List<T> getHostList();
 
     /**
-     * Gets a {@link Stream} containing the active Hosts inside the Datacenter.
-     *
-     * @return the active host Stream
+     * @return a {@link Stream} containing the active Hosts inside the Datacenter.
      */
     Stream<? extends Host> getActiveHostStream();
 
     /**
-     * Gets a Host in a given position inside the Host List.
+     * {@return a Host in a given position inside the Host List}
      * @param index the position of the List to get the Host
-     * @return
      */
     Host getHost(int index);
 
     /**
-     * Gets the current number of Hosts that are powered on inside the Datacenter.
-     * @return
+     * @return the current number of Hosts that are powered-on inside the Datacenter.
      * @see Host#isActive()
      */
     long getActiveHostsNumber();
 
     /**
-     * Gets the total number of existing Hosts in this Datacenter,
+     * @return the total number of existing Hosts in this Datacenter,
      * which indicates the Datacenter's size.
-     * @return
      */
     long size();
 
@@ -123,7 +112,7 @@ public interface Datacenter extends SimEntity, PowerAware<PowerModelDatacenter>,
     Host getHostById(long id);
 
     /**
-     * Physically expands the Datacenter by adding a List of new Hosts (physical machines) to it.
+     * Physically expands the Datacenter by adding a List of new {@link Host}s (physical machines) to it.
      * Hosts can be added before or after the simulation has started.
      * If a Host is added during simulation execution,
      * in case VMs are added dynamically too, they
@@ -133,13 +122,13 @@ public interface Datacenter extends SimEntity, PowerAware<PowerModelDatacenter>,
      * <p>If an ID is not assigned to a Host, the method assigns one.</p>
      *
      * @param hostList the List of new hosts to be added
-     * @return
+     * @return this Datacenter
      * @see #getVmAllocationPolicy()
      */
     <T extends Host> Datacenter addHostList(List<T> hostList);
 
     /**
-     * Physically expands the Datacenter by adding a new Host (physical machine) to it.
+     * Physically expands the Datacenter by adding a new {@link Host} (physical machine) to it.
      * Hosts can be added before or after the simulation has started.
      * If a Host is added during simulation execution,
      * in case VMs are added dynamically too, they
@@ -150,7 +139,7 @@ public interface Datacenter extends SimEntity, PowerAware<PowerModelDatacenter>,
      * the method assigns one.</p>
      *
      * @param host the new host to be added
-     * @return
+     * @return this Datacenter
      * @see #getVmAllocationPolicy()
      */
     <T extends Host> Datacenter addHost(T host);
@@ -159,14 +148,12 @@ public interface Datacenter extends SimEntity, PowerAware<PowerModelDatacenter>,
      * Removes a Host from its Datacenter.
      *
      * @param host the new host to be removed from its assigned Datacenter
-     * @return
+     * @return this Datacenter
      */
     <T extends Host> Datacenter removeHost(T host);
 
     /**
-     * Gets the policy to be used by the Datacenter to allocate VMs into hosts.
-     *
-     * @return the VM allocation policy
+     * @return the policy to be used by the Datacenter to allocate VMs into hosts.
      * @see VmAllocationPolicy
      */
     VmAllocationPolicy getVmAllocationPolicy();
@@ -174,13 +161,13 @@ public interface Datacenter extends SimEntity, PowerAware<PowerModelDatacenter>,
     /**
      * Gets the scheduling interval to process each event received by the
      * Datacenter (in seconds). This value defines the interval in which
-     * processing of Cloudlets will be updated. The interval doesn't affect the
-     * processing of such cloudlets, it only defines in which interval the processing
+     * processing of {@link Cloudlet}s will be updated. The interval doesn't affect the
+     * processing of such Cloudlets, but it only defines in which interval the processing
      * will be updated. For instance, if it is set an interval of 10 seconds, the
-     * processing of cloudlets will be updated at every 10 seconds.
+     * processing of Cloudlets will be updated at every 10 seconds.
      *
      * <p>The default value is zero, which indicates no scheduling interval
-     * is set and the simulation state is updated only when a cloudlet is finished.
+     * is set, and the simulation state is updated only when a Cloudlet is finished.
      * That ensures the highest performance but may not be desired
      * if you want to collect some simulation data in a defined time interval.</p>
      *
@@ -189,18 +176,16 @@ public interface Datacenter extends SimEntity, PowerAware<PowerModelDatacenter>,
     double getSchedulingInterval();
 
     /**
-     * Sets the scheduling delay to process each event received by the
-     * Datacenter (in seconds).
+     * Sets the scheduling delay to process each event received by the Datacenter.
      *
      * @param schedulingInterval the new scheduling interval (in seconds)
-     * @return
+     * @return this Datacenter
      * @see #getSchedulingInterval()
      */
     Datacenter setSchedulingInterval(double schedulingInterval);
 
     /**
-     * Gets the Datacenter characteristics.
-     * @return the characteristics
+     * @return the Datacenter characteristics.
      */
     DatacenterCharacteristics getCharacteristics();
 
@@ -212,27 +197,24 @@ public interface Datacenter extends SimEntity, PowerAware<PowerModelDatacenter>,
     Datacenter setCharacteristics(DatacenterCharacteristics characteristics);
 
     /**
-     * Gets the storage of the Datacenter.
-     *
-     * @return the storage
+     * @return the storage device of the Datacenter.
      */
     DatacenterStorage getDatacenterStorage();
 
     /**
-     * Sets the storage of the Datacenter.
+     * Sets the storage device of the Datacenter.
      *
      * @param datacenterStorage the new storage
      */
     void setDatacenterStorage(DatacenterStorage datacenterStorage);
 
     /**
-     * Gets the percentage of the bandwidth allocated to a Host to
+     * @return the percentage of the bandwidth allocated to a Host to
      * migrate VMs. It's a value between [0 and 1] (where 1 is 100%).
      * The default value is 0.5, meaning only 50% of the bandwidth
      * will be allowed for migration, while the remaining
      * will be used for VM services.
      *
-     * @return
      * @see #DEF_BW_PERCENT_FOR_MIGRATION
      */
     double getBandwidthPercentForMigration();
@@ -256,7 +238,7 @@ public interface Datacenter extends SimEntity, PowerAware<PowerModelDatacenter>,
      * before the simulation starts, the listeners will not be notified.
      *
      * @param listener the event listener to add
-     * @return
+     * @return this Datacenter
      */
     Datacenter addOnHostAvailableListener(EventListener<HostEventInfo> listener);
 
@@ -265,27 +247,27 @@ public interface Datacenter extends SimEntity, PowerAware<PowerModelDatacenter>,
      * a VM migration is finished either successfully or not.
      *
      * @param listener the event listener to add
-     * @return
+     * @return this Datacenter
      */
     Datacenter addOnVmMigrationFinishListener(EventListener<DatacenterVmMigrationEventInfo> listener);
 
     /**
-     * Checks if migrations are enabled.
-     *
-     * @return true, if migrations are enable; false otherwise
+     * @return true, if migrations are enabled; false otherwise
      */
     boolean isMigrationsEnabled();
 
     /**
      * Enable VM migrations.
-     * @return
+     * @return this Datacenter
      * @see #getHostSearchRetryDelay()
+     * @see #isMigrationsEnabled()
      */
     Datacenter enableMigrations();
 
     /**
      * Disable VM migrations.
-     * @return
+     * @return this Datacenter
+     * @see #isMigrationsEnabled()
      */
     Datacenter disableMigrations();
 
@@ -303,7 +285,7 @@ public interface Datacenter extends SimEntity, PowerAware<PowerModelDatacenter>,
      *              Give a positive value to define an actual delay or
      *              a negative value to indicate a new Host search for VM migration
      *              must be tried as soon as possible
-     * @return
+     * @return this Datacenter
      */
     Datacenter setHostSearchRetryDelay(double delay);
 }

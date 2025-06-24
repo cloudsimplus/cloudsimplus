@@ -40,7 +40,7 @@ import org.cloudsimplus.vms.Vm;
  */
 public interface CloudletVmEventInfo extends CloudletEventInfo, VmEventInfo {
     /**
-     * Gets a CloudletVmEventInfo instance from the given parameters.
+     * Gets a {@code CloudletVmEventInfo} instance from the given parameters.
      * The {@link #getTime()} is the current simulation time.
      *
      * @param listener the listener to be notified about the event
@@ -55,7 +55,7 @@ public interface CloudletVmEventInfo extends CloudletEventInfo, VmEventInfo {
     }
 
     /**
-     * Gets a CloudletVmEventInfo instance from the given parameters.
+     * Gets a {@code CloudletVmEventInfo} instance from the given parameters.
      * The {@link #getVm() Vm} attribute is defined as the {@link Vm} where the {@link Cloudlet}
      * is running.
      *
@@ -68,7 +68,7 @@ public interface CloudletVmEventInfo extends CloudletEventInfo, VmEventInfo {
     }
 
     /**
-     * Gets a CloudletVmEventInfo instance from the given parameters.
+     * Gets a {@code CloudletVmEventInfo} instance from the given parameters.
      * The {@link #getVm() Vm} attribute is defined as the {@link Vm} where the {@link Cloudlet}
      * is running and the {@link #getTime()} is the current simulation time.
      *
@@ -80,7 +80,7 @@ public interface CloudletVmEventInfo extends CloudletEventInfo, VmEventInfo {
     }
 
     /**
-     * Gets a CloudletVmEventInfo instance from the given parameters.
+     * Gets a {@code CloudletVmEventInfo} instance from the given parameters.
      *
      * @param listener the listener to be notified about the event
      * @param time the time the event happened

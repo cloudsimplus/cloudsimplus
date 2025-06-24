@@ -30,16 +30,14 @@ import lombok.ToString;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Represents a metric of an SLA contract.
- * Follows the standard defined by
- * <a href="http://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/viewing_metrics_with_cloudwatch.html">AWS Cloudwatch</a>.
- *
- * <p>For more details, check
- * <a href="https://ubibliorum.ubi.pt/handle/10400.6/7839">Raysa Oliveira's Master Thesis (only in Portuguese)</a>.</p>
- *
- * @author raysaoliveira
- */
+/// Represents a metric of an SLA contract.
+/// Follows the standard defined by
+/// [AWS Cloudwatch](http://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/viewing_metrics_with_cloudwatch.html).
+///
+/// For more details, check
+/// [Raysa Oliveira's Master Thesis (only in Portuguese)](https://ubibliorum.ubi.pt/handle/10400.6/7839).
+///
+/// @author raysaoliveira
 @Getter @ToString
 public class SlaMetric {
     public static final SlaMetric NULL = new SlaMetric();
@@ -76,10 +74,9 @@ public class SlaMetric {
     }
 
     /**
-     * Gets a {@link SlaMetricDimension} representing the minimum value expected for the metric.
+     * @return a {@link SlaMetricDimension} representing the minimum value expected for the metric.
      * If the {@link SlaMetricDimension#getValue()} is a negative number, it means
      * there is no minimum value.
-     * @return
      */
     public SlaMetricDimension getMinDimension() {
         return dimensions
@@ -90,10 +87,9 @@ public class SlaMetric {
     }
 
     /**
-     * Gets a {@link SlaMetricDimension} representing the maximum value expected for the metric.
+     * @return a {@link SlaMetricDimension} representing the maximum value expected for the metric.
      * If the {@link SlaMetricDimension#getValue()} is equals to {@link Double#MAX_VALUE},
      * it means there is no maximum value.
-     * @return
      */
     public SlaMetricDimension getMaxDimension() {
         return dimensions

@@ -26,6 +26,7 @@ package org.cloudsimplus.vms;
 import lombok.Getter;
 import lombok.NonNull;
 import org.cloudsimplus.brokers.DatacenterBroker;
+import org.cloudsimplus.hosts.Host;
 import org.cloudsimplus.resources.Resource;
 import org.cloudsimplus.schedulers.MipsShare;
 import org.cloudsimplus.schedulers.cloudlet.CloudletScheduler;
@@ -34,20 +35,17 @@ import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 
-/**
- * Represents a List of VMs that form a group,
- * so that should be placed together at the same,
- * according to resource availability.
- * This way, such an object is not an actual {@link Vm},
- * but a mock used to check if all the resources
- * required by all VMs inside the group are available at a
- * single Host.
- *
- * <p>It assumes all VMs belong to the same {@link DatacenterBroker}.</p>
- *
- * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 4.6.0
- */
+/// Represents a List of [Vm]s that form a group,
+/// so that should be placed together at the same,
+/// according to resource availability.
+/// This way, such an object is not an actual [Vm],
+/// but a mock used to check if all the resources
+/// required by all VMs inside the group are available at a single [Host].
+///
+/// It assumes all VMs belong to the same [DatacenterBroker].
+///
+/// @author Manoel Campos da Silva Filho
+/// @since CloudSim Plus 4.6.0
 public class VmGroup extends VmSimple {
     /**
      * The List of VMs belonging to this group.
@@ -81,7 +79,7 @@ public class VmGroup extends VmSimple {
     /**
      * Creates a VmGroup for a List of VMs to be placed
      * at the datacenter closest to a given timezone.
-     * All VMs will be changed to the given timezone.
+     * All VMs will be changed to the given time zone.
      * @param vmList the List of VMs to create the group
      * @param timeZone the timezone of the Datacenter where it's expected the VMs to be placed
      *                 as close as possible
@@ -95,10 +93,10 @@ public class VmGroup extends VmSimple {
     /**
      * Creates a VmGroup for a List of VMs to be placed
      * at the datacenter closest to a given timezone.
-     * All VMs will be changed to the given timezone.
+     * All VMs will be changed to the given time zone.
      * @param id the VmGroup ID
      * @param vmList the List of VMs to create the group
-     * @param timeZone the timezone of the Datacenter where it's expected the VMs to be placed
+     * @param timeZone the time zone of the Datacenter where it's expected the VMs to be placed
      *                 as close as possible
      * @see DatacenterBroker#setSelectClosestDatacenter(boolean)
      */
@@ -133,7 +131,7 @@ public class VmGroup extends VmSimple {
     }
 
     /**
-     * {@return the max MIPS capacity a VM} inside the List is requiring.
+     * {@return the max MIPS capacity a VM inside the List is requiring}
      * @param vmList the List of VMs to create the group
      */
     private static double getMaxMips(final List<Vm> vmList){
@@ -141,7 +139,7 @@ public class VmGroup extends VmSimple {
     }
 
     /**
-     * {@return the total number of PEs} from all VMs inside the List.
+     * @return the total number of PEs from all VMs inside the List.
      */
     private static long getTotalPes(final List<Vm> vmList){
         return vmList.stream().mapToLong(Vm::getPesNumber).sum();
@@ -172,7 +170,7 @@ public class VmGroup extends VmSimple {
     }
 
     /**
-     * {@return the number of VMs} inside this group.
+     * @return the number of VMs inside this group.
      */
     public int size(){
         return vmList.size();
@@ -180,7 +178,7 @@ public class VmGroup extends VmSimple {
 
     @Override
     public double updateProcessing(final double currentTime, final MipsShare mipsShare) {
-        //The given mipsShare is ignored because we need to get the mipsShare for each VM inside the group
+        // The given mipsShare is ignored because we need to get the mipsShare for each VM inside the group
         double minNextEventDelay = Double.MAX_VALUE;
         for (final Vm vm : vmList) {
             final double nextEventDelay = vm.updateProcessing(currentTime, vm.getHost().getVmScheduler().getAllocatedMips(vm));

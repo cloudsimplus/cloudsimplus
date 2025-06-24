@@ -22,7 +22,7 @@ import org.cloudsimplus.listeners.EventListener;
 import java.util.Objects;
 
 /**
- * An event which is passed between the entities in the simulation.
+ * An event passed between the entities in the simulation.
  *
  * @author Costas Simatos
  * @see CloudSimPlus
@@ -57,8 +57,8 @@ public final class CloudSimEvent implements SimEvent {
      * @param delay how many seconds after the current simulation time the event should be scheduled
      * @param source the source entity which is sending the message
      * @param destination the destination entity which has to receive the message
-     * @param tag the tag that identifies the type of the message
-     *            (which is used by the destination entity to perform operations based on the message type)
+     * @param tag the tag that identifies the type of the message (according to {@link CloudSimTag} or other custom tags you create),
+     *            which is used by the destination entity to perform operations based on the message type
      * @param data the data attached to the message, that depends on the message tag
      */
     public CloudSimEvent(
@@ -73,8 +73,8 @@ public final class CloudSimEvent implements SimEvent {
      * Creates a {@link Type#SEND} CloudSimEvent where the sender and destination are the same entity.
      * @param delay how many seconds after the current simulation time the event should be scheduled
      * @param destination the destination entity which has to receive the message
-     * @param tag the tag that identifies the type of the message
-     *            (which is used by the destination entity to perform operations based on the message type)
+     * @param tag the tag that identifies the type of the message (according to {@link CloudSimTag} or other custom tags you create),
+     *            which is used by the destination entity to perform operations based on the message type
      */
     public CloudSimEvent(final double delay, final SimEntity destination, final int tag) {
         this(delay, destination, tag, null);
@@ -85,8 +85,8 @@ public final class CloudSimEvent implements SimEvent {
      * and the message is sent with no delay.
      *
      * @param destination the destination entity which has to receive the message
-     * @param tag the tag that identifies the type of the message
-     *            (which is used by the destination entity to perform operations based on the message type)
+     * @param tag the tag that identifies the type of the message (according to {@link CloudSimTag} or other custom tags you create),
+     *            which is used by the destination entity to perform operations based on the message type
      * @param data the data attached to the message, that depends on the message tag
      */
     public CloudSimEvent(final SimEntity destination, final int tag, Object data) {
@@ -97,8 +97,8 @@ public final class CloudSimEvent implements SimEvent {
      * Creates a {@link Type#SEND} CloudSimEvent where the sender and destination are the same entity.
      * @param delay how many seconds after the current simulation time the event should be scheduled
      * @param destination the destination entity which has to receive the message
-     * @param tag the tag that identifies the type of the message
-     *            (which is used by the destination entity to perform operations based on the message type)
+     * @param tag the tag that identifies the type of the message (according to {@link CloudSimTag} or other custom tags you create),
+     *            which is used by the destination entity to perform operations based on the message type
      * @param data the data attached to the message, that depends on the message tag
      */
     public CloudSimEvent(
@@ -113,8 +113,8 @@ public final class CloudSimEvent implements SimEvent {
      * the message has no delay and no data.
      *
      * @param destination the source entity which has to receive the message
-     * @param tag the tag that identifies the type of the message
-     *            (which is used by the destination entity to perform operations based on the message type)
+     * @param tag the tag that identifies the type of the message (according to {@link CloudSimTag} or other custom tags you create),
+     *            which is used by the destination entity to perform operations based on the message type
      */
     public CloudSimEvent(
         final SimEntity destination, final int tag)
@@ -124,7 +124,7 @@ public final class CloudSimEvent implements SimEvent {
 
     /**
      * Creates a CloudSimEvent where the destination entity and tag are not set yet.
-     * Furthermore, there will be not data associated to the event.
+     * Furthermore, there will be not data associated with the event.
      *
      * @param type the internal type of the event
      * @param delay how many seconds after the current simulation time the event should be scheduled

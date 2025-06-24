@@ -10,8 +10,11 @@ import org.cloudsimplus.brokers.DatacenterBroker;
 import org.cloudsimplus.core.*;
 import org.cloudsimplus.listeners.CloudletVmEventInfo;
 import org.cloudsimplus.listeners.EventListener;
+import org.cloudsimplus.resources.Pe;
 import org.cloudsimplus.resources.ResourceManageable;
 import org.cloudsimplus.schedulers.cloudlet.CloudletScheduler;
+import org.cloudsimplus.schedulers.cloudlet.CloudletSchedulerCompletelyFair;
+import org.cloudsimplus.schedulers.cloudlet.network.CloudletTaskScheduler;
 import org.cloudsimplus.traces.google.GoogleTaskEventsTraceReader;
 import org.cloudsimplus.utilizationmodels.UtilizationModel;
 import org.cloudsimplus.vms.Vm;
@@ -20,10 +23,10 @@ import java.util.List;
 
 /**
  * An interface to be implemented by each class that provides basic
- * features for cloud applications, aka Cloudlets.
+ * features for cloud applications, a.k.a. Cloudlets.
  *
  * <p>The interface implements the Null Object Design
- * Pattern in order to start avoiding {@link NullPointerException}
+ * Pattern in order to avoid {@link NullPointerException}
  * when using the {@link Cloudlet#NULL} object instead
  * of attributing {@code null} to {@link Cloudlet} variables.
  * </p>
@@ -49,7 +52,7 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
         READY,
 
         /**
-         * The Cloudlet has moved to a Vm but it is in the waiting queue.
+         * The Cloudlet has moved to a Vm, but it is in the waiting queue.
          */
         QUEUED,
 
@@ -85,18 +88,18 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
 
         /**
          * The Cloudlet has been paused. It can be resumed by changing the status
-         * into <b>RESUMED</b>.
+         * to {@link #RESUMED}.
          */
         PAUSED,
 
         /**
-         * The Cloudlet has been resumed from <b>PAUSED</b> state.
+         * The Cloudlet has been resumed from {@link #PAUSED} state.
          */
         RESUMED,
 
         /**
-         * The cloudlet has failed to start in reason of a failure in some resource such as a Host or VM.
-         * That may happen too when the VM to run the Cloudlet cannot be created for some reason
+         * The cloudlet has failed to start in reason of a failure in some resource, such as a Host or VM.
+         * That may also happen when the VM to run the Cloudlet cannot be created for some reason
          * (such as the lack of a suitable Host).
          */
         FAILED_RESOURCE_UNAVAILABLE
@@ -112,8 +115,8 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
      * Adds a file to the list or required files.
      *
      * @param fileName the name of the required file
-     * @return true if the file was added (it didn't exist in the
-     * list of required files), false otherwise (it did already exist)
+     * @return true if the file was added (it didn't exist in the list of required files);
+     *         false otherwise (it did already exist)
      */
     boolean addRequiredFile(String fileName);
 
@@ -123,7 +126,7 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
      * will be added.
      *
      * @param fileNames the list of files to be added
-     * @return true if at least one file was added,
+     * @return true if at least one file was added;
      * false if no file was added (in the case that all given files
      * already exist in the current required list)
      */
@@ -132,8 +135,8 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
     /**
      * Deletes the given filename from the list.
      *
-     * @param filename the given filename to be deleted
-     * @return true if the file was found and removed,
+     * @param filename the filename to be deleted
+     * @return true if the file was found and removed;
      *         false if not found
      */
     boolean deleteRequiredFile(String filename);
@@ -142,6 +145,8 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
      * Checks whether this cloudlet requires any files or not.
      *
      * @return true if required, false otherwise
+     * @see #addRequiredFile(String)
+     * @see #addRequiredFiles(List)
      */
     boolean hasRequiresFiles();
 
@@ -161,27 +166,21 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
     double getDcArrivalTime();
 
     /**
-     * Gets the input file size of this Cloudlet before execution (in bytes).
+     * {@return the input file size of this Cloudlet before execution (in bytes)}
      * This size has to be considered the program + input data sizes.
-     *
-     * @return the input file size of this Cloudlet (in bytes)
      */
     long getFileSize();
 
     /**
-     * Gets the output file size of this Cloudlet after execution (in bytes).
+     * {@return the output file size of this Cloudlet after execution (in bytes)}
      * It is the data produced as result of cloudlet execution
      * that needs to be transferred thought the network to
      * simulate sending response data to the user.
-     *
-     * @return the Cloudlet output file size (in bytes)
      */
     long getOutputSize();
 
     /**
-     * Gets the execution status of this Cloudlet.
-     *
-     * @return the Cloudlet status
+     * @return the execution status of this Cloudlet.
      */
     Status getStatus();
 
@@ -200,7 +199,7 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
     /**
      * Checks if the Cloudlet has finished and returned to the broker,
      * so that the broker is aware about the end of execution of the Cloudlet.
-     * @return
+     * @return true if the Cloudlet has finished and returned to the broker, false otherwise
      */
     boolean isReturnedToBroker();
 
@@ -208,7 +207,7 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
      * Register the arrival time of this Cloudlet into a Datacenter to the
      * current simulation time and returns this time.
      *
-     * @return the arrived time set;
+     * @return the arrived time set (in seconds);
      *         or {@link #NOT_ASSIGNED} if the cloudlet is not assigned to a Datacenter
      */
     double registerArrivalInDatacenter();
@@ -216,7 +215,7 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
     /**
      * Gets the latest execution start time of this Cloudlet (in seconds).
      * This attribute only stores the latest
-     * execution time. Previous execution time are ignored.
+     * execution time. Previous execution times are ignored.
      * This time represents the simulation second when the cloudlet started.
      *
      * @return the latest execution start time (in seconds)
@@ -227,7 +226,7 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
      * Gets the time when this Cloudlet has completed executing in the latest Datacenter.
      * This time represents the simulation second when the cloudlet finished.
      *
-     * @return the finish or completion time of this Cloudlet (in seconds);
+     * @return the finish time of this Cloudlet (in seconds);
      *         or {@link #NOT_ASSIGNED} if not finished yet.
      */
     double getFinishTime();
@@ -235,7 +234,7 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
     /**
      * Gets the id of the job that this Cloudlet belongs to, if any.
      * This field is just used for classification.
-     * If there is an supposed job that multiple Cloudlets belong to,
+     * If there is a supposed job that multiple Cloudlets belong to,
      * one can set the job id for all Cloudlets of that job
      * in order to classify them.
      * Besides classification, this field doesn't have any effect.
@@ -254,6 +253,7 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
      * Besides classification, this field doesn't have any effect.
      *
      * @param jobId the job id to set
+     * @return this Cloudlet
      */
     Cloudlet setJobId(long jobId);
 
@@ -261,11 +261,13 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
      * Gets the priority of this Cloudlet for scheduling inside a Vm.
      * Each {@link CloudletScheduler} implementation can define if it will
      * use this attribute to impose execution priorities or not.
-     * How the priority is interpreted and what is the range of values it accepts
+     *
+     * <p><b>WARNING</b>: How the priority is interpreted and what is the range of values it accepts
      * depends on the {@link CloudletScheduler}
      * that is being used by the Vm running the Cloudlet.
-     *
+     * </p>
      * @return priority of this cloudlet
+     * @see org.cloudsimplus.schedulers.cloudlet.CloudletSchedulerCompletelyFair
      */
     int getPriority();
 
@@ -280,20 +282,22 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
      * </p>
      *
      * @param priority the priority to set
+     * @return this Cloudlet
+     * @see CloudletSchedulerCompletelyFair
      */
     Cloudlet setPriority(int priority);
 
     /**
      * Gets the Type of Service (ToS) of IPv4 for sending Cloudlet over the network.
      * It is the ToS this cloudlet receives in the network
-     * (applicable to selected CloudletTaskScheduler class only).
+     * (applicable to selected {@link CloudletTaskScheduler} class only).
      *
      * @return the network service level
      */
     int getNetServiceLevel();
 
     /**
-     * Gets the number of Processing Elements (PEs) from the VM, that is
+     * Gets the number of Processing Elements ({@link Pe})s from the VM, that is
      * required to execute this cloudlet.
      *
      * @return number of PEs
@@ -302,29 +306,23 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
     long getPesNumber();
 
     /**
-     * Gets the utilization model that defines how the cloudlet will use the VM's
-     * bandwidth (bw).
-     * @return
+     * @return the utilization model that defines how the cloudlet will use the VM's bandwidth (bw).
      */
     UtilizationModel getUtilizationModelBw();
 
     /**
-     * Gets the utilization model that defines how the cloudlet will use the VM's CPU.
-     * @return
+     * @return the utilization model that defines how the cloudlet will use the VM's CPU.
      */
     UtilizationModel getUtilizationModelCpu();
 
     /**
-     * Gets the utilization model that defines how the cloudlet will use the VM's RAM.
-     * @return
+     * @return the utilization model that defines how the cloudlet will use the VM's RAM.
      */
     UtilizationModel getUtilizationModelRam();
 
     /**
-     * Gets the utilization model for a given resource
-     *
+     * {@return the utilization model for a given resource}
      * @param resourceClass the kind of resource to get its {@link UtilizationModel}
-     * @return
      */
     UtilizationModel getUtilizationModel(Class<? extends ResourceManageable> resourceClass);
 
@@ -334,7 +332,7 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
      * {@link UtilizationModel#getUnit()} set for the
      * {@link #getUtilizationModelCpu() CPU utilizaton model}.
      *
-     * @return the utilization % (from [0 to 1])
+     * @return the CPU utilization in percentage or absolute value
      * @see #getUtilizationModelCpu()
      */
     double getUtilizationOfCpu();
@@ -345,7 +343,7 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
      * {@link UtilizationModel#getUnit()} defined for the {@link #getUtilizationModelCpu()}.
      *
      * @param time the time to get the utilization
-     * @return the utilization % (from [0 to 1])
+     * @return the CPU utilization in percentage or absolute value
      * @see #getUtilizationModelCpu()
      */
     double getUtilizationOfCpu(double time);
@@ -356,7 +354,7 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
      * {@link UtilizationModel#getUnit()} set for the
      * {@link #getUtilizationModelRam() RAM utilizaton model}.
      *
-     * @return the utilization % (from [0 to 1])
+     * @return the RAM utilization in percentage or absolute value
      * @see #getUtilizationModelRam()
      */
     double getUtilizationOfRam();
@@ -367,7 +365,7 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
      * {@link UtilizationModel#getUnit()} defined for the {@link #getUtilizationModelRam()}.
      *
      * @param time the time to get the utilization
-     * @return the utilization % (from [0 to 1])
+     * @return the RAM utilization in percentage or absolute value
      * @see #getUtilizationModelRam()
      */
     double getUtilizationOfRam(double time);
@@ -378,7 +376,7 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
      * {@link UtilizationModel#getUnit()} set for the
      * {@link #getUtilizationModelBw() BW utilizaton model}.
      *
-     * @return the utilization % (from [0 to 1])
+     * @return the BW utilization in percentage or absolute value
      * @see #getUtilizationModelCpu()
      */
     double getUtilizationOfBw();
@@ -389,20 +387,19 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
      * {@link UtilizationModel#getUnit()} defined for the {@link #getUtilizationModelBw()}.
      *
      * @param time the time to get the utilization
-     * @return the utilization % (from [0 to 1])
+     * @return the BW utilization in percentage or absolute value
      * @see #getUtilizationModelBw()
      */
     double getUtilizationOfBw(double time);
 
     /**
-     * Gets the Vm that is planned to execute the cloudlet.
-     *
-     * @return the VM; or {@link Vm#NULL} if the Cloudlet was not assigned to a VM yet
+     * @return the Vm that is planned to execute the cloudlet;
+     * or {@link Vm#NULL} if the Cloudlet was not assigned to a VM yet
      */
     Vm getVm();
 
     /**
-     * Indicates if the Cloudlet is bounded to a specific Vm,
+     * Checks whether the Cloudlet is bounded to a specific Vm,
      * meaning that the {@link DatacenterBroker} doesn't have to
      * select a VM for it. In this case, the Cloudlet was already
      * bounded to a specific VM and must run on it.
@@ -431,7 +428,7 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
      * This size has to be considered the program + input data sizes.
      *
      * @param fileSize the size to set (in bytes)
-     * @return
+     * @return this Cloudlet
      * @throws IllegalArgumentException when the given size is lower or equal to zero
      * @see #setSizes(long)
      */
@@ -444,7 +441,7 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
      * simulate sending response data to the user.
      *
      * @param outputSize the output size to set (in bytes)
-     * @return
+     * @return this Cloudlet
      * @throws IllegalArgumentException when the given size is lower or equal to zero
      * @see #setSizes(long)
      */
@@ -454,7 +451,7 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
      * Sets the input and output file sizes of this Cloudlet to <b>the same value (in bytes)</b>.
      *
      * @param size the value to set (in bytes) for input and output size
-     * @return
+     * @return this Cloudlet
      * @throws IllegalArgumentException when the given size is lower or equal to zero
      *
      * @see #setFileSize(long)
@@ -477,35 +474,39 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
      * @return true if the cloudlet status was changed,
      *         i.e, if the newStatus is different from the current status;
      *         false otherwise
+     * TODO Move to abstract class
      */
     boolean setStatus(Status newStatus);
 
     /**
-     * Sets the Type of Service (ToS) for sending this cloudlet over a network.
+     * Sets the <a href="https://en.wikipedia.org/wiki/Type_of_service">Type of Service (ToS)</a>
+     * for sending this cloudlet over a network.
      *
      * @param netServiceLevel the new type of service (ToS) of this cloudlet
+     * @return this Cloudlet
+     * TODO This attribute is not used and should be removed (we need confirm it is not used)
      */
     Cloudlet setNetServiceLevel(int netServiceLevel);
 
     /**
-     * Sets the number of PEs required to run this Cloudlet. <br>
+     * Sets the number of {@link Pe}s required to run this Cloudlet. <br>
      * NOTE: The Cloudlet length is computed only for 1 PE for simplicity. <br>
      * For example, consider a Cloudlet that has a length of 500 MI and requires
      * 2 PEs. This means each PE will execute 500 MI of this Cloudlet.
      *
      * @param pesNumber number of PEs
-     * @return
+     * @return this Cloudlet
      * @throws IllegalArgumentException when the number of PEs is lower or equal to zero
      */
     Cloudlet setPesNumber(long pesNumber);
 
     /**
-     * Sets the <b>same utilization model</b> for defining the usage of Bandwidth, CPU and RAM.
+     * Sets the <b>same {@link UtilizationModel}</b> for defining the usage of Bandwidth, CPU and RAM.
      * To set different utilization models for each one of these resources, use the
      * respective setters.
      *
      * @param utilizationModel the new utilization model for BW, CPU and RAM
-     * @return
+     * @return this Cloudlet
      * @see #setUtilizationModelBw(UtilizationModel)
      * @see #setUtilizationModelCpu(UtilizationModel)
      * @see #setUtilizationModelRam(UtilizationModel)
@@ -513,32 +514,36 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
     Cloudlet setUtilizationModel(UtilizationModel utilizationModel);
 
     /**
-     * Sets the {@link #getUtilizationModelBw() utilization model of bw}.
-     * @param utilizationModelBw the new utilization model of bw
+     * Sets the {@link #getUtilizationModelBw() utilization model of BW}.
+     * @param utilizationModelBw the new utilization model of BW
+     * @return this Cloudlet
      */
     Cloudlet setUtilizationModelBw(UtilizationModel utilizationModelBw);
 
     /**
-     * Sets the {@link #getUtilizationModelCpu() utilization model of cpu}.
-     * @param utilizationModelCpu the new utilization model of cpu
+     * Sets the {@link #getUtilizationModelCpu() utilization model of CPU}.
+     * @param utilizationModelCpu the new utilization model of CPU
+     * @return this Cloudlet
      */
     Cloudlet setUtilizationModelCpu(UtilizationModel utilizationModelCpu);
 
     /**
-     * Sets the {@link #getUtilizationModelRam() utilization model of ram}.
-     * @param utilizationModelRam the new utilization model of ram
+     * Sets the {@link #getUtilizationModelRam() utilization model of RAM}.
+     * @param utilizationModelRam the new utilization model of RAM
+     * @return this Cloudlet
      */
     Cloudlet setUtilizationModelRam(UtilizationModel utilizationModelRam);
 
     /**
      * Sets the id of {@link Vm} that is planned to execute the cloudlet.
-     * @param vm the id of vm to run the cloudlet
+     * @param vm id of vm to run the cloudlet
+     * @return this Cloudlet
      */
     Cloudlet setVm(Vm vm);
 
     /**
      * Gets the execution length of this Cloudlet (in Million Instructions (MI))
-     * that will be executed in each defined PE.
+     * that will be executed in each defined {@link Pe}.
      *
      * <p>In case the length is a negative value, it means
      * the Cloudlet doesn't have a defined length, this way,
@@ -549,9 +554,8 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
      * Million Instruction Per Second - MIPS) where the cloudlet will be run,
      * the cloudlet will take a given time to finish processing. For instance,
      * for a cloudlet of 10000 MI running on a processor of 2000 MIPS, the
-     * cloudlet will spend 5 seconds using the processor in order to be
-     * completed (that may be uninterrupted or not, depending on the scheduling
-     * policy).
+     * cloudlet will spend 5 seconds using the processor until
+     * completed (that may be uninterrupted or not, depending on the scheduling policy).
      * </p>
      *
      * @return the length of this Cloudlet (in MI)
@@ -564,22 +568,21 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
      * Sets the execution length of this Cloudlet (in Million Instructions (MI))
      * that will be executed in each defined PE.
      *
-     * <p>In case the length is a negative value, it means
-     * the Cloudlet doesn't have a defined length, this way,
-     * it keeps running until a {@link CloudSimTag#CLOUDLET_FINISH}
+     * <p>A negative length means the Cloudlet in fact doesn't have a defined length.
+     * This way, it keeps running until a {@link CloudSimTag#CLOUDLET_FINISH}
      * message is sent to the {@link DatacenterBroker}.</p>
 
      * <p>According to this length and the power of the VM processor (in
      * Million Instruction Per Second - MIPS) where the cloudlet will be run,
      * the cloudlet will take a given time to finish processing. For instance,
      * for a cloudlet of 10000 MI running on a processor of 2000 MIPS, the
-     * cloudlet will spend 5 seconds using the processor in order to be
-     * completed (that may be uninterrupted or not, depending on the scheduling
-     * policy).
+     * cloudlet will spend 5 seconds using the processor until
+     * completed (that may be uninterrupted or not, depending on the scheduling policy).
      * </p>
      *
-     * @param length the length (in MI) of this Cloudlet to be executed in a Vm
-     * @return
+     * @param length the length (in MI) of this Cloudlet to be executed in a Vm.
+     *               A negative value means the Cloudlet in fact doesn't have a defined length.
+     * @return this Cloudlet
      * @throws IllegalArgumentException when the given length is lower or equal to zero
      *
      * @see #getLength()
@@ -606,7 +609,7 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
     /**
      * Gets the length of this Cloudlet that has been executed so far from the
      * latest Datacenter (in MI). This method is useful when trying to move this
-     * Cloudlet into different Datacenter or to cancel it.
+     * Cloudlet into a different Datacenter or to cancel it.
      *
      * @return the length of a partially executed Cloudlet,
      *         or the full Cloudlet length if it is completed (in MI)
@@ -714,7 +717,7 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
 
     /**
      * Resets the state of the Cloudlet.
-     * @return
+     * @return this Cloudlet
      */
     Cloudlet reset();
 

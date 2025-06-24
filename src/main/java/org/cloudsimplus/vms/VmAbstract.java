@@ -35,13 +35,22 @@ import java.util.*;
  */
 @Accessors(makeFinal = false) @Getter
 public abstract class VmAbstract extends CustomerEntityAbstract implements Vm {
-    /** @see #setDefaultRamCapacity(long) */
+    /**
+     * Gets the Default RAM capacity (in MB) for creating VMs.
+     * This value is used when the RAM capacity is not given in a VM constructor.
+     */
     private static long defaultRamCapacity = 1024;
 
-    /** @see #setDefaultBwCapacity(long) */
+    /**
+     * Gets the Default Bandwidth capacity (in Mbps) for creating VMs.
+     * This value is used when the BW capacity is not given in a VM constructor.
+     */
     private static long defaultBwCapacity = 100;
 
-    /** @see #setDefaultStorageCapacity(long) */
+    /**
+     * Gets the Default Storage capacity (in MB) for creating VMs.
+     * This value is used when the Storage capacity is not given in a VM constructor.
+     */
     private static long defaultStorageCapacity = 1024;
 
     protected final Processor processor;
@@ -93,7 +102,7 @@ public abstract class VmAbstract extends CustomerEntityAbstract implements Vm {
     /**
      * A copy constructor that creates a VM based on the configuration of another one.
      * The created VM will have the same MIPS capacity, number of PEs,
-     * BW, RAM and size of the given VM, but a default CloudletScheduler and no broker.
+     * BW, RAM and size of the given VM, but a default {@link CloudletScheduler} and no {@link DatacenterBroker}.
      * @param sourceVm the VM to be cloned
      */
     public VmAbstract(final Vm sourceVm) {
@@ -118,7 +127,7 @@ public abstract class VmAbstract extends CustomerEntityAbstract implements Vm {
         this.resources = new ArrayList<>(4);
         this.bootModel = BootModel.NULL;
 
-        //initiate number of free PEs as number of PEs of VM
+        // Initializes the number of free PEs as the number of VM PEs
         this.freePesNumber = pesNumber;
         this.expectedFreePesNumber = pesNumber;
 
@@ -135,28 +144,12 @@ public abstract class VmAbstract extends CustomerEntityAbstract implements Vm {
     }
 
     /**
-     * Gets the Default RAM capacity (in MB) for creating VMs.
-     * This value is used when the RAM capacity is not given in a VM constructor.
-     */
-    public static long getDefaultRamCapacity() {
-        return defaultRamCapacity;
-    }
-
-    /**
      * Sets the Default RAM capacity (in MB) for creating VMs.
      * This value is used when the RAM capacity is not given in a VM constructor.
      */
     public static void setDefaultRamCapacity(final long defaultCapacity) {
         Machine.validateCapacity(defaultCapacity);
         defaultRamCapacity = defaultCapacity;
-    }
-
-    /**
-     * Gets the Default Bandwidth capacity (in Mbps) for creating VMs.
-     * This value is used when the BW capacity is not given in a VM constructor.
-     */
-    public static long getDefaultBwCapacity() {
-        return defaultBwCapacity;
     }
 
     /**
@@ -169,14 +162,6 @@ public abstract class VmAbstract extends CustomerEntityAbstract implements Vm {
     }
 
     /**
-     * Gets the Default Storage capacity (in MB) for creating VMs.
-     * This value is used when the Storage capacity is not given in a VM constructor.
-     */
-    public static long getDefaultStorageCapacity() {
-        return defaultStorageCapacity;
-    }
-
-    /**
      * Sets the Default Storage capacity (in MB) for creating VMs.
      * This value is used when the Storage capacity is not given in a VM constructor.
      */
@@ -186,11 +171,11 @@ public abstract class VmAbstract extends CustomerEntityAbstract implements Vm {
     }
 
     /**
-     * Accepts a Vm or {@code List<Vm>}. If a Vm is given, returns it.
+     * Accepts a Vm or {@code List<Vm>}. If a Vm is given, it is returned.
      * If a List is given, returns the first VM in that List.
      * @param vmOrList a single Vm object or a {@code List<Vm>}
      * @return the Vm object or the first Vm inside the List (according to the given parameter)
-     * @param <T>
+     * @param <T> the type of the parameter, which may be a Vm or {@code List<Vm>}
      */
     public static <T> VmAbstract getFirstVm(final T vmOrList) {
         return isVmList(vmOrList) ? ((List<VmAbstract>) vmOrList).get(0) : (VmAbstract) vmOrList;
@@ -200,7 +185,7 @@ public abstract class VmAbstract extends CustomerEntityAbstract implements Vm {
      * Accepts a Vm or {@code List<Vm>} and return a {@code List<Vm>}
      * @param vmOrList a single Vm object or a {@code List<Vm>}
      * @return a List with 1 Vm object if a Vm instance is given; or a {@code List<Vm>} if a List is given
-     * @param <T>
+     * @param <T> the type of the parameter, which may be a Vm or {@code List<Vm>}
      */
     public static <T> List<Vm> getList(final T vmOrList) {
         return isVmList(vmOrList) ? ((List<Vm>) vmOrList) : List.of((Vm) vmOrList);
@@ -210,7 +195,7 @@ public abstract class VmAbstract extends CustomerEntityAbstract implements Vm {
      * Checks if an object is a Vm or {@code List<Vm>}.
      * @param vmOrList a Vm {@code List<Vm>}
      * @return true if it's a {@code List<Vm>}, false otherwise
-     * @param <T>
+     * @param <T> the type of the parameter, which may be a Vm or {@code List<Vm>}
      */
     public static <T> boolean isVmList(final T vmOrList) {
         return vmOrList instanceof List<?>;
@@ -220,7 +205,7 @@ public abstract class VmAbstract extends CustomerEntityAbstract implements Vm {
      * Accepts a single Vm object or a {@code List<Vm>} and returns the number of Vms in the given object.
      * @param vmOrList a Vm {@code List<Vm>}
      * @return 1 if the given object is a single Vm object, {@link List#size()} if it's a List.
-     * @param <T>
+     * @param <T> the type of the parameter, which may be a Vm or {@code List<Vm>}
      */
     public static <T> int getVmCount(final T vmOrList) {
         return isVmList(vmOrList) ? ((List<Vm>)vmOrList).size() : 1;
@@ -298,8 +283,8 @@ public abstract class VmAbstract extends CustomerEntityAbstract implements Vm {
          * At time 50.0 the Cloudlet is still running, so there is some CPU utilization.
          * But since the next update would be only at time 50.1, the utilization
          * at time 50.0 wouldn't be collected to enable knowing the exact time
-         * before the utilization drop.
-         * Condition and computation below is used to ensure VM processing occurs
+         * before the utilization drops.
+         * The condition and computation below is used to ensure VM processing occurs
          * at time 50 and 50.1.
          */
         final double decimals = currentTime - (int) currentTime;
@@ -406,7 +391,7 @@ public abstract class VmAbstract extends CustomerEntityAbstract implements Vm {
 
     @Override
     public MipsShare getCurrentRequestedMips() {
-        //TODO This method is confusing, since there is a getRequestedMips() (created with lombok)
+        // TODO This method is confusing, since there is a getRequestedMips() (created with lombok)
         if (isCreated()) {
             return isStartingUp() ? new MipsShare(processor, bootModel) : host.getVmScheduler().getRequestedMips(this);
         }
@@ -448,8 +433,7 @@ public abstract class VmAbstract extends CustomerEntityAbstract implements Vm {
 
     /**
      * Checks if the VM has ever started some Cloudlet.
-     *
-     * @return
+     * @return true if the VM has started some Cloudlet, false otherwise
      */
     public boolean hasStartedSomeCloudlet() {
         return getLastBusyTime() > NOT_ASSIGNED;
@@ -519,7 +503,7 @@ public abstract class VmAbstract extends CustomerEntityAbstract implements Vm {
     /**
      * Sets a new {@link SimpleStorage} resource for the Vm.
      *
-     * @param storage the RawStorage resource to set
+     * @param storage the storage resource to set
      */
     protected void setStorage(@NonNull final SimpleStorage storage) {
         this.storage = storage;
@@ -538,7 +522,7 @@ public abstract class VmAbstract extends CustomerEntityAbstract implements Vm {
      * Sets the PM that hosts the VM.
      *
      * @param host Host to run the VM
-     * @return
+     * @return this Vm
      */
     public Vm setHost(@NonNull final Host host) {
         this.host = host;
@@ -858,120 +842,8 @@ public abstract class VmAbstract extends CustomerEntityAbstract implements Vm {
         return !created;
     }
 
-    public String getDescription() {
-        return this.description;
-    }
-
-    public String getVmm() {
-        return this.vmm;
-    }
-
-    public Host getHost() {
-        return this.host;
-    }
-
-    public double getTimeZone() {
-        return this.timeZone;
-    }
-
-    public double getSubmissionDelay() {
-        return this.submissionDelay;
-    }
-
-    public VmGroup getGroup() {
-        return this.group;
-    }
-
-    public boolean isFailed() {
-        return this.failed;
-    }
-
-    public SimpleStorage getStorage() {
-        return this.storage;
-    }
-
     public Ram getRam() {
         return this.ram;
-    }
-
-    public Bandwidth getBw() {
-        return this.bw;
-    }
-
-    public Processor getProcessor() {
-        return this.processor;
-    }
-
-    public CloudletScheduler getCloudletScheduler() {
-        return this.cloudletScheduler;
-    }
-
-    public boolean isCreated() {
-        return this.created;
-    }
-
-    public boolean isInMigration() {
-        return this.inMigration;
-    }
-
-    public long getFreePesNumber() {
-        return this.freePesNumber;
-    }
-
-    public long getExpectedFreePesNumber() {
-        return this.expectedFreePesNumber;
-    }
-
-    public HorizontalVmScaling getHorizontalScaling() {
-        return this.horizontalScaling;
-    }
-
-    public VerticalVmScaling getRamVerticalScaling() {
-        return this.ramVerticalScaling;
-    }
-
-    public VerticalVmScaling getBwVerticalScaling() {
-        return this.bwVerticalScaling;
-    }
-
-    public VerticalVmScaling getPeVerticalScaling() {
-        return this.peVerticalScaling;
-    }
-
-    public MipsShare getAllocatedMips() {
-        return this.allocatedMips;
-    }
-
-    public MipsShare getRequestedMips() {
-        return this.requestedMips;
-    }
-
-    public VmResourceStats getCpuUtilizationStats() {
-        return this.cpuUtilizationStats;
-    }
-
-    public List<EventListener<VmHostEventInfo>> getOnMigrationStartListeners() {
-        return this.onMigrationStartListeners;
-    }
-
-    public List<EventListener<VmHostEventInfo>> getOnMigrationFinishListeners() {
-        return this.onMigrationFinishListeners;
-    }
-
-    public List<EventListener<VmHostEventInfo>> getOnHostAllocationListeners() {
-        return this.onHostAllocationListeners;
-    }
-
-    public List<EventListener<VmHostEventInfo>> getOnHostDeallocationListeners() {
-        return this.onHostDeallocationListeners;
-    }
-
-    public List<EventListener<VmHostEventInfo>> getOnUpdateProcessingListeners() {
-        return this.onUpdateProcessingListeners;
-    }
-
-    public List<EventListener<VmDatacenterEventInfo>> getOnCreationFailureListeners() {
-        return this.onCreationFailureListeners;
     }
 
     public Vm setDescription(final String description) {

@@ -46,8 +46,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * A class that implements the Null Object Design Pattern for {@link Host}
- * class.
+ * A class that implements the Null Object Design Pattern for the {@link Host} class.
  *
  * @author Manoel Campos da Silva Filho
  * @see Host#NULL

@@ -43,7 +43,7 @@ public interface BrokerBuilderInterface extends Builder{
      * @param brokerConsumer a {@link Consumer} that will
      *                       perform some configuration
      *                       with the just created broker
-     * @return
+     * @return this broker builder
      */
     BrokerBuilderDecorator create(Consumer<DatacenterBroker> brokerConsumer);
     DatacenterBroker findBroker(int id);

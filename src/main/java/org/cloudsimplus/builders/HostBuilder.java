@@ -23,6 +23,10 @@
  */
 package org.cloudsimplus.builders;
 
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.cloudsimplus.hosts.Host;
 import org.cloudsimplus.hosts.HostSimple;
 import org.cloudsimplus.listeners.EventListener;
@@ -33,13 +37,12 @@ import org.cloudsimplus.schedulers.vm.VmScheduler;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
  * A Builder class to create {@link Host} objects
- * using the default configurations defined in {@link Host} class.
+ * using the default configurations defined in the {@link Host} class.
  *
  * @see HostSimple#setDefaultRamCapacity(long)
  * @see HostSimple#setDefaultBwCapacity(long)
@@ -48,14 +51,23 @@ import java.util.function.Supplier;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
+@Accessors(chain = true)
 public class HostBuilder implements Builder {
-    private double mips = 2000;
-    private int    pes = 1;
+    @Getter @Setter private double mips = 2000;
+    @Getter @Setter private int    pes = 1;
 
-    private final List<Host> hosts;
-    private Function<List<Pe>, Host> hostCreationFunction;
-    private EventListener<HostUpdatesVmsProcessingEventInfo> onUpdateVmsProcessingListener = EventListener.NULL;
-    private Supplier<VmScheduler> vmSchedulerSupplier;
+    /**
+     * The list of all created Hosts
+     */
+    @Getter private final List<Host> hosts;
+
+    /**
+     * A {@link Function} used to create Hosts.
+     * It must receive a list of {@link Pe} for the Host it will create.
+     */
+    @Setter @NonNull private Function<List<Pe>, Host> hostCreationFunction;
+    @Setter @NonNull private EventListener<HostUpdatesVmsProcessingEventInfo> onUpdateVmsProcessingListener = EventListener.NULL;
+    @Setter private Supplier<VmScheduler> vmSchedulerSupplier;
 
     public HostBuilder() {
         super();
@@ -65,7 +77,7 @@ public class HostBuilder implements Builder {
 
     /**
      * Creates a single Host and stores it internally.
-     * @return
+     * @return this builder
      * @see #getHosts()
      */
     public HostBuilder create() {
@@ -74,31 +86,23 @@ public class HostBuilder implements Builder {
 
     /**
      * Creates a list of Hosts and stores it internally.
-     * @return
+     * @return this builder
      * @see #getHosts()
      */
     public HostBuilder create(final int amount) {
         validateAmount(amount);
 
         for (int i = 0; i < amount; i++) {
-            final List<Pe> peList = new PeBuilder().create(pes, mips);
-            final Host host = hostCreationFunction.apply(peList);
+            final var peList = new PeBuilder().create(pes, mips);
+            final var host = hostCreationFunction.apply(peList);
             if(vmSchedulerSupplier != null) {
                 host.setVmScheduler(vmSchedulerSupplier.get());
             }
+
             hosts.add(host);
         }
-        return this;
-    }
 
-    /**
-     * Gets the list of all created Hosts.
-     * @return
-     * @see #create()
-     * @see #create(int)
-     */
-    public List<Host> getHosts() {
-        return hosts;
+        return this;
     }
 
     private Host defaultHostCreationFunction(final List<Pe> peList) {
@@ -106,42 +110,5 @@ public class HostBuilder implements Builder {
             .setRamProvisioner(new ResourceProvisionerSimple())
             .setBwProvisioner(new ResourceProvisionerSimple())
             .addOnUpdateProcessingListener(onUpdateVmsProcessingListener);
-    }
-
-    public double getMips() {
-        return mips;
-    }
-
-    public HostBuilder setMips(double defaultMIPS) {
-        this.mips = defaultMIPS;
-        return this;
-    }
-
-    public int getPes() {
-        return pes;
-    }
-
-    public HostBuilder setPes(int defaultPEs) {
-        this.pes = defaultPEs;
-        return this;
-    }
-
-    /**
-     * Sets a {@link Function} used to create Hosts.
-     * It must receive a list of {@link Pe} for the Host it will create.
-     * @param hostCreationFunction
-     */
-    public void setHostCreationFunction(final Function<List<Pe>, Host> hostCreationFunction) {
-        this.hostCreationFunction = Objects.requireNonNull(hostCreationFunction);
-    }
-
-    public HostBuilder setOnUpdateVmsProcessingListener(final EventListener<HostUpdatesVmsProcessingEventInfo> listener) {
-        this.onUpdateVmsProcessingListener = Objects.requireNonNull(listener);
-        return this;
-    }
-
-    public HostBuilder setVmSchedulerSupplier(final Supplier<VmScheduler> vmSchedulerSupplier) {
-        this.vmSchedulerSupplier = Objects.requireNonNull(vmSchedulerSupplier);
-        return this;
     }
 }

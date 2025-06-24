@@ -25,7 +25,6 @@
  * Provides base classes to enable implementing testbeds in a repeatable manner,
  * allowing a researcher to execute several simulation runs
  * for a given experiment and collect statistical data using a scientific approach.
- * </p>
  *
  * @author Manoel Campos da Silva Filho
  */

@@ -20,9 +20,9 @@ import java.util.function.Predicate;
 import static java.util.Comparator.comparingDouble;
 
 /**
- * A {@link VmAllocationPolicy} that uses a Static CPU utilization Threshold (THR) to
+ * A {@link VmAllocationPolicyMigration} that uses a Static CPU utilization Threshold (THR) to
  * detect host {@link #getUnderUtilizationThreshold() under} and
- * {@link #getOverUtilizationThreshold(Host)} over} utilization.
+ * {@link #getOverUtilizationThreshold(Host) over} utilization.
  *
  * <p>It's a <b>Best Fit policy</b> which selects the Host having the most used amount of CPU
  * MIPS to place a given VM, <b>disregarding energy consumption</b>.</p>
@@ -34,11 +34,12 @@ import static java.util.Comparator.comparingDouble;
 public class VmAllocationPolicyMigrationBestFitStaticThreshold extends VmAllocationPolicyMigrationStaticThreshold {
 
     /**
-     * Creates a VmAllocationPolicyMigrationBestFitStaticThreshold.
+     * Creates a VmAllocationPolicy.
      * It uses a {@link #DEF_OVER_UTILIZATION_THRESHOLD default over utilization threshold}
-     * and a {@link #DEF_UNDERLOAD_THRESHOLD default under utilization threshold}.
+     * and a {@link #DEF_UNDER_UTILIZATION_THRESHOLD default under utilization threshold}.
      *
-     * @param vmSelectionPolicy the policy that defines how VMs are selected for migration
+     * @param vmSelectionPolicy the {@link VmAllocationPolicyMigration#getVmSelectionPolicy() policy}
+     *                          that defines how VMs are selected for migration
      * @see #setUnderUtilizationThreshold(double)
      * @see #setOverUtilizationThreshold(double)
      */
@@ -46,6 +47,13 @@ public class VmAllocationPolicyMigrationBestFitStaticThreshold extends VmAllocat
         this(vmSelectionPolicy, DEF_OVER_UTILIZATION_THRESHOLD);
     }
 
+    /**
+     * Creates a VmAllocationPolicy with a given over utilization threshold.
+     *
+     * @param vmSelectionPolicy the {@link VmAllocationPolicyMigration#getVmSelectionPolicy() policy}
+     *                          that defines how VMs are selected for migration
+     * @param overUtilizationThreshold {@link #setOverUtilizationThreshold(double) the over utilization threshold percent (between 0 and 1)}
+     */
     public VmAllocationPolicyMigrationBestFitStaticThreshold(
         final VmSelectionPolicy vmSelectionPolicy,
         final double overUtilizationThreshold)
@@ -55,8 +63,9 @@ public class VmAllocationPolicyMigrationBestFitStaticThreshold extends VmAllocat
 
     /**
      * Creates a new VmAllocationPolicy, changing the {@link Function} to select a Host for a Vm.
-     * @param vmSelectionPolicy the policy that defines how VMs are selected for migration
-     * @param overUtilizationThreshold the over utilization threshold
+     * @param vmSelectionPolicy vmSelectionPolicy the {@link VmAllocationPolicyMigration#getVmSelectionPolicy() policy}
+     *                          that defines how VMs are selected for migration
+     * @param overUtilizationThreshold {@link #setOverUtilizationThreshold(double) the over utilization threshold percent (between 0 and 1)}
      * @param findHostForVmFunction a {@link Function} to select a Host for a given Vm.
      *                              Passing null makes the Function to be set as the default {@link #findHostForVm(Vm)}.
      * @see VmAllocationPolicy#setFindHostForVmFunction(java.util.function.BiFunction)
@@ -72,7 +81,7 @@ public class VmAllocationPolicyMigrationBestFitStaticThreshold extends VmAllocat
     /**
      * Gets the Host having the least available MIPS capacity (max used MIPS).
      *
-     * <p>This method is ignoring the additional filtering performed by the super class.
+     * <p>This method doesn't apply the additional filters from the super class.
      * This way, Host selection is performed ignoring energy consumption.
      * However, all the basic filters defined in the super class are ensured, since
      * this method is called just after they are applied.
@@ -84,8 +93,8 @@ public class VmAllocationPolicyMigrationBestFitStaticThreshold extends VmAllocat
      */
     @Override
     protected Optional<Host> findHostForVmInternal(final Vm vm, final Predicate<Host> predicate) {
-        /*It's ignoring the super class intentionally to avoid the additional filtering performed there
-        * and to apply a different method to select the Host to place the VM.*/
+        /* It's ignoring the super class intentionally to avoid the additional filtering performed there
+         * and to apply a different method to select the Host to place the VM.*/
         return getHostList().stream().filter(predicate).max(comparingDouble(Host::getCpuMipsUtilization));
     }
 }

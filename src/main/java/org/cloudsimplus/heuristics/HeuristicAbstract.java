@@ -35,12 +35,10 @@ import java.lang.reflect.InvocationTargetException;
 /**
  * An abstract class for {@link Heuristic} implementations.
  *
- * @author Manoel Campos da Silva Filho
  * @param <S> The {@link HeuristicSolution class of solutions} the heuristic will deal with.
- *            It starts with an initial
- *            solution (usually random, depending on each subclass implementation)
- *            and executes the solution search in order
- *            to find a satisfying solution (defined by a stop criteria)
+ *            It starts with an initial solution (usually random, depending on each subclass implementation)
+ *            and executes the search to find a satisfying solution (defined by a stop criteria).
+ * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
 @Accessors @Getter
@@ -52,7 +50,7 @@ public abstract class HeuristicAbstract<S extends HeuristicSolution<?>>  impleme
     private final Class<S> solutionClass;
 
     /**
-     * A random number generator
+     * A pseudo-random number generator
      */
 	private final ContinuousDistribution random;
 
@@ -71,7 +69,7 @@ public abstract class HeuristicAbstract<S extends HeuristicSolution<?>>  impleme
 	/**
 	 * Creates a heuristic.
 	 *
-	 * @param random a random number generator
+	 * @param random a pseudo-random number generator
 	 * @param solutionClass reference to the generic class that will be used to instantiate heuristic solutions
 	 */
 	public HeuristicAbstract(@NonNull final ContinuousDistribution random, @NonNull final Class<S> solutionClass){
@@ -100,8 +98,7 @@ public abstract class HeuristicAbstract<S extends HeuristicSolution<?>>  impleme
 	}
 
 	/**
-	 * Updates the state of the system in order to keep looking
-	 * for a suboptimal solution.
+	 * Updates the state of the system to keep looking for a suboptimal solution.
 	 */
 	protected abstract void updateSystemState();
 

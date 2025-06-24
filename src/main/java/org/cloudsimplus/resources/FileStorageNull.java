@@ -1,8 +1,7 @@
 package org.cloudsimplus.resources;
 
 /**
- * A class that implements the Null Object Design Pattern for {@link FileStorage}
- * class.
+ * A class that implements the Null Object Design Pattern for {@link FileStorage} class.
  *
  * @author Manoel Campos da Silva Filho
  * @see FileStorage#NULL

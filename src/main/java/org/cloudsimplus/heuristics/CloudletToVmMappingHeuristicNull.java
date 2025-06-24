@@ -37,8 +37,8 @@ import java.util.List;
  * @see CloudletToVmMappingHeuristic#NULL
  */
 final class CloudletToVmMappingHeuristicNull extends HeuristicNull<CloudletToVmMappingSolution> implements CloudletToVmMappingHeuristic {
-    @Override public List<Cloudlet> getCloudletList() { return Collections.EMPTY_LIST; }
-    @Override public List<Vm> getVmList() { return Collections.EMPTY_LIST; }
+    @Override public List<Cloudlet> getCloudletList() { return Collections.emptyList(); }
+    @Override public List<Vm> getVmList() { return Collections.emptyList(); }
     @Override public CloudletToVmMappingHeuristic setCloudletList(List<Cloudlet> cloudletList) { return this; }
     @Override public CloudletToVmMappingHeuristic setVmList(List<Vm> vmList) { return this; }
 }

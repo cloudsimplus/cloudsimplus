@@ -27,7 +27,7 @@ import org.cloudsimplus.datacenters.Datacenter;
 import org.cloudsimplus.vms.Vm;
 
 /**
- * An interface that represent data to be passed
+ * An interface that represents data to be passed
  * to {@link EventListener} objects that are registered to be notified
  * when some events happen for a given {@link Vm}
  * running inside a {@link Datacenter}.
@@ -39,9 +39,9 @@ import org.cloudsimplus.vms.Vm;
  */
 public interface VmDatacenterEventInfo extends VmEventInfo, DatacenterEventInfo {
     /**
-     * Gets a VmDatacenterEventInfo instance from the given parameters.
+     * Gets a {@code VmDatacenterEventInfo} instance from the given parameters.
      * The {@link #getDatacenter() Datacenter} attribute is defined as the {@link Datacenter} where the {@link Vm}
-     * is running and the {@link #getTime()} is the current simulation time..
+     * is running and the {@link #getTime()} is the current simulation time.
      *
      * @param listener the listener to be notified about the event
      * @param vm the {@link Vm} that fired the event
@@ -51,16 +51,16 @@ public interface VmDatacenterEventInfo extends VmEventInfo, DatacenterEventInfo 
     }
 
     /**
-     * Gets a VmDatacenterEventInfo instance from the given parameters.
+     * Gets a {@code VmDatacenterEventInfo} instance from the given parameters.
      * The {@link #getTime()} is the current simulation time.
      *
      * @param listener the listener to be notified about the event
      * @param vm the {@link Vm} that fired the event
      * @param datacenter {@link Datacenter} that the {@link Vm} is related to.
      *                   Such a Datacenter can be that one where the Vm is or was placed,
-     *                   or where the Vm was tried to be be created,
+     *                   or where the Vm was tried to be created,
      *                   depending on the fired event, such as the
-     *                   {@link Vm#addOnCreationFailureListener(EventListener)}  OnVmCreationFailure}
+     *                   {@link Vm#addOnCreationFailureListener(EventListener)  OnVmCreationFailure}
      */
     static VmDatacenterEventInfo of(final EventListener<VmDatacenterEventInfo> listener, final Vm vm, final Datacenter datacenter) {
         final double time = vm.getSimulation().clock();

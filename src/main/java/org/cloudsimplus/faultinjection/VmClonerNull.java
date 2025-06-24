@@ -34,8 +34,7 @@ import java.util.function.Function;
 import java.util.function.UnaryOperator;
 
 /**
- * A class that implements the Null Object Design Pattern for {@link VmCloner}
- * objects.
+ * A class that implements the Null Object Design Pattern for {@link VmCloner} objects.
  *
  * @author Manoel Campos da Silva Filho
  * @see VmCloner#NULL

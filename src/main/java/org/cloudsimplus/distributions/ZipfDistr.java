@@ -12,7 +12,7 @@ import org.cloudsimplus.util.MathUtil;
 
 /**
  * A Pseudo-Random Number Generator following the
- * <a href="http://en.wikipedia.org/wiki/Zipf's_law">Zipf</a> distribution.
+ * <a href="http://en.wikipedia.org/wiki/Zipf's_law">Zipf distribution</a>.
  *
  * @author Marcos Dias de Assuncao
  * @author Manoel Campos da Silva Filho
@@ -49,7 +49,7 @@ public class ZipfDistr implements DiscreteDistribution {
      *
      * @param shape the shape distribution parameter
      * @param population the population distribution parameter
-     * @param seed the seed
+     * @param seed the seed to initialize the generator
      *
      * @see #ZipfDistr(double, int, long, RandomGenerator)
      */

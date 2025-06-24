@@ -7,8 +7,7 @@ import org.cloudsimplus.vms.Vm;
 import java.util.function.Function;
 
 /**
- * A class that implements the Null Object Design Pattern for
- * {@link ResourceProvisioner} class.
+ * A class that implements the Null Object Design Pattern for {@link ResourceProvisioner} class.
  *
  * @author Manoel Campos da Silva Filho
  * @see ResourceProvisioner#NULL

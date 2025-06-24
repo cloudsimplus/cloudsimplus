@@ -76,7 +76,7 @@ public final class CheckCloudletLifetimeTest {
 
         brokerBuilder.getCloudletBuilder()
                      .setLength(CLOUDLET_LENGTH)
-                     .setPEs(CLOUDLET_PES)
+                     .setPes(CLOUDLET_PES)
                      .setLifeTime(CLOUDLET_LIFE_TIME)
                      .createAndSubmit(1);
     }

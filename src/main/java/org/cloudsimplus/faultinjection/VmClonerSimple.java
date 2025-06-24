@@ -44,17 +44,24 @@ import java.util.function.UnaryOperator;
  */
 @Accessors
 public class VmClonerSimple implements VmCloner {
+    /** @see #setVmClonerFunction(UnaryOperator)  */
     @Setter @NonNull
     private UnaryOperator<Vm> vmClonerFunction;
+
+    /** @see #setCloudletsClonerFunction(Function)  */
     @Setter @NonNull
     private Function<Vm, List<Cloudlet>> cloudletsClonerFunction;
+
+    /** @see #getMaxClonesNumber() */
     @Getter @Setter
     private int maxClonesNumber;
+
+    /** @see #getClonedVmsNumber() */
     @Getter
     private int clonedVmsNumber;
 
     /**
-     * Creates a {@link Vm} cloner which makes the maximum of 1 Vm clone.
+     * Creates a {@link Vm} cloner which clones Vm at maximum once after all VMs fail on a given broker.
      *
      * @param vmClonerFunction the {@link UnaryOperator} to be used to clone {@link Vm}s.
      * @param cloudletsClonerFunction the {@link Function} to be used to clone Vm's {@link Cloudlet}s.

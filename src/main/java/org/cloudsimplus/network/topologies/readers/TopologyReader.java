@@ -19,14 +19,14 @@ import java.io.UncheckedIOException;
  *
  * @author Thomas Hohnstein
  * @since CloudSim Toolkit 1.0
+ * @see TopologyReaderBrite
  */
 public interface TopologyReader {
-
 	/**
 	 * Reads a file and creates a {@link TopologicalGraph} object.
 	 *
-	 * @param filename Name of the file to read
-	 * @return The created TopologicalGraph
+	 * @param filename name of the file to read
+	 * @return the created TopologicalGraph
 	 * @throws UncheckedIOException when the file cannot be accessed
 	 */
 	TopologicalGraph readGraphFile(String filename);
@@ -35,9 +35,8 @@ public interface TopologyReader {
      * Reads a file and creates an {@link TopologicalGraph} object.
      *
      * @param reader the {@link InputStreamReader} to read the file
-     * @return The created TopologicalGraph
+     * @return the created TopologicalGraph
      * @throws UncheckedIOException when the file cannot be accessed
      */
     TopologicalGraph readGraphFile(InputStreamReader reader);
-
 }

@@ -98,7 +98,7 @@ public final class CheckHostAvailableMipsTest {
             brokerBuilder.getCloudletBuilder()
                 .setLength(cloudletLength)
                 .setUtilizationModelCpu(utilizationModel)
-                .setPEs(CLOUDLET_PES)
+                .setPes(CLOUDLET_PES)
                 .createAndSubmit(1, i);
         }
     }

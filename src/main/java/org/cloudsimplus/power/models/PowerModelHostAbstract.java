@@ -8,7 +8,7 @@ import org.cloudsimplus.power.PowerMeter;
 import org.cloudsimplus.util.MathUtil;
 
 /**
- * Abstract implementation of a host power model.
+ * Abstract implementation of a {@link Host} {@link PowerModel}.
  *
  * @since CloudSim Plus 6.0.0
  * @see PowerMeter
@@ -27,7 +27,7 @@ public abstract class PowerModelHostAbstract implements PowerModelHost {
 
     /**
      * Checks if a power value (in Watts) is valid.
-     * @param power the value to validate
+     * @param power the value to validate (in Watts)
      * @param fieldName the name of the field/variable storing the value
      * @return the given power if it's valid
      * @throws IllegalArgumentException when the value is smaller than 1

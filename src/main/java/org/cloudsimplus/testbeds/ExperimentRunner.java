@@ -58,18 +58,14 @@ import static java.util.stream.Collectors.toList;
  */
 @Getter @Accessors
 public abstract class ExperimentRunner<T extends Experiment<T>> extends AbstractRunnable {
-    /**
-     * If experiments are executed in parallel, each experiment verbosity is disabled,
-     * otherwise, you'll see mixed log messages from different
-     * experiment runs.
-     *
-     * <p>
-     * If parallel execution is enabled,
-     * you may consider disabling {@link #setVerbose(boolean) verbosity} for individual {@link Experiment}s created,
-     * since messages from different runs will be mixed up
-     * and may cause confusion.
-     * </p>
-     */
+    /// If experiments are executed in parallel, each experiment verbosity is disabled;
+    /// otherwise, you'll see mixed log messages from different
+    /// experiment runs.
+    ///
+    /// If parallel execution is enabled,
+    /// you may consider disabling [verbosity][#setVerbose(boolean)] for individual [Experiment]s created,
+    /// since messages from different runs will be mixed up and may cause confusion.
+    ///
     private final boolean parallel;
 
     /**
@@ -87,8 +83,7 @@ public abstract class ExperimentRunner<T extends Experiment<T>> extends Abstract
 
     /**
      * The seed to be used for the first executed experiment.
-     * The seed for each subsequent experiment is this seed plus the index
-     * of the experiment.
+     * The seed for each subsequent experiment is this seed plus the index of the experiment.
      */
     private final long baseSeed;
 
@@ -96,13 +91,9 @@ public abstract class ExperimentRunner<T extends Experiment<T>> extends Abstract
      * @see #addSeed(long)  */
     private final List<Long> seeds;
 
-    /**
-     * The number of times the experiment will be executed in order to get
-     * values such as means and standard deviations. It has to be an even number
-     * if the
-     * {@link #isApplyAntitheticVariates() "Antithetic Variates Technique"}
-     * is to be used.
-     */
+    /// The number of times the experiment will be executed to get
+    /// values such as means and standard deviations. It has to be an even number
+    /// if the ["Antithetic Variates Technique"][#isApplyAntitheticVariates()] is to be used.
     private int simulationRuns;
 
     private final AtomicInteger finishedRuns;
@@ -117,13 +108,9 @@ public abstract class ExperimentRunner<T extends Experiment<T>> extends Abstract
      */
     private long experimentsExecutionTimeSecs;
 
-    /**
-     * Checks if the "Antithetic Variates Technique" is to be applied to reduce
-     * results variance.
-     *
-     * @see
-     * <a href="https://en.wikipedia.org/wiki/Antithetic_variates">Antithetic variates</a>
-     */
+    /// Checks if the "Antithetic Variates Technique" is to be applied to reduce results variance.
+    ///
+    /// @link [Antithetic variates](https://en.wikipedia.org/wiki/Antithetic_variates)
     private final boolean applyAntitheticVariates;
 
     /**
@@ -133,32 +120,30 @@ public abstract class ExperimentRunner<T extends Experiment<T>> extends Abstract
      */
     private final int batchesNumber;
 
-    /**
-     * A Map containing a List of values for each metric to be computed.
-     * The computation of final experiments results are performed on this map.
-     *
-     * <p>Each key is the metric name and each value is a List of Double
-     * containing the values collected for that metric, for each experiment run.
-     * These values will be then summarized to compute the final value
-     * for each metric.</p>
-     *
-     * <p>The values to be added for each metric on this map
-     * should be collected by the experiment finish listener.
-     * The listener can be set inside the runner's {@link #createExperimentInternal(int)}.</p>
-     * @see Experiment#setAfterExperimentFinish(Consumer)
-     */
+    /// A Map containing a List of values for each metric to be computed.
+    /// The computation of final experiments results are performed on this map.
+    ///
+    /// Each key is the metric name, and each value is a List of Double
+    /// containing the values collected for that metric, for each experiment's run.
+    /// These values will be then summarized to compute the final value
+    /// for each metric.
+    ///
+    /// The values to be added for each metric on this map
+    /// should be collected by the experiment finish listener.
+    /// The listener can be set inside the runner's [#createExperimentInternal(int)].
+    /// @see Experiment#setAfterExperimentFinish(Consumer)
     private final Map<String, List<Double>> metricsMap;
 
     /**
      * A description for this experiment which is shown when it starts.
-     * It's also used to generate a caption for the Latex table.
+     * It's also used to generate a caption for the LaTeX table.
      * @see #setLatexTableResultsGeneration(boolean)
      */
     @Setter
     private String description;
 
     /**
-     * An id used to identify the experiment results table generated in formats such as Latex
+     * An id used to identify the experiment results table generated in formats such as LaTeX
      * for computed metrics.
      * @see #latexTableResultsGeneration
      */
@@ -166,7 +151,7 @@ public abstract class ExperimentRunner<T extends Experiment<T>> extends Abstract
     private String resultsTableId;
 
     /**
-     * Checks if generation of a result table in Latex format for computed metrics is enabled.
+     * Checks if generation of a result table in LaTeX format for computed metrics is enabled.
      */
     @Setter
     private boolean latexTableResultsGeneration;
@@ -182,54 +167,46 @@ public abstract class ExperimentRunner<T extends Experiment<T>> extends Abstract
         this(baseSeed, simulationRuns, false);
     }
 
-    /**
-     * Creates an experiment runner with a given {@link #getBaseSeed() base seed}
-     * that runs sequentially.
-     * @param baseSeed the seed to be used as base for each experiment seed
-     * @param simulationRuns the number of times the experiment will be executed
-     * @param latexTableResultsGeneration Enables/disables the generation of a result table in Latex format for computed metrics.
-     * @param parallel whether experiments will run in parallel or sequentially
-     */
+    /// Creates an experiment runner with a given [base seed][#getBaseSeed()]
+    /// that runs sequentially.
+    /// @param baseSeed the seed to be used as base for each experiment seed
+    /// @param simulationRuns the number of times the experiment will be executed
+    /// @param latexTableResultsGeneration Enables/disables the generation of a result table in LaTeX format for computed metrics.
+    /// @param parallel whether experiments will run in parallel or sequentially
     protected ExperimentRunner(final long baseSeed, final int simulationRuns, final boolean latexTableResultsGeneration, final boolean parallel) {
         this(baseSeed, simulationRuns, 0, false, parallel, latexTableResultsGeneration);
     }
 
-    /**
-     * Creates an experiment runner with a given {@link #getBaseSeed() base seed}
-     * that runs sequentially.
-     * @param baseSeed the seed to be used as base for each experiment seed
-     * @param simulationRuns the number of times the experiment will be executed
-     * @param applyAntitheticVariates indicates if it's to be applied the
-     *        <a href="https://en.wikipedia.org/wiki/Antithetic_variates">antithetic variates technique</a>.
-     */
+    /// Creates an experiment runner with a given [base seed][#getBaseSeed()]
+    /// that runs sequentially.
+    /// @param baseSeed the seed to be used as base for each experiment seed
+    /// @param simulationRuns the number of times the experiment will be executed
+    /// @param applyAntitheticVariates indicates if it's to be applied the
+    ///        [Antithetic Variates Technique](https://en.wikipedia.org/wiki/Antithetic_variates).
     protected ExperimentRunner(final long baseSeed, final int simulationRuns, final boolean applyAntitheticVariates) {
         this(baseSeed, simulationRuns, 0, applyAntitheticVariates, false, false);
     }
 
-    /**
-     * Creates an experiment runner with a given {@link #getBaseSeed() base seed}
-     * that runs sequentially.
-     * @param baseSeed the seed to be used as base for each experiment seed
-     * @param simulationRuns the number of times the experiment will be executed
-     * @param batchesNumber number of simulation run batches (zero disables the batch means method)
-     * @param applyAntitheticVariates indicates if it's to be applied the
-     *        <a href="https://en.wikipedia.org/wiki/Antithetic_variates">antithetic variates technique</a>.
-     */
+    /// Creates an experiment runner with a given [base seed][#getBaseSeed()]
+    /// that runs sequentially.
+    /// @param baseSeed the seed to be used as base for each experiment seed
+    /// @param simulationRuns the number of times the experiment will be executed
+    /// @param batchesNumber number of simulation run batches (zero disables the batch means method)
+    /// @param applyAntitheticVariates indicates if it's to be applied the
+    ///        [Antithetic Variates Technique](https://en.wikipedia.org/wiki/Antithetic_variates).
     protected ExperimentRunner(final long baseSeed, final int simulationRuns, final int batchesNumber, final boolean applyAntitheticVariates) {
         this(baseSeed, simulationRuns, batchesNumber, applyAntitheticVariates, false, false);
     }
 
-    /**
-     * Creates an experiment runner with a given {@link #getBaseSeed() base seed}.
-     * @param baseSeed the seed to be used as base for each experiment seed
-     * @param simulationRuns the number of times the experiment will be executed
-     * @param batchesNumber number of simulation run batches (zero disables the batch means method)
-     * @param applyAntitheticVariates indicates if it's to be applied the
-     *        <a href="https://en.wikipedia.org/wiki/Antithetic_variates">antithetic variates technique</a>.
-     * @param parallel whether experiments will run in parallel or sequentially. It's just actually enabled when the simulation runs
-     *                 is larger than 1.
-     * @param latexTableResultsGeneration Enables/disables the generation of a result table in Latex format for computed metrics.
-     */
+    /// Creates an experiment runner with a given [base seed][#getBaseSeed()].
+    /// @param baseSeed the seed to be used as base for each experiment seed
+    /// @param simulationRuns the number of times the experiment will be executed
+    /// @param batchesNumber number of simulation run batches (zero disables the batch means method)
+    /// @param applyAntitheticVariates indicates if it's to be applied the
+    ///        [Antithetic Variates Technique](https://en.wikipedia.org/wiki/Antithetic_variates).
+    /// @param parallel whether experiments will run in parallel or sequentially.
+    ///                 It's just actually enabled when the `simulationRuns` is larger than 1.
+    /// @param latexTableResultsGeneration Enables/disables the generation of a result table in LaTeX format for computed metrics.
     protected ExperimentRunner(
         final long baseSeed, final int simulationRuns, final int batchesNumber,
         final boolean applyAntitheticVariates,
@@ -247,7 +224,7 @@ public abstract class ExperimentRunner<T extends Experiment<T>> extends Abstract
         this.latexTableResultsGeneration = latexTableResultsGeneration;
 
         /* Since experiments may run in parallel and these fields are shared across them,
-         * we need to synchronize these collections.*/
+         * we need to synchronize these collections. */
         this.seeds = parallel ? Collections.synchronizedList(new ArrayList<>()) : new ArrayList<>();
         this.metricsMap = parallel ? Collections.synchronizedMap(new TreeMap<>()) : new TreeMap<>();
 
@@ -271,12 +248,10 @@ public abstract class ExperimentRunner<T extends Experiment<T>> extends Abstract
         return simulationRuns;
     }
 
-    /**
-     * Sets the number of simulation runs and batches to an even number. The
-     * "Antithetic Variates Technique" for variance reduction requires an even
-     * number of simulation runs. Accordingly, if the "Batch Means Method" is
-     * used simultaneously, the number of batches has to be even.
-     */
+    /// Sets the number of simulation runs and batches to an even number.
+    /// The [Antithetic Variates Technique](https://en.wikipedia.org/wiki/Antithetic_variates)
+    /// for variance reduction requires an even number of simulation runs.
+    /// Accordingly, if the "Batch Means Method" is used simultaneously, the number of batches has to be even.
     private void setSimulationRunsAndBatchesToEvenNumber() {
         if (!(isApplyBatchMeansMethod() || isApplyAntitheticVariates())) {
             return;
@@ -291,13 +266,11 @@ public abstract class ExperimentRunner<T extends Experiment<T>> extends Abstract
         }
     }
 
-    /**
-     * Adjusts the number of simulation runs to be multiple of the number of
-     * batches, once each batch has to have the same size. If
-     * applyAntitheticVariatesTechnique is true, the number of batches will be
-     * even and consequently, the number of simulation runs after being adjusted
-     * will be even too.
-     */
+    /// Adjusts the number of simulation runs to be multiple of the number of
+    /// batches, once each batch has to have the same size. If
+    /// [#applyAntitheticVariates] is true, the number of batches will be
+    /// even and consequently, the number of simulation runs after being adjusted
+    /// will be even too.
     private void setNumberOfSimulationRunsAsMultipleOfNumberOfBatches() {
         if (isApplyBatchMeansAndSimulationRunsIsNotMultipleOfBatches()) {
             simulationRuns = batchSizeCeil() * getBatchesNumber();
@@ -323,9 +296,8 @@ public abstract class ExperimentRunner<T extends Experiment<T>> extends Abstract
      *
      * Checks if the "Batch Means Method" is to be applied to reduce correlation
      * between the results for different experiment runs.
-     * That happens if the number of simulation runs and the number of batches are
-     * compatible.
-     * @return
+     * That happens if the number of simulation runs and the number of batches are compatible.
+     * @return true if the "Batch Means Method" is to be applied, false otherwise.
      */
     public boolean isApplyBatchMeansMethod() {
         final boolean batchesGreaterThan1 = batchesNumber > 1;
@@ -362,42 +334,36 @@ public abstract class ExperimentRunner<T extends Experiment<T>> extends Abstract
         return batchMeans;
     }
 
-    /**
-     * Gets the average for the values of a given batch <i>i</i>.
-     * If there are 10 simulation runs and the number of batches is 5,
-     * the batch size is 2 (⎡10/2⎤) and each batch will be formed as follows:
-     *
-     * <center>
-     *     {0 1} {2 3} {4 5} {6 7} {8 9}
-     * </center>
-     *
-     * @param samples the list with samples to apply the "Batch Means Method".
-     *                Samples size is defined by the {@link #getSimulationRuns()}.
-     * @param index the index of the batch to get its values average
-     * @return the average for the values of a given batch
-     */
+    /// Gets the average for the values of a given batch _i_.
+    /// If there are 10 simulation runs and the number of batches is 5,
+    /// the batch size is 2 (⎡10/2⎤) and each batch will be formed as follows:
+    /// <center>
+    ///     {0 1} {2 3} {4 5} {6 7} {8 9}
+    /// </center>
+    ///
+    /// @param samples the list with samples to apply the "Batch Means Method".
+    ///                Samples size is defined by the [#getSimulationRuns()].
+    /// @param index the index of the batch to get its values average
+    /// @return the average for the values of a given batch
     private double getBatchAverage(final List<Double> samples, final int index) {
         final int k = batchSizeCeil();
         return IntStream.range(0, k).mapToDouble(j -> samples.get(getBatchElementIndex(index, j))).average().orElse(0.0);
     }
 
-    /**
-     * Gets the absolute position of the <i>jth</i> element of a batch <i>i</i>,
-     * from the samples of all experiments.
-     * If there are 12 simulation runs and the number of batches is 3,
-     * the batch size is 4 (⎡12/3⎤). The elements of the batch 2, for instance, from
-     * the samples of all experiments, will be the ones inside the brackets below:
-     *
-     * <center>
-     *     0 1 2 3 4 5 {6 <b>7</b> 8} 9 10 11
-     * </center>
-     *
-     * <p>This way, the absolute position of the 2nd (<i>j</i>) element inside the batch 3 (<i>i</i>) is 7 (in bold).</p>
-     *
-     * @param i the index of the batch to get the absolute position of one of its elements
-     * @param j the relative position of the element to get inside the batch
-     * @return the absolute position of the <i>jth</i> element of the batch
-     */
+    /// Gets the absolute position of the _jth_ element from a batch _i_,
+    /// from the samples of all experiments.
+    /// If there are 12 simulation runs and the number of batches is 3,
+    /// the batch size is 4 (⎡12/3⎤). The elements of batch 2, for instance, from
+    /// the samples of all experiments, will be the ones inside the brackets below:
+    /// <center>
+    ///     0 1 2 3 4 5 {6 <b>7</b> 8} 9 10 11
+    /// </center>
+    ///
+    /// This way, the absolute position of the 2nd (_j_) element inside batch 3 (_i_) is **7**.
+    ///
+    /// @param i the index of the batch to get the absolute position of one of its elements
+    /// @param j the relative position of the element to get inside the batch
+    /// @return the absolute position of the _jth_ element from the batch
     private int getBatchElementIndex(final int i, final int j) {
         final int k = batchSizeCeil();
         return i*k + j;
@@ -414,7 +380,7 @@ public abstract class ExperimentRunner<T extends Experiment<T>> extends Abstract
 
     /**
      * Adjusts the current number of simulations to be equal to its closer
-     * multiple of the number of batches.
+     * multiple of the batches' number.
      * @return this ExperimentRunner object
      */
     private ExperimentRunner<T> setSimulationRunsAsMultipleOfBatchNumber() {
@@ -427,26 +393,23 @@ public abstract class ExperimentRunner<T extends Experiment<T>> extends Abstract
         return seeds.get(experimentIndex);
     }
 
-    /**
-     * Uses the provided {@link Function} to create a pseudo random number generator (PRNG)
-     * for an experiment run.
-     * The kind and parameters for this PRNG is defined internally by the given Function.
-     * This method calls that Function just providing the seed to be used for
-     * the current experiment run.
-     *
-     * <p>If it is to apply the
-     * {@link #isApplyAntitheticVariates() "Antithetic Variates Technique"}
-     * to reduce results variance, the second half of experiments will used the
-     * seeds from the first half.</p>
-     *
-     * @param experimentIndex index of the experiment run to create a PRNG
-     * @param randomGenCreator a {@link Function} that receives a seed generated
-     *                         by the runner and returns a new instance of some PRNG
-     * @return the created PRNG with the seed provided by the runner
-     *
-     * @see UniformDistr#isApplyAntitheticVariates()
-     * @see #createRandomGen(int, double, double)
-     */
+    /// Uses the provided [Function] to create a pseudo random number generator (PRNG)
+    /// for an experiment run.
+    /// The given Function defines the kind and parameters for this PRNG internally.
+    /// This method calls that Function just providing the seed to be used for
+    /// the current experiment run.
+    ///
+    /// If it is to apply the [Antithetic Variates Technique][#isApplyAntitheticVariates()]
+    /// to reduce results variance, the second half of experiments will use the
+    /// seeds from the first half.
+    ///
+    /// @param experimentIndex index of the experiment's run to create a PRNG
+    /// @param randomGenCreator a [Function] that receives a seed generated
+    ///                         by the runner and returns a new instance of some PRNG
+    /// @return the created PRNG with the seed provided by the runner
+    ///
+    /// @see UniformDistr#isApplyAntitheticVariates()
+    /// @see #createRandomGen(int, double, double)
     public <S extends StatisticalDistribution> S createRandomGen(final int experimentIndex, @NonNull final Function<Long, S> randomGenCreator) {
         if(seeds.isEmpty()){
             var s = "You have to create at least 1 %s before requesting a %s to create a pseudo random number generator (PRNG)!";
@@ -465,12 +428,12 @@ public abstract class ExperimentRunner<T extends Experiment<T>> extends Abstract
 
     /**
      * Creates a pseudo random number generator (PRNG) for an experiment run that
-     * generates uniform values between [0 and 1[.
+     * generates uniform values between [0..1[.
      * If it is to apply the {@link #isApplyAntitheticVariates() "Antithetic Variates Technique"}
      * to reduce results variance, the second half of experiments will use the
      * seeds from the first half.
      *
-     * @param experimentIndex index of the experiment run to create a PRNG
+     * @param experimentIndex index of the experiment's run to create a PRNG
      * @return the created PRNG
      *
      * @see UniformDistr#isApplyAntitheticVariates()
@@ -480,21 +443,19 @@ public abstract class ExperimentRunner<T extends Experiment<T>> extends Abstract
         return createRandomGen(experimentIndex,0, 1);
     }
 
-    /**
-     * Creates a pseudo random number generator (PRNG) for an experiment run that
-     * generates uniform values between [min and max[.
-     * If it is to apply the {@link #isApplyAntitheticVariates() "Antithetic Variates Technique"}
-     * to reduce results' variance, the second half of experiments will use the
-     * seeds from the first half.
-     *
-     * @param experimentIndex index of the experiment run to create a PRNG
-     * @param minInclusive the minimum value the generator will return (inclusive)
-     * @param maxExclusive the maximum value the generator will return (exclusive)
-     * @return the created PRNG
-     *
-     * @see UniformDistr#isApplyAntitheticVariates()
-     * @see #createRandomGen(int)
-     */
+    /// Creates a pseudo random number generator (PRNG) for an experiment run that
+    /// generates uniform values between [min .. max[.
+    /// If it is to apply the ["Antithetic Variates Technique"][#isApplyAntitheticVariates()]
+    /// to reduce results' variance, the second half of experiments will use the
+    /// seeds from the first half.
+    ///
+    /// @param experimentIndex index of the experiment's run to create a PRNG
+    /// @param minInclusive the minimum value the generator will return (inclusive)
+    /// @param maxExclusive the maximum value the generator will return (exclusive)
+    /// @return the created PRNG
+    ///
+    /// @see UniformDistr#isApplyAntitheticVariates()
+    /// @see #createRandomGen(int)
     public ContinuousDistribution createRandomGen(final int experimentIndex, final double minInclusive, final double maxExclusive) {
         return createRandomGen(
             experimentIndex,
@@ -560,10 +521,10 @@ public abstract class ExperimentRunner<T extends Experiment<T>> extends Abstract
             simulationRuns, TimeUtil.secondsToStr(experimentsExecutionTimeSecs), LocalTime.now());
     }
 
-    /** Since experiments may execute in parallel and during execution
+    /** Since experiments may execute in parallel and during the execution
      * they access the shared seeds list, all experiments have to
      * be created before starting execution.
-     * Otherwise, if they are run in parallel, we get IndexOutOfBoundsException's.
+     * Otherwise, if they are run in parallel, we get {@link IndexOutOfBoundsException}.
      */
     private void createAllExperimentsBeforeFirstRun() {
         if(experiments == null) {
@@ -625,19 +586,17 @@ public abstract class ExperimentRunner<T extends Experiment<T>> extends Abstract
         return new ConfidenceInterval(stats, metricEntry.getKey());
     }
 
-    /**
-     * Creates a {@link SummaryStatistics} object from a list of
-     * Double values, allowing computation of statistics such as mean over these values.
-     * The method also checks if the
-     * {@link #isApplyAntitheticVariates() Antithetic Variates}
-     * and the {@link #isApplyBatchMeansMethod() Batch Means} techniques
-     * are enabled, applying them over the given list of Doubles.
-     * These techniques are used for variance reduction.
-     *
-     * @param values the List of values to add to the {@link SummaryStatistics} object
-     * @return the {@link SummaryStatistics} object containing
-     * the double values, after applying the techniques for variance reduction.
-     */
+    /// Creates a [SummaryStatistics] object from a list of
+    /// Double values, allowing computation of statistics such as mean over these values.
+    /// The method also checks if the
+    /// [Antithetic Variates][#isApplyAntitheticVariates()]
+    /// and the [Batch Means][#isApplyBatchMeansMethod()] techniques
+    /// are enabled, applying them over the given list of Doubles.
+    /// These techniques are used for variance reduction.
+    ///
+    /// @param values the List of values to add to the [SummaryStatistics] object
+    /// @return the [SummaryStatistics] object containing
+    /// the double values, after applying the techniques for variance reduction.
     protected final SummaryStatistics computeFinalStatistics(final List<Double> values) {
         final var stats = new SummaryStatistics();
         final List<Double> adjustedValues = computeAntitheticMeans(computeBatchMeans(values));
@@ -645,18 +604,16 @@ public abstract class ExperimentRunner<T extends Experiment<T>> extends Abstract
         return stats;
     }
 
-    /**
-     * Add a value to a given metric inside the {@link #metricsMap}.
-     *
-     * <p>This method must be called for each metric inside the experiment finish listener.
-     * The listener can be set inside the runner's {@link #createExperimentInternal(int)}.</p>
-     * @see Experiment#setAfterExperimentFinish(Consumer)
-     * @param metricName the name of the metric to collect the data for a simulation run
-     * @param value the value for at metric for a given simulation run.
-     *              If null is given, that means no value was collected for that metric
-     *              in the run, but the metric entry must exist in the metrics map,
-     *              so that the final results table show the metric entry with 0.
-     */
+    /// Add a value to a given metric inside the [#metricsMap].
+    ///
+    /// This method must be called for each metric inside the experiment finish listener.
+    /// The listener can be set inside the runner's [#createExperimentInternal(int)].
+    /// @see Experiment#setAfterExperimentFinish(Consumer)
+    /// @param metricName the name of the metric to collect the data for a simulation run
+    /// @param value the value for at metric for a given simulation run.
+    ///              If null is given, that means no value was collected for that metric
+    ///              in the run, but the metric entry must exist in the metrics map,
+    ///              so that the final results' table shows the metric entry with 0.
     protected final void addMetricValue(final String metricName, final Double value){
         final List<Double> metricValues = getMetricValues(metricName);
         if(value != null)
@@ -667,28 +624,22 @@ public abstract class ExperimentRunner<T extends Experiment<T>> extends Abstract
         return metricsMap.compute(metricName, (key, values) -> values == null ? new ArrayList<>(simulationRuns) : values);
     }
 
-    /**
-     * <p>
-     * Computes the antithetic means for the given samples if the
-     * {@link #isApplyAntitheticVariates() "Antithetic Variates Technique" is to be applied}.
-     * </p>
-     *
-     * <p>These values are the mean between the first half of samples with the
-     * second half. By this way, the resulting value is an array with half of
-     * the samples length.
-     * </p>
-     *
-     * <p>
-     * <b>NOTE:</b> To correctly compute the antithetic values the seeds from
-     * the first half of experiments must be used for the second half.</p>
-     *
-     * @param samples the list of samples to compute the antithetic means from
-     * @return the computed antithetic means from the given samples if the
-     * "Antithetic Variates Technique" is to be applied, otherwise return the
-     * same given samples list.
-     *
-     * @see #createRandomGen(int, double, double)
-     */
+    ///
+    /// Computes the antithetic means for the given samples if the
+    /// ["Antithetic Variates Technique" is to be applied][#isApplyAntitheticVariates()].
+    ///
+    /// These values are the average between the first half of samples with the
+    /// second half. By this way, the resulting value is an array with half the samples' length.
+    ///
+    /// **NOTE:** To correctly compute the antithetic values, the seeds from
+    /// the first half of experiments must be used for the second half.
+    ///
+    /// @param samples the list of samples to compute the antithetic means from
+    /// @return the computed antithetic means from the given samples if the
+    /// "Antithetic Variates Technique" is to be applied, otherwise return the
+    /// same given samples list.
+    ///
+    /// @see #createRandomGen(int, double, double)
     protected List<Double> computeAntitheticMeans(final List<Double> samples) {
         if (!isApplyAntitheticVariates()) {
             return samples;
@@ -701,8 +652,8 @@ public abstract class ExperimentRunner<T extends Experiment<T>> extends Abstract
             antitheticMeans.add((samples.get(i) + samples.get(half + i)) / 2.0);
         }
 
-        System.out.printf(
-                "\tAntithetic Variates Technique applied. The number of samples was reduced to the half (%d).%n", half);
+        final var msg = "\tAntithetic Variates Technique applied. The number of samples was reduced to the half (%d).%n";
+        System.out.printf(msg, half);
 
         return antitheticMeans;
     }
@@ -721,7 +672,7 @@ public abstract class ExperimentRunner<T extends Experiment<T>> extends Abstract
 
     /**
      * Increments the number of finished runs and returns the updated value.
-     * @return
+     * @return the incremented number of finished runs
      */
     final int incFinishedRuns() {
         return finishedRuns.incrementAndGet();

@@ -23,6 +23,8 @@
  */
 package org.cloudsimplus.distributions;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.math3.util.CombinatoricsUtils;
 
 import java.util.function.BiConsumer;
@@ -37,8 +39,7 @@ import java.util.stream.IntStream;
  * @author Manoel Campos da Silva Filho
  * @see <a href="https://en.wikipedia.org/wiki/Poisson_distribution">Poisson Distribution</a>
  * @since CloudSim Plus 1.2.0
- * TODO There is the {@link org.apache.commons.math3.distribution.PoissonDistribution}
- * implementation already.
+ * TODO There is the {@link org.apache.commons.math3.distribution.PoissonDistribution} implementation already.
  * This class should simply extend it, as the other class on this package do.
  */
 public class PoissonDistr implements DiscreteDistribution {
@@ -50,10 +51,21 @@ public class PoissonDistr implements DiscreteDistribution {
      */
     private final UniformDistr rand;
 
-    /** @see #getLambda() */
+    /**
+     * The average number of events (λ) that are expected to happen at each 1 time unit.
+     * It is the expected number of events to happen each time,
+     * also called the <b>event rate</b> or <b>rate parameter</b>.
+     *
+     * <p>If one considers the unit as minute, this value means the average number of arrivals
+     * at each minute. It's the inverse of the {@link #getInterArrivalMeanTime()}.</p>
+     */
+    @Getter
     private double lambda;
 
-    /** @see #getK() */
+    /**
+     *  The number of events to check the probability for them to happen
+     *  in a time interval (default 1). */
+    @Getter @Setter
     private int k;
 
     /**
@@ -91,20 +103,6 @@ public class PoissonDistr implements DiscreteDistribution {
     }
 
     /**
-     * Gets the average number of events (λ) that are expected to happen at each 1 time unit.
-     * It is the expected number of events to happen each time,
-     * also called the <b>event rate</b> or <b>rate parameter</b>.
-     *
-     * <p>If one considers the unit as minute, this value means the average number of arrivals
-     * at each minute. It's the inverse of the {@link #getInterArrivalMeanTime()}.</p>
-     *
-     * @return
-     */
-    public double getLambda() {
-        return lambda;
-    }
-
-    /**
      * Sets the average number of events (λ) that are expected to happen at each 1 time unit.
      * It is the expected number of events to happen each time,
      * also called the <b>event rate</b> or <b>rate parameter</b>.
@@ -119,7 +117,7 @@ public class PoissonDistr implements DiscreteDistribution {
     }
 
     /**
-     * Gets the probability to arrive {@link #getK() k} events in the current time,
+     * Gets the probability (Pr) to arrive {@link #getK() k} events in the current time,
      * considering the mean arrival time {@link #getLambda() lambda (λ)},
      * which is represented as {@code Pr(k events in time period)}.
      * It computes the Probability Mass Function (PMF) of the Poisson distribution.
@@ -143,15 +141,15 @@ public class PoissonDistr implements DiscreteDistribution {
     }
 
     /**
-     * Gets a random number that represents the next time (from current time or last generated event)
-     * that an event will happen, considering events arrival rate defined
-     * by {@link #getLambda() lambda (λ)}.
-     * The time unit (if seconds, minutes, hours, etc) is the same
-     * considered when setting a value to the {@link #getLambda() lambda} attribute.
+     * {@return a random number that represents the next time (from current time or last generated event)
+     * that an event will happen}
+     * That time is computed based on events arrival rate defined by {@link #getLambda() lambda (λ)}.
+     * The time unit (if seconds, minutes, hours, etc.) is the same
+     * you considered when setting a value to the {@link #getLambda() lambda} attribute.
      *
      * <p>
      * Calling this method for the first time returns the next event arrival time.
-     * The retuning values for consecutive calls can be dealt in one of the following ways:
+     * The return values for consecutive calls can be handled in one of the following ways:
      * <ul>
      *   <li>
      *   If you are generating all random event arrivals at the beginning of the simulation,
@@ -173,7 +171,6 @@ public class PoissonDistr implements DiscreteDistribution {
      * <p>Poisson inter-arrival times are independent and identically distributed
      * exponential random variables with mean 1/λ.</p>
      *
-     * @return
      * @see <a href="https://books.google.com.br/books?isbn=1420076191">Monte Carlo Methods and Models in Finance and Insurance.
      * Ralf Korn, Elke Korn, et al. 1st edition, 2010. Section 2.4.1: Exponential distribution. Page 33.</a>
      * @see <a href="https://en.wikipedia.org/wiki/Poisson_distribution#Related_distributions">Related distributions</a>
@@ -205,45 +202,21 @@ public class PoissonDistr implements DiscreteDistribution {
     }
 
     /**
-     * Gets the number of events to check the probability for them to happen
-     * in a time interval (default 1).
-     *
-     * @return
-     */
-    public int getK() {
-        return k;
-    }
-
-    /**
-     * Sets the number of events to check the probability to happen
-     * in a time interval.
-     *
-     * @param k the value to set
-     */
-    public void setK(final int k) {
-        this.k = k;
-    }
-
-    /**
-     * Gets the mean time between arrival of two events,
-     * which is the inverse of {@link #getLambda() lambda (λ)}.
+     * {@return the mean time between arrival of two events}
+     * It is the inverse of {@link #getLambda() lambda (λ)}.
      * The time unit (if seconds, minutes, hours, etc.) is the same
      * considered when setting a value to the {@link #getLambda() lambda} attribute.
-     *
-     * @return
      */
     public double getInterArrivalMeanTime() {
         return 1.0 / lambda;
     }
 
     /**
-     * Tests the simulations of customers arrivals in a Poisson process.
+     * Tests the simulations of customer arrivals in a Poisson process.
      * All the code inside this method is just to try the class.
-     * That is way it declares internal methods as Functional
+     * That is why it declares internal methods as Functional
      * objects, instead of declaring such methods
      * at the class level and just calling them.
-     *
-     * @param args
      */
     public static void main(final String[] args) {
         //@TODO This method should be moved to a meaningful example class that creates Cloudlets instead of customers
@@ -251,7 +224,7 @@ public class PoissonDistr implements DiscreteDistribution {
         /*
          * Mean number of customers that arrives per minute.
          * The value of 0.4 customers per minute means that 1 customer will arrive at every 2.5 minutes
-         * (i.e. 1 minute / 0.4 customer per minute = 1 customer at every 2.5 minutes).
+         * (i.e., 1 minute / 0.4 customer per minute = 1 customer at every 2.5 minutes).
          * This is the inter-arrival time (in average).
          *
          * The time unit is irrelevant for the generator.

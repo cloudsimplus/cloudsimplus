@@ -128,6 +128,7 @@ public class CloudletsTableBuilder extends TableBuilderAbstract<Cloudlet> {
 
     /**
      * Sets the format for cloudlet length columns.
+     * @return this table builder
      */
     public CloudletsTableBuilder setLengthFormat(final String lengthFormat) {
         this.lengthFormat = requireNonNullElse(lengthFormat, "");
@@ -136,6 +137,7 @@ public class CloudletsTableBuilder extends TableBuilderAbstract<Cloudlet> {
 
     /**
      * Sets the format for ID columns.
+     * @return this table builder
      */
     public CloudletsTableBuilder setIdFormat(final String idFormat) {
         this.idFormat = requireNonNullElse(idFormat, "");
@@ -144,6 +146,7 @@ public class CloudletsTableBuilder extends TableBuilderAbstract<Cloudlet> {
 
     /**
      * Sets the format for columns indicating number of PEs.
+     * @return this table builder
      */
     public CloudletsTableBuilder setPeFormat(final String peFormat) {
         this.peFormat = requireNonNullElse(peFormat, "");

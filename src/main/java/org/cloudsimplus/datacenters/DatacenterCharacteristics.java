@@ -12,10 +12,11 @@ import lombok.Getter;
 import lombok.experimental.Accessors;
 import org.cloudsimplus.allocationpolicies.VmAllocationPolicy;
 import org.cloudsimplus.core.Identifiable;
+import org.cloudsimplus.hosts.Host;
 
 /**
  * An interface to be implemented by each class that represents
- * the physical characteristics of a Datacenter.
+ * the physical characteristics of a {@link Datacenter}.
  *
  * @author Manzur Murshed
  * @author Rajkumar Buyya
@@ -45,63 +46,51 @@ public interface DatacenterCharacteristics extends Identifiable {
     }
 
     /**
-     * An attribute that implements the Null Object Design Pattern for {@link Datacenter}
-     * objects.
+     * An attribute that implements the Null Object Design Pattern for {@link Datacenter} objects.
      */
     DatacenterCharacteristics NULL = new DatacenterCharacteristicsNull();
 
     /**
-     * {@return the distribution type of the datacenter} That is used for classification purposes.
+     * {@return the distribution type of the datacenter} That is used for classification.
      * @see Distribution
      */
     Distribution getDistribution();
 
     /**
-     * Sets the distribution type of the datacenter, which is used for classification purposes.
+     * Sets the distribution type of the datacenter, which is used for classification.
      * @param distribution the distribution type to set
-     * @return
+     * @return this instance
      */
     DatacenterCharacteristics setDistribution(Distribution distribution);
 
     /**
-     * Gets the Datacenter id.
-     * @return
+     * @return the {@link Datacenter} id.
      */
     @Override
     long getId();
 
     /**
-     * Gets the {@link Datacenter} that owns these characteristics
-     * @return
+     * @return the {@link Datacenter} that owns these characteristics
      */
     Datacenter getDatacenter();
 
     /**
-     * Gets the total MIPS rating, which is the sum of MIPS rating of all Hosts in
-     * the Datacenter.
-     *
-     * @return the sum of MIPS ratings
+     * @return the total MIPS rating, which is the sum of the MIPS rating across all {@link Host}s in the Datacenter.
      */
     double getMips();
 
     /**
-     * Gets the current number of failed PMs.
-     *
-     * @return current number of failed PMs the Datacenter has.
+     * @return the current number of failed PMs the Datacenter has.
      */
     long getNumberOfFailedHosts();
 
     /**
-     * Gets the total number of PEs for all PMs.
-     *
-     * @return number of PEs
+     * @return the total number of PEs for all PMs.
      */
     int getPesNumber();
 
     /**
-     * Checks whether all PMs of the Datacenter are working properly or not.
-     *
-     * @return if all PMs are working, otherwise
+     * @return true if all PMs of the Datacenter are working properly, false otherwise
      */
     boolean isWorking();
 
@@ -134,14 +123,14 @@ public interface DatacenterCharacteristics extends Identifiable {
     DatacenterCharacteristics setCostPerMem(double costPerMem);
 
     /**
-     * Gets the monetary cost per second of CPU for using the Hosts in the Datacenter.
+     * Gets the monetary cost per second of CPU for using the {@link Host}s in the Datacenter.
      *
      * @return the cost ($) per second
      */
     double getCostPerSecond();
 
     /**
-     * Sets the monetary cost per second of CPU.
+     * Sets the monetary cost per second of CPU for using the {@link Host}s in the Datacenter.
      *
      * @param costPerSecond the new cost ($) per second
      */

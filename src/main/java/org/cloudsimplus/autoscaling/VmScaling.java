@@ -48,13 +48,12 @@ public interface VmScaling {
     VmScaling NULL = new VmScalingNull();
 
     /**
-     * Gets the {@link Vm} that this Load Balancer is linked to.
-     * @return
+     * {@return the Vm that this VmScaling is linked to}
      */
     Vm getVm();
 
     /**
-     * Sets a {@link Vm} to this Load Balancer. The broker will call this Load Balancer
+     * Sets a {@link Vm} to this VmScaling. The broker will call this VmScaling
      * in order to balance load when its Vm is over utilized.
      *
      * <p><b>When the VmScaling is assigned to a Vm, the Vm sets itself to the VmScaling object,
@@ -67,16 +66,16 @@ public interface VmScaling {
      * Requests the Vm to be scaled up or down if it is over or underloaded, respectively.
      * The scaling request will be sent to the {@link DatacenterBroker} only
      * if the under or overload condition is met, that depends on the implementation
-     * of the scaling mechanisms.
+     * of the scaling mechanism.
      *
-     * <p>The Vm to which this scaling object is related to, creates an
+     * <p>The Vm to which this VmScaling is related to, creates an
      * {@link Vm#addOnUpdateProcessingListener(EventListener) UpdateProcessingListener}
-     * that will call this method to check if it time to perform an down or up scaling,
+     * that will call this method to check if it's time to perform a down or up scaling,
      * every time the Vm processing is updated.</p>
      *
      * @param evt event information, including the current simulation time and the VM to be scaled
-     * @return true if the Vm is over or underloaded and up or down scaling request was sent
-     *         to the broker; false otherwise
+     * @return true if the Vm is over or underloaded and up or down scaling request was sent to the broker;
+     *         false otherwise
      */
     boolean requestUpScalingIfPredicateMatches(VmHostEventInfo evt);
 }

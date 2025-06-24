@@ -27,8 +27,7 @@ import org.apache.commons.math3.exception.NumberIsTooLargeException;
 import org.apache.commons.math3.exception.OutOfRangeException;
 
 /**
- * A class that implements the Null Object Design Pattern for {@link ContinuousDistribution}
- * class.
+ * A class that implements the Null Object Design Pattern for {@link ContinuousDistribution} class.
  *
  * @author Manoel Campos da Silva Filho
  * @see ContinuousDistribution#NULL

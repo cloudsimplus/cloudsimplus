@@ -52,14 +52,13 @@ public interface SubmissionDelayable extends ExecDelayable {
      * to submit the entity to a Datacenter, in order to request the creation of the object.
      * This is a relative time from the current simulation time.
      *
-     * @param submissionDelay the amount of seconds from the current simulation
+     * @param submissionDelay the number of seconds from the current simulation
      * time that the object will wait to be submitted
      */
     void setSubmissionDelay(double submissionDelay);
 
     /**
-     * Checks if this object has a submission delay or not
-     * @return
+     * @return true if this object has a submission delay, false otherwise
      */
     boolean isSubmissionDelayed();
 }

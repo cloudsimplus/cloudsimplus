@@ -46,12 +46,10 @@ import java.util.function.UnaryOperator;
  */
 public interface VmCloner {
     Logger LOGGER = LoggerFactory.getLogger(VmCloner.class.getSimpleName());
-
     VmCloner NULL = new VmClonerNull();
 
     /**
-     * Gets the number of VMs cloned so far.
-     * @return
+     * @return the number of VMs cloned so far.
      */
     int getClonedVmsNumber();
 
@@ -61,7 +59,7 @@ public interface VmCloner {
      * binding the cloned Cloudlets to the cloned Vm.
      *
      * @param sourceVm the Vm to be cloned
-     * @return a {@link Map.Entry} where the key is the cloned Vm
+     * @return a {@link Map.Entry} where the key is the cloned Vm,
      * and the value is the List of cloned Cloudlets.
      * @see #setVmClonerFunction(UnaryOperator)
      * @see #setCloudletsClonerFunction(Function)
@@ -70,7 +68,7 @@ public interface VmCloner {
 
     /**
      * Sets the {@link UnaryOperator} to be used to clone {@link Vm}s.
-     * It is a Function which, when called, creates a clone of a specific Vm.
+     * It is a Function that, when called internally, will create a clone of a specific Vm.
      *
      * @param vmClonerFunction the {@link Vm} cloner Function to set
      */
@@ -78,7 +76,7 @@ public interface VmCloner {
 
     /**
      * Gets the {@link Function} to be used to clone Vm's {@link Cloudlet}s.
-     * When the given Function is called, creates a clone of cloudlets
+     * When the given Function is called internally, creates a clone of cloudlets
      * which were running inside a specific Vm.
      *
      * <p>Such a Function is used to recreate those Cloudlets
@@ -93,19 +91,17 @@ public interface VmCloner {
     VmCloner setCloudletsClonerFunction(Function<Vm, List<Cloudlet>> cloudletsClonerFunction);
 
     /**
-     * Gets the maximum number of Vm clones to create.
+     * {@return the maximum number of times Vms will be cloned due to a failure}
      * For instance, if this value is equal to 2,
-     * it means if all VMs from a given broker are destroyed multiple times,
+     * it means if all VMs from a given broker are destroyed (due to a failure) multiple times,
      * a clone will be created only 2 times. If all VMs are destroyed again
      * for the 3rd time, no clone will be created.
      * The default value is 1.
-     *
-     * @return
      */
     int getMaxClonesNumber();
 
     /**
-     * Sets the maximum number of Vm clones to create.
+     * Sets the maximum number of times Vms will be cloned due to a failure.
      * For instance, if this value is equal to 2,
      * it means if all VMs from a given broker are destroyed multiple times,
      * a clone will be created only 2 times. If all VMs are destroyed again
@@ -117,8 +113,7 @@ public interface VmCloner {
     VmCloner setMaxClonesNumber(int maxClonesNumber);
 
     /**
-     * Checks if the maximum number of Vm clones to be created was reached.
-     * @return true if the maximum number of clones was reached, false otherwise
+     * @return true if the maximum number of times Vms were cloned was reached, false otherwise
      */
     boolean isMaxClonesNumberReached();
 }

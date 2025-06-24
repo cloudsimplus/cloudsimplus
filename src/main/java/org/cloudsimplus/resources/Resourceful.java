@@ -30,18 +30,18 @@ import org.cloudsimplus.vms.Vm;
 import java.util.List;
 
 /**
- * An interface to be implemented by a machine such as a {@link Host} or {@link Vm},
- * that provides a polymorphic way to access a given resource
+ * An interface to provide a polymorphic way to access a given resource
  * like {@link Ram}, {@link Bandwidth}, {@link SimpleStorage}
  * or {@link Pe} from a List containing such different resources.
+ * It is implemented by {@link Machine} such as a {@link Host} or {@link Vm}.
  *
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
 public interface Resourceful {
     /**
-     * Gets a given {@link Machine} {@link Resource}, such as {@link Ram} or {@link Bandwidth},
-     * from the List of machine resources.
+     * Gets a given {@link Resource}, such as {@link Ram} or {@link Bandwidth},
+     * from the List of the {@link Machine}'s resources.
      *
      * @param resourceClass the class of resource to get
      * @return the {@link Resource} corresponding to the given class
@@ -55,10 +55,8 @@ public interface Resourceful {
     }
 
     /**
-     * Gets a <b>read-only</b> list of resources the machine has.
-     *
+     * @return a <b>read-only</b> list of resources the machine has.
      * @see #getResource(Class)
-     * @return a read-only list of resources
      */
     List<ResourceManageable> getResources();
 }

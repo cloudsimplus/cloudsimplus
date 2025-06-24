@@ -7,6 +7,8 @@
  */
 package org.cloudsimplus.cloudlets.network;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.cloudsimplus.resources.Pe;
 
 /**
@@ -14,7 +16,7 @@ import org.cloudsimplus.resources.Pe;
  * in a single {@link Pe}.
  * The tasks currently just execute in a sequential manner.
  *
- * <p>Please refer to following publication for more details:
+ * <p>Please refer to the following publication for more details:
  * <ul>
  * <li>
  * <a href="https://doi.org/10.1109/UCC.2011.24">
@@ -33,10 +35,12 @@ import org.cloudsimplus.resources.Pe;
  */
 public class CloudletExecutionTask extends CloudletTask {
 
-    /** @see #getLength() */
+    /** the execution length of the task (in MI). */
+    @Getter @Setter
     private long length;
 
-    /** @see #getTotalExecutedLength() */
+    /** The length of this CloudletTask that has been executed so far (in MI). */
+    @Getter
     private long totalExecutedLength;
 
     /**
@@ -50,36 +54,10 @@ public class CloudletExecutionTask extends CloudletTask {
     }
 
     /**
-     * Gets the execution length of the task (in MI).
-     * @return
-     */
-    public long getLength() {
-        return length;
-    }
-
-    /**
-     * Sets the execution length of the task (in MI).
-     *
-     * @param length the length to set
-     */
-    public void setLength(final long length) {
-        this.length = length;
-    }
-
-    /**
-     * Gets the length of this CloudletTask that has been executed so far (in MI).
-     * @return
-     */
-    public long getTotalExecutedLength() {
-        return totalExecutedLength;
-    }
-
-    /**
-     * Sets a given number of MI to the {@link #getTotalExecutedLength() total
-     * MI executed so far} by the cloudlet.
+     * Sets a given number of MI to the {@link #getTotalExecutedLength() total MI executed so far} by the cloudlet.
      *
      * @param partialFinishedMI the partial executed length of this Cloudlet (in MI)
-     * @return {@inheritDoc}
+     * @return true if the MI value is valid (greater than zero), false otherwise
      */
     public boolean process(final long partialFinishedMI) {
         if(partialFinishedMI <= 0) {

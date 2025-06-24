@@ -46,9 +46,8 @@ public abstract class AbstractRunnable implements Runnable {
     }
 
     /**
-     * Checks if simulation results of the experiment don't have to be
-     * output.
-     * @return
+     * Checks if simulation results of the experiment don't have to be output.
+     * @return true if the experiment is not verbose, false otherwise
      */
     public boolean isNotVerbose() {
         return !verbose;

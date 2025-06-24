@@ -36,8 +36,7 @@ import org.cloudsimplus.power.models.PowerModel;
  */
 public interface PowerAware<T extends PowerModel> {
     /**
-     * Gets the model defining how the entity consumes power.
-     * @return
+     * @return the model defining how the entity consumes power.
      */
     T getPowerModel();
 

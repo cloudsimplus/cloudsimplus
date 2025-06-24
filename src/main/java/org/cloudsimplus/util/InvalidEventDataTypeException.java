@@ -29,7 +29,7 @@ import org.cloudsimplus.core.events.SimEvent;
 import java.io.Serial;
 
 /**
- * An exception to be raised when the type of the {@link SimEvent#getData()}
+ * An exception to be thrown when the type of the {@link SimEvent#getData()}
  * is not as expected for a given tag from {@link CloudSimTag}.
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 7.0.1
@@ -38,14 +38,12 @@ public class InvalidEventDataTypeException extends IllegalStateException {
     @Serial
     private static final long serialVersionUID = -3905805615156717344L;
 
-    /**
-     * Instantiates the exception
-     * @param evt the event having invalid data type
-     * @param tagName the name of the tag from {@link CloudSimTag} that generated the event
-     * @param requiredClassName the name of the required class wasn't met. It's String to enable providing
-     *                          specific type names using generics, such "Set<Datacenter>"
-     *                          instead of just Set.
-     */
+    /// Instantiates the exception
+    /// @param evt the event having invalid data type
+    /// @param tagName the name of the tag from [CloudSimTag] that generated the event
+    /// @param requiredClassName the name of the required class wasn't met. It's String to enable providing
+    ///                          specific type names using generics, such `Set<Datacenter>`
+    ///                          instead of just Set.
     public InvalidEventDataTypeException(final SimEvent evt, final String tagName, final String requiredClassName) {
         super(formatMsg(evt, tagName, requiredClassName));
     }

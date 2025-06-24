@@ -47,8 +47,7 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * An abstract class to implement simulation experiments
- * that can be executed in a repeatable way
- * by a {@link ExperimentRunner}.
+ * that can be executed repeatably by a {@link ExperimentRunner}.
  *
  * @param <T> the type of the subclass extending this class
  * @author Manoel Campos da Silva Filho
@@ -80,7 +79,7 @@ public abstract class Experiment<T extends Experiment<T>> extends AbstractRunnab
     private final List<Datacenter> datacenterList;
 
     /**
-     * The list of created DatacenterBrokers.
+     * The list of created {@link DatacenterBroker}s.
      */
     @Getter
     private final List<DatacenterBroker> brokerList;
@@ -106,22 +105,22 @@ public abstract class Experiment<T extends Experiment<T>> extends AbstractRunnab
 
     /**
      * Sets a {@link Consumer} that will be called before starting the simulation.
+     * This is optional.
      *
-     * <p>Setting a Consumer object is optional.</p>
      * @param <T> the class of the experiment
      * @param beforeExperimentRun the beforeExperimentRun Consumer to set
      */
     @Setter @NonNull
     private Consumer<T> beforeExperimentRun;
+
     /**
      * Sets a {@link Consumer} object that will receive the experiment instance
      * after the experiment finishes, then it performs some post-processing
      * tasks. These tasks are defined by the developer using the current class
      * and can include collecting data for statistical analysis.
-     * <p>Inside this Consumer, you must call {@link ExperimentRunner#addMetricValue(String, Double)}
-     * to collect values for each desired metric.</p>
      *
-     * <p>Setting a Consumer object is optional.</p>
+     * <p>Inside this Consumer, you must call {@link ExperimentRunner#addMetricValue(String, Double)}
+     * to collect values for each desired metric. Setting a Consumer object is optional.</p>
      *
      * @param <T> the class of the experiment
      * @param afterExperimentFinishConsumer a {@link Consumer} instance to set
@@ -131,8 +130,8 @@ public abstract class Experiment<T extends Experiment<T>> extends AbstractRunnab
 
     /**
      * Sets a {@link Consumer} that will be called before the simulation scenario is built.
+     * This is optional.
      *
-     * <p>Setting a Consumer object is optional.</p>
      * @param <T> the class of the experiment
      * @param beforeExperimentBuild the beforeExperimentBuild Consumer to set
      */
@@ -142,8 +141,8 @@ public abstract class Experiment<T extends Experiment<T>> extends AbstractRunnab
     /**
      * Sets a {@link Consumer} that will be called after the simulation scenario is built,
      * which is before starting the simulation.
+     * This is optional.
      *
-     * <p>Setting a Consumer object is optional.</p>
      * @param <T> the class of the experiment
      * @param afterExperimentBuild the afterExperimentBuild Consumer to set
      */
@@ -153,7 +152,7 @@ public abstract class Experiment<T extends Experiment<T>> extends AbstractRunnab
     /**
      * A {@link Function} that receives a {@link DatacenterBroker} and returns the
      * number of Vms to create for that broker.
-     * If you want all brokers to have the same amount of VMs,
+     * If you want all brokers to have the same number of VMs,
      * you can give a lambda expression such as {@code broker -> NUMBER_OF_VMS_TO_CREATE}.
      */
     @Getter @Setter @NonNull
@@ -163,9 +162,8 @@ public abstract class Experiment<T extends Experiment<T>> extends AbstractRunnab
     private Supplier<VmAllocationPolicy> vmAllocationPolicySupplier;
 
     /**
-     * Creates a simulation experiment that is not linked to a runner,
-     * to enable it to execute just one run.
-     *
+     * Creates a simulation experiment which is not linked to a runner,
+     * to enable it to execute just once.
      */
     public Experiment(final long seed) {
         this(0, null, seed);
@@ -175,9 +173,8 @@ public abstract class Experiment<T extends Experiment<T>> extends AbstractRunnab
      * Instantiates a simulation experiment with 1 Datacenter by default.
      *
      * @param index the index that identifies the current experiment run.
-     * @param runner The {@link ExperimentRunner} that is in charge of executing
-     * this experiment a defined number of times and to collect data for
-     * statistical analysis.
+     * @param runner the {@link ExperimentRunner} that is in charge of executing
+     * this experiment a defined number of times and to collect data for statistical analysis.
      * @see #setDatacentersNumber(int)
      */
     public Experiment(final int index, final ExperimentRunner<?> runner) {
@@ -190,7 +187,7 @@ public abstract class Experiment<T extends Experiment<T>> extends AbstractRunnab
      * that will create 1 broker and 1 Datacenter by default.
      *
      * @param index the index that identifies the current experiment run.
-     * @param runner The {@link ExperimentRunner} to execute the experiment.
+     * @param runner the {@link ExperimentRunner} to execute the experiment.
      *               If omitted, it means the experiment is independent and may be run just once.
      *               If you don't provide a runner, you must provide a seed
      * @param seed the seed to be set. If a runner is given, this value is ignored
@@ -214,7 +211,7 @@ public abstract class Experiment<T extends Experiment<T>> extends AbstractRunnab
         this.cloudletList = new ArrayList<>();
         this.runner = runner;
 
-        //Defines an empty Consumer to avoid NullPointerException if an actual one is not set
+        // Defines empty Consumers to avoid NullPointerException if specific ones are not given
         afterExperimentFinish = exp -> {};
         beforeExperimentBuild = exp -> {};
         afterExperimentBuild = exp -> {};
@@ -247,8 +244,7 @@ public abstract class Experiment<T extends Experiment<T>> extends AbstractRunnab
 
     /**
      * Prints the results for the experiment.
-     * The method has to be implemented by subclasses in order to output the
-     * experiment results.
+     * The method has to be implemented by subclasses to output the experiment results.
      *
      * @see #printResultsInternal()
      */
@@ -292,13 +288,11 @@ public abstract class Experiment<T extends Experiment<T>> extends AbstractRunnab
      */
     protected abstract DatacenterBroker createBroker();
 
-    /**
-     * Creates a DatacenterBroker and adds it to the
-     * {@link #getBrokerList() DatacenterBroker list}.
-     *
-     * @return the created DatacenterBroker.
-     * @see #createBrokers()
-     */
+    /// Creates a DatacenterBroker and adds it to the
+    /// [DatacenterBroker list][#getBrokerList()].
+    ///
+    /// @return the created DatacenterBroker.
+    /// @see #createBrokers()
     private DatacenterBroker createBrokerAndAddToList() {
         final var broker = createBroker();
         brokerList.add(broker);
@@ -319,7 +313,7 @@ public abstract class Experiment<T extends Experiment<T>> extends AbstractRunnab
      * Creates a datacenter using a {@link VmAllocationPolicy}
      * supplied by the {@link #vmAllocationPolicySupplier}.
      * @param index index of the datacenter being created, from the {@link #datacentersNumber}.
-     * @return
+     * @return the created Datacenter
      * @see #setVmAllocationPolicySupplier(Supplier)
      */
     protected Datacenter createDatacenter(final int index) {
@@ -368,7 +362,7 @@ public abstract class Experiment<T extends Experiment<T>> extends AbstractRunnab
      * Creates the Vms to be used by the experiment.
      *
      * @return the List of created VMs
-     * @param broker
+     * @param broker the DatacenterBroker to attach VMs to
      */
     protected List<Vm> createVms(final DatacenterBroker broker) {
         final int numVms = vmsByBrokerFunction.apply(broker);
@@ -448,6 +442,7 @@ public abstract class Experiment<T extends Experiment<T>> extends AbstractRunnab
     /**
      * Sets the number of brokers to create.
      * @param brokersNumber the value to set
+     * @return this experiment instance
      */
     public Experiment setBrokersNumber(final int brokersNumber) {
         if(brokersNumber <= 0){

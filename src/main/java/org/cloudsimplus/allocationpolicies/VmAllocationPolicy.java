@@ -23,8 +23,8 @@ import java.util.Set;
 import java.util.function.BiFunction;
 
 /**
- * An interface to be implemented by each class that represents a policy used by
- * a {@link Datacenter} to choose a {@link Host} to place or migrate a
+ * An interface to be implemented by each class that represents a policy, used by
+ * a {@link Datacenter}, to choose a {@link Host} to place or migrate a
  * given {@link Vm} or {@link VmGroup}.
  *
  * <p>The VmAllocationPolicy uses Java 8+ Functional Programming
@@ -53,14 +53,14 @@ public interface VmAllocationPolicy {
     VmAllocationPolicy NULL = new VmAllocationPolicyNull();
 
     /**
-     * Gets the {@link Datacenter} associated to the VmAllocationPolicy.
-     * @return
+     * {@return the Datacenter associated to the VmAllocationPolicy}
      */
     Datacenter getDatacenter();
 
     /**
      * Sets the Datacenter associated to the VmAllocationPolicy
      * @param datacenter the Datacenter to set
+     * @return this VmAllocationPolicy
      */
     VmAllocationPolicy setDatacenter(Datacenter datacenter);
 
@@ -82,7 +82,7 @@ public interface VmAllocationPolicy {
      *
      * @param vmList the List of {@link Vm}s or {@link VmGroup}s to allocate a host to
      * @return a Set of {@link HostSuitability} to indicate if a Vm was placed into the host or not,
-     * containing a HostSuitability object for the last Host where the VM was tried to be created;
+     * containing a HostSuitability object for the last Host where each VM was tried to be created;
      * or an empty set if the Datacenter has no hosts.
      *
      * @see VmGroup
@@ -125,28 +125,28 @@ public interface VmAllocationPolicy {
     /**
      * Sets a {@link BiFunction} that selects a Host for a given Vm.
      * This Function receives the current VmAllocationPolicy and the
-     * {@link Vm} requesting to be place.
-     * It then returns an {@code Optional<Host>}
+     * {@link Vm} requesting to be placed.
+     * It then returns an {@link Optional}{@code <Host>}
      * that may contain a suitable Host for that Vm or not.
      *
-     * <p>If not Function is set, the default VM selection method provided by implementing classes
-     * will be used.</p>
+     * <p>If no Function is set, the default VM selection method provided by implementing classes
+     * will be used instead.</p>
      *
      * @param findHostForVmFunction the {@link BiFunction} to set
      */
     VmAllocationPolicy setFindHostForVmFunction(BiFunction<VmAllocationPolicy, Vm, Optional<Host>> findHostForVmFunction);
 
     /**
-     * Gets the list of Hosts available in a {@link Datacenter}, that will be
-     * used by the Allocation Policy to place VMs.
+     * Gets the list of Hosts available in the {@link Datacenter} linked to this VmAllocationPolicy,
+     * which will be used to place VMs.
      *
-     * @param <T> The generic type
-     * @return the host list
+     * @param <T> the host type
+     * @return datacenter the host list
      */
      <T extends Host> List<T> getHostList();
 
     /**
-     * Gets a map of optimized allocation for VMs according to current utilization
+     * Gets a map of optimized allocation for VMs, according to current utilization
      * and Hosts under and overloaded conditions.
      * The conditions that will make a new VM placement map to be proposed
      * and returned is defined by each implementing class.
@@ -160,12 +160,11 @@ public interface VmAllocationPolicy {
 
     /**
      * Finds a suitable Host that has enough resources to place a given VM.
-     * Internally it may use a default implementation or one set in runtime.
+     * Internally it may use a default implementation or one {@link #setFindHostForVmFunction(BiFunction) set in runtime}.
      *
      * @param vm the vm to find a host for it
      * @return an {@link Optional} containing a suitable Host to place the VM;
      *         or an empty {@link Optional} if no suitable Host was found
-     * @see #setFindHostForVmFunction(BiFunction)
      */
     Optional<Host> findHostForVm(Vm vm);
 
@@ -174,7 +173,7 @@ public interface VmAllocationPolicy {
      * Realize that even if the policy allows VM migration,
      * such operations can be dynamically enabled/disabled by the Datacenter.
      *
-     * @return
+     * @return true if VM migration is supported; false otherwise.
      * @see Datacenter#enableMigrations()
      * @see Datacenter#disableMigrations()
      */
@@ -182,8 +181,8 @@ public interface VmAllocationPolicy {
 
     /**
      * Checks if Host's parallel search is enabled or not.
-     * @return true if a Host for a VM is to find in parallel;
-     *         false if it's to be found sequentially
+     * @return true if host search for VM placement must be performed in parallel;
+     *         false if it's to be performed sequentially
      * @see #setHostCountForParallelSearch(int)
      */
     default boolean isParallelHostSearchEnabled(){
@@ -191,14 +190,15 @@ public interface VmAllocationPolicy {
     }
 
     /**
-     * Gets the minimum number of Hosts to start using parallel search.
-     * @return
+     * {@return the minimum number of Hosts to start using parallel search}
+     * @see #isParallelHostSearchEnabled()
      */
     int getHostCountForParallelSearch();
 
     /**
      * Sets the minimum number of Hosts to start using parallel search.
      * @param hostCountForParallelSearch the value to set (use {@link Integer#MAX_VALUE} to disable parallel search)
+     * @return this VmAllocationPolicy
      */
     VmAllocationPolicy setHostCountForParallelSearch(int hostCountForParallelSearch);
 }

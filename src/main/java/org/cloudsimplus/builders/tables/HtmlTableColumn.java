@@ -24,8 +24,8 @@
 package org.cloudsimplus.builders.tables;
 
 /**
- * A column of an HTML table. The class generates the HTML code
- * that represents a column in a HTML table.
+ * A column of an {@link HtmlTable}. The class generates the HTML code
+ * that represents a column in the table.
  *
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0

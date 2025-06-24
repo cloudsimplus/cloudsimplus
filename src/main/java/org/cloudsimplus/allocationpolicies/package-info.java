@@ -1,7 +1,7 @@
 /**
  * Provides classes that implement policies for a {@link org.cloudsimplus.datacenters.Datacenter}
  * to select a Host to <b>place</b> or <b>migrate</b> a VM, based on some criteria defined by each class.
- * Different policies can follow approaches such as best-fit, worst-fit and so on.
+ * Different policies can follow approaches such as best-fit, first-fit and so on.
  *
  * <p>
  *     <b>Each Datacenter must have its own instance of a {@link org.cloudsimplus.allocationpolicies.VmAllocationPolicy}.</b>

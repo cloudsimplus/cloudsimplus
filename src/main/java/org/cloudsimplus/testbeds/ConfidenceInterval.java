@@ -54,7 +54,7 @@ public final class ConfidenceInterval {
      * The Confidence Interval value,
      * which is the mean value for an arbitrary metric
      * from multiple simulation runs.
-     * This value is usually referred as just CI.
+     * This value is usually referred to as just CI.
      *
      * @see #CONFIDENCE_LEVEL
      */
@@ -116,57 +116,49 @@ public final class ConfidenceInterval {
             return;
         }
 
-        /* When the number of simulations runs is not greater than 1,
-         * there is no way to compute the confidence interval.
+        /* When the number of simulation runs is not greater than 1,
+         * there is no way to compute the Confidence Interval.
          * Therefore, it will just store the mean value for a given metric
-         * as the ci and all other attributes will be zero,
-         * indicating there is no confidence interval in fact. */
+         * as the `ci` and all other attributes will be zero,
+         * indicating there is no Confidence Interval in fact. */
         this.criticalValue = 0;
         this.errorMargin = 0;
         this.lowerLimit = 0;
         this.upperLimit = 0;
      }
 
-    /**
-     * Computes the Confidence Interval (CI) error margin for a given set of samples
-     * in order to enable finding the interval lower and upper bound around a
-     * mean value.
-     *
-     * <p>
-     * To reduce the confidence interval by half, one have to execute the
-     * experiments 4 more times. This is called the "Replication Method" and
-     * just works when the samples are i.i.d. (independent and identically
-     * distributed). Thus, if you have correlation between samples of each
-     * simulation run, a different method such as a bias compensation,
-     * batch means or regenerative method has to be used. </p>
-     *
-     * <b>NOTE:</b> How to compute the error margin is a little confusing.
-     * The Harry Perros' book states that if less than 30 samples are collected,
-     * the t-Distribution has to be used to that purpose.
-     *
-     * <p>However, this
-     * <a href="https://en.wikipedia.org/wiki/Confidence_interval#Basic_Steps">Wikipedia article</a>
-     * says that if the standard deviation of the real population is known, it
-     * has to be used the z-value from the Standard Normal Distribution.
-     * Otherwise, it has to be used the t-value from the t-Distribution to
-     * calculate the critical value for defining the error margin (also called
-     * standard error). The book "Numeric Computation and Statistical Data
-     * Analysis on the Java Platform" confirms the last statement and such
-     * approach was followed.
-     * </p>
-     *
-     * @param stats the statistic object with the values to compute the error
-     *              margin of the confidence interval
-     * @return the error margin to compute the lower and upper bound of the confidence interval
-     *
-     * @see <a href="http://www.itl.nist.gov/div898/handbook/eda/section3/eda3672.htm">
-     *     Critical Values of the Student's t Distribution</a>
-     * @see <a href="https://en.wikipedia.org/wiki/Student%27s_t-distribution">t-Distribution</a>
-     * @see <a href="http://www4.ncsu.edu/~hp/files/simulation.pdf">
-     *     Harry Perros, "Computer Simulation Techniques: The definitive introduction!," 2009</a>
-     * @see <a href="http://www.springer.com/gp/book/9783319285290">
-     *     Numeric Computation and Statistical Data Analysis on the Java Platform</a>
-     */
+    /// Computes the Confidence Interval (CI) error margin for a given set of samples.
+    /// That enables finding the interval lower and upper bound around a
+    /// mean value.
+    ///
+    /// To reduce the confidence interval by half, you have to execute the
+    /// experiments 4 more times. This is called the "Replication Method" and
+    /// just works when the samples are i.i.d. (independent and identically
+    /// distributed). Thus, if you have a correlation between samples of each
+    /// simulation run, a different method such as a bias compensation,
+    /// batch means or regenerative method has to be used.
+    ///
+    /// **NOTE:** How to compute the error margin is a little confusing.
+    /// The Harry Perros' book states that if less than 30 samples are collected,
+    /// the t-Distribution has to be used to that purpose.
+    ///
+    /// However, this [Wikipedia article](https://en.wikipedia.org/wiki/Confidence_interval#Basic_Steps)
+    /// says that if the standard deviation of the real population is known, it
+    /// has to be used the z-value from the Standard Normal Distribution.
+    /// Otherwise, it has to be used the t-value from the t-Distribution to
+    /// calculate the critical value for defining the error margin (also called
+    /// standard error). The book "Numeric Computation and Statistical Data
+    /// Analysis on the Java Platform" confirms the last statement, and such
+    /// an approach was followed.
+    ///
+    /// @param stats the statistic object with the values to compute the error
+    ///              margin of the confidence interval
+    /// @return the error margin to compute the lower and upper bound of the confidence interval
+    ///
+    /// @link [Critical Values of the Student's t Distribution](http://www.itl.nist.gov/div898/handbook/eda/section3/eda3672.htm)
+    /// @link [t-Distribution](https://en.wikipedia.org/wiki/Student%27s_t-distribution)
+    /// @link [Harry Perros, "Computer Simulation Techniques: The definitive introduction!," 2009](http://www4.ncsu.edu/~hp/files/simulation.pdf)
+    /// @link [Numeric Computation and Statistical Data Analysis on the Java Platform](http://www.springer.com/gp/book/9783319285290)
     public static Optional<Double> errorMargin(@NonNull final SummaryStatistics stats) {
         final long samples = stats.getN();
         if(samples <= 1) {
@@ -200,16 +192,15 @@ public final class ConfidenceInterval {
         return tDist.inverseCumulativeProbability(1.0 - significance / 2.0);
     }
 
-    /**
-     * {@return true or false} to indicate if the CI was actually computed
-     * (when the number of samples is greater than 1).
-     *
-     * <p>Otherwise, the CI {@link #value} is just the mean for the experiment metric,
-     * not the CI in fact.
-     * In that case, {@link #criticalValue}, {@link #errorMargin},
-     * {@link #lowerLimit} and {@link #upperLimit}
-     * will be zero (corroborating there is no CI).</p>
-     */
+    /// Checks if the CI was actually computed (when the number of samples is greater than 1).
+    ///
+    /// Otherwise, the CI [value][#getValue()] is just the mean for the experiment metric,
+    /// not the CI in fact.
+    /// In that case, [criticalValue][#getCriticalValue()],
+    /// [errorMargin][#getErrorMargin()],
+    /// [lowerLimit][#getLowerLimit()] and [upperLimit][#getUpperLimit()]
+    /// will be zero (corroborating there is no CI).
+    /// @return true if the CI was computed, false otherwise
     public boolean isComputed(){
         return samples > 1;
     }

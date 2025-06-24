@@ -31,16 +31,16 @@ import org.cloudsimplus.vms.Vm;
 /**
  * A general interface that represents data to be passed to
  * {@link EventListener} objects that are registered to be notified when some
- * events happen for a given simulation entity such as a
- * {@link Datacenter}, {@link Host}, {@link Vm}, {@link Cloudlet} and so on.
+ * events happen for a given simulation entity (such as a
+ * {@link Datacenter}, {@link Host}, {@link Vm}, {@link Cloudlet} and so on).
  *
  * <p>
- * There is not implementing class for such interfaces because instances of them
+ * There is no implementing class for such interfaces because instances of them
  * are just Data Type Objects (DTO) that just store data and do not have
  * business rules. Each interface that extends this one has a
  * {@code getInstance()} method to create an object from that interface. Such
- * method uses the JDK8 static methods for interfaces to provide such a feature
- * e reduce the number of classes, providing a simpler design.
+ * a method uses the JDK 8 static methods for interfaces to provide such a feature,
+ * reducing the number of classes and providing a simpler design.
  * </p>
  *
  * @author Manoel Campos da Silva Filho
@@ -54,22 +54,20 @@ import org.cloudsimplus.vms.Vm;
 public interface EventInfo {
 
     /**
-     * Gets the simulation time this event was scheduled to (at which it should occur).
+     * @return the simulation time this event was scheduled to (at which it should occur).
      */
     double getTime();
 
     /**
-     * Gets the listener that was notified about the event.
-     * @return
+     * @return the listener that was notified about the event.
      */
     <T extends EventInfo> EventListener<T> getListener();
 
     /**
-     * Gets a EventInfo instance from the given parameters.
+     * Gets an {@code EventInfo} instance from the given parameters.
      *
      * @param listener the listener to be notified about the event
      * @param time the time the event happened
-     * @return
      */
     static EventInfo of(final EventListener<EventInfo> listener, final double time) {
         return new EventInfo() {

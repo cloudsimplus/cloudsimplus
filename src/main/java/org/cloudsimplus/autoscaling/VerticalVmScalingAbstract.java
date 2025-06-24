@@ -63,13 +63,13 @@ public abstract class VerticalVmScalingAbstract extends VmScalingAbstract implem
     private Resource vmResource;
 
     /**
-     * Creates a VerticalVmScalingAbstract.
+     * Creates a VerticalVmScaling.
      *
      * @param resourceClassToScale the class of Vm resource that this scaling object will request
      *                             up or down scaling (such as {@link Ram}.class,
      *                             {@link Bandwidth}.class or {@link Processor}.class).
      * @param resourceScaling {@link ResourceScaling} that defines how the resource has to be resized.
-     * @param scalingFactor the factor (a percentage value in scale from 0 to 1)
+     * @param scalingFactor the factor (a percentage value between 0 and 1)
      *                      that will be used to scale a Vm resource up or down,
      *                      whether such a resource is over or underloaded, according to the
      *                      defined predicates.
@@ -93,7 +93,7 @@ public abstract class VerticalVmScalingAbstract extends VmScalingAbstract implem
      * Validates the class of Vm resource that this scaling object will request up or down scaling.
      * Such a class can be {@link Ram}.class, {@link Bandwidth}.class or {@link Pe}.class.
      * @param resourceClass the resource class to set
-     * @return
+     * @return the validated resource class
      */
     private Class<? extends ResourceManageable> validateResourceClass(@NonNull final Class<? extends ResourceManageable> resourceClass) {
         if(Pe.class.equals(resourceClass)){
@@ -118,9 +118,10 @@ public abstract class VerticalVmScalingAbstract extends VmScalingAbstract implem
     }
 
     /**
-     * Throws an exception if the under and overload predicates are equal (to make clear
-     * that over and under-load situations must be defined by different conditions)
-     * or if any of them are null.
+     * Validates lower and upper threshold functions,
+     * throwing an exception if the under and overload predicates
+     * (i) are equal (to make clear that under and over-load situations must be defined by different conditions)
+     * or (ii) any of them are null.
      *
      * @param lowerThresholdFunction the lower threshold function
      * @param upperThresholdFunction the upper threshold function
@@ -179,14 +180,13 @@ public abstract class VerticalVmScalingAbstract extends VmScalingAbstract implem
      * {@inheritDoc}
      *
      * <p>If a {@link ResourceScaling} implementation such as
-     * {@link ResourceScalingGradual} or {@link ResourceScalingInstantaneous} are used,
+     * {@link ResourceScalingGradual} or {@link ResourceScalingInstantaneous} is used,
      * it will rely on the {@link #getScalingFactor()} to compute the amount of resource to scale.
-     * Other implementations may use the scaling factor by it is up to them.
      * </p>
      *
      * <h3>NOTE:</h3>
      * <b>The return of this method is rounded up to avoid
-     * values between ]0 and 1[</b>. For instance, up scaling the number of CPUs in 0.5
+     * values smaller than 1. For instance, up scaling the number of CPUs in 0.5
      * means that half of a CPU should be added to the VM. Since number of CPUs is
      * an integer value, this 0.5 will be converted to zero, causing no effect.
      * For other resources such as RAM, adding 0.5 MB has not practical advantages either.

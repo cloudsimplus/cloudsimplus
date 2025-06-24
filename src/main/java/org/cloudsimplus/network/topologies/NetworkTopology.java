@@ -10,7 +10,6 @@ package org.cloudsimplus.network.topologies;
 import org.cloudsimplus.core.SimEntity;
 
 /**
- **
  * Implements a network layer by reading the topology from a file in a specific format
  * that is defined by each implementing class.
  *
@@ -22,14 +21,13 @@ import org.cloudsimplus.core.SimEntity;
  */
 public interface NetworkTopology {
     /**
-     * An attribute that implements the Null Object Design Pattern for {@link NetworkTopology}
-     * objects.
+     * An attribute that implements the Null Object Design Pattern for {@link NetworkTopology} objects.
      */
     NetworkTopology NULL = new NetworkTopologyNull();
 
     /**
      * Adds a new link in the network topology. The {@link SimEntity}s that
-     * represent the source and destination of the link will be mapped to BRITE
+     * represent the source and destination of the link will be mapped to {@link BriteNetworkTopology BRITE}
      * entities.
      * @param src {@link SimEntity} that represents the link's source node
      * @param dest {@link SimEntity} that represents the link's destination node

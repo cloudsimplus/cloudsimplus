@@ -37,12 +37,7 @@ public abstract class StartableAbstract implements Startable {
     private double finishTime = NOT_ASSIGNED;
     private double lastBusyTime = NOT_ASSIGNED;
 
-    /**
-     * Gets the total execution time of the entity so far (in seconds),
-     * if the entity has finished already or not.
-     *
-     * @return
-     */
+
     @Override
     public final double getTotalExecutionTime() {
         if (startTime <= NOT_ASSIGNED) {

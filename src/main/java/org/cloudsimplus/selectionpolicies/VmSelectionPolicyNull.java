@@ -29,8 +29,7 @@ import org.cloudsimplus.vms.Vm;
 import java.util.Optional;
 
 /**
- * A class that implements the Null Object Design Pattern for {@link VmSelectionPolicy}
- * class.
+ * A class that implements the Null Object Design Pattern for {@link VmSelectionPolicy} class.
  *
  * @author Manoel Campos da Silva Filho
  * @see VmSelectionPolicy#NULL

@@ -22,6 +22,7 @@ import org.cloudsimplus.schedulers.MipsShare;
 import org.cloudsimplus.util.Conversion;
 import org.cloudsimplus.vms.Vm;
 import org.cloudsimplus.vms.VmGroup;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.BiFunction;
@@ -31,11 +32,9 @@ import static java.util.stream.Collectors.toSet;
 /**
  * An abstract class that represents the policy
  * used by a {@link Datacenter} to choose a {@link Host} to place or migrate
- * a given {@link Vm}. It supports two-stage commit of reservation of
- * hosts: first, we reserve the Host and, once committed by the customer, the VM is
- * effectively allocated to that Host.
+ * a given {@link Vm}.
  *
- * <p>Each {@link Datacenter} must to have its own instance of a {@link VmAllocationPolicy}.</p>
+ * <p>Each {@link Datacenter} must have its own instance of a {@link VmAllocationPolicy}.</p>
  *
  * @author Rodrigo N. Calheiros
  * @author Anton Beloglazov
@@ -100,7 +99,7 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
     /**
      * Performs the up scaling of Vm resource associated to a given scaling object.
      *
-     * @param scaling the Vm's scaling object
+     * @param scaling the Vm scaling object
      * @return true if the Vm was overloaded and the up scaling was performed, false otherwise
      */
     private boolean upScaleVmVertically(final VerticalVmScaling scaling) {
@@ -110,7 +109,7 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
     /**
      * Performs the down scaling of Vm resource associated to a given scaling object.
      *
-     * @param scaling the Vm's scaling object
+     * @param scaling the Vm scaling object
      * @return true if the down scaling was performed, false otherwise
      */
     private boolean downScaleVmVertically(final VerticalVmScaling scaling) {
@@ -119,9 +118,9 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
 
     /**
      * Performs the up or down scaling of Vm {@link Pe}s,
-     * depending if the VM is under or overloaded.
+     * depending on if the VM is under or overloaded.
      *
-     * @param scaling the Vm's scaling object
+     * @param scaling the Vm scaling object
      * @return true if the scaling was performed, false otherwise
      * @see #upScaleVmVertically(VerticalVmScaling)
      */
@@ -174,7 +173,7 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
     /**
      * Performs the up scaling of a Vm resource that is anything else than CPU.
      *
-     * @param scaling the Vm's scaling object
+     * @param scaling the Vm scaling object
      * @return true if the up scaling was performed, false otherwise
      * @see #scaleVmPesUpOrDown(VerticalVmScaling)
      * @see #upScaleVmVertically(VerticalVmScaling)
@@ -186,7 +185,7 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
     /**
      * Performs the down scaling of a Vm resource that is anything else than CPU.
      *
-     * @param scaling the Vm's scaling object
+     * @param scaling the Vm scaling object
      * @return true if the down scaling was performed, false otherwise
      * @see #downScaleVmVertically(VerticalVmScaling)
      */
@@ -240,9 +239,7 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
 
     /**
      * Allocates the host with less PEs in use for a given VM.
-     *
-     * @param vm {@inheritDoc}
-     * @return {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     public HostSuitability allocateHostForVm(final Vm vm) {
@@ -266,19 +263,17 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
     }
 
     /**
-     * Checks if a datacenter is empty (has no hosts).
-     * @return
+     * {@return true if the datacenter linked to this VmAllocationPolicy is empty (has no hosts); false otherwise}
      */
     private boolean datacenterHasNoHosts() {
         return datacenterHasNoHosts(null);
     }
 
     /**
-     * Checks if a datacenter is empty (has no hosts).
-     * @param vm the Vm requested to be created
-     * @return
+     * {@return true if the datacenter linked to this VmAllocationPolicy is empty (has no hosts); false otherwise}
+     * @param vm a Vm requested to be created or null if there is no Vm creation request
      */
-    private boolean datacenterHasNoHosts(final Vm vm) {
+    private boolean datacenterHasNoHosts(@Nullable final Vm vm) {
         final var vmStr = vm == null ? "Vm" : vm;
         if (getHostList().isEmpty()) {
             LOGGER.error(
@@ -341,7 +336,8 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
      * The default implementation of such a Function is provided by the method {@link #findHostForVm(Vm)}.
      *
      * @param findHostForVmFunction {@inheritDoc}.
-     *                              Passing null makes the default method to find a Host for a VM to be used.
+     *                              Passing null will cause the usage of the default method to find a Host for a VM.
+     * @see #defaultFindHostForVm(Vm)
      */
     @Override
     public final VmAllocationPolicy setFindHostForVmFunction(final BiFunction<VmAllocationPolicy, Vm, Optional<Host>> findHostForVmFunction) {
@@ -361,7 +357,7 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
      * to find a suitable Host for a given VM.
      *
      * @param vm the VM to find a suitable Host to
-     * @return an {@link Optional} containing a suitable Host to place the VM or an empty {@link Optional} if no suitable Host was found
+     * @return an {@link Optional} containing a suitable Host to place the VM; or an empty {@link Optional} if no suitable Host was found
      * @see #setFindHostForVmFunction(BiFunction)
      */
     protected abstract Optional<Host> defaultFindHostForVm(Vm vm);

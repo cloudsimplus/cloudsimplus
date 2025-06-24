@@ -8,8 +8,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * A class that implements the Null Object Design Pattern for {@link CloudletTaskScheduler}
- * class.
+ * A class that implements the Null Object Design Pattern for {@link CloudletTaskScheduler} class.
  *
  * @author Manoel Campos da Silva Filho
  * @see CloudletTaskScheduler#NULL
@@ -27,8 +26,7 @@ final class CloudletTaskSchedulerNull implements CloudletTaskScheduler {
         return false;
     }
     @Override public void processCloudletTasks(Cloudlet cloudlet, long partialFinishedMI) {/**/}
-    @Override
-    public boolean isTimeToUpdateCloudletProcessing(Cloudlet cloudlet) {
+    @Override public boolean isTimeToUpdateCloudletProcessing(Cloudlet cloudlet) {
         return true;
     }
 }

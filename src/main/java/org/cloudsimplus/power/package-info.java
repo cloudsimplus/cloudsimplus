@@ -1,10 +1,7 @@
-/**
- * Provides classes and interfaces for the power-consumption module.
- * They are used to:
- * <ol>
- * <li>represent objects having power capabilities ({@link org.cloudsimplus.power.PowerAware});</li>
- * <li>model how physical/virtual elements consume power; or</li>
- * <li>enable automatic power consumption data collection.</li>
- * </ol>
- */
+/// Provides classes and interfaces for the power-consumption module.
+/// They are used to:
+///
+/// - represent objects having power capabilities ([org.cloudsimplus.power.PowerAware]);
+/// - model how physical/virtual elements consume power; or
+/// - enable automatic power consumption data collection.
 package org.cloudsimplus.power;

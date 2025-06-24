@@ -36,7 +36,7 @@ public final class BytesConversion {
      * The value of 1 KiloByte in Bytes or 1 Kilo-bit in bits.
      * It is declared as double because such a value is commonly used
      * in divisions. This way, it avoids explicit double casts
-     * to ensure a double instead an integer division.
+     * to ensure a double instead of an integer division.
      */
     public static final double KILO = 1024;
 
@@ -61,7 +61,7 @@ public final class BytesConversion {
     /**
      * A private constructor to avoid class instantiation.
      */
-    private BytesConversion(){}
+    private BytesConversion(){/**/}
 
     /**
      * Converts a value in bytes to MegaBytes (MB)
@@ -91,8 +91,8 @@ public final class BytesConversion {
     }
 
     /**
-     * Converts a value in bytes to the most suitable unit, such as Kilobytes (KB), MegaBytes (MB) or
-     * Gigabytes (GB)
+     * Converts a value in bytes to the most suitable unit,
+     * such as Kilobytes (KB), MegaBytes (MB) or Gigabytes (GB)
      * @param bytes the value in bytes
      * @return the converted value concatenated with the unit converted to (KB, MB or GB)
      */
@@ -125,8 +125,8 @@ public final class BytesConversion {
      * Converts any value in bytes to bits,
      * doesn't matter if the unit is Kilobytes (KB), Megabytes (MB), Gigabytes (GB), etc.
      *
-     * @param bytes the value in bytes, KB, MB, GB, etc
-     * @return the value in bites, kilo-bits, mega-bits, giga-bits and so on, according to the given value
+     * @param bytes the value in bytes, KB, MB, GB, etc.
+     * @return the value in bites, kilo-bits, megabits, gigabits and so on, according to the given value
      */
     public static double bytesToBits(final double bytes){
         return bytes * 8;
@@ -136,7 +136,7 @@ public final class BytesConversion {
      * Converts any value in bits to bytes,
      * doesn't matter if the unit is Kilobits (Kb), Megabits (Mb), Gigabits (Gb), etc.
      *
-     * @param bits the value in bites, Kb, Mb, Gb, etc
+     * @param bits the value in bites, Kb, Mb, Gb, etc.
      * @return the value in bites, Kbytes, Mbytes, Gbytes and so on, according to the given value
      */
     public static double bitsToBytes(final double bits){
@@ -206,5 +206,4 @@ public final class BytesConversion {
     public static double teraToGiga(final double tera){
         return tera * KILO;
     }
-
 }

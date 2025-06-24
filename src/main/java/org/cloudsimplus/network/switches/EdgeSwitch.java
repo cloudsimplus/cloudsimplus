@@ -21,9 +21,9 @@ import java.util.List;
 
 /**
  * Represents an Edge Switch in a Datacenter network, which can be connected to {@link NetworkHost}s.
- * It interacts with other Datacenter in order to exchange packets.
+ * It interacts with another Datacenter to exchange packets.
  *
- * <br>Please refer to following publication for more details:<br>
+ * <br>Please refer to the following publication for more details:<br>
  * <ul>
  * <li>
  * <a href="https://doi.org/10.1109/UCC.2011.24">
@@ -41,18 +41,18 @@ import java.util.List;
  */
 public class EdgeSwitch extends AbstractSwitch {
     /**
-     * The level (layer) of the switch in the network topology.
+     * The level (layer) of the Switch in the network topology.
      */
     public static final int LEVEL = 2;
 
     /**
      * Default number of ports that defines the number of
-     * {@link Host} that can be connected to the switch.
+     * {@link Host} that can be connected to the Switch.
      */
     public static final int PORTS = 4;
 
     /**
-     * Default downlink bandwidth of EdgeSwitch in Megabits/s.
+     * Default downlink bandwidth of {@link EdgeSwitch} in Megabits/s.
      * It also represents the uplink bandwidth of connected hosts.
      */
     private static final long DEF_DOWNLINK_BW = 100 * 8;
@@ -63,17 +63,17 @@ public class EdgeSwitch extends AbstractSwitch {
     private static final double DEF_SWITCHING_DELAY = 0.00157;
 
     /**
-     * List of hosts connected to the switch.
+     * List of hosts connected to the Switch.
      */
     private final List<NetworkHost> hostList;
 
     /**
-     * Instantiates a EdgeSwitch specifying Datacenter that are connected to its
-     * downlink and uplink ports, and corresponding bandwidths. In this switch,
-     * downlink ports aren't connected to other switch but to hosts.
+     * Instantiates a {@link EdgeSwitch}, specifying the Datacenter which is connected to its
+     * downlink and uplink ports and corresponding bandwidths. In this Switch,
+     * downlink ports aren't connected to another Switch but to Hosts.
      *
-     * @param simulation the CloudSimPlus instance that represents the simulation the Entity belongs
-     * @param dc The Datacenter where the switch is connected to
+     * @param simulation the CloudSimPlus instance that represents the simulation the Switch belongs to
+     * @param dc the Datacenter where the Switch is connected to
      */
     public EdgeSwitch(final CloudSimPlus simulation, final NetworkDatacenter dc) {
         super(simulation, dc);
@@ -89,7 +89,7 @@ public class EdgeSwitch extends AbstractSwitch {
     protected void processPacketDown(final SimEvent evt) {
         super.processPacketDown(evt);
 
-        // packet is to be received by host
+        // packet to be received by the Host
         final HostPacket pkt = extractReceivedHostPacket(evt);
         addPacketToSendToHost(pkt.getDestination(), pkt);
     }
@@ -106,20 +106,20 @@ public class EdgeSwitch extends AbstractSwitch {
     protected void processPacketUp(final SimEvent evt) {
         super.processPacketUp(evt);
 
-        /* packet is received from host and to be sent to
-        aggregate level or to another host in the same level */
+        /* the packet received from the Host and to be sent to
+        aggregate level or to another Host in the same level */
         final HostPacket pkt = extractReceivedHostPacket(evt);
 
-        // packet needs to go to a host which is connected directly to switch
+        // the packet needs to go to a host which is connected directly to switch
         if (pkt.getDestination() != null && pkt.getDestination() != Host.NULL) {
             addPacketToSendToHost(pkt.getDestination(), pkt);
             return;
         }
 
-        // otherwise, packet is to be sent to upper switch
+        // otherwise, the packet is to be sent to upper switch
         /*
          * ASSUMPTION: Each Edge is connected to one Aggregate Switch.
-         * If there are more than one Aggregate Switch, the following code has to be modified.
+         * If there is more than one Aggregate Switch, the following code has to be modified.
         */
         addPacketToBeSentToFirstUplinkSwitch(pkt);
     }
@@ -130,15 +130,14 @@ public class EdgeSwitch extends AbstractSwitch {
     }
 
     /**
-     * Gets a <b>read-only</b> list of Hosts connected to the switch.
-     * @return
+     * @return a <b>read-only</b> list of Hosts connected to the switch.
      */
     public List<NetworkHost> getHostList() {
         return Collections.unmodifiableList(hostList);
     }
 
     /**
-     * Connects a {@link NetworkHost} to the switch, by adding it to the
+     * Connects a {@link NetworkHost} to the Switch, by adding it to the
      * {@link #getHostList()}.
      * @param host the host to be connected to the switch
      */
@@ -148,10 +147,10 @@ public class EdgeSwitch extends AbstractSwitch {
     }
 
     /**
-     * Disconnects a {@link NetworkHost} from the switch, by removing it from the
+     * Disconnects a {@link NetworkHost} from the Switch, by removing it from the
      * {@link #getHostList()}.
-     * @param host the host to be disconnected from the switch
-     * @return true if the Host was connected to the switch, false otherwise
+     * @param host the host to be disconnected from the Switch
+     * @return true if the Host was connected to the Switch, false otherwise
      */
     public boolean disconnectHost(@NonNull final NetworkHost host) {
         if(hostList.remove(host)){

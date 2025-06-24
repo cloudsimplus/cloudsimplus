@@ -29,7 +29,7 @@ import org.cloudsimplus.vms.Vm;
 import java.util.Optional;
 
 /**
- * A <b>Round-Robin VM allocation policy</b>
+ * A <a href="https://en.wikipedia.org/wiki/Round-robin_scheduling">Round-Robin VM allocation policy</a>
  * which finds the next Host having suitable resources to place a given VM
  * in a circular way. That means when it selects a suitable Host to place a VM,
  * it moves to the next suitable Host when a new VM has to be placed.
@@ -41,7 +41,7 @@ import java.util.Optional;
  *     <ul>
  *         <li>This policy doesn't perform optimization of VM allocation by means of VM migration.</li>
  *         <li>It has a low computational complexity (high time-efficient) but may return
- *         and inactive Host that will be activated, while there may be active Hosts
+ *         an inactive Host that will be activated, while there may be active Hosts
  *         suitable for the VM.</li>
  *         <li>Despite the low computational complexity, such a policy will increase the number of active Hosts,
  *         that increases power consumption.</li>

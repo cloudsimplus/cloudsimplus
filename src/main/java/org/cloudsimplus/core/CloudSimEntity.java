@@ -57,7 +57,7 @@ public abstract class CloudSimEntity implements SimEntity {
     /**
      * Creates a new entity.
      *
-     * @param simulation The CloudSimPlus instance that represents the simulation the Entity belongs to
+     * @param simulation The {@link CloudSimPlus} instance that represents the simulation the Entity belongs to
      * @throws IllegalArgumentException when the entity name is invalid
      */
     public CloudSimEntity(@NonNull final Simulation simulation) {
@@ -97,10 +97,10 @@ public abstract class CloudSimEntity implements SimEntity {
         this.shutdownTime = simulation.clock();
 
         /*
-         * Since entities never get removed from the entities list, this can create
+         * Since entities never get removed from the entity list, this can create
          * a memory leak with severe performance implications.
          * Here the finished entity is purged from that list
-         * to improve performance of large-scale experiments.
+         * to improve the performance of large-scale experiments.
          */
         ((CloudSimPlus)simulation).removeFinishedEntity(this);
     }
@@ -146,7 +146,7 @@ public abstract class CloudSimEntity implements SimEntity {
     }
 
     /**
-     * If the simulation has finished and an  {@link CloudSimTag#SIMULATION_END}
+     * If the simulation has finished and a {@link CloudSimTag#SIMULATION_END}
      * message is sent, it has to be processed to enable entities to shut down.
      */
     private boolean canSendEvent(final SimEvent evt) {
@@ -164,8 +164,8 @@ public abstract class CloudSimEntity implements SimEntity {
      * Sends an event to another entity with no delay.
      *
      * @param dest the destination entity
-     * @param tag  a tag representing the type of event.
-     * @param data The data to be sent with the event.
+     * @param tag  a tag representing the type of event, according to the {@link CloudSimTag} or some custom one.
+     * @param data the data to be sent with the event, according to the tag
      */
     public void scheduleNow(final SimEntity dest, final int tag, final Object data) {
         schedule(dest, 0, tag, data);
@@ -175,50 +175,50 @@ public abstract class CloudSimEntity implements SimEntity {
      * Sends an event to another entity with <b>no</b> attached data and no delay.
      *
      * @param dest the destination entity
-     * @param tag  a user-defined number representing the type of event.
+     * @param tag  a tag representing the type of event, according to the {@link CloudSimTag} or some custom one.
      */
     public void scheduleNow(final SimEntity dest, final int tag) {
         schedule(dest, 0, tag, null);
     }
 
     /**
-     * Sends a high priority event to another entity with no delay.
+     * Sends a high-priority event to another entity with no delay.
      *
      * @param dest the destination entity
-     * @param tag  a tag representing the type of event.
-     * @param data The data to be sent with the event.
+     * @param tag  a tag representing the type of event, according to the {@link CloudSimTag} or some custom one.
+     * @param data The data to be sent with the event, according to the tag
      */
     public void scheduleFirstNow(final SimEntity dest, final int tag, final Object data) {
         scheduleFirst(dest, 0, tag, data);
     }
 
     /**
-     * Sends a high priority event to another entity with <b>no</b> attached data and no delay.
+     * Sends a high-priority event to another entity with <b>no</b> attached data and no delay.
      * @param dest the destination entity
-     * @param tag  a user-defined number representing the type of event.
+     * @param tag  a tag representing the type of event, according to the {@link CloudSimTag} or some custom one.
      */
     public void scheduleFirstNow(final SimEntity dest, final int tag) {
         scheduleFirst(dest, 0, tag, null);
     }
 
     /**
-     * Sends a high priority event to another entity and with <b>no</b> attached data.
+     * Sends a high-priority event to another entity and with <b>no</b> attached data.
      *
      * @param dest  the destination entity
      * @param delay How many seconds after the current simulation time the event should be sent
-     * @param tag   a user-defined number representing the type of event.
+     * @param tag   a tag representing the type of event, according to the {@link CloudSimTag} or some custom one.
      */
     public void scheduleFirst(final SimEntity dest, final double delay, final int tag) {
         scheduleFirst(dest, delay, tag, null);
     }
 
     /**
-     * Sends a high priority event to another entity.
+     * Sends a high-priority event to another entity.
      *
      * @param dest  the destination entity
      * @param delay How many seconds after the current simulation time the event should be sent
-     * @param tag   a user-defined number representing the type of event.
-     * @param data  The data to be sent with the event.
+     * @param tag   a tag representing the type of event, according to the {@link CloudSimTag} or some custom one.
+     * @param data  The data to be sent with the event, according to the tag
      */
     public void scheduleFirst(final SimEntity dest, final double delay, final int tag, final Object data) {
         final var evt = new CloudSimEvent(delay, this, dest, tag, data);
@@ -340,7 +340,7 @@ public abstract class CloudSimEntity implements SimEntity {
     }
 
     /**
-     * Sets the entity id and defines its name based on such ID.
+     * Sets the entity id and defines its name based on it.
      *
      * @param id the new id
      */
@@ -368,12 +368,11 @@ public abstract class CloudSimEntity implements SimEntity {
 
     /**
      * Sends an event/message to another entity by <b>delaying</b> the
-     * simulation time from the current time, with a tag representing the event
-     * type.
+     * simulation time from the current time, with a tag representing the event type.
      * @param dest the destination entity
      * @param delay How many seconds after the current simulation time the event should be sent.
-     *              If delay is a negative number, then it will be changed to 0
-     * @param tag a user-defined number representing the type of event/message
+     *              If the delay is a negative number, then it will be changed to 0
+     * @param tag a tag representing the type of event, according to the {@link CloudSimTag} or some custom one.
      * @param data A reference to data to be sent with the event
      */
     protected void send(final SimEntity dest, double delay, final int tag, final Object data) {
@@ -383,7 +382,7 @@ public abstract class CloudSimEntity implements SimEntity {
             return;
         }
 
-        // if delay is negative, then it doesn't make sense. So resets to 0.0
+        // if the delay is negative, then it doesn't make sense. So resets to 0.0
         if (delay < 0) {
             delay = 0;
         }
@@ -402,12 +401,11 @@ public abstract class CloudSimEntity implements SimEntity {
 
     /**
      * Sends an event/message to another entity by <b>delaying</b> the
-     * simulation time from the current time, with a tag representing the event
-     * type.
-     *  @param dest    the destination entity
-     * @param delay       How many seconds after the current simulation time the event should be sent.
-     *                    If delay is a negative number, then it will be changed to 0
-     * @param tag a user-defined number representing the type of an
+     * simulation time from the current time, with a tag representing the event type.
+     * @param dest    the destination entity
+     * @param delay   How many seconds after the current simulation time the event should be sent.
+     *                If the delay is a negative number, then it will be changed to 0
+     * @param tag a tag representing the type of event, according to the {@link CloudSimTag} or some custom one
      */
     protected void send(final SimEntity dest, final double delay, final int tag) {
         send(dest, delay, tag, null);
@@ -416,32 +414,30 @@ public abstract class CloudSimEntity implements SimEntity {
     /**
      * Sends an event/message to another entity, with a tag representing the
      * event type.
-     *  @param dest    the destination entity
-     * @param tag a user-defined number representing the type of an
-     *                    event/message
-     * @param data        A reference to data to be sent with the event
+     * @param dest    the destination entity
+     * @param tag a tag representing the type of event, according to the {@link CloudSimTag} or some custom one
+     * @param data  the data to be sent with the event, according to the tag
      */
     protected void sendNow(final SimEntity dest, final int tag, final Object data) {
         send(dest, 0, tag, data);
     }
 
     /**
-     * Sends an event/message to another entity, with a tag representing the
-     * event type.
-     *  @param dest    the destination entity
-     * @param tag a user-defined number representing the event/message type
+     * Sends an event/message to another entity, with a tag representing the event type.
+     * @param dest    the destination entity
+     * @param tag a tag representing the type of event, according to the {@link CloudSimTag} or some custom one
      */
     protected void sendNow(final SimEntity dest, final int tag) {
         send(dest, 0, tag, null);
     }
 
     /**
-     * Gets the network delay associated to the sent of a message from a given
+     * Gets the network delay to send a message from a given
      * source to a given destination.
      *
      * @param src source of the message
      * @param dst destination of the message
-     * @return the delay to send a message from src to dst
+     * @return the delay to send a message from src to dst (in seconds)
      */
     private double getNetworkDelay(final SimEntity src, final SimEntity dst) {
         return getSimulation().getNetworkTopology().getDelay(src, dst);

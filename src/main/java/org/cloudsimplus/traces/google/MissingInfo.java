@@ -23,12 +23,12 @@
  */
 package org.cloudsimplus.traces.google;
 
-/**
- * Defines the type of information missing in a {@link GoogleTaskEventsTraceReader} trace file.
- * It represents the possible values for the MISSING_INFO field.
- * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 4.0.0
- */
+/// Defines the type of information missing in a [GoogleTaskEventsTraceReader] trace file.
+/// It represents the possible values for the `MISSING_INFO` field of the trace file.
+///
+/// @see TaskEventField#MISSING_INFO
+/// @author Manoel Campos da Silva Filho
+/// @since CloudSim Plus 4.0.0
 public enum MissingInfo {
     /**
      * 0: Means Google Clusters did not find a record representing the given event,

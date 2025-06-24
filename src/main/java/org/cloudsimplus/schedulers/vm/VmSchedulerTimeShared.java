@@ -6,6 +6,7 @@
  */
 package org.cloudsimplus.schedulers.vm;
 
+import org.cloudsimplus.hosts.Host;
 import org.cloudsimplus.resources.Pe;
 import org.cloudsimplus.schedulers.MipsShare;
 import org.cloudsimplus.vms.Vm;
@@ -13,48 +14,44 @@ import org.cloudsimplus.vms.VmSimple;
 
 import java.util.Iterator;
 
-/**
- * VmSchedulerTimeShared is a Virtual Machine Monitor (VMM), also called Hypervisor,
- * that defines a policy to allocate one or more PEs from a PM to a VM, and allows sharing of PEs
- * by multiple VMs. <b>This class also implements 10% performance degradation due
- * to VM migration. It does not support over-subscription.</b>
- *
- * <p>Each host has to use is own instance of a VmScheduler that will so
- * schedule the allocation of host's PEs for VMs running on it.</p>
- *
- * <p>
- * It does not perform a preemption process in order to move running
- * VMs to the waiting list in order to make room for other already waiting
- * VMs to run. It just imposes there is not waiting VMs,
- * <b>oversimplifying</b> the scheduling, considering that for a given simulation
- * second <i>t</i>, the total processing capacity of the processor cores (in
- * MIPS) is equally divided by the VMs that are using them.
- * </p>
- *
- * <p>In processors enabled with <a href="https://en.wikipedia.org/wiki/Hyper-threading">Hyper-threading technology (HT)</a>,
- * it is possible to run up to 2 processes at the same physical CPU core.
- * However, this scheduler implementation
- * oversimplifies a possible HT feature by allowing several VMs to use a fraction of the MIPS capacity from
- * physical PEs, until that the total capacity of the virtual PE is allocated.
- * Consider that a virtual PE is requiring 1000 MIPS but there is no physical PE
- * with such a capacity. The scheduler will allocate these 1000 MIPS across several physical PEs,
- * for instance, by allocating 500 MIPS from PE 0, 300 from PE 1 and 200 from PE 2, totaling the 1000 MIPS required
- * by the virtual PE.
- * </p>
- *
- * <p>In a real hypervisor in a Host that has Hyper-threading CPU cores, two virtual PEs can be
- * allocated to the same physical PE, but a single virtual PE must be allocated to just one physical PE.</p>
- *
- * @author Rodrigo N. Calheiros
- * @author Anton Beloglazov
- * @author Manoel Campos da Silva Filho
- * @since CloudSim Toolkit 1.0
- */
+/// A Virtual Machine Monitor (VMM), also called Hypervisor,
+/// that defines a policy to allocate one or more [Pe]s from a [Host] to a [Vm],
+/// and allows sharing of PEs by multiple VMs.
+/// **This class also implements 10% performance degradation due to VM migration.
+/// It does not support resource over-subscription.**
+///
+/// Each Host has to use its own instance of a VmScheduler that will so
+/// schedule the allocation of Host's PEs for VMs running on it.
+///
+/// It does not perform a preemption process to move running
+/// VMs to the waiting list to make room for other VMs already waiting.
+/// It just imposes there isn't waiting VMs,
+/// **oversimplifying** the scheduling, considering that for a given simulation
+/// second _t_, the total processing capacity (in MIPS) of the processor cores ([Pe]s)
+/// is equally divided by the VMs that are using them.
+///
+/// In CPUs enabled with [Hyper-threading technology (HT)](https://en.wikipedia.org/wiki/Hyper-threading),
+/// it is possible to run up to 2 processes at the same physical CPU core.
+/// However, this scheduler implementation
+/// oversimplifies a possible HT feature by allowing several VMs to use a fraction of the MIPS capacity from
+/// physical PEs, until that the total capacity of the virtual PE is allocated.
+/// Consider that a virtual PE is requiring 1000 MIPS but there is no physical PE
+/// with such a capacity. The scheduler will allocate these 1000 MIPS across several physical PEs,
+/// for instance, by allocating 500 MIPS from PE 0, 300 from PE 1 and 200 from PE 2, totaling the 1000 MIPS required
+/// by the virtual PE.
+///
+/// In a real hypervisor in a Host that has Hyper-threading CPU cores,
+/// one physical PE can be allocated to two virtual PEs (preemptively),
+/// but a single virtual PE can use just one physical PE at a time.
+///
+/// @author Rodrigo N. Calheiros
+/// @author Anton Beloglazov
+/// @author Manoel Campos da Silva Filho
+/// @since CloudSim Toolkit 1.0
 public class VmSchedulerTimeShared extends VmSchedulerAbstract {
 
     /**
-     * Creates a time-shared VM scheduler.
-     *
+     * Creates a time-shared VM scheduler with a default CPU overhead for VM migrations.
      */
     public VmSchedulerTimeShared() {
         this(DEF_VM_MIGRATION_CPU_OVERHEAD);
@@ -79,8 +76,8 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
      * Try to allocate the MIPS requested by a VM
      * and update the allocated MIPS share.
      *
-     * @param vm the VM
-     * @param requestedMips the list of mips share requested by the vm
+     * @param vm the VM to allocate MIPS to
+     * @param requestedMips the MIPS share requested by the VM
      * @return true if successful, false otherwise
      */
     private boolean allocateMipsShareForVmInternal(final Vm vm, final MipsShare requestedMips) {
@@ -93,12 +90,12 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
     }
 
     /**
-     * Performs the allocation of a MIPS List to a given VM.
+     * Performs the allocation of a MIPS share to a given VM.
      * The actual MIPS to be allocated to the VM may be reduced
      * if the VM is in migration, due to migration overhead.
      *
      * @param vm the VM to allocate MIPS to
-     * @param requestedMipsReduced the list of MIPS to allocate to the VM,
+     * @param requestedMipsReduced the MIPS share to allocate to the VM,
      * after it being adjusted by the {@link VmSchedulerAbstract#getMipsShareRequestedReduced(Vm, MipsShare)} method.
      * @see VmSchedulerAbstract#getMipsShareRequestedReduced(Vm, MipsShare)
      */
@@ -180,12 +177,12 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
      * Try to allocate the MIPS available in a given Physical PE
      * to a vPE. This method is used when the MIPS requested
      * by a vPE is not entirely available at a Physical PE.
-     * This all, this method allocates the available capacity to the vPE.
+     * This way, this method allocates the available capacity to the vPE.
      *
      * @param vm the VM to allocate MIPS from one of its vPEs.
-     * @param hostPe the Physical PE to allocated MIPS from
+     * @param hostPe the Physical PE to allocate MIPS from
      * @return true if all requested MIPS of the vPE is available at the physical PE
-     * and was allocated, false otherwise
+     * and was allocated; false otherwise
      *
      * @see #allocateAllVmPeRequestedMipsFromHostPe(Vm, Pe, double)
      */
@@ -197,8 +194,8 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
 
         /*
         * If the selected Host PE doesn't have the available MIPS requested by the current
-        * vPE, allocate the MIPS that is available in that PE for the vPE
-        * and try to find another Host PE to allocate the remaining MIPS required by the
+        * vPE, allocate the MIPS that is available in that PE for the vPE.
+        * Then, it tries to find another Host PE to allocate the remaining MIPS required by the
         * current vPE.
         */
         allocateMipsFromHostPeForVm(vm, hostPe, availableMips);
@@ -209,21 +206,10 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
      * Try to allocate all the MIPS requested by a Virtual PE from a given Physical PE.
      *
      * @param vm the VM to allocate MIPS from one of its vPEs.
-     * @param hostPe the Physical PE to allocated MIPS from
+     * @param hostPe the Physical PE to allocate MIPS from
      * @param requestedMipsForVmPe the MIPS requested by the vPE
      * @return true if all requested MIPS of the vPE is available at the physical PE
-     * and was allocated, false otherwise
-     *
-     * @TODO If the selected Host PE has enough available MIPS that is requested by the
-     *       current VM PE (Virtual PE, vPE or vCore), allocate that MIPS from that Host PE for that vPE.
-     *       For each next vPE, in case the same previous selected Host PE yet
-     *       has available MIPS to allocate to it, that Host PE will be allocated
-     *       to that next vPE. However, for the best of my knowledge,
-     *       in real scheduling, it is not possible to allocate
-     *       more than one VM to the same CPU core,
-     *       even in CPUs with Hyper-Threading technology.
-     *       The last picture in the following article makes it clear:
-     *       https://support.rackspace.com/how-to/numa-vnuma-and-cpu-scheduling/
+     * and was allocated; false otherwise
      */
     private boolean allocateAllVmPeRequestedMipsFromHostPe(final Vm vm, final Pe hostPe, final double requestedMipsForVmPe) {
         if (getAvailableMipsFromHostPe(hostPe) >= requestedMipsForVmPe) {
@@ -266,7 +252,7 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
      * the amount of MIPS allocated to the VM.
      *
      * @param vm the VM requesting allocation of MIPS
-     * @param requestedMips the list of MIPS requested for each vPE
+     * @param requestedMips the MIPS share requested for each vPE
      * @return the allocated MIPS share to the VM
      */
     protected MipsShare getMipsShareToAllocate(final Vm vm, final MipsShare requestedMips) {
@@ -281,7 +267,7 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
      *
      * @param requestedMips the list of MIPS requested for each vPE
      * @param scalingFactor the factor that will be used to reduce the amount of MIPS
-     * allocated to each vPE (which is a percentage value between [0 .. 1]) in case the VM is in migration
+     * allocated to each vPE (which is a percentage value between [0..1]) in case the VM is in migration
      * @return the MIPS share allocated to the VM
      */
     protected MipsShare getMipsShareToAllocate(final MipsShare requestedMips, final double scalingFactor) {

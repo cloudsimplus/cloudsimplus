@@ -30,7 +30,7 @@ import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.vms.Vm;
 
 /**
- * Keeps track of number of VM creation requests and retries sent by a {@link DatacenterBroker}
+ * Keeps track of the number of VM creation requests and retries sent by a {@link DatacenterBroker}
  * and enables configuring creation retries.
  * VM creation fails when the broker can't find a suitable Host for placement.
  *
@@ -43,6 +43,7 @@ public class VmCreation {
 
     /**
      * Default number of times the broker will try to recreated failed VMs.
+     * @see #setMaxRetries(int)
      */
     public static final int DEF_CURRENT_VM_CREATION_RETRIES = 5;
 
@@ -52,9 +53,9 @@ public class VmCreation {
      *
      * <ul>
      *  <li>A value larger than zero indicates the broker will retry
-     *  to place failed VM as soon as new VMs or Cloudlets
+     *  to place a failed VM as soon as new VMs/Cloudlets
      *  are submitted or after the given delay.</li>
-     *  <li>otherwise, indicates failed VMs will be just added to the
+     *  <li>otherwise, indicates that failed VMs will be just added to the
      *  {@link DatacenterBroker#getVmFailedList()} and the user simulation have to deal with it.
      *  If the VM has an {@link Vm#addOnCreationFailureListener(EventListener) OnCreationFailureListener},
      *  it will be notified about the failure.</li>
@@ -101,16 +102,17 @@ public class VmCreation {
 
     /**
      * Creates an object with all attributes equal to zero.
-     * @return
+     * @return the created object
      */
     public static VmCreation ofZero(){
         return new VmCreation(0, 0);
     }
 
     /**
-     * Checks if the broker has to retry allocating VMs
-     * that couldn't be placed due to lack of suitable Hosts.
-     * @return
+     * {@return true if the broker has to retry allocating VMs that couldn't be placed due to lack of suitable Hosts,
+     * false otherwise.}
+     * @see #setRetryDelay(double)
+     * @see #setMaxRetries(int)
      */
     public boolean isRetryFailedVms() {
         return retryDelay > 0 && retries < maxRetries;
@@ -134,7 +136,7 @@ public class VmCreation {
 
     /**
      * Increments/decrements the number of VM creation requests.
-     * @param value the value to increment/decrement
+     * @param value a positive or negative value to allow increment or decrement, respectively
      * @see #resetCurrentRetries()
      */
     public void incCreationRequests(final int value) {

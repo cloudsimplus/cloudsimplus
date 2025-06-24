@@ -15,10 +15,9 @@ import org.cloudsimplus.hosts.Host;
 
 /**
  * Represents static properties of a Datacenter such as architecture,
- * Operating System (OS), management policy (time- or space-shared),
- * cost and time zone at which the resource is located along resource configuration.
- * Each {@link Datacenter} has to have its own instance of this class,
- * since it stores the Datacenter host list.
+ * Operating System (OS), cost and {@link Distribution Distribution}.
+ * Each {@link Datacenter} must have its own instance of this class.
+ * By default, all instances are created as {@link Distribution#PRIVATE PRIVATE} datacenters.
  *
  * @author Manzur Murshed
  * @author Rajkumar Buyya

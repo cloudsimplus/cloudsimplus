@@ -43,12 +43,12 @@ import org.cloudsimplus.vms.Vm;
 public class VerticalVmScalingSimple extends VerticalVmScalingAbstract {
 
     /**
-     * Creates a VerticalVmScalingSimple with a {@link ResourceScalingGradual} scaling type.
+     * Creates a VerticalVmScaling with a {@link ResourceScalingGradual} scaling type.
      *
      * @param resourceClassToScale the class of Vm resource that this scaling object will request
      *                             up or down scaling (such as {@link Ram}.class,
      *                             {@link Bandwidth}.class or {@link Processor}.class).
-     * @param scalingFactor the factor (a percentage value in scale from 0 to 1)
+     * @param scalingFactor the factor (a percentage value between 0 and 1)
      *                      that will be used to scale a Vm resource up or down,
      *                      whether such a resource is over or underloaded, according to the
      *                      defined predicates.

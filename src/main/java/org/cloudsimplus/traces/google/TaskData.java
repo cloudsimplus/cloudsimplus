@@ -45,12 +45,9 @@ class TaskData extends MachineDataBase {
      */
     private long taskIndex;
 
-    /**
-     * A unique ID to be used to identify Cloudlets.
-     * The ID is composed of the {@link #getJobId() Job ID},
-     * concatenated with the {@link #getTaskIndex() Task Index}.
-     * @return
-     */
+    /// @return a unique ID to be used to identify Cloudlets.
+    /// The ID is composed of the [Job ID][#getJobId()],
+    /// concatenated with the [Task Index][#getTaskIndex()].
     public long getUniqueTaskId(){
         final String uniqueId = "%d%d".formatted(getJobId(), getTaskIndex());
         return Long.parseLong(uniqueId);

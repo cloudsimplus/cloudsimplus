@@ -34,33 +34,29 @@ import org.cloudsimplus.utilizationmodels.UtilizationModelDynamic;
 
 import java.util.function.Function;
 
-/**
- * A data class to store the attributes to create a {@link Cloudlet},
- * according to the data read from a line inside a "task events" trace file.
- * Instance of this class are created by the {@link GoogleTaskEventsTraceReader}
- * and provided to the user's simulation.
- *
- * <p>
- * In order to create such Cloudlets, the {@link GoogleTaskEventsTraceReader} requires
- * the developer to provide a {@link Function}
- * that creates Cloudlets according to the developer needs.
- * </p>
- *
- * <p>The {@link GoogleTaskEventsTraceReader} cannot create the Cloudlets itself
- * by hard-coding some simulation specific parameters such as the {@link UtilizationModel}
- * or cloudlet length. This way, it request a {@link Function} implemented
- * by the developer using the {@link GoogleTaskEventsTraceReader} class
- * that has the custom logic to create Cloudlets.
- * However, this developer's {@link Function} needs to receive
- * the task parameters read from the trace file such as
- * CPU, RAM and disk requirements and priority.
- * To avoid passing so many parameters to the developer's
- * Function, an instance of this class that wraps all these
- * parameters is used instead.</p>
- *
- * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 4.0.0
- */
+/// A data class to store the attributes to create a [Cloudlet],
+/// according to the data read from a line inside a "task events" trace file.
+/// Instances of this class are created by the [GoogleTaskEventsTraceReader]
+/// and provided to the user's simulation.
+///
+/// The [GoogleTaskEventsTraceReader] requires
+/// the developer to provide a [Function]
+/// that creates Cloudlets according to the developer needs.
+///
+/// The [GoogleTaskEventsTraceReader] cannot create the Cloudlets itself
+/// by hard-coding some simulation-specific parameters such as the [UtilizationModel]
+/// or cloudlet length. This way, it requests a [Function] implemented
+/// by the developer using the [GoogleTaskEventsTraceReader] class
+/// that has the custom logic to create Cloudlets.
+/// However, this developer's [Function] needs to receive
+/// the task parameters read from the trace file such as
+/// CPU, RAM and disk requirements and priority.
+/// To avoid passing so many parameters to the developer's
+/// Function, an instance of this class that wraps all these
+/// parameters is used instead.
+///
+/// @author Manoel Campos da Silva Filho
+/// @since CloudSim Plus 4.0.0
 @Getter @Setter @Builder
 public final class TaskEvent extends TaskData {
     private int priority;
@@ -80,76 +76,63 @@ public final class TaskEvent extends TaskData {
     @Setter(AccessLevel.NONE)
     private TaskEventType type;
 
-    /**
-     * The maximum number of CPU cores
-     * the task is permitted to use (in percentage from 0 to 1).
-     * This percentage value can be used to compute the number of {@link Pe}s
-     * the Cloudlet will require, based on the number of PEs of the Vm where the Cloudlet will be executed.
-     *
-     * <p>The actual value to be assigned to a Cloudlet created from this trace field
-     * must be defined by the researcher, inside the
-     * {@link GoogleTaskEventsTraceReader#getCloudletCreationFunction() cloudlet creation function}
-     * given to the trace reader.
-     * </p>
-     *
-     * <p>
-     * Since there are "task usage" trace files, they can used used to
-     * define the CPU utilization along the time.
-     * The value of this attribute is not the same as the max resource usage
-     * of the CPU {@link UtilizationModel}.
-     * It just represents the maximum number of CPUs the Cloudlet will use.
-     * The percentage that such CPUs will be used for a given time is defined
-     * by the CPU {@link UtilizationModel#getUtilization()}.
-     * Such a value is defined by a "task usage" trace.
-     * </p>
-     *
-     * @see TaskEventField#RESOURCE_REQUEST_FOR_CPU_CORES
-     * @see GoogleTaskUsageTraceReader
-     */
+    /// The maximum number of CPU cores
+    /// the task is permitted to use (in percentage from 0 to 1).
+    /// This percentage value can be used to compute the number of [Pe]s
+    /// the Cloudlet will require, based on the number of PEs of the Vm where the Cloudlet will be executed.
+    ///
+    /// The actual value to be assigned to a Cloudlet created from this trace field
+    /// must be defined by the researcher, inside the
+    /// [cloudlet creation function][GoogleTaskEventsTraceReader#getCloudletCreationFunction()]
+    /// given to the trace reader.
+    ///
+    /// Since there are "task usage" trace files, they can be used to
+    /// define the CPU utilization along the time.
+    /// The value of this attribute is different from the max resource usage
+    /// of the CPU [UtilizationModel].
+    /// It just represents the maximum number of CPUs the Cloudlet will use.
+    /// The percentage that such CPUs will be used for a given time is defined
+    /// by the CPU [UtilizationModel#getUtilization()].
+    /// Such a value is defined by a "task usage" trace.
+    ///
+    /// @see TaskEventField#RESOURCE_REQUEST_FOR_CPU_CORES
+    /// @see GoogleTaskUsageTraceReader
     @Setter
     private double resourceRequestForCpuCores;
 
-    /**
-     * The maximum amount of RAM
-     * the task is permitted to use (in percentage from 0 to 1).
-     *
-     * <p>The actual value to be assigned to a Cloudlet created from this trace field
-     * must be defined by the researcher, inside the
-     * {@link GoogleTaskEventsTraceReader#getCloudletCreationFunction() cloudlet creation function}
-     * given to the trace reader.
-     * </p>
-     *
-     * <p>This field can be used to define the max resource utilization percentage for a
-     * UtilizationModel when creating the Cloudlet.
-     * Since there are "task usage" trace files, they can be used to
-     * define the RAM utilization along the time.
-     * In this case, a {@link UtilizationModelDynamic} is required for the Cloudlet's
-     * RAM UtilizationModel. Using a different class will raise a runtime exception
-     * when trying to create the Cloudlets.
-     * </p>
-     *
-     * @see TaskEventField#RESOURCE_REQUEST_FOR_RAM
-     * @see GoogleTaskUsageTraceReader
-     */
+    /// The maximum amount of RAM
+    /// the task is permitted to use (in percentage from 0 to 1).
+    ///
+    /// The actual value to be assigned to a Cloudlet created from this trace field
+    /// must be defined by the researcher, inside the
+    /// [cloudlet creation function][GoogleTaskEventsTraceReader#getCloudletCreationFunction()]
+    /// given to the trace reader.
+    ///
+    /// This field can be used to define the max resource utilization percentage for a
+    /// UtilizationModel when creating the Cloudlet.
+    /// Since there are "task usage" trace files, they can be used to
+    /// define the RAM utilization along the time.
+    /// In this case, a [UtilizationModelDynamic] is required for the Cloudlet's
+    /// RAM UtilizationModel. Using a different class will raise a runtime exception
+    /// when trying to create the Cloudlets.
+    ///
+    /// @see TaskEventField#RESOURCE_REQUEST_FOR_RAM
+    /// @see GoogleTaskUsageTraceReader
     @Setter
     private double resourceRequestForRam;
 
-    /**
-     * The maximum amount of local disk space
-     * the task is permitted to use (in percentage from 0 to 1).
-     *
-     * <p>The actual value to be assigned to a Cloudlet created from this trace field
-     * must be defined by the researcher, inside the
-     * {@link GoogleTaskEventsTraceReader#getCloudletCreationFunction() cloudlet creation function}
-     * given to the trace reader.
-     * </p>
-     *
-     * <p>This field can be used to define the initial Cloudlet file size and/or output size
-     * when creating the Cloudlet, according to the researcher needs.
-     * </p>
-     *
-     * @see TaskEventField#RESOURCE_REQUEST_FOR_LOCAL_DISK_SPACE
-     */
+    /// The maximum amount of local disk space
+    /// the task is permitted to use (in percentage from 0 to 1).
+    ///
+    /// The actual value to be assigned to a Cloudlet created from this trace field
+    /// must be defined by the researcher, inside the
+    /// [cloudlet creation function][GoogleTaskEventsTraceReader#getCloudletCreationFunction()]
+    /// given to the trace reader.
+    ///
+    /// This field can be used to define the initial Cloudlet file size and/or output size
+    /// when creating the Cloudlet, according to the researcher needs.
+    ///
+    /// @see TaskEventField#RESOURCE_REQUEST_FOR_LOCAL_DISK_SPACE
     @Setter
     private double resourceRequestForLocalDiskSpace;
 
@@ -179,7 +162,7 @@ public final class TaskEvent extends TaskData {
     /**
      * Sets the {@link TaskEventType} according to the enum ordinal.
      * @param type the int value of the task event type
-     * @return
+     * @return this instance
      */
     public TaskEvent setType(final int type) {
         this.type = TaskEventType.getValue(type);
@@ -188,16 +171,16 @@ public final class TaskEvent extends TaskData {
 
     /**
      * Creates a TaskEvent from the current processed line from a Google Task Events trace file.
-     * @param reader
-     * @return
+     * @param reader the trace file reader
+     * @return this instance
      */
     public static TaskEvent of(final GoogleTaskEventsTraceReader reader) {
         final var builder = new Builder();
-        /*TODO The tasks with the same username must run inside the same user's VM,
-         *     unless the machineID is different.
-         *     The task (cloudlet) needs to be mapped to a specific Host (according to the machineID).
-         *     The challenge here is because the task requirements are usually not known,
-         *     for instance when the task is submitted. It's just know when it starts to execute.
+        /* TODO The tasks with the same username must run inside the same user's VM,
+         *      unless the machineID is different.
+         *      The task (cloudlet) needs to be mapped to a specific Host (according to the machineID).
+         *      The challenge here is because the task requirements are usually not known,
+         *      for instance when the task is submitted. It's just know when it starts to execute.
          */
         builder
             .type(TaskEventField.EVENT_TYPE.getValue(reader))

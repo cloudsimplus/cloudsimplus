@@ -37,9 +37,9 @@ import org.cloudsimplus.vms.Vm;
  * {@link DatacenterBroker} and
  * {@link Cloudlet}.
  *
- * The builders helps in the creation of such objects,
+ * <p>The builders help in the creation of such objects,
  * by allowing to set standard attribute's values
- * in order to create several objects with the same characteristics.
+ * in order to create several objects with the same characteristics.</p>
  *
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0

@@ -30,14 +30,13 @@ import static java.util.stream.Collectors.toList;
  */
 @Getter
 public abstract class VmSchedulerAbstract implements VmScheduler {
-
     private Host host;
     private final double vmMigrationCpuOverhead;
 
     /**
      * Creates a VmScheduler, defining a CPU overhead for VM migration.
      * @param vmMigrationCpuOverhead the percentage of Host's CPU usage increase when a
-     * VM is migrating in or out of the Host. The value is in scale from 0 to 1 (where 1 is 100%).
+     * VM is migrating in or out the Host. The value is in scale from 0 to 1 (where 1 is 100%).
      */
     public VmSchedulerAbstract(final double vmMigrationCpuOverhead){
         if(vmMigrationCpuOverhead < 0 || vmMigrationCpuOverhead >= 1){
@@ -93,8 +92,8 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
     }
 
     /**
-     * Based on the number of PEs required by a given VM, sets the status of the same
-     * number of physical PEs in its Host to BUSY.
+     * Sets the status of physical PEs from a Host used by a given VM to BUSY.
+     * The number of Host PEs changed is equal to the number of PEs required by the VM.
      * @param vm the VM to set the status of its used physical PEs
      * */
     private void updateHostPesStatusToBusy(final Vm vm) {
@@ -102,11 +101,10 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
     }
 
     /**
-     * Based on a specific number of virtual PEs, sets the status of the same
-     * number of physical PEs in its Host to a given status.
+     * Sets the status of physical PEs from a Host used by a given VM.
      * @param peList the list of physical PEs from which the corresponding virtual PEs will have the status changed
      * @param vPesNumber the number of Virtual PEs that correspond to the number of physical PEs to have their status changed
-     * @param newStatus the status to set
+     * @param newStatus the new status to set
      */
     private void updateHostPesStatus(final List<Pe> peList, final long vPesNumber, final Pe.Status newStatus) {
         if(vPesNumber <= 0) {
@@ -136,8 +134,8 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
 
     /**
      * Sets the status of physical PEs used by a destroyed VM to FREE.
-     * That works for any kind of scheduler, such as time- and space-shared.
-     * @param removedPes number of PEs actually removed from the VM
+     * That works for any kind of scheduler, such as time- and space-shared one.
+     * @param removedPes number of PEs actually removed from the destroyed VM
      */
     private void updateHostUsedPesToFree(final long removedPes) {
         updateHostPesStatus(host.getBusyPeList(), removedPes, Pe.Status.FREE);
@@ -146,7 +144,7 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
     /**
      * Tries to remove a given number of PEs allocated to a VM
      * @param vm the VM to remove PEs
-     * @param mipsShare the VM mips share where to remove PEs from
+     * @param mipsShare the VM MIPS share where to remove PEs from
      * @param pesToRemove the number of PEs to remove
      * @return the number of actual removed PEs
      */
@@ -161,7 +159,7 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
         final MipsShare mipsShare = ((VmSimple)vm).getAllocatedMips();
 
         /*
-        When a VM is migrating out of the source Host, its allocated MIPS
+        When a VM is migrating out the source Host, its allocated MIPS
         is reduced due to migration overhead.
         When it is migrating into the target Host, it also
         experiences overhead, but for the first time the VM is allocated into
@@ -170,14 +168,12 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
         return host.getVmsMigratingOut().contains(vm) ? getMipsShareRequestedReduced(vm, mipsShare) : mipsShare;
     }
 
-    /**
-     * Gets an adjusted List of MIPS requested by a VM, reducing every MIPS which is higher
-     * than the {@link #getPeCapacity() capacity of each physical PE} to that value.
-     *
-     * @param vm the VM to get the MIPS requested
-     * @param mipsShareRequested the VM requested MIPS List
-     * @return a new VM requested MIPS share with adjusted MIPS capacity
-     */
+    /// Gets an adjusted MIPS share requested by a VM, reducing every MIPS which is higher
+    /// than the [capacity of each physical PE][#getPeCapacity()] to that value.
+    ///
+    /// @param vm the VM to get the MIPS requested
+    /// @param mipsShareRequested the VM requested MIPS share
+    /// @return a new VM requested MIPS share with adjusted MIPS capacity
     protected MipsShare getMipsShareRequestedReduced(final Vm vm, final MipsShare mipsShareRequested){
         final double peMips = getPeCapacity();
         final long requestedPes = mipsShareRequested.pes();
@@ -191,12 +187,10 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
     }
 
     /**
-     * Gets PE capacity in MIPS.
+     * @return PE capacity in MIPS.
      *
-     * @return
-     *
-     * @TODO It considers that all PEs have the same capacity, what has been
-     *       shown doesn't be assured. The peList received by the VmScheduler can be
+     * @TODO It considers that all PEs have the same capacity, which has been
+     *       shown it isn't assured. The peList received by the VmScheduler can have
      *       heterogeneous PEs.
      */
     public long getPeCapacity() {
@@ -204,10 +198,7 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
     }
 
     /**
-     * Gets the list of working PEs from the Host, <b>which excludes failed PEs</b>.
-     *
-     * @return
-     *
+     * @return the list of working PEs from the Host, <b>excluding failed PEs</b>.
      */
     public final List<Pe> getWorkingPeList() {
         return host.getWorkingPeList();
@@ -232,74 +223,66 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
 
     /**
      * Gets the sum of MIPS requested by each VM PE, including
-     * the CPU overhead if the VM is in migration to this Host.
+     * the CPU overhead if the VM is migration into this Host.
      *
-     * <p>For instance, if the migration overhead is 10% and
-     * the total requested MIPS of a VM is 1000 MIPS,
-     * it will be allocated just 900 MIPS, but from this values, this method
+     * <p>For instance, consider the migration overhead is 10% and
+     * the total requested MIPS of a VM is 1000 MIPS.
+     * It will be allocated just 900 MIPS, but from these values, this method
      * returns the 1000 MIPS, which is the actual MIPS being
-     * used by the Host (900 by the VM and 100 by migration overhead).</p>
+     * used by the Host (900 by the VM and 100 by the migration overhead).</p>
      *
-     * @param vm
+     * @param vm the VM to get the requested MIPS sum
      * @return the actual requested MIPS sum across all VM PEs,
      * including the CPU overhead of the VM is in migration to this Host
      */
     private double actualVmTotalRequestedMips(final VmSimple vm) {
         final double totalVmRequestedMips = vm.getAllocatedMips().totalMips();
 
-        /*If the VM is migrating in or out this Host,
-        there is a migration overhead.
-        Considering the overhead is 10%,
-        if it's migrating in, it's just allocated just this 10%
-        for the migration process.
-        If it's migrating out, it's allocated 90% for the VM,
-        and 10% for the migration process.
+        /* If the VM is migrating in or out this Host,
+         there is a migration overhead.
+         Considering the overhead is 10%, if it's migrating in,
+         it's just allocated this percentage for the migration process.
+         If it's migrating out, it's allocated 90% for the VM,
+         and 10% for the migration process.
 
-        The line below computes the original
-        requested MIPS (which correspond to 100%)
-        */
+         The line below computes the original
+         requested MIPS (which correspond to 100%) */
         return totalVmRequestedMips / mipsPercentToRequest(vm);
     }
 
-    /**
-     * Gets the percentage of the MIPS requested by a VM
-     * that will be in fact requested to the Host, according to the VM migration
-     * status:
-     *
-     * <ul>
-     *  <li>VM is migrating out of this Host: the MIPS requested by VM will be reduced
-     *   according to the
-     *   {@link #getVmMigrationCpuOverhead() CPU migration overhead}.
-     *   The number of MIPS corresponding to the CPU overhead is used
-     *   by the Host to perform the migration;</li>
-     *  <li>VM is migrating into this Host: only a fraction of its requested MIPS will be
-     *   in fact requested to the Host. This amount is computed by reducing the
-     *   {@link #getVmMigrationCpuOverhead() CPU migration overhead};</li>
-     *  <li>VM is not in migration: 100% of its requested MIPS will be
-     *   in fact requested to the Host</li>
-     * </ul>
-     * @param vm the VM that is requesting MIPS from the Host
-     * @return the percentage of MIPS requested by the VM that will be in fact
-     * requested to the Host (in scale from [0 to 1], where  is 100%)
-     */
+    /// Gets the percentage of the MIPS requested by a VM
+    /// that will be in fact requested to the Host, according to the VM migration
+    /// status:
+    ///
+    /// - VM is migrating out of this Host: the MIPS requested by the VM will be reduced
+    ///   according to the [CPU migration overhead][#getVmMigrationCpuOverhead()].
+    ///   The Host uses the number of MIPS corresponding to the CPU overhead to perform the migration;
+    /// - VM is migrating into this Host: only a fraction of its requested MIPS will be
+    ///   in fact requested to the Host. This amount is computed by reducing the
+    ///   [CPU migration overhead][#getVmMigrationCpuOverhead()];
+    /// - VM is not in migration: 100% of its requested MIPS will be
+    ///   in fact requested to the Host
+    ///
+    /// @param vm the VM that is requesting MIPS from the Host
+    /// @return the percentage of MIPS requested by the VM that will be in fact
+    /// requested to the Host (in scale from [0 to 1], where is 100%)
     protected double mipsPercentToRequest(final Vm vm) {
         if (host.getVmsMigratingIn().contains(vm)) {
             /* While the VM is migrating in,
-            the destination host only increases CPU usage according
-            to the CPU migration overhead.
-             */
+            the destination Host only increases CPU usage according
+            to the CPU migration overhead. */
             return vmMigrationCpuOverhead;
         }
 
         if (host.getVmsMigratingOut().contains(vm)) {
-            /* While the VM is migrating out, the host where it's migrating from
+            /* While the VM is migrating out, the Host where it's migrating from
             experiences a performance degradation.
             Thus, the allocated MIPS for that VM is reduced according to the CPU migration
-            overhead.*/
+            overhead. */
             return getMaxCpuUsagePercentDuringOutMigration();
         }
 
-        //VM is not migrating, thus 100% of its requested MIPS will be requested to the Host.
+        // VM is not migrating, thus 100% of its requested MIPS will be requested to the Host.
         return 1;
     }
 
@@ -322,14 +305,14 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
      * Checks if the {@link VmScheduler} has a {@link Host} assigned that is
      * different from the given one
      *
-     * @param host the Host to check if assigned scheduler's Host is different from
-     * @return
+     * @param host the Host to check if the assigned scheduler's Host is different from
+     * @return true if the Host assigned to this VmScheduler is different from the given one, false otherwise
      */
     private boolean isOtherHostAssigned(@NonNull final Host host) {
-        /*It's used != instead of !equals() because when a VmScheduler is set to a Host,
-        * the Host may not have an ID yet.
-        * That may happen when the Host is created without an id,
-        * which is set only when the Host list is assigned to a Datacenter. */
+        /* It's used != instead of !equals() because when a VmScheduler is set to a Host,
+         * the Host may not have an ID yet.
+         * That may happen when the Host is created without an id,
+         * which is set only when the Host list is assigned to a Datacenter. */
         return this.host != null && this.host != Host.NULL && host != this.host;
     }
 }

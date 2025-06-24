@@ -11,10 +11,10 @@ import org.cloudsimplus.hosts.Host;
 
 /**
  * An interface to be implemented by VM allocation policies that define
- * a dynamic over utilization threshold computed using some statistical method such as
+ * a dynamic over utilization threshold, computed using some statistical method such as
  * <a href="https://en.wikipedia.org/wiki/Median_absolute_deviation">Median Absolute Deviation (MAD)</a>,
  * <a href="https://en.wikipedia.org/wiki/Interquartile_range">Inter-quartile Range (IQR)</a>,
- * <a href="https://en.wikipedia.org/wiki/Local_regression">Local Regression (LR)</a>, etc,
+ * <a href="https://en.wikipedia.org/wiki/Local_regression">Local Regression (LR)</a>, etc.,
  * depending on the implementing class.
  *
  * @author Anton Beloglazov
@@ -24,7 +24,7 @@ import org.cloudsimplus.hosts.Host;
 public interface VmAllocationPolicyMigrationDynamicUpperThreshold extends VmAllocationPolicyMigration {
     /**
      * Sets the fallback VM allocation policy to be used when
-     * the over utilization host detection doesn't have
+     * the over-utilization host detection doesn't have
      * data to be computed.
      *
      * @param fallbackPolicy the new fallback vm allocation policy
@@ -32,11 +32,9 @@ public interface VmAllocationPolicyMigrationDynamicUpperThreshold extends VmAllo
     VmAllocationPolicyMigrationDynamicUpperThreshold setFallbackVmAllocationPolicy(VmAllocationPolicyMigration fallbackPolicy);
 
     /**
-     * Gets the fallback VM allocation policy to be used when
-     * the over utilization host detection doesn't have
-     * data to be computed.
-     *
-     * @return the fallback vm allocation policy
+     * {@return the fallback VM allocation policy to be used when
+     * the over-utilization host detection doesn't have
+     * data to be computed}
      */
     VmAllocationPolicyMigration getFallbackVmAllocationPolicy();
 
@@ -48,10 +46,10 @@ public interface VmAllocationPolicyMigrationDynamicUpperThreshold extends VmAllo
      * on a dynamic defined host utilization threshold.
      *
      * <p>Such a threshold is computed based on the host's usage
-     * history using different statistical methods
-     * (such as Median absolute deviation - MAD, that is similar to the Standard Deviation)
-     * depending on the implementing class, as defined by the method
-     * {@link #computeHostUtilizationMeasure(Host)}.</p>
+     * history, using different statistical methods
+     * (such as Median absolute deviation - MAD, that is similar to the Standard Deviation),
+     * depending on the implementing class (as defined by the
+     * {@link #computeHostUtilizationMeasure(Host)} method).</p>
      *
      * <p>
      * This safety parameter is used to increase or decrease the utilization threshold.
@@ -68,28 +66,28 @@ public interface VmAllocationPolicyMigrationDynamicUpperThreshold extends VmAllo
      * Now take a safety parameter of 0.5 (50%).
      * To compute the usage threshold, the MAD is increased by 50%, being equals to 0.3.
      * Finally, the threshold will be 1 - 0.3 = 0.7.
-     * Thus, only when the host utilization threshold exceeds 70%,
+     * Therefore, only when the host utilization threshold exceeds 70%,
      * the host is considered overloaded.
      * </p>
      *
      * <p>
-     * Here, safer doesn't mean a more accurate overload detection but that the
-     * algorithm will use a lower host
-     * utilization threshold that may lead to lower SLA violations but higher
-     * resource wastage. <b>Thus this parameter has to be tuned in order to
+     * Here, safer doesn't mean a more accurate overload detection. Instead, it means the
+     * algorithm will use a lower host utilization threshold,
+     * which may lead to lower SLA violations but higher resource wastage.
+     * <b>Accordingly, this parameter has to be tuned in order to
      * trade-off between SLA violation and resource wastage.</b></p>
      */
     double getSafetyParameter();
 
     /**
-     * Computes the measure used to generate the dynamic host over utilization
+     * Computes the measure used internally to generate the dynamic host over utilization
      * threshold using some statistical method (such as the
      * Median absolute deviation - MAD, InterQuartileRange - IRQ, Local Regression, etc.),
      * depending on the implementing class.
      * The method uses Host utilization history to compute such a metric.
      *
      * @param host the host to get the current utilization
-     * @return
+     * @return the computed measure for internal purposes
      * @throws IllegalArgumentException when the measure could not be computed
      * (for instance, because the Host doesn't have enough history to use)
      * @see #getOverUtilizationThreshold(Host)

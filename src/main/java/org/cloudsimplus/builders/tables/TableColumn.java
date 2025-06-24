@@ -32,15 +32,14 @@ package org.cloudsimplus.builders.tables;
  */
 public interface TableColumn {
     /**
-     * Gets the index of the column into the table.
-     * @return
+     * {@return the index of the column into the table}
      */
     int getIndex();
 
     /**
      * Generates the string that represents the data of the column,
      * formatted according to the {@link #getFormat() format}.
-     * @param data The data of the column to be formatted
+     * @param data the data of the column to be formatted
      * @return a string containing the formatted column data
      */
     String generateData(Object data);
@@ -58,41 +57,53 @@ public interface TableColumn {
      * @return the generated sub-header string
      */
     String generateSubtitleHeader();
+
     /**
-     *
-     * @return The format to be used to display the content of the column,
+     * @return the format to be used to display the content of the column,
      * according to the {@link String#format(java.lang.String, java.lang.Object...)} (optional).
      */
     String getFormat();
 
     /**
-     *
-     * @return The subtitle to be displayed below the title of the column (optional).
+     * @return the subtitle to be displayed below the title of the column (optional).
      */
     String getSubTitle();
 
     /**
-     *
-     * @return The table that the column belongs to.
+     * @return the table that the column belongs to.
      */
     Table getTable();
 
     /**
-     *
-     * @return The title to be displayed at the top of the column.
+     * @return the title to be displayed at the top of the column.
      */
     String getTitle();
 
     /**
-     * Sets the format to print the column data
+     * Sets the format to print the column data.
      * @param format the format to set
-     * @return
+     * @return this column
      */
     TableColumn setFormat(String format);
 
+    /**
+     * Sets the subtitle of the table (optional).
+     * @param subTitle the subtitle to set
+     * @return this column
+     */
     TableColumn setSubTitle(String subTitle);
 
+    /**
+     * Sets the table this column belongs to.
+     * @param table the table to set
+     * @return this column
+     */
     TableColumn setTable(Table table);
 
+    /**
+     * Sets the title of the table (optional).
+     * @param title the title to set
+     * @return this column
+     */
     TableColumn setTitle(String title);
 }
