@@ -29,8 +29,9 @@
         <license-maven-plugin.version>3.0</license-maven-plugin.version>
         <!-- License file to be used by the com.mycila.license-maven-plugin -->
         <copyrightfile>COPYRIGHT</copyrightfile>
-        <logback.version>1.5.16</logback.version>
-        <junit.version>5.12.1</junit.version>
+        <logback.version>1.5.18</logback.version>
+        <junit.version>5.12.2</junit.version>
+        <lombok.version>1.18.38</lombok.version>
     </properties>
 
     <developers>
@@ -331,6 +332,13 @@
                 <version>3.14.0</version>
                 <configuration>
                     <release>17</release>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>${lombok.version}</version>
+                        </path>
+                    </annotationProcessorPaths>
                 </configuration>
             </plugin>
 
@@ -342,7 +350,7 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.12</version>
+                <version>0.8.13</version>
                 <executions>
                     <execution>
                         <goals>
@@ -440,8 +448,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.38</version>
-            <scope>provided</scope>
+            <version>${lombok.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
