@@ -102,7 +102,7 @@ public final class CheckCloudletStartDelayForTransferRequiredFilesTest {
         brokerBuilder.getCloudletBuilder()
                 .setLength(CLOUDLET_LENGTH)
                 .setUtilizationModelCpu(new UtilizationModelFull())
-                .setPEs(CLOUDLET_PES)
+                .setPes(CLOUDLET_PES)
                 .setRequiredFiles(getFileNames())
                 .createAndSubmit(1);
     }
