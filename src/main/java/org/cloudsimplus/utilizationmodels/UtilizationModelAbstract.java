@@ -23,6 +23,7 @@ import org.cloudsimplus.core.Simulation;
 public abstract class UtilizationModelAbstract implements UtilizationModel {
     /**
      * Indicates that values lower or equal to this will be considered as zero.
+     * This constant is used to compare utilization values to avoid floating point precision issues.
      */
     public static final double ALMOST_ZERO = 0.0000000001;
 

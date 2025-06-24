@@ -8,9 +8,10 @@ import org.cloudsimplus.core.Machine;
 /**
  * Defines how a {@link Machine} uses resources
  * such as CPU and RAM during the boot process.
- * The default constructor doesn't set any utilization model,
- * so that you can set one for the resources you wish calling the respective setter.
- * If you don't call any setter, the boot process won't use any resources.
+ * The default constructor doesn't set any utilization model.
+ * You need to set a model for the resources you wish by calling the respective setter.
+ * If you don't call any setter, the boot process won't use any resources,
+ * indicating there is no overhead during the machine boot (which is not accurate).
  *
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 8.3.0
@@ -18,20 +19,19 @@ import org.cloudsimplus.core.Machine;
 @Setter @NoArgsConstructor
 public class BootModel {
     /**
-     * An attribute that implements the Null Object Design Pattern for {@link BootModel}
-     * objects.
+     * An attribute that implements the Null Object Design Pattern for {@link BootModel} objects.
      */
     public static final BootModel NULL = new BootModel();
 
     /**
-     * {@return the utilization model} which defines how the machine uses
+     * The utilization model which defines how the machine uses
      * CPU during the boot process.
      */
     @NonNull
     private UtilizationModel utilizationModelCpu = UtilizationModel.NULL;
 
     /**
-     * {@return the utilization model} which defines how the machine uses
+     * The utilization model which defines how the machine uses
      * RAM during the boot process.
      */
     @NonNull
@@ -58,14 +58,14 @@ public class BootModel {
     }
 
     /**
-     * {@return [0 .. 1]} to indicate the VM boot CPU utilization percentage for the current time.
+     * @return [0..1] to indicate the VM boot CPU utilization percentage for the current time.
      */
     public double getCpuPercentUtilization(){
         return utilizationModelCpu.getUtilization();
     }
 
     /**
-     * {@return [0 .. 1]} to indicate the VM boot RAM utilization percentage for the current time.
+     * @return [0..1] to indicate the VM boot RAM utilization percentage for the current time.
      */
     public double getRamPercentUtilization(){
         return utilizationModelRam.getUtilization();

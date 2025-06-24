@@ -10,24 +10,26 @@ package org.cloudsimplus.utilizationmodels;
 
 import static org.cloudsimplus.util.Conversion.HUNDRED_PERCENT;
 
-/**
- * A {@link UtilizationModel} that according to which, a Cloudlet always utilizes
- * a given allocated resource from its Vm at 100%, all the time.
- * The methods {@link #getUtilization(double)} and {@link #getUtilization()}
- * always return 1 any time they are called.
- *
- * @author Anton Beloglazov
- * @since CloudSim Toolkit 2.0
- * @see UtilizationModelDynamic
- * @see UtilizationModelStochastic
- * @see UtilizationModelPlanetLab
- */
+/// A [UtilizationModel] that makes a Cloudlet always utilize
+/// a given allocated resource from its Vm at 100%, all the time.
+/// The methods [#getUtilization(double)] and [#getUtilization()]
+/// always return 1 any time they are called.
+///
+/// This model may not be realistic for most of the scenarios.
+/// This way, other implementations such as [UtilizationModelDynamic]
+/// might be more suitable.
+///
+/// @author Anton Beloglazov
+/// @since CloudSim Toolkit 2.0
+/// @see UtilizationModelDynamic
+/// @see UtilizationModelStochastic
+/// @see UtilizationModelPlanetLab
 public class UtilizationModelFull extends UtilizationModelAbstract {
     /**
      * Gets the utilization percentage (in scale from [0 to 1]) of resource at a given simulation time.
      *
      * @param time the time to get the resource usage.
-     * @return Always return 1 (100% of utilization), independent of the time.
+     * @return always 1 (100% of utilization), regardless the time given (which is completely ignored).
      */
     @Override
     protected final double getUtilizationInternal(final double time) {

@@ -13,12 +13,8 @@ import org.cloudsimplus.schedulers.cloudlet.CloudletScheduler;
 import org.cloudsimplus.vms.Vm;
 
 /**
- * An interface to be implemented in order to provide a
- * fine-grained control over resource usage by a Cloudlet.
- * It also implements the Null Object Design
- * Pattern in order to start avoiding {@link NullPointerException}
- * when using the {@link UtilizationModel#NULL} object instead
- * of attributing {@code null} to {@link UtilizationModel} variables.
+ * An interface to be implemented to provide a
+ * fine-grained control over resource usage by a {@link Cloudlet}.
  *
  * @author Anton Beloglazov
  * @author Manoel Campos da Silva Filho
@@ -27,6 +23,8 @@ import org.cloudsimplus.vms.Vm;
 public interface UtilizationModel {
     /**
      * Defines the unit of the resource utilization.
+     * @see #getUtilization(double)
+     * @see #getUtilization()
      */
     enum Unit {
         /**
@@ -42,21 +40,19 @@ public interface UtilizationModel {
     }
 
     /**
-     * An attribute that implements the Null Object Design Pattern for {@link UtilizationModel}
-     * objects using a Lambda Expression. A {@link Cloudlet} using such a utilization model
+     * An attribute that implements the Null Object Design Pattern for {@link UtilizationModel} objects.
+     * A {@link Cloudlet} using such a utilization model
      * for one of its resources will not consume any amount of that resource ever.
      */
     UtilizationModel NULL = new UtilizationModelNull();
 
     /**
-     * Gets the simulation that this UtilizationModel belongs to.
-     * @return
+     * @return the simulation that this UtilizationModel belongs to.
      */
     Simulation getSimulation();
 
     /**
-     * Gets the {@link Unit} in which the resource utilization is defined.
-     * @return
+     * @return the {@link Unit} in which the resource utilization is defined.
      */
     Unit getUnit();
 
@@ -67,68 +63,60 @@ public interface UtilizationModel {
      */
     UtilizationModel setSimulation(Simulation simulation);
 
-    /**
-     * Gets the <b>expected</b> utilization of resource at a given simulation time.
-     * Such a value can be a percentage in scale from 0..1 or an absolute value,
-     * depending on the {@link #getUnit()}.
-     *
-     * <p><b>It is an expected usage value because the actual {@link Cloudlet} resource usage
-     * depends on the available {@link Vm} resource.</b></p>
-     *
-     * @param time the time to get the resource usage.
-     * @return the resource utilization at the given time
-     * @see #getUnit()
-     */
+    /// Gets the **expected** utilization of resource at a given simulation time.
+    /// Such a value can be a percentage in scale from 0..1 or an absolute value,
+    /// depending on the [#getUnit()].
+    ///
+    /// **It is an expected usage value because the actual [Cloudlet] resource usage
+    /// depends on the available [Vm] resource.**
+    ///
+    /// @param time the time to get the resource usage.
+    /// @return the resource utilization at the given time
+    /// @see #getUnit()
     double getUtilization(double time);
 
-    /**
-     * Gets the <b>expected</b> utilization of resource at the current simulation time.
-     * Such a value can be a percentage in scale from 0..1 or an absolute value,
-     * depending on the {@link #getUnit()}.
-     *
-     * <p><b>It is an expected usage value because the actual {@link Cloudlet} resource usage
-     * depends on the available {@link Vm} resource.</b></p>
-     *
-     * @return the current resource utilization
-     * @see #getUnit()
-     */
+    /// Gets the **expected** utilization of resource at the current simulation time.
+    /// Such a value can be a percentage in scale from 0..1 or an absolute value,
+    /// depending on the [#getUnit()].
+    ///
+    /// **It is an expected usage value because the actual [Cloudlet] resource usage
+    /// depends on the available [Vm] resource.**
+    ///
+    /// @return the current resource utilization
+    /// @see #getUnit()
     double getUtilization();
 
-    /**
-     * Checks if the resource utilization requested by a Cloudlet is allowed to exceed 100% or not.
-     * <p><b>WARNING:</b> This attribute is just considered when the {@link #getUnit()}
-     * is defined as {@link Unit#PERCENTAGE}.</p>
-     *
-     * @return true if Cloudlets can request more than 100% of a resource, false otherwise
-     * @see #setOverCapacityRequestAllowed(boolean)
-     */
+    /// Checks if the resource utilization requested by a Cloudlet is allowed to exceed 100% or not.
+    ///
+    /// **WARNING:** This attribute is just considered when the [#getUnit()]
+    /// is defined as [Unit#PERCENTAGE].
+    ///
+    /// @return true if Cloudlets can request more than 100% of a resource, false otherwise
+    /// @see #setOverCapacityRequestAllowed(boolean)
     boolean isOverCapacityRequestAllowed();
 
-    /**
-     * Allow the resource utilization requested by a Cloudlet to exceed 100% or not.
-     *
-     * <p>The VM's {@link CloudletScheduler} won't allocate more resources than there is available,
-     * showing a warning if such a request is received.
-     * While requesting more than 100% of a resource may be useful to try simulating
-     * an overloading scenario, in other ones it may not be desired.
-     * You may want your Cloudlets to request the maximum of 100% of a given resource.
-     * In such a case, you can disable this attribute and the {@link #getUtilization(double)}
-     * method will only return values strictly between the closed range [0..1].
-     * If a value greater than 1 is generated, it's returned 1.
-     * </p>
-     *
-     * <p>For specific implementations such as
-     * the {@link UtilizationModelPlanetLab} (which reads data from a trace file that
-     * may be manipulated) and {@link UtilizationModelStochastic}
-     * (which generates utilization values randomly),
-     * the model may return values greater than 1 (100%).
-     * In such cases, you may consider disabling this attribute
-     * if you don't want such a behaviour.</p>
-     *
-     * <p><b>WARNING:</b> This attribute is just considered when the {@link #getUnit()}
-     * is defined as {@link Unit#PERCENTAGE}.</p>
-     *
-     * @param allow true to allow requesting more than 100% of a resource, false to disallow that
-     */
+    /// Allow the resource utilization requested by a Cloudlet to exceed 100% or not.
+    ///
+    /// The VM's [CloudletScheduler] won't allocate more resources than there is available,
+    /// showing a warning if such a request is received.
+    /// While requesting more than 100% of a resource may be useful to try simulating
+    /// an overloading scenario, in other ones it may not be desired.
+    /// You may want your Cloudlets to request at maximum 100% of a given resource.
+    /// In such a case, you can disable this attribute and the [#getUtilization(double)]
+    /// method will only return values strictly between the closed range [0..1].
+    /// If a value greater than 1 is generated, it's returned 1.
+    ///
+    /// For specific implementations such as
+    /// the [UtilizationModelPlanetLab] (which reads data from a trace file that
+    /// may be manipulated) and [UtilizationModelStochastic]
+    /// (which generates utilization values randomly),
+    /// the model may return values greater than 1 (100%).
+    /// In such cases, you may consider disabling this attribute
+    /// if you don't want such behavior.
+    ///
+    /// **WARNING:** This attribute is just considered when the [#getUnit()]
+    /// is defined as [Unit#PERCENTAGE].
+    ///
+    /// @param allow true to allow requesting more than 100% of a resource, false to disallow that
     UtilizationModel setOverCapacityRequestAllowed(boolean allow);
 }
