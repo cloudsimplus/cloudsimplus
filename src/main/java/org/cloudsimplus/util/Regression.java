@@ -19,7 +19,7 @@ public final class Regression {
     private Regression(){/**/}
 
     /**
-     * {@return a new instance} of a simple linear regression.
+     * {@return a new instance of a simple linear regression}
      * @param x the independent variable
      * @param y the dependent variable
      */
@@ -32,7 +32,7 @@ public final class Regression {
     }
 
     /**
-     * {@return a new instance} of a multiple linear regression.
+     * {@return a new instance of a multiple linear regression}
      * @param x the independent variable
      * @param y the dependent variable
      */
@@ -43,7 +43,7 @@ public final class Regression {
     }
 
     /**
-     * {@return a new instance} of a weighted linear regression.
+     * {@return a new instance of a weighted linear regression}
      * @param x the independent variable
      * @param y the dependent variable
      * @param weights the weights to apply to x and y
@@ -71,7 +71,7 @@ public final class Regression {
     }
 
     /**
-     * {@return an array} containing the Local Regression (LOESS) parameter estimates.
+     * {@return an array containing the Local Regression (LOESS) parameter estimates}
      *
      * @param y the dependent variable
      * @see <a href="https://www.itl.nist.gov/div898/handbook/pmd/section1/pmd144.htm">LOESS</a>
@@ -83,7 +83,7 @@ public final class Regression {
     }
 
     /**
-     * {@return an array} containing the robust LOESS parameter estimates.
+     * {@return an array containing the robust LOESS parameter estimates}
      * @param y the dependent variable
      */
     public static double[] getRobustLoessParameterEstimates(final double... y) {
@@ -104,7 +104,7 @@ public final class Regression {
     }
 
     /**
-     * {@return an array} containing the tricube weigths with n elements.
+     * {@return an array containing the tricube weights with n elements}
      * @param weightsNumber the number of weights
      */
     private static double[] getTricubeWeights(final int weightsNumber) {
@@ -120,8 +120,8 @@ public final class Regression {
     }
 
     /**
-     * {@return an array} containing the tricube bisquare weigths.
-     * @param residuals the residuals array
+     * {@return an array containing the tricube bisquare weightsBytesConversion
+     * @param residuals the residual array
      */
     private static double[] getTricubeBisquareWeights(final double... residuals) {
         final double[] weights = getTricubeWeights(residuals.length);
@@ -137,7 +137,7 @@ public final class Regression {
     }
 
     /**
-     * {@return the computed correlation coefficients} for a set of data.
+     * {@return the computed correlation coefficients for a set of data}
      * @param data the data to compute the correlation coefficients
      */
     public static List<Double> correlationCoefficients(final double[][] data) {
@@ -164,8 +164,7 @@ public final class Regression {
     }
 
     /**
-     * {@return a new array} representing the independent variable for
-     * computing a linear regression.
+     * {@return a new array representing the independent variable for computing a linear regression}
      *
      * @param length the length of the array to create
      */

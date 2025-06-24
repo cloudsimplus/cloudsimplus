@@ -31,7 +31,7 @@ public final class ExecutionTimeMeasurer {
     /**
      * A private constructor to avoid class instantiation.
      */
-    private ExecutionTimeMeasurer(){}
+    private ExecutionTimeMeasurer(){/**/}
 
     /**
      * Starts measuring the execution time of a method/process.
@@ -57,7 +57,7 @@ public final class ExecutionTimeMeasurer {
     }
 
     /**
-     * {@return the map} of execution times.
+     * @return the map of execution times.
      * @see #EXECUTION_START_TIMES
      */
     static Map<String, Long> getExecutionStartTimes() {
@@ -65,7 +65,7 @@ public final class ExecutionTimeMeasurer {
     }
 
     /**
-     * {@return the execution start time} for the given method/process.
+     * {@return the execution start time for the given method/process}
      *
      * @param name the name of the method/process to get the execution start time
      * @see #EXECUTION_START_TIMES
@@ -73,5 +73,4 @@ public final class ExecutionTimeMeasurer {
     static Long getExecutionStartTime(final String name){
         return EXECUTION_START_TIMES.get(name);
     }
-
 }

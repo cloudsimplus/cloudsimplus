@@ -45,7 +45,7 @@ public final class Conversion {
     /**
      * A private constructor to avoid class instantiation.
      */
-    private Conversion(){}
+    private Conversion(){/**/}
 
     /**
      * Converts a boolean value to int
@@ -55,5 +55,4 @@ public final class Conversion {
     public static int boolToInt(final boolean bool){
         return bool ? 1 : 0;
     }
-
 }

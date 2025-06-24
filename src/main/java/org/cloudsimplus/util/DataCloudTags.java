@@ -32,7 +32,7 @@ public final class DataCloudTags {
     public static final int DEFAULT_MTU = 1500;
 
     /**
-     * The default packet size (in byte) for sending events to other entity.
+     * The default packet size (in byte) for sending events to another entity.
      */
     public static final int PKT_SIZE = DEFAULT_MTU * 100;  // in bytes
 
@@ -62,29 +62,24 @@ public final class DataCloudTags {
      */
     public static final int FILE_DELETE_ERROR = RM_BASE + 41;
 
-    /**
-     * Denotes the request to de-register / delete a master file from the
-     * Replica Catalogue.
-     * <p>
-     * The format of this request is Object[2] = {String lfn, Integer
-     * resourceID}.
-     * </p>
-     *
-     * The reply tag name is {@link #CTLG_DELETE_MASTER_RESULT}.
-     */
+    /// Denotes the request to deregister / delete a master file from the
+    /// Replica Catalogue.
+    ///
+    /// The format of this request is `Object[2] = {String lfn, Integer resourceID}`.
+    ///
+    /// The reply tag name is [#CTLG_DELETE_MASTER_RESULT].
     public static final int CTLG_DELETE_MASTER = CTLG_BASE + 20;
 
-    /**
-     * Sends the result of de-registering a master file back to sender.
-     * <p>
-     * The format of the reply is Object[2] = {String lfn, Integer resultID}.
-     * </p>NOTE: The result id is in the form of CTLG_DELETE_MASTER_XXXX where
-     * XXXX means the error/success message
-     */
+    /// Sends the result of deregistering a master file back to sender.
+    ///
+    /// The format of the reply is `Object[2] = {String lfn, Integer resultID}`.
+    ///
+    /// NOTE: The result id is in the form of `CTLG_DELETE_MASTER_XYZ` where
+    /// `XYZ` means the error/success message
     public static final int CTLG_DELETE_MASTER_RESULT = CTLG_BASE + 21;
 
     /**
      * A private constructor to avoid class instantiation.
      */
-    private DataCloudTags(){}
+    private DataCloudTags(){/**/}
 }

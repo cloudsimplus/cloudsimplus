@@ -52,16 +52,13 @@ public final class Util {
      * represented by several tasks (steps). The bar is updated at the current line.
      * If nothing is printed between updates, the bar is shown at the same place.
      * You can use it like the sample below:
-     * <pre>
-     * <code>
-     *
-     * final int total = 100;
-     * for (int i = 0; i <= total; i++) {
-     *     Util.sleep(120); //simulates some task (use your own code here)
-     *     Util.printProgress(i, total);
+     * {@snippet :
+     *  final int total = 100;
+     *  for (int i = 0; i <= total; i++) {
+     *      Util.sleep(120); //simulates some task (use your own code here)
+     *      Util.printProgress(i, total);
+     *  }
      * }
-     * </code>
-     * </pre>
      * @param current the index of the current finished task (step)
      * @param total the total number of tasks (steps)
      * @see #printProgress(int, int, boolean)
@@ -74,19 +71,16 @@ public final class Util {
      * Prints a progress bar at the command line for any general process
      * represented by several tasks (steps).
      * You can use it like the sample below:
-     * <pre>
-     * <code>
-     *
-     * final int total = 100;
-     * for (int i = 0; i <= total; i++) {
-     *     Util.sleep(120); //simulates some task (use your own code here)
-     *     Util.printProgress(i, total);
+     * {@snippet :
+     *  final int total = 100;
+     *  for (int i = 0; i <= total; i++) {
+     *      Util.sleep(120); //simulates some task (use your own code here)
+     *      Util.printProgress(i, total);
+     *  }
      * }
-     * </code>
-     * </pre>
      * @param current the index of the current finished task (step)
      * @param total the total number of tasks (steps)
-     * @param progressBarInNewLine indicates if the progress bar will be printed in a new line or not
+     * @param progressBarInNewLine indicates if the progress bar is to be printed in a new line or not
      * @see #printProgress(int, int)
      */
     public static void printProgress(final int current, final int total, final boolean progressBarInNewLine){
@@ -124,7 +118,7 @@ public final class Util {
     }
 
     /**
-     * {@return the file extension} including the dot
+     * {@return the file extension including the dot}
      * @param fileName file name to extract extension
      */
     public static String getFileExtension(final String fileName){

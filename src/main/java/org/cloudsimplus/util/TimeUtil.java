@@ -23,20 +23,17 @@
  */
 package org.cloudsimplus.util;
 
-/**
- * Utility class that provides some methods to deal with time units.
- *
- * <p><b>INFO:</b> It's not used the {@link java.time.Duration},
- * {@link java.util.concurrent.TimeUnit} and {@link java.time.Period} classes because
- * they don't work with double type.
- * Therefore, it's not possible for them to deal with
- * time fractions, such as 2.5 hours.
- * </p>
- *
- * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 4.4.2
- * @see MathUtil
- */
+/// Utility class that provides some methods to deal with time units.
+///
+/// **INFO:** It's not used the [java.time.Duration],
+/// [java.util.concurrent.TimeUnit] and [java.time.Period] classes because
+/// they don't work with double type.
+/// Therefore, it's not possible for them to deal with
+/// time fractions, such as 2.5 hours.
+///
+/// @author Manoel Campos da Silva Filho
+/// @since CloudSim Plus 4.4.2
+/// @see MathUtil
 public final class TimeUtil {
     /** Number of seconds in one minute. */
     private static final double MINUTE_SECS = 60;
@@ -57,7 +54,7 @@ public final class TimeUtil {
     private TimeUtil(){/**/}
 
     /**
-     * Converts a given amount of seconds to the most suitable unit, i.e.,
+     * Converts a given number of seconds to the most suitable unit, i.e.,
      * the highest unit that results in the lower converted value.
      * For instance, if a value such as 80400 seconds is given, it will be converted to
      * 1 day. It is not converted to hour, for instance, because it will return 24 (hours):
@@ -92,8 +89,8 @@ public final class TimeUtil {
     }
 
     /**
-     * Converts an amount of seconds to a time unit defined by a conversion factor.
-     * @param seconds the amount of seconds to convert to a time unit
+     * Converts a number of seconds to a time unit defined by a conversion factor.
+     * @param seconds the number of seconds to convert to a time unit
      * @param conversionFactor the conversion factor used to divide the number of seconds to convert to the desired unit
      * @param unit the name of the unit to convert to (such as second, minute, hour, day, month or year)
      * @return a String containing the value converted to the given unit, followed by the name of the unit
@@ -104,8 +101,7 @@ public final class TimeUtil {
     }
 
     /**
-     * Gets the computer actual time in seconds.
-     * @return
+     * @return the computer actual time in seconds.
      */
     public static double currentTimeSecs() {
         return System.currentTimeMillis()/1000.0;
@@ -217,63 +213,51 @@ public final class TimeUtil {
         return hoursToDays(secondsToHours(seconds));
     }
 
-    /**
-     * Converts a value in hours to days.
-     *
-     * @param hours the value in hours
-     * @return the value in days
-     */
+    /// Converts a value in `hours` to `days`.
+    ///
+    /// @param hours the value in hours
+    /// @return the value in days
     public static double hoursToDays(final double hours) {
         return hours/24.0;
     }
 
-    /**
-     * Converts a value in hours to minutes.
-     *
-     * @param hours the value in hours
-     * @return the value in minutes
-     */
+    /// Converts a value in `hours` to `minutes`.
+    ///
+    /// @param hours the value in hours
+    /// @return the value in minutes
     public static double hoursToMinutes(final double hours) {
         return hours*60.0;
     }
 
-    /**
-     * Converts a value in hours to seconds.
-     *
-     * @param hours the value in hours
-     * @return the value in seconds
-     */
+    /// Converts a value in `hours` to `seconds`.
+    ///
+    /// @param hours the value in hours
+    /// @return the value in seconds
     public static double hoursToSeconds(final double hours) {
         return minutesToSeconds(hours*60.0);
     }
 
-    /**
-     * Converts a value in days to seconds.
-     *
-     * @param days the value in days
-     * @return the value in seconds
-     */
+    /// Converts a value in `days` to `seconds`.
+    ///
+    /// @param days the value in days
+    /// @return the value in seconds
     public static double daysToSeconds(final double days) {
         return hoursToSeconds(days*24.0);
     }
 
-    /**
-     * Converts a value in days to hours.
-     *
-     * @param days the value in days
-     * @return the value in hours
-     */
+    /// Converts a value in `days` to `hours`.
+    ///
+    /// @param days the value in days
+    /// @return the value in hours
     public static double daysToHours(final double days) {
         return days * 24;
     }
 
-    /**
-     * Converts a value in months to an <b>approximated</b> number of seconds,
-     * since it considers every month has 30 days.
-     *
-     * @param months the value in months
-     * @return the value in seconds
-     */
+    /// Converts a value in `months` to an **approximated** number of seconds,
+    /// since it considers every month has 30 days.
+    ///
+    /// @param months the value in months
+    /// @return the value in seconds
     public static double monthsToSeconds(final double months) {
         return daysToSeconds(months*30.0);
     }
