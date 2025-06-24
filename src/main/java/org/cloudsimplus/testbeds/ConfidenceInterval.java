@@ -194,9 +194,11 @@ public final class ConfidenceInterval {
 
     /// Checks if the CI was actually computed (when the number of samples is greater than 1).
     ///
-    /// Otherwise, the CI [#value] is just the mean for the experiment metric,
+    /// Otherwise, the CI [value][#getValue()] is just the mean for the experiment metric,
     /// not the CI in fact.
-    /// In that case, [#criticalValue], [#errorMargin], [#lowerLimit] and [#upperLimit]
+    /// In that case, [criticalValue][#getCriticalValue()],
+    /// [errorMargin][#getErrorMargin()],
+    /// [lowerLimit][#getLowerLimit()] and [upperLimit][#getUpperLimit()]
     /// will be zero (corroborating there is no CI).
     /// @return true if the CI was computed, false otherwise
     public boolean isComputed(){

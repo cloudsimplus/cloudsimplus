@@ -705,7 +705,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     /// @param processingTimeSpan the current cloudlet processing time span
     /// @return (i) the processing delay in seconds (considering vMem access);
     /// (ii) 0 if there is available physical RAM (no over-subscription), therefore no vMem is required;
-    /// (iii) or [#MIN_VALUE] if the cloudlet is requesting more RAM than the total VM capacity.
+    /// (iii) or [Double#MIN_VALUE] if the cloudlet is requesting more RAM than the total VM capacity.
     /// @link [Linux Kernel Swap Management](https://www.kernel.org/doc/gorman/html/understand/understand014.html)
     /// @see #getResourceOverSubscriptionDelay(CloudletExecution, double, ResourceManageable, BiPredicate, BiFunction)
     private double getVirtualMemoryDelay(final CloudletExecution cle, final double processingTimeSpan) {

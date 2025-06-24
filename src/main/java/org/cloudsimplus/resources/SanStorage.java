@@ -96,7 +96,7 @@ public class SanStorage extends HarddriveStorage {
     }
 
     /// Adds a file for which the space has already been reserved.
-    /// The time taken (in seconds) for adding the specified file can also be found using [#getTransactionTime()].
+    /// The time taken (in seconds) for adding the specified file can also be found using [File#getTransactionTime()].
     ///
     /// @param file the file to be added
     /// @return the time (in seconds) required for adding the file
@@ -120,7 +120,7 @@ public class SanStorage extends HarddriveStorage {
     }
 
     /// Adds a set of files to the storage. The time taken (in seconds) for adding each file can also
-    /// be found using [#getTransactionTime()].
+    /// be found using [File#getTransactionTime()].
     ///
     /// @param list the files to be added
     /// @return the time taken (in seconds) for adding the specified file;
@@ -135,7 +135,7 @@ public class SanStorage extends HarddriveStorage {
     }
 
     /// Adds a file to the storage. The time taken (in seconds) for adding the specified file can
-    /// also be found using [#getTransactionTime()].
+    /// also be found using [File#getTransactionTime()].
     ///
     /// @param file the file to be added
     /// @return the time taken (in seconds) for adding the specified file;
@@ -250,7 +250,7 @@ public class SanStorage extends HarddriveStorage {
     }
 
     /// Gets the file with the specified name. The time taken (in seconds) for getting the specified
-    /// file can also be found using [#getTransactionTime()].
+    /// file can also be found using [File#getTransactionTime()].
     ///
     /// @param fileName the name of the file to get
     /// @return an [Optional] containing the file if it was found; or an empty Optional otherwise
@@ -340,7 +340,7 @@ public class SanStorage extends HarddriveStorage {
     }
 
     /// Removes a file from the storage. The time taken (in seconds) for deleting the specified file
-    /// can be found using [#getTransactionTime()].
+    /// can be found using [File#getTransactionTime()].
     ///
     /// @param fileName the name of the file to be removed
     /// @return an [Optional] containing the deleted file if it is found;
@@ -360,7 +360,7 @@ public class SanStorage extends HarddriveStorage {
     }
 
     /// Removes a file from the storage. The time taken (in seconds) for deleting the specified file
-    /// can also be found using [#getTransactionTime()].
+    /// can also be found using [File#getTransactionTime()].
     ///
     /// @param file the file to be removed
     /// @return the time taken (in seconds) for deleting the specified file
@@ -384,7 +384,7 @@ public class SanStorage extends HarddriveStorage {
     }
 
     /// Renames a file on the storage. The time taken (in seconds) for renaming the specified file
-    /// can also be found using [#getTransactionTime()].
+    /// can also be found using [File#getTransactionTime()].
     ///
     /// @param file    the file to be renamed
     /// @param newName the new name of the file

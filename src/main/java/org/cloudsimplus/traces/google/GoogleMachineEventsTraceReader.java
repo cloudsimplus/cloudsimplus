@@ -312,7 +312,7 @@ public final class GoogleMachineEventsTraceReader extends GoogleTraceReaderAbstr
 
     /// Adds a Host that will become available for the Datacenter just
     /// at the time specified by the timestamp in the trace line,
-    /// which is set as the host [startup time][#getStartTime()].
+    /// which is set as the host [startup time][Host#getStartTime()].
     ///
     /// @param host the Host to be added
     /// @return true if the host was added, false otherwise

@@ -226,7 +226,7 @@ public class GoogleTaskEventsTraceReader extends GoogleTraceReaderAbstract<Cloud
     }
 
     /// Send a message to the broker to request change in a Cloudlet status,
-    /// using some tags from [CloudSimTag] such as [#CLOUDLET_READY].
+    /// using some tags from [CloudSimTag] such as [CloudSimTag#CLOUDLET_READY].
     /// @param tag a CLOUDLET tag from the [CloudSimTag] used to send a message to request the Cloudlet status change
     /// @return true if the request was created, false otherwise
     /* default */ boolean requestCloudletStatusChange(final int tag) {
@@ -381,7 +381,7 @@ public class GoogleTaskEventsTraceReader extends GoogleTraceReaderAbstract<Cloud
     /// representing different cloudlet requests, such as creation, execution, pause, destruction, etc.).
     /// By using the [#setMaxLinesToRead(int)] it may not ensure that only a given number of Cloudlets will be created.
     /// @param maxCloudletsToCreate the maximum number of Cloudlets to create from the file.
-    ///                             Use [#MAX_VALUE] to disable this configuration.
+    ///                             Use [Double#MAX_VALUE] to disable this configuration.
     /// @see #setMaxLinesToRead(int)
     public GoogleTaskEventsTraceReader setMaxCloudletsToCreate(final int maxCloudletsToCreate) {
         if(maxCloudletsToCreate <= 0) {

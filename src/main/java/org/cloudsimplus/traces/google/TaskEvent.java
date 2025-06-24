@@ -83,7 +83,7 @@ public final class TaskEvent extends TaskData {
     ///
     /// The actual value to be assigned to a Cloudlet created from this trace field
     /// must be defined by the researcher, inside the
-    /// [cloudlet creation function][#getCloudletCreationFunction()]
+    /// [cloudlet creation function][GoogleTaskEventsTraceReader#getCloudletCreationFunction()]
     /// given to the trace reader.
     ///
     /// Since there are "task usage" trace files, they can be used to
@@ -92,7 +92,7 @@ public final class TaskEvent extends TaskData {
     /// of the CPU [UtilizationModel].
     /// It just represents the maximum number of CPUs the Cloudlet will use.
     /// The percentage that such CPUs will be used for a given time is defined
-    /// by the CPU [#getUtilization()].
+    /// by the CPU [UtilizationModel#getUtilization()].
     /// Such a value is defined by a "task usage" trace.
     ///
     /// @see TaskEventField#RESOURCE_REQUEST_FOR_CPU_CORES
@@ -105,7 +105,7 @@ public final class TaskEvent extends TaskData {
     ///
     /// The actual value to be assigned to a Cloudlet created from this trace field
     /// must be defined by the researcher, inside the
-    /// [cloudlet creation function][#getCloudletCreationFunction()]
+    /// [cloudlet creation function][GoogleTaskEventsTraceReader#getCloudletCreationFunction()]
     /// given to the trace reader.
     ///
     /// This field can be used to define the max resource utilization percentage for a
@@ -126,7 +126,7 @@ public final class TaskEvent extends TaskData {
     ///
     /// The actual value to be assigned to a Cloudlet created from this trace field
     /// must be defined by the researcher, inside the
-    /// [cloudlet creation function][#getCloudletCreationFunction()]
+    /// [cloudlet creation function][GoogleTaskEventsTraceReader#getCloudletCreationFunction()]
     /// given to the trace reader.
     ///
     /// This field can be used to define the initial Cloudlet file size and/or output size
