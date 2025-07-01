@@ -254,19 +254,21 @@
                     </plugin>
 
                     <!--
-                    Plugin to deploy to the maven central using a Sonatype account.
+                    Plugin to deploy to the maven central using the new
+                    Central Portal at https://central.sonatype.com.
                     Credentials are defined into the local repo settings.xml
+                    https://central.sonatype.org/publish/publish-portal-maven
                     -->
                     <plugin>
-                        <groupId>org.sonatype.plugins</groupId>
-                        <artifactId>nexus-staging-maven-plugin</artifactId>
-                        <version>1.7.0</version>
+                        <groupId>org.sonatype.central</groupId>
+                        <artifactId>central-publishing-maven-plugin</artifactId>
+                        <version>0.8.0</version>
                         <extensions>true</extensions>
                         <configuration>
-                            <serverId>manoelcampos-ossrh</serverId>
-                            <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-                            <!--If the artifact will be automatically released to maven central after the upload to sonatype.-->
-                            <autoReleaseAfterClose>false</autoReleaseAfterClose>
+                            <!-- The id of the server tag inside the local maven settings.xml file-->
+                            <publishingServerId>central</publishingServerId>
+                            <autoPublish>true</autoPublish>
+                            <waitUntil>published</waitUntil>
                         </configuration>
                     </plugin>
                 </plugins>
