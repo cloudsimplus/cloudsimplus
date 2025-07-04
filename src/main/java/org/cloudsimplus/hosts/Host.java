@@ -38,7 +38,10 @@ import java.util.Set;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
-public interface Host extends PhysicalMachine, Comparable<Host>, PowerAware<PowerModelHost>, ResourceStatsComputer<HostResourceStats> {
+public sealed interface Host
+    extends PhysicalMachine, Comparable<Host>, PowerAware<PowerModelHost>, ResourceStatsComputer<HostResourceStats>
+    permits HostAbstract, HostNull
+{
     Logger LOGGER = LoggerFactory.getLogger(Host.class.getSimpleName());
 
     /**

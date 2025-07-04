@@ -35,7 +35,7 @@ import java.util.function.Consumer;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
-public interface BrokerBuilderInterface extends Builder{
+interface BrokerBuilderInterface extends Builder {
     BrokerBuilderDecorator create();
 
     /**

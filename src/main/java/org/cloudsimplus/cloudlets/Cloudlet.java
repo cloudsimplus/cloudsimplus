@@ -36,7 +36,10 @@ import java.util.List;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
-public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, CustomerEntity {
+public sealed interface Cloudlet
+    extends UniquelyIdentifiable, Comparable<Cloudlet>, CustomerEntity
+    permits CloudletAbstract, CloudletNull
+{
     /**
      * Execution Status of Cloudlets.
      */

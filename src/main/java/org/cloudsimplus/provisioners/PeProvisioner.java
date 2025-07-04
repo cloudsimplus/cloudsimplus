@@ -13,7 +13,9 @@ import org.cloudsimplus.vms.Vm;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.1
  */
-public interface PeProvisioner extends ResourceProvisioner {
+public sealed interface PeProvisioner
+    extends ResourceProvisioner permits PeProvisionerAbstract, PeProvisionerNull
+{
 
     /**
      * An attribute that implements the Null Object Design Pattern for PeProvisioner objects.

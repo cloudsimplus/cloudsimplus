@@ -36,28 +36,25 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-/**
- * Allocates one different underloaded Host for each submitted VM from a List (in batch),
- * if {@link DatacenterBroker#isBatchVmCreation()} is true, so that
- * the broker sends a List of VMs to be created in a single event
- * (instead of sending a new event for each VM).
- *
- * <p>If that is not enabled, this implementation will place VMs one-by-one
- * following the {@link VmAllocationPolicyMigrationFirstFitStaticThreshold}.</p>
- *
- * <p>This implementation is similar to {@link VmAllocationPolicyRoundRobin},
- * but it selects active and underloaded Hosts first, then performs selection
- * of Host to place a list of VMs in order to reduce the underload state of various Hosts at once.
- * </p>
- *
- * <p>This may not be the most reasonable policy and is provided
- * just as an example on how to implement a different policy for batch VM creation
- * when the related broker attribute is enabled.</p>
- *
- * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 8.5.0
- * @see DatacenterBroker#setBatchVmCreation(boolean)
- */
+/// Allocates one different underloaded Host for each submitted VM from a List (in batch),
+/// if [#isBatchVmCreation()] is true. This way,
+/// the broker sends a List of VMs to be created in a single event
+/// (instead of sending a new event for each VM).
+///
+/// If that is not enabled, this implementation will place VMs one-by-one
+/// following the [VmAllocationPolicyMigrationFirstFitStaticThreshold].
+///
+/// This implementation is similar to [VmAllocationPolicyRoundRobin],
+/// but it selects active and underloaded Hosts first, then performs selection
+/// of Host to place a list of VMs to reduce the underload state of various Hosts at once.
+///
+/// This may not be the most reasonable policy and is provided
+/// just as an example on how to implement a different policy for batch VM creation
+/// when the related broker attribute is enabled.
+///
+/// @author Manoel Campos da Silva Filho
+/// @since CloudSim Plus 8.5.0
+/// @see DatacenterBroker#setBatchVmCreation(boolean)
 public class VmAllocationPolicyBatchPlacementUnderloadedHosts extends VmAllocationPolicyMigrationFirstFitStaticThreshold {
     public VmAllocationPolicyBatchPlacementUnderloadedHosts(final VmSelectionPolicy vmSelectionPolicy) {
         super(vmSelectionPolicy);

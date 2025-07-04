@@ -7,6 +7,7 @@
  */
 package org.cloudsimplus.allocationpolicies;
 
+import org.cloudsimplus.allocationpolicies.migration.VmAllocationPolicyMigration;
 import org.cloudsimplus.autoscaling.VerticalVmScaling;
 import org.cloudsimplus.datacenters.Datacenter;
 import org.cloudsimplus.hosts.Host;
@@ -37,7 +38,9 @@ import java.util.function.BiFunction;
  * @since CloudSim Plus 1.0
  * @see #setFindHostForVmFunction(BiFunction)
  */
-public interface VmAllocationPolicy {
+public sealed interface VmAllocationPolicy
+    permits VmAllocationPolicyAbstract, VmAllocationPolicyMigration, VmAllocationPolicyNull
+{
     Logger LOGGER = LoggerFactory.getLogger(VmAllocationPolicy.class.getSimpleName());
 
     /**

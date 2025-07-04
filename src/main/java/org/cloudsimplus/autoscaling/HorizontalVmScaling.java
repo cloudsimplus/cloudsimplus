@@ -24,7 +24,6 @@
 package org.cloudsimplus.autoscaling;
 
 import org.cloudsimplus.brokers.DatacenterBroker;
-import org.cloudsimplus.datacenters.Datacenter;
 import org.cloudsimplus.listeners.VmHostEventInfo;
 import org.cloudsimplus.vms.Vm;
 
@@ -32,31 +31,29 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-/**
- * A Vm <a href="https://en.wikipedia.org/wiki/Scalability#Horizontal_and_vertical_scaling">Horizontal Scaling</a>
- * mechanism used by a {@link DatacenterBroker} to dynamically create VMs according to the arrival of
- * Cloudlets, in order to enable load balancing.
- *
- * <p>Since Cloudlets can be created and submitted to a broker in runtime,
- * the number of arrived Cloudlets can be too much to the existing VMs,
- * requiring the creation of new VMs to balance the load.
- * A HorizontalVmScaling implementation performs
- * such up scaling by creating VMs as needed.</p>
- *
- * <br>
- * <p>
- * To enable horizontal down-scaling to destroy idle VMs, the {@link DatacenterBroker} has to be used
- * by setting a {@link DatacenterBroker#setVmDestructionDelayFunction(Function)}.
- * Since there is no Cloudlet migration mechanism (and it isn't intended to have),
- * if a VM becomes underloaded, there is nothing that can be done until all Cloudlets
- * finish executing. When that happens, the vmDestructionDelayFunction
- * will handle such a situation.
- * </p>
- *
- * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 1.0.0
- */
-public interface HorizontalVmScaling extends VmScaling {
+/// A Vm [Horizontal Scaling](https://en.wikipedia.org/wiki/Scalability#Horizontal_and_vertical_scaling)
+/// mechanism used by a [DatacenterBroker] to dynamically create VMs according to the arrival of
+/// Cloudlets, to enable load balancing.
+///
+/// Since Cloudlets can be created and submitted to a broker in runtime,
+/// the number of arrived Cloudlets can be too much to the existing VMs,
+/// requiring the creation of new VMs to balance the load.
+/// A HorizontalVmScaling implementation performs
+/// such upscaling by creating VMs as needed.
+///
+///
+/// To enable horizontal down-scaling to destroy idle VMs, the [DatacenterBroker] has to be used
+/// by setting a [#setVmDestructionDelayFunction(Function)].
+/// Since there is no Cloudlet migration mechanism (and it isn't intended to have),
+/// if a VM becomes underloaded, there is nothing that can be done until all Cloudlets
+/// finish executing. When that happens, the vmDestructionDelayFunction
+/// will handle such a situation.
+///
+/// @author Manoel Campos da Silva Filho
+/// @since CloudSim Plus 1.0.0
+public sealed interface HorizontalVmScaling extends VmScaling
+    permits HorizontalVmScalingNull, HorizontalVmScalingAbstract
+{
     Predicate<Vm> FALSE_PREDICATE = vm -> false;
 
     /**
@@ -66,8 +63,8 @@ public interface HorizontalVmScaling extends VmScaling {
     HorizontalVmScaling NULL = new HorizontalVmScalingNull();
 
     /**
-     * {@return a Supplier that will be used to create VMs when
-     * the Load Balancer detects that the current Broker's VMs are overloaded}
+     * @return a Supplier that will be used to create VMs when
+     * the Load Balancer detects that the current Broker's VMs are overloaded
      */
     Supplier<Vm> getVmSupplier();
 
@@ -79,44 +76,41 @@ public interface HorizontalVmScaling extends VmScaling {
      */
     HorizontalVmScaling setVmSupplier(Supplier<Vm> supplier);
 
-    /**
-     * Requests a horizontal scale if a Vm is overloaded, according to the
-     * {@link #getOverloadPredicate()} predicate.
-     * The scaling is performed by creating a new Vm using the {@link #getVmSupplier()} method
-     * and submitting it to the broker.
-     *
-     * <p>The time interval in which it will be checked if the Vm is overloaded
-     * depends on the {@link Datacenter#getSchedulingInterval()} value.
-     * Make sure to set such a value to enable the periodic overload verification.</p>
-     *
-     * <p><b>The method will check the need to create a new
-     * VM at the time interval defined by the {@link Datacenter#getSchedulingInterval()}.
-     * A VM creation request is only sent when the VM is overloaded and
-     * new Cloudlets were submitted to the broker.
-     * </b></p>
-     *
-     * @param evt event information, including the current simulation time and the VM to be scaled
-     * @return {@inheritDoc}
-     */
+    /// Requests a horizontal scale if a Vm is overloaded, according to the
+    /// [#getOverloadPredicate()] predicate.
+    /// The scaling is performed by creating a new Vm using the [#getVmSupplier()] method
+    /// and submitting it to the broker.
+    ///
+    /// The time interval in which it will be checked if the Vm is overloaded
+    /// depends on the [#getSchedulingInterval()] value.
+    /// Make sure to set such a value to enable the periodic overload verification.
+    ///
+    /// **The method will check the need to create a new
+    /// VM at the time interval defined by the [#getSchedulingInterval()].
+    /// A VM creation request is only sent when the VM is overloaded and
+    /// new Cloudlets were submitted to the broker.
+    /// **
+    ///
+    /// @param evt event information, including the current simulation time and the VM to be scaled
+    /// @return {@inheritDoc}
     @Override
     boolean requestUpScalingIfPredicateMatches(VmHostEventInfo evt);
 
     /**
-     * Gets the {@link Predicate} that defines when a {@link #getVm() Vm} is overloaded or not,
-     * that will make the Vm's {@link DatacenterBroker} to up scale the VM.
-     * The up scaling is performed by creating new VMs to run new arrived Cloudlets
+     * @return the {@link Predicate} that defines when a {@link #getVm() Vm} is overloaded or not,
+     * that will make the Vm's {@link DatacenterBroker} to upscale the VM.
+     * The upscaling is performed by creating new VMs to run new arrived Cloudlets
      * and then balance the load.
      *
-     * @return
      * @see #setOverloadPredicate(Predicate)
      */
     Predicate<Vm> getOverloadPredicate();
 
     /**
      * Sets a {@link Predicate} that defines when a {@link #getVm() Vm} is overloaded or not,
-     * making the {@link DatacenterBroker} to up scale the VM.
-     * The up scaling is performed by creating new VMs to run new arrived Cloudlets
-     * in order to balance the load.
+     * making the {@link DatacenterBroker} to upscale the VM.
+     * The upscaling is performed by creating new VMs to run new arrived Cloudlets
+     * to balance the load.
      *
      * @param predicate a predicate that checks certain conditions
      *                  to define a {@link #getVm() Vm} as overloaded.

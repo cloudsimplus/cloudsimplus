@@ -20,7 +20,7 @@ import org.cloudsimplus.core.Simulation;
  * @since CloudSim Plus 1.2
  */
 @Accessors @Getter
-public abstract class UtilizationModelAbstract implements UtilizationModel {
+public abstract non-sealed class UtilizationModelAbstract implements UtilizationModel {
     /**
      * Indicates that values lower or equal to this will be considered as zero.
      * This constant is used to compare utilization values to avoid floating point precision issues.

@@ -17,25 +17,23 @@ import java.util.function.Function;
 
 import static java.util.Comparator.comparing;
 
-/**
- * A VmAllocationPolicy implementation that chooses, as
- * the host for a VM, that one with the fewest PEs in use.
- * <b>It is therefore a Worst-Fit policy</b>, allocating each VM into the host with the highest number of available PEs.
- *
- * <p>This is a really computationally complex policy since the worst-case complexity
- * to allocate a Host for a VM is O(N), where N is the number of Hosts.
- * Such an implementation is not appropriate for large scale scenarios.</p>
- *
- * <p><b>NOTE: This policy doesn't perform optimization of VM allocation by means of VM migration.</b></p>
- *
- * @author Rodrigo N. Calheiros
- * @author Anton Beloglazov
- * @author Manoel Campos da Silva Filho
- * @since CloudSim Toolkit 1.0
- *
- * @see VmAllocationPolicyFirstFit
- * @see VmAllocationPolicyBestFit
- */
+/// A VmAllocationPolicy implementation that chooses, as
+/// the host for a VM, that one with the fewest PEs in use.
+/// **It is therefore a Worst-Fit policy**, allocating each VM into the host with the highest number of available PEs.
+///
+/// This is a really computationally complex policy since the worst-case complexity
+/// to allocate a Host for a VM is O(N), where N is the number of Hosts.
+/// Such an implementation is not appropriate for large scale scenarios.
+///
+/// **NOTE: This policy doesn't perform optimization of VM allocation using VM migration.**
+///
+/// @author Rodrigo N. Calheiros
+/// @author Anton Beloglazov
+/// @author Manoel Campos da Silva Filho
+/// @since CloudSim Toolkit 1.0
+///
+/// @see VmAllocationPolicyFirstFit
+/// @see VmAllocationPolicyBestFit
 public class VmAllocationPolicySimple extends VmAllocationPolicyAbstract {
     /**
      * Creates a VmAllocationPolicy.

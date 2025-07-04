@@ -24,6 +24,7 @@
 package org.cloudsimplus.mocks;
 
 import org.cloudsimplus.brokers.DatacenterBroker;
+import org.cloudsimplus.brokers.DatacenterBrokerAbstract;
 import org.cloudsimplus.core.CloudSimPlus;
 import org.cloudsimplus.core.Simulation;
 import org.mockito.Mockito;
@@ -79,7 +80,7 @@ public final class MocksHelper {
      * @return
      */
     public static DatacenterBroker createMockBroker(final Simulation cloudsim, final Consumer<DatacenterBroker> consumer) {
-        final DatacenterBroker broker = Mockito.mock(DatacenterBroker.class);
+        final DatacenterBroker broker = Mockito.mock(DatacenterBrokerAbstract.class);
         Mockito.when(broker.getSimulation()).thenReturn(cloudsim);
         Mockito.when(broker.getId()).thenReturn(0L);
         consumer.accept(broker);

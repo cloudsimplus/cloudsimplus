@@ -35,7 +35,9 @@ import java.util.function.Function;
  *      VmScheduler is using the term "allocation", but since it's accountable for running a VM,
  *      it should perform resource provisioning (request the actual amount of the allocated resource to be used in that moment).
  */
-public interface ResourceProvisioner {
+public sealed interface ResourceProvisioner
+    permits PeProvisioner, ResourceProvisionerAbstract, ResourceProvisionerNull
+{
     /**
      * An attribute that implements the Null Object Design Pattern for ResourceProvisioner objects.
      */

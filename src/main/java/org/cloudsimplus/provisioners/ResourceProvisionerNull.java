@@ -12,7 +12,7 @@ import java.util.function.Function;
  * @author Manoel Campos da Silva Filho
  * @see ResourceProvisioner#NULL
  */
-class ResourceProvisionerNull implements ResourceProvisioner {
+non-sealed class ResourceProvisionerNull implements ResourceProvisioner {
     @Override public boolean allocateResourceForVm(Vm vm, long newTotalVmResourceCapacity) {
         return false;
     }

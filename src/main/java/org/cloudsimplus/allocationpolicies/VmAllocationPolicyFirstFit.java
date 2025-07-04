@@ -32,31 +32,26 @@ import org.cloudsimplus.vms.Vm;
 import java.util.List;
 import java.util.Optional;
 
-/**
- * A <a href="https://en.wikipedia.org/wiki/First-fit_bin_packing">First Fit VM allocation policy</a>
- * which finds the first Host having enough resources to place a given VM.
- * This is a high time-efficient policy with a best-case complexity O(1)
- * and a worst-case complexity O(N), where N is the number of Hosts.
- * Additionally, such a policy is resource efficient, because it performs
- * server consolidation by trying to place the maximum number of VMs
- * into the same Host in order to increase Host's resource usage.
- *
- * <p>
- *     <b>NOTES:</b>
- *     <ul>
- *         <li>This policy doesn't perform optimization of VM allocation by means of VM migration.</li>
- *         <li>It has a low computational complexity but may return
- *         an inactive Host that will be activated, while there may be active Hosts
- *         suitable for the VM.</li>
- *     </ul>
- * </p>
- *
- * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 1.0.0
- * @see VmAllocationPolicyBestFit
- * @see VmAllocationPolicySimple
- */
-public class VmAllocationPolicyFirstFit extends VmAllocationPolicyAbstract implements VmAllocationPolicy {
+/// A [First Fit VM allocation policy](https://en.wikipedia.org/wiki/First-fit_bin_packing)
+/// which finds the first Host having enough resources to place a given VM.
+/// This is a high time-efficient policy with a best-case complexity O(1)
+/// and a worst-case complexity O(N), where N is the number of Hosts.
+/// Additionally, such a policy is resource efficient, because it performs
+/// server consolidation by trying to place the maximum number of VMs
+/// into the same Host to increase Host's resource usage.
+///
+/// **NOTES:**
+///
+/// - This policy doesn't perform optimization of VM allocation using VM migration.
+/// - It has a low computational complexity but may return
+///   an inactive Host that will be activated, while there may be active Hosts
+///   suitable for the VM.
+///
+/// @author Manoel Campos da Silva Filho
+/// @since CloudSim Plus 1.0.0
+/// @see VmAllocationPolicyBestFit
+/// @see VmAllocationPolicySimple
+public class VmAllocationPolicyFirstFit extends VmAllocationPolicyAbstract {
     /** The index of the last host where a VM was placed. */
     @Getter(AccessLevel.PROTECTED)
     @Setter(AccessLevel.NONE)

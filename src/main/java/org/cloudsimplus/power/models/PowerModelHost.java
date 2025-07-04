@@ -9,7 +9,10 @@ import org.cloudsimplus.power.PowerMeter;
  * @since CloudSim Plus 6.0.0
  * @see PowerMeter
  */
-public interface PowerModelHost extends PowerModel{
+public sealed interface PowerModelHost
+    extends PowerModel
+    permits PowerModelHostAbstract, PowerModelHostNull
+{
     /**
      * An attribute that implements the Null Object Design Pattern for {@link PowerModelHost} objects.
      */

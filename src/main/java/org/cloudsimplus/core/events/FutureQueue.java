@@ -26,7 +26,7 @@ import java.util.stream.Stream;
  * @see java.util.TreeSet
  * @since CloudSim Toolkit 1.0
  */
-public class FutureQueue implements EventQueue {
+public final class FutureQueue implements EventQueue {
 
     /**
      * The sorted set of events.

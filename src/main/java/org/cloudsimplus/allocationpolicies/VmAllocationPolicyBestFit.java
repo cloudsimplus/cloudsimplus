@@ -30,23 +30,21 @@ import java.util.Comparator;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-/**
- * A <a href="https://en.wikipedia.org/wiki/Best-fit_bin_packing">Best Fit</a> VmAllocationPolicy implementation that chooses, as
- * the host for a VM, the one with the highest number of PEs in use,
- * which has enough free PEs for a VM.
- *
- * <p>This is a really computationally complex policy since the worst-case complexity
- * to allocate a Host for a VM is O(N), where N is the number of Hosts.
- * Such an implementation is not appropriate for large scale scenarios.</p>
- *
- * <p><b>NOTE: This policy doesn't perform optimization of VM allocation by means of VM migration.</b></p>
- *
- * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 3.0.1
- *
- * @see VmAllocationPolicyFirstFit
- * @see VmAllocationPolicySimple
- */
+/// A [Best Fit](https://en.wikipedia.org/wiki/Best-fit_bin_packing) VmAllocationPolicy implementation that chooses,
+/// as the host for a VM, the one with the highest number of PEs in use,
+/// which has enough free PEs for a VM.
+///
+/// This is a really computationally complex policy since the worst-case complexity
+/// to allocate a Host for a VM is O(N), where N is the number of Hosts.
+/// Such an implementation is not appropriate for large scale scenarios.
+///
+/// **NOTE: This policy doesn't perform optimization of VM allocation by means of VM migration.**
+///
+/// @author Manoel Campos da Silva Filho
+/// @since CloudSim Plus 3.0.1
+///
+/// @see VmAllocationPolicyFirstFit
+/// @see VmAllocationPolicySimple
 public class VmAllocationPolicyBestFit extends VmAllocationPolicyAbstract {
     /**
      * Gets the first suitable host from the {@link #getHostList()}

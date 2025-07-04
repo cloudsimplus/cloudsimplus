@@ -34,7 +34,10 @@ import java.util.stream.Stream;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
-public interface Datacenter extends SimEntity, PowerAware<PowerModelDatacenter>, TimeZoned, Sizeable {
+public sealed interface Datacenter
+    extends SimEntity, PowerAware<PowerModelDatacenter>, TimeZoned, Sizeable
+    permits DatacenterSimple, DatacenterNull
+{
     Logger LOGGER = LoggerFactory.getLogger(Datacenter.class.getSimpleName());
 
     /**

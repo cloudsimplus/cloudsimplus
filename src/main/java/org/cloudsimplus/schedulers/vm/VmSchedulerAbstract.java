@@ -29,7 +29,7 @@ import static java.util.stream.Collectors.toList;
  * @since CloudSim Toolkit 1.0
  */
 @Getter
-public abstract class VmSchedulerAbstract implements VmScheduler {
+public abstract non-sealed class VmSchedulerAbstract implements VmScheduler {
     private Host host;
     private final double vmMigrationCpuOverhead;
 

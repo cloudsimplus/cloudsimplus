@@ -17,7 +17,7 @@ import org.apache.commons.math3.distribution.RealDistribution;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Toolkit 1.0
  */
-public interface ContinuousDistribution extends StatisticalDistribution, RealDistribution {
+public non-sealed interface ContinuousDistribution extends StatisticalDistribution, RealDistribution {
     /**
      * An attribute that implements the Null Object Design Pattern for {@link ContinuousDistribution} objects.
      */

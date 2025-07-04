@@ -35,9 +35,12 @@ import org.cloudsimplus.vms.Vm;
  *
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 5.1.4
- * @param <T> The type of the storage device for the machine
+ * @param <T> the type of the storage device for the machine
  */
-public interface Machine<T extends Resource> extends ChangeableId, Resourceful, ExecDelayable {
+public sealed interface Machine<T extends Resource>
+    extends ChangeableId, Resourceful, ExecDelayable
+    permits Vm, PhysicalMachine, MachineNull
+{
     /**
      * An attribute that implements the Null Object Design Pattern for {@link Machine} objects.
      */

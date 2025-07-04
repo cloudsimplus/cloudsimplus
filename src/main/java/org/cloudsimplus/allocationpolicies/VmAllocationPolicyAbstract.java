@@ -42,7 +42,7 @@ import static java.util.stream.Collectors.toSet;
  * @since CloudSim Toolkit 1.0
  */
 @Accessors(makeFinal = false) @Getter @Setter
-public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
+public non-sealed abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
     /**
      * WARNING: the function should not be called directly because it may be null.
      * Use the {@link #findHostForVm(Vm)} instead.
@@ -97,10 +97,10 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
     }
 
     /**
-     * Performs the up scaling of Vm resource associated to a given scaling object.
+     * Performs the upscaling of Vm resource associated to a given scaling object.
      *
      * @param scaling the Vm scaling object
-     * @return true if the Vm was overloaded and the up scaling was performed, false otherwise
+     * @return true if the Vm was overloaded and the upscaling was performed, false otherwise
      */
     private boolean upScaleVmVertically(final VerticalVmScaling scaling) {
         return isRequestingCpuScaling(scaling) ? scaleVmPesUpOrDown(scaling) : upScaleVmNonCpuResource(scaling);
@@ -110,7 +110,7 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
      * Performs the down scaling of Vm resource associated to a given scaling object.
      *
      * @param scaling the Vm scaling object
-     * @return true if the down scaling was performed, false otherwise
+     * @return true if the downscaling was performed, false otherwise
      */
     private boolean downScaleVmVertically(final VerticalVmScaling scaling) {
         return isRequestingCpuScaling(scaling) ? scaleVmPesUpOrDown(scaling) : downScaleVmNonCpuResource(scaling);
@@ -131,7 +131,7 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
         }
 
         final boolean isVmUnderloaded = scaling.isVmUnderloaded();
-        //Avoids trying to downscale the number of vPEs to zero
+        // Avoids trying to downscale the number of vPEs to zero
         if(isVmUnderloaded && scaling.getVm().getPesNumber() == pesNumberForScaling) {
             scaling.logDownscaleToZeroNotAllowed();
             return false;
@@ -145,7 +145,7 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
         final Vm vm = scaling.getVm();
         vm.getHost().getVmScheduler().deallocatePesFromVm(vm);
         final int signal = isVmUnderloaded ? -1 : 1;
-        //Removes or adds some capacity from/to the resource, respectively if the VM is under or overloaded
+        // Removes or adds some capacity from/to the resource, respectively if the VM is under or overloaded
         vm.getProcessor().sumCapacity((long) pesNumberForScaling * signal);
 
         vm.getHost().getVmScheduler().allocatePesForVm(vm);
@@ -171,10 +171,10 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
     }
 
     /**
-     * Performs the up scaling of a Vm resource that is anything else than CPU.
+     * Performs the upscaling of a Vm resource that is anything else than CPU.
      *
      * @param scaling the Vm scaling object
-     * @return true if the up scaling was performed, false otherwise
+     * @return true if the upscaling was performed, false otherwise
      * @see #scaleVmPesUpOrDown(VerticalVmScaling)
      * @see #upScaleVmVertically(VerticalVmScaling)
      */
@@ -183,10 +183,10 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
     }
 
     /**
-     * Performs the down scaling of a Vm resource that is anything else than CPU.
+     * Performs the downscaling of a Vm resource that is anything else than CPU.
      *
      * @param scaling the Vm scaling object
-     * @return true if the down scaling was performed, false otherwise
+     * @return true if the downscaling was performed, false otherwise
      * @see #downScaleVmVertically(VerticalVmScaling)
      */
     private boolean downScaleVmNonCpuResource(final VerticalVmScaling scaling) {
@@ -263,7 +263,8 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
     }
 
     /**
-     * {@return true if the datacenter linked to this VmAllocationPolicy is empty (has no hosts); false otherwise}
+     * @return true if the datacenter linked to this VmAllocationPolicy is empty (has no hosts);
+     *         false otherwise.
      */
     private boolean datacenterHasNoHosts() {
         return datacenterHasNoHosts(null);
@@ -357,7 +358,8 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
      * to find a suitable Host for a given VM.
      *
      * @param vm the VM to find a suitable Host to
-     * @return an {@link Optional} containing a suitable Host to place the VM; or an empty {@link Optional} if no suitable Host was found
+     * @return an {@link Optional} containing a suitable Host to place the VM;
+     *         or an empty {@link Optional} if no suitable Host was found
      * @see #setFindHostForVmFunction(BiFunction)
      */
     protected abstract Optional<Host> defaultFindHostForVm(Vm vm);
@@ -368,8 +370,7 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
          * This method implementation doesn't perform any
          * VM placement optimization and, in fact, has no effect.
          * Classes implementing the {@link VmAllocationPolicyMigration}
-         * provide actual implementations for this method that can be overridden
-         * by subclasses.
+         * provide actual implementations for this method that subclasses can override.
          */
         return Collections.emptyMap();
     }

@@ -32,7 +32,7 @@ import java.util.List;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
-public interface Table {
+public sealed interface Table permits AbstractTable {
     /**
      * Adds a new empty row to the list of rows, so that data can be added to the row further.
      * @return the new empty row

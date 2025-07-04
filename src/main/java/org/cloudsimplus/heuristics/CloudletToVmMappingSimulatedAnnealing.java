@@ -34,14 +34,12 @@ import org.cloudsimplus.vms.Vm;
 
 import java.util.List;
 
-/**
- * A heuristic that uses <a href="http://en.wikipedia.org/wiki/Simulated_annealing">Simulated Annealing</a>
- * to find a suboptimal mapping between a set of Cloudlets and VMs to reduce
- * the number of idle or overloaded Vm {@link Pe}s.
- *
- * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 1.0
- */
+/// A heuristic that uses [Simulated Annealing](http://en.wikipedia.org/wiki/Simulated_annealing)
+/// to find a suboptimal mapping between a set of Cloudlets and VMs to reduce
+/// the number of idle or overloaded Vm [Pe]s.
+///
+/// @author Manoel Campos da Silva Filho
+/// @since CloudSim Plus 1.0
 @Accessors
 public class CloudletToVmMappingSimulatedAnnealing
       extends SimulatedAnnealingAbstract<CloudletToVmMappingSolution>

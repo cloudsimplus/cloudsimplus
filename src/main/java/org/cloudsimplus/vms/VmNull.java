@@ -49,7 +49,7 @@ import java.util.List;
  * @author Manoel Campos da Silva Filho
  * @see Vm#NULL
  */
-class VmNull implements Vm {
+final class VmNull implements Vm {
     @Override public Vm setId(long id) { return this; }
     @Override public long getId() {
         return -1;

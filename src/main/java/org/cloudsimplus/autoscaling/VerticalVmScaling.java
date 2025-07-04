@@ -36,66 +36,60 @@ import org.cloudsimplus.vms.Vm;
 
 import java.util.function.Function;
 
-import static org.cloudsimplus.utilizationmodels.UtilizationModel.Unit;
-
-/**
- * A Vm <a href="https://en.wikipedia.org/wiki/Scalability#Horizontal_and_vertical_scaling">Vertical Scaling</a>
- * mechanism used by a {@link DatacenterBroker} to request the dynamic scale of
- * VM resources up or down, according to the current resource usage.
- * For each kind of resource to be scaled, a different {@code VerticalVmScaling}
- * instance should be provided.
- * If a scaling object is going to be set to a Vm, it has to be exclusive of that Vm.
- * Different Vms must have different instances of a scaling object.
- *
- * <p>A {@link Vm} runs a set of {@link Cloudlet}s. When a {@code VerticalVmScaling} object
- * is attached to a {@link Vm}, it's required to define which
- * {@link #getResourceClass() resource will be scaled} ({@link Ram}, {@link Bandwidth}, etc)
- * when it's {@link #getLowerThresholdFunction() under} or
- * {@link #getUpperThresholdFunction() overloaded}.
- * </p>
- *
- * <p>
- *     The scaling request follows this path:
- *     <ul>
- *         <li>a {@link Vm}, which has a {@link VerticalVmScaling} object set, monitors its own
- *         resource usage using an {@link EventListener}, to check if an
- *         {@link #getLowerThresholdFunction() under} or
- *         {@link #getUpperThresholdFunction() overload} condition is met;</li>
- *         <li>if any of these conditions is met, the Vm uses the VerticalVmScaling
- *         to send a scaling request to its {@link DatacenterBroker};</li>
- *         <li>the DatacenterBroker forwards the request to the {@link Datacenter}
- *         where the Vm is hosted;</li>
- *         <li>the Datacenter delegates the task to its {@link VmAllocationPolicy};</li>
- *         <li>the VmAllocationPolicy checks if there is resource availability and then
- *         finally scale the Vm.</li>
- *     </ul>
- * </p>
- *
- * <h1>WARNING</h1>
- * <hr>
- *    Make sure that the {@link UtilizationModel} of some of these {@code Cloudlets}
- *    is defined as {@link Unit#ABSOLUTE ABSOLUTE}. Defining the {@code UtilizationModel}
- *    of all {@code Cloudlets} running inside the {@code Vm} as {@link Unit#PERCENTAGE PERCENTAGE}
- *    causes these {@code Cloudlets} to automatically increase/decrease their resource usage when the
- *    {@code Vm} resource is vertically scaled.
- *    This is not a CloudSim Plus issue, but the natural and maybe
- *    surprising effect that may trap researchers trying to implement and assess VM scaling policies.
- *
- *    <p>Consider the following example: a {@code VerticalVmScaling} is attached to
- *    a {@code Vm} to double its {@link Ram} when its usage reaches 50%.
- *    The {@code Vm} has 10GB of RAM.
- *    All {@code Cloudlets} running inside this {@code Vm} have a {@link UtilizationModel}
- *    for their RAM utilization defined in {@link Unit#PERCENTAGE PERCENTAGE}.
- *    When the RAM utilization of all these
- *    {@code Cloudlets} reach 50% (5GB), the {@code Vm} {@link Ram} will be doubled.
- *    However, as the RAM usage of the running {@code Cloudlets} is defined in percentage, they will
- *    continue to use 50% of {@code Vm}'s RAM, that now represents 10GB from the 20GB capacity.
- *    This way, the vertical scaling will have no real benefit.</p>
- *
- * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 1.1.0
- */
-public interface VerticalVmScaling extends VmScaling {
+/// A Vm [Vertical Scaling](https://en.wikipedia.org/wiki/Scalability#Horizontal_and_vertical_scaling)
+/// mechanism used by a [DatacenterBroker] to request the dynamic scale of
+/// VM resources up or down, according to the current resource usage.
+/// For each kind of resource to be scaled, a different `VerticalVmScaling`
+/// instance should be provided.
+/// If a scaling object is going to be set to a Vm, it has to be exclusive of that Vm.
+/// Different Vms must have different instances of a scaling object.
+///
+/// A [Vm] runs a set of [Cloudlet]s. When a `VerticalVmScaling` object
+/// is attached to a [Vm], it's required to define which
+/// [resource will be scaled][#getResourceClass()] ([Ram], [Bandwidth], etc)
+/// when it's [under][#getLowerThresholdFunction()] or
+/// [overloaded][#getUpperThresholdFunction()].
+///
+/// The scaling request follows this path:
+///
+/// - a [Vm], which has a [VerticalVmScaling] object set, monitors its own
+///   resource usage using an [EventListener], to check if an
+///   [under][#getLowerThresholdFunction()] or
+///   [overload][#getUpperThresholdFunction()] condition is met;
+/// - if any of these conditions is met, the Vm uses the VerticalVmScaling
+///   to send a scaling request to its [DatacenterBroker];
+/// - the DatacenterBroker forwards the request to the [Datacenter]
+///   where the Vm is hosted;
+/// - the Datacenter delegates the task to its [VmAllocationPolicy];
+/// - the VmAllocationPolicy checks if there is resource availability and then
+///   finally scale the Vm.
+///
+/// ## WARNING
+///
+/// Make sure that the [UtilizationModel] of some of these `Cloudlets`
+/// is defined as [ABSOLUTE][#ABSOLUTE]. Defining the `UtilizationModel`
+/// of all `Cloudlets` running inside the `Vm` as [PERCENTAGE][#PERCENTAGE]
+/// causes these `Cloudlets` to automatically increase/decrease their resource usage when the
+/// `Vm` resource is vertically scaled.
+/// This is not a CloudSim Plus issue, but the natural and maybe
+/// surprising effect that may trap researchers trying to implement and assess VM scaling policies.
+///
+/// Consider the following example: a `VerticalVmScaling` is attached to
+/// a `Vm` to double its [Ram] when its usage reaches 50%.
+/// The `Vm` has 10GB of RAM.
+/// All `Cloudlets` running inside this `Vm` have a [UtilizationModel]
+/// for their RAM utilization defined in [PERCENTAGE][#PERCENTAGE].
+/// When the RAM utilization of all these
+/// `Cloudlets` reach 50% (5GB), the `Vm` [Ram] will be doubled.
+/// However, as the RAM usage of the running `Cloudlets` is defined in percentage, they will
+/// continue to use 50% of `Vm`'s RAM, that now represents 10GB from the 20GB capacity.
+/// This way, the vertical scaling will have no real benefit.
+///
+/// @author Manoel Campos da Silva Filho
+/// @since CloudSim Plus 1.1.0
+public sealed interface VerticalVmScaling extends VmScaling
+    permits VerticalVmScalingAbstract, VerticalVmScalingNull
+{
 
     /**
      * An attribute that implements the Null Object Design Pattern for {@link VerticalVmScaling}

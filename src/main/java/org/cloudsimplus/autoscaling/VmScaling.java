@@ -38,7 +38,7 @@ import org.slf4j.LoggerFactory;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0.0
  */
-public interface VmScaling {
+public sealed interface VmScaling permits HorizontalVmScaling, VerticalVmScaling, VmScalingAbstract, VmScalingNull {
     Logger LOGGER = LoggerFactory.getLogger(VmScaling.class.getSimpleName());
 
     /**

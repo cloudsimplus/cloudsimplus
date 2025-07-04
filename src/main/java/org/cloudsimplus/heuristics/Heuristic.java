@@ -26,30 +26,27 @@ package org.cloudsimplus.heuristics;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * Provides the methods to be used for implementation of
- * <a href="https://en.wikipedia.org/wiki/Heuristic_(computer_science)">heuristics</a>
- * to find a solution for complex problems where the solution space
- * to search is large. These problems are usually <a href="https://en.wikipedia.org/wiki/NP-hardness">NP-Hard</a> ones
- * that the time to find a solution increases, for instance, in exponential time.
- * An example of such a problem can be
- * the mapping a set of VMs to existing Hosts or mapping a set of Cloudlets to VMs.
- *
- * <p>A heuristic implementation thus provides an approximation of
- * an optimal solution (a suboptimal solution).
- * </p>
- *
- * <p>Different heuristic can be implemented, such as
- * <a href="https://en.wikipedia.org/wiki/Tabu_search">Tabu search</a>,
- * <a href="https://en.wikipedia.org/wiki/Simulated_annealing">Simulated annealing</a>,
- * <a href="https://en.wikipedia.org/wiki/Hill_climbing">Hill climbing</a> or
- * <a href="https://en.wikipedia.org/wiki/Ant_colony_optimization_algorithms">Ant colony optimization</a>,
- * to name a few.</p>
- *
- * @param <S> the {@link HeuristicSolution class of solutions} the heuristic will deal with
- * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 1.0
- */
+/// Provides the methods to be used for implementation of
+/// [heuristics](https://en.wikipedia.org/wiki/Heuristic_(computer_science))
+/// to find a solution for complex problems where the solution space
+/// to search is large. These problems are usually [NP-Hard](https://en.wikipedia.org/wiki/NP-hardness) ones
+/// that the time to find a solution increases, for instance, in exponential time.
+/// An example of such a problem can be
+/// the mapping a set of VMs to existing Hosts or mapping a set of Cloudlets to VMs.
+///
+/// A heuristic implementation thus provides an approximation of
+/// an optimal solution (a suboptimal solution).
+///
+/// Different heuristics can be implemented, such as
+/// [Tabu search](https://en.wikipedia.org/wiki/Tabu_search),
+/// [Simulated annealing](https://en.wikipedia.org/wiki/Simulated_annealing),
+/// [Hill climbing](https://en.wikipedia.org/wiki/Hill_climbing) or
+/// [Ant colony optimization](https://en.wikipedia.org/wiki/Ant_colony_optimization_algorithms),
+/// to name a few.
+///
+/// @param <S> the [class of solutions][HeuristicSolution] the heuristic will deal with
+/// @author Manoel Campos da Silva Filho
+/// @since CloudSim Plus 1.0
 public interface Heuristic<S extends HeuristicSolution<?>> {
     Logger LOGGER = LoggerFactory.getLogger(Heuristic.class.getSimpleName());
 

@@ -25,7 +25,10 @@ import org.cloudsimplus.hosts.Host;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
-public interface DatacenterCharacteristics extends Identifiable {
+public sealed interface DatacenterCharacteristics
+    extends Identifiable
+    permits DatacenterCharacteristicsSimple, DatacenterCharacteristicsNull
+{
     /**
      * Identifies different datacenter distribution models, just for classification purposes.
      * For instance, a {@link VmAllocationPolicy} may prioritize placing VMs into

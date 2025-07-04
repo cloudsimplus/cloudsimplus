@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
-public interface VmScheduler {
+public sealed interface VmScheduler permits VmSchedulerAbstract, VmSchedulerNull {
     Logger LOGGER = LoggerFactory.getLogger(VmScheduler.class.getSimpleName());
 
     /**

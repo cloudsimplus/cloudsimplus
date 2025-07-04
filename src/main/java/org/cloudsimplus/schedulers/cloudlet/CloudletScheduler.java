@@ -34,7 +34,9 @@ import java.util.List;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
-public interface CloudletScheduler extends Serializable {
+public sealed interface CloudletScheduler
+    extends Serializable permits CloudletSchedulerAbstract, CloudletSchedulerNull
+{
     Logger LOGGER = LoggerFactory.getLogger(CloudletScheduler.class.getSimpleName());
 
     /**

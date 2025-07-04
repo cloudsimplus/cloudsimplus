@@ -7,7 +7,6 @@
  */
 package org.cloudsimplus.provisioners;
 
-import lombok.NonNull;
 import org.cloudsimplus.hosts.Host;
 import org.cloudsimplus.resources.Pe;
 import org.cloudsimplus.resources.ResourceManageable;
@@ -25,7 +24,7 @@ import org.cloudsimplus.vms.Vm;
 /// @author Anton Beloglazov
 /// @author Manoel Campos da Silva Filho
 /// @since CloudSim Toolkit 2.0
-public class PeProvisionerSimple extends ResourceProvisionerSimple implements PeProvisioner {
+public class PeProvisionerSimple extends PeProvisionerAbstract {
 
     /**
      * Instantiates a new PeProvisionerSimple. The {@link Pe} it will manage will be set
@@ -46,29 +45,7 @@ public class PeProvisionerSimple extends ResourceProvisionerSimple implements Pe
     }
 
     @Override
-    public void setPe(final Pe pe){
-        if(isOtherProvisionerAssignedToPe(pe)){
-            throw new IllegalArgumentException("Pe already has a PeProvisioner assigned to it. Each Pe must have its own PeProvisioner instance.");
-        }
-        setResources(pe, Vm::getProcessor);
-    }
-
-    @Override
     public double getUtilization() {
         return getTotalAllocatedResource() / (double)getCapacity();
-    }
-
-    /**
-     * Checks if the {@link Pe} has a {@link PeProvisioner} assigned that is
-     * different from the current one.
-     *
-     * @param pe the Pe to check
-     * @return {@code true} if the Pe has a PeProvisioner different then the current one,
-     *         {@code false} otherwise.
-     */
-    private boolean isOtherProvisionerAssignedToPe(@NonNull final Pe pe) {
-        return pe.getPeProvisioner() != null &&
-               pe.getPeProvisioner() != PeProvisioner.NULL &&
-               !pe.getPeProvisioner().equals(this);
     }
 }

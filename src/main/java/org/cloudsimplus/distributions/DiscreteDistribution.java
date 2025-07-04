@@ -30,5 +30,5 @@ package org.cloudsimplus.distributions;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 5.5.1
  */
-public interface DiscreteDistribution extends StatisticalDistribution {
+public non-sealed interface DiscreteDistribution extends StatisticalDistribution {
 }

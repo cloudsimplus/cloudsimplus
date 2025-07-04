@@ -24,10 +24,12 @@ import org.cloudsimplus.schedulers.MipsShare;
 import org.cloudsimplus.schedulers.cloudlet.CloudletScheduler;
 import org.cloudsimplus.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudsimplus.schedulers.vm.VmScheduler;
+import org.cloudsimplus.schedulers.vm.VmSchedulerAbstract;
 import org.cloudsimplus.schedulers.vm.VmSchedulerSpaceShared;
 import org.cloudsimplus.schedulers.vm.VmSchedulerTimeShared;
 import org.cloudsimplus.util.Conversion;
 import org.cloudsimplus.vms.Vm;
+import org.cloudsimplus.vms.VmAbstract;
 import org.cloudsimplus.vms.VmSimple;
 import org.cloudsimplus.vms.VmTestUtil;
 import org.junit.jupiter.api.BeforeEach;
@@ -322,7 +324,7 @@ public class HostSimpleTest {
 
         final List<Vm> vmList = createListOfMockVms(numberOfVms, mipsShare, time);
 
-        final VmScheduler vmScheduler = Mockito.mock(VmScheduler.class);
+        final VmScheduler vmScheduler = Mockito.mock(VmSchedulerAbstract.class);
         final HostSimple host = createHostSimple(numberOfVms, VmScheduler.NULL);
 
         Mockito.when(vmScheduler.getAllocatedMips(Mockito.any())).thenReturn(mipsShare);
@@ -345,7 +347,7 @@ public class HostSimpleTest {
         for(int i = 0; i < vmsNumber; i++) {
             final double nextCloudletCompletionTime = i+1;
 
-            final Vm vm = Mockito.mock(Vm.class);
+            final Vm vm = Mockito.mock(VmAbstract.class);
             Mockito
                 .when(vm.updateProcessing(simulationClock, mipsShare))
                 .thenReturn(nextCloudletCompletionTime);
@@ -635,7 +637,7 @@ public class HostSimpleTest {
      * @return
      */
     private Vm createMockVm(final ResourceManageable vmResource, final Function<Vm, Resource> vmResourceFunction, final long usedResource){
-        final Vm vm = Mockito.mock(Vm.class);
+        final Vm vm = Mockito.mock(VmAbstract.class);
         vmResource.allocateResource(usedResource);
 
         /* When the given VM resource function is called during tests,

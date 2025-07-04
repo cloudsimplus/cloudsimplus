@@ -37,7 +37,7 @@ import java.util.Set;
  * @author Manoel Campos da Silva Filho
  */
 @Accessors(makeFinal = false) @Getter @Setter
-public abstract class CloudletAbstract extends CustomerEntityAbstract implements Cloudlet {
+public non-sealed abstract class CloudletAbstract extends CustomerEntityAbstract implements Cloudlet {
     private long jobId;
     private long pesNumber;
 

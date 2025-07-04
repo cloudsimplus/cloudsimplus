@@ -20,7 +20,7 @@ import org.cloudsimplus.vms.Vm;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Toolkit 2.0
  */
-public interface UtilizationModel {
+public sealed interface UtilizationModel permits UtilizationModelAbstract, UtilizationModelNull {
     /**
      * Defines the unit of the resource utilization.
      * @see #getUtilization(double)
