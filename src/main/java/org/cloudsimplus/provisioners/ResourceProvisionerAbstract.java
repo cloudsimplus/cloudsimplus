@@ -26,7 +26,7 @@ import java.util.function.Function;
  * @author Manoel Campos da Silva Filho
  * @since 3.0.4
  */
-public abstract class ResourceProvisionerAbstract implements ResourceProvisioner {
+public abstract non-sealed class ResourceProvisionerAbstract implements ResourceProvisioner {
     @Getter
     private ResourceManageable pmResource;
 

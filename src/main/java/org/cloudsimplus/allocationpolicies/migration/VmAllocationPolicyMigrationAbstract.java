@@ -44,7 +44,10 @@ import static java.util.stream.Collectors.*;
  * @since CloudSim Toolkit 3.0
  */
 @Accessors
-public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPolicyAbstract implements VmAllocationPolicyMigration {
+public non-sealed abstract class VmAllocationPolicyMigrationAbstract
+    extends VmAllocationPolicyAbstract
+    implements VmAllocationPolicyMigration
+{
     /**
      * Default CPU utilization percentage ([0..1]) that indicates a Host is underloaded.
      * @see #setUnderUtilizationThreshold(double)

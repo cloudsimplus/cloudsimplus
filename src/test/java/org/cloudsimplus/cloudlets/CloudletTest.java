@@ -3,6 +3,7 @@ package org.cloudsimplus.cloudlets;
 import org.cloudsimplus.brokers.DatacenterBroker;
 import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.utilizationmodels.UtilizationModel;
+import org.cloudsimplus.utilizationmodels.UtilizationModelAbstract;
 import org.cloudsimplus.vms.Vm;
 import org.cloudsimplus.vms.VmTestUtil;
 import org.junit.jupiter.api.Test;
@@ -99,7 +100,7 @@ public class CloudletTest {
 
     @Test
     public void testNullObjectUtilization2(){
-        final UtilizationModel model = Mockito.mock(UtilizationModel.class);
+        final UtilizationModel model = Mockito.mock(UtilizationModelAbstract.class);
         Cloudlet.NULL.setUtilizationModelBw(model);
         assertSame(UtilizationModel.NULL, Cloudlet.NULL.getUtilizationModelBw());
 

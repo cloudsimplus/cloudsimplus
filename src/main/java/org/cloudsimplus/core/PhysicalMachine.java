@@ -34,7 +34,8 @@ import org.cloudsimplus.vms.Vm;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.2.0
  */
-public interface PhysicalMachine extends Machine<FileStorage> {
+public sealed interface PhysicalMachine extends Machine<FileStorage> permits Host
+{
     /**
      * Computes the current relative percentage of the CPU a VM is using from the PM's total MIPS capacity.
      * If the capacity is 1000 MIPS and the VM is using 250 MIPS, it's equivalent to 25%

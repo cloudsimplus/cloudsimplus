@@ -39,7 +39,9 @@ import java.util.function.Function;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
-public interface DatacenterBroker extends SimEntity {
+public sealed interface DatacenterBroker extends SimEntity
+    permits DatacenterBrokerAbstract, DatacenterBrokerNull
+{
     Logger LOGGER = LoggerFactory.getLogger(DatacenterBroker.class.getSimpleName());
 
     /**

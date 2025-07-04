@@ -29,22 +29,16 @@ import org.cloudsimplus.datacenters.Datacenter;
 import org.cloudsimplus.hosts.Host;
 import org.cloudsimplus.vms.Vm;
 
-/**
- * A Builder interface for creation of simulation objects,
- * such as {@link Datacenter},
- * {@link Host},
- * {@link Vm}
- * {@link DatacenterBroker} and
- * {@link Cloudlet}.
- *
- * <p>The builders help in the creation of such objects,
- * by allowing to set standard attribute's values
- * in order to create several objects with the same characteristics.</p>
- *
- * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 1.0
- */
-public interface Builder {
+/// A Builder interface for the creation of simulation objects,
+/// such as [Datacenter], [Host], [Vm] [DatacenterBroker] and [Cloudlet].
+///
+/// The builders help in the creation of such objects,
+/// by allowing to set standard attribute's values
+/// to create several objects with the same characteristics.
+///
+/// @author Manoel Campos da Silva Filho
+/// @since CloudSim Plus 1.0
+interface Builder {
     default void validateAmount(final double amount){
         if(amount <= 0)
             throw new IllegalArgumentException("The amount has to be greater than 0.");

@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
  * @author Marcos Dias de Assuncao
  * @author Manoel Campos da Silva Filho
  */
-public interface TraceReader {
+public sealed interface TraceReader permits TraceReaderAbstract {
     Logger LOGGER = LoggerFactory.getLogger(TraceReader.class.getSimpleName());
 
     /**

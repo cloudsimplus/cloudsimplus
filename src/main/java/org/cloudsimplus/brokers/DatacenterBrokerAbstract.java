@@ -47,7 +47,7 @@ import java.util.function.Function;
  * @author Manoel Campos da Silva Filho
  */
 @Accessors @Getter @Setter
-public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements DatacenterBroker {
+public non-sealed abstract class DatacenterBrokerAbstract extends CloudSimEntity implements DatacenterBroker {
     /**
      * A default {@link Function} which always returns {@link #DEF_VM_DESTRUCTION_DELAY}
      * to indicate that any VM should not be immediately destroyed after it becomes idle.

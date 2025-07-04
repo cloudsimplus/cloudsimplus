@@ -49,7 +49,7 @@ import static org.cloudsimplus.listeners.CloudletResourceAllocationFailEventInfo
  * @since CloudSim Toolkit 1.0
  */
 @Getter
-public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
+public abstract non-sealed class CloudletSchedulerAbstract implements CloudletScheduler {
     @Serial
     private static final long serialVersionUID = -2314361120790372742L;
 

@@ -31,7 +31,7 @@ import java.util.function.Predicate;
  * @see CloudSimPlus
  * @since CloudSim Plus 1.0
  */
-public interface Simulation {
+public sealed interface Simulation permits CloudSim, SimulationNull {
     /**
      * A standard predicate that matches any event.
      */

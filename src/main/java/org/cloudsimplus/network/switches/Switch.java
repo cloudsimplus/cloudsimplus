@@ -34,7 +34,7 @@ import java.util.List;
  *
  * @author Manoel Campos da Silva Filho
  */
-public interface Switch extends SimEntity {
+public sealed interface Switch extends SimEntity permits AbstractSwitch, SwitchNull {
 
     /**
      * An attribute that implements the Null Object Design Pattern for {@link Switch} objects.

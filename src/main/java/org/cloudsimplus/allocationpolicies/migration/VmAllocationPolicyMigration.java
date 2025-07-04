@@ -19,7 +19,9 @@ import org.cloudsimplus.selectionpolicies.VmSelectionPolicy;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
-public interface VmAllocationPolicyMigration extends VmAllocationPolicy {
+public sealed interface VmAllocationPolicyMigration extends VmAllocationPolicy
+    permits VmAllocationPolicyMigrationDynamicUpperThreshold, VmAllocationPolicyMigrationAbstract, VmAllocationPolicyMigrationNull
+{
     /**
      * An attribute that implements the Null Object Design Pattern for
      * {@link VmAllocationPolicyMigration} objects.

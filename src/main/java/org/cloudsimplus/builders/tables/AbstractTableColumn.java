@@ -32,7 +32,7 @@ import static java.util.Objects.requireNonNullElse;
  * @author Manoel Campos da Silva Filho
  */
 @Getter
-public abstract class AbstractTableColumn implements TableColumn {
+public non-sealed abstract class AbstractTableColumn implements TableColumn {
     /**
      * The title to be displayed at the top of the column.
      */

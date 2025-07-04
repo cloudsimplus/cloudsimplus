@@ -21,7 +21,9 @@ import org.cloudsimplus.listeners.EventInfo;
  * @see CloudSimEvent
  * @since CloudSim Plus 1.0
  */
-public interface SimEvent extends Comparable<SimEvent>, EventInfo {
+public sealed interface SimEvent extends Comparable<SimEvent>, EventInfo
+    permits CloudSimEvent, SimEventNull
+{
     /**
      * An attribute that implements the Null Object Design Pattern for {@link SimEvent} objects.
      */

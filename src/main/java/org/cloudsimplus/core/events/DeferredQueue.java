@@ -18,7 +18,7 @@ import java.util.stream.Stream;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 4.4.2
  */
-public class DeferredQueue implements EventQueue {
+public final class DeferredQueue implements EventQueue {
     /**
      * Despite the events are sorted by time, and there are
      * sorted collections such as {@link java.util.SortedSet},

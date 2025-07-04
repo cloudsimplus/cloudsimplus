@@ -41,7 +41,10 @@ import java.util.function.Predicate;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
-public interface Vm extends Machine<Resource>, UniquelyIdentifiable, Comparable<Vm>, CustomerEntity, TimeZoned, ResourceStatsComputer<VmResourceStats> {
+public sealed interface Vm
+    extends Machine<Resource>, UniquelyIdentifiable, Comparable<Vm>, CustomerEntity, TimeZoned, ResourceStatsComputer<VmResourceStats>
+    permits VmAbstract, VmNull
+{
     Logger LOGGER = LoggerFactory.getLogger(Vm.class.getSimpleName());
 
     /**

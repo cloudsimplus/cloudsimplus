@@ -36,7 +36,7 @@ import static java.util.stream.Collectors.toList;
  * @since CloudSim Plus 8.3.0
  */
 @Accessors @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
-public abstract class HostAbstract extends ExecDelayableAbstract implements Host {
+public non-sealed abstract class HostAbstract extends ExecDelayableAbstract implements Host {
     /**
      * The Default RAM capacity (in MB) for creating Hosts.
      * This value is used when the RAM capacity is not given in a Host constructor.

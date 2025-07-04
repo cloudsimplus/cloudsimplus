@@ -27,7 +27,7 @@ import org.cloudsimplus.hosts.Host;
  * @since CloudSim Toolkit 1.0
  */
 @Accessors @Getter @Setter
-public class DatacenterCharacteristicsSimple implements DatacenterCharacteristics {
+public non-sealed class DatacenterCharacteristicsSimple implements DatacenterCharacteristics {
     @NonNull
     private Datacenter datacenter = Datacenter.NULL;
 

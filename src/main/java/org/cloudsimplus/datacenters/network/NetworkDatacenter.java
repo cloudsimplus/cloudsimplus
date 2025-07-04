@@ -27,27 +27,19 @@ import java.util.List;
 
 import static java.util.stream.Collectors.toList;
 
-/**
- * A {@link Datacenter} whose {@link Host}s have network support.
- * It contains all the information about the internal network.
- * For example, which {@link NetworkVm} is connected to which {@link Switch}, etc.
- *
- * <p>Please refer to the following publication for more details:
- * <ul>
- * <li>
- * <a href="https://doi.org/10.1109/UCC.2011.24">
- * Saurabh Kumar Garg and Rajkumar Buyya, NetworkCloudSim: Modelling Parallel
- * Applications in Cloud Simulations, Proceedings of the 4th IEEE/ACM
- * International Conference on Utility and Cloud Computing (UCC 2011, IEEE CS
- * Press, USA), Melbourne, Australia, December 5-7, 2011.
- * </a>
- * </li>
- * </ul>
- * </p>
- *
- * @author Saurabh Kumar Garg
- * @author Manoel Campos da Silva Filho
- */
+/// A [Datacenter] whose [Host]s have network support.
+/// It contains all the information about the internal network.
+/// For example, which [NetworkVm] is connected to which [Switch], etc.
+///
+/// Please refer to the following publication for more details:
+///
+/// - [Saurabh Kumar Garg and Rajkumar Buyya, NetworkCloudSim: Modelling Parallel
+///   Applications in Cloud Simulations, Proceedings of the 4th IEEE/ACM
+///   International Conference on Utility and Cloud Computing (UCC 2011, IEEE CS
+///   Press, USA), Melbourne, Australia, December 5-7, 2011.](https://doi.org/10.1109/UCC.2011.24)
+///
+/// @author Saurabh Kumar Garg
+/// @author Manoel Campos da Silva Filho
 public class NetworkDatacenter extends DatacenterSimple {
 
     /** @see #getSwitchMap() */

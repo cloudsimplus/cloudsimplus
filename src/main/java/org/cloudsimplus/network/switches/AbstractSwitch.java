@@ -34,7 +34,7 @@ import java.util.*;
  * @author Manoel Campos da Silva Filho
  */
 @Accessors
-public abstract class AbstractSwitch extends CloudSimEntity implements Switch {
+public abstract non-sealed class AbstractSwitch extends CloudSimEntity implements Switch {
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractSwitch.class.getSimpleName());
 
     @Getter @Setter @NonNull

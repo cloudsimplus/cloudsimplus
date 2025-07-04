@@ -34,7 +34,7 @@ import org.apache.commons.math3.random.Well19937c;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 5.5.1
  */
-public interface StatisticalDistribution {
+public sealed interface StatisticalDistribution permits DiscreteDistribution, ContinuousDistribution {
     /**
      * Generate a new pseudo random number
      * directly from the {@link RealDistribution#sample()} method.

@@ -51,7 +51,7 @@ import java.util.Optional;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 4.4.2
  */
-public class VmAllocationPolicyRandom extends VmAllocationPolicyAbstract implements VmAllocationPolicy {
+public class VmAllocationPolicyRandom extends VmAllocationPolicyAbstract {
     /**
      * A Pseudo-Random Number Generator (PRNG) used to select a Host.
      * The PRNG must return values between 0 and 1.

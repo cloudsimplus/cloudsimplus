@@ -52,7 +52,7 @@ import static org.cloudsimplus.util.BytesConversion.bitsToBytes;
  * @since CloudSim Toolkit 1.0
  */
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
-public class DatacenterSimple extends CloudSimEntity implements Datacenter {
+public non-sealed class DatacenterSimple extends CloudSimEntity implements Datacenter {
     @Getter @EqualsAndHashCode.Include
     private DatacenterCharacteristics characteristics;
 
@@ -1130,7 +1130,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     }
 
     @Override
-    public Datacenter setCharacteristics(@NonNull DatacenterCharacteristics c) {
+    public Datacenter setCharacteristics(final @NonNull DatacenterCharacteristics c) {
         ((DatacenterCharacteristicsSimple)c).setDatacenter(this);
         this.characteristics = c;
         return this;

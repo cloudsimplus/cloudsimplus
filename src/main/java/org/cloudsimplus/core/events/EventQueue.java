@@ -17,7 +17,7 @@ import java.util.stream.Stream;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
-public interface EventQueue {
+public sealed interface EventQueue permits DeferredQueue, FutureQueue {
     /**
      * Adds a new event to the queue, preserving the temporal order of the events.
      *

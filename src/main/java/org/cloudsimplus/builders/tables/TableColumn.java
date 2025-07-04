@@ -30,7 +30,7 @@ package org.cloudsimplus.builders.tables;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
-public interface TableColumn {
+public sealed interface TableColumn permits AbstractTableColumn {
     /**
      * {@return the index of the column into the table}
      */

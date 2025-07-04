@@ -47,7 +47,7 @@ import java.util.function.Function;
  * @since CloudSim Plus 7.0.4
  */
 @Accessors
-public abstract class VerticalVmScalingAbstract extends VmScalingAbstract implements VerticalVmScaling {
+public non-sealed abstract class VerticalVmScalingAbstract extends VmScalingAbstract implements VerticalVmScaling {
     @Getter @NonNull
     private Function<Vm, Double> upperThresholdFunction;
 
@@ -73,7 +73,7 @@ public abstract class VerticalVmScalingAbstract extends VmScalingAbstract implem
      *                      that will be used to scale a Vm resource up or down,
      *                      whether such a resource is over or underloaded, according to the
      *                      defined predicates.
-     *                      In the case of up scaling, the value 1 will scale the resource in 100%,
+     *                      In the case of upscaling, value 1 will scale the resource in 100%,
      *                      doubling its capacity.
      * @see VerticalVmScaling#setResourceScaling(ResourceScaling)
      */
@@ -117,17 +117,16 @@ public abstract class VerticalVmScalingAbstract extends VmScalingAbstract implem
         return this;
     }
 
-    /**
-     * Validates lower and upper threshold functions,
-     * throwing an exception if the under and overload predicates
-     * (i) are equal (to make clear that under and over-load situations must be defined by different conditions)
-     * or (ii) any of them are null.
-     *
-     * @param lowerThresholdFunction the lower threshold function
-     * @param upperThresholdFunction the upper threshold function
-     * @throws IllegalArgumentException if the two functions are equal
-     * @throws NullPointerException if any of the functions is null
-     */
+    /// Validates lower and upper threshold functions,
+    /// throwing an exception if the under and overload predicates:
+    ///
+    /// - are equal (to make clear that under and overload situations must be defined by different conditions);
+    /// - or any of them are null.
+    ///
+    /// @param lowerThresholdFunction the lower threshold function
+    /// @param upperThresholdFunction the upper threshold function
+    /// @throws IllegalArgumentException if the two functions are equal
+    /// @throws NullPointerException if any of the functions is null
     private void validateFunctions(
         @NonNull final Function<Vm, Double> lowerThresholdFunction,
         @NonNull final Function<Vm, Double> upperThresholdFunction)

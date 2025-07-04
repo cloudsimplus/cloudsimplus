@@ -17,6 +17,7 @@ import org.cloudsimplus.mocks.CloudSimMocker;
 import org.cloudsimplus.mocks.MocksHelper;
 import org.cloudsimplus.schedulers.MipsShare;
 import org.cloudsimplus.schedulers.cloudlet.CloudletScheduler;
+import org.cloudsimplus.schedulers.cloudlet.CloudletSchedulerAbstract;
 import org.cloudsimplus.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -295,7 +296,7 @@ public class VmSimpleTest {
     public void testGetCurrentRequestedBwWhenVmWasCreatedInsideHost() {
         final double currentBwUsagePercent = 0.5;
 
-        final CloudletScheduler scheduler = Mockito.mock(CloudletScheduler.class);
+        final CloudletScheduler scheduler = Mockito.mock(CloudletSchedulerAbstract.class);
         Mockito.doNothing().when(scheduler).setVm(Mockito.any());
         Mockito.when(scheduler.getCurrentRequestedBwPercentUtilization())
                .thenReturn(currentBwUsagePercent);
@@ -320,7 +321,7 @@ public class VmSimpleTest {
         final double currentRamUsagePercent = 0.5;
         final long expectedCurrentRamUsage = (long)(currentRamUsagePercent* VmTestUtil.RAM);
 
-        final CloudletScheduler scheduler = Mockito.mock(CloudletScheduler.class);
+        final CloudletScheduler scheduler = Mockito.mock(CloudletSchedulerAbstract.class);
         Mockito.doNothing().when(scheduler).setVm(Mockito.any());
         Mockito.when(scheduler.getCurrentRequestedRamPercentUtilization())
                 .thenReturn(currentRamUsagePercent);

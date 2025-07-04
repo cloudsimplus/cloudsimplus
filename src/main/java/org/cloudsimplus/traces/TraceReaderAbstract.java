@@ -40,7 +40,7 @@ import lombok.experimental.Accessors;
 /// @author Manoel Campos da Silva Filho
 /// @since CloudSim Plus 4.0.0
 @Accessors
-public abstract class TraceReaderAbstract extends FileReader implements TraceReader {
+public abstract non-sealed class TraceReaderAbstract extends FileReader implements TraceReader {
 
     /**
      * Regular expression to check if a String corresponds to an integer number.

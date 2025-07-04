@@ -37,7 +37,7 @@ import org.cloudsimplus.vms.Vm;
  * @since CloudSim Plus 1.1.0
  */
 @Accessors(makeFinal = false)
-public abstract class VmScalingAbstract implements VmScaling {
+public non-sealed abstract class VmScalingAbstract implements VmScaling {
     private double lastProcessingTime;
 
     @Getter @Setter @NonNull

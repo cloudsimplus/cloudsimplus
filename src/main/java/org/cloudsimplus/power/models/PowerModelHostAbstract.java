@@ -14,7 +14,7 @@ import org.cloudsimplus.util.MathUtil;
  * @see PowerMeter
  */
 @Accessors(makeFinal = false) @Getter
-public abstract class PowerModelHostAbstract implements PowerModelHost {
+public abstract non-sealed class PowerModelHostAbstract implements PowerModelHost {
     @Setter
     private Host host;
     private double startupPower;

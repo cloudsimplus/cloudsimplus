@@ -39,7 +39,7 @@ import java.util.stream.IntStream;
  * @author Manoel Campos da Silva Filho
  */
 @Getter
-public abstract class AbstractTable implements Table {
+public non-sealed abstract class AbstractTable implements Table {
     /**
      * The {@link PrintStream} used to print the generated table.
      */

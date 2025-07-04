@@ -34,7 +34,7 @@ import java.util.*;
  * @since CloudSim Plus 8.3.0
  */
 @Accessors(makeFinal = false) @Getter
-public abstract class VmAbstract extends CustomerEntityAbstract implements Vm {
+public non-sealed abstract class VmAbstract extends CustomerEntityAbstract implements Vm {
     /**
      * Gets the Default RAM capacity (in MB) for creating VMs.
      * This value is used when the RAM capacity is not given in a VM constructor.

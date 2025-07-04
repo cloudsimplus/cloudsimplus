@@ -55,89 +55,70 @@ import static java.util.stream.Collectors.toMap;
 import static org.cloudsimplus.core.CloudSimTag.HOST_FAILURE;
 import static org.cloudsimplus.util.Conversion.HUNDRED_PERCENT;
 
-/**
- * Generates random failures for the {@link Pe}'s of {@link Host}s inside a given {@link Datacenter}.
- * A Fault Injection object usually has to be created after the VMs are created,
- * making it easier to define a function to be used to clone failed VMs.
- *
- * <p>
- * The events happen in the following order:
- * <ol>
- *  <li>a time to inject a Host failure is generated using a given {@link org.cloudsimplus.distributions Random Number Generator};</li>
- *  <li>a Host is randomly selected to fail at that time using an internal
- *  {@link UniformDistr Uniform Random Number Generator} with the same seed of the given generator;</li>
- *  <li>the number of Host {@link Pe}s to fail is randomly generated using the internal generator;</li>
- *  <li>failed physical PEs are removed from affected VMs, VMs with no remaining
- *  PEs and destroying and clones of them are submitted to the {@link DatacenterBroker} of the failed VMs;</li>
- *  <li>another failure is scheduled for a future time using the given generator;</li>
- *  <li>the process repeats until the end of the simulation.</li>
- * </ol>
- * </p>
- *
- * <p>
- * When Host's PEs fail, if there are more available PEs
- * than required by its running VMs, no VM will be affected.
- * </p>
- *
- * <p>
- * Considering that {@code X} is the number of failed PEs, and it is lower than the total available PEs.
- * In this case, the {@code X} PEs will be removed cyclically, 1 by 1, from running VMs.
- * This way, some VMs may continue running with fewer PEs than they requested initially.
- * On the other hand, if after the failure, the number of Host's working PEs
- * is lower than the required to run all VMs, some VMs will be destroyed.
- * </p>
- *
- * <p>
- * If all PEs are removed from a VM, it is automatically destroyed,
- * and a snapshot (clone) from it is taken and submitted
- * to the {@link DatacenterBroker}, so that the VM clone can start executing into another host.
- * In this case, all Cloudlets that still were running inside the VM
- * will be cloned too and restart executing from the beginning.
- * </p>
- *
- * <p>
- * If a cloudlet running inside a VM which was affected by a PE failure
- * requires {@code Y} PEs but the VM doesn't have all the PEs anymore,
- * the Cloudlet will continue executing, but it will spend
- * more time to finish.
- * For instance, if a Cloudlet requires 2 PEs but after the failure
- * the VM was left with just 1 PE, the Cloudlet will spend the double
- * of the time to finish.
- * </p>
- *
- * <p>
- * <b>NOTES:</b>
- * <ul>
- *     <li>
- *      Host PEs failures may happen after all its VMs have finished executing.
- *      This way, the presented simulation results may show that the
- *      number of PEs into a Host is lower than required by its VMs.
- *      In this case, the VMs shown in the results finished executing before
- *      some failures have happened. Analyzing the logs is easy to confirm that.
- *      </li>
- *      <li>Inter-arrivals failures are defined in minutes, since seconds is a too
- *      small time unit to define such value. Furthermore, it doesn't make sense to define
- *      the number of failures per second. This way, the generator of failure arrival times
- *      given to the constructor considers the time in minutes, despite the simulation
- *      time unit is seconds. Since usually Cloudlets just take some seconds to finish,
- *      mainly in simulation examples, failures may happen just after the cloudlets
- *      have finished. This way, you should make sure that Cloudlet lengths
- *      are large enough to allow failures to happen before they end running.
- *      </li>
- * </ul>
- * </p>
- *
- * <p>For more details, check
- * <a href="https://ubibliorum.ubi.pt/handle/10400.6/7839">Raysa Oliveira's Master Thesis (only in Portuguese)</a>.</p>
- *
- * @author raysaoliveira
- * @since CloudSim Plus 1.2.0
- * @see <a href="https://blogs.sap.com/2014/07/21/equipment-availability-vs-reliability/">SAP Blog: Availability vs Reliability</a>
- *
- * TODO The class has multiple responsibilities.
- *      The fault injection mechanism must be separated from
- *      the fault recovery. The cloner methods are fault recovery.
- */
+/// Generates random failures for the [Pe]'s of [Host]s inside a given [Datacenter].
+/// A Fault Injection object usually has to be created after the VMs are created,
+/// making it easier to define a function to be used to clone failed VMs.
+///
+/// The events happen in the following order:
+///
+/// 1. a time to inject a Host failure is generated using a given [Random Number Generator][org.cloudsimplus.distributions];
+/// 2. a Host is randomly selected to fail at that time using an internal
+///  [Uniform Random Number Generator][UniformDistr] with the same seed of the given generator;
+/// 3. the number of Host [Pe]s to fail is randomly generated using the internal generator;
+/// 4. failed physical PEs are removed from affected VMs, VMs with no remaining
+///  PEs and destroying and clones of them are submitted to the [DatacenterBroker] of the failed VMs;
+/// 5. another failure is scheduled for a future time using the given generator;
+/// 6. the process repeats until the end of the simulation.
+///
+///
+/// When Host's PEs fail, if there are more available PEs
+/// than required by its running VMs, no VM will be affected.
+///
+/// Considering that `X` is the number of failed PEs, and it is lower than the total available PEs.
+/// In this case, the `X` PEs will be removed cyclically, 1 by 1, from running VMs.
+/// This way, some VMs may continue running with fewer PEs than they requested initially.
+/// On the other hand, if after the failure, the number of Host's working PEs
+/// is lower than the required to run all VMs, some VMs will be destroyed.
+///
+/// If all PEs are removed from a VM, it is automatically destroyed,
+/// and a snapshot (clone) from it is taken and submitted
+/// to the [DatacenterBroker], so that the VM clone can start executing into another host.
+/// In this case, all Cloudlets that still were running inside the VM
+/// will be cloned too and restart executing from the beginning.
+///
+/// If a cloudlet running inside a VM which was affected by a PE failure
+/// requires `Y` PEs but the VM doesn't have all the PEs anymore,
+/// the Cloudlet will continue executing, but it will spend
+/// more time to finish.
+/// For instance, if a Cloudlet requires 2 PEs but after the failure,
+/// the VM was left with just 1 PE, the Cloudlet will spend the double
+/// of the time to finish.
+///
+/// **NOTES:**
+///
+/// - Host PEs failures may happen after all its VMs have finished executing.
+///   This way, the presented simulation results may show that the
+///   number of PEs into a Host is lower than required by its VMs.
+///   In this case, the VMs shown in the results finished executing before
+///   some failures have happened. Analyzing the logs is easy to confirm that.
+/// - Inter-arrivals failures are defined in minutes, since seconds is a too
+///  small time unit to define such value. Furthermore, it doesn't make sense to define
+///  the number of failures per second. This way, the generator of failure arrival times
+///  given to the constructor considers the time in minutes, despite the simulation
+///  time unit is seconds. Since usually Cloudlets just take some seconds to finish,
+///  mainly in simulation examples, failures may happen just after the cloudlets
+///  have finished. This way, you should make sure that Cloudlet lengths
+///  are large enough to allow failures to happen before they end running.
+///
+/// For more details, check
+/// [Raysa Oliveira's Master Thesis (only in Portuguese)](https://ubibliorum.ubi.pt/handle/10400.6/7839).
+///
+/// @author raysaoliveira
+/// @since CloudSim Plus 1.2.0
+/// @link [SAP Blog: Availability vs Reliability](https://blogs.sap.com/2014/07/21/equipment-availability-vs-reliability/)
+/// 2TODO The class has multiple responsibilities.
+///      The fault injection mechanism must be separated from
+///      the fault recovery. The cloner methods are fault recovery.
 public class HostFaultInjection extends CloudSimEntity {
     /**
      * Maximum number of seconds for a VM to recovery from a failure,
