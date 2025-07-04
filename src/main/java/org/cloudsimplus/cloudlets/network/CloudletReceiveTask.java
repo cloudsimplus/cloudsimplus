@@ -69,7 +69,7 @@ import java.util.List;
  * How is the network delay being computed?
  */
 @Getter @Setter
-public class CloudletReceiveTask extends CloudletTask {
+public non-sealed class CloudletReceiveTask extends CloudletTask {
     private final List<VmPacket> packetsReceived;
 
     /**

@@ -33,7 +33,7 @@ import org.cloudsimplus.resources.Pe;
  *
  * @since CloudSim Toolkit 1.0
  */
-public class CloudletExecutionTask extends CloudletTask {
+public non-sealed class CloudletExecutionTask extends CloudletTask {
 
     /** the execution length of the task (in MI). */
     @Getter @Setter
