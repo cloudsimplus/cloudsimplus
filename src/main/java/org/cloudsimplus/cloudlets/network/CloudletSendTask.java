@@ -39,7 +39,7 @@ import java.util.Objects;
  * @since CloudSim Toolkit 1.0
  *
  */
-public class CloudletSendTask extends CloudletTask {
+public non-sealed class CloudletSendTask extends CloudletTask {
     private final List<VmPacket> packetsToSend;
 
     /**
