@@ -15,28 +15,19 @@ import org.cloudsimplus.cloudlets.Cloudlet;
 import org.cloudsimplus.cloudlets.CloudletExecution;
 import org.cloudsimplus.core.Identifiable;
 
-/**
- * An abstract class to be implemented by tasks that can be executed by a {@link NetworkCloudlet}.
- *
- * <p>Please refer to the following publication for more details:
- * <ul>
- * <li>
- * <a href="https://doi.org/10.1109/UCC.2011.24">
- * Saurabh Kumar Garg and Rajkumar Buyya, NetworkCloudSim: Modelling Parallel
- * Applications in Cloud Simulations, Proceedings of the 4th IEEE/ACM
- * International Conference on Utility and Cloud Computing (UCC 2011, IEEE CS
- * Press, USA), Melbourne, Australia, December 5-7, 2011.
- * </a>
- * </li>
- * </ul>
- * </p>
- *
- * @author Saurabh Kumar Garg
- * @since CloudSim Toolkit 1.0
- *
- * TODO Classes {@link CloudletTask}, {@link Cloudlet}
- * and {@link CloudletExecution} share a common set of attributes that should be defined by a common interface.
- */
+/// An abstract class to be implemented by tasks that can be executed by a [NetworkCloudlet].
+///
+/// Please refer to the following publication for more details:
+///
+/// - [Saurabh Kumar Garg and Rajkumar Buyya, NetworkCloudSim: Modelling Parallel
+/// Applications in Cloud Simulations, Proceedings of the 4th IEEE/ACM
+/// International Conference on Utility and Cloud Computing (UCC 2011, IEEE CS
+/// Press, USA), Melbourne, Australia, December 5-7, 2011](https://doi.org/10.1109/UCC.2011.24).
+///
+/// @author Saurabh Kumar Garg
+/// @since CloudSim Toolkit 1.0
+/// @TODO Classes [CloudletTask], [Cloudlet] and [CloudletExecution]
+/// share a common set of attributes that should be defined by a common interface.
 @Getter @Setter
 public abstract class CloudletTask implements Identifiable {
     /** The id of the task. */
