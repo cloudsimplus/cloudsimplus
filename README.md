@@ -4,7 +4,7 @@
 
 [![Consulting](https://img.shields.io/badge/Consulting-Click%20here-brightgreen)](#consulting) [![Build Status](https://github.com/cloudsimplus/cloudsimplus/actions/workflows/build.yml/badge.svg)](https://github.com/cloudsimplus/cloudsimplus/actions/workflows/build.yml) [![Codacy Badge](https://app.codacy.com/project/badge/Grade/9aaa4b031c1d4143bdd39c4eedf49562)](https://www.codacy.com/gh/cloudsimplus/cloudsimplus/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=cloudsimplus/cloudsimplus&amp;utm_campaign=Badge_Grade) [![Codacy Code Coverage](https://app.codacy.com/project/badge/Coverage/9aaa4b031c1d4143bdd39c4eedf49562)](https://www.codacy.com/gh/manoelcampos/cloudsimplus/dashboard?utm_source=github.com&utm_medium=referral&utm_content=manoelcampos/cloudsimplus&utm_campaign=Badge_Coverage) [![Maven Central](https://img.shields.io/maven-central/v/org.cloudsimplus/cloudsimplus.svg?label=Maven%20Central)](https://central.sonatype.com/search?q=cloudsimplus&namespace=org.cloudsimplus) [![Documentation Status](https://readthedocs.org/projects/cloudsimplus/badge/?version=latest)](http://cloudsimplus.rtfd.io/en/latest/?badge=latest) [![GPL licensed](https://img.shields.io/badge/license-GPL-blue.svg)](http://www.gnu.org/licenses/gpl-3.0) [![GitHub Repo stars](https://img.shields.io/github/stars/cloudsimplus/cloudsimplus?label=Contribute.%20Star%20it.)](https://github.com/cloudsimplus/cloudsimplus) [![Twitter Follow](https://img.shields.io/twitter/follow/cloudsimplus?style=social)](http://twitter.com/cloudsimplus)
 
-CloudSim Plus is a modern, up-to-date, full-featured and fully documented **Java 17** simulation framework. It's easy to use and extend, enabling modeling, simulation, and experimentation of Cloud computing infrastructures and application services. 
+CloudSim Plus is a modern, up-to-date, full-featured and fully documented **Java 24** simulation framework. It's easy to use and extend, enabling modeling, simulation, and experimentation of Cloud computing infrastructures and application services. 
 It allows developers to focus on specific system design issues to be investigated, without concerning the low-level details related to Cloud-based infrastructures and services.
  
 CloudSim Plus is a fork of CloudSim 3, re-engineered primarily to avoid code duplication, provide code reuse and ensure compliance with software engineering principles and recommendations for extensibility improvements and accuracy. It's currently the state-of-the-art in cloud computing simulation framework. 
@@ -98,12 +98,12 @@ The light yellow ones were introduced just to better organize existing CloudSim 
 
 ## 4. Project Requirements
 
-CloudSim Plus is a Java 17 project that uses maven for build and dependency management. To build and run the project, you need JDK 17+ installed and an updated version of maven (such as 3.8.6+). Maven is already installed on your IDE. Unless it's out-of-date or you want to build the project from the command line, you need to install maven into your operating system. All project dependencies are download automatically by maven.
+CloudSim Plus is a Java 24 project that uses maven for build and dependency management. To build and run the project, you need JDK 24+ installed and an updated version of maven (such as 3.8.6+). Maven is already installed on your IDE. Unless it's out-of-date or you want to build the project from the command line, you need to install maven into your operating system. All project dependencies are download automatically by maven.
 
 # 5. How to Use CloudSim Plus 👩🏽‍💻 
 
 > **Warning**
-> Before trying to use this project, make sure you have JDK 17 installed.
+> Before trying to use this project, make sure you have JDK 24 installed.
 
 There are 2 ways to use CloudSim Plus:
 
