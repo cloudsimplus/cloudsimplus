@@ -43,7 +43,7 @@ import java.util.function.Supplier;
 ///
 ///
 /// To enable horizontal down-scaling to destroy idle VMs, the [DatacenterBroker] has to be used
-/// by setting a [#setVmDestructionDelayFunction(Function)].
+/// by setting a [DatacenterBroker#setVmDestructionDelayFunction(Function)].
 /// Since there is no Cloudlet migration mechanism (and it isn't intended to have),
 /// if a VM becomes underloaded, there is nothing that can be done until all Cloudlets
 /// finish executing. When that happens, the vmDestructionDelayFunction

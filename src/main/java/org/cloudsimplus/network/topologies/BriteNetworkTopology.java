@@ -38,7 +38,7 @@ import java.util.Map;
 /// @author Manoel Campos da Silva Filho
 /// @since CloudSim Toolkit 1.0
 /// @see #getInstance(String)
-/// @see [Brite Oficial Website](http://www.cs.bu.edu/brite/)
+/// @link [Brite Oficial Website](http://www.cs.bu.edu/brite/)
 public final class BriteNetworkTopology implements NetworkTopology {
     private static final Logger LOGGER = LoggerFactory.getLogger(BriteNetworkTopology.class.getSimpleName());
 

@@ -61,7 +61,7 @@ import static org.cloudsimplus.util.Conversion.HUNDRED_PERCENT;
 ///
 /// The events happen in the following order:
 ///
-/// 1. a time to inject a Host failure is generated using a given [Random Number Generator][org.cloudsimplus.distributions];
+/// 1. a time to inject a Host failure is generated using a given [Random Number Generator][org.cloudsimplus.distributions.StatisticalDistribution];
 /// 2. a Host is randomly selected to fail at that time using an internal
 ///  [Uniform Random Number Generator][UniformDistr] with the same seed of the given generator;
 /// 3. the number of Host [Pe]s to fail is randomly generated using the internal generator;

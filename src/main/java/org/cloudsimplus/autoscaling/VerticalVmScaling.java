@@ -67,8 +67,8 @@ import java.util.function.Function;
 /// ## WARNING
 ///
 /// Make sure that the [UtilizationModel] of some of these `Cloudlets`
-/// is defined as [ABSOLUTE][#ABSOLUTE]. Defining the `UtilizationModel`
-/// of all `Cloudlets` running inside the `Vm` as [PERCENTAGE][#PERCENTAGE]
+/// is defined as [ABSOLUTE][UtilizationModel.Unit#ABSOLUTE]. Defining the `UtilizationModel`
+/// of all `Cloudlets` running inside the `Vm` as [PERCENTAGE][UtilizationModel.Unit#PERCENTAGE]
 /// causes these `Cloudlets` to automatically increase/decrease their resource usage when the
 /// `Vm` resource is vertically scaled.
 /// This is not a CloudSim Plus issue, but the natural and maybe
@@ -78,7 +78,7 @@ import java.util.function.Function;
 /// a `Vm` to double its [Ram] when its usage reaches 50%.
 /// The `Vm` has 10GB of RAM.
 /// All `Cloudlets` running inside this `Vm` have a [UtilizationModel]
-/// for their RAM utilization defined in [PERCENTAGE][#PERCENTAGE].
+/// for their RAM utilization defined in [PERCENTAGE][UtilizationModel.Unit#PERCENTAGE].
 /// When the RAM utilization of all these
 /// `Cloudlets` reach 50% (5GB), the `Vm` [Ram] will be doubled.
 /// However, as the RAM usage of the running `Cloudlets` is defined in percentage, they will

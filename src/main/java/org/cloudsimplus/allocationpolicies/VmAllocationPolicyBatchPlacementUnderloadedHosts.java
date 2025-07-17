@@ -37,7 +37,7 @@ import java.util.List;
 import java.util.Set;
 
 /// Allocates one different underloaded Host for each submitted VM from a List (in batch),
-/// if [#isBatchVmCreation()] is true. This way,
+/// if [DatacenterBroker#isBatchVmCreation()] is true. This way,
 /// the broker sends a List of VMs to be created in a single event
 /// (instead of sending a new event for each VM).
 ///

@@ -31,25 +31,24 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
 
-/**
- * <p>A class that implements the Decorator Design Pattern in order to
- * include features in an existing class.
- * It is used to ensure that specific methods are called only after
- * a given method is called.</p>
- *
- * For instance, the methods {@link #getVmBuilder()} and
- * {@link #getCloudletBuilder()} can only be called after
- * some {@link DatacenterBrokerSimple} was created by calling
- * the {@link #create()} method.<br>
- * This way, after the method is called, it returns
- * an instance of this decorator that allow
- * chained calls to the specific decorator methods
- * as the following example:
- * <ul><li>{@link #create()}.{@link #getVmBuilder()}</li></ul>
- *
- * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 1.0
- */
+///
+/// A class that implements the Decorator Design Pattern to
+/// include features in an existing class.
+/// It is used to ensure that specific methods are called only after
+/// a given method is called.
+/// For instance, the methods [#getVmBuilder()] and
+/// [#getCloudletBuilder()] can only be called after
+/// some [DatacenterBrokerSimple] was created by calling
+/// the [#create()] method.
+/// This way, after the method is called, it returns
+/// an instance of this decorator that allows
+/// chained calls to the specific decorator methods
+/// as the following example:
+///
+///   - [#create()].[#getVmBuilder()]
+///
+/// @author Manoel Campos da Silva Filho
+/// @since CloudSim Plus 1.0
 public class BrokerBuilderDecorator implements BrokerBuilderInterface {
     private final BrokerBuilder builder;
 

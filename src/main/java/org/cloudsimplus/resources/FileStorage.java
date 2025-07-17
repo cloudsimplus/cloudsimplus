@@ -25,7 +25,7 @@ import org.slf4j.LoggerFactory;
 /// @author Uros Cibej
 /// @author Anthony Sulistio
 /// @author Manoel Campos da Silva Filho
-/// @see [Hard disk drive performance characteristics](https://en.wikipedia.org/wiki/Hard_disk_drive_performance_characteristics#Access_time)
+/// @link [Hard disk drive performance characteristics](https://en.wikipedia.org/wiki/Hard_disk_drive_performance_characteristics#Access_time)
 public interface FileStorage extends Resource {
     /**
      * An attribute that implements the Null Object Design Pattern for {@link FileStorage} objects.

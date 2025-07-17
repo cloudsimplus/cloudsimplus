@@ -26,7 +26,7 @@ import java.util.Map;
 /// using a [ContinuousDistribution].
 ///
 /// The class may return different utilization values for the same requested time.
-/// For performance reasons, this behavior is dependent of the [#isHistoryEnabled()]
+/// For performance reasons, this behavior is dependent on the [#isHistoryEnabled()]
 /// and [#isAlwaysGenNewRandUtilization()].
 ///
 /// @author Anton Beloglazov

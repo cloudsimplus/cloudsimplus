@@ -52,7 +52,7 @@ import java.util.function.Function;
 /// [Google Cluster Data](https://github.com/google/cluster-data/blob/master/ClusterData2011_2.md).
 ///
 /// When a trace file is [processed][#process()], it creates a list of available [Host]s for every line with a zero timestamp
-/// and the [event type][#getEventType()] equals to [#ADD], meaning
+/// and the [event type][#getEventType()] equals to [MachineEventType#ADD], meaning
 /// that such Hosts will be immediately available at the simulation start.
 /// Hosts addition events with timestamp greater than zero will be scheduled to be added
 /// just at the specified type. In the same way, Hosts removal is accordingly scheduled.
@@ -280,7 +280,7 @@ public final class GoogleMachineEventsTraceReader extends GoogleTraceReaderAbstr
      *
      * @return the {@link MachineEventType} value
      */
-    private MachineEventType getEventType() {
+    public MachineEventType getEventType() {
         return MachineEventType.getValue(MachineEventField.EVENT_TYPE.getValue(this));
     }
 
