@@ -164,22 +164,6 @@
              -->
             <id>sonatype</id>
 
-            <!--
-            URLs to deploy the project at the Maven Central (http://mvnrepository.com)
-            using a Sonatype account (http://central.sonatype.org)
-            See the "all" profile in this pom for deployment information.
-            -->
-            <distributionManagement>
-                <snapshotRepository>
-                    <id>ossrh</id>
-                    <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-                </snapshotRepository>
-                <repository>
-                    <id>ossrh</id>
-                    <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-                </repository>
-            </distributionManagement>
-
             <build>
                 <plugins>
                     <plugin>
