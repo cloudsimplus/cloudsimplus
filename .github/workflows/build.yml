@@ -8,14 +8,14 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    name: Java 24 Build
+    name: Java Build
     steps:
       - uses: actions/checkout@v4
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
           distribution: 'corretto'
-          java-version: 24
+          java-version: 25
           cache: 'maven'
       - name: Maven Build
         run: mvn clean verify -B -V -Pintegration-tests
