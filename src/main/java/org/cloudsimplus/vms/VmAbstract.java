@@ -305,6 +305,13 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
     }
 
     /**
+     * Frees all PEs of this VM, setting the {@link #freePesNumber} to the total number of PEs.
+     */
+    public void freeAllPes() {
+        setFreePesNumber(getPesNumber());
+    }
+
+    /**
      * Adds a given number of expected free PEs to the total number of expected free PEs.
      * This value is updated as cloudlets are assigned to VMs but not submitted to the broker for running yet.
      *
