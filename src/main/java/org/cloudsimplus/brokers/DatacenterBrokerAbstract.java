@@ -903,6 +903,7 @@ public non-sealed abstract class DatacenterBrokerAbstract extends CloudSimEntity
             getSimulation().clockStr(), getName(), cloudlet, lifeTime, cloudlet.getVm());
 
         if (cloudlet.getVm().getCloudletScheduler().isEmpty()) {
+            ((VmAbstract) cloudlet.getVm()).freeAllPes();
             requestIdleVmDestruction(cloudlet.getVm());
             return true;
         }
