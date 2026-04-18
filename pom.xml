@@ -159,8 +159,7 @@
              To execute use: mvn clean deploy -P sonatype
 
              To check the deployed artifact and probably release it to maven central
-             you should visit https://oss.sonatype.org.
-             MAKE SURE YOU ARE LOGGED IN TO SEE YOUR DEPLOYMENTS.
+             you should visit https://central.sonatype.com
              -->
             <id>sonatype</id>
 
