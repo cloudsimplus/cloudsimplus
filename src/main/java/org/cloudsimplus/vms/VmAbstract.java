@@ -219,7 +219,6 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
 
         setInMigration(false);
         this.host = Host.NULL;
-        setCloudletScheduler(new CloudletSchedulerTimeShared());
 
         this.setHorizontalScaling(HorizontalVmScaling.NULL);
         this.setRamVerticalScaling(VerticalVmScaling.NULL);
