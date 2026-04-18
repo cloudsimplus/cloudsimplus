@@ -524,6 +524,12 @@ public abstract non-sealed class CloudletSchedulerAbstract implements CloudletSc
             usedPes += cle.getCloudlet().getPesNumber();
         }
 
+        /*
+        TODO: This logic should be encapsuled inside the VmAbstract class.
+        A new method should be introduced that accepts just the usedPes and
+        updates the freePesNumber accordingly, since that is a property of the VM and not of the scheduler.
+        This will make this call much simples and provides more cohesion.
+        */
         ((VmSimple) vm).setFreePesNumber(vm.getPesNumber() - usedPes);
 
         return nextProcessing;
