@@ -24,30 +24,34 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * @see <a href="https://github.com/cloudsimplus/cloudsimplus/issues/544">Issue #544</a>
  */
 public final class VmFreePesAfterCloudletsFinishTest {
-    private static final int HOST_MIPS = 1000;
+    // Constants that matter for the tests.
     private static final int VM_PES = 2;
     private static final int CLOUDLET_PES = 1;
-    private static final int CLOUDLET_LENGTH = 10_000;
-    private static final int HRAM = 2048;
-    private static final int HBW = 10_000;
-    private static final int HSTORAGE = 1_000_000;
-    private static final int VM_RAM = 512;
-    private static final int VM_BW = 1000;
 
+    // Attributes used across the entire test class
     private CloudSimPlus simulation;
     private VmSimple vm;
+    private static final int HOST_MIPS = 1000;
 
     @BeforeEach
     public void setUp() {
+        // Values for attributes that don't matter to the test
+        final int hStorage = 1_000_000;
+        final int hBW = 10_000;
+        final int hRAM = 2048;
+        final int vmRAM = 512;
+        final int vmBW = 1000;
+        final int cloudletLength = 10_000;
+
         simulation = new CloudSimPlus();
-        final var host = new HostSimple(HRAM, HBW, HSTORAGE, List.of(newPe(), newPe()));
+        final var host = new HostSimple(hRAM, hBW, hStorage, List.of(newPe(), newPe()));
         new DatacenterSimple(simulation, List.of(host));
 
         final var broker = new DatacenterBrokerSimple(simulation);
         vm = new VmSimple(HOST_MIPS, VM_PES);
-        vm.setRam(VM_RAM).setBw(VM_BW).setSize(HBW);
+        vm.setRam(vmRAM).setBw(vmBW).setSize(hBW);
         broker.submitVmList(List.of(vm));
-        final var cloudlet = new CloudletSimple(CLOUDLET_LENGTH, CLOUDLET_PES);
+        final var cloudlet = new CloudletSimple(cloudletLength, CLOUDLET_PES);
         broker.submitCloudletList(List.of(cloudlet));
     }
 
