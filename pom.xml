@@ -29,7 +29,7 @@
         <license-maven-plugin.version>5.0.0</license-maven-plugin.version>
         <!-- License file to be used by the com.mycila.license-maven-plugin -->
         <copyrightfile>COPYRIGHT</copyrightfile>
-        <logback.version>1.5.18</logback.version>
+        <logback.version>1.5.25</logback.version>
         <junit.version>5.13.4</junit.version>
         <lombok.version>1.18.42</lombok.version>
     </properties>
@@ -159,8 +159,7 @@
              To execute use: mvn clean deploy -P sonatype
 
              To check the deployed artifact and probably release it to maven central
-             you should visit https://oss.sonatype.org.
-             MAKE SURE YOU ARE LOGGED IN TO SEE YOUR DEPLOYMENTS.
+             you should visit https://central.sonatype.com
              -->
             <id>sonatype</id>
 
