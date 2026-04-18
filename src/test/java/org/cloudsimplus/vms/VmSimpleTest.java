@@ -18,6 +18,7 @@ import org.cloudsimplus.mocks.MocksHelper;
 import org.cloudsimplus.schedulers.MipsShare;
 import org.cloudsimplus.schedulers.cloudlet.CloudletScheduler;
 import org.cloudsimplus.schedulers.cloudlet.CloudletSchedulerAbstract;
+import org.cloudsimplus.schedulers.cloudlet.CloudletSchedulerSpaceShared;
 import org.cloudsimplus.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -347,5 +348,17 @@ public class VmSimpleTest {
         vm.setCreated(true);
 
         assertTrue(vm.getCurrentRequestedMips().isEmpty());
+    }
+
+    /**
+     * Checks that a CloudletScheduler passed in the constructor is preserved
+     * and not overwritten during VM initialization.
+     * @see <a href="https://github.com/cloudsimplus/cloudsimplus/issues/542">Issue #542</a>
+     */
+    @Test
+    public void cloudletSchedulerPassedInConstructorIsPreserved() {
+        final var scheduler = new CloudletSchedulerSpaceShared();
+        final var vm = new VmSimple(1000, 2, scheduler);
+        assertInstanceOf(CloudletSchedulerSpaceShared.class, vm.getCloudletScheduler());
     }
 }
