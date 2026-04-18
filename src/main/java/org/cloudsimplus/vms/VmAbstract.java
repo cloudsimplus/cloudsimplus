@@ -128,6 +128,7 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
         this.bootModel = BootModel.NULL;
 
         // Initializes the number of free PEs as the number of VM PEs
+        // TODO: It's not calling setFreePesNumber, which has some logic there.
         this.freePesNumber = pesNumber;
         this.expectedFreePesNumber = pesNumber;
 
@@ -299,6 +300,8 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
         if (freePesNumber < 0) {
             freePesNumber = 0;
         }
+
+        // TODO: If the freePesNumber is changed, a warning should be issued
         this.freePesNumber = Math.min(freePesNumber, getPesNumber());
         return this;
     }
