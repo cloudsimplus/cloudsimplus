@@ -339,7 +339,7 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
      * @param expectedFreePes the expected free PEs number to set
      */
     private Vm setExpectedFreePesNumber(final long expectedFreePes) {
-        this.expectedFreePesNumber = Math.max(expectedFreePes, 0);
+        this.expectedFreePesNumber = Math.clamp(expectedFreePes, 0, getPesNumber());
         return this;
     }
 
