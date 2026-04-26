@@ -5,6 +5,8 @@
     <groupId>org.cloudsimplus</groupId>
     <artifactId>cloudsimplus</artifactId>
     <version>9.0.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
+
 
     <name>CloudSim Plus API</name>
     <description>CloudSim Plus: A modern, highly extensible and easier-to-use Java 25+ Framework for Modeling and Simulation of Cloud Computing Infrastructures and Services</description>
@@ -287,7 +289,7 @@
 					<archive>
 						<manifest>
 							<!-- Adds dependencies to classpath into the manifest file inside the jar !-->
-							<addClasspath>true</addClasspath>
+							<addClasspath>false</addClasspath>
 
 							<!-- Defines that the dependencies will follow the same
 							 hierarchical directory structure of a maven repository !-->
@@ -314,6 +316,7 @@
                             <version>${lombok.version}</version>
                         </path>
                     </annotationProcessorPaths>
+                    <useModulePath>false</useModulePath>
                 </configuration>
             </plugin>
 

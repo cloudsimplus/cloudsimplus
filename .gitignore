@@ -36,3 +36,5 @@ Test.java
 deploy.sh
 checkstyle.sh
 node_modules/
+
+.claude/

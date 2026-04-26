@@ -329,6 +329,12 @@ public class CloudSimTag{
     public static final int HOST_FAILURE = FAILURE + 1;
 
     /**
+     * Denotes a request to generate a {@link org.cloudsimplus.vms.Vm} failure
+     * (i.e., a fault that originates at the VM level rather than at the underlying Host).
+     */
+    public static final int VM_FAILURE = FAILURE + 2;
+
+    /**
      * Denotes a request to a {@link Datacenter} to add a {@link Host} or list of Hosts.
      * The {@link SimEvent#getData()} must be a Host to be added
      * to the Datacenter where the message is being sent to.
