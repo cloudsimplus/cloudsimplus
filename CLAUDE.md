@@ -70,6 +70,7 @@ The main simulation entities form a layered infrastructure:
 | `listeners` | Event listener interfaces and info objects |
 | `builders` | Fluent builders for simulation setup |
 | `heuristics` | Optimization heuristics (Simulated Annealing, etc.) |
+| `services` | Microservice interdependencies — `Service`, `ServiceCall` graphs, `ServiceRequest`, `ServiceBrokerSimple` for chained call simulation (e.g. `Request → A → B → A → D → E`) |
 
 ## Code Style
 
