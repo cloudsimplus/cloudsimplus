@@ -94,9 +94,12 @@ public class ServiceSimple implements Service {
         if (vm == Vm.NULL) {
             return this;
         }
-        if (!vms.contains(vm)) {
-            vms.add(vm);
+        for (final Vm existing : vms) {
+            if (existing == vm) {
+                return this;
+            }
         }
+        vms.add(vm);
         return this;
     }
 

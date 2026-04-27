@@ -151,4 +151,9 @@ public class VmSimple extends VmAbstract {
                Long.compare(this.getId(), obj.getId()) +
                this.getBroker().compareTo(obj.getBroker());
     }
+
+    @Override
+    public boolean isNull() {
+        return false;
+    }
 }

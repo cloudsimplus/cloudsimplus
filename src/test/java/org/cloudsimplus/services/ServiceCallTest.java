@@ -55,7 +55,7 @@ class ServiceCallTest {
     @Test
     void serviceSelectVmReturnsNullWhenNoVms() {
         final var svc = new ServiceSimple("empty");
-        assertSame(Vm.NULL, svc.selectVm());
+        assertTrue(svc.selectVm().isNull());
     }
 
     @Test
@@ -127,6 +127,6 @@ class ServiceCallTest {
         assertSame(svcA, aRoot.getService());
         assertSame(svcA, anotherA.getService());
         assertEquals(1, bCall.getChildren().size());
-        assertSame(eCall, dCall.getChildren().get(0));
+        assertSame(eCall, dCall.getChildren().getFirst());
     }
 }

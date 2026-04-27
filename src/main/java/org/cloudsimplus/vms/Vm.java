@@ -659,6 +659,8 @@ public sealed interface Vm
      */
     Processor getProcessor();
 
+    boolean isNull();
+
    /**
      * Gets the {@link DatacenterBroker} that represents the owner of this Vm.
      *

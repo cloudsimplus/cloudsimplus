@@ -210,6 +210,12 @@ final class VmNull implements Vm {
     @Override public VerticalVmScaling getBwVerticalScaling() { return VerticalVmScaling.NULL; }
     @Override public VerticalVmScaling getPeVerticalScaling() { return VerticalVmScaling.NULL; }
     @Override public Processor getProcessor() { return Processor.NULL; }
+
+    @Override
+    public boolean isNull() {
+        return true;
+    }
+
     @Override public String getDescription() { return ""; }
     @Override public Vm setDescription(String description) { return this; }
     @Override public VmGroup getGroup() { return null; }
