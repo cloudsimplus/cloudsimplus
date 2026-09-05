@@ -310,6 +310,10 @@ If you want your project to be listed here, send us a Pull Request. Make sure yo
 1. [LEAF](https://github.com/dos-group/leaf-java): Simulator for modeling Large Energy-Aware Fog computing environments.
 1. [EPCSAC](https://github.com/TNanukem/EPCSAC): Extensible Platform for Cloud Scheduling Algorithm Comparison.
 1. [SatEdgeSim](https://github.com/wjy491156866/SatEdgeSim): A Toolkit for Modeling and Simulation of Performance Evaluation in Satellite Edge Computing Environments.
+- **IA-Cloud Adaptive Load Balancing Framework**
+  An open-source AI-driven framework built on top of CloudSim Plus that automatically predicts and dynamically adapts load balancing algorithms according to QoS requirements. The framework supports dynamic runtime adaptation and optional integration with the IA-Cloud Prediction Service for  AI-assisted algorithm selection.
+ https://github.com/BenhalimaAnouar/iacloud-framework.git
+ Platform link  https://iacloudac.ma/
 
 <p align="right"><a href="#top">:arrow_up:</a></p>
 
