@@ -13,6 +13,8 @@ import org.cloudsimplus.hosts.Host;
 import org.cloudsimplus.resources.ResourceManageable;
 import org.cloudsimplus.vms.Vm;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
 
@@ -32,6 +34,14 @@ public abstract non-sealed class ResourceProvisionerAbstract implements Resource
 
     /** @see #getVmResourceFunction() */
     private Function<Vm, ResourceManageable> vmResourceFunction;
+
+    /**
+     * A map where each key is a VM and each value is the amount of the
+     * {@link #getPmResource() PM resource} provisioned to that VM.
+     * It's kept apart from the VM resource, since that one stores the amount
+     * actually used by the VM's Cloudlets, not the amount provisioned to the VM.
+     */
+    private final Map<Vm, Long> vmAllocationMap = new HashMap<>();
 
     /**
      * Creates a ResourceManageable Provisioner for which the {@link #getPmResource() resource}
@@ -55,7 +65,26 @@ public abstract non-sealed class ResourceProvisionerAbstract implements Resource
 
     @Override
     public long getAllocatedResourceForVm(final Vm vm) {
-        return vmResourceFunction.apply(vm).getAllocatedResource();
+        return vmAllocationMap.getOrDefault(vm, 0L);
+    }
+
+    /**
+     * Stores the amount of the {@link #getPmResource() PM resource} provisioned to a given VM.
+     * @param vm the VM to set the provisioned amount
+     * @param amount the total amount provisioned to the VM
+     */
+    protected void setAllocatedResourceForVm(final Vm vm, final long amount) {
+        vmAllocationMap.put(vm, amount);
+    }
+
+    /**
+     * Removes the amount of the {@link #getPmResource() PM resource} provisioned to a given VM.
+     * @param vm the VM to remove the provisioned amount
+     * @return the amount that was provisioned to the VM (0 if none)
+     */
+    protected long removeAllocatedResourceForVm(final Vm vm) {
+        final Long amount = vmAllocationMap.remove(vm);
+        return amount == null ? 0 : amount;
     }
 
     @Override
