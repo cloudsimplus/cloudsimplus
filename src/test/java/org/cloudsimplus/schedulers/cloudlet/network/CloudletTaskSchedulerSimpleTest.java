@@ -35,6 +35,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * to cloudlet C, which runs in VM 1 (in another host).
  * C has one receive task for A's packet (R_A), then another one for B's packet (R_B).</p>
  *
+ * <p>It also checks that a cloudlet waiting for packets doesn't take a share of the VM's CPU (issue #556).</p>
+ *
  * @author Manoel Campos da Silva Filho
  */
 class CloudletTaskSchedulerSimpleTest {
@@ -47,6 +49,7 @@ class CloudletTaskSchedulerSimpleTest {
     private static final long PACKET_BYTES = 1000;
     private static final long LENGTH = 10_000;
     private static final double MAX_SIM_TIME = 1000;
+    private static final double FINISH_TIME_TOLERANCE = 1;
 
     private CloudSimPlus simulation;
     private DatacenterBroker broker;
@@ -97,6 +100,28 @@ class CloudletTaskSchedulerSimpleTest {
         assertAllFinished(dag);
         assertEquals(1, dag.receiveFromA.getPacketsReceived().size());
         assertEquals(1, dag.receiveFromB.getPacketsReceived().size());
+    }
+
+    /**
+     * While C is waiting for A's packet, it must not take a share of VM 1's CPU.
+     * This way, the other 2 cloudlets in VM 1 (which has 2 PEs) must get
+     * a full PE each (issue #556).
+     */
+    @Test
+    void cloudletWaitingForPacketsDoesNotTakeCpuShare() {
+        final var dag = new Dag(LENGTH * 3, LENGTH, true);
+        final var cloudlet1 = createCloudlet(vmList.get(1));
+        final var cloudlet2 = createCloudlet(vmList.get(1));
+        addExecutionTask(cloudlet1, LENGTH);
+        addExecutionTask(cloudlet2, LENGTH);
+
+        broker.submitCloudletList(List.of(dag.a, dag.b, dag.c, cloudlet1, cloudlet2));
+        simulation.start();
+
+        assertAllFinished(dag);
+        final double expectedFinishTime = LENGTH / (double) MIPS;
+        assertEquals(expectedFinishTime, cloudlet1.getFinishTime(), FINISH_TIME_TOLERANCE);
+        assertEquals(expectedFinishTime, cloudlet2.getFinishTime(), FINISH_TIME_TOLERANCE);
     }
 
     private void runSimulation(final Dag dag) {

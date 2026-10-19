@@ -109,6 +109,15 @@ public class CloudletTaskSchedulerSimple implements CloudletTaskScheduler {
         return true;
     }
 
+    @Override
+    public boolean isCloudletWaitingForPackets(@NonNull final Cloudlet cloudlet) {
+        return cloudlet instanceof NetworkCloudlet nc &&
+               nc.getCurrentTask()
+                 .filter(CloudletTask::isReceiveTask)
+                 .filter(CloudletTask::isActive)
+                 .isPresent();
+    }
+
     /**
      * Gets the list of packets to be sent from a given source
      * cloudlet and adds this list to the list of all packets to send

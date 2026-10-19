@@ -29,4 +29,7 @@ final class CloudletTaskSchedulerNull implements CloudletTaskScheduler {
     @Override public boolean isTimeToUpdateCloudletProcessing(Cloudlet cloudlet) {
         return true;
     }
+    @Override public boolean isCloudletWaitingForPackets(Cloudlet cloudlet) {
+        return false;
+    }
 }
