@@ -98,4 +98,15 @@ public interface CloudletTaskScheduler {
      * @return true if it's time to update Cloudlet execution, false otherwise.
      */
     boolean isTimeToUpdateCloudletProcessing(Cloudlet cloudlet);
+
+    /**
+     * Checks if a given Cloudlet is blocked, waiting for packets to be received.
+     * A blocked Cloudlet doesn't use the CPU, so it must not take a share of the VM's MIPS.
+     * Different from {@link #isTimeToUpdateCloudletProcessing(Cloudlet)},
+     * this method has no side effects.
+     *
+     * @param cloudlet the Cloudlet to check
+     * @return true if the Cloudlet is waiting for packets, false otherwise
+     */
+    boolean isCloudletWaitingForPackets(Cloudlet cloudlet);
 }

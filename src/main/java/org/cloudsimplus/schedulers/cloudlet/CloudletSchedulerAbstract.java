@@ -164,11 +164,13 @@ public abstract non-sealed class CloudletSchedulerAbstract implements CloudletSc
     }
 
     /**
-     * @return the total number of PEs from all cloudlets currently executing in this scheduler.
+     * @return the total number of PEs from all cloudlets currently executing in this scheduler,
+     * excluding the ones blocked waiting for packets (which don't use the CPU).
      */
     private long totalAllExecCloudletsPes() {
         return cloudletExecList.stream()
                                .map(CloudletExecution::getCloudlet)
+                               .filter(cloudlet -> !taskScheduler.isCloudletWaitingForPackets(cloudlet))
                                .mapToLong(Cloudlet::getPesNumber).sum();
     }
 
