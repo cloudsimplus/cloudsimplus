@@ -18,6 +18,16 @@ jobs:
           server-username: MAVEN_USERNAME
           server-password: MAVEN_PASSWORD
           cache: 'maven'
+      # The plugin publishes -SNAPSHOT versions to the snapshot repository instead of releasing them.
+      # This avoids that when a tag is pushed while the pom.xml still has a SNAPSHOT version
+      # (SNAPSHOTs are published by snapshot.yml).
+      - name: Check the project version matches the tag
+        run: |
+          version=$(mvn --batch-mode -q help:evaluate -Dexpression=project.version -DforceStdout)
+          if [[ "v$version" != "$GITHUB_REF_NAME" ]]; then
+            echo "::error::The project version ($version) doesn't match the tag ($GITHUB_REF_NAME). Update the version in pom.xml before creating the tag."
+            exit 1
+          fi
       - name: Publish package
         run: SIGN_KEY="${{ secrets.OSSRH_GPG_SIGN_KEY }}" mvn --no-transfer-progress --batch-mode -Psonatype deploy
         env:
