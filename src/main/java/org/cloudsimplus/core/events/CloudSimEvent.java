@@ -140,9 +140,10 @@ public final class CloudSimEvent implements SimEvent {
      * @param source the event to clone
      */
     public CloudSimEvent(final SimEvent source) {
+        // The time of the source event is absolute, so it must not be added to the current simulation time again.
         this(
-            source.getType(), source.getTime(),
-            source.getSource(), source.getDestination(), source.getTag(), source.getData());
+            source.getType(), source.getSource(), source.getDestination(),
+            source.getTag(), source.getData(), source.getTime());
     }
 
     /**
@@ -160,17 +161,43 @@ public final class CloudSimEvent implements SimEvent {
         final SimEntity source, final SimEntity destination,
         final int tag, final Object data)
     {
-        if (delay < 0) {
-            throw new IllegalArgumentException("Delay can't be negative.");
-        }
+        this(type, source, destination, tag, data, timeAfterDelay(source, delay));
+    }
 
+    /**
+     * Creates a CloudSimEvent to be fired at a given absolute time.
+     * @param type the internal type of the event
+     * @param source the source entity which is sending the message
+     * @param destination the destination entity which has to receive the message
+     * @param tag the tag that identifies the type of the message
+     * @param data the data attached to the message, that depends on the message tag
+     * @param time the absolute simulation time the event should be fired
+     */
+    private CloudSimEvent(
+        final Type type,
+        final SimEntity source, final SimEntity destination,
+        final int tag, final Object data, final double time)
+    {
         this.type = type;
         this.setSource(source);
         this.setDestination(destination);
         this.setSimulation(source.getSimulation());
-        this.time = simulation.clock() + delay;
+        this.time = time;
         this.tag = tag;
         this.data = data;
+    }
+
+    /**
+     * {@return the absolute simulation time after a given delay from the current simulation time}
+     * @param source the source entity which is sending the message
+     * @param delay how many seconds after the current simulation time the event should be scheduled
+     */
+    private static double timeAfterDelay(@NonNull final SimEntity source, final double delay) {
+        if (delay < 0) {
+            throw new IllegalArgumentException("Delay can't be negative.");
+        }
+
+        return source.getSimulation().clock() + delay;
     }
 
     @Override
