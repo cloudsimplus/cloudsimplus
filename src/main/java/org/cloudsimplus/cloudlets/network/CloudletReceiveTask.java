@@ -23,6 +23,27 @@ import java.util.List;
  * Each receiver task expects to receive packets
  * from just one VM.
  *
+ * <p>The task never takes more packets than the {@link #getExpectedPacketsToReceive() expected number}.
+ * The remaining ones are kept for the next receive tasks of the same Cloudlet.</p>
+ *
+ * <p>If multiple Cloudlets in the same {@link #getSourceVm() source VM} send packets
+ * to the Cloudlet of this task (such as in a DAG where a Cloudlet has multiple parents in the same VM),
+ * you should give the {@link #getSenderCloudlet() sender Cloudlet}, so that the task
+ * only accepts packets from that Cloudlet.
+ * If you don't, the simulation still finishes, as long as the total number of packets
+ * sent from that VM to the Cloudlet is equal to the total expected by its receive tasks.
+ * However, a task may receive packets sent by another Cloudlet in that VM
+ * (for instance, the task waiting for a packet from Cloudlet A may receive the packet from Cloudlet B),
+ * so it may finish before the Cloudlet it depends on.</p>
+ *
+ * <p>If fewer packets are sent than expected, the task waits forever
+ * and the Cloudlet never finishes, since there is no timeout for receiving packets yet.</p>
+ *
+ * <p><b>WARNING:</b> A Cloudlet waiting for packets keeps using its PEs.
+ * If you use a {@link org.cloudsimplus.schedulers.cloudlet.CloudletSchedulerSpaceShared}
+ * and the sender Cloudlet is waiting in the same VM for PEs to be released,
+ * the simulation will get stuck (deadlock).</p>
+ *
  * <p>
  * Please refer to the following publication for more details:
  * <ul>
@@ -85,15 +106,63 @@ public non-sealed class CloudletReceiveTask extends CloudletTask {
     private final Vm sourceVm;
 
     /**
-     * Creates a new task.
+     * The Cloudlet from where packets are expected to be received,
+     * or null if packets from any Cloudlet inside the {@link #getSourceVm() source VM} are accepted.
+     */
+    private final NetworkCloudlet senderCloudlet;
+
+    /**
+     * Creates a new task that accepts packets from any Cloudlet inside the given VM.
+     * If multiple Cloudlets in that VM send packets to the Cloudlet of this task,
+     * the task may receive packets from a Cloudlet other than the one it depends on.
+     * In such a case, use {@link #CloudletReceiveTask(int, Vm, NetworkCloudlet)}.
      *
      * @param id id to assign to the task
      * @param sourceVm Vm from where packets are expected to be received
+     * @see #CloudletReceiveTask(int, Vm, NetworkCloudlet)
      */
     public CloudletReceiveTask(final int id, final Vm sourceVm) {
+        this(id, sourceVm, null);
+    }
+
+    /**
+     * Creates a new task that accepts packets just from a given Cloudlet.
+     *
+     * @param id id to assign to the task
+     * @param sourceVm Vm from where packets are expected to be received
+     * @param senderCloudlet Cloudlet from where packets are expected to be received
+     *                       (or null to accept packets from any Cloudlet inside the sourceVm)
+     */
+    public CloudletReceiveTask(final int id, @NonNull final Vm sourceVm, final NetworkCloudlet senderCloudlet) {
         super(id);
         this.packetsReceived = new ArrayList<>();
         this.sourceVm = sourceVm;
+        this.senderCloudlet = senderCloudlet;
+    }
+
+    /**
+     * Checks if a packet is expected by this task, considering its
+     * {@link #getSourceVm() source VM}, {@link #getSenderCloudlet() sender Cloudlet} (if given)
+     * and the Cloudlet the task belongs to.
+     *
+     * @param packet the packet to check
+     * @return true if the packet is expected by this task, false otherwise
+     */
+    public boolean isPacketExpected(@NonNull final VmPacket packet) {
+        return packet.getSource().equals(sourceVm) &&
+               packet.getReceiverCloudlet().equals(getCloudlet()) &&
+               isPacketFromExpectedSender(packet);
+    }
+
+    private boolean isPacketFromExpectedSender(final VmPacket packet) {
+        return senderCloudlet == null || senderCloudlet.equals(packet.getSenderCloudlet());
+    }
+
+    /**
+     * @return the number of packets still to be received for the task to finish.
+     */
+    public long getRemainingPacketsToReceive() {
+        return Math.max(0, expectedPacketsToReceive - packetsReceived.size());
     }
 
     /**
