@@ -1,0 +1,69 @@
+# Publishes the current SNAPSHOT version (such as 9.0.0-SNAPSHOT) to the Maven Central snapshot repository:
+# https://central.sonatype.com/repository/maven-snapshots/
+#
+# It runs after the "build" workflow succeeds for a push to master, so only commits that passed the tests are published.
+# It can also be started manually from the Actions tab.
+# Nothing is published when the project version is not a SNAPSHOT (final versions are published by deploy.yml).
+#
+# Snapshots are deleted from Maven Central after 90 days, so publishing at each push keeps them available.
+# It requires SNAPSHOTs to be enabled for the org.cloudsimplus namespace on the Central Portal:
+# https://central.sonatype.org/publish/publish-portal-snapshots/
+name: Publish SNAPSHOT to Maven Central
+on:
+  workflow_run:
+    workflows: [ build ]
+    types: [ completed ]
+    branches: [ master ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# A new run cancels a previous one still in progress, since only the latest snapshot matters.
+concurrency:
+  group: snapshot
+  cancel-in-progress: true
+
+jobs:
+  publish-snapshot:
+    runs-on: ubuntu-latest
+    # For workflow_run, just publish when the build succeeded for a push to this repository.
+    # This avoids publishing code from pull requests, including ones from forks whose branch is also named master.
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.workflow_run.conclusion == 'success' &&
+       github.event.workflow_run.event == 'push' &&
+       github.event.workflow_run.head_repository.full_name == github.repository)
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # The exact commit that was built and tested
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+
+      - name: Set up Java and Maven Central credentials
+        uses: actions/setup-java@v4
+        with:
+          java-version: '25'
+          distribution: 'temurin'
+          # Creates ~/.m2/settings.xml with the credentials for the "central" server
+          server-id: central
+          server-username: MAVEN_USERNAME
+          server-password: MAVEN_PASSWORD
+          cache: 'maven'
+
+      - name: Get project version
+        id: version
+        run: echo "version=$(mvn --batch-mode -q help:evaluate -Dexpression=project.version -DforceStdout)" >> "$GITHUB_OUTPUT"
+
+      - name: Skip non-SNAPSHOT version
+        if: ${{ !endsWith(steps.version.outputs.version, '-SNAPSHOT') }}
+        run: echo "::notice::Version ${{ steps.version.outputs.version }} is not a SNAPSHOT. Nothing to publish."
+
+      # Tests are skipped since the build workflow already ran them for this commit.
+      # The central-publishing-maven-plugin sends -SNAPSHOT versions to the snapshot repository.
+      - name: Publish SNAPSHOT
+        if: ${{ endsWith(steps.version.outputs.version, '-SNAPSHOT') }}
+        run: SIGN_KEY="${{ secrets.OSSRH_GPG_SIGN_KEY }}" mvn --no-transfer-progress --batch-mode -Psonatype -DskipTests deploy
+        env:
+          MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}

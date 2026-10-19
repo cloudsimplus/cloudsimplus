@@ -136,6 +136,69 @@ dependencies {
 }
 ```
 
+## 5.3 Using a SNAPSHOT (development) version
+
+Besides the final releases, a SNAPSHOT version (such as `9.0.0-SNAPSHOT`) is published each time the code in the `master` branch changes.
+It lets you try new features and fixes before they are released.
+
+> **Warning**
+> A SNAPSHOT version may change at any time and may have bugs or incompatible changes.
+> Since the same version is updated, your results may not be reproducible. Use a final version for your published experiments.
+
+SNAPSHOTs are not in the regular Maven Central repository, but in the
+[Maven Central snapshot repository](https://central.sonatype.org/publish/publish-portal-snapshots/).
+They are kept there for 90 days after being published.
+
+For Maven, add the snapshot repository and the SNAPSHOT version into your pom.xml:
+
+```xml
+<repositories>
+    <repository>
+        <name>Central Portal Snapshots</name>
+        <id>central-portal-snapshots</id>
+        <url>https://central.sonatype.com/repository/maven-snapshots/</url>
+        <releases>
+            <enabled>false</enabled>
+        </releases>
+        <snapshots>
+            <enabled>true</enabled>
+        </snapshots>
+    </repository>
+</repositories>
+
+<dependencies>
+    <dependency>
+        <groupId>org.cloudsimplus</groupId>
+        <artifactId>cloudsimplus</artifactId>
+        <version>9.0.0-SNAPSHOT</version>
+    </dependency>
+</dependencies>
+```
+
+For Gradle, add the following into your build.gradle:
+
+```groovy
+repositories {
+    mavenCentral()
+    maven {
+        url = 'https://central.sonatype.com/repository/maven-snapshots/'
+        mavenContent { snapshotsOnly() }
+    }
+}
+
+dependencies {
+    implementation 'org.cloudsimplus:cloudsimplus:9.0.0-SNAPSHOT'
+}
+```
+
+Some notes:
+
+- Final versions still come from Maven Central, since the snapshot repository is just used for SNAPSHOT versions.
+  This way, to move to the final version when it's released, just remove the `-SNAPSHOT` suffix (for instance, use `9.0.0`).
+- Maven checks for a newer SNAPSHOT once a day. To get the latest one right away, run `mvn -U` (for instance, `mvn -U clean package`).
+  For Gradle, use `gradle --refresh-dependencies`.
+- Check the latest published SNAPSHOT [here](https://central.sonatype.com/repository/maven-snapshots/org/cloudsimplus/cloudsimplus/maven-metadata.xml).
+
 <p align="right"><a href="#top">:arrow_up:</a></p>
 
 <a id="example"></a>
