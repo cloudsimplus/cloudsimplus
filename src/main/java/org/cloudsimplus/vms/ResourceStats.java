@@ -24,7 +24,8 @@
 package org.cloudsimplus.vms;
 
 import lombok.NonNull;
-import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
+import org.apache.commons.statistics.descriptive.DoubleStatistics;
+import org.apache.commons.statistics.descriptive.Statistic;
 import org.cloudsimplus.core.Machine;
 import org.cloudsimplus.hosts.Host;
 import org.cloudsimplus.resources.Resource;
@@ -42,7 +43,7 @@ import java.util.function.Function;
 public class ResourceStats<T extends Machine> {
     private final Function<T, Double> resourceUtilizationFunction;
     private final T machine;
-    private final SummaryStatistics stats;
+    private final DoubleStatistics stats;
     private double previousTime;
     private double previousUtilization;
 
@@ -55,7 +56,8 @@ public class ResourceStats<T extends Machine> {
     protected ResourceStats(@NonNull final T machine, @NonNull final Function<T, Double> resourceUtilizationFunction){
         this.resourceUtilizationFunction = resourceUtilizationFunction;
         this.machine = machine;
-        this.stats = new SummaryStatistics();
+        this.stats = DoubleStatistics.of(
+            Statistic.MIN, Statistic.MAX, Statistic.MEAN, Statistic.STANDARD_DEVIATION, Statistic.VARIANCE);
     }
 
     /**
@@ -84,7 +86,7 @@ public class ResourceStats<T extends Machine> {
                 return false;
             }
 
-            this.stats.addValue(utilization);
+            this.stats.accept(utilization);
             this.previousUtilization = utilization;
             return true;
         } finally {
@@ -93,45 +95,60 @@ public class ResourceStats<T extends Machine> {
     }
 
     /**
-     * @return the minimum resource utilization percentage (from 0 to 1).
+     * @return the minimum resource utilization percentage (from 0 to 1),
+     *         or {@link Double#NaN} if no sample was collected.
      */
     public double getMin(){
-        return stats.getMin();
+        return get(Statistic.MIN);
     }
 
     /**
-     * @return the maximum resource utilization percentage (from 0 to 1).
+     * @return the maximum resource utilization percentage (from 0 to 1),
+     *         or {@link Double#NaN} if no sample was collected.
      */
     public double getMax(){
-        return stats.getMax();
+        return get(Statistic.MAX);
     }
 
     /**
-     * @return the average resource utilization percentage (from 0 to 1).
+     * @return the average resource utilization percentage (from 0 to 1),
+     *         or {@link Double#NaN} if no sample was collected.
      */
     public double getMean(){
-        return stats.getMean();
+        return get(Statistic.MEAN);
     }
 
     /**
-     * @return the Standard Deviation of resource utilization percentage (from 0 to 1).
+     * @return the Standard Deviation of resource utilization percentage (from 0 to 1),
+     *         or {@link Double#NaN} if no sample was collected.
      */
     public double getStandardDeviation(){
-        return stats.getStandardDeviation();
+        return get(Statistic.STANDARD_DEVIATION);
     }
 
     /**
-     * @return the (sample) variance of resource utilization percentage (from 0 to 1).
+     * @return the (sample) variance of resource utilization percentage (from 0 to 1),
+     *         or {@link Double#NaN} if no sample was collected.
      */
     public double getVariance(){
-        return stats.getVariance();
+        return get(Statistic.VARIANCE);
+    }
+
+    /**
+     * Gets the value of a statistic.
+     * @param statistic the statistic to get
+     * @return the statistic value or {@link Double#NaN} if no sample was collected
+     *         (some statistics, such as min and max, would return infinite values otherwise)
+     */
+    private double get(final Statistic statistic) {
+        return isEmpty() ? Double.NaN : stats.getAsDouble(statistic);
     }
 
     /**
      * @return the number of collected resource utilization samples.
      */
     public double count(){
-        return stats.getN();
+        return stats.getCount();
     }
 
     /**

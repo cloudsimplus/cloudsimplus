@@ -7,11 +7,8 @@
  */
 package org.cloudsimplus.distributions;
 
-import org.apache.commons.math3.distribution.LogNormalDistribution;
-import org.apache.commons.math3.random.RandomGenerator;
-import org.cloudsimplus.util.MathUtil;
-
-import java.io.Serial;
+import org.apache.commons.rng.UniformRandomProvider;
+import org.apache.commons.statistics.distribution.LogNormalDistribution;
 
 /**
  * A Pseudo-Random Number Generator following the
@@ -20,15 +17,7 @@ import java.io.Serial;
  * @author Marcos Dias de Assuncao
  * @since CloudSim Toolkit 1.0
  */
-public class LogNormalDistr extends LogNormalDistribution implements ContinuousDistribution {
-    @Serial
-    private static final long serialVersionUID = -1023800693849880578L;
-
-    /** @see #isApplyAntitheticVariates() */
-    private boolean applyAntitheticVariates;
-
-    private long seed;
-
+public class LogNormalDistr extends ContinuousDistributionAbstract {
     /**
      * Creates a Log-normal Pseudo-Random Number Generator (PRNG).
      *
@@ -55,36 +44,7 @@ public class LogNormalDistr extends LogNormalDistribution implements ContinuousD
      * @param scale the scale parameter of this distribution
      * @param seed the seed
      */
-    public LogNormalDistr(final double shape, final double scale, final long seed, final RandomGenerator rng) {
-        super(rng, scale, shape);
-        this.seed = MathUtil.nonNegative(seed, "Seed");
-    }
-
-    @Override
-    public void reseedRandomGenerator(final long seed) {
-        super.reseedRandomGenerator(seed);
-        this.seed = seed;
-    }
-
-    @Override
-    public long getSeed() {
-        return seed;
-    }
-
-
-    @Override
-    public boolean isApplyAntitheticVariates() {
-        return applyAntitheticVariates;
-    }
-
-    @Override
-    public LogNormalDistr setApplyAntitheticVariates(final boolean applyAntitheticVariates) {
-        this.applyAntitheticVariates = applyAntitheticVariates;
-        return this;
-    }
-
-    @Override
-    public double originalSample() {
-        return super.sample();
+    public LogNormalDistr(final double shape, final double scale, final long seed, final UniformRandomProvider rng) {
+        super(LogNormalDistribution.of(scale, shape), seed, rng);
     }
 }

@@ -7,11 +7,8 @@
  */
 package org.cloudsimplus.distributions;
 
-import org.apache.commons.math3.distribution.GammaDistribution;
-import org.apache.commons.math3.random.JDKRandomGenerator;
-import org.apache.commons.math3.random.RandomGenerator;
-
-import java.io.Serial;
+import org.apache.commons.rng.UniformRandomProvider;
+import org.apache.commons.statistics.distribution.GammaDistribution;
 
 /**
  * A Pseudo-Random Number Generator following the
@@ -21,26 +18,16 @@ import java.io.Serial;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Toolkit 1.0
  */
-public class GammaDistr extends GammaDistribution implements ContinuousDistribution {
-    @Serial
-    private static final long serialVersionUID = 4299916221045352272L;
-
-    /** @see #isApplyAntitheticVariates() */
-    private boolean applyAntitheticVariates;
-
-    private long seed;
-
+public class GammaDistr extends ContinuousDistributionAbstract {
     /**
      * Creates a Gamma Pseudo-Random Number Generator (PRNG) using the current time as seed.
      *
-     * <p>Internally, it relies on the {@link JDKRandomGenerator},
-     * a wrapper for the {@link java.util.Random} class
-     * that doesn't have high-quality randomness properties but is very fast.</p>
+     * <p>Internally, it uses the {@link StatisticalDistribution#newDefaultGen(long) default PRNG}.</p>
      *
      * @param shape the shape parameter of this distribution
      * @param scale the scale parameter of this distribution
      *
-     * @see #GammaDistr(int, double, long, RandomGenerator)
+     * @see #GammaDistr(int, double, long, UniformRandomProvider)
      */
     public GammaDistr(final int shape, final double scale) {
         this(shape, scale, StatisticalDistribution.defaultSeed());
@@ -53,7 +40,7 @@ public class GammaDistr extends GammaDistribution implements ContinuousDistribut
      * @param scale the scale parameter of this distribution
      * @param seed the seed to initialize the generator
      *
-     * @see #GammaDistr(int, double, long, RandomGenerator)
+     * @see #GammaDistr(int, double, long, UniformRandomProvider)
      */
     public GammaDistr(final int shape, final double scale, final long seed) {
         this(shape, scale, seed, StatisticalDistribution.newDefaultGen(seed));
@@ -65,37 +52,9 @@ public class GammaDistr extends GammaDistribution implements ContinuousDistribut
      * @param scale the scale parameter of this distribution
      * @param seed the seed <b>already used</b> to initialize the Pseudo-Random Number Generator
      * @param rng the actual Pseudo-Random Number Generator that will be the base
-*                 to generate random numbers following a continuous distribution.
+     *            to generate random numbers following a continuous distribution.
      */
-    public GammaDistr(final int shape, final double scale, final long seed, final RandomGenerator rng) {
-        super(rng, shape, scale);
-        this.seed = seed;
-    }
-
-    @Override
-    public long getSeed() {
-        return this.seed;
-    }
-
-    @Override
-    public void reseedRandomGenerator(final long seed) {
-        super.reseedRandomGenerator(seed);
-        this.seed = seed;
-    }
-
-    @Override
-    public boolean isApplyAntitheticVariates() {
-        return applyAntitheticVariates;
-    }
-
-    @Override
-    public GammaDistr setApplyAntitheticVariates(final boolean applyAntitheticVariates) {
-        this.applyAntitheticVariates = applyAntitheticVariates;
-        return this;
-    }
-
-    @Override
-    public double originalSample() {
-        return super.sample();
+    public GammaDistr(final int shape, final double scale, final long seed, final UniformRandomProvider rng) {
+        super(GammaDistribution.of(shape, scale), seed, rng);
     }
 }

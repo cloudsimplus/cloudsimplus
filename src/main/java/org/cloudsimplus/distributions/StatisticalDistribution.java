@@ -23,9 +23,8 @@
  */
 package org.cloudsimplus.distributions;
 
-import org.apache.commons.math3.distribution.RealDistribution;
-import org.apache.commons.math3.random.RandomGenerator;
-import org.apache.commons.math3.random.Well19937c;
+import org.apache.commons.rng.UniformRandomProvider;
+import org.apache.commons.rng.simple.RandomSource;
 
 /**
  * Interface to be implemented by a Pseudo-Random Number Generator (PRNG)
@@ -37,7 +36,7 @@ import org.apache.commons.math3.random.Well19937c;
 public sealed interface StatisticalDistribution permits DiscreteDistribution, ContinuousDistribution {
     /**
      * Generate a new pseudo random number
-     * directly from the {@link RealDistribution#sample()} method.
+     * directly from the underlying distribution.
      * This way, the {@link #isApplyAntitheticVariates() Antithetic Variates Technique}
      * is ignored if enabled.
      *
@@ -68,36 +67,34 @@ public sealed interface StatisticalDistribution permits DiscreteDistribution, Co
     long getSeed();
 
     /**
-     * Instantiates a {@link Well19937c} as the default
-     * {@link RandomGenerator Pseudo-Random Number Generator}
+     * Instantiates a <a href="https://en.wikipedia.org/wiki/Well_equidistributed_long-period_linear">WELL19937c</a>
+     * as the default {@link UniformRandomProvider Pseudo-Random Number Generator}
      * (PRNG) used by implementing classes.
+     * The PRNG is provided by the <a href="https://commons.apache.org/proper/commons-rng/">Apache Commons RNG</a> library.
      *
-     * <p>{@link Well19937c} is the PRNG also used by {@link RealDistribution}
-     * implementations of the {@link org.apache.commons.math3}.
-     * {@link ContinuousDistribution} implementations rely on classes in such a library to provide
-     * PRNGs following some statistical distributions.
-     * </p>
+     * <p>{@link ContinuousDistribution} implementations rely on the
+     * <a href="https://commons.apache.org/proper/commons-statistics/">Apache Commons Statistics</a>
+     * library to generate random numbers following some statistical distribution.
+     * Such a library uses a {@link UniformRandomProvider} as the source of randomness.</p>
      *
-     * <p>
-     * Despite the classes from {@link org.apache.commons.math3}
-     * use the same {@link RandomGenerator} defined here,
-     * providing a {@link RandomGenerator} when instantiating a {@link ContinuousDistribution}
-     * allows the researcher to define any PRNG by calling the appropriate
-     * {@link ContinuousDistribution} constructor.
-     * For instance, the {@link UniformDistr#UniformDistr(long, RandomGenerator)}
+     * <p>Providing a {@link UniformRandomProvider} when instantiating a {@link ContinuousDistribution}
+     * allows the researcher to define any PRNG by calling the appropriate constructor.
+     * For instance, the {@link UniformDistr#UniformDistr(long, UniformRandomProvider)}
      * constructor enables providing a different PRNG, while
      * the {@link UniformDistr#UniformDistr(long)} uses the PRNG instantiated here.
-     * </p>
+     * Any PRNG from {@link RandomSource} can be used, such as
+     * {@code RandomSource.XO_RO_SHI_RO_128_PP.create(seed)}.</p>
      *
-     * <p>By calling a constructor that accepts a {@link RandomGenerator},
+     * <p>By calling a constructor that accepts a {@link UniformRandomProvider},
      * the researcher may provide a different PRNG with either higher performance
      * or better statistical properties
      * (it's challenging to have both properties on the same PRNG).</p>
      *
-     * @param seed the seed to set
+     * @param seed the seed to initialize the PRNG
+     * @return the new PRNG
      */
-    static RandomGenerator newDefaultGen(final long seed){
-        return new Well19937c(seed);
+    static UniformRandomProvider newDefaultGen(final long seed){
+        return RandomSource.WELL_19937_C.create(seed);
     }
 
     static long defaultSeed(){

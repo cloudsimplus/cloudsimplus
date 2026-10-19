@@ -25,7 +25,7 @@ package org.cloudsimplus.distributions;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.apache.commons.math3.util.CombinatoricsUtils;
+import org.apache.commons.statistics.distribution.PoissonDistribution;
 
 import java.util.function.BiConsumer;
 import java.util.function.Function;
@@ -39,8 +39,9 @@ import java.util.stream.IntStream;
  * @author Manoel Campos da Silva Filho
  * @see <a href="https://en.wikipedia.org/wiki/Poisson_distribution">Poisson Distribution</a>
  * @since CloudSim Plus 1.2.0
- * TODO There is the {@link org.apache.commons.math3.distribution.PoissonDistribution} implementation already.
- * This class should simply extend it, as the other class on this package do.
+ * TODO The {@link PoissonDistribution} from Apache Commons Statistics is just used to compute
+ * the {@link #eventsArrivalProbability()}. It could also be used to generate the random numbers,
+ * as the classes extending {@link ContinuousDistributionAbstract} do.
  */
 public class PoissonDistr implements DiscreteDistribution {
     /** @see #isApplyAntitheticVariates() */
@@ -63,6 +64,12 @@ public class PoissonDistr implements DiscreteDistribution {
     private double lambda;
 
     /**
+     * The Poisson distribution with the given {@link #lambda},
+     * used to compute the {@link #eventsArrivalProbability()}.
+     */
+    private PoissonDistribution distribution;
+
+    /**
      *  The number of events to check the probability for them to happen
      *  in a time interval (default 1). */
     @Getter @Setter
@@ -76,6 +83,7 @@ public class PoissonDistr implements DiscreteDistribution {
      *               If one considers the unit as minute, this value means the average number of arrivals
      *               at each minute.
      * @param seed   the seed to initialize the internal uniform Pseudo-Random Number Generator
+     * @throws IllegalArgumentException when lambda is not greater than zero or the seed is negative
      * @see #setK(int)
      * @see #setLambda(double)
      */
@@ -96,6 +104,7 @@ public class PoissonDistr implements DiscreteDistribution {
      *               For instance, if it was defined 1 event to be expected at
      *               each 2.5 minutes, it means that 0.4 event is expected
      *               at each minute (1/2.5).
+     * @throws IllegalArgumentException when lambda is not greater than zero
      * @see #setK(int)
      */
     public PoissonDistr(final double lambda) {
@@ -111,8 +120,10 @@ public class PoissonDistr implements DiscreteDistribution {
      * at each minute. It's the inverse of the {@link #getInterArrivalMeanTime()}.</p>
      *
      * @param lambda the value to set
+     * @throws IllegalArgumentException when lambda is not greater than zero
      */
     private void setLambda(final double lambda) {
+        this.distribution = PoissonDistribution.of(lambda);
         this.lambda = lambda;
     }
 
@@ -126,7 +137,7 @@ public class PoissonDistr implements DiscreteDistribution {
      * @see <a href="https://en.wikipedia.org/wiki/Poisson_distribution#Definition">Poisson Probability Mass Function</a>
      */
     public double eventsArrivalProbability() {
-        return (Math.pow(getLambda(), k) * Math.exp(-getLambda())) / CombinatoricsUtils.factorial(k);
+        return distribution.probability(k);
     }
 
     /**

@@ -7,10 +7,7 @@
  */
 package org.cloudsimplus.distributions;
 
-import org.apache.commons.math3.random.RandomGenerator;
-import org.cloudsimplus.util.MathUtil;
-
-import java.io.Serial;
+import org.apache.commons.rng.UniformRandomProvider;
 
 /**
  * A Pseudo-Random Number Generator following the
@@ -20,12 +17,7 @@ import java.io.Serial;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Toolkit 1.0
  */
-public class LomaxDistr extends ParetoDistr implements ContinuousDistribution {
-    @Serial
-    private static final long serialVersionUID = 8444069359429898420L;
-
-    private long seed;
-
+public class LomaxDistr extends ParetoDistr {
     /**
      * The shift parameter of this distribution
      */
@@ -38,7 +30,7 @@ public class LomaxDistr extends ParetoDistr implements ContinuousDistribution {
      * @param location the location parameter of this distribution
      * @param shift the shift parameter of this distribution
      *
-     * @see #LomaxDistr(double, double, double, long, RandomGenerator)
+     * @see #LomaxDistr(double, double, double, long, UniformRandomProvider)
      */
     public LomaxDistr(final double shape, final double location, final double shift) {
         this(shape, location, shift, StatisticalDistribution.defaultSeed());
@@ -52,7 +44,7 @@ public class LomaxDistr extends ParetoDistr implements ContinuousDistribution {
      * @param shift the shift parameter of this distribution
      * @param seed the seed to initialize the generator
      *
-     * @see #LomaxDistr(double, double, double, long, RandomGenerator)
+     * @see #LomaxDistr(double, double, double, long, UniformRandomProvider)
      */
     public LomaxDistr(final double shape, final double location, final double shift, final long seed) {
         this(shape, location, shift, seed, StatisticalDistribution.newDefaultGen(seed));
@@ -66,31 +58,19 @@ public class LomaxDistr extends ParetoDistr implements ContinuousDistribution {
      * @param shift the shift parameter of this distribution
      * @param seed the seed <b>already used</b> to initialize the Pseudo-Random Number Generator
      * @param rng the actual Pseudo-Random Number Generator that will be the base
-*                 to generate random numbers following a continuous distribution.
+     *            to generate random numbers following a continuous distribution.
      */
-    public LomaxDistr(final double shape, final double location, final double shift, final long seed, final RandomGenerator rng) {
+    public LomaxDistr(final double shape, final double location, final double shift, final long seed, final UniformRandomProvider rng) {
         super(shape, location, seed, rng);
         if (shift > location) {
             throw new IllegalArgumentException("Shift must be smaller or equal than location");
         }
 
-        this.seed = MathUtil.nonNegative(seed, "Seed");
         this.shift = shift;
     }
 
     @Override
     public double sample() {
         return super.sample() - shift;
-    }
-
-    @Override
-    public long getSeed() {
-        return this.seed;
-    }
-
-    @Override
-    public void reseedRandomGenerator(final long seed) {
-        super.reseedRandomGenerator(seed);
-        this.seed = seed;
     }
 }

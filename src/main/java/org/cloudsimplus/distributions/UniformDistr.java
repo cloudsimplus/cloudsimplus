@@ -8,12 +8,8 @@
 package org.cloudsimplus.distributions;
 
 import org.apache.commons.lang3.Range;
-import org.apache.commons.math3.distribution.UniformRealDistribution;
-import org.apache.commons.math3.random.JDKRandomGenerator;
-import org.apache.commons.math3.random.RandomGenerator;
-import org.cloudsimplus.util.MathUtil;
-
-import java.io.Serial;
+import org.apache.commons.rng.UniformRandomProvider;
+import org.apache.commons.statistics.distribution.UniformContinuousDistribution;
 
 /**
  * A Pseudo-Random Number Generator (RNG) following the
@@ -24,23 +20,14 @@ import java.io.Serial;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Toolkit 1.0
  */
-public class UniformDistr extends UniformRealDistribution implements ContinuousDistribution {
-    @Serial
-    private static final long serialVersionUID = 3341651849752903428L;
-
-    /** @see #isApplyAntitheticVariates() */
-    private boolean applyAntitheticVariates;
-    private long seed;
-
+public class UniformDistr extends ContinuousDistributionAbstract {
     /**
      * Creates a uniform Pseudo-Random Number Generator (PRNG)
      * that generates values between [0 and 1[ using the current time as seed.
      *
-     * <p>Internally, it relies on the {@link JDKRandomGenerator},
-     * a wrapper for the {@link java.util.Random} class
-     * that doesn't have high-quality randomness properties but is very fast.</p>
+     * <p>Internally, it uses the {@link StatisticalDistribution#newDefaultGen(long) default PRNG}.</p>
      *
-     * @see #UniformDistr(double, double, long, RandomGenerator)
+     * @see #UniformDistr(double, double, long, UniformRandomProvider)
      */
     public UniformDistr() {
         this(0, 1);
@@ -50,13 +37,11 @@ public class UniformDistr extends UniformRealDistribution implements ContinuousD
      * Creates a uniform Pseudo-Random Number Generator (PRNG)
      * that generates values between [0 and 1[ using a given seed.
      *
-     * <p>Internally, it relies on the {@link JDKRandomGenerator},
-     * a wrapper for the {@link java.util.Random} class
-     * that doesn't have high-quality randomness properties but is very fast.</p>
+     * <p>Internally, it uses the {@link StatisticalDistribution#newDefaultGen(long) default PRNG}.</p>
      *
      * @param seed the seed to initialize the Pseudo-Random Number Generator.
      *
-     * @see #UniformDistr(double, double, long, RandomGenerator)
+     * @see #UniformDistr(double, double, long, UniformRandomProvider)
      */
     public UniformDistr(final long seed) {
         this(0, 1, seed);
@@ -66,17 +51,15 @@ public class UniformDistr extends UniformRealDistribution implements ContinuousD
      * Creates a uniform Pseudo-Random Number Generator (PRNG)
      * that generates values between [0 and 1[ using a given seed.
      *
-     * <p>Internally, it relies on the {@link JDKRandomGenerator},
-     * a wrapper for the {@link java.util.Random} class
-     * that doesn't have high-quality randomness properties but is very fast.</p>
+     * <p>Internally, it uses the {@link StatisticalDistribution#newDefaultGen(long) default PRNG}.</p>
      *
      * @param seed the seed <b>already used</b> to initialize the Pseudo-Random Number Generator
      * @param rng the actual Pseudo-Random Number Generator that will be the base
      *            to generate random numbers following a continuous distribution.
      *
-     * @see #UniformDistr(double, double, long, RandomGenerator)
+     * @see #UniformDistr(double, double, long, UniformRandomProvider)
      */
-    public UniformDistr(final long seed, final RandomGenerator rng) {
+    public UniformDistr(final long seed, final UniformRandomProvider rng) {
         this(0, 1, seed, rng);
     }
 
@@ -85,13 +68,11 @@ public class UniformDistr extends UniformRealDistribution implements ContinuousD
      * that produces values between a given {@link Range},
      * using the current time as seed.
      *
-     * <p>Internally, it relies on the {@link JDKRandomGenerator},
-     * a wrapper for the {@link java.util.Random} class
-     * that doesn't have high-quality randomness properties but is very fast.</p>
+     * <p>Internally, it uses the {@link StatisticalDistribution#newDefaultGen(long) default PRNG}.</p>
      *
      * @param range the {@link Range} to generate random values in between
      *
-     * @see #UniformDistr(double, double, long, RandomGenerator)
+     * @see #UniformDistr(double, double, long, UniformRandomProvider)
      */
     public UniformDistr(final Range<Double> range) {
         this(range, StatisticalDistribution.defaultSeed());
@@ -101,14 +82,12 @@ public class UniformDistr extends UniformRealDistribution implements ContinuousD
      * Creates a uniform Pseudo-Random Number Generator (PRNG)
      * that produces values between a given {@link Range}.
      *
-     * <p>Internally, it relies on the {@link JDKRandomGenerator},
-     * a wrapper for the {@link java.util.Random} class
-     * that doesn't have high-quality randomness properties but is very fast.</p>
+     * <p>Internally, it uses the {@link StatisticalDistribution#newDefaultGen(long) default PRNG}.</p>
      *
      * @param range the {@link Range} to generate random values in between
      * @param seed the seed to initialize the Pseudo-Random Number Generator
      *
-     * @see #UniformDistr(double, double, long, RandomGenerator)
+     * @see #UniformDistr(double, double, long, UniformRandomProvider)
      */
     public UniformDistr(final Range<Double> range, final long seed) {
         this(range.getMinimum(), range.getMaximum()+1, seed);
@@ -119,14 +98,12 @@ public class UniformDistr extends UniformRealDistribution implements ContinuousD
      * that produces values between a min (inclusive) and max (exclusive),
      * using the current time as seed.
      *
-     * <p>Internally, it relies on the {@link JDKRandomGenerator},
-     * a wrapper for the {@link java.util.Random} class
-     * that doesn't have high-quality randomness properties but is very fast.</p>
+     * <p>Internally, it uses the {@link StatisticalDistribution#newDefaultGen(long) default PRNG}.</p>
      *
      * @param minInclusive minimum value to generate (inclusive)
      * @param maxExclusive maximum value to generate (exclusive)
      *
-     * @see #UniformDistr(double, double, long, RandomGenerator)
+     * @see #UniformDistr(double, double, long, UniformRandomProvider)
      */
     public UniformDistr(final double minInclusive, final double maxExclusive) {
         this(minInclusive, maxExclusive, StatisticalDistribution.defaultSeed());
@@ -135,15 +112,13 @@ public class UniformDistr extends UniformRealDistribution implements ContinuousD
     /**
      * Creates a uniform Pseudo-Random Number Generator (PRNG).
      *
-     * <p>Internally, it relies on the {@link JDKRandomGenerator},
-     * a wrapper for the {@link java.util.Random} class
-     * that doesn't have high-quality randomness properties but is very fast.</p>
+     * <p>Internally, it uses the {@link StatisticalDistribution#newDefaultGen(long) default PRNG}.</p>
      *
      * @param minInclusive minimum value to generate (inclusive)
      * @param maxExclusive maximum value to generate (exclusive)
      * @param seed the seed to initialize the Pseudo-Random Number Generator.
      *
-     * @see #UniformDistr(double, double, long, RandomGenerator)
+     * @see #UniformDistr(double, double, long, UniformRandomProvider)
      */
     public UniformDistr(final double minInclusive, final double maxExclusive, final long seed) {
         this(minInclusive, maxExclusive, seed, StatisticalDistribution.newDefaultGen(seed));
@@ -157,41 +132,7 @@ public class UniformDistr extends UniformRealDistribution implements ContinuousD
      * @param rng the actual Pseudo-Random Number Generator that will be the base
      *            to generate random numbers following a continuous distribution.
      */
-    public UniformDistr(final double minInclusive, final double maxExclusive, final long seed, final RandomGenerator rng) {
-        super(rng, minInclusive, maxExclusive);
-        this.seed = MathUtil.nonNegative(seed, "Seed");
-        applyAntitheticVariates = false;
-    }
-
-    @Override
-    public double sample() {
-        return applyAntitheticVariates ? 1 - super.sample() : super.sample();
-    }
-
-    @Override
-    public long getSeed() {
-        return seed;
-    }
-
-    @Override
-    public boolean isApplyAntitheticVariates() {
-        return applyAntitheticVariates;
-    }
-
-    @Override
-    public UniformDistr setApplyAntitheticVariates(final boolean applyAntitheticVariates) {
-        this.applyAntitheticVariates = applyAntitheticVariates;
-	    return this;
-    }
-
-    @Override
-    public double originalSample() {
-        return super.sample();
-    }
-
-    @Override
-    public void reseedRandomGenerator(final long seed) {
-        super.reseedRandomGenerator(seed);
-        this.seed = seed;
+    public UniformDistr(final double minInclusive, final double maxExclusive, final long seed, final UniformRandomProvider rng) {
+        super(UniformContinuousDistribution.of(minInclusive, maxExclusive), seed, rng);
     }
 }

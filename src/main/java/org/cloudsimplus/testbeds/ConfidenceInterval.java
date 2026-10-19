@@ -25,11 +25,14 @@ package org.cloudsimplus.testbeds;
 
 import lombok.Getter;
 import lombok.NonNull;
-import org.apache.commons.math3.distribution.TDistribution;
-import org.apache.commons.math3.exception.MathIllegalArgumentException;
-import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
+import org.apache.commons.statistics.descriptive.DoubleStatistics;
+import org.apache.commons.statistics.descriptive.Statistic;
+import org.apache.commons.statistics.distribution.TDistribution;
 
+import java.util.Collections;
+import java.util.EnumSet;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * Computes the confidence interval for any arbitrary metric
@@ -44,6 +47,15 @@ public final class ConfidenceInterval {
      * The confidence level for computing the CI {@link #value} (in % from 0 to 1).
      */
     public static final double CONFIDENCE_LEVEL = 0.95;
+
+    /**
+     * The statistics that a {@link DoubleStatistics} object must compute
+     * to be used to create a ConfidenceInterval.
+     * For instance: {@code DoubleStatistics.of(ConfidenceInterval.REQUIRED_STATISTICS, values)}.
+     * @see #ConfidenceInterval(DoubleStatistics, String)
+     */
+    public static final Set<Statistic> REQUIRED_STATISTICS =
+        Collections.unmodifiableSet(EnumSet.of(Statistic.MEAN, Statistic.STANDARD_DEVIATION));
 
     /**
      * The name of the metric for which the Confidence Interval is computed.
@@ -97,21 +109,23 @@ public final class ConfidenceInterval {
 
     /**
      * Creates a ConfidenceInterval (CI) object with 95% confidence level.
-     * @param stats the object containing the statistics for the arbitrary metric collected
+     * @param stats the object containing the statistics for the arbitrary metric collected.
+     *              It must compute at least the {@link #REQUIRED_STATISTICS}.
      * @param metricName the name of the metric for which the CI is computed.
+     * @throws IllegalArgumentException when the stats object doesn't compute the {@link #REQUIRED_STATISTICS}
      */
-    public ConfidenceInterval(final SummaryStatistics stats, @NonNull final String metricName) {
+    public ConfidenceInterval(@NonNull final DoubleStatistics stats, @NonNull final String metricName) {
         this.metricName = metricName;
         final Optional<Double> optionalErrorMargin = errorMargin(stats);
-        this.stdDev = stats.getStandardDeviation();
-        this.samples = stats.getN();
-        this.value = stats.getMean();
+        this.stdDev = stats.getAsDouble(Statistic.STANDARD_DEVIATION);
+        this.samples = stats.getCount();
+        this.value = stats.getAsDouble(Statistic.MEAN);
 
         if(optionalErrorMargin.isPresent()) {
             this.criticalValue = computeCriticalValue(samples);
             this.errorMargin = optionalErrorMargin.get();
-            this.lowerLimit = stats.getMean() - errorMargin;
-            this.upperLimit = stats.getMean() + errorMargin;
+            this.lowerLimit = value - errorMargin;
+            this.upperLimit = value + errorMargin;
             //System.out.printf("95%% Confidence Interval: %.4f ∓ %.4f, that is [%.4f to %.4f]%n", ci, intervalSize, lowerLimit, upperLimit);
             return;
         }
@@ -152,25 +166,22 @@ public final class ConfidenceInterval {
     /// an approach was followed.
     ///
     /// @param stats the statistic object with the values to compute the error
-    ///              margin of the confidence interval
+    ///              margin of the confidence interval.
+    ///              It must compute at least the [#REQUIRED_STATISTICS].
     /// @return the error margin to compute the lower and upper bound of the confidence interval
     ///
     /// @link [Critical Values of the Student's t Distribution](http://www.itl.nist.gov/div898/handbook/eda/section3/eda3672.htm)
     /// @link [t-Distribution](https://en.wikipedia.org/wiki/Student%27s_t-distribution)
     /// @link [Harry Perros, "Computer Simulation Techniques: The definitive introduction!," 2009](http://www4.ncsu.edu/~hp/files/simulation.pdf)
     /// @link [Numeric Computation and Statistical Data Analysis on the Java Platform](http://www.springer.com/gp/book/9783319285290)
-    public static Optional<Double> errorMargin(@NonNull final SummaryStatistics stats) {
-        final long samples = stats.getN();
+    public static Optional<Double> errorMargin(@NonNull final DoubleStatistics stats) {
+        final long samples = stats.getCount();
         if(samples <= 1) {
             return Optional.empty();
         }
 
-        try {
-            final double criticalValue = computeCriticalValue(samples);
-            return Optional.of(criticalValue * stats.getStandardDeviation() / Math.sqrt(samples));
-        } catch (final MathIllegalArgumentException e) {
-            return Optional.empty();
-        }
+        final double criticalValue = computeCriticalValue(samples);
+        return Optional.of(criticalValue * stats.getAsDouble(Statistic.STANDARD_DEVIATION) / Math.sqrt(samples));
     }
 
     /**
@@ -187,7 +198,7 @@ public final class ConfidenceInterval {
 
         /* The t-Distribution is used to determine the probability that
         the real population mean lies in a given interval. */
-        final var tDist = new TDistribution(freedomDegrees);
+        final var tDist = TDistribution.of(freedomDegrees);
         final double significance = 1.0 - CONFIDENCE_LEVEL;
         return tDist.inverseCumulativeProbability(1.0 - significance / 2.0);
     }

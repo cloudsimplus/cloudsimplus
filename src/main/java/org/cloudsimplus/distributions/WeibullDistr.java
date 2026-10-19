@@ -7,12 +7,8 @@
  */
 package org.cloudsimplus.distributions;
 
-import org.apache.commons.math3.distribution.WeibullDistribution;
-import org.apache.commons.math3.random.JDKRandomGenerator;
-import org.apache.commons.math3.random.RandomGenerator;
-import org.cloudsimplus.util.MathUtil;
-
-import java.io.Serial;
+import org.apache.commons.rng.UniformRandomProvider;
+import org.apache.commons.statistics.distribution.WeibullDistribution;
 
 /**
  * A Pseudo-Random Number Generator following the
@@ -22,26 +18,16 @@ import java.io.Serial;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Toolkit 1.0
  */
-public class WeibullDistr extends WeibullDistribution implements ContinuousDistribution {
-    @Serial
-    private static final long serialVersionUID = -4265866419607842138L;
-
-    /** @see #isApplyAntitheticVariates() */
-    private boolean applyAntitheticVariates;
-
-    private long seed;
-
+public class WeibullDistr extends ContinuousDistributionAbstract {
     /**
      * Creates a Weibull Pseudo-Random Number Generator (PRNG) using a given seed.
      *
-     * <p>Internally, it relies on the {@link JDKRandomGenerator},
-     * a wrapper for the {@link java.util.Random} class
-     * that doesn't have high-quality randomness properties but is very fast.</p>
+     * <p>Internally, it uses the {@link StatisticalDistribution#newDefaultGen(long) default PRNG}.</p>
      *
      * @param alpha the alpha distribution parameter
      * @param beta the beta distribution parameter
      *
-     * @see #WeibullDistr(double, double, long, RandomGenerator)
+     * @see #WeibullDistr(double, double, long, UniformRandomProvider)
      */
     public WeibullDistr(final double alpha, final double beta) {
         this(alpha, beta, StatisticalDistribution.defaultSeed());
@@ -50,15 +36,13 @@ public class WeibullDistr extends WeibullDistribution implements ContinuousDistr
     /**
      * Creates a Weibull Pseudo-Random Number Generator (PRNG).
      *
-     * <p>Internally, it relies on the {@link JDKRandomGenerator},
-     * a wrapper for the {@link java.util.Random} class
-     * that doesn't have high-quality randomness properties but is very fast.</p>
+     * <p>Internally, it uses the {@link StatisticalDistribution#newDefaultGen(long) default PRNG}.</p>
      *
      * @param alpha the alpha distribution parameter
      * @param beta the beta distribution parameter
      * @param seed the seed
      *
-     * @see #WeibullDistr(double, double, long, RandomGenerator)
+     * @see #WeibullDistr(double, double, long, UniformRandomProvider)
      */
     public WeibullDistr(final double alpha, final double beta, final long seed) {
         this(alpha, beta, seed, StatisticalDistribution.newDefaultGen(seed));
@@ -72,35 +56,7 @@ public class WeibullDistr extends WeibullDistribution implements ContinuousDistr
      * @param rng the actual Pseudo-Random Number Generator that will be the base
      *            to generate random numbers following a continuous distribution.
      */
-    public WeibullDistr(final double alpha, final double beta, final long seed, final RandomGenerator rng) {
-        super(rng, alpha, beta);
-        this.seed = MathUtil.nonNegative(seed, "Seed");
-    }
-
-    @Override
-    public void reseedRandomGenerator(final long seed) {
-        super.reseedRandomGenerator(seed);
-        this.seed = seed;
-    }
-
-    @Override
-    public long getSeed() {
-        return this.seed;
-    }
-
-    @Override
-    public boolean isApplyAntitheticVariates() {
-        return applyAntitheticVariates;
-    }
-
-    @Override
-    public WeibullDistr setApplyAntitheticVariates(final boolean applyAntitheticVariates) {
-        this.applyAntitheticVariates = applyAntitheticVariates;
-        return this;
-    }
-
-    @Override
-    public double originalSample() {
-        return super.sample();
+    public WeibullDistr(final double alpha, final double beta, final long seed, final UniformRandomProvider rng) {
+        super(WeibullDistribution.of(alpha, beta), seed, rng);
     }
 }
