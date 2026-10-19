@@ -27,7 +27,7 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
+import org.apache.commons.statistics.descriptive.DoubleStatistics;
 import org.cloudsimplus.core.CloudSimPlus;
 import org.cloudsimplus.distributions.ContinuousDistribution;
 import org.cloudsimplus.distributions.StatisticalDistribution;
@@ -585,13 +585,12 @@ public abstract class ExperimentRunner<T extends Experiment<T>> extends Abstract
      */
     protected ConfidenceInterval computeFinalResults(final Map.Entry<String, List<Double>> metricEntry){
         final List<Double> metricValues = metricEntry.getValue();
-        final SummaryStatistics stats = computeFinalStatistics(metricValues);
-        //System.out.printf("# %s: %.6f (%d %s)%n", metricEntry.getKey(), stats.getMean(), metricValues.size(), metricValues.size() > 1 ? "samples" : "sample");
+        final DoubleStatistics stats = computeFinalStatistics(metricValues);
 
         return new ConfidenceInterval(stats, metricEntry.getKey());
     }
 
-    /// Creates a [SummaryStatistics] object from a list of
+    /// Creates a [DoubleStatistics] object from a list of
     /// Double values, allowing computation of statistics such as mean over these values.
     /// The method also checks if the
     /// [Antithetic Variates][#isApplyAntitheticVariates()]
@@ -599,14 +598,14 @@ public abstract class ExperimentRunner<T extends Experiment<T>> extends Abstract
     /// are enabled, applying them over the given list of Doubles.
     /// These techniques are used for variance reduction.
     ///
-    /// @param values the List of values to add to the [SummaryStatistics] object
-    /// @return the [SummaryStatistics] object containing
+    /// @param values the List of values to add to the [DoubleStatistics] object
+    /// @return the [DoubleStatistics] object containing
     /// the double values, after applying the techniques for variance reduction.
-    protected final SummaryStatistics computeFinalStatistics(final List<Double> values) {
-        final var stats = new SummaryStatistics();
-        final List<Double> adjustedValues = computeAntitheticMeans(computeBatchMeans(values));
-        adjustedValues.forEach(stats::addValue);
-        return stats;
+    /// It computes the [ConfidenceInterval#REQUIRED_STATISTICS].
+    protected final DoubleStatistics computeFinalStatistics(final List<Double> values) {
+        final double[] adjustedValues =
+            computeAntitheticMeans(computeBatchMeans(values)).stream().mapToDouble(Double::doubleValue).toArray();
+        return DoubleStatistics.of(ConfidenceInterval.REQUIRED_STATISTICS, adjustedValues);
     }
 
     /// Add a value to a given metric inside the [#metricsMap].

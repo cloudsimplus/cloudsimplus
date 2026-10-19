@@ -23,23 +23,21 @@
  */
 package org.cloudsimplus.distributions;
 
-import lombok.Getter;
-import org.apache.commons.math3.random.RandomGenerator;
+import org.apache.commons.rng.UniformRandomProvider;
 
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
- * A {@link RandomGenerator} that internally uses the {@link ThreadLocalRandom},
+ * A {@link UniformRandomProvider} that internally uses the {@link ThreadLocalRandom},
  * a very fast Pseudo-Random Number Generator (PRNG)
  * with higher performance than {@link java.util.Random}, mainly in concurrent environments.
- * The {@link ThreadLocalRandom} also has
- * much better performance than PRNGs available in {@link org.apache.commons.math3},
+ * The {@link ThreadLocalRandom} may also be faster than some PRNGs available in
+ * <a href="https://commons.apache.org/proper/commons-rng/">Apache Commons RNG</a>,
  * despite it probably has worse statistical properties.
  *
  * <p>This generator has some drawbacks.
  * It only generates the seed internally and doesn't allow setting an explicit seed.
- * Calling the {@code setSeed()} methods will throw an {@link UnsupportedOperationException}
- * and there is no way to get the generated seed.
+ * There is also no way to get the generated seed.
  * This latter issue makes it impossible to reproduce a
  * simulation experiment to verify the generated results if the seed is unknown.
  * </p>
@@ -55,12 +53,15 @@ import java.util.concurrent.ThreadLocalRandom;
  * In such a scenario, the second half of experiments have to use the seeds from the first half.
  * </p>
  *
+ * <p>The {@link UniformRandomProvider} interface just requires implementing {@link #nextLong()}.
+ * The other methods are overridden to directly call the equivalent {@link ThreadLocalRandom} ones,
+ * which is faster.</p>
+ *
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 4.3.9
  */
-public final class JDKThreadLocalRandomGenerator implements RandomGenerator {
-    @Getter
-    private static final JDKThreadLocalRandomGenerator instance = new JDKThreadLocalRandomGenerator();
+public final class JDKThreadLocalRandomGenerator implements UniformRandomProvider {
+    private static final JDKThreadLocalRandomGenerator INSTANCE = new JDKThreadLocalRandomGenerator();
 
     /**
      * A private constructor to avoid class instantiation.
@@ -68,19 +69,13 @@ public final class JDKThreadLocalRandomGenerator implements RandomGenerator {
      */
     private JDKThreadLocalRandomGenerator(){/**/}
 
-    @Override
-    public void setSeed(final int seed) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void setSeed(final int[] seed) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void setSeed(final long seed) {
-        throw new UnsupportedOperationException();
+    /**
+     * {@return the single instance of this generator}
+     * Since it just calls the {@link ThreadLocalRandom} of the current thread,
+     * a single instance can be shared, even by different threads.
+     */
+    public static JDKThreadLocalRandomGenerator getInstance() {
+        return INSTANCE;
     }
 
     @Override
@@ -116,10 +111,5 @@ public final class JDKThreadLocalRandomGenerator implements RandomGenerator {
     @Override
     public double nextDouble() {
         return ThreadLocalRandom.current().nextDouble();
-    }
-
-    @Override
-    public double nextGaussian() {
-        return ThreadLocalRandom.current().nextGaussian();
     }
 }

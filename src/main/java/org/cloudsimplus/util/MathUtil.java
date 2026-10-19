@@ -8,7 +8,8 @@
 
 package org.cloudsimplus.util;
 
-import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
+import org.apache.commons.statistics.descriptive.Median;
+import org.apache.commons.statistics.descriptive.NaNPolicy;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -24,6 +25,12 @@ import java.util.List;
  * @see BytesConversion
  */
 public final class MathUtil {
+    /**
+     * Computes the median of numbers, ignoring {@link Double#NaN} values.
+     * It doesn't change the given numbers.
+     */
+    private static final Median MEDIAN = Median.withDefaults().with(NaNPolicy.EXCLUDE);
+
     /**
      * A private constructor to avoid class instantiation.
      */
@@ -46,44 +53,24 @@ public final class MathUtil {
 
     /**
      * Gets the median from a list of numbers.
+     * {@link Double#NaN} values are ignored.
      *
      * @param list the list of numbers
-     * @return the median
+     * @return the median or {@link Double#NaN} if the list is empty
      */
     public static double median(final Collection<Double> list) {
-        return getStatistics(list).getPercentile(50);
+        return median(list.stream().mapToDouble(Double::doubleValue).toArray());
     }
 
     /**
      * Gets the median from an array of numbers.
+     * {@link Double#NaN} values are ignored.
      *
      * @param list the array of numbers
-     * @return the median
+     * @return the median or {@link Double#NaN} if the array is empty
      */
     public static double median(final double... list) {
-        return getStatistics(list).getPercentile(50);
-    }
-
-    /**
-     * Gets an object to compute descriptive statistics for a list of numbers.
-     *
-     * @param list the list of numbers. Must not be null.
-     * @return descriptive statistics for the list of numbers.
-     */
-    public static DescriptiveStatistics getStatistics(final Collection<Double> list) {
-        final DescriptiveStatistics stats = new DescriptiveStatistics();
-        list.forEach(stats::addValue);
-        return stats;
-    }
-
-    /**
-     * Gets an object to compute descriptive statistics for an array of numbers.
-     *
-     * @param list the array of numbers. Must not be null.
-     * @return descriptive statistics for the array of numbers.
-     */
-    public static DescriptiveStatistics getStatistics(final double... list) {
-        return new DescriptiveStatistics(list);
+        return MEDIAN.evaluate(list);
     }
 
     /**

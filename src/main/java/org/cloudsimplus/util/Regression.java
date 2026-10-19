@@ -1,9 +1,5 @@
 package org.cloudsimplus.util;
 
-import org.apache.commons.math3.linear.Array2DRowRealMatrix;
-import org.apache.commons.math3.stat.regression.OLSMultipleLinearRegression;
-import org.apache.commons.math3.stat.regression.SimpleRegression;
-
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -22,24 +18,20 @@ public final class Regression {
      * {@return a new instance of a simple linear regression}
      * @param x the independent variable
      * @param y the dependent variable
+     * @see LinearRegression#of(double[], double[])
      */
-    public static SimpleRegression newLinearRegression(final double[] x, final double[] y) {
-        final var regression = new SimpleRegression();
-        for (int i = 0; i < x.length; i++) {
-            regression.addData(x[i], y[i]);
-        }
-        return regression;
+    public static LinearRegression newLinearRegression(final double[] x, final double[] y) {
+        return LinearRegression.of(x, y);
     }
 
     /**
      * {@return a new instance of a multiple linear regression}
-     * @param x the independent variable
+     * @param x the independent variables, where each row is an observation and each column is a variable
      * @param y the dependent variable
+     * @see LinearRegression#of(double[][], double[])
      */
-    public static OLSMultipleLinearRegression newLinearRegression(final double[][] x, final double[] y) {
-        final var regression = new OLSMultipleLinearRegression();
-        regression.newSampleData(y, x);
-        return regression;
+    public static LinearRegression newLinearRegression(final double[][] x, final double[] y) {
+        return LinearRegression.of(x, y);
     }
 
     /**
@@ -48,7 +40,7 @@ public final class Regression {
      * @param y the dependent variable
      * @param weights the weights to apply to x and y
      */
-    public static SimpleRegression newWeightedLinearRegression(
+    public static LinearRegression newWeightedLinearRegression(
         final double[] x, final double[] y, final double[] weights)
     {
         final double[] weightedX = new double[x.length];
@@ -79,7 +71,7 @@ public final class Regression {
     public static double[] getLoessParameterEstimates(final double... y) {
         final double[] x = createIndependentArray(y.length);
         final var regression = newWeightedLinearRegression(x, y, getTricubeWeights(y.length));
-        return regression.regress().getParameterEstimates();
+        return regression.getParameterEstimates();
     }
 
     /**
@@ -95,9 +87,9 @@ public final class Regression {
         }
         final var tricubeBySqrRegression = newWeightedLinearRegression(x, y, getTricubeBisquareWeights(residuals));
 
-        final double[] estimates = tricubeBySqrRegression.regress().getParameterEstimates();
+        final double[] estimates = tricubeBySqrRegression.getParameterEstimates();
         if (Double.isNaN(estimates[0]) || Double.isNaN(estimates[1])) {
-            return tricubeRegression.regress().getParameterEstimates();
+            return tricubeRegression.getParameterEstimates();
         }
 
         return estimates;
@@ -153,11 +145,11 @@ public final class Regression {
                 }
             }
 
-            // Transpose the matrix so that it fits the linear model
-            final double[][] xT = new Array2DRowRealMatrix(x).transpose().getData();
+            // Transpose the matrix so that it fits the linear model (each row must be an observation)
+            final double[][] xT = transpose(x);
 
-            // RSquare is the "coefficient of determination"
-            correlationCoefficients.add(newLinearRegression(xT, data[i]).calculateRSquared());
+            // RSquared is the "coefficient of determination"
+            correlationCoefficients.add(newLinearRegression(xT, data[i]).getRSquared());
         }
 
         return correlationCoefficients;
@@ -175,5 +167,20 @@ public final class Regression {
         }
 
         return x;
+    }
+
+    /**
+     * {@return a new matrix that is the transpose of the given one} (rows become columns)
+     * @param matrix the matrix to transpose (it must be rectangular)
+     */
+    private static double[][] transpose(final double[][] matrix) {
+        final double[][] transposed = new double[matrix[0].length][matrix.length];
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix[i].length; j++) {
+                transposed[j][i] = matrix[i][j];
+            }
+        }
+
+        return transposed;
     }
 }

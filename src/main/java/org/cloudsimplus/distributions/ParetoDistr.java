@@ -7,11 +7,8 @@
  */
 package org.cloudsimplus.distributions;
 
-import org.apache.commons.math3.distribution.ParetoDistribution;
-import org.apache.commons.math3.random.RandomGenerator;
-import org.cloudsimplus.util.MathUtil;
-
-import java.io.Serial;
+import org.apache.commons.rng.UniformRandomProvider;
+import org.apache.commons.statistics.distribution.ParetoDistribution;
 
 /**
  * A Pseudo-Random Number Generator following the
@@ -21,22 +18,14 @@ import java.io.Serial;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Toolkit 1.0
  */
-public class ParetoDistr extends ParetoDistribution implements ContinuousDistribution {
-    @Serial
-    private static final long serialVersionUID = 5395364227220680901L;
-
-    /** @see #isApplyAntitheticVariates() */
-    private boolean applyAntitheticVariates;
-
-    private long seed;
-
+public class ParetoDistr extends ContinuousDistributionAbstract {
     /**
      * Creates a Pareto Pseudo-Random Number Generator (PRNG) using the current time as seed.
      *
      * @param shape the shape parameter of this distribution
      * @param location the location parameter of this distribution
      *
-     * @see #ParetoDistr(double, double, long, RandomGenerator)
+     * @see #ParetoDistr(double, double, long, UniformRandomProvider)
      */
     public ParetoDistr(final double shape, final double location) {
         this(shape, location, StatisticalDistribution.defaultSeed());
@@ -48,7 +37,7 @@ public class ParetoDistr extends ParetoDistribution implements ContinuousDistrib
      * @param shape the shape parameter of this distribution
      * @param location the location parameter of this distribution
      * @param seed the seed to initialize the generator
-     * @see #ParetoDistr(double, double, long, RandomGenerator)
+     * @see #ParetoDistr(double, double, long, UniformRandomProvider)
      */
     public ParetoDistr(final double shape, final double location, final long seed) {
         this(shape, location, seed, StatisticalDistribution.newDefaultGen(seed));
@@ -61,37 +50,9 @@ public class ParetoDistr extends ParetoDistribution implements ContinuousDistrib
      * @param location the location parameter of this distribution
      * @param seed the seed <b>already used</b> to initialize the Pseudo-Random Number Generator
      * @param rng the actual Pseudo-Random Number Generator that will be the base
-*                 to generate random numbers following a continuous distribution.
+     *            to generate random numbers following a continuous distribution.
      */
-    public ParetoDistr(final double shape, final double location, final long seed, final RandomGenerator rng) {
-        super(rng, location, shape);
-        this.seed = MathUtil.nonNegative(seed, "Seed");
-    }
-
-    @Override
-    public void reseedRandomGenerator(final long seed) {
-        super.reseedRandomGenerator(seed);
-        this.seed = seed;
-    }
-
-    @Override
-    public long getSeed() {
-        return this.seed;
-    }
-
-    @Override
-    public boolean isApplyAntitheticVariates() {
-        return applyAntitheticVariates;
-    }
-
-    @Override
-    public ParetoDistr setApplyAntitheticVariates(final boolean applyAntitheticVariates) {
-        this.applyAntitheticVariates = applyAntitheticVariates;
-        return this;
-    }
-
-    @Override
-    public double originalSample() {
-        return super.sample();
+    public ParetoDistr(final double shape, final double location, final long seed, final UniformRandomProvider rng) {
+        super(ParetoDistribution.of(location, shape), seed, rng);
     }
 }
