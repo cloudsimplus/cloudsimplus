@@ -216,7 +216,7 @@ public class GoogleTaskEventsTraceReader extends GoogleTraceReaderAbstract<Cloud
     }
 
     protected void sendCloudletEvents(final List<CloudSimEvent> events) {
-        events.forEach(evt -> evt.getSource().schedule(evt));
+        events.forEach(GoogleTraceReaderAbstract::scheduleTraceEvent);
     }
 
     @Override

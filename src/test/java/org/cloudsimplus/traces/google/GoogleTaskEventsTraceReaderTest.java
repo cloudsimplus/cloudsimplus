@@ -23,7 +23,24 @@
  */
 package org.cloudsimplus.traces.google;
 
+import org.cloudsimplus.cloudlets.Cloudlet;
+import org.cloudsimplus.cloudlets.CloudletSimple;
+import org.cloudsimplus.core.CloudSimPlus;
+import org.cloudsimplus.datacenters.DatacenterSimple;
+import org.cloudsimplus.hosts.HostSimple;
+import org.cloudsimplus.resources.Pe;
+import org.cloudsimplus.resources.PeSimple;
+import org.cloudsimplus.utilizationmodels.UtilizationModelDynamic;
+import org.cloudsimplus.vms.VmSimple;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
+import org.junit.jupiter.api.io.TempDir;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.List;
+import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -33,6 +50,50 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * @since CloudSim Plus 4.0.0
  */
 public class GoogleTaskEventsTraceReaderTest {
+    private static final int PES = 4;
+    private static final double MIPS = 1000;
+    private static final long CLOUDLET_LENGTH = -10_000;
+    private static final double FINISH_TIME = 10;
+    private static final int TIMEOUT_SECS = 30;
+
+    /**
+     * A trace where a task is submitted and scheduled at timestamp 0,
+     * then finished at {@link #FINISH_TIME} (timestamps are in microseconds).
+     */
+    private static final String TRACE_STARTING_AT_TIME_ZERO = """
+        0,,1,0,0,0,user,3,9,0.5,0.1,0.1,0
+        0,,1,0,0,1,user,3,9,0.5,0.1,0.1,0
+        10000000,,1,0,0,4,user,3,9,0.5,0.1,0.1,0
+        """;
+
+    /**
+     * Checks that trace events happening before the first simulation clock tick
+     * are processed instead of being detected as past events.
+     * See <a href="https://github.com/cloudsimplus/cloudsimplus/issues/563">#563</a>.
+     */
+    @Test @Timeout(TIMEOUT_SECS)
+    public void eventsAtTimestampZeroAreProcessed(@TempDir final Path tempDir) throws IOException {
+        final var simulation = new CloudSimPlus();
+        final var peList = IntStream.range(0, PES).mapToObj(i -> (Pe) new PeSimple(MIPS)).toList();
+        new DatacenterSimple(simulation, List.of(new HostSimple(peList)));
+
+        final var traceFile = Files.writeString(tempDir.resolve("task-events.csv"), TRACE_STARTING_AT_TIME_ZERO);
+        final var reader = new GoogleTaskEventsTraceReader(simulation, traceFile.toString(), GoogleTaskEventsTraceReaderTest::createCloudlet);
+        final var cloudlet = reader.process().iterator().next();
+        reader.getBrokerManager().getBrokers().forEach(broker -> broker.submitVm(new VmSimple(MIPS, PES)));
+        simulation.start();
+
+        assertAll(
+            () -> assertEquals(Cloudlet.Status.SUCCESS, cloudlet.getStatus()),
+            () -> assertEquals(FINISH_TIME, cloudlet.getFinishTime(), 1)
+        );
+    }
+
+    private static Cloudlet createCloudlet(final TaskEvent event) {
+        return new CloudletSimple(CLOUDLET_LENGTH, 1)
+            .setUtilizationModelRam(new UtilizationModelDynamic(0, event.getResourceRequestForRam()));
+    }
+
     /**
      * Ensures the order or enums is not changed,
      * because that will cause the enums ordinal values to change.
