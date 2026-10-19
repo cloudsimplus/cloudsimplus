@@ -20,7 +20,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * A scheduling policy performed by a {@link Vm} to process {@link CloudletTask}s
@@ -178,9 +177,14 @@ public class CloudletTaskSchedulerSimple implements CloudletTaskScheduler {
      * to be processed by a {@link CloudletReceiveTask}, and returns them to be
      * delivered for that Cloudlet.
      *
+     * <p>It takes just the packets the task is still waiting for,
+     * keeping the remaining ones to other receive tasks (such as
+     * when multiple Cloudlets in the same VM send packets to the same Cloudlet).</p>
+     *
      * @param receiveTask the {@link CloudletReceiveTask} that is waiting for packets
      * @return the list of packets targeting the {@link NetworkCloudlet}; or an empty list
      *         if there are no packets received targeting such a Cloudlet.
+     * @see CloudletReceiveTask#isPacketExpected(VmPacket)
      */
     private List<VmPacket> getPacketsSentToCloudlet(final CloudletReceiveTask receiveTask) {
         final List<VmPacket> pktsFromExpectedSenderVm = getListOfPacketsSentFromVm(receiveTask.getSourceVm());
@@ -188,8 +192,9 @@ public class CloudletTaskSchedulerSimple implements CloudletTaskScheduler {
         return pktsFromExpectedSenderVm
                 .stream()
                 .filter(pkt -> pkt.getDestination().equals(receiveTask.getCloudlet().getVm()))
-                .filter(pkt -> pkt.getReceiverCloudlet().equals(receiveTask.getCloudlet()))
-                .collect(Collectors.toList());
+                .filter(receiveTask::isPacketExpected)
+                .limit(receiveTask.getRemainingPacketsToReceive())
+                .toList();
     }
 
     /**
