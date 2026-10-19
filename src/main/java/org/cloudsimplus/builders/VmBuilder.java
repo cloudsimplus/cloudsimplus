@@ -41,6 +41,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A Builder class to create {@link Vm} objects using the default
@@ -68,7 +69,7 @@ public class VmBuilder implements Builder {
     @Getter @Setter private long pes = 1;
     private int numberOfCreatedVms;
     private final DatacenterBrokerSimple broker;
-    @Setter private Supplier<CloudletScheduler> cloudletSchedulerSupplier;
+    @Setter @Nullable private Supplier<CloudletScheduler> cloudletSchedulerSupplier;
     @Setter @NonNull private EventListener<VmHostEventInfo> onHostAllocationListener = EventListener.NULL;
     @Setter @NonNull private EventListener<VmHostEventInfo> onHostDeallocationListener = EventListener.NULL;
     @Setter @NonNull private EventListener<VmDatacenterEventInfo> onVmCreationFailureListener = EventListener.NULL;

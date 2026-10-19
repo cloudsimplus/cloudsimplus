@@ -60,7 +60,7 @@ public non-sealed abstract class VerticalVmScalingAbstract extends VmScalingAbst
 
     @Getter @Setter
     private double scalingFactor;
-    private Resource vmResource;
+    private Resource vmResource = Resource.NULL;
 
     /**
      * Creates a VerticalVmScaling.

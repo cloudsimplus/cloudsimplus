@@ -27,6 +27,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.function.Predicate;
+import org.jspecify.annotations.Nullable;
 
 /**
  * An interface to be implemented by each class that provides basic
@@ -72,7 +73,7 @@ public sealed interface Vm
      * Gets the {@link VmGroup group} this Vm belongs to
      * @return the {@link VmGroup} or NULL if the VM doesn't belong to a group
      */
-    VmGroup getGroup();
+    @Nullable VmGroup getGroup();
 
     /**
      * Adds a VM state history entry.

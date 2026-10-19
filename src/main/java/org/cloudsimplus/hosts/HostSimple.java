@@ -15,7 +15,6 @@ import org.cloudsimplus.resources.Pe;
 import org.cloudsimplus.schedulers.vm.VmScheduler;
 import org.cloudsimplus.schedulers.vm.VmSchedulerSpaceShared;
 import org.cloudsimplus.vms.Vm;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -186,7 +185,7 @@ public class HostSimple extends HostAbstract {
     }
 
     @Override
-    public int compareTo(final @NotNull Host other) {
+    public int compareTo(final Host other) {
         if(this.equals(other)) {
             return 0;
         }

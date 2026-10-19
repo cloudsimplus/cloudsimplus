@@ -52,6 +52,7 @@ public class File {
     /**
      * The file attributes.
      */
+    @SuppressWarnings("NullAway.Init") // initialized by createAttribute() in the constructors
     private FileAttribute attribute;
 
     /**

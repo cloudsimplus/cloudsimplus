@@ -55,10 +55,10 @@ public class CloudletToVmMappingSimulatedAnnealing
     private CloudletToVmMappingSolution initialSolution;
 
     @Getter @Setter @NonNull
-    private List<Vm> vmList;
+    private List<Vm> vmList = List.of();
 
     @Getter @Setter @NonNull
-    private List<Cloudlet> cloudletList;
+    private List<Cloudlet> cloudletList = List.of();
 
     /**
      * Creates a Simulated Annealing Heuristic for solving Cloudlets to VMs mapping.

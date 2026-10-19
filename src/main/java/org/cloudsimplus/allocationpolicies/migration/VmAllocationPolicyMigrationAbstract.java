@@ -30,6 +30,7 @@ import java.util.function.Predicate;
 
 import static java.util.Comparator.comparingDouble;
 import static java.util.stream.Collectors.*;
+import org.jspecify.annotations.Nullable;
 
 /**
  * An abstract VM allocation policy that dynamically optimizes the
@@ -81,7 +82,7 @@ public non-sealed abstract class VmAllocationPolicyMigrationAbstract
      * so that the policy tries migrating VMs inside the datacenter (inter-datacenter migration)
      * before looking for a different one.
      */
-    private Datacenter targetMigrationDc;
+    private Datacenter targetMigrationDc = Datacenter.NULL;
 
     /**
      * The index of the datacenter from the entire {@link CloudInformationService}
@@ -114,7 +115,7 @@ public non-sealed abstract class VmAllocationPolicyMigrationAbstract
      */
     public VmAllocationPolicyMigrationAbstract(
         final VmSelectionPolicy vmSelectionPolicy,
-        final BiFunction<VmAllocationPolicy, Vm, Optional<Host>> findHostForVmFunction)
+        @Nullable final BiFunction<VmAllocationPolicy, Vm, Optional<Host>> findHostForVmFunction)
     {
         super(findHostForVmFunction);
         this.underUtilizationThreshold = DEF_UNDER_UTILIZATION_THRESHOLD;

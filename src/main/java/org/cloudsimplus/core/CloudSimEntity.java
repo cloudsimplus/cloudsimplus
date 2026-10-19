@@ -20,6 +20,7 @@ import java.util.function.Predicate;
 
 import static java.util.Objects.requireNonNull;
 import static java.util.Objects.requireNonNullElseGet;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Represents a simulation entity. An entity handles events and can
@@ -38,7 +39,7 @@ public abstract class CloudSimEntity implements SimEntity {
     private final Simulation simulation;
 
     @Getter
-    private String name;
+    private String name = "";
 
     @Getter
     private double startTime;
@@ -52,6 +53,7 @@ public abstract class CloudSimEntity implements SimEntity {
     /**
      * The buffer for selected incoming events.
      */
+    @Nullable
     private SimEvent buffer;
 
     /**
@@ -111,12 +113,12 @@ public abstract class CloudSimEntity implements SimEntity {
     protected abstract void startInternal();
 
     @Override
-    public boolean schedule(final SimEntity dest, final double delay, final int tag, final Object data) {
+    public boolean schedule(final SimEntity dest, final double delay, final int tag, @Nullable final Object data) {
         return schedule(new CloudSimEvent(delay, this, dest, tag, data));
     }
 
     @Override
-    public boolean schedule(final double delay, final int tag, final Object data) {
+    public boolean schedule(final double delay, final int tag, @Nullable final Object data) {
         return schedule(this, delay, tag, data);
     }
 
@@ -131,7 +133,7 @@ public abstract class CloudSimEntity implements SimEntity {
     }
 
     @Override
-    public boolean schedule(final int tag, final Object data) {
+    public boolean schedule(final int tag, @Nullable final Object data) {
         return schedule(this, 0, tag, data);
     }
 
@@ -167,7 +169,7 @@ public abstract class CloudSimEntity implements SimEntity {
      * @param tag  a tag representing the type of event, according to the {@link CloudSimTag} or some custom one.
      * @param data the data to be sent with the event, according to the tag
      */
-    public void scheduleNow(final SimEntity dest, final int tag, final Object data) {
+    public void scheduleNow(final SimEntity dest, final int tag, @Nullable final Object data) {
         schedule(dest, 0, tag, data);
     }
 
@@ -188,7 +190,7 @@ public abstract class CloudSimEntity implements SimEntity {
      * @param tag  a tag representing the type of event, according to the {@link CloudSimTag} or some custom one.
      * @param data The data to be sent with the event, according to the tag
      */
-    public void scheduleFirstNow(final SimEntity dest, final int tag, final Object data) {
+    public void scheduleFirstNow(final SimEntity dest, final int tag, @Nullable final Object data) {
         scheduleFirst(dest, 0, tag, data);
     }
 
@@ -220,7 +222,7 @@ public abstract class CloudSimEntity implements SimEntity {
      * @param tag   a tag representing the type of event, according to the {@link CloudSimTag} or some custom one.
      * @param data  The data to be sent with the event, according to the tag
      */
-    public void scheduleFirst(final SimEntity dest, final double delay, final int tag, final Object data) {
+    public void scheduleFirst(final SimEntity dest, final double delay, final int tag, @Nullable final Object data) {
         final var evt = new CloudSimEvent(delay, this, dest, tag, data);
         if (canSendEvent(evt)) {
             simulation.sendFirst(evt);
@@ -375,7 +377,7 @@ public abstract class CloudSimEntity implements SimEntity {
      * @param tag a tag representing the type of event, according to the {@link CloudSimTag} or some custom one.
      * @param data A reference to data to be sent with the event
      */
-    protected void send(final SimEntity dest, double delay, final int tag, final Object data) {
+    protected void send(final SimEntity dest, double delay, final int tag, @Nullable final Object data) {
         requireNonNull(dest);
         if (dest.getId() < 0) {
             LOGGER.error("{}.send(): invalid entity id {} for {}", getName(), dest.getId(), dest);
@@ -418,7 +420,7 @@ public abstract class CloudSimEntity implements SimEntity {
      * @param tag a tag representing the type of event, according to the {@link CloudSimTag} or some custom one
      * @param data  the data to be sent with the event, according to the tag
      */
-    protected void sendNow(final SimEntity dest, final int tag, final Object data) {
+    protected void sendNow(final SimEntity dest, final int tag, @Nullable final Object data) {
         send(dest, 0, tag, data);
     }
 

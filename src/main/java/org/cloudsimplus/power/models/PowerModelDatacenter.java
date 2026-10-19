@@ -21,5 +21,5 @@ public abstract class PowerModelDatacenter implements PowerModel {
      * The Datacenter this PowerModel is collecting power consumption measurements from.
      */
     @Getter @Setter @NonNull
-    private Datacenter datacenter;
+    private Datacenter datacenter = Datacenter.NULL;
 }

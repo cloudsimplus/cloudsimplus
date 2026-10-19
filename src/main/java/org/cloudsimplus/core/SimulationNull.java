@@ -9,6 +9,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A class that implements the Null Object Design Pattern for {@link Simulation} class.
@@ -35,6 +36,7 @@ final class SimulationNull implements Simulation {
     @Override public Calendar getCalendar() {
         return Calendar.getInstance();
     }
+    @SuppressWarnings("NullAway") // there is no Null Object for CloudInformationService
     @Override public CloudInformationService getCis() {
         return null;
     }
@@ -73,10 +75,10 @@ final class SimulationNull implements Simulation {
     }
     @Override public SimEvent select(SimEntity dest, Predicate<SimEvent> predicate) { return SimEvent.NULL; }
     @Override public void send(SimEvent evt) {/**/}
-    @Override public void send(SimEntity src, SimEntity dest, double delay, int tag, Object data) {/**/}
+    @Override public void send(SimEntity src, SimEntity dest, double delay, int tag, @Nullable Object data) {/**/}
     @Override public void sendFirst(SimEvent evt) {/**/}
-    @Override public void sendFirst(SimEntity src, SimEntity dest, double delay, int tag, Object data) {/**/}
-    @Override public void sendNow(SimEntity src, SimEntity dest, int tag, Object data) {/**/}
+    @Override public void sendFirst(SimEntity src, SimEntity dest, double delay, int tag, @Nullable Object data) {/**/}
+    @Override public void sendNow(SimEntity src, SimEntity dest, int tag, @Nullable Object data) {/**/}
     @Override public double runFor(double interval) { return 0; }
     @Override public Simulation addOnEventProcessingListener(EventListener<SimEvent> listener) {
         return this;

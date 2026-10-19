@@ -24,6 +24,7 @@ import org.slf4j.LoggerFactory;
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
+import org.jspecify.annotations.Nullable;
 
 /**
  * An abstract class to manage Cloud Computing simulations,
@@ -496,12 +497,12 @@ non-sealed abstract class CloudSim implements Simulation {
     }
 
     @Override
-    public void sendNow(final SimEntity src, final SimEntity dest, final int tag, final Object data) {
+    public void sendNow(final SimEntity src, final SimEntity dest, final int tag, @Nullable final Object data) {
         send(src, dest, 0, tag, data);
     }
 
     @Override
-    public void send(final SimEntity src, final SimEntity dest, final double delay, final int tag, final Object data) {
+    public void send(final SimEntity src, final SimEntity dest, final double delay, final int tag, @Nullable final Object data) {
         send(new CloudSimEvent(SimEvent.Type.SEND, delay, src, dest, tag, data));
     }
 
@@ -514,7 +515,7 @@ non-sealed abstract class CloudSim implements Simulation {
     }
 
     @Override
-    public void sendFirst(final SimEntity src, final SimEntity dest, final double delay, final int tag, final Object data) {
+    public void sendFirst(final SimEntity src, final SimEntity dest, final double delay, final int tag, @Nullable final Object data) {
         sendFirst(new CloudSimEvent(SimEvent.Type.SEND, delay, src, dest, tag, data));
     }
 

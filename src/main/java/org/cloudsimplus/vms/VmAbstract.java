@@ -26,6 +26,7 @@ import org.cloudsimplus.util.MathUtil;
 import org.cloudsimplus.utilizationmodels.BootModel;
 
 import java.util.*;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A base class for implementing {@link Vm}s.
@@ -82,7 +83,7 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
     private Host host;
     private double timeZone;
     private double submissionDelay;
-    @Setter @NonNull
+    @Nullable
     private VmGroup group;
     private boolean failed;
     private SimpleStorage storage;
@@ -116,6 +117,7 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
         this(id, mipsCapacity, pesNumber, new CloudletSchedulerTimeShared());
     }
 
+    @SuppressWarnings("NullAway.Init") // fields are initialized by mutableAttributesInit()
     protected VmAbstract(final long id, final long mipsCapacity, final long pesNumber, final CloudletScheduler cloudletScheduler) {
         super();
         setId(id);

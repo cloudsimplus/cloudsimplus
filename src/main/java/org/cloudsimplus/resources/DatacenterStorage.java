@@ -27,7 +27,7 @@ public class DatacenterStorage {
     private List<SanStorage> storageList;
 
     @Getter @Setter
-	private Datacenter datacenter;
+	private Datacenter datacenter = Datacenter.NULL;
 
     /// Creates a DatacenterStorage with an empty [storage list][#getStorageList()].
     public DatacenterStorage(){

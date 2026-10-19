@@ -20,6 +20,7 @@ import org.cloudsimplus.distributions.UniformDistr;
 import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
+import org.jspecify.annotations.Nullable;
 
 /// Implements a model, according to which a [Cloudlet] generates
 /// random resource utilization every time frame,
@@ -231,7 +232,7 @@ public class UtilizationModelStochastic extends UtilizationModelAbstract {
     /// @param time the time to get the utilization history for
     /// @return the stored utilization percentage or `null` if it has never been generated
     ///         a utilization value for the given time
-    protected Double getUtilizationHistory(final double time) {
+    protected @Nullable Double getUtilizationHistory(final double time) {
         return historyMap.get(time);
     }
 

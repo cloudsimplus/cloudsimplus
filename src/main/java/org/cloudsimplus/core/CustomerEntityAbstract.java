@@ -43,7 +43,7 @@ public non-sealed abstract class CustomerEntityAbstract extends ExecDelayableAbs
 
     @NonNull
     @EqualsAndHashCode.Include
-    private DatacenterBroker broker;
+    private DatacenterBroker broker = DatacenterBroker.NULL;
 
     private double brokerArrivalTime;
     private double creationTime;

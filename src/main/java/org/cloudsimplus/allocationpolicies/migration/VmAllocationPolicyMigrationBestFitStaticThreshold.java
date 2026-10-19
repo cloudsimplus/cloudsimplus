@@ -18,6 +18,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 import static java.util.Comparator.comparingDouble;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A {@link VmAllocationPolicyMigration} that uses a Static CPU utilization Threshold (THR) to
@@ -73,7 +74,7 @@ public class VmAllocationPolicyMigrationBestFitStaticThreshold extends VmAllocat
     public VmAllocationPolicyMigrationBestFitStaticThreshold(
         final VmSelectionPolicy vmSelectionPolicy,
         final double overUtilizationThreshold,
-        final BiFunction<VmAllocationPolicy, Vm, Optional<Host>> findHostForVmFunction)
+        @Nullable final BiFunction<VmAllocationPolicy, Vm, Optional<Host>> findHostForVmFunction)
     {
         super(vmSelectionPolicy, overUtilizationThreshold, findHostForVmFunction);
     }

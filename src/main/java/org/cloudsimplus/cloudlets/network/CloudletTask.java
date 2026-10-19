@@ -53,6 +53,7 @@ public abstract sealed class CloudletTask implements Identifiable permits Cloudl
      * The {@link NetworkCloudlet} that the task belongs to.
      */
     @NonNull
+    @SuppressWarnings("NullAway.Init") // set when the task is added to a NetworkCloudlet
     private NetworkCloudlet cloudlet;
 
     /**

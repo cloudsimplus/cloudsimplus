@@ -39,7 +39,7 @@ public class CloudletTaskSchedulerSimple implements CloudletTaskScheduler {
     private static final Logger LOGGER = LoggerFactory.getLogger(CloudletTaskSchedulerSimple.class.getSimpleName());
 
     @Getter @Setter
-    private Vm vm;
+    private Vm vm = Vm.NULL;
 
     /** @see #getVmPacketsToSend() */
     private final List<VmPacket> vmPacketsToSend;

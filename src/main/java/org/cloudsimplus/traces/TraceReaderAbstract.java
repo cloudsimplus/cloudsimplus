@@ -48,7 +48,7 @@ public abstract non-sealed class TraceReaderAbstract extends FileReader implemen
     private static final String INT_REGEX = "^-?\\d+$";
 
     /** @see #getLastParsedLineArray() */
-    private String[] lastParsedLineArray;
+    private String[] lastParsedLineArray = new String[0];
 
     /**
      * Create a TraceReader object.

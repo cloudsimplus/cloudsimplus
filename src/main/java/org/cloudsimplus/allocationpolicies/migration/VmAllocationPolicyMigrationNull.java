@@ -10,6 +10,7 @@ import org.cloudsimplus.vms.Vm;
 
 import java.util.*;
 import java.util.function.BiFunction;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A class that implements the Null Object Design Pattern for {@link VmAllocationPolicyMigration}.
@@ -37,7 +38,7 @@ final class VmAllocationPolicyMigrationNull implements VmAllocationPolicyMigrati
         return Collections.emptyList();
     }
     @Override public Map<Vm, Host> getOptimizedAllocationMap(List<? extends Vm> vmList) { return Collections.emptyMap(); }
-    @Override public VmAllocationPolicy setFindHostForVmFunction(BiFunction<VmAllocationPolicy, Vm, Optional<Host>> findHostForVmFunction) { return this; }
+    @Override public VmAllocationPolicy setFindHostForVmFunction(@Nullable BiFunction<VmAllocationPolicy, Vm, Optional<Host>> findHostForVmFunction) { return this; }
     @Override public boolean isUnderloaded() { return false; }
     @Override public boolean isUnderloaded(Host host) { return false; }
     @Override public boolean isOverloaded() { return false; }

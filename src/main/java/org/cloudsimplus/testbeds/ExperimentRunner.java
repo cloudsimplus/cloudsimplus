@@ -45,6 +45,7 @@ import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toCollection;
 import static java.util.stream.Collectors.toList;
+import org.jspecify.annotations.Nullable;
 
 /**
  * An abstract class to implement experiment runners.
@@ -140,7 +141,7 @@ public abstract class ExperimentRunner<T extends Experiment<T>> extends Abstract
      * @see #setLatexTableResultsGeneration(boolean)
      */
     @Setter
-    private String description;
+    private String description = "";
 
     /**
      * An id used to identify the experiment results table generated in formats such as LaTeX
@@ -148,13 +149,14 @@ public abstract class ExperimentRunner<T extends Experiment<T>> extends Abstract
      * @see #latexTableResultsGeneration
      */
     @Setter
-    private String resultsTableId;
+    private String resultsTableId = "";
 
     /**
      * Checks if generation of a result table in LaTeX format for computed metrics is enabled.
      */
     @Setter
     private boolean latexTableResultsGeneration;
+    @Nullable
     private List<Experiment<T>> experiments;
 
     /**
@@ -490,7 +492,7 @@ public abstract class ExperimentRunner<T extends Experiment<T>> extends Abstract
      */
     @Override
     public void run() {
-        createAllExperimentsBeforeFirstRun();
+        final var experimentList = createAllExperimentsBeforeFirstRun();
 
         final String runWord = simulationRuns > 1 ? "runs" : "run";
         System.out.printf(
@@ -503,7 +505,7 @@ public abstract class ExperimentRunner<T extends Experiment<T>> extends Abstract
 
         experimentsStartTimeSecs = Math.round(System.currentTimeMillis()/1000.0);
         printProgress(0);
-        getStream(this.experiments).forEach(Experiment::run);
+        getStream(experimentList).forEach(Experiment::run);
         System.out.println();
         experimentsExecutionTimeSecs = TimeUtil.elapsedSeconds(experimentsStartTimeSecs);
 
@@ -525,11 +527,14 @@ public abstract class ExperimentRunner<T extends Experiment<T>> extends Abstract
      * they access the shared seeds list, all experiments have to
      * be created before starting execution.
      * Otherwise, if they are run in parallel, we get {@link IndexOutOfBoundsException}.
+     * @return the list of created experiments
      */
-    private void createAllExperimentsBeforeFirstRun() {
+    private List<Experiment<T>> createAllExperimentsBeforeFirstRun() {
         if(experiments == null) {
             experiments = IntStream.range(0, simulationRuns).mapToObj(this::createExperiment).collect(toList());
         }
+
+        return experiments;
     }
 
     private void computeAndPrintFinalResults() {

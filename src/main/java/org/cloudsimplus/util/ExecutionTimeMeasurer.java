@@ -10,6 +10,7 @@ package org.cloudsimplus.util;
 
 import java.util.HashMap;
 import java.util.Map;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Measures execution times of CloudSim's methods.
@@ -53,7 +54,12 @@ public final class ExecutionTimeMeasurer {
      * @see #getExecutionStartTimes()
      */
     public static double end(final String name) {
-        return (System.currentTimeMillis() - EXECUTION_START_TIMES.remove(name)) / 1000.0;
+        final Long startTime = EXECUTION_START_TIMES.remove(name);
+        if (startTime == null) {
+            throw new IllegalStateException("The execution time measurement for '%s' was not started".formatted(name));
+        }
+
+        return (System.currentTimeMillis() - startTime) / 1000.0;
     }
 
     /**
@@ -70,7 +76,7 @@ public final class ExecutionTimeMeasurer {
      * @param name the name of the method/process to get the execution start time
      * @see #EXECUTION_START_TIMES
      */
-    static Long getExecutionStartTime(final String name){
+    static @Nullable Long getExecutionStartTime(final String name){
         return EXECUTION_START_TIMES.get(name);
     }
 }

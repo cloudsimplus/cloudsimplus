@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiFunction;
+import org.jspecify.annotations.Nullable;
 
 /**
  * An interface to be implemented by each class that represents a policy, used by
@@ -137,7 +138,7 @@ public sealed interface VmAllocationPolicy
      *
      * @param findHostForVmFunction the {@link BiFunction} to set
      */
-    VmAllocationPolicy setFindHostForVmFunction(BiFunction<VmAllocationPolicy, Vm, Optional<Host>> findHostForVmFunction);
+    VmAllocationPolicy setFindHostForVmFunction(@Nullable BiFunction<VmAllocationPolicy, Vm, Optional<Host>> findHostForVmFunction);
 
     /**
      * Gets the list of Hosts available in the {@link Datacenter} linked to this VmAllocationPolicy,

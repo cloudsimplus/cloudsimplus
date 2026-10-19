@@ -16,6 +16,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import static java.util.Comparator.comparing;
+import org.jspecify.annotations.Nullable;
 
 /// A VmAllocationPolicy implementation that chooses, as
 /// the host for a VM, that one with the fewest PEs in use.
@@ -49,7 +50,7 @@ public class VmAllocationPolicySimple extends VmAllocationPolicyAbstract {
      * @param findHostForVmFunction a {@link Function} to select a Host for a given Vm.
      * @see VmAllocationPolicy#setFindHostForVmFunction(java.util.function.BiFunction)
      */
-    public VmAllocationPolicySimple(final BiFunction<VmAllocationPolicy, Vm, Optional<Host>> findHostForVmFunction) {
+    public VmAllocationPolicySimple(@Nullable final BiFunction<VmAllocationPolicy, Vm, Optional<Host>> findHostForVmFunction) {
         super(findHostForVmFunction);
     }
 

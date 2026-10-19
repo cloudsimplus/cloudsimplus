@@ -44,6 +44,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static java.util.Objects.requireNonNull;
+import org.jspecify.annotations.Nullable;
 
 /**
  * An abstract class to implement simulation experiments
@@ -59,6 +60,7 @@ public abstract class Experiment<T extends Experiment<T>> extends AbstractRunnab
      * The object that is in charge to run the experiment.
      */
     @Getter
+    @Nullable
     private final ExperimentRunner<?> runner;
 
     protected int hostsNumber;
@@ -156,9 +158,10 @@ public abstract class Experiment<T extends Experiment<T>> extends AbstractRunnab
      * you can give a lambda expression such as {@code broker -> NUMBER_OF_VMS_TO_CREATE}.
      */
     @Getter @Setter @NonNull
+    @SuppressWarnings("NullAway.Init") // it's required to be set before calling run()
     private Function<DatacenterBroker, Integer> vmsByBrokerFunction;
 
-    @Setter
+    @Setter @Nullable
     private Supplier<VmAllocationPolicy> vmAllocationPolicySupplier;
 
     /**
@@ -196,7 +199,7 @@ public abstract class Experiment<T extends Experiment<T>> extends AbstractRunnab
      * @see #setBrokersNumber(int)
      * @see #setDatacentersNumber(int)
      */
-    protected Experiment(final int index, final ExperimentRunner<?> runner, final long seed) {
+    protected Experiment(final int index, @Nullable final ExperimentRunner<?> runner, final long seed) {
         super();
         if(seed == -1){
             requireNonNull(runner);
@@ -239,7 +242,7 @@ public abstract class Experiment<T extends Experiment<T>> extends AbstractRunnab
     }
 
     public boolean isFirstExperimentCreated(){
-        return index == runner.getFirstExperimentCreated();
+        return runner != null && index == runner.getFirstExperimentCreated();
     }
 
     /**

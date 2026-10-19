@@ -62,13 +62,13 @@ public non-sealed abstract class CloudletAbstract extends CustomerEntityAbstract
     private Vm vm;
 
     @NonNull
-    private UtilizationModel utilizationModelCpu;
+    private UtilizationModel utilizationModelCpu = UtilizationModel.NULL;
 
     @NonNull
-    private UtilizationModel utilizationModelRam;
+    private UtilizationModel utilizationModelRam = UtilizationModel.NULL;
 
     @NonNull
-    private UtilizationModel utilizationModelBw;
+    private UtilizationModel utilizationModelBw = UtilizationModel.NULL;
 
     private List<String> requiredFiles;
 

@@ -36,7 +36,7 @@ public class TopologyReaderBrite implements TopologyReader {
      * The network Topological Graph.
      */
     @Getter
-    private TopologicalGraph graph;
+    private TopologicalGraph graph = new TopologicalGraph();
 
     void setState(final ParsingState state) {
         this.state = state;
