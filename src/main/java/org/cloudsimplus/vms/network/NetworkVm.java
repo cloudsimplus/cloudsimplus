@@ -50,7 +50,7 @@ public class NetworkVm extends VmSimple {
      * List of packets received by the VM.
      */
     @NonNull
-    private List<VmPacket> receivedPacketList;
+    private List<VmPacket> receivedPacketList = new ArrayList<>();
 
     /** Indicates if the VM is free or not. */
     private boolean free;

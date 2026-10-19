@@ -100,7 +100,7 @@ final class ResultTable<T extends Experiment<T>> {
 
                 \\begin{tabular}{|p{2.8cm}|p{1.3cm}p{1.3cm}|>{\\raggedleft\\arraybackslash}p{1.2cm}|}
                 \\hline
-                \\textbf{Metric} & \\multicolumn{2}{p{3.0cm}|}{\\textbf{95\\% Confidence Interval}} & \\textbf{*Std. Dev.} \\\\
+                \\textbf{Metric} & \\multicolumn{2}{p{3.0cm}|}{\\textbf{95\\%% Confidence Interval}} & \\textbf{*Std. Dev.} \\\\
                 \\hline
             """;
 

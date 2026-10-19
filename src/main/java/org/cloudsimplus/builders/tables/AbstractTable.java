@@ -60,7 +60,7 @@ public non-sealed abstract class AbstractTable implements Table {
     private final List<List<Object>> rows;
 
     /** @see #getColumnSeparator() */
-    private String columnSeparator;
+    private String columnSeparator = "";
 
     public AbstractTable(){
         this("");

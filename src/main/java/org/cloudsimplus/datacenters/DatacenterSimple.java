@@ -1116,7 +1116,7 @@ public non-sealed class DatacenterSimple extends CloudSimEntity implements Datac
         }
 
         this.powerModel = powerModel;
-        return null;
+        return this;
     }
 
     @Override

@@ -8,6 +8,7 @@ package org.cloudsimplus.core;
 
 import lombok.NonNull;
 import org.cloudsimplus.core.events.SimEvent;
+import org.jspecify.annotations.Nullable;
 
 /**
  * An interface that represents a simulation entity.
@@ -105,7 +106,7 @@ public interface SimEntity extends Nameable, Runnable, Comparable<SimEntity> {
      * @param data  The data to be sent with the event, according to the tag
      * @return true if the event was sent; false if the simulation was not started yet
      */
-    boolean schedule(double delay, int tag, Object data);
+    boolean schedule(double delay, int tag, @Nullable Object data);
 
     /**
      * Sends an event from the entity to itself with no data.
@@ -123,7 +124,7 @@ public interface SimEntity extends Nameable, Runnable, Comparable<SimEntity> {
      * @param data  The data to be sent with the event, according to the tag
      * @return true if the event was sent; false if the simulation was not started yet
      */
-    boolean schedule(SimEntity dest, double delay, int tag, Object data);
+    boolean schedule(SimEntity dest, double delay, int tag, @Nullable Object data);
 
     /**
      * Sends an event to another entity with <b>no</b> attached data.
@@ -140,7 +141,7 @@ public interface SimEntity extends Nameable, Runnable, Comparable<SimEntity> {
      * @param data  The data to be sent with the event, according to the tag
      * @return true if the event was sent; false if the simulation was not started yet
      */
-    boolean schedule(int tag, Object data);
+    boolean schedule(int tag, @Nullable Object data);
 
     /**
      * Starts the run loop to process events fired during the simulation. The events

@@ -8,7 +8,6 @@ import org.cloudsimplus.hosts.HostSimple;
 import org.cloudsimplus.resources.Pe;
 import org.cloudsimplus.resources.PeSimple;
 import org.cloudsimplus.vms.VmSimple;
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -61,7 +60,7 @@ public final class VmExpectedFreePesOverflowTest {
         broker.submitCloudletList(List.of(cloudlet));
     }
 
-    private static @NotNull PeSimple newPe() {
+    private static PeSimple newPe() {
         return new PeSimple(HOST_MIPS);
     }
 

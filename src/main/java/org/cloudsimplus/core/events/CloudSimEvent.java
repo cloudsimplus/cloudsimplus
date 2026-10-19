@@ -20,6 +20,7 @@ import org.cloudsimplus.listeners.EventInfo;
 import org.cloudsimplus.listeners.EventListener;
 
 import java.util.Objects;
+import org.jspecify.annotations.Nullable;
 
 /**
  * An event passed between the entities in the simulation.
@@ -48,6 +49,7 @@ public final class CloudSimEvent implements SimEvent {
 
     private final int tag;
 
+    @Nullable @Getter(AccessLevel.NONE)
     private final Object data;
 
     private long serial = -1;
@@ -64,7 +66,7 @@ public final class CloudSimEvent implements SimEvent {
     public CloudSimEvent(
         final double delay,
         final SimEntity source, final SimEntity destination,
-        final int tag, final Object data)
+        final int tag, @Nullable final Object data)
     {
         this(Type.SEND, delay, source, destination, tag, data);
     }
@@ -89,7 +91,7 @@ public final class CloudSimEvent implements SimEvent {
      *            which is used by the destination entity to perform operations based on the message type
      * @param data the data attached to the message, that depends on the message tag
      */
-    public CloudSimEvent(final SimEntity destination, final int tag, Object data) {
+    public CloudSimEvent(final SimEntity destination, final int tag, @Nullable Object data) {
         this(0, destination, tag, data);
     }
 
@@ -103,7 +105,7 @@ public final class CloudSimEvent implements SimEvent {
      */
     public CloudSimEvent(
         final double delay,
-        final SimEntity destination, final int tag, final Object data)
+        final SimEntity destination, final int tag, @Nullable final Object data)
     {
         this(Type.SEND, delay, destination, destination, tag, data);
     }
@@ -159,7 +161,7 @@ public final class CloudSimEvent implements SimEvent {
     public CloudSimEvent(
         final Type type, final double delay,
         final SimEntity source, final SimEntity destination,
-        final int tag, final Object data)
+        final int tag, @Nullable final Object data)
     {
         this(type, source, destination, tag, data, timeAfterDelay(source, delay));
     }
@@ -176,7 +178,7 @@ public final class CloudSimEvent implements SimEvent {
     private CloudSimEvent(
         final Type type,
         final SimEntity source, final SimEntity destination,
-        final int tag, final Object data, final double time)
+        final int tag, @Nullable final Object data, final double time)
     {
         this.type = type;
         this.setSource(source);
@@ -245,5 +247,18 @@ public final class CloudSimEvent implements SimEvent {
     public String toString() {
         return "Event tag = " + tag + " source = " + source.getName() +
             " target = " + destination.getName() + " time = " + time;
+    }
+
+    /**
+     * {@inheritDoc}
+     * The data is null only for events whose tag doesn't carry any data.
+     * Since entities just read the data for tags that carry it,
+     * the method is declared to return a non-null value.
+     * @return {@inheritDoc}
+     */
+    @Override
+    @SuppressWarnings("NullAway")
+    public Object getData() {
+        return data;
     }
 }

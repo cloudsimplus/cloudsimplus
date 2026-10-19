@@ -170,10 +170,7 @@ public final class BriteNetworkTopology implements NetworkTopology {
             entitiesMap = new HashMap<>();
         }
 
-        addNodeMapping(src);
-        addNodeMapping(dest);
-
-        final var link = new TopologicalLink(entitiesMap.get(src), entitiesMap.get(dest), latency, bandwidth);
+        final var link = new TopologicalLink(addNodeMapping(src), addNodeMapping(dest), latency, bandwidth);
         graph.addLink(link);
         generateMatrices();
     }
@@ -186,12 +183,17 @@ public final class BriteNetworkTopology implements NetworkTopology {
     /**
      * Adds a new node in the network topology graph if it's absent.
      * @param entity the CloudSim entity to check if there isn't a BRITE mapping yet.
+     * @return the index of the BRITE node mapped to the entity
      */
-    private void addNodeMapping(final SimEntity entity) {
-        if (entitiesMap.putIfAbsent(entity, nextIdx) == null) {
-            graph.addNode(new TopologicalNode(nextIdx));
-            nextIdx++;
+    private int addNodeMapping(final SimEntity entity) {
+        final Integer nodeIdx = entitiesMap.get(entity);
+        if (nodeIdx != null) {
+            return nodeIdx;
         }
+
+        entitiesMap.put(entity, nextIdx);
+        graph.addNode(new TopologicalNode(nextIdx));
+        return nextIdx++;
     }
 
     /**

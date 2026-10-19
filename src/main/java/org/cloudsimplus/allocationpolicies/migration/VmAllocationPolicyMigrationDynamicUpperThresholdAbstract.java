@@ -23,7 +23,7 @@ public non-sealed abstract class VmAllocationPolicyMigrationDynamicUpperThreshol
      * @see VmAllocationPolicyMigrationDynamicUpperThreshold#getFallbackVmAllocationPolicy()
      */
     @NonNull
-    private VmAllocationPolicyMigration fallbackVmAllocationPolicy;
+    private VmAllocationPolicyMigration fallbackVmAllocationPolicy = VmAllocationPolicyMigration.NULL;
 
     public VmAllocationPolicyMigrationDynamicUpperThresholdAbstract(final VmSelectionPolicy vmSelectionPolicy) {
         super(vmSelectionPolicy);

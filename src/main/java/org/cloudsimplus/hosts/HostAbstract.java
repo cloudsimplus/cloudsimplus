@@ -150,7 +150,7 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
     private VmScheduler vmScheduler;
 
     @Getter @NonNull
-    private List<Pe> peList;
+    private List<Pe> peList = List.of();
 
     @Getter @Setter
     private boolean stateHistoryEnabled;

@@ -34,6 +34,7 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 import static java.util.Collections.singletonList;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Manages creation and access to {@link DatacenterBroker}s used by
@@ -48,6 +49,7 @@ public final class BrokerManager {
      * @see #setDefaultBroker(DatacenterBroker)
      * @see #brokersMap
      */
+    @Nullable
     private DatacenterBroker defaultBroker;
 
     /**

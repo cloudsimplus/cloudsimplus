@@ -24,6 +24,7 @@
 package org.cloudsimplus.core;
 
 import org.cloudsimplus.core.events.SimEvent;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A base interface used internally to implement the Null Object Design Pattern
@@ -42,10 +43,10 @@ public interface SimEntityNullBase extends SimEntity {
     @Override default Simulation getSimulation() { return Simulation.NULL; }
     @Override default void processEvent(SimEvent evt) {/**/}
     @Override default boolean schedule(SimEvent evt) { return false; }
-    @Override default boolean schedule(SimEntity dest, double delay, int tag, Object data) { return false; }
-    @Override default boolean schedule(double delay, int tag, Object data) { return false; }
+    @Override default boolean schedule(SimEntity dest, double delay, int tag, @Nullable Object data) { return false; }
+    @Override default boolean schedule(double delay, int tag, @Nullable Object data) { return false; }
     @Override default boolean schedule(SimEntity dest, double delay, int tag) { return false; }
-    @Override default boolean schedule(int tag, Object data) { return false; }
+    @Override default boolean schedule(int tag, @Nullable Object data) { return false; }
     @Override default boolean schedule(double delay, int tag) { return false; }
     @Override default void run() {/**/}
     @Override default boolean start() { return false; }

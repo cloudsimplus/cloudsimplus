@@ -28,6 +28,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A Host that support simulation of networked {@link Datacenter}s. It executes actions related to the management of packets
@@ -78,7 +79,7 @@ public class NetworkHost extends HostSimple {
      * An Edge Switch the Host is directly connected to.
      * TODO Setter is to be called only by the {@link EdgeSwitch#connectHost(NetworkHost)} method.
      */
-    @Getter @Setter @NonNull
+    @Setter @Nullable
     private EdgeSwitch edgeSwitch;
 
     /**
@@ -184,11 +185,23 @@ public class NetworkHost extends HostSimple {
     }
 
     /**
+     * {@return the Edge Switch the Host is directly connected to}
+     * @throws IllegalStateException when the Host is not connected to any switch
+     */
+    public EdgeSwitch getEdgeSwitch() {
+        if (edgeSwitch == null) {
+            throw new IllegalStateException("%s is not connected to any %s".formatted(this, EdgeSwitch.class.getSimpleName()));
+        }
+
+        return edgeSwitch;
+    }
+
+    /**
      * Sends packets from the local packets buffer to VMs outside this host.
      */
     private void sendPacketsToExternalVms() {
         for (final HostPacket pkt : pktsToSendForExternalVms) {
-            final double delay = edgeSwitch.downlinkTransferDelay(pkt, pktsToSendForExternalVms.size());
+            final double delay = getEdgeSwitch().downlinkTransferDelay(pkt, pktsToSendForExternalVms.size());
             totalDataTransferBytes += pkt.getSize();
 
             getSimulation().send(

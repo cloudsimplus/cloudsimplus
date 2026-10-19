@@ -22,7 +22,7 @@ import org.cloudsimplus.schedulers.MipsShare;
 import org.cloudsimplus.util.Conversion;
 import org.cloudsimplus.vms.Vm;
 import org.cloudsimplus.vms.VmGroup;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.BiFunction;
@@ -49,11 +49,12 @@ public non-sealed abstract class VmAllocationPolicyAbstract implements VmAllocat
      *
      * @see #setFindHostForVmFunction(BiFunction)
      */
+    @Nullable
     private BiFunction<VmAllocationPolicy, Vm, Optional<Host>> findHostForVmFunction;
 
     /** @see #getDatacenter() */
     @NonNull
-    private Datacenter datacenter;
+    private Datacenter datacenter = Datacenter.NULL;
 
     /** @see #getHostCountForParallelSearch() */
     private int hostCountForParallelSearch;
@@ -72,8 +73,7 @@ public non-sealed abstract class VmAllocationPolicyAbstract implements VmAllocat
      * @param findHostForVmFunction a {@link BiFunction} to select a Host for a given Vm.
      * @see VmAllocationPolicy#setFindHostForVmFunction(BiFunction)
      */
-    public VmAllocationPolicyAbstract(final BiFunction<VmAllocationPolicy, Vm, Optional<Host>> findHostForVmFunction) {
-        setDatacenter(Datacenter.NULL);
+    public VmAllocationPolicyAbstract(@Nullable final BiFunction<VmAllocationPolicy, Vm, Optional<Host>> findHostForVmFunction) {
         setFindHostForVmFunction(findHostForVmFunction);
         this.hostCountForParallelSearch = DEF_HOST_COUNT_PARALLEL_SEARCH;
     }
@@ -341,7 +341,7 @@ public non-sealed abstract class VmAllocationPolicyAbstract implements VmAllocat
      * @see #defaultFindHostForVm(Vm)
      */
     @Override
-    public final VmAllocationPolicy setFindHostForVmFunction(final BiFunction<VmAllocationPolicy, Vm, Optional<Host>> findHostForVmFunction) {
+    public final VmAllocationPolicy setFindHostForVmFunction(@Nullable final BiFunction<VmAllocationPolicy, Vm, Optional<Host>> findHostForVmFunction) {
         this.findHostForVmFunction = findHostForVmFunction;
         return this;
     }

@@ -16,7 +16,7 @@ import org.cloudsimplus.util.MathUtil;
 @Accessors(makeFinal = false) @Getter
 public abstract non-sealed class PowerModelHostAbstract implements PowerModelHost {
     @Setter
-    private Host host;
+    private Host host = Host.NULL;
     private double startupPower;
     private double shutDownPower;
     private double totalStartupPower;

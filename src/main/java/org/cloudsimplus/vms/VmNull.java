@@ -42,6 +42,7 @@ import org.cloudsimplus.utilizationmodels.BootModel;
 
 import java.util.Collections;
 import java.util.List;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A class that implements the Null Object Design Pattern for {@link Vm} objects.
@@ -212,7 +213,7 @@ final class VmNull implements Vm {
     @Override public Processor getProcessor() { return Processor.NULL; }
     @Override public String getDescription() { return ""; }
     @Override public Vm setDescription(String description) { return this; }
-    @Override public VmGroup getGroup() { return null; }
+    @Override public @Nullable VmGroup getGroup() { return null; }
     @Override public double getTimeZone() { return Integer.MAX_VALUE; }
     @Override public Vm setTimeZone(double timeZone) { return this; }
     @Override public List<ResourceManageable> getResources() { return Collections.emptyList(); }

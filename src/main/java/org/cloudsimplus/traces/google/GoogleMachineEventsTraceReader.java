@@ -89,7 +89,7 @@ public final class GoogleMachineEventsTraceReader extends GoogleTraceReaderAbstr
      * The Datacenter where the Hosts with timestamp greater than 0 will be created.
      */
     @Setter @NonNull
-    private Datacenter datacenterForLaterHosts;
+    private Datacenter datacenterForLaterHosts = Datacenter.NULL;
 
     /**
      * A {@link BiFunction} that will be called for every {@link Host} to be created
@@ -205,7 +205,7 @@ public final class GoogleMachineEventsTraceReader extends GoogleTraceReaderAbstr
 
     @Override
     protected void preProcess() {
-        if (this.datacenterForLaterHosts == null) {
+        if (this.datacenterForLaterHosts == Datacenter.NULL) {
             throw new IllegalStateException("The Datacenter where the Hosts with timestamp greater than 0 will be created must be set.");
         }
     }

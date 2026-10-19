@@ -17,6 +17,7 @@ import org.cloudsimplus.vms.Vm;
 import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A VM allocation policy that uses a static CPU utilization threshold to detect
@@ -73,7 +74,7 @@ public class VmAllocationPolicyMigrationStaticThreshold extends VmAllocationPoli
     public VmAllocationPolicyMigrationStaticThreshold(
         final VmSelectionPolicy vmSelectionPolicy,
         final double overUtilizationThreshold,
-        final BiFunction<VmAllocationPolicy, Vm, Optional<Host>> findHostForVmFunction)
+        @Nullable final BiFunction<VmAllocationPolicy, Vm, Optional<Host>> findHostForVmFunction)
     {
         super(vmSelectionPolicy, findHostForVmFunction);
         setOverUtilizationThreshold(overUtilizationThreshold);

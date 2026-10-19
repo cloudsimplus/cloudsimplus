@@ -52,6 +52,7 @@ public non-sealed abstract class AbstractTableColumn implements TableColumn {
     /**
      * The table that the column belongs to.
      */
+    @SuppressWarnings("NullAway.Init") // set by Table.addColumn() when not given in the constructor
     private Table table;
 
     /**

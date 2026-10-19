@@ -49,7 +49,7 @@ public final class HostPacket implements NetworkPacket<NetworkHost> {
     /**
      * The {@link Host} that the packet is going to (the receiver).
      */
-    private NetworkHost destination;
+    private NetworkHost destination = NetworkHost.NULL;
 
     private double sendTime;
     private double receiveTime;

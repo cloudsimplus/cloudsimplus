@@ -32,6 +32,11 @@
         <logback.version>1.5.34</logback.version>
         <junit.version>5.13.4</junit.version>
         <lombok.version>1.18.42</lombok.version>
+        <errorprone.version>2.50.0</errorprone.version>
+        <nullaway.version>0.14.2</nullaway.version>
+        <jspecify.version>1.0.0</jspecify.version>
+        <!-- Error Prone arguments shared by main and test code compilation (see maven-compiler-plugin). -->
+        <errorprone.args>-XepDisableWarningsInGeneratedCode -Xep:StringConcatToTextBlock:OFF -Xep:UnrecognisedJavadocTag:OFF</errorprone.args>
     </properties>
 
     <developers>
@@ -313,8 +318,57 @@
                             <artifactId>lombok</artifactId>
                             <version>${lombok.version}</version>
                         </path>
+                        <path>
+                            <!--
+                            Error Prone: Google's static analyzer that runs as a javac plugin,
+                            finding common mistakes at compile time.
+                            It is also the base to run NullAway.
+                            StringConcatToTextBlock is disabled because it crashes on some string concatenations.
+                            UnrecognisedJavadocTag is disabled because Lombok copies field JavaDocs to
+                            generated getters/setters, causing false positives.
+                            Requires the options in .mvn/jvm.config to work on JDK 16+.
+                            https://errorprone.info
+                            -->
+                            <groupId>com.google.errorprone</groupId>
+                            <artifactId>error_prone_core</artifactId>
+                            <version>${errorprone.version}</version>
+                        </path>
+                        <path>
+                            <!--
+                            NullAway: Error Prone check that fails the build when a value
+                            that may be null is used without a check, avoiding NullPointerException.
+                            Everything inside org.cloudsimplus packages is considered non-null by default,
+                            unless annotated with JSpecify @Nullable.
+                            https://github.com/uber/NullAway
+                            -->
+                            <groupId>com.uber.nullaway</groupId>
+                            <artifactId>nullaway</artifactId>
+                            <version>${nullaway.version}</version>
+                        </path>
                     </annotationProcessorPaths>
+                    <compilerArgs>
+                        <!-- Error Prone and NullAway settings (see the comments in annotationProcessorPaths above). -->
+                        <arg>-XDcompilePolicy=simple</arg>
+                        <arg>--should-stop=ifError=FLOW</arg>
+                        <arg>-Xplugin:ErrorProne ${errorprone.args} -Xep:NullAway:ERROR -XepOpt:NullAway:AnnotatedPackages=org.cloudsimplus</arg>
+                    </compilerArgs>
                 </configuration>
+                <executions>
+                    <execution>
+                        <!--
+                        NullAway is disabled for tests, since they pass null values on purpose
+                        to check that methods reject them. Other Error Prone checks are still executed.
+                        -->
+                        <id>default-testCompile</id>
+                        <configuration>
+                            <compilerArgs combine.self="override">
+                                <arg>-XDcompilePolicy=simple</arg>
+                                <arg>--should-stop=ifError=FLOW</arg>
+                                <arg>-Xplugin:ErrorProne ${errorprone.args} -Xep:NullAway:OFF</arg>
+                            </compilerArgs>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
 
             <!--
@@ -480,10 +534,14 @@
             <version>${logback.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.jetbrains</groupId>
-            <artifactId>annotations</artifactId>
-            <version>26.0.2</version>
-            <scope>compile</scope>
+            <!--
+            JSpecify annotations (such as @Nullable) to indicate values that may be null.
+            They are checked by NullAway at compile time.
+            https://jspecify.dev
+            -->
+            <groupId>org.jspecify</groupId>
+            <artifactId>jspecify</artifactId>
+            <version>${jspecify.version}</version>
         </dependency>
     </dependencies>
 

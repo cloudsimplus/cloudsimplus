@@ -20,6 +20,7 @@ import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A {@link VmAllocationPolicy} that uses a Static CPU utilization Threshold (THR) to
@@ -77,7 +78,7 @@ public class VmAllocationPolicyMigrationFirstFitStaticThreshold extends VmAlloca
     public VmAllocationPolicyMigrationFirstFitStaticThreshold(
         final VmSelectionPolicy vmSelectionPolicy,
         final double overUtilizationThreshold,
-        final BiFunction<VmAllocationPolicy, Vm, Optional<Host>> findHostForVmFunction)
+        @Nullable final BiFunction<VmAllocationPolicy, Vm, Optional<Host>> findHostForVmFunction)
     {
         super(vmSelectionPolicy, overUtilizationThreshold, findHostForVmFunction);
     }

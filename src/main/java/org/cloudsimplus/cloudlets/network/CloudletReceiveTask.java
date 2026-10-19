@@ -16,6 +16,7 @@ import org.cloudsimplus.vms.Vm;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A task executed by a {@link NetworkCloudlet} that
@@ -109,6 +110,7 @@ public non-sealed class CloudletReceiveTask extends CloudletTask {
      * The Cloudlet from where packets are expected to be received,
      * or null if packets from any Cloudlet inside the {@link #getSourceVm() source VM} are accepted.
      */
+    @Nullable
     private final NetworkCloudlet senderCloudlet;
 
     /**
@@ -133,7 +135,7 @@ public non-sealed class CloudletReceiveTask extends CloudletTask {
      * @param senderCloudlet Cloudlet from where packets are expected to be received
      *                       (or null to accept packets from any Cloudlet inside the sourceVm)
      */
-    public CloudletReceiveTask(final int id, @NonNull final Vm sourceVm, final NetworkCloudlet senderCloudlet) {
+    public CloudletReceiveTask(final int id, @NonNull final Vm sourceVm, @Nullable final NetworkCloudlet senderCloudlet) {
         super(id);
         this.packetsReceived = new ArrayList<>();
         this.sourceVm = sourceVm;

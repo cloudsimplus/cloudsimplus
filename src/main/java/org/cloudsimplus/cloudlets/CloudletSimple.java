@@ -118,7 +118,7 @@ public class CloudletSimple extends CloudletAbstract {
             return 0;
         }
 
-        return Double.compare(getLength(), other.getLength()) +
+        return Long.compare(getLength(), other.getLength()) +
             Long.compare(this.getId(), other.getId()) +
             this.getBroker().compareTo(other.getBroker());
     }

@@ -31,7 +31,7 @@ import org.cloudsimplus.vms.Vm;
 import org.cloudsimplus.vms.VmAbstract;
 import org.cloudsimplus.vms.VmGroup;
 import org.cloudsimplus.vms.VmSimple;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -1253,7 +1253,7 @@ public non-sealed abstract class DatacenterBrokerAbstract extends CloudSimEntity
      * @return {@inheritDoc}
      */
     @Override
-    public DatacenterBroker setVmDestructionDelayFunction(final Function<Vm, Double> function) {
+    public DatacenterBroker setVmDestructionDelayFunction(@Nullable final Function<Vm, Double> function) {
         this.vmDestructionDelayFunction = function == null ? DEF_VM_DESTRUCTION_DELAY_FUNC : function;
         return this;
     }

@@ -39,6 +39,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A Builder class to create {@link Host} objects
@@ -67,7 +68,7 @@ public class HostBuilder implements Builder {
      */
     @Setter @NonNull private Function<List<Pe>, Host> hostCreationFunction;
     @Setter @NonNull private EventListener<HostUpdatesVmsProcessingEventInfo> onUpdateVmsProcessingListener = EventListener.NULL;
-    @Setter private Supplier<VmScheduler> vmSchedulerSupplier;
+    @Setter @Nullable private Supplier<VmScheduler> vmSchedulerSupplier;
 
     public HostBuilder() {
         super();

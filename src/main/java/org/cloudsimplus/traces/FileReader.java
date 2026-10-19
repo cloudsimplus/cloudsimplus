@@ -35,6 +35,7 @@ import java.util.Arrays;
 import java.util.function.Function;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.ZipInputStream;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Reads and parses data inside text, zip and gzip files.
@@ -253,7 +254,7 @@ public class FileReader {
      * @see #getMaxLinesToRead()
      */
     @SneakyThrows
-    private String readNextLine(final BufferedReader reader) {
+    private @Nullable String readNextLine(final BufferedReader reader) {
         if (reader.ready() && lastLineNumber <= maxLinesToRead - 1) {
             return reader.readLine();
         }

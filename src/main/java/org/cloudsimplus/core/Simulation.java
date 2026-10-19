@@ -19,6 +19,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
+import org.jspecify.annotations.Nullable;
 
 /**
  * An interface to be implemented by a class that manages simulation
@@ -49,10 +50,10 @@ public sealed interface Simulation permits CloudSim, SimulationNull {
      *
      * @param <T> the type of entities to define an ID
      * @param list list of entities to define an ID
-     * @return the last entity that had an id set
+     * @return the last entity that had an id set or null if the list is empty
      */
-    static <T extends ChangeableId> T setIdForEntitiesWithoutOne(final List<? extends T> list){
-        return setIdForEntitiesWithoutOne(list, null);
+    static <T extends ChangeableId> @Nullable T setIdForEntitiesWithoutOne(final List<? extends T> list){
+        return list.isEmpty() ? null : setIdForEntitiesWithoutOne(list, list.getLast());
     }
 
     /**
@@ -72,7 +73,7 @@ public sealed interface Simulation permits CloudSim, SimulationNull {
             return lastEntity;
         }
 
-        long id = lastEntity == null ? list.get(list.size()-1).getId() : lastEntity.getId();
+        long id = lastEntity.getId();
         //if the ID is a negative number lower than -1, it's set as -1 to start the first ID as 0
         id = Math.max(id, -1);
         T entity = lastEntity;
@@ -334,7 +335,7 @@ public sealed interface Simulation permits CloudSim, SimulationNull {
      * @param tag   the {@link SimEvent#getTag() tag} that classifies the event
      * @param data  the {@link SimEvent#getData() data} to be sent inside the event, according to the tag
      */
-    void send(SimEntity src, SimEntity dest, double delay, int tag, Object data);
+    void send(SimEntity src, SimEntity dest, double delay, int tag, @Nullable Object data);
 
     /**
      * Sends an event where all data required is defined inside the event instance,
@@ -353,7 +354,7 @@ public sealed interface Simulation permits CloudSim, SimulationNull {
      * @param tag   the {@link SimEvent#getTag() tag} that classifies the event
      * @param data  the {@link SimEvent#getData() data} to be sent inside the event, according to the tag
      */
-    void sendFirst(SimEntity src, SimEntity dest, double delay, int tag, Object data);
+    void sendFirst(SimEntity src, SimEntity dest, double delay, int tag, @Nullable Object data);
 
     /**
      * Sends an event from one entity to another without delaying the message.
@@ -363,7 +364,7 @@ public sealed interface Simulation permits CloudSim, SimulationNull {
      * @param tag  the {@link SimEvent#getTag() tag} that classifies the event
      * @param data the {@link SimEvent#getData() data} to be sent inside the event, according to the tag
      */
-    void sendNow(SimEntity src, SimEntity dest, int tag, Object data);
+    void sendNow(SimEntity src, SimEntity dest, int tag, @Nullable Object data);
 
     /**
      * Runs the simulation for a specific period of time and then immediately returns.
