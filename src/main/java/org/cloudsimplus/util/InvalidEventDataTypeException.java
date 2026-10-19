@@ -48,9 +48,20 @@ public class InvalidEventDataTypeException extends IllegalStateException {
         super(formatMsg(evt, tagName, requiredClassName));
     }
 
+    /// Formats the exception message, including the entities that sent and received the event,
+    /// so that it's easier to find the code sending the event with an invalid data type.
     private static String formatMsg(final SimEvent evt, final String tagName, final String requiredClassName) {
-        final var fmt = "%s: %s event data must be a %s but it was %s";
+        final var fmt = "%s: %s event data must be a %s but it was %s. Event sent from %s to %s.";
         final var clock = evt.getSimulation().clockStr();
-        return fmt.formatted(clock, tagName, requiredClassName, evt.getData().getClass().getSimpleName());
+        return fmt.formatted(
+                    clock, tagName, requiredClassName, dataTypeName(evt),
+                    evt.getSource().getName(), evt.getDestination().getName());
+    }
+
+    /// {@return the simple class name of the event data, or "null" if there is no data}
+    /// @param evt the event to get the data type name
+    private static String dataTypeName(final SimEvent evt) {
+        final Object data = evt.getData();
+        return data == null ? "null" : data.getClass().getSimpleName();
     }
 }
