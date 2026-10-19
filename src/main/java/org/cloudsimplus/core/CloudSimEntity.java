@@ -19,7 +19,7 @@ import org.slf4j.LoggerFactory;
 import java.util.function.Predicate;
 
 import static java.util.Objects.requireNonNull;
-import static java.util.Objects.requireNonNullElse;
+import static java.util.Objects.requireNonNullElseGet;
 
 /**
  * Represents a simulation entity. An entity handles events and can
@@ -315,7 +315,7 @@ public abstract class CloudSimEntity implements SimEntity {
     }
 
     public void run(final double until) {
-        var evt = requireNonNullElse(buffer, getNextEvent(e -> e.getTime() <= until));
+        var evt = requireNonNullElseGet(buffer, () -> getNextEvent(e -> e.getTime() <= until));
 
         while (evt != SimEvent.NULL) {
             processEvent(evt);
