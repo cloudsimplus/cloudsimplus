@@ -350,7 +350,7 @@ public final class GoogleTaskUsageTraceReader extends GoogleTraceReaderAbstract<
      * @param info the simulation start event information
      */
     private void onSimulationStart(final EventInfo info) {
-        cloudletUsageChangeEvents.forEach(evt -> evt.getSource().schedule(evt));
+        cloudletUsageChangeEvents.forEach(GoogleTraceReaderAbstract::scheduleTraceEvent);
     }
 
     @Override
