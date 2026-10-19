@@ -56,30 +56,43 @@ public class ResourceProvisionerSimple extends ResourceProvisionerAbstract {
             return false;
         }
 
-        /* Stores the resource allocation before changing the current allocation,
-         * this line must be placed here and not at the end where it's in fact used.*/
-        final ResourceManageable vmResource = getVmResourceFunction().apply(vm);
-        final long prevVmResourceAllocation = vmResource.getAllocatedResource();
-        if (prevVmResourceAllocation > 0) {
-            //De-allocates any amount of the resource assigned to the Vm to allocate a new capacity
-            deallocateResourceForVm(vm);
-        }
-
-        /*
-        Pe resources are not stored in the VM resource List.
-        Only the provisioner keeps track of Pe allocation for VM.
-        This way, if the resource is not found inside the VM
-        and it is a Pe, it's OK (as it is expected)
-        */
-        if(!getPmResource().isSubClassOf(Pe.class) && !vmResource.setCapacity(newTotalVmResourceCapacity)){
+        if (!isPeProvisioner() && !setVmResourceCapacity(vm, newTotalVmResourceCapacity)) {
             return false;
         }
 
-        // Allocates the requested resource from the physical resource
+        // Releases any amount previously provisioned to the VM, then provisions the new amount
+        getPmResource().deallocateResource(removeAllocatedResourceForVm(vm));
         getPmResource().allocateResource(newTotalVmResourceCapacity);
-        vmResource.setCapacity(newTotalVmResourceCapacity);
-        vmResource.setAllocatedResource(newTotalVmResourceCapacity);
+        setAllocatedResourceForVm(vm, newTotalVmResourceCapacity);
         return true;
+    }
+
+    /**
+     * Pe resources are not stored in the VM resource List.
+     * Only the provisioner keeps track of Pe allocation for a VM.
+     * @return true if this provisioner manages a {@link Pe}, false otherwise
+     */
+    private boolean isPeProvisioner() {
+        return getPmResource().isSubClassOf(Pe.class);
+    }
+
+    /**
+     * Sets the capacity of the VM resource, keeping its current utilization,
+     * which is the amount used by the VM's Cloudlets (not the amount provisioned to the VM).
+     * If such utilization is higher than the new capacity (e.g., when the VM is downscaled),
+     * it is cleared, since the Cloudlet scheduler recomputes it at the next update.
+     *
+     * @param vm the VM to set the resource capacity
+     * @param newCapacity the new capacity for the VM resource
+     * @return true if the capacity was changed, false otherwise
+     */
+    private boolean setVmResourceCapacity(final Vm vm, final long newCapacity) {
+        final ResourceManageable vmResource = getVmResourceFunction().apply(vm);
+        if (vmResource.getAllocatedResource() > newCapacity) {
+            vmResource.deallocateAllResources();
+        }
+
+        return vmResource.setCapacity(newCapacity);
     }
 
     @Override
@@ -89,14 +102,12 @@ public class ResourceProvisionerSimple extends ResourceProvisionerAbstract {
 
     @Override
     public long deallocateResourceForVm(final Vm vm) {
-        final ResourceManageable vmResource = getVmResourceFunction().apply(vm);
-        final long vmAllocatedResource = vmResource.getAllocatedResource();
+        // The VM is leaving the PM, so it doesn't use any amount of the resource there anymore
+        getVmResourceFunction().apply(vm).deallocateAllResources();
 
-        // De-allocates the virtual resource from the VM
-        vmResource.deallocateAllResources();
-
-        // De-allocates the virtual resource to make it free on the physical machine
-        getPmResource().deallocateResource(vmResource.getCapacity());
+        // De-allocates the amount provisioned to the VM to make it free on the physical machine
+        final long vmAllocatedResource = removeAllocatedResourceForVm(vm);
+        getPmResource().deallocateResource(vmAllocatedResource);
         return vmAllocatedResource;
     }
 

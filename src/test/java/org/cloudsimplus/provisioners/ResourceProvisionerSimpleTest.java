@@ -146,4 +146,57 @@ public class ResourceProvisionerSimpleTest {
         assertEquals(0, vm1.getRam().getAllocatedResource());
         assertEquals(0, vm2.getRam().getAllocatedResource());
     }
+
+    /**
+     * Checks that provisioning a resource to a VM doesn't make
+     * the VM resource 100% used, since no Cloudlet is using it yet.
+     * @see <a href="https://github.com/cloudsimplus/cloudsimplus/issues/557">Issue #557</a>
+     */
+    @Test
+    public void testAllocateResourceForVmDoesNotMakeVmResourceUsed() {
+        final VmSimple vm = createVm(0, HALF_CAPACITY);
+
+        assertTrue(provisioner.allocateResourceForVm(vm, HALF_CAPACITY));
+        assertEquals(HALF_CAPACITY, provisioner.getAllocatedResourceForVm(vm));
+        assertEquals(HALF_CAPACITY, vm.getRam().getCapacity());
+        assertEquals(0, vm.getRam().getAllocatedResource());
+    }
+
+    /**
+     * Checks that re-provisioning a resource to a VM (such as in vertical scaling)
+     * keeps the PM resource accounting right and doesn't change
+     * the amount used by the VM, when it fits the new capacity.
+     */
+    @Test
+    public void testReallocateResourceForVmWhenVmResourceIsBeingUsed() {
+        final VmSimple vm = createVm(0, HALF_CAPACITY);
+        assertTrue(provisioner.allocateResourceForVm(vm, HALF_CAPACITY));
+        vm.getRam().allocateResource(QUARTER_OF_CAPACITY);
+
+        assertTrue(provisioner.allocateResourceForVm(vm, CAPACITY));
+        assertEquals(0, provisioner.getAvailableResource());
+        assertEquals(CAPACITY, vm.getRam().getCapacity());
+        assertEquals(QUARTER_OF_CAPACITY, vm.getRam().getAllocatedResource());
+
+        assertTrue(provisioner.allocateResourceForVm(vm, HALF_CAPACITY));
+        assertEquals(HALF_CAPACITY, provisioner.getAvailableResource());
+        assertEquals(HALF_CAPACITY, provisioner.getAllocatedResourceForVm(vm));
+        assertEquals(QUARTER_OF_CAPACITY, vm.getRam().getAllocatedResource());
+    }
+
+    /**
+     * Checks that downscaling a VM resource below the amount used by the VM
+     * clears such a usage, so that the new capacity can be set.
+     */
+    @Test
+    public void testReallocateResourceForVmWhenVmResourceUsageIsHigherThanNewCapacity() {
+        final VmSimple vm = createVm(0, HALF_CAPACITY);
+        assertTrue(provisioner.allocateResourceForVm(vm, HALF_CAPACITY));
+        vm.getRam().allocateResource(HALF_CAPACITY);
+
+        assertTrue(provisioner.allocateResourceForVm(vm, QUARTER_OF_CAPACITY));
+        assertEquals(CAPACITY - QUARTER_OF_CAPACITY, provisioner.getAvailableResource());
+        assertEquals(QUARTER_OF_CAPACITY, vm.getRam().getCapacity());
+        assertEquals(0, vm.getRam().getAllocatedResource());
+    }
 }
