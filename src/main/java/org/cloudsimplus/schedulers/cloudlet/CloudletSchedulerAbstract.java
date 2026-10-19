@@ -477,16 +477,16 @@ public abstract non-sealed class CloudletSchedulerAbstract implements CloudletSc
     public double updateProcessing(final double currentTime, final MipsShare mipsShare) {
         setCurrentMipsShare(mipsShare);
 
+        deallocateVmResources();
         if (isEmpty()) {
             setPreviousTime(currentTime);
             return Double.MAX_VALUE;
         }
 
-        deallocateVmResources();
-
         double nextSimulationDelay = updateCloudletsProcessing(currentTime);
         nextSimulationDelay = Math.min(nextSimulationDelay, moveNextCloudletsFromWaitingToExecList(currentTime));
         addCloudletsToFinishedList();
+        deallocateVmResourcesIfNoCloudletRunning();
 
         setPreviousTime(currentTime);
         vm.getSimulation().setLastCloudletProcessingUpdate(currentTime);
@@ -501,6 +501,18 @@ public abstract non-sealed class CloudletSchedulerAbstract implements CloudletSc
     private void deallocateVmResources() {
         ((VmSimple)vm).getRam().deallocateAllResources();
         ((VmSimple)vm).getBw().deallocateAllResources();
+    }
+
+    /**
+     * Deallocates VM RAM and Bandwidth used by Cloudlets
+     * if there is no Cloudlet running anymore (such as when the last ones just finished).
+     * This way, the VM resource utilization doesn't keep
+     * the amount used by the last finished Cloudlets.
+     */
+    private void deallocateVmResourcesIfNoCloudletRunning() {
+        if (cloudletExecList.isEmpty()) {
+            deallocateVmResources();
+        }
     }
 
     /**
