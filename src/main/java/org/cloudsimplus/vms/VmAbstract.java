@@ -142,7 +142,7 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
 
         // Initializes the number of free PEs as the number of VM PEs
         // TODO: It's not calling setFreePesNumber, which has some logic there.
-        // See https://github.com/cloudsimplus/cloudsimplus/issues/588
+        // See https://github.com/cloudsimplus/cloudsimplus/issues/592
         this.freePesNumber = pesNumber;
         this.expectedFreePesNumber = pesNumber;
 
@@ -298,7 +298,7 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
         }
 
         // TODO: If the freePesNumber is changed, a warning should be issued
-        // See https://github.com/cloudsimplus/cloudsimplus/issues/588
+        // See https://github.com/cloudsimplus/cloudsimplus/issues/592
         this.freePesNumber = Math.min(freePesNumber, getPesNumber());
         return this;
     }

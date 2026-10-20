@@ -23,7 +23,7 @@ import org.cloudsimplus.provisioners.PeProvisionerSimple;
 /// **ASSUMPTION:** All PEs under the same Machine have the same MIPS rating.
 ///
 /// TODO: This assumption is not being assured on different classes (where other TODOs were included)
-/// See https://github.com/cloudsimplus/cloudsimplus/issues/588
+/// See https://github.com/cloudsimplus/cloudsimplus/issues/592
 ///
 /// @author Manzur Murshed
 /// @author Rajkumar Buyya
