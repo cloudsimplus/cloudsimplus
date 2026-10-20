@@ -106,7 +106,9 @@
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
                         <configuration>
-                            <additionalOptions>-Xdoclint:none</additionalOptions>
+                            <additionalOptions combine.children="append">
+                                <additionalOption>-Xdoclint:none</additionalOption>
+                            </additionalOptions>
                             <tags>
                                 <tag>
                                     <name>TODO</name>
@@ -272,6 +274,13 @@
                     <version>3.11.2</version>
                     <configuration>
                         <failOnError>false</failOnError>
+                        <additionalOptions>
+                            <!--
+                            Where to find the classes used as external {@snippet}s in the docs,
+                            so that the example code is compiled and tested like the rest of the code.
+                            -->
+                            <additionalOption>--snippet-path ${project.basedir}/src/test/java</additionalOption>
+                        </additionalOptions>
                         <tags>
                             <tag>
                                 <name>TODO</name>
@@ -606,6 +615,10 @@
                 </reportSets>
 
                 <configuration>
+                    <!-- See the comment in the pluginManagement section -->
+                    <additionalOptions>
+                        <additionalOption>--snippet-path ${project.basedir}/src/test/java</additionalOption>
+                    </additionalOptions>
                     <tags>
                         <tag>
                             <name>TODO</name>

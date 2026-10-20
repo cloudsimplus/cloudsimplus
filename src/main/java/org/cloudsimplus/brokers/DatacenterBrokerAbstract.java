@@ -24,6 +24,7 @@ import org.cloudsimplus.datacenters.TimeZoned;
 import org.cloudsimplus.listeners.DatacenterBrokerEventInfo;
 import org.cloudsimplus.listeners.EventInfo;
 import org.cloudsimplus.listeners.EventListener;
+import org.cloudsimplus.listeners.Listeners;
 import org.cloudsimplus.schedulers.cloudlet.CloudletScheduler;
 import org.cloudsimplus.traces.google.GoogleTaskEventsTraceReader;
 import org.cloudsimplus.util.InvalidEventDataTypeException;
@@ -65,7 +66,7 @@ public non-sealed abstract class DatacenterBrokerAbstract extends CloudSimEntity
     ///
     /// @see #addOnVmsCreatedListener(EventListener)
     @Getter(AccessLevel.NONE)
-    private final List<EventListener<DatacenterBrokerEventInfo>> onVmsCreatedListeners;
+    private List<EventListener<DatacenterBrokerEventInfo>> onVmsCreatedListeners = List.of();
 
     private final VmCreation vmCreation;
 
@@ -154,7 +155,6 @@ public non-sealed abstract class DatacenterBrokerAbstract extends CloudSimEntity
             setName(name);
         }
 
-        this.onVmsCreatedListeners = new ArrayList<>();
         this.lastSubmittedCloudlet = Cloudlet.NULL;
         this.lastSubmittedVm = Vm.NULL;
         this.lastSelectedVm = Vm.NULL;
@@ -670,10 +670,7 @@ public non-sealed abstract class DatacenterBrokerAbstract extends CloudSimEntity
             return;
         }
 
-        // TODO: Workaround - Uses indexed for to avoid ConcurrentModificationException
-        // See https://github.com/cloudsimplus/cloudsimplus/issues/586
-        for (int i = 0; i < onVmsCreatedListeners.size(); i++) {
-            final var listener = onVmsCreatedListeners.get(i);
+        for (final var listener : onVmsCreatedListeners) {
             listener.update(DatacenterBrokerEventInfo.of(listener, this));
         }
 
@@ -1208,13 +1205,13 @@ public non-sealed abstract class DatacenterBrokerAbstract extends CloudSimEntity
 
     @Override
     public DatacenterBroker addOnVmsCreatedListener(@NonNull final EventListener<DatacenterBrokerEventInfo> listener) {
-        this.onVmsCreatedListeners.add(listener);
+        onVmsCreatedListeners = Listeners.add(onVmsCreatedListeners, listener);
         return this;
     }
 
     @Override
     public DatacenterBroker removeOnVmsCreatedListener(@NonNull final EventListener<? extends EventInfo> listener) {
-        this.onVmsCreatedListeners.remove(listener);
+        onVmsCreatedListeners = Listeners.remove(onVmsCreatedListeners, listener);
         return this;
     }
 

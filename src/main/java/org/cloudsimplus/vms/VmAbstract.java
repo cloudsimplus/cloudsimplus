@@ -39,6 +39,7 @@ import org.cloudsimplus.core.Startable;
 import org.cloudsimplus.datacenters.Datacenter;
 import org.cloudsimplus.hosts.Host;
 import org.cloudsimplus.listeners.EventListener;
+import org.cloudsimplus.listeners.Listeners;
 import org.cloudsimplus.listeners.VmDatacenterEventInfo;
 import org.cloudsimplus.listeners.VmHostEventInfo;
 import org.cloudsimplus.resources.*;
@@ -72,12 +73,12 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
     protected final Processor processor;
     /// @see #getStateHistory()
     protected final List<VmStateHistoryEntry> stateHistory;
-    protected final List<EventListener<VmHostEventInfo>> onMigrationStartListeners;
-    protected final List<EventListener<VmHostEventInfo>> onMigrationFinishListeners;
-    protected final List<EventListener<VmHostEventInfo>> onHostAllocationListeners;
-    protected final List<EventListener<VmHostEventInfo>> onHostDeallocationListeners;
-    protected final List<EventListener<VmHostEventInfo>> onUpdateProcessingListeners;
-    protected final List<EventListener<VmDatacenterEventInfo>> onCreationFailureListeners;
+    private List<EventListener<VmHostEventInfo>> onMigrationStartListeners = List.of();
+    private List<EventListener<VmHostEventInfo>> onMigrationFinishListeners = List.of();
+    private List<EventListener<VmHostEventInfo>> onHostAllocationListeners = List.of();
+    private List<EventListener<VmHostEventInfo>> onHostDeallocationListeners = List.of();
+    private List<EventListener<VmHostEventInfo>> onUpdateProcessingListeners = List.of();
+    private List<EventListener<VmDatacenterEventInfo>> onCreationFailureListeners = List.of();
 
     @Setter @NonNull
     private BootModel bootModel;
@@ -149,12 +150,6 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
         this.allocatedMips = new MipsShare();
         this.requestedMips = new MipsShare();
         this.stateHistory = new LinkedList<>();
-        this.onMigrationStartListeners = new ArrayList<>();
-        this.onMigrationFinishListeners = new ArrayList<>();
-        this.onHostAllocationListeners = new ArrayList<>();
-        this.onHostDeallocationListeners = new ArrayList<>();
-        this.onUpdateProcessingListeners = new ArrayList<>();
-        this.onCreationFailureListeners = new ArrayList<>();
         mutableAttributesInit();
     }
 
@@ -531,10 +526,7 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
     ///
     /// @param targetHost the Host the VM is migrating to
     public void updateMigrationStartListeners(final Host targetHost) {
-        // TODO: Workaround - Uses indexed for to avoid ConcurrentModificationException
-        // See https://github.com/cloudsimplus/cloudsimplus/issues/586
-        for (int i = 0; i < onMigrationStartListeners.size(); i++) {
-            final var listener = onMigrationStartListeners.get(i);
+        for (final var listener : onMigrationStartListeners) {
             listener.update(VmHostEventInfo.of(listener, this, targetHost));
         }
     }
@@ -543,10 +535,7 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
     ///
     /// @param targetHost the Host the VM has just migrated to
     public void updateMigrationFinishListeners(final Host targetHost) {
-        // TODO: Workaround - Uses indexed for to avoid ConcurrentModificationException
-        // See https://github.com/cloudsimplus/cloudsimplus/issues/586
-        for (int i = 0; i < onMigrationFinishListeners.size(); i++) {
-            final var listener = onMigrationFinishListeners.get(i);
+        for (final var listener : onMigrationFinishListeners) {
             listener.update(VmHostEventInfo.of(listener, this, targetHost));
         }
     }
@@ -626,19 +615,19 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
 
     @Override
     public Vm addOnHostAllocationListener(@NonNull final EventListener<VmHostEventInfo> listener) {
-        this.onHostAllocationListeners.add(listener);
+        onHostAllocationListeners = Listeners.add(onHostAllocationListeners, listener);
         return this;
     }
 
     @Override
     public Vm addOnMigrationStartListener(@NonNull final EventListener<VmHostEventInfo> listener) {
-        onMigrationStartListeners.add(listener);
+        onMigrationStartListeners = Listeners.add(onMigrationStartListeners, listener);
         return this;
     }
 
     @Override
     public Vm addOnMigrationFinishListener(@NonNull final EventListener<VmHostEventInfo> listener) {
-        onMigrationFinishListeners.add(listener);
+        onMigrationFinishListeners = Listeners.add(onMigrationFinishListeners, listener);
         return this;
     }
 
@@ -648,7 +637,7 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
             return this;
         }
 
-        this.onHostDeallocationListeners.add(listener);
+        onHostDeallocationListeners = Listeners.add(onHostDeallocationListeners, listener);
         return this;
     }
 
@@ -658,7 +647,7 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
             return this;
         }
 
-        this.onCreationFailureListeners.add(listener);
+        onCreationFailureListeners = Listeners.add(onCreationFailureListeners, listener);
         return this;
     }
 
@@ -668,28 +657,36 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
             return this;
         }
 
-        this.onUpdateProcessingListeners.add(listener);
+        onUpdateProcessingListeners = Listeners.add(onUpdateProcessingListeners, listener);
         return this;
     }
 
     @Override
     public boolean removeOnCreationFailureListener(@NonNull final EventListener<VmDatacenterEventInfo> listener) {
-        return onCreationFailureListeners.remove(listener);
+        final var oldList = onCreationFailureListeners;
+        onCreationFailureListeners = Listeners.remove(oldList, listener);
+        return onCreationFailureListeners.size() != oldList.size();
     }
 
     @Override
     public boolean removeOnUpdateProcessingListener(@NonNull final EventListener<VmHostEventInfo> listener) {
-        return onUpdateProcessingListeners.remove(listener);
+        final var oldList = onUpdateProcessingListeners;
+        onUpdateProcessingListeners = Listeners.remove(oldList, listener);
+        return onUpdateProcessingListeners.size() != oldList.size();
     }
 
     @Override
     public boolean removeOnHostAllocationListener(@NonNull final EventListener<VmHostEventInfo> listener) {
-        return onHostAllocationListeners.remove(listener);
+        final var oldList = onHostAllocationListeners;
+        onHostAllocationListeners = Listeners.remove(oldList, listener);
+        return onHostAllocationListeners.size() != oldList.size();
     }
 
     @Override
     public boolean removeOnHostDeallocationListener(@NonNull final EventListener<VmHostEventInfo> listener) {
-        return onHostDeallocationListeners.remove(listener);
+        final var oldList = onHostDeallocationListeners;
+        onHostDeallocationListeners = Listeners.remove(oldList, listener);
+        return onHostDeallocationListeners.size() != oldList.size();
     }
 
     @Override
@@ -725,52 +722,44 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
 
     @Override
     public void notifyOnHostAllocationListeners() {
-        // TODO: Workaround - Uses indexed for to avoid ConcurrentModificationException
-        // See https://github.com/cloudsimplus/cloudsimplus/issues/586
-        for (int i = 0; i < onHostAllocationListeners.size(); i++) {
-            final var listener = onHostAllocationListeners.get(i);
+        for (final var listener : onHostAllocationListeners) {
             listener.update(VmHostEventInfo.of(listener, this));
         }
     }
 
     @Override
     public void notifyOnHostDeallocationListeners(@NonNull final Host deallocatedHost) {
-        // TODO: Workaround - Uses indexed for to avoid ConcurrentModificationException
-        // See https://github.com/cloudsimplus/cloudsimplus/issues/586
-        for (int i = 0; i < onHostDeallocationListeners.size(); i++) {
-            final var listener = onHostDeallocationListeners.get(i);
+        for (final var listener : onHostDeallocationListeners) {
             listener.update(VmHostEventInfo.of(listener, this, deallocatedHost));
         }
     }
 
     /// Notifies all registered listeners when the processing of the Vm is updated in its [Host].
     public void notifyOnUpdateProcessingListeners() {
-        // TODO: Workaround - Uses indexed for to avoid ConcurrentModificationException
-        // See https://github.com/cloudsimplus/cloudsimplus/issues/586
-        for (int i = 0; i < onUpdateProcessingListeners.size(); i++) {
-            final var listener = onUpdateProcessingListeners.get(i);
+        for (final var listener : onUpdateProcessingListeners) {
             listener.update(VmHostEventInfo.of(listener, this));
         }
     }
 
     @Override
     public void notifyOnCreationFailureListeners(@NonNull final Datacenter failedDatacenter) {
-        // TODO: Workaround - Uses indexed for to avoid ConcurrentModificationException
-        // See https://github.com/cloudsimplus/cloudsimplus/issues/586
-        for (int i = 0; i < onCreationFailureListeners.size(); i++) {
-            final var listener = onCreationFailureListeners.get(i);
+        for (final var listener : onCreationFailureListeners) {
             listener.update(VmDatacenterEventInfo.of(listener, this, failedDatacenter));
         }
     }
 
     @Override
     public boolean removeOnMigrationStartListener(@NonNull final EventListener<VmHostEventInfo> listener) {
-        return onMigrationStartListeners.remove(listener);
+        final var oldList = onMigrationStartListeners;
+        onMigrationStartListeners = Listeners.remove(oldList, listener);
+        return onMigrationStartListeners.size() != oldList.size();
     }
 
     @Override
     public boolean removeOnMigrationFinishListener(@NonNull final EventListener<VmHostEventInfo> listener) {
-        return onMigrationFinishListeners.remove(listener);
+        final var oldList = onMigrationFinishListeners;
+        onMigrationFinishListeners = Listeners.remove(oldList, listener);
+        return onMigrationFinishListeners.size() != oldList.size();
     }
 
     @Override

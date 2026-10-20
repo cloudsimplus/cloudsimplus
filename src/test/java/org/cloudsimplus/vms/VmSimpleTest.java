@@ -24,6 +24,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 /// @author Anton Beloglazov
@@ -197,6 +200,55 @@ public class VmSimpleTest {
         final EventListener<VmHostEventInfo> listener = (info) -> {};
         vm.addOnHostDeallocationListener(listener);
         assertTrue(vm.removeOnHostDeallocationListener(listener));
+    }
+
+    @Test
+    public void testRemoveOnHostAllocationListenerNotAdded() {
+        final EventListener<VmHostEventInfo> listener = (info) -> {};
+        assertFalse(vm.removeOnHostAllocationListener(listener));
+    }
+
+    @Test
+    public void testAddSameOnHostAllocationListenerTwiceNotifiesOnce() {
+        final var calls = new ArrayList<String>();
+        final EventListener<VmHostEventInfo> listener = info -> calls.add("listener");
+        vm.addOnHostAllocationListener(listener);
+        vm.addOnHostAllocationListener(listener);
+
+        vm.notifyOnHostAllocationListeners();
+        assertEquals(List.of("listener"), calls);
+    }
+
+    @Test
+    public void testOnHostAllocationListenerRemovingItselfDoesNotSkipNextListener() {
+        final var calls = new ArrayList<String>();
+        vm.addOnHostAllocationListener(info -> {
+            calls.add("first");
+            vm.removeOnHostAllocationListener(info.getListener());
+        });
+        vm.addOnHostAllocationListener(info -> calls.add("second"));
+
+        vm.notifyOnHostAllocationListeners();
+        assertEquals(List.of("first", "second"), calls);
+
+        vm.notifyOnHostAllocationListeners();
+        assertEquals(List.of("first", "second", "second"), calls);
+    }
+
+    @Test
+    public void testOnHostAllocationListenerAddedDuringNotificationIsCalledOnlyInNextRound() {
+        final var calls = new ArrayList<String>();
+        final EventListener<VmHostEventInfo> added = info -> calls.add("added");
+        vm.addOnHostAllocationListener(info -> {
+            calls.add("first");
+            vm.addOnHostAllocationListener(added);
+        });
+
+        vm.notifyOnHostAllocationListeners();
+        assertEquals(List.of("first"), calls);
+
+        vm.notifyOnHostAllocationListeners();
+        assertEquals(List.of("first", "first", "added"), calls);
     }
 
     @Test()
