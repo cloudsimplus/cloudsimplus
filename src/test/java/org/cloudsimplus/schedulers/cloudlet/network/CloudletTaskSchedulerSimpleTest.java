@@ -39,6 +39,7 @@ import org.cloudsimplus.hosts.network.NetworkHost;
 import org.cloudsimplus.network.switches.EdgeSwitch;
 import org.cloudsimplus.resources.Pe;
 import org.cloudsimplus.resources.PeSimple;
+import org.cloudsimplus.schedulers.cloudlet.CloudletSchedulerSpaceShared;
 import org.cloudsimplus.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudsimplus.schedulers.vm.VmSchedulerTimeShared;
 import org.cloudsimplus.utilizationmodels.UtilizationModelFull;
@@ -174,6 +175,37 @@ class CloudletTaskSchedulerSimpleTest {
         final double expectedFinishTime = LENGTH / (double) MIPS;
         assertEquals(expectedFinishTime, cloudlet1.getFinishTime(), FINISH_TIME_TOLERANCE);
         assertEquals(expectedFinishTime, cloudlet2.getFinishTime(), FINISH_TIME_TOLERANCE);
+    }
+
+    /// VM 1 uses a space-shared scheduler and has 2 PEs.
+    /// Receivers R1 and R2 are submitted first, take both PEs and wait for packets from sender S,
+    /// which is in the same VM. S stays in the waiting list since there are no free PEs.
+    /// Since cloudlets waiting for packets don't hold their PEs, S must run
+    /// and send the packets, so that all cloudlets finish without a deadlock (issue #581).
+    @Test
+    void spaceSharedCloudletsWaitingForPacketsReleasePesToTheSender() {
+        final var vm = vmList.get(1);
+        vm.setCloudletScheduler(new CloudletSchedulerSpaceShared());
+        final var receiver1 = createCloudlet(vm);
+        final var receiver2 = createCloudlet(vm);
+        final var sender = createCloudlet(vm);
+
+        final var receiveTask1 = addReceiveTask(receiver1, sender, true);
+        final var receiveTask2 = addReceiveTask(receiver2, sender, true);
+        addExecutionTask(receiver1, LENGTH);
+        addExecutionTask(receiver2, LENGTH);
+        addExecutionTask(sender, LENGTH);
+        addSendTask(sender, receiver1);
+        addSendTask(sender, receiver2);
+
+        broker.submitCloudletList(List.of(receiver1, receiver2, sender));
+        simulation.start();
+
+        assertTrue(sender.isFinished(), "Sender didn't finish");
+        assertTrue(receiver1.isFinished(), "Receiver 1 didn't finish");
+        assertTrue(receiver2.isFinished(), "Receiver 2 didn't finish");
+        assertEquals(1, receiveTask1.getPacketsReceived().size());
+        assertEquals(1, receiveTask2.getPacketsReceived().size());
     }
 
     /// A never sends the packet C is waiting for.
