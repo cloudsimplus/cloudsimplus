@@ -107,14 +107,15 @@ public final class Listeners {
 
     /// Creates a new immutable list without the given listener.
     /// @param listeners the current immutable list of listeners
-    /// @param listener the listener to remove
+    /// @param listener the listener to remove (if null, nothing is removed)
     /// @param <T> the type of the listeners
     /// @return a new list without the listener,
     ///         or the given list (the same instance) if it doesn't have the listener.
     ///         If the removed listener was the last one, returns the shared empty `List.of()`.
     @SuppressWarnings("unchecked")
     public static <T> List<T> remove(@NonNull final List<T> listeners, final Object listener) {
-        final int index = listeners.indexOf(listener);
+        // List.of() lists can't have nulls and throw a NullPointerException when searching for null
+        final int index = listener == null ? -1 : listeners.indexOf(listener);
         if (index < 0) {
             return listeners;
         }

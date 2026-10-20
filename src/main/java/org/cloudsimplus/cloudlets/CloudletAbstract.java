@@ -18,16 +18,15 @@ import org.cloudsimplus.core.CustomerEntityAbstract;
 import org.cloudsimplus.datacenters.Datacenter;
 import org.cloudsimplus.listeners.CloudletVmEventInfo;
 import org.cloudsimplus.listeners.EventListener;
+import org.cloudsimplus.listeners.Listeners;
 import org.cloudsimplus.resources.*;
 import org.cloudsimplus.utilizationmodels.UtilizationModel;
-import org.cloudsimplus.utilizationmodels.UtilizationModelFull;
 import org.cloudsimplus.vms.Vm;
 import org.cloudsimplus.vms.VmGroup;
 
-import java.util.HashSet;
-import java.util.LinkedList;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
 /// An abstract class for [Cloudlet] implementations.
 ///
@@ -68,14 +67,24 @@ public non-sealed abstract class CloudletAbstract extends CustomerEntityAbstract
     @NonNull
     private UtilizationModel utilizationModelBw = UtilizationModel.NULL;
 
-    private List<String> requiredFiles;
+    /// The list of required files, which starts as the shared empty `List.of()`
+    /// and is only created when the first file is added.
+    /// This way, the many Cloudlets that don't require files don't allocate an empty list.
+    /// @see #mutableRequiredFiles()
+    @Getter(AccessLevel.NONE)
+    private List<String> requiredFiles = List.of();
 
+    /// @see #addOnStartListener(EventListener)
     @Getter(AccessLevel.NONE)
-    private final Set<EventListener<CloudletVmEventInfo>> onStartListeners;
+    private List<EventListener<CloudletVmEventInfo>> onStartListeners = List.of();
+
+    /// @see #addOnFinishListener(EventListener)
     @Getter(AccessLevel.NONE)
-    private final Set<EventListener<CloudletVmEventInfo>> onFinishListeners;
+    private List<EventListener<CloudletVmEventInfo>> onFinishListeners = List.of();
+
+    /// @see #addOnUpdateProcessingListener(EventListener)
     @Getter(AccessLevel.NONE)
-    private final Set<EventListener<CloudletVmEventInfo>> onUpdateProcessingListeners;
+    private List<EventListener<CloudletVmEventInfo>> onUpdateProcessingListeners = List.of();
 
     /// Creates a Cloudlet with no priority or id. The id is defined when the Cloudlet is
     /// submitted to a [DatacenterBroker]. The file size and output size are defined as 1.
@@ -99,7 +108,7 @@ public non-sealed abstract class CloudletAbstract extends CustomerEntityAbstract
     /// The id is defined when the Cloudlet is submitted to
     /// a [DatacenterBroker]. The file size and output size are defined as 1.
     ///
-    /// **NOTE:** By default, the Cloudlet will use a [UtilizationModelFull] to define
+    /// **NOTE:** By default, the Cloudlet will use a [UtilizationModel#FULL] to define
     /// CPU utilization and a [UtilizationModel#NULL] for RAM and BW.
     /// To change the default values, use the respective setters.
     ///
@@ -113,7 +122,7 @@ public non-sealed abstract class CloudletAbstract extends CustomerEntityAbstract
     /// Creates a Cloudlet with no priority or id. The id is defined when the Cloudlet is submitted to
     /// a [DatacenterBroker]. The file size and output size are defined as 1.
     ///
-    /// **NOTE:** By default, the Cloudlet will use a [UtilizationModelFull] to define
+    /// **NOTE:** By default, the Cloudlet will use a [UtilizationModel#FULL] to define
     /// CPU utilization and a [UtilizationModel#NULL] for RAM and BW.
     /// To change the default values, use the respective setters.
     ///
@@ -126,7 +135,7 @@ public non-sealed abstract class CloudletAbstract extends CustomerEntityAbstract
 
     /// Creates a Cloudlet with no priority, file size and output size equal to 1.
     ///
-    /// **NOTE:** By default, the Cloudlet will use a [UtilizationModelFull] to define
+    /// **NOTE:** By default, the Cloudlet will use a [UtilizationModel#FULL] to define
     /// CPU utilization and a [UtilizationModel#NULL] for RAM and BW.
     /// To change the default values, use the respective setters.
     ///
@@ -137,7 +146,6 @@ public non-sealed abstract class CloudletAbstract extends CustomerEntityAbstract
     public CloudletAbstract(final long id, final long length, final long pesNumber) {
         super();
 
-        this.requiredFiles = new LinkedList<>();
         this.setId(id);
         this.setJobId(NOT_ASSIGNED);
         this.setPesNumber(pesNumber);
@@ -149,12 +157,9 @@ public non-sealed abstract class CloudletAbstract extends CustomerEntityAbstract
 
         this.reset();
 
-        setUtilizationModelCpu(new UtilizationModelFull());
+        setUtilizationModelCpu(UtilizationModel.FULL);
         setUtilizationModelRam(UtilizationModel.NULL);
         setUtilizationModelBw(UtilizationModel.NULL);
-        onStartListeners = new HashSet<>();
-        onFinishListeners = new HashSet<>();
-        onUpdateProcessingListeners = new HashSet<>();
     }
 
     @Override
@@ -184,24 +189,28 @@ public non-sealed abstract class CloudletAbstract extends CustomerEntityAbstract
 
     @Override
     public Cloudlet addOnUpdateProcessingListener(@NonNull final EventListener<CloudletVmEventInfo> listener) {
-        this.onUpdateProcessingListeners.add(listener);
+        onUpdateProcessingListeners = Listeners.add(onUpdateProcessingListeners, listener);
         return this;
     }
 
     @Override
     public boolean removeOnUpdateProcessingListener(@NonNull final EventListener<CloudletVmEventInfo> listener) {
-        return this.onUpdateProcessingListeners.remove(listener);
+        final var oldList = onUpdateProcessingListeners;
+        onUpdateProcessingListeners = Listeners.remove(oldList, listener);
+        return onUpdateProcessingListeners.size() != oldList.size();
     }
 
     @Override
     public Cloudlet addOnStartListener(@NonNull final EventListener<CloudletVmEventInfo> listener) {
-        this.onStartListeners.add(listener);
+        onStartListeners = Listeners.add(onStartListeners, listener);
         return this;
     }
 
     @Override
     public boolean removeOnStartListener(@NonNull final EventListener<CloudletVmEventInfo> listener) {
-        return onStartListeners.remove(listener);
+        final var oldList = onStartListeners;
+        onStartListeners = Listeners.remove(oldList, listener);
+        return onStartListeners.size() != oldList.size();
     }
 
     @Override
@@ -210,18 +219,22 @@ public non-sealed abstract class CloudletAbstract extends CustomerEntityAbstract
             return this;
         }
 
-        this.onFinishListeners.add(listener);
+        onFinishListeners = Listeners.add(onFinishListeners, listener);
         return this;
     }
 
     @Override
     public boolean removeOnFinishListener(final EventListener<CloudletVmEventInfo> listener) {
-        return onFinishListeners.remove(listener);
+        final var oldList = onFinishListeners;
+        onFinishListeners = Listeners.remove(oldList, listener);
+        return onFinishListeners.size() != oldList.size();
     }
 
     @Override
     public void notifyOnUpdateProcessingListeners(final double time) {
-        onUpdateProcessingListeners.forEach(listener -> listener.update(CloudletVmEventInfo.of(listener, time, this)));
+        for (final var listener : onUpdateProcessingListeners) {
+            listener.update(CloudletVmEventInfo.of(listener, time, this));
+        }
     }
 
     private void setFinishTime(){
@@ -312,14 +325,20 @@ public non-sealed abstract class CloudletAbstract extends CustomerEntityAbstract
     @Override
     protected void onStart(final double time) {
         if(vm != Vm.NULL){
-            onStartListeners.forEach(listener -> listener.update(CloudletVmEventInfo.of(listener, time, this)));
+            for (final var listener : onStartListeners) {
+                listener.update(CloudletVmEventInfo.of(listener, time, this));
+            }
         }
     }
 
     @Override
     protected void onFinish(final double time) {
-        onFinishListeners.forEach(listener -> listener.update(CloudletVmEventInfo.of(listener, this)));
-        onFinishListeners.clear();
+        final var listeners = onFinishListeners;
+        // Cleared before notifying, so that a listener added during notification is kept for a next finish
+        onFinishListeners = List.of();
+        for (final var listener : listeners) {
+            listener.update(CloudletVmEventInfo.of(listener, this));
+        }
     }
 
     @Override
@@ -370,17 +389,33 @@ public non-sealed abstract class CloudletAbstract extends CustomerEntityAbstract
     ///
     /// @param requiredFiles the new list of required files
     public final void setRequiredFiles(@NonNull final List<String> requiredFiles) {
-        this.requiredFiles = requiredFiles;
+        // Copies the list, since the given one may be immutable and later changes would fail
+        this.requiredFiles = requiredFiles.isEmpty() ? List.of() : new ArrayList<>(requiredFiles);
+    }
+
+    @Override
+    public List<String> getRequiredFiles() {
+        return Collections.unmodifiableList(requiredFiles);
     }
 
     @Override
     public boolean addRequiredFile(final String fileName) {
-        if (getRequiredFiles().stream().anyMatch(reqFile -> reqFile.equals(fileName))) {
+        if (requiredFiles.contains(fileName)) {
             return false;
         }
 
-        requiredFiles.add(fileName);
+        mutableRequiredFiles().add(fileName);
         return true;
+    }
+
+    /// {@return the list of required files that can be changed}
+    /// Creates the list if the current one is the shared empty `List.of()`.
+    private List<String> mutableRequiredFiles() {
+        if (requiredFiles.isEmpty()) {
+            requiredFiles = new ArrayList<>();
+        }
+
+        return requiredFiles;
     }
 
     @Override
@@ -395,21 +430,13 @@ public non-sealed abstract class CloudletAbstract extends CustomerEntityAbstract
 
     @Override
     public boolean deleteRequiredFile(final String filename) {
-        for (int i = 0; i < getRequiredFiles().size(); i++) {
-            final String currentFile = requiredFiles.get(i);
-
-            if (currentFile.equals(filename)) {
-                requiredFiles.remove(i);
-                return true;
-            }
-        }
-
-        return false;
+        // The isEmpty() check avoids calling remove() on the immutable List.of(), which throws an exception
+        return !requiredFiles.isEmpty() && requiredFiles.remove(filename);
     }
 
     @Override
     public boolean hasRequiresFiles() {
-        return !getRequiredFiles().isEmpty();
+        return !requiredFiles.isEmpty();
     }
 
     @Override

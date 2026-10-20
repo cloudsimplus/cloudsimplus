@@ -95,6 +95,12 @@ class ListenersTest {
     }
 
     @Test
+    void removeNullListenerReturnsSameInstance() {
+        final var listeners = List.of(FIRST);
+        assertSame(listeners, Listeners.remove(listeners, null));
+    }
+
+    @Test
     void removeLastListenerReturnsSharedEmptyList() {
         assertSame(List.of(), Listeners.remove(List.of(FIRST), FIRST));
     }

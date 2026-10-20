@@ -86,6 +86,41 @@ public class CloudletSimpleFilesTest {
         assertEquals(files, cloudlet.getRequiredFiles());
     }
 
+    @Test
+    public void testAddRequiredFileAfterSetImmutableList() {
+        cloudlet.setRequiredFiles(List.of(FILE1));
+        assertTrue(cloudlet.addRequiredFile(FILE2));
+        assertEquals(List.of(FILE1, FILE2), cloudlet.getRequiredFiles());
+    }
+
+    @Test
+    public void testSetRequiredFilesCopiesGivenList() {
+        final var files = new ArrayList<>(List.of(FILE1));
+        cloudlet.setRequiredFiles(files);
+        files.add(FILE2);
+        assertEquals(List.of(FILE1), cloudlet.getRequiredFiles());
+    }
+
+    @Test
+    public void testDeleteRequiredFileWhenNoFiles() {
+        assertFalse(cloudlet.deleteRequiredFile(FILE1));
+        assertFalse(cloudlet.hasRequiresFiles());
+    }
+
+    @Test
+    public void testAddRequiredFileAfterDeletingAllFiles() {
+        cloudlet.addRequiredFile(FILE1);
+        cloudlet.deleteRequiredFile(FILE1);
+        assertTrue(cloudlet.addRequiredFile(FILE2));
+        assertEquals(List.of(FILE2), cloudlet.getRequiredFiles());
+    }
+
+    @Test
+    public void testGetRequiredFilesIsReadOnly() {
+        cloudlet.addRequiredFile(FILE1);
+        assertThrows(UnsupportedOperationException.class, () -> cloudlet.getRequiredFiles().add(FILE2));
+    }
+
     @Test()
     public void testRequiredFiles1() {
         final CloudletSimple cloudlet = CloudletTestUtil.createCloudlet();

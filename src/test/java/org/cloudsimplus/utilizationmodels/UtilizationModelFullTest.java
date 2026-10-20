@@ -23,9 +23,11 @@
  */
 package org.cloudsimplus.utilizationmodels;
 
+import org.cloudsimplus.core.CloudSimPlus;
+import org.cloudsimplus.core.Simulation;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 /// @author Manoel Campos da Silva Filho
 public class UtilizationModelFullTest {
@@ -42,4 +44,21 @@ public class UtilizationModelFullTest {
         }
     }
 
+    @Test
+    public void testSharedFullGetUtilizationForDifferentTimes() {
+        for (int time = 0; time < 10000; time++) {
+            assertEquals(EXPECTED_UTILIZATION, UtilizationModel.FULL.getUtilization(time));
+        }
+    }
+
+    @Test
+    public void testSharedFullSettersDoNothing() {
+        final UtilizationModel instance = UtilizationModel.FULL;
+        assertSame(instance, instance.setOverCapacityRequestAllowed(true));
+        assertFalse(instance.isOverCapacityRequestAllowed());
+
+        assertSame(instance, instance.setSimulation(new CloudSimPlus()));
+        assertSame(Simulation.NULL, instance.getSimulation());
+        assertEquals(UtilizationModel.Unit.PERCENTAGE, instance.getUnit());
+    }
 }

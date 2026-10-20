@@ -18,7 +18,7 @@ import org.cloudsimplus.vms.Vm;
 /// @author Anton Beloglazov
 /// @author Manoel Campos da Silva Filho
 /// @since CloudSim Toolkit 2.0
-public sealed interface UtilizationModel permits UtilizationModelAbstract, UtilizationModelNull {
+public sealed interface UtilizationModel permits UtilizationModelAbstract, UtilizationModelNull, UtilizationModelFullShared {
     /// Defines the unit of the resource utilization.
     /// @see #getUtilization(double)
     /// @see #getUtilization()
@@ -35,6 +35,15 @@ public sealed interface UtilizationModel permits UtilizationModelAbstract, Utili
     /// A [Cloudlet] using such a utilization model
     /// for one of its resources will not consume any amount of that resource ever.
     UtilizationModel NULL = new UtilizationModelNull();
+
+    /// An **immutable** [UtilizationModel] shared by all objects using it,
+    /// which makes a [Cloudlet] always use 100% of a resource.
+    /// It's the default CPU utilization model for Cloudlets.
+    ///
+    /// Since the instance is shared, its setters do nothing.
+    /// If you need to change attributes such as [#setOverCapacityRequestAllowed(boolean)],
+    /// create a [UtilizationModelFull] instead.
+    UtilizationModel FULL = new UtilizationModelFullShared();
 
     /// @return the simulation that this UtilizationModel belongs to.
     Simulation getSimulation();

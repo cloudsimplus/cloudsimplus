@@ -11,7 +11,6 @@ import lombok.NonNull;
 import org.cloudsimplus.brokers.DatacenterBroker;
 import org.cloudsimplus.resources.Pe;
 import org.cloudsimplus.utilizationmodels.UtilizationModel;
-import org.cloudsimplus.utilizationmodels.UtilizationModelFull;
 import org.cloudsimplus.vms.Vm;
 
 /// Cloudlet implements the basic features of an application/job/task to be executed
@@ -45,7 +44,7 @@ public class CloudletSimple extends CloudletAbstract {
     /// The id is defined when the Cloudlet is submitted to
     /// a [DatacenterBroker]. The file size and output size are defined as 1.
     ///
-    /// **NOTE:** By default, the Cloudlet will use a [UtilizationModelFull] to define
+    /// **NOTE:** By default, the Cloudlet will use a [UtilizationModel#FULL] to define
     /// CPU utilization and a [UtilizationModel#NULL] for RAM and BW.
     /// To change the default values, use the respective setters.
     ///
@@ -62,7 +61,7 @@ public class CloudletSimple extends CloudletAbstract {
     /// The id is defined when the Cloudlet is submitted to
     /// a [DatacenterBroker]. The file size and output size are defined as 1.
     ///
-    /// **NOTE:** By default, the Cloudlet will use a [UtilizationModelFull] to define
+    /// **NOTE:** By default, the Cloudlet will use a [UtilizationModel#FULL] to define
     /// CPU utilization and a [UtilizationModel#NULL] for RAM and BW.
     /// To change the default values, use the respective setters.
     ///
@@ -77,7 +76,7 @@ public class CloudletSimple extends CloudletAbstract {
 
     /// Creates a Cloudlet with no priority, file size and output size equal to 1.
     ///
-    /// **NOTE:** By default, the Cloudlet will use a [UtilizationModelFull] to define
+    /// **NOTE:** By default, the Cloudlet will use a [UtilizationModel#FULL] to define
     /// CPU utilization and a [UtilizationModel#NULL] for RAM and BW.
     /// To change the default values, use the respective setters.
     ///
