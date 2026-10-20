@@ -33,12 +33,15 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /// @author Manoel Campos da Silva Filho
 class CloudletReceiveTaskTest {
     private static final int TASK_ID = 0;
     private static final long PACKET_BYTES = 100;
+    private static final double START_TIME = 5;
+    private static final double TIMEOUT = 10;
 
     private NetworkVm sourceVm;
     private NetworkVm destinationVm;
@@ -93,6 +96,126 @@ class CloudletReceiveTaskTest {
 
         task.receivePacket(createPacket(senderA, receiver));
         assertEquals(0, task.getRemainingPacketsToReceive());
+    }
+
+    @Test
+    void setTimeoutThrowsWhenNegative() {
+        final var task = createTask(senderA);
+        assertThrows(IllegalArgumentException.class, () -> task.setTimeout(-1));
+    }
+
+    @Test
+    void getRemainingTimeoutIsMaxValueWhenThereIsNoTimeout() {
+        final var task = createStartedTask(0);
+        assertFalse(task.hasTimeout());
+        assertEquals(Double.MAX_VALUE, task.getRemainingTimeout(TIMEOUT * 2));
+    }
+
+    @Test
+    void getRemainingTimeoutIsMaxValueWhenTaskHasNotStarted() {
+        final var task = createTask(senderA).setTimeout(TIMEOUT);
+        assertEquals(Double.MAX_VALUE, task.getRemainingTimeout(0));
+    }
+
+    @Test
+    void getRemainingTimeoutDecreasesUntilZero() {
+        final var task = createStartedTask(TIMEOUT);
+        assertEquals(TIMEOUT, task.getRemainingTimeout(START_TIME));
+        assertEquals(TIMEOUT / 2, task.getRemainingTimeout(START_TIME + TIMEOUT / 2));
+        assertEquals(0, task.getRemainingTimeout(START_TIME + TIMEOUT * 2));
+    }
+
+    @Test
+    void finishIfTimedOutDoesNothingBeforeTimeout() {
+        final var task = createStartedTask(TIMEOUT);
+        assertFalse(task.finishIfTimedOut(START_TIME + TIMEOUT / 2));
+        assertFalse(task.isTimedOut());
+        assertTrue(task.isActive());
+    }
+
+    @Test
+    void finishIfTimedOutFinishesTaskWhenTimeoutIsReached() {
+        final var task = createStartedTask(TIMEOUT);
+        assertTrue(task.finishIfTimedOut(START_TIME + TIMEOUT));
+        assertTrue(task.isTimedOut());
+        assertTrue(task.isFinished());
+    }
+
+    @Test
+    void finishIfTimedOutNeverFinishesTaskWithoutTimeout() {
+        final var task = createStartedTask(0);
+        assertFalse(task.finishIfTimedOut(Double.MAX_VALUE / 2));
+        assertTrue(task.isActive());
+    }
+
+    @Test
+    void finishedTaskDoesNotTimeOut() {
+        final var task = createStartedTask(TIMEOUT);
+        task.setExpectedPacketsToReceive(1);
+        task.receivePacket(createPacket(senderA, receiver));
+
+        assertFalse(task.finishIfTimedOut(START_TIME + TIMEOUT));
+        assertFalse(task.isTimedOut());
+    }
+
+    @Test
+    void getWaitingTimeIsZeroWhenTaskHasNotStarted() {
+        final var task = createTask(senderA);
+        assertEquals(0, task.getWaitingTime(START_TIME));
+    }
+
+    @Test
+    void getWaitingTimeGrowsAfterTaskStarts() {
+        final var task = createStartedTask(0);
+        assertEquals(0, task.getWaitingTime(START_TIME));
+        assertEquals(TIMEOUT, task.getWaitingTime(START_TIME + TIMEOUT));
+    }
+
+    @Test
+    void getWaitingTimeIsZeroWhenTaskIsFinished() {
+        final var task = createStartedTask(0);
+        task.setExpectedPacketsToReceive(1);
+        task.receivePacket(createPacket(senderA, receiver));
+        assertEquals(0, task.getWaitingTime(START_TIME + TIMEOUT));
+    }
+
+    @Test
+    void isWaitingTooLongOnlyAfterWaitWarningTime() {
+        final var task = createStartedTask(0);
+        final double warningTime = START_TIME + CloudletReceiveTask.WAIT_WARNING_TIME;
+        assertFalse(task.isWaitingTooLong(warningTime - 1));
+        assertTrue(task.isWaitingTooLong(warningTime));
+        assertTrue(task.isWaitingTooLong(warningTime + 1));
+    }
+
+    @Test
+    void isNeverWaitingTooLongWhenTaskHasTimeout() {
+        final var task = createStartedTask(CloudletReceiveTask.WAIT_WARNING_TIME * 2);
+        assertFalse(task.isWaitingTooLong(START_TIME + CloudletReceiveTask.WAIT_WARNING_TIME));
+        assertEquals(Double.MAX_VALUE, task.getRemainingWaitWarningTime(START_TIME));
+    }
+
+    @Test
+    void isNotWaitingTooLongWhenTaskIsFinished() {
+        final var task = createStartedTask(0);
+        task.setExpectedPacketsToReceive(1);
+        task.receivePacket(createPacket(senderA, receiver));
+        assertFalse(task.isWaitingTooLong(START_TIME + CloudletReceiveTask.WAIT_WARNING_TIME));
+    }
+
+    @Test
+    void getRemainingWaitWarningTimeDecreasesUntilZero() {
+        final var task = createStartedTask(0);
+        final double halfWarningTime = CloudletReceiveTask.WAIT_WARNING_TIME / 2;
+        assertEquals(CloudletReceiveTask.WAIT_WARNING_TIME, task.getRemainingWaitWarningTime(START_TIME));
+        assertEquals(halfWarningTime, task.getRemainingWaitWarningTime(START_TIME + halfWarningTime));
+        assertEquals(0, task.getRemainingWaitWarningTime(START_TIME + CloudletReceiveTask.WAIT_WARNING_TIME * 2));
+    }
+
+    private CloudletReceiveTask createStartedTask(final double timeout) {
+        final var task = createTask(senderA).setTimeout(timeout);
+        task.setStartTime(START_TIME);
+        return task;
     }
 
     private CloudletReceiveTask createTask(final NetworkCloudlet sender) {

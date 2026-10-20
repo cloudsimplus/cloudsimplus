@@ -9,6 +9,7 @@ package org.cloudsimplus.schedulers.cloudlet.network;
 
 import org.cloudsimplus.cloudlets.Cloudlet;
 import org.cloudsimplus.cloudlets.network.CloudletExecutionTask;
+import org.cloudsimplus.cloudlets.network.CloudletReceiveTask;
 import org.cloudsimplus.cloudlets.network.CloudletTask;
 import org.cloudsimplus.cloudlets.network.NetworkCloudlet;
 import org.cloudsimplus.datacenters.network.NetworkDatacenter;
@@ -90,4 +91,15 @@ public interface CloudletTaskScheduler {
     /// @param cloudlet the Cloudlet to check
     /// @return true if the Cloudlet is waiting for packets, false otherwise
     boolean isCloudletWaitingForPackets(Cloudlet cloudlet);
+
+    /// Gets the delay until the next event of the current task of a given Cloudlet
+    /// that is waiting for packets: the task [timing out][CloudletReceiveTask#getRemainingTimeout(double)]
+    /// or reaching the [CloudletReceiveTask#WAIT_WARNING_TIME].
+    /// It's used to schedule the next processing update, so that these events happen on time.
+    /// This method has no side effects.
+    ///
+    /// @param cloudlet the Cloudlet to check
+    /// @return the delay (in seconds) until the next event of the current task;
+    /// or [Double#MAX_VALUE] if the Cloudlet isn't waiting for packets or there is no such event.
+    double getNextTaskUpdateDelay(Cloudlet cloudlet);
 }
