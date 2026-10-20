@@ -120,7 +120,9 @@ public sealed interface Cloudlet
     /// The time to transfer these files by the network is considered when
     /// placing the cloudlet inside a given VM
     ///
-    /// @return the required files
+    /// @return a read-only list of the required files
+    /// @see #addRequiredFile(String)
+    /// @see #deleteRequiredFile(String)
     List<String> getRequiredFiles();
 
     /// Gets the time the Cloudlet arrived at a Datacenter to be executed.

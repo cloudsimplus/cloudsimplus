@@ -17,6 +17,9 @@ import org.cloudsimplus.utilizationmodels.UtilizationModelStochastic;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 /// @author	Anton Beloglazov
@@ -77,6 +80,63 @@ public class CloudletSimpleTest {
     public void testRemoveOnCloudletFinishEventListenerWhenNull() {
         cloudlet.addOnFinishListener(e->{});
         assertFalse(cloudlet.removeOnFinishListener(null));
+    }
+
+    @Test
+    public void testNewCloudletUsesSharedFullCpuUtilizationModel() {
+        final var cloudlet1 = new CloudletSimple(CloudletTestUtil.CLOUDLET_LENGTH, PES_NUMBER);
+        final var cloudlet2 = new CloudletSimple(CloudletTestUtil.CLOUDLET_LENGTH, PES_NUMBER);
+        assertSame(UtilizationModel.FULL, cloudlet1.getUtilizationModelCpu());
+        assertSame(UtilizationModel.FULL, cloudlet2.getUtilizationModelCpu());
+    }
+
+    @Test
+    public void testRemoveOnUpdateProcessingListenerNotAdded() {
+        final EventListener<CloudletVmEventInfo> listener = info -> {};
+        assertFalse(cloudlet.removeOnUpdateProcessingListener(listener));
+    }
+
+    @Test
+    public void testAddSameOnUpdateProcessingListenerTwiceNotifiesOnce() {
+        final var calls = new ArrayList<String>();
+        final EventListener<CloudletVmEventInfo> listener = info -> calls.add("listener");
+        cloudlet.addOnUpdateProcessingListener(listener);
+        cloudlet.addOnUpdateProcessingListener(listener);
+
+        cloudlet.notifyOnUpdateProcessingListeners(0);
+        assertEquals(List.of("listener"), calls);
+    }
+
+    @Test
+    public void testOnUpdateProcessingListenerRemovingItselfDoesNotSkipNextListener() {
+        final var calls = new ArrayList<String>();
+        cloudlet.addOnUpdateProcessingListener(info -> {
+            calls.add("first");
+            cloudlet.removeOnUpdateProcessingListener(info.getListener());
+        });
+        cloudlet.addOnUpdateProcessingListener(info -> calls.add("second"));
+
+        cloudlet.notifyOnUpdateProcessingListeners(0);
+        assertEquals(List.of("first", "second"), calls);
+
+        cloudlet.notifyOnUpdateProcessingListeners(1);
+        assertEquals(List.of("first", "second", "second"), calls);
+    }
+
+    @Test
+    public void testOnUpdateProcessingListenerAddedDuringNotificationIsCalledOnlyInNextRound() {
+        final var calls = new ArrayList<String>();
+        final EventListener<CloudletVmEventInfo> added = info -> calls.add("added");
+        cloudlet.addOnUpdateProcessingListener(info -> {
+            calls.add("first");
+            cloudlet.addOnUpdateProcessingListener(added);
+        });
+
+        cloudlet.notifyOnUpdateProcessingListeners(0);
+        assertEquals(List.of("first"), calls);
+
+        cloudlet.notifyOnUpdateProcessingListeners(1);
+        assertEquals(List.of("first", "first", "added"), calls);
     }
 
     @Test
