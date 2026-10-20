@@ -658,7 +658,7 @@ public non-sealed abstract class DatacenterBrokerAbstract extends CloudSimEntity
                     vmWaitingList.remove(vm);
                     vmFailedList.add(vm);
                     LOGGER.warn(
-                        "{}: {}: {} has been moved to the failed list because creation retry is not enabled.",
+                        "{}: {}: {} has been moved to the failed list because creation retry is disabled or the max number of retries was reached.",
                         getSimulation().clockStr(), getName(), vm);
                 }
 
@@ -715,7 +715,7 @@ public non-sealed abstract class DatacenterBrokerAbstract extends CloudSimEntity
      */
     private void requestCreationOfWaitingVmsToFallbackDatacenter() {
         this.lastSelectedDc = Datacenter.NULL;
-        if (vmWaitingList.isEmpty() || requestDatacenterToCreateWaitingVms(false, true)) {
+        if (vmWaitingList.isEmpty() || requestDatacenterToCreateWaitingVms(true, false)) {
             return;
         }
 
@@ -756,14 +756,17 @@ public non-sealed abstract class DatacenterBrokerAbstract extends CloudSimEntity
      * @param isFallbackDatacenter true to indicate that a fallback Datacenter will be tried,
      *                             after the previous one was not able to create all waiting VMs;
      *                             false to indicate it will try the default datacenter.
-     * @return true if some Datacenter was selected; false if all Datacenter were tried
-     *         and not all VMs could be created
+     * @param creationRetry true to indicate it's a retry to create failed VMs
+     *                      (which enables trying again Datacenters already tried before), false otherwise
+     * @return true if some VM creation request was sent to a Datacenter;
+     *         false if all Datacenters were tried and not all VMs could be created
      * @see #submitVmList(java.util.List)
      */
     private boolean requestDatacenterToCreateWaitingVms(final boolean isFallbackDatacenter, final boolean creationRetry) {
         if(vmWaitingList.isEmpty())
             return false;
 
+        int sentRequests = 0;
         for (final var vm : vmWaitingList) {
             if(creationRetry) {
                 vm.setLastTriedDatacenter(Datacenter.NULL);
@@ -771,7 +774,7 @@ public non-sealed abstract class DatacenterBrokerAbstract extends CloudSimEntity
 
             if(!batchVmCreation) {
                 this.lastSelectedDc = getLastSelectedDc(isFallbackDatacenter, vm);
-                vmCreation.incCreationRequests(requestSingleVmCreation(lastSelectedDc, isFallbackDatacenter, vm));
+                sentRequests += requestSingleVmCreation(lastSelectedDc, isFallbackDatacenter, vm);
             }
         }
 
@@ -779,10 +782,11 @@ public non-sealed abstract class DatacenterBrokerAbstract extends CloudSimEntity
         if(batchVmCreation) {
             //In batch VM creation, sends all VMs to the same DC selected for the first VM
             this.lastSelectedDc = getLastSelectedDc(isFallbackDatacenter, vmWaitingList.get(0));
-            vmCreation.incCreationRequests(requestVmCreation(lastSelectedDc, isFallbackDatacenter, vmWaitingList));
+            sentRequests += requestVmCreation(lastSelectedDc, isFallbackDatacenter, vmWaitingList);
         }
 
-        return lastSelectedDc != Datacenter.NULL;
+        vmCreation.incCreationRequests(sentRequests);
+        return sentRequests > 0;
     }
 
     private Datacenter getLastSelectedDc(final boolean isFallbackDatacenter, final Vm vm) {
