@@ -24,6 +24,7 @@
 package org.cloudsimplus.datacenters;
 
 import org.cloudsimplus.allocationpolicies.VmAllocationPolicy;
+import org.cloudsimplus.brokers.DatacenterBroker;
 import org.cloudsimplus.core.SimEntity;
 import org.cloudsimplus.core.SimEntityNullBase;
 import org.cloudsimplus.hosts.Host;
@@ -59,6 +60,8 @@ final class DatacenterNull implements Datacenter, SimEntityNullBase {
     @Override public Stream<? extends Host> getActiveHostStream() { return Stream.empty(); }
     @Override public Host getHost(final int index) { return Host.NULL; }
     @Override public long getActiveHostsNumber() { return 0; }
+    @Override public long getPoweringOnHostsNumber() { return 0; }
+    @Override public Datacenter addBrokerWaitingHostPowerOn(DatacenterBroker broker) { return this; }
     @Override public long size() { return 0; }
     @Override public Host getHostById(long id) { return Host.NULL; }
     @Override public <T extends Host> Datacenter addHostList(List<T> hostList) { return this; }

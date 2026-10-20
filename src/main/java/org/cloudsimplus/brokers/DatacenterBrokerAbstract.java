@@ -12,6 +12,7 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import org.cloudsimplus.allocationpolicies.VmAllocationPolicy;
 import org.cloudsimplus.autoscaling.VerticalVmScaling;
 import org.cloudsimplus.cloudlets.Cloudlet;
 import org.cloudsimplus.cloudlets.CloudletSimple;
@@ -473,14 +474,29 @@ public non-sealed abstract class DatacenterBrokerAbstract extends CloudSimEntity
 
     private boolean processVmEvents(final SimEvent evt) {
         return switch (evt.getTag()) {
-            case CloudSimTag.VM_CREATE_RETRY -> {
-                vmCreationRetrySent = false;
-                yield requestDatacenterToCreateWaitingVms(false, true);
-            }
+            case CloudSimTag.VM_CREATE_RETRY -> processVmCreationRetry();
             case CloudSimTag.VM_CREATE_ACK -> processVmCreateResponseFromDatacenter(evt);
             case CloudSimTag.VM_VERTICAL_SCALING -> requestVmVerticalScaling(evt);
             default -> false;
         };
+    }
+
+    /**
+     * Requests the creation of waiting VMs again.
+     * If there are VM creation requests waiting for an ack,
+     * the retry is ignored, since those acks will request the creation of VMs that fail.
+     * That happens when multiple Datacenters notify that a Host was powered on.
+     *
+     * @return true if some VM creation request was sent, false otherwise
+     * @see Datacenter#addBrokerWaitingHostPowerOn(DatacenterBroker)
+     */
+    private boolean processVmCreationRetry() {
+        vmCreationRetrySent = false;
+        if (vmCreation.getCreationRequests() > 0) {
+            return false;
+        }
+
+        return requestDatacenterToCreateWaitingVms(false, true);
     }
 
     private boolean processGeneralEvents(final SimEvent evt) {
@@ -758,13 +774,17 @@ public non-sealed abstract class DatacenterBrokerAbstract extends CloudSimEntity
      *                             false to indicate it will try the default datacenter.
      * @param creationRetry true to indicate it's a retry to create failed VMs
      *                      (which enables trying again Datacenters already tried before), false otherwise
-     * @return true if some VM creation request was sent to a Datacenter;
+     * @return true if some VM creation request was sent to a Datacenter
+     *         (or the requests were postponed until some Host is powered on);
      *         false if all Datacenters were tried and not all VMs could be created
      * @see #submitVmList(java.util.List)
      */
     private boolean requestDatacenterToCreateWaitingVms(final boolean isFallbackDatacenter, final boolean creationRetry) {
         if(vmWaitingList.isEmpty())
             return false;
+
+        if(postponeVmCreationUntilHostPowerOn())
+            return true;
 
         int sentRequests = 0;
         for (final var vm : vmWaitingList) {
@@ -787,6 +807,50 @@ public non-sealed abstract class DatacenterBrokerAbstract extends CloudSimEntity
 
         vmCreation.incCreationRequests(sentRequests);
         return sentRequests > 0;
+    }
+
+    /**
+     * Checks if no Host is powered on in any available Datacenter, but some are being powered on.
+     * In that case, no VM can be placed right now.
+     * This way, the creation of waiting VMs is postponed until a Host is powered on,
+     * when the Datacenter sends a {@link CloudSimTag#VM_CREATE_RETRY} to this broker.
+     * That doesn't count as a VM creation retry.
+     *
+     * <p>If no Host is powered on and none is being powered on,
+     * VM creation is not postponed, since the {@link VmAllocationPolicy} may power Hosts on as needed.</p>
+     *
+     * @return true if VM creation was postponed, false otherwise
+     * @see Datacenter#addBrokerWaitingHostPowerOn(DatacenterBroker)
+     */
+    private boolean postponeVmCreationUntilHostPowerOn() {
+        if (hasActiveHost()) {
+            return false;
+        }
+
+        if (vmCreationRetrySent) {
+            return true;
+        }
+
+        final var dcsPoweringOnHosts = datacenterList.stream().filter(dc -> dc.getPoweringOnHostsNumber() > 0).toList();
+        /* If no Host is being powered on, VM creation is requested as usual.
+         * That includes Datacenters without Hosts:
+         * the VmAllocationPolicy logs an error and the VM creation fails,
+         * following the regular fallback/retry flow. */
+        if (dcsPoweringOnHosts.isEmpty()) {
+            return false;
+        }
+
+        LOGGER.warn(
+            "{}: {}: No Host is powered on in any available Datacenter. Postponing creation of {} VMs until some Host is powered on.",
+            getSimulation().clockStr(), getName(), vmWaitingList.size());
+
+        dcsPoweringOnHosts.forEach(dc -> dc.addBrokerWaitingHostPowerOn(this));
+        this.vmCreationRetrySent = true;
+        return true;
+    }
+
+    private boolean hasActiveHost() {
+        return datacenterList.stream().anyMatch(dc -> dc.getActiveHostsNumber() > 0);
     }
 
     private Datacenter getLastSelectedDc(final boolean isFallbackDatacenter, final Vm vm) {

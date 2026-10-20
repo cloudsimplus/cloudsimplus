@@ -10,6 +10,7 @@ import lombok.*;
 import org.cloudsimplus.allocationpolicies.VmAllocationPolicy;
 import org.cloudsimplus.allocationpolicies.VmAllocationPolicySimple;
 import org.cloudsimplus.allocationpolicies.migration.VmAllocationPolicyMigration;
+import org.cloudsimplus.brokers.DatacenterBroker;
 import org.cloudsimplus.autoscaling.VerticalVmScaling;
 import org.cloudsimplus.cloudlets.Cloudlet;
 import org.cloudsimplus.core.*;
@@ -66,6 +67,12 @@ public non-sealed class DatacenterSimple extends CloudSimEntity implements Datac
 
     @Getter
     private long activeHostsNumber;
+
+    @Getter
+    private long poweringOnHostsNumber;
+
+    /** @see #addBrokerWaitingHostPowerOn(DatacenterBroker) */
+    private final Set<DatacenterBroker> brokersWaitingHostPowerOn;
 
     @Getter
     private PowerModelDatacenter powerModel = PowerModelDatacenter.NULL;
@@ -196,6 +203,7 @@ public non-sealed class DatacenterSimple extends CloudSimEntity implements Datac
 
         this.onHostAvailableListeners = new ArrayList<>();
         this.onVmMigrationFinishListeners = new ArrayList<>();
+        this.brokersWaitingHostPowerOn = new LinkedHashSet<>();
         this.characteristics = new DatacenterCharacteristicsSimple(this);
         this.bandwidthPercentForMigration = DEF_BW_PERCENT_FOR_MIGRATION;
         this.migrationsEnabled = true;
@@ -253,6 +261,9 @@ public non-sealed class DatacenterSimple extends CloudSimEntity implements Datac
         } else if (evt.getTag() == CloudSimTag.HOST_POWER_ON || evt.getTag() == CloudSimTag.HOST_POWER_OFF) {
             final HostSimple host = (HostSimple)evt.getData();
             host.processActivation(evt.getTag() == CloudSimTag.HOST_POWER_ON);
+            if (host.isActive()) {
+                notifyBrokersWaitingHostPowerOn();
+            }
         }
 
         return false;
@@ -1011,6 +1022,31 @@ public non-sealed class DatacenterSimple extends CloudSimEntity implements Datac
      */
     public void updateActiveHostsNumber(final Host host){
         activeHostsNumber += host.isActive() ? 1 : -1;
+    }
+
+    /**
+     * Update the number of Hosts being powered on inside the datacenter
+     * @param poweringOn true if a Host started powering on, false if it finished powering on
+     */
+    public void updatePoweringOnHostsNumber(final boolean poweringOn){
+        poweringOnHostsNumber += poweringOn ? 1 : -1;
+    }
+
+    @Override
+    public Datacenter addBrokerWaitingHostPowerOn(@NonNull final DatacenterBroker broker) {
+        brokersWaitingHostPowerOn.add(broker);
+        return this;
+    }
+
+    /**
+     * Sends a {@link CloudSimTag#VM_CREATE_RETRY} to every broker waiting for a Host to be powered on,
+     * so that they can create their waiting VMs.
+     * @see #addBrokerWaitingHostPowerOn(DatacenterBroker)
+     */
+    private void notifyBrokersWaitingHostPowerOn() {
+        final double delay = getSimulation().getMinTimeBetweenEvents();
+        brokersWaitingHostPowerOn.forEach(broker -> send(broker, delay, CloudSimTag.VM_CREATE_RETRY));
+        brokersWaitingHostPowerOn.clear();
     }
 
     @Override
