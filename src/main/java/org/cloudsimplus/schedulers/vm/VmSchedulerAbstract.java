@@ -9,8 +9,8 @@ package org.cloudsimplus.schedulers.vm;
 import lombok.Getter;
 import lombok.NonNull;
 import org.cloudsimplus.hosts.Host;
-import org.cloudsimplus.hosts.HostSimple;
-import org.cloudsimplus.resources.Pe;
+import org.cloudsimplus.resources.CoreStatus;
+import org.cloudsimplus.resources.Processor;
 import org.cloudsimplus.schedulers.MipsShare;
 import org.cloudsimplus.vms.Vm;
 import org.cloudsimplus.vms.VmSimple;
@@ -88,23 +88,21 @@ public abstract non-sealed class VmSchedulerAbstract implements VmScheduler {
     }
 
     /// Sets the status of physical PEs from a Host used by a given VM to BUSY.
-    /// The number of Host PEs changed is equal to the number of PEs required by the VM.
+    /// The number of Host PEs changed is equal to the number of PEs required by the VM,
+    /// limited to the number of free PEs.
     /// @param vm the VM to set the status of its used physical PEs
     private void updateHostPesStatusToBusy(final Vm vm) {
-        updateHostPesStatus(host.getFreePeList(), vm.getPesNumber(), Pe.Status.BUSY);
+        moveHostCores(CoreStatus.FREE, CoreStatus.BUSY, vm.getPesNumber());
     }
 
-    /// Sets the status of physical PEs from a Host used by a given VM.
-    /// @param peList the list of physical PEs from which the corresponding virtual PEs will have the status changed
-    /// @param vPesNumber the number of Virtual PEs that correspond to the number of physical PEs to have their status changed
-    /// @param newStatus the new status to set
-    private void updateHostPesStatus(final List<Pe> peList, final long vPesNumber, final Pe.Status newStatus) {
-        if(vPesNumber <= 0) {
-            return;
-        }
-
-        final var selectedPesList = peList.stream().limit(vPesNumber).collect(toList());
-        ((HostSimple)host).setPeStatus(selectedPesList, newStatus);
+    /// Moves a given number of physical cores from the Host [Processor] between two statuses,
+    /// limited to the number of cores in the current status.
+    /// @param from the current status of the cores
+    /// @param to the new status of the cores
+    /// @param cores the number of cores to move
+    private void moveHostCores(final CoreStatus from, final CoreStatus to, final long cores) {
+        final var processor = host.getProcessor();
+        processor.moveCores(from, to, Math.min(cores, processor.getCoresNumber(from)));
     }
 
     protected abstract boolean allocatePesForVmInternal(Vm vm, MipsShare mipsShareRequested);
@@ -128,7 +126,7 @@ public abstract non-sealed class VmSchedulerAbstract implements VmScheduler {
     /// That works for any kind of scheduler, such as time- and space-shared one.
     /// @param removedPes number of PEs actually removed from the destroyed VM
     private void updateHostUsedPesToFree(final long removedPes) {
-        updateHostPesStatus(host.getBusyPeList(), removedPes, Pe.Status.FREE);
+        moveHostCores(CoreStatus.BUSY, CoreStatus.FREE, removedPes);
     }
 
     /// Tries to remove a given number of PEs allocated to a VM
@@ -174,19 +172,9 @@ public abstract non-sealed class VmSchedulerAbstract implements VmScheduler {
         return getAllocatedMips(vm).totalMips();
     }
 
-    /// @return PE capacity in MIPS.
-    ///
-    /// @TODO It considers that all PEs have the same capacity, which has been
-    /// shown it isn't assured. The peList received by the VmScheduler can have
-    /// heterogeneous PEs.
-    /// See https://github.com/cloudsimplus/cloudsimplus/issues/592
+    /// @return the MIPS capacity of each Host PE, or 0 if all PEs have failed.
     public long getPeCapacity() {
-        return getWorkingPeList().isEmpty() ? 0 : getWorkingPeList().get(0).getCapacity();
-    }
-
-    /// @return the list of working PEs from the Host, **excluding failed PEs**.
-    public final List<Pe> getWorkingPeList() {
-        return host.getWorkingPeList();
+        return host.getWorkingPesNumber() == 0 ? 0 : (long) host.getMips();
     }
 
     @Override

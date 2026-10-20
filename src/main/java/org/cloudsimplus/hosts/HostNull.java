@@ -34,7 +34,7 @@ import org.cloudsimplus.listeners.HostUpdatesVmsProcessingEventInfo;
 import org.cloudsimplus.power.models.PowerModelHost;
 import org.cloudsimplus.provisioners.ResourceProvisioner;
 import org.cloudsimplus.resources.FileStorage;
-import org.cloudsimplus.resources.Pe;
+import org.cloudsimplus.resources.Processor;
 import org.cloudsimplus.resources.Resource;
 import org.cloudsimplus.resources.ResourceManageable;
 import org.cloudsimplus.schedulers.vm.VmScheduler;
@@ -89,9 +89,7 @@ final class HostNull implements Host {
         return 0;
     }
     @Override public double getMips() { return 0; }
-    @Override public List<Pe> getPeList() {
-        return Collections.emptyList();
-    }
+    @Override public Processor getProcessor() { return Processor.NULL; }
     @Override public Resource getRam() {
         return Resource.NULL;
     }
@@ -175,9 +173,6 @@ final class HostNull implements Host {
     @Override public Host setId(long id) { return this; }
     @Override public double getTotalMipsCapacity() { return 0.0; }
     @Override public int getFailedPesNumber() { return 0; }
-    @Override public List<Pe> getWorkingPeList() { return Collections.emptyList(); }
-    @Override public List<Pe> getBusyPeList() { return Collections.emptyList(); }
-    @Override public List<Pe> getFreePeList() { return Collections.emptyList(); }
     @Override public double getCpuPercentUtilization() { return 0.0; }
     @Override public double getCpuPercentRequested() { return 0; }
     @Override public double getCpuMipsUtilization() { return 0.0; }

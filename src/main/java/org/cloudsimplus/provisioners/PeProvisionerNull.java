@@ -30,6 +30,9 @@ import org.cloudsimplus.vms.Vm;
 ///
 /// @author Manoel Campos da Silva Filho
 /// @see PeProvisioner#NULL
+/// @deprecated The Host [org.cloudsimplus.resources.Processor] manages its cores without a provisioner.
+/// See https://github.com/cloudsimplus/cloudsimplus/issues/592
+@Deprecated(forRemoval = true)
 final class PeProvisionerNull extends ResourceProvisionerNull implements PeProvisioner {
     @Override public void setPe(Pe pe) {/**/}
     @Override public double getUtilization() {

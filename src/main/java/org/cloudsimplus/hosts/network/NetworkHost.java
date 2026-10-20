@@ -70,7 +70,17 @@ public class NetworkHost extends HostSimple {
     /// @param ram the RAM capacity in Megabytes
     /// @param bw the Bandwidth (BW) capacity in Megabits/s
     /// @param storage the storage capacity in Megabytes
-    /// @param peList the host's [Pe] list
+    /// @param pesNumber the number of PEs (CPU cores) of the Host
+    /// @param mips the MIPS capacity of each PE
+    public NetworkHost(final long ram, final long bw, final long storage, final long pesNumber, final double mips) {
+        super(ram, bw, storage, pesNumber, mips);
+        hostPktsReceived = new ArrayList<>();
+        pktsToSendForExternalVms = new ArrayList<>();
+        pktsToSendForLocalVms = new ArrayList<>();
+    }
+
+    /// @deprecated Use [#NetworkHost(long, long, long, long, double)] instead.
+    @Deprecated(forRemoval = true)
     public NetworkHost(final long ram, final long bw, final long storage, final List<Pe> peList) {
         super(ram, bw, storage, peList);
         hostPktsReceived = new ArrayList<>();
@@ -80,7 +90,7 @@ public class NetworkHost extends HostSimple {
 
     /// Creates a NetworkHost with no resources.
     private NetworkHost() {
-        this(0, 0, 0, List.of(Pe.NULL));
+        this(0, 0, 0, 1, 0);
         setId(-1);
     }
 

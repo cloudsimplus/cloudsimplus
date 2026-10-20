@@ -38,6 +38,9 @@ import java.util.function.Function;
 ///
 /// @author Manoel Campos da Silva Filho
 /// @since CloudSim Plus 1.0
+/// @deprecated Hosts are created with a number of PEs and their MIPS, so a PE list is no longer needed.
+/// See https://github.com/cloudsimplus/cloudsimplus/issues/592
+@Deprecated(forRemoval = true)
 @Accessors(chain = true)
 public class PeBuilder implements Builder {
     /// A [Function] that is accountable to create [Pe]

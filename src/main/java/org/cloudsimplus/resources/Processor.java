@@ -23,77 +23,58 @@
  */
 package org.cloudsimplus.resources;
 
-import lombok.Getter;
-import org.cloudsimplus.util.MathUtil;
+import org.cloudsimplus.core.Machine;
+import org.cloudsimplus.hosts.Host;
 import org.cloudsimplus.vms.Vm;
 
-/// A virtual Central Processing Unit (vCPU) attached to a [Vm],
-/// having one or more cores ([Pe]s).
+/// A Central Processing Unit (CPU) of a [Machine] ([Host], [Vm] or a future container),
+/// having one or more cores (PEs) with the same MIPS capacity.
+/// Instead of keeping one object per core, it keeps just the number of cores in each [CoreStatus].
+///
+/// The [capacity][#getCapacity()] is the total number of cores (in any status),
+/// the [available resource][#getAvailableResource()] is the number of [free][CoreStatus#FREE] cores
+/// and the [allocated resource][#getAllocatedResource()] is the number of [busy][CoreStatus#BUSY] cores.
 ///
 /// @author Manoel Campos da Silva Filho
 /// @since CloudSim Plus 1.0
-@Getter
-public final class Processor extends ResourceManageableAbstract {
-    public static final Processor NULL = new Processor(Vm.NULL, 0);
+public sealed interface Processor extends ResourceManageable permits ProcessorSimple, ProcessorNull {
+    /// An attribute that implements the Null Object Design Pattern for [Processor] objects.
+    Processor NULL = new ProcessorNull();
 
-    /// The Vm to which the processor belongs to.
-    private final Vm vm;
+    /// @return the [Machine] to which the processor belongs to.
+    Machine<?> getMachine();
 
-    /// The individual MIPS of each [Pe].
-    private double mips;
+    /// @return the individual MIPS of each core.
+    double getMips();
 
-    /// Instantiates a Processor for a given VM.
-    ///
-    /// @param vm          the [Vm] to which the processor will belong to
-    /// @param pesNumber number of [Pe]s (the processor [capacity][#getCapacity()])
-    /// @param pesMips     MIPS of each [Pe]
-    public Processor(final Vm vm, final long pesNumber, final double pesMips) {
-        this(vm, pesNumber);
-        setMips(pesMips);
+    /// Sets the individual MIPS of each core.
+    /// @param newMips the new MIPS of each core
+    void setMips(double newMips);
+
+    /// @return the current total MIPS capacity of the processor.
+    /// How it's computed is defined by each implementation.
+    double getTotalMips();
+
+    /// @param status the status to get the number of cores
+    /// @return the number of cores in a given status.
+    long getCoresNumber(CoreStatus status);
+
+    /// @return the number of working (non-failed) cores.
+    default long getWorkingCoresNumber() {
+        return getCapacity() - getCoresNumber(CoreStatus.FAILED);
     }
 
-    private Processor(final Vm vm, final long pesNumber){
-        super(pesNumber, "Unit");
-        this.vm = vm;
+    /// @return the number of failed cores.
+    default long getFailedCoresNumber() {
+        return getCoresNumber(CoreStatus.FAILED);
     }
 
-    /// @return the sum of MIPS from all [Pe]s.
-    public double getTotalMips(){
-        return getMips() * getCapacity();
-    }
-
-    /// Sets the individual MIPS of each [Pe].
-    /// @param newMips the new MIPS of each PE
-    public void setMips(final double newMips) {
-        this.mips = MathUtil.nonNegative(newMips, "MIPS");
-    }
-
-    /// @return the number of Pes of the Processor
-    @Override
-    public long getCapacity() {
-        return super.getCapacity();
-    }
-
-    /// Sets the number of [Pe]s of the Processor
-    /// @param pesNumber the number of PEs to set
-    /// @return true if the capacity was set, false otherwise
-    @Override
-    public boolean setCapacity(long pesNumber) {
-        if(pesNumber <= 0){
-            throw new IllegalArgumentException("The Processor's number of PEs must be greater than 0.");
-        }
-        return super.setCapacity(pesNumber);
-    }
-
-    /// @return the number of available PEs that are free to be used
-    @Override
-    public long getAvailableResource() {
-        return super.getAvailableResource();
-    }
-
-    /// @return the number of PEs allocated
-    @Override
-    public long getAllocatedResource() {
-        return super.getAllocatedResource();
-    }
+    /// Moves a given number of cores from one status to another.
+    /// @param from the current status of the cores to move
+    /// @param to the new status of the cores
+    /// @param cores the number of cores to move
+    /// @return true if the cores were moved;
+    ///         false if the number of cores is not positive,
+    ///         both statuses are equal or there aren't enough cores in the `from` status
+    boolean moveCores(CoreStatus from, CoreStatus to, long cores);
 }

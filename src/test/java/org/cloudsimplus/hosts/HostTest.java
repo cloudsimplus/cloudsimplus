@@ -54,7 +54,7 @@ public class HostTest {
             () -> assertSame(VmScheduler.NULL, instance.getVmScheduler()),
             () -> assertFalse(instance.isFailed()),
             () -> assertFalse(instance.isSuitableForVm(vm)),
-            () -> assertTrue(instance.getPeList().isEmpty()),
+            () -> assertEquals(0, instance.getPesNumber()),
             () -> assertTrue(instance.getVmsMigratingIn().isEmpty()),
             () -> assertSame(Datacenter.NULL, instance.getDatacenter()),
             () -> assertEquals(-1, instance.getId()),

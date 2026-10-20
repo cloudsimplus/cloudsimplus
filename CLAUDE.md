@@ -66,7 +66,7 @@ So changes to cloudlet or VM execution logic usually affect this update chain an
 | Which VM to migrate | `VmSelectionPolicy` | migration allocation policies |
 | Host PEs → VMs | `VmScheduler` (time/space shared) | Host |
 | VM PEs → Cloudlets | `CloudletScheduler` (time/space shared, completely fair) | Vm |
-| RAM/BW/PE provisioning | `ResourceProvisioner` | Host |
+| RAM/BW provisioning | `ResourceProvisioner` | Host |
 | Resource usage over time | `UtilizationModel` | Cloudlet |
 | Power consumption | `PowerModel` | Host / Datacenter |
 | Scaling | `HorizontalVmScaling`, `VerticalVmScaling` (`autoscaling`) | Broker / Vm |

@@ -24,6 +24,9 @@ import org.cloudsimplus.vms.Vm;
 /// @author Anton Beloglazov
 /// @author Manoel Campos da Silva Filho
 /// @since CloudSim Toolkit 2.0
+/// @deprecated The Host [org.cloudsimplus.resources.Processor] manages its cores without a provisioner.
+/// See https://github.com/cloudsimplus/cloudsimplus/issues/592
+@Deprecated(forRemoval = true)
 public class PeProvisionerSimple extends PeProvisionerAbstract {
 
     /// Instantiates a new PeProvisionerSimple. The [Pe] it will manage will be set

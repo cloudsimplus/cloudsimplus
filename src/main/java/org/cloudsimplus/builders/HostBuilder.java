@@ -32,12 +32,11 @@ import org.cloudsimplus.hosts.HostSimple;
 import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.listeners.HostUpdatesVmsProcessingEventInfo;
 import org.cloudsimplus.provisioners.ResourceProvisionerSimple;
-import org.cloudsimplus.resources.Pe;
 import org.cloudsimplus.schedulers.vm.VmScheduler;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
+import java.util.function.BiFunction;
 import java.util.function.Supplier;
 import org.jspecify.annotations.Nullable;
 
@@ -58,9 +57,9 @@ public class HostBuilder implements Builder {
     /// The list of all created Hosts
     @Getter private final List<Host> hosts;
 
-    /// A [Function] used to create Hosts.
-    /// It must receive a list of [Pe] for the Host it will create.
-    @Setter @NonNull private Function<List<Pe>, Host> hostCreationFunction;
+    /// A [BiFunction] used to create Hosts.
+    /// It receives the number of PEs and the MIPS capacity of each PE for the Host it will create.
+    @Setter @NonNull private BiFunction<Long, Double, Host> hostCreationFunction;
     @Setter @NonNull private EventListener<HostUpdatesVmsProcessingEventInfo> onUpdateVmsProcessingListener = EventListener.NULL;
     @Setter @Nullable private Supplier<VmScheduler> vmSchedulerSupplier;
 
@@ -84,8 +83,7 @@ public class HostBuilder implements Builder {
         validateAmount(amount);
 
         for (int i = 0; i < amount; i++) {
-            final var peList = new PeBuilder().create(pes, mips);
-            final var host = hostCreationFunction.apply(peList);
+            final var host = hostCreationFunction.apply((long) pes, mips);
             if(vmSchedulerSupplier != null) {
                 host.setVmScheduler(vmSchedulerSupplier.get());
             }
@@ -96,8 +94,8 @@ public class HostBuilder implements Builder {
         return this;
     }
 
-    private Host defaultHostCreationFunction(final List<Pe> peList) {
-        return new HostSimple(peList)
+    private Host defaultHostCreationFunction(final long pesNumber, final double peMips) {
+        return new HostSimple(pesNumber, peMips)
             .setRamProvisioner(new ResourceProvisionerSimple())
             .setBwProvisioner(new ResourceProvisionerSimple())
             .addOnUpdateProcessingListener(onUpdateVmsProcessingListener);

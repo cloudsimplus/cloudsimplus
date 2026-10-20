@@ -34,6 +34,9 @@ import org.cloudsimplus.vms.Vm;
 ///
 /// @author Manoel Campos da Silva Filho
 /// @since CloudSim Plus 1.1
+/// @deprecated The Host [org.cloudsimplus.resources.Processor] manages its cores without a provisioner.
+/// See https://github.com/cloudsimplus/cloudsimplus/issues/592
+@Deprecated(forRemoval = true)
 public sealed interface PeProvisioner
     extends ResourceProvisioner permits PeProvisionerAbstract, PeProvisionerNull
 {

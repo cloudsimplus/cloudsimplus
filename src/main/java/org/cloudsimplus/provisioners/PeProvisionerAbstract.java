@@ -32,6 +32,9 @@ import java.util.function.Function;
 
 /// A base class for implementing [Pe] [ResourceProvisioner]s.
 /// @author Manoel Campos
+/// @deprecated The Host [org.cloudsimplus.resources.Processor] manages its cores without a provisioner.
+/// See https://github.com/cloudsimplus/cloudsimplus/issues/592
+@Deprecated(forRemoval = true)
 public abstract non-sealed class PeProvisionerAbstract extends ResourceProvisionerSimple implements PeProvisioner {
     public PeProvisionerAbstract(ResourceManageable resource, Function<Vm, ResourceManageable> vmResourceFunction) {
         super(resource, vmResourceFunction);

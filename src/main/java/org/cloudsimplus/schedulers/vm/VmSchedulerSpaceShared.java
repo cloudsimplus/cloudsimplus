@@ -8,13 +8,10 @@
 package org.cloudsimplus.schedulers.vm;
 
 import org.cloudsimplus.hosts.Host;
-import org.cloudsimplus.resources.Pe;
 import org.cloudsimplus.schedulers.MipsShare;
 import org.cloudsimplus.vms.Vm;
 import org.cloudsimplus.vms.VmSimple;
 
-import java.util.ArrayList;
-import java.util.List;
 
 /// A Virtual Machine Monitor (VMM), also called Hypervisor, that allocates one or more
 /// [Pe]s from a [Host] to a [Vm], **and doesn't allow sharing of PEs between VMs**.
@@ -47,45 +44,19 @@ public class VmSchedulerSpaceShared extends VmSchedulerAbstract {
 
     @Override
     protected boolean isSuitableForVmInternal(final Vm vm, final MipsShare requestedMips) {
-        final var selectedPesList = getTotalCapacityToBeAllocatedToVm(requestedMips);
-        return selectedPesList.size() >= requestedMips.pes();
+        return getHost().getFreePesNumber() >= requestedMips.pes() && isPeCapacityEnough(requestedMips);
     }
 
-    /// Checks if the requested amount of MIPS is available to be allocated to a VM
+    /// Checks if each Host PE has enough MIPS capacity for each PE requested by a VM.
     /// @param requestedMips a MIPS share requested by a VM
-    /// @return the list of PEs that may be allocated to the VM. If the size of this list is
-    /// lower than the PEs number of the requestedMips, it means there aren't enough PEs
-    /// with requested MIPS to be allocated to the VM
-    private List<Pe> getTotalCapacityToBeAllocatedToVm(final MipsShare requestedMips) {
-        if (getHost().getWorkingPesNumber() < requestedMips.pes()) {
-            return getHost().getWorkingPeList();
-        }
-
-        final var freePeList = getHost().getFreePeList();
-        final var selectedPesList = new ArrayList<Pe>();
-        if(freePeList.isEmpty()){
-            return selectedPesList;
-        }
-
-        final var peIterator = freePeList.iterator();
-        Pe pe = peIterator.next();
-        for (int i = 0; i < requestedMips.pes(); i++) {
-            if (requestedMips.mips() <= pe.getCapacity()) {
-                selectedPesList.add(pe);
-                if (!peIterator.hasNext()) {
-                    break;
-                }
-                pe = peIterator.next();
-            }
-        }
-
-        return selectedPesList;
+    /// @return true if the PE capacity is enough or no PE is requested, false otherwise
+    private boolean isPeCapacityEnough(final MipsShare requestedMips) {
+        return requestedMips.pes() == 0 || requestedMips.mips() <= getPeCapacity();
     }
 
     @Override
     public boolean allocatePesForVmInternal(final Vm vm, final MipsShare requestedMips) {
-        final var selectedPesList = getTotalCapacityToBeAllocatedToVm(requestedMips);
-        if(selectedPesList.size() < requestedMips.pes()){
+        if(!isSuitableForVmInternal(vm, requestedMips)){
             return false;
         }
 

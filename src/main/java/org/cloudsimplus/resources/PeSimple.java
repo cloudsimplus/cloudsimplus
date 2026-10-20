@@ -22,12 +22,12 @@ import org.cloudsimplus.provisioners.PeProvisionerSimple;
 ///
 /// **ASSUMPTION:** All PEs under the same Machine have the same MIPS rating.
 ///
-/// TODO: This assumption is not being assured on different classes (where other TODOs were included)
-/// See https://github.com/cloudsimplus/cloudsimplus/issues/592
-///
 /// @author Manzur Murshed
 /// @author Rajkumar Buyya
 /// @since CloudSim Toolkit 1.0
+/// @deprecated Use the [Processor] of a [Host] instead, which keeps counters instead of one object per core.
+/// See https://github.com/cloudsimplus/cloudsimplus/issues/592
+@Deprecated(forRemoval = true)
 @Accessors @Getter @Setter
 public class PeSimple extends ResourceManageableAbstract implements Pe {
     /// The default MIPS capacity to be used to create PEs when the no-args constructor is called.

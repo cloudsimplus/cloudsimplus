@@ -30,6 +30,9 @@ import org.cloudsimplus.provisioners.PeProvisionerSimple;
 ///
 /// @author Manoel Campos da Silva Filho
 /// @see Pe#NULL
+/// @deprecated Use [Processor#NULL] instead.
+/// See https://github.com/cloudsimplus/cloudsimplus/issues/592
+@Deprecated(forRemoval = true)
 final class PeNull implements Pe {
     @Override public long getAvailableResource() {
         return 0;

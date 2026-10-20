@@ -80,9 +80,7 @@ public class HostSimpleTest {
         final double mips, final long ram,
         final long bw, final long storage, final boolean activate)
     {
-        final List<Pe> peList = createPes(pesNumber, mips);
-
-        final HostSimple host = new HostSimple(ram, bw, storage, peList, activate);
+        final HostSimple host = new HostSimple(ram, bw, storage, pesNumber, mips, activate);
         host.setRamProvisioner(new ResourceProvisionerSimple())
             .setBwProvisioner(new ResourceProvisionerSimple())
             .setVmScheduler(new VmSchedulerTimeShared())
@@ -91,9 +89,7 @@ public class HostSimpleTest {
     }
 
     private static HostSimple createHostSimple(final int pesNumber, VmScheduler vmScheduler) {
-        final List<Pe> peList = createPes(pesNumber, MIPS);
-
-        final HostSimple host = new HostSimple(RAM, BW, STORAGE, peList);
+        final HostSimple host = new HostSimple(RAM, BW, STORAGE, pesNumber, MIPS);
         host.setRamProvisioner(new ResourceProvisionerSimple())
             .setBwProvisioner(new ResourceProvisionerSimple())
             .setVmScheduler(vmScheduler);
@@ -101,10 +97,71 @@ public class HostSimpleTest {
 
     }
 
+    @SuppressWarnings("removal")
     private static List<Pe> createPes(final int pesNumber, final double mips) {
         return IntStream.range(0, pesNumber)
                         .mapToObj(id -> new PeSimple(mips, new PeProvisionerSimple()))
                         .collect(Collectors.toCollection(() -> new ArrayList<>(pesNumber)));
+    }
+
+    @Test
+    @SuppressWarnings("removal")
+    public void testDeprecatedPeListConstructorConvertsToProcessor() {
+        final var host = new HostSimple(RAM, BW, STORAGE, createPes(PES, MIPS));
+        assertAll(
+            () -> assertEquals(PES, host.getPesNumber()),
+            () -> assertEquals(MIPS, host.getMips()),
+            () -> assertEquals(PES * MIPS, host.getTotalMipsCapacity()),
+            () -> assertEquals(PES, host.getFreePesNumber())
+        );
+    }
+
+    @Test
+    @SuppressWarnings("removal")
+    public void testDeprecatedPeListConstructorWithDifferentMips() {
+        final List<Pe> peList = List.of(new PeSimple(MIPS), new PeSimple(MIPS * 2));
+        assertThrows(IllegalArgumentException.class, () -> new HostSimple(RAM, BW, STORAGE, peList));
+    }
+
+    @Test
+    @SuppressWarnings("removal")
+    public void testDeprecatedPeListConstructorWithEmptyList() {
+        final List<Pe> peList = List.of();
+        assertThrows(IllegalArgumentException.class, () -> new HostSimple(RAM, BW, STORAGE, peList));
+    }
+
+    @Test
+    public void testConstructorWithZeroPes() {
+        assertThrows(IllegalArgumentException.class, () -> new HostSimple(RAM, BW, STORAGE, 0, MIPS));
+    }
+
+    @Test
+    public void testTotalMipsCapacityExcludesFailedPes() {
+        final HostSimple host = createHostSimple(0, 4);
+        host.getProcessor().moveCores(CoreStatus.FREE, CoreStatus.FAILED, 1);
+        assertEquals(3 * MIPS, host.getTotalMipsCapacity());
+    }
+
+    @Test
+    public void testSetFailedFailsAllPesAndRecoverFreesThem() {
+        final int pesNumber = 4;
+        final HostSimple host = createHostSimple(0, pesNumber);
+        host.getProcessor().moveCores(CoreStatus.FREE, CoreStatus.BUSY, 1);
+
+        host.setFailed(true);
+        assertAll(
+            () -> assertEquals(pesNumber, host.getFailedPesNumber()),
+            () -> assertEquals(0, host.getWorkingPesNumber()),
+            () -> assertEquals(0, host.getBusyPesNumber()),
+            () -> assertEquals(0, host.getTotalMipsCapacity())
+        );
+
+        host.setFailed(false);
+        assertAll(
+            () -> assertEquals(0, host.getFailedPesNumber()),
+            () -> assertEquals(pesNumber, host.getFreePesNumber()),
+            () -> assertEquals(pesNumber, host.getWorkingPesNumber())
+        );
     }
 
     @BeforeEach
@@ -435,7 +492,7 @@ public class HostSimpleTest {
     public void testGetNumberOfFreePesWhenOneBusyPes() {
         final int pesNumber = 2;
         final HostSimple host = createHostSimple(0, pesNumber);
-        host.setPeStatus(host.getPeList().subList(0,1), Pe.Status.BUSY);
+        host.getProcessor().moveCores(CoreStatus.FREE, CoreStatus.BUSY, 1);
         assertAll(
             () -> assertEquals(1, host.getFreePesNumber()),
             () -> assertEquals(1, host.getBusyPesNumber())
@@ -494,7 +551,7 @@ public class HostSimpleTest {
     public void testGetNumberOfWorkingPesWhenOneIsFailed() {
         final int pesNumber = 2;
         final HostSimple host = createHostSimple(0, pesNumber);
-        host.setPeStatus(host.getPeList().subList(0,1), Pe.Status.FAILED);
+        host.getProcessor().moveCores(CoreStatus.FREE, CoreStatus.FAILED, 1);
         assertAll(
             () -> assertEquals(1, host.getFreePesNumber()),
             () -> assertEquals(1, host.getWorkingPesNumber()),
@@ -507,7 +564,7 @@ public class HostSimpleTest {
         final int pesNumber = 4;
         final HostSimple host = createHostSimple(0, pesNumber);
 
-        host.setPeStatus(host.getPeList(), Pe.Status.BUSY);
+        host.getProcessor().moveCores(CoreStatus.FREE, CoreStatus.BUSY, pesNumber);
         assertEquals(0, host.getFreePesNumber());
     }
 

@@ -503,16 +503,6 @@ public abstract non-sealed class CloudletSchedulerAbstract implements CloudletSc
         }
 
         updateAllocatedPes(usedPes);
-
-        /*
-        TODO: This logic should be encapsuled inside the VmAbstract class.
-        A new method should be introduced that accepts just the usedPes and
-        updates the freePesNumber accordingly, since that is a property of the VM and not of the scheduler.
-        This will make this call much simples and provides more cohesion.
-        See https://github.com/cloudsimplus/cloudsimplus/issues/592
-        */
-        ((VmSimple) vm).setFreePesNumber(vm.getPesNumber() - usedPes);
-
         return nextProcessing;
     }
 
@@ -530,18 +520,16 @@ public abstract non-sealed class CloudletSchedulerAbstract implements CloudletSc
     /// Otherwise, a space-shared scheduler may get stuck (deadlock):
     /// the receiver holds the PEs while the sender waits for them.
     ///
-    /// It's just performed when there is a [CloudletTaskScheduler] (in network simulations),
-    /// so that other simulations are not affected.
-    /// When a blocked Cloudlet receives its packets and there are no free PEs,
+    /// When there are more PEs used by Cloudlets than VM PEs (such as in a time-shared scheduler
+    /// or when a blocked Cloudlet receives its packets and there are no free PEs),
     /// the allocation is limited to the number of VM PEs. The running Cloudlets then
     /// share the VM MIPS until some of them finish.
+    /// This way, the VM [free PEs][Vm#getFreePesNumber()] are kept up to date.
     ///
     /// @param usedPes the number of PEs used by the Cloudlets that are not blocked
     private void updateAllocatedPes(final long usedPes) {
-        if (isThereTaskScheduler()) {
-            final var processor = vm.getProcessor();
-            processor.setAllocatedResource(Math.min(usedPes, processor.getCapacity()));
-        }
+        final var processor = vm.getProcessor();
+        processor.setAllocatedResource(Math.min(usedPes, processor.getCapacity()));
     }
 
     /// Updates the processing of a specific cloudlet from the Vm using this scheduler.

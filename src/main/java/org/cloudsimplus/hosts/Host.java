@@ -16,8 +16,6 @@ import org.cloudsimplus.power.PowerAware;
 import org.cloudsimplus.power.models.PowerModelHost;
 import org.cloudsimplus.provisioners.ResourceProvisioner;
 import org.cloudsimplus.resources.Bandwidth;
-import org.cloudsimplus.resources.Pe;
-import org.cloudsimplus.resources.Pe.Status;
 import org.cloudsimplus.resources.Ram;
 import org.cloudsimplus.resources.ResourceManageable;
 import org.cloudsimplus.schedulers.vm.VmScheduler;
@@ -150,7 +148,7 @@ public sealed interface Host
     /// and allocates them on the Host.
     void reallocateMigratingInVms();
 
-    /// @return total MIPS capacity of [Pe]s which are not [Status#FAILED].
+    /// @return total MIPS capacity of PEs which are not [failed][org.cloudsimplus.resources.CoreStatus#FAILED].
     @Override
     double getTotalMipsCapacity();
 
@@ -171,34 +169,21 @@ public sealed interface Host
     /// @param vm the Vm to remove
     void removeMigratingInVm(Vm vm);
 
-    /// @return the list of all [Pe]s of the host, including failed PEs.
-    /// @see #getWorkingPeList()
-    List<Pe> getPeList();
-
-    /// @return the list of working (non-failed) [Pe]s of the Host.
-    List<Pe> getWorkingPeList();
-
-    /// @return the list of [Pe]s of the Host that are [Status#BUSY].
-    List<Pe> getBusyPeList();
-
-    /// @return the list of free (non-failed) [Pe]s of the Host.
-    List<Pe> getFreePeList();
-
-    /// @return the number of [Pe]s that are free to be used by any VM.
+    /// @return the number of PEs that are free to be used by any VM.
     int getFreePesNumber();
 
-    /// @return the number of [Pe]s that are working (non-failed).
+    /// @return the number of PEs that are working (non-failed).
     int getWorkingPesNumber();
 
-    /// @return the number of [Pe]s that are [Pe.Status#BUSY].
+    /// @return the number of PEs that are [busy][org.cloudsimplus.resources.CoreStatus#BUSY].
     int getBusyPesNumber();
 
-    /// @return the current percentage (from 0..1) of used (busy) [Pe]s,
+    /// @return the current percentage (from 0..1) of used (busy) PEs,
     /// according to the [total number of PEs][#getPesNumber()].
     /// @see #getBusyPesPercent(boolean)
     double getBusyPesPercent();
 
-    /// Gets the current percentage of used (busy) [Pe]s,
+    /// Gets the current percentage of used (busy) PEs,
     /// according to the [total number of PEs][#getPesNumber()].
     /// @param hundredScale true for getting the return in the 0..100 scale;
     /// false for the 0..1 scale.
@@ -206,7 +191,7 @@ public sealed interface Host
     /// @see #getBusyPesPercent()
     double getBusyPesPercent(boolean hundredScale);
 
-    /// @return the number of [Pe]s that have failed.
+    /// @return the number of PEs that have failed.
     int getFailedPesNumber();
 
     /// @return the total free storage available at the Host in Megabytes.
@@ -243,10 +228,10 @@ public sealed interface Host
     /// @return the read-only created VM historic list
     <T extends Vm> List<T> getVmCreatedList();
 
-    /// @return the policy for allocation of host [Pe]s to VMs to schedule VM execution.
+    /// @return the policy for allocation of host PEs to VMs to schedule VM execution.
     VmScheduler getVmScheduler();
 
-    /// Sets the policy for allocation of host [Pe]s to VMs to schedule VM
+    /// Sets the policy for allocation of host PEs to VMs to schedule VM
     /// execution. The host also sets itself to the given scheduler.
     /// It also sets the Host itself to the given scheduler.
     ///
@@ -404,7 +389,7 @@ public sealed interface Host
     Host setSimulation(Simulation simulation);
 
     /// Gets the [ResourceProvisioner]s that manages a Host's resource
-    /// such as [Ram], [Bandwidth] and [Pe].
+    /// such as [Ram], [Bandwidth] and [Processor].
     /// @param resourceClass the class of the resource to get its provisioner
     /// @return the [ResourceProvisioner] for the given resource class
     ResourceProvisioner getProvisioner(Class<? extends ResourceManageable> resourceClass);

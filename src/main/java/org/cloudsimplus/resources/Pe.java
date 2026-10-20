@@ -22,6 +22,9 @@ import org.cloudsimplus.vms.Vm;
 /// @author Rajkumar Buyya
 /// @author Manoel Campos da Silva Filho
 /// @since CloudSim Plus 1.0
+/// @deprecated Use the [Processor] of a [org.cloudsimplus.core.Machine] instead, which keeps counters instead of one object per core.
+/// See https://github.com/cloudsimplus/cloudsimplus/issues/592
+@Deprecated(forRemoval = true)
 public interface Pe extends ChangeableId, ResourceManageable {
     /// Status of PEs.
     enum Status {

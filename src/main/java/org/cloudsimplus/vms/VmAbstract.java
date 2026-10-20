@@ -86,7 +86,11 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
 
     @Setter
     protected String description;
-    protected long freePesNumber;
+
+    /// The expected number of free PEs, estimated by the broker when it maps Cloudlets to the VM.
+    /// It's different from the [number of free PEs][#getFreePesNumber()], which
+    /// considers only Cloudlets already running.
+    /// @see #getExpectedFreePesNumber()
     protected long expectedFreePesNumber;
     @Setter  @NonNull
     protected MipsShare allocatedMips;
@@ -133,18 +137,12 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
     protected VmAbstract(final long id, final long mipsCapacity, final long pesNumber, final CloudletScheduler cloudletScheduler) {
         super();
         setId(id);
-        this.processor = new Processor(this, pesNumber, mipsCapacity);
-        setMips(mipsCapacity);
-        setPesNumber(pesNumber);
+        this.processor = new ProcessorSimple(this, pesNumber, mipsCapacity);
         setCloudletScheduler(cloudletScheduler);
 
         this.resources = new ArrayList<>(4);
         this.bootModel = BootModel.NULL;
 
-        // Initializes the number of free PEs as the number of VM PEs
-        // TODO: It's not calling setFreePesNumber, which has some logic there.
-        // See https://github.com/cloudsimplus/cloudsimplus/issues/592
-        this.freePesNumber = pesNumber;
         this.expectedFreePesNumber = pesNumber;
 
         this.allocatedMips = new MipsShare();
@@ -284,23 +282,16 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
         return nextSimulationDelay - decimals < 0 ? nextSimulationDelay : nextSimulationDelay - decimals;
     }
 
-    /// Sets the current number of free PEs.
-    ///
-    /// @return the new free pes number
-    public Vm setFreePesNumber(long freePesNumber) {
-        if (freePesNumber < 0) {
-            freePesNumber = 0;
-        }
-
-        // TODO: If the freePesNumber is changed, a warning should be issued
-        // See https://github.com/cloudsimplus/cloudsimplus/issues/592
-        this.freePesNumber = Math.min(freePesNumber, getPesNumber());
-        return this;
+    /// {@return the number of PEs not used by running Cloudlets}
+    /// It's the number of free cores of the VM [Processor].
+    @Override
+    public long getFreePesNumber() {
+        return processor.getAvailableResource();
     }
 
-    /// Frees all PEs of this VM, setting the [#freePesNumber] to the total number of PEs.
+    /// Frees all PEs of this VM.
     public void freeAllPes() {
-        setFreePesNumber(getPesNumber());
+        processor.deallocateAllResources();
     }
 
     /// Adds a given number of expected free PEs to the total number of expected free PEs.

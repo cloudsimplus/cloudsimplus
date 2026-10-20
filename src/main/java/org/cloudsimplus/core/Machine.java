@@ -24,7 +24,7 @@
 package org.cloudsimplus.core;
 
 import org.cloudsimplus.hosts.Host;
-import org.cloudsimplus.resources.Pe;
+import org.cloudsimplus.resources.Processor;
 import org.cloudsimplus.resources.Resource;
 import org.cloudsimplus.resources.Resourceful;
 import org.cloudsimplus.vms.Vm;
@@ -51,11 +51,14 @@ public sealed interface Machine<T extends Resource>
     /// @return the storage device of the machine with capacity in Megabytes.
     T getStorage();
 
-    /// @return the overall number of [Pe]s the machine has,
+    /// @return the processor of the machine, that manages its cores (PEs).
+    Processor getProcessor();
+
+    /// @return the overall number of PEs the machine has,
     /// that include PEs of all statuses, including failed PEs.
     long getPesNumber();
 
-    /// @return the individual MIPS capacity of any machine's [Pe],
+    /// @return the individual MIPS capacity of any machine's PE,
     /// considering that all PEs have the same capacity.
     double getMips();
 

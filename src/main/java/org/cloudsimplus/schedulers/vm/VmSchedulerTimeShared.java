@@ -7,12 +7,10 @@
 package org.cloudsimplus.schedulers.vm;
 
 import org.cloudsimplus.hosts.Host;
-import org.cloudsimplus.resources.Pe;
 import org.cloudsimplus.schedulers.MipsShare;
 import org.cloudsimplus.vms.Vm;
 import org.cloudsimplus.vms.VmSimple;
 
-import java.util.Iterator;
 
 /// A Virtual Machine Monitor (VMM), also called Hypervisor,
 /// that defines a policy to allocate one or more [Pe]s from a [Host] to a [Vm],
@@ -96,116 +94,6 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
         ((VmSimple)vm).setAllocatedMips(mipsShare);
     }
 
-    /// Allocates Host PEs for a given VM.
-    /// @param vm the VM to allocate MIPS for its PEs
-    /// @param mipsShare the share of MIPS for that VM
-    private void allocatePesListForVm(final Vm vm, final MipsShare mipsShare) {
-        final Iterator<Pe> hostPesIterator = getWorkingPeList().iterator();
-        for (int i = 0; i < mipsShare.pes(); i++) {
-            final double allocatedPeMips = allocateMipsFromHostPesToGivenVirtualPe(vm, mipsShare.mips(), hostPesIterator);
-            if(mipsShare.mips() > 0.1 && allocatedPeMips <= 0.1){
-                logMipsUnavailable(vm, mipsShare.mips(), allocatedPeMips);
-            }
-        }
-    }
-
-    /// Prints a log showing that the total requested MIPS is not available
-    /// and that just a fraction or zero MIPS were allocated.
-    ///
-    /// @param vm the VM requesting the MIPS
-    /// @param requestedMipsForVmPe the MIPS requested for a vPE
-    /// @param allocatedMipsForVmPe the actually allocated MIPS for the vPE
-    private void logMipsUnavailable(final Vm vm, final double requestedMipsForVmPe, final double allocatedMipsForVmPe) {
-        final String msg = allocatedMipsForVmPe > 0 ?
-                "Only %.0f MIPS were allocated.".formatted(allocatedMipsForVmPe) :
-                "No MIPS were allocated.";
-        LOGGER.warn(
-                "{}: {}: {} is requiring a total of {} MIPS but the PEs of {} currently don't have such an available MIPS amount. {}",
-                getHost().getSimulation().clockStr(),
-                getClass().getSimpleName(), vm,
-                (long)requestedMipsForVmPe, getHost(), msg);
-    }
-
-    /// Try to allocate MIPS from one or more Host PEs to a specific Virtual PE (PE of a VM).
-    ///
-    /// @param vm the VM to try to find Host PEs for one of its Virtual PEs
-    /// @param requestedMipsForVmPe the amount of MIPS requested by such a VM PE
-    /// @param hostPesIterator an [Iterator] over the PEs of the [Host][#getHost()] that the scheduler will
-    /// iterate over to allocate PEs for a VM
-    /// @return the total MIPS allocated from one or more Host PEs for the requested VM PE
-    private double allocateMipsFromHostPesToGivenVirtualPe(
-        final Vm vm,
-        final double requestedMipsForVmPe,
-        final Iterator<Pe> hostPesIterator)
-    {
-        if(requestedMipsForVmPe <= 0){
-            return 0;
-        }
-
-        double allocatedMipsForVmPe = 0;
-        /*
-        * While all the requested MIPS for the VM PE was not allocated, try to find a Host PE
-        * with that MIPS amount available.
-        */
-        while (allocatedMipsForVmPe <= 0 && hostPesIterator.hasNext()) {
-             final Pe selectedHostPe = hostPesIterator.next();
-             if(allocateAllVmPeRequestedMipsFromHostPe(vm, selectedHostPe, requestedMipsForVmPe)){
-                allocatedMipsForVmPe = requestedMipsForVmPe;
-             } else {
-                allocatedMipsForVmPe += allocatedMipsFromHostPeToVirtualPe(vm, selectedHostPe);
-             }
-        }
-
-        return allocatedMipsForVmPe;
-    }
-
-    /// Try to allocate the MIPS available in a given Physical PE
-    /// to a vPE. This method is used when the MIPS requested
-    /// by a vPE is not entirely available at a Physical PE.
-    /// This way, this method allocates the available capacity to the vPE.
-    ///
-    /// @param vm the VM to allocate MIPS from one of its vPEs.
-    /// @param hostPe the Physical PE to allocate MIPS from
-    /// @return true if all requested MIPS of the vPE is available at the physical PE
-    /// and was allocated; false otherwise
-    ///
-    /// @see #allocateAllVmPeRequestedMipsFromHostPe(Vm, Pe, double)
-    private double allocatedMipsFromHostPeToVirtualPe(final Vm vm, final Pe hostPe) {
-        final double availableMips = getAvailableMipsFromHostPe(hostPe);
-        if (availableMips <= 0){
-           return 0;
-        }
-
-        /*
-        * If the selected Host PE doesn't have the available MIPS requested by the current
-        * vPE, allocate the MIPS that is available in that PE for the vPE.
-        * Then, it tries to find another Host PE to allocate the remaining MIPS required by the
-        * current vPE.
-        */
-        allocateMipsFromHostPeForVm(vm, hostPe, availableMips);
-        return availableMips;
-    }
-
-    /// Try to allocate all the MIPS requested by a Virtual PE from a given Physical PE.
-    ///
-    /// @param vm the VM to allocate MIPS from one of its vPEs.
-    /// @param hostPe the Physical PE to allocate MIPS from
-    /// @param requestedMipsForVmPe the MIPS requested by the vPE
-    /// @return true if all requested MIPS of the vPE is available at the physical PE
-    /// and was allocated; false otherwise
-    private boolean allocateAllVmPeRequestedMipsFromHostPe(final Vm vm, final Pe hostPe, final double requestedMipsForVmPe) {
-        if (getAvailableMipsFromHostPe(hostPe) >= requestedMipsForVmPe) {
-            allocateMipsFromHostPeForVm(vm, hostPe, requestedMipsForVmPe);
-            return true;
-        }
-
-        return false;
-    }
-
-    private long getAvailableMipsFromHostPe(final Pe hostPe) {
-        return hostPe.getPeProvisioner().getAvailableResource();
-    }
-
     /// The non-emptiness of the list is ensured by the [VmScheduler#isSuitableForVm(Vm,MipsShare)] method.
     @Override
     protected boolean isSuitableForVmInternal(final Vm vm, final MipsShare requestedMips) {
@@ -213,14 +101,6 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
 
         // This scheduler does not allow over-subscription of PEs' MIPS
         return getHost().getWorkingPesNumber() >= requestedMips.pes() && getTotalAvailableMips() >= totalRequestedMips;
-    }
-
-    /// Allocates a given amount of MIPS from a specific PE for a given VM.
-    /// @param vm the VM to allocate the MIPS from a given PE
-    /// @param pe the PE that will have MIPS allocated to the VM
-    /// @param mipsToAllocate the amount of MIPS from the PE that have to be allocated to the VM
-    private void allocateMipsFromHostPeForVm(final Vm vm, final Pe pe, final double mipsToAllocate) {
-        pe.getPeProvisioner().allocateResourceForVm(vm, (long)mipsToAllocate);
     }
 
     /// Gets the actual MIPS share that will be allocated to VM's PEs,
