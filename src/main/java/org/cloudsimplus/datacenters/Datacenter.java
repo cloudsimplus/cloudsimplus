@@ -9,7 +9,9 @@ package org.cloudsimplus.datacenters;
 
 import org.cloudsimplus.allocationpolicies.VmAllocationPolicy;
 import org.cloudsimplus.allocationpolicies.migration.VmAllocationPolicyMigration;
+import org.cloudsimplus.brokers.DatacenterBroker;
 import org.cloudsimplus.cloudlets.Cloudlet;
+import org.cloudsimplus.core.CloudSimTag;
 import org.cloudsimplus.core.SimEntity;
 import org.cloudsimplus.core.Sizeable;
 import org.cloudsimplus.hosts.Host;
@@ -100,6 +102,25 @@ public sealed interface Datacenter
      * @see Host#isActive()
      */
     long getActiveHostsNumber();
+
+    /**
+     * @return the current number of Hosts inside the Datacenter that are being powered on
+     * (waiting for their {@link Host#getStartupDelay() startup delay}).
+     * @see #getActiveHostsNumber()
+     */
+    long getPoweringOnHostsNumber();
+
+    /**
+     * Registers a broker that is waiting for a Host to be powered on, so that it can create its waiting VMs.
+     * When the next Host is powered on, the broker receives a {@link CloudSimTag#VM_CREATE_RETRY} event
+     * (after the {@link org.cloudsimplus.core.Simulation#getMinTimeBetweenEvents()}).
+     * Then the broker is removed from the waiting list.
+     *
+     * @param broker the broker waiting for a Host to be powered on
+     * @return this Datacenter
+     * @see #getPoweringOnHostsNumber()
+     */
+    Datacenter addBrokerWaitingHostPowerOn(DatacenterBroker broker);
 
     /**
      * @return the total number of existing Hosts in this Datacenter,

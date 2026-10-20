@@ -134,6 +134,11 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
      */
     private boolean activationChangeInProgress;
 
+    /**
+     * Indicates if the Host is waiting its {@link #getStartupDelay() startup delay} to be powered on.
+     */
+    private boolean poweringOn;
+
     @Getter
     private double firstStartTime = -1;
 
@@ -480,6 +485,9 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
         LOGGER.info("{}: {} is being powered " + msg, getSimulation().clockStr(), this, delay);
         datacenter.schedule(delay, tag, this);
         activationChangeInProgress = true;
+        if (activate) {
+            updatePoweringOn(true);
+        }
 
         return this;
     }
@@ -501,6 +509,9 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
         if (activate) {
             setStartTime(getSimulation().clock());
             setShutdownBeginTime(NOT_ASSIGNED);
+            if (poweringOn) {
+                updatePoweringOn(false);
+            }
             powerModel.addStartupTotals();
         } else {
             this.setFinishTime(getSimulation().clock());
@@ -511,6 +522,15 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
         ((DatacenterSimple) datacenter).updateActiveHostsNumber(this);
         activationChangeInProgress = false;
         notifyStartupOrShutdown(activate, wasActive);
+    }
+
+    /**
+     * Sets if the Host is being powered on and updates the Datacenter accordingly.
+     * @param poweringOn true if the Host started powering on, false if it finished powering on
+     */
+    private void updatePoweringOn(final boolean poweringOn) {
+        this.poweringOn = poweringOn;
+        ((DatacenterSimple) datacenter).updatePoweringOnHostsNumber(poweringOn);
     }
 
     /**
