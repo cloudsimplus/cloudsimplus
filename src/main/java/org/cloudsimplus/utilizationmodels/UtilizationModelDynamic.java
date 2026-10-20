@@ -31,21 +31,19 @@ import org.cloudsimplus.util.Conversion;
 
 import java.util.function.Function;
 
-/**
- * A {@link Cloudlet} {@link UtilizationModel} that allows to increase the utilization of
- * the related resource along the simulation time.
- * It accepts a Lambda Expression that defines how the utilization increment must behave.
- * This way, the class enables the developer to define such a behavior when instantiating
- * objects of this class.
- *
- * <p>For instance, it is possible to use the class to arithmetically or
- * geometrically increment resource usage, but any kind of increment as
- * logarithmic or exponential is possible.
- * For more details, see the {@link #setUtilizationUpdateFunction(Function)}.</p>
- *
- * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 1.0
- */
+/// A [Cloudlet] [UtilizationModel] that allows to increase the utilization of
+/// the related resource along the simulation time.
+/// It accepts a Lambda Expression that defines how the utilization increment must behave.
+/// This way, the class enables the developer to define such a behavior when instantiating
+/// objects of this class.
+///
+/// For instance, it is possible to use the class to arithmetically or
+/// geometrically increment resource usage, but any kind of increment as
+/// logarithmic or exponential is possible.
+/// For more details, see the [#setUtilizationUpdateFunction(Function)].
+///
+/// @author Manoel Campos da Silva Filho
+/// @since CloudSim Plus 1.0
 public class UtilizationModelDynamic extends UtilizationModelAbstract {
     /// Indicates whether the utilization model is readonly or not.
     /// It's set to true when using the
@@ -98,14 +96,10 @@ public class UtilizationModelDynamic extends UtilizationModelAbstract {
     @Setter @NonNull
     private Function<UtilizationModelDynamic, Double> utilizationUpdateFunction;
 
-    /**
-     * The last time the utilization was updated.
-     */
+    /// The last time the utilization was updated.
     private double previousUtilizationTime;
 
-    /**
-     * The time that the utilization is being currently requested.
-     */
+    /// The time that the utilization is being currently requested.
     private double currentUtilizationTime;
 
     /// Creates a UtilizationModelDynamic with no initial utilization.
@@ -186,11 +180,9 @@ public class UtilizationModelDynamic extends UtilizationModelAbstract {
         utilizationUpdateFunction = modelInstance -> modelInstance.currentUtilization;
     }
 
-    /**
-     * A copy constructor that creates a read-only UtilizationModelDynamic based on another one.
-     *
-     * @param source the source UtilizationModelDynamic to create an instance from
-     */
+    /// A copy constructor that creates a read-only UtilizationModelDynamic based on another one.
+    ///
+    /// @param source the source UtilizationModelDynamic to create an instance from
     protected UtilizationModelDynamic(final UtilizationModelDynamic source){
         this(source, source.currentUtilization);
 
@@ -207,12 +199,10 @@ public class UtilizationModelDynamic extends UtilizationModelAbstract {
         this.readOnly = true;
     }
 
-    /**
-     * A copy constructor that creates a UtilizationModelDynamic based on another one.
-     *
-     * @param source the source UtilizationModelDynamic to create an instance from
-     * @param initialUtilization the initial resource utilization (in the same unit of the given UtilizationModelDynamic instance)
-     */
+    /// A copy constructor that creates a UtilizationModelDynamic based on another one.
+    ///
+    /// @param source the source UtilizationModelDynamic to create an instance from
+    /// @param initialUtilization the initial resource utilization (in the same unit of the given UtilizationModelDynamic instance)
     public UtilizationModelDynamic(@NonNull final UtilizationModelDynamic source, final double initialUtilization){
         this(source.getUnit(), initialUtilization);
         this.currentUtilizationTime = source.currentUtilizationTime;
@@ -222,10 +212,8 @@ public class UtilizationModelDynamic extends UtilizationModelAbstract {
         this.setUtilizationUpdateFunction(source.utilizationUpdateFunction);
     }
 
-    /**
-     * It will automatically increment the {@link #getUtilization()}
-     * by applying the {@link #setUtilizationUpdateFunction(Function) increment function}.
-     */
+    /// It will automatically increment the [#getUtilization()]
+    /// by applying the [increment function][#setUtilizationUpdateFunction(Function)].
     @Override
     protected double getUtilizationInternal(final double time) {
         if(readOnly) {
@@ -261,10 +249,8 @@ public class UtilizationModelDynamic extends UtilizationModelAbstract {
         return currentUtilization;
     }
 
-    /**
-     * @return the time difference from the current simulation time to the
-     * last time the resource utilization was updated.
-     */
+    /// @return the time difference from the current simulation time to the
+    /// last time the resource utilization was updated.
     public double getTimeSpan(){
         return currentUtilizationTime - previousUtilizationTime;
     }

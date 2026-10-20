@@ -29,13 +29,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-/**
- * An abstract class for {@link Cloudlet} implementations.
- *
- * @author Rodrigo N. Calheiros
- * @author Anton Beloglazov
- * @author Manoel Campos da Silva Filho
- */
+/// An abstract class for [Cloudlet] implementations.
+///
+/// @author Rodrigo N. Calheiros
+/// @author Anton Beloglazov
+/// @author Manoel Campos da Silva Filho
 @Accessors(makeFinal = false) @Getter @Setter
 public non-sealed abstract class CloudletAbstract extends CustomerEntityAbstract implements Cloudlet {
     private long jobId;
@@ -79,71 +77,63 @@ public non-sealed abstract class CloudletAbstract extends CustomerEntityAbstract
     @Getter(AccessLevel.NONE)
     private final Set<EventListener<CloudletVmEventInfo>> onUpdateProcessingListeners;
 
-    /**
-     * Creates a Cloudlet with no priority or id. The id is defined when the Cloudlet is
-     * submitted to a {@link DatacenterBroker}. The file size and output size are defined as 1.
-     *
-     * @param length the length (in MI) of this cloudlet to be executed in a VM
-     *               (check out {@link #setLength(long)})
-     * @param pesNumber number of {@link Pe}s the Cloudlet will require
-     * @param utilizationModel a {@link UtilizationModel} to define how the Cloudlet uses CPU, RAM and BW.
-     *                         To define an independent utilization model for each resource,
-     *                         call the respective setters.
-     *
-     * @see #setUtilizationModelCpu(UtilizationModel)
-     * @see #setUtilizationModelRam(UtilizationModel)
-     * @see #setUtilizationModelBw(UtilizationModel)
-     */
+    /// Creates a Cloudlet with no priority or id. The id is defined when the Cloudlet is
+    /// submitted to a [DatacenterBroker]. The file size and output size are defined as 1.
+    ///
+    /// @param length the length (in MI) of this cloudlet to be executed in a VM
+    /// (check out [#setLength(long)])
+    /// @param pesNumber number of [Pe]s the Cloudlet will require
+    /// @param utilizationModel a [UtilizationModel] to define how the Cloudlet uses CPU, RAM and BW.
+    /// To define an independent utilization model for each resource,
+    /// call the respective setters.
+    ///
+    /// @see #setUtilizationModelCpu(UtilizationModel)
+    /// @see #setUtilizationModelRam(UtilizationModel)
+    /// @see #setUtilizationModelBw(UtilizationModel)
     public CloudletAbstract(final long length, final int pesNumber, final UtilizationModel utilizationModel) {
         this(-1, length, pesNumber);
         setUtilizationModel(utilizationModel);
     }
 
-    /**
-     * Creates a Cloudlet with no priority or id.
-     * The id is defined when the Cloudlet is submitted to
-     * a {@link DatacenterBroker}. The file size and output size are defined as 1.
-     *
-     * <p><b>NOTE:</b> By default, the Cloudlet will use a {@link UtilizationModelFull} to define
-     * CPU utilization and a {@link UtilizationModel#NULL} for RAM and BW.
-     * To change the default values, use the respective setters.</p>
-     *
-     * @param length the length (in MI) of this cloudlet to be executed in a VM
-     *               (check out {@link #setLength(long)})
-     * @param pesNumber number of {@link Pe}s the Cloudlet will require
-     */
+    /// Creates a Cloudlet with no priority or id.
+    /// The id is defined when the Cloudlet is submitted to
+    /// a [DatacenterBroker]. The file size and output size are defined as 1.
+    ///
+    /// **NOTE:** By default, the Cloudlet will use a [UtilizationModelFull] to define
+    /// CPU utilization and a [UtilizationModel#NULL] for RAM and BW.
+    /// To change the default values, use the respective setters.
+    ///
+    /// @param length the length (in MI) of this cloudlet to be executed in a VM
+    /// (check out [#setLength(long)])
+    /// @param pesNumber number of [Pe]s the Cloudlet will require
     public CloudletAbstract(final long length, final int pesNumber) {
         this(-1, length, pesNumber);
     }
 
-    /**
-     * Creates a Cloudlet with no priority or id. The id is defined when the Cloudlet is submitted to
-     * a {@link DatacenterBroker}. The file size and output size are defined as 1.
-     *
-     * <p><b>NOTE:</b> By default, the Cloudlet will use a {@link UtilizationModelFull} to define
-     * CPU utilization and a {@link UtilizationModel#NULL} for RAM and BW.
-     * To change the default values, use the respective setters.</p>
-     *
-     * @param length the length (in MI) of this cloudlet to be executed in a VM
-     *               (check out {@link #setLength(long)})
-     * @param pesNumber number of {@link Pe}s the Cloudlet will require
-     */
+    /// Creates a Cloudlet with no priority or id. The id is defined when the Cloudlet is submitted to
+    /// a [DatacenterBroker]. The file size and output size are defined as 1.
+    ///
+    /// **NOTE:** By default, the Cloudlet will use a [UtilizationModelFull] to define
+    /// CPU utilization and a [UtilizationModel#NULL] for RAM and BW.
+    /// To change the default values, use the respective setters.
+    ///
+    /// @param length the length (in MI) of this cloudlet to be executed in a VM
+    /// (check out [#setLength(long)])
+    /// @param pesNumber number of [Pe]s the Cloudlet will require
     public CloudletAbstract(final long length, final long pesNumber) {
         this(-1, length, pesNumber);
     }
 
-    /**
-     * Creates a Cloudlet with no priority, file size and output size equal to 1.
-     *
-     * <p><b>NOTE:</b> By default, the Cloudlet will use a {@link UtilizationModelFull} to define
-     * CPU utilization and a {@link UtilizationModel#NULL} for RAM and BW.
-     * To change the default values, use the respective setters.</p>
-     *
-     * @param id     id of the Cloudlet
-     * @param length the length (in MI) of this cloudlet to be executed in a VM
-     *               (check out {@link #setLength(long)})
-     * @param pesNumber number of {@link Pe}s the Cloudlet will require
-     */
+    /// Creates a Cloudlet with no priority, file size and output size equal to 1.
+    ///
+    /// **NOTE:** By default, the Cloudlet will use a [UtilizationModelFull] to define
+    /// CPU utilization and a [UtilizationModel#NULL] for RAM and BW.
+    /// To change the default values, use the respective setters.
+    ///
+    /// @param id     id of the Cloudlet
+    /// @param length the length (in MI) of this cloudlet to be executed in a VM
+    /// (check out [#setLength(long)])
+    /// @param pesNumber number of [Pe]s the Cloudlet will require
     public CloudletAbstract(final long id, final long length, final long pesNumber) {
         super();
 
@@ -271,11 +261,10 @@ public non-sealed abstract class CloudletAbstract extends CustomerEntityAbstract
             return Math.min(finishedLengthSoFar, absLength());
         }
 
-        /**
-         * If the length is negative, it means the Cloudlet doesn't have a fixed length.
-         * This way, it keeps running and increasing the executed length
-         * until a {@link CloudSimTag#CLOUDLET_FINISH} message is sent to the broker
-         * or the simulation is terminated under request (by setting a termination time).*/
+        /// If the length is negative, it means the Cloudlet doesn't have a fixed length.
+        /// This way, it keeps running and increasing the executed length
+        /// until a [CloudSimTag#CLOUDLET_FINISH] message is sent to the broker
+        /// or the simulation is terminated under request (by setting a termination time).
         return finishedLengthSoFar;
     }
 
@@ -295,12 +284,11 @@ public non-sealed abstract class CloudletAbstract extends CustomerEntityAbstract
             return false;
         }
 
-        /**
-         * If the Cloudlet has a defined length (a positive value), then, the partial
-         * finished length cannot be greater than the actual total length.
-         * If the Cloudlet has a negative length, it means it doesn't have a defined
-         * length, so that its length increases indefinitely until
-         * a {@link CloudSimTag#CLOUDLET_FINISH} message is sent to the broker. */
+        /// If the Cloudlet has a defined length (a positive value), then, the partial
+        /// finished length cannot be greater than the actual total length.
+        /// If the Cloudlet has a negative length, it means it doesn't have a defined
+        /// length, so that its length increases indefinitely until
+        /// a [CloudSimTag#CLOUDLET_FINISH] message is sent to the broker.
         final long maxLengthToAdd = getLength() < 0 ?
                                     partialFinishedMI :
                                     Math.min(partialFinishedMI, absLength()-getFinishedLengthSoFar());
@@ -310,10 +298,8 @@ public non-sealed abstract class CloudletAbstract extends CustomerEntityAbstract
         return true;
     }
 
-    /**
-     * Notifies the broker about the end of execution of the Cloudlet,
-     * by returning the Cloudlet to it.
-     */
+    /// Notifies the broker about the end of execution of the Cloudlet,
+    /// by returning the Cloudlet to it.
     private void returnToBrokerIfFinished() {
         if(isFinished() && !isReturnedToBroker()){
             returnedToBroker = true;
@@ -346,10 +332,8 @@ public non-sealed abstract class CloudletAbstract extends CustomerEntityAbstract
         return this;
     }
 
-    /**
-     * @return the absolute value of the length (without the signal).
-     * Check out {@link #getLength()} for details.
-     */
+    /// @return the absolute value of the length (without the signal).
+    /// Check out [#getLength()] for details.
     protected long absLength(){
         /*Since the getLength is overridden by classes such as the NetworkCloudlet,
         * we have to call the method instead of directly using the length attribute.*/
@@ -361,11 +345,9 @@ public non-sealed abstract class CloudletAbstract extends CustomerEntityAbstract
         return getLength() * pesNumber;
     }
 
-    /**
-     * Sets the time the Cloudlet arrived at a Datacenter to be executed.
-     * A negative value indicates there is no arrival time yet
-     * @param dcArrivalTime the arrival time to set (in seconds)
-     */
+    /// Sets the time the Cloudlet arrived at a Datacenter to be executed.
+    /// A negative value indicates there is no arrival time yet
+    /// @param dcArrivalTime the arrival time to set (in seconds)
     protected final void setDcArrivalTime(final double dcArrivalTime) {
         this.dcArrivalTime = dcArrivalTime;
     }
@@ -384,11 +366,9 @@ public non-sealed abstract class CloudletAbstract extends CustomerEntityAbstract
         return true;
     }
 
-    /**
-     * Sets the list of {@link #getRequiredFiles() required files}.
-     *
-     * @param requiredFiles the new list of required files
-     */
+    /// Sets the list of [required files][#getRequiredFiles()].
+    ///
+    /// @param requiredFiles the new list of required files
     public final void setRequiredFiles(@NonNull final List<String> requiredFiles) {
         this.requiredFiles = requiredFiles;
     }

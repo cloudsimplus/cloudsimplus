@@ -25,12 +25,10 @@ import static org.cloudsimplus.util.Conversion.HUNDRED_PERCENT;
 /// @see UtilizationModelStochastic
 /// @see UtilizationModelPlanetLab
 public class UtilizationModelFull extends UtilizationModelAbstract {
-    /**
-     * Gets the utilization percentage (in scale from [0 to 1]) of resource at a given simulation time.
-     *
-     * @param time the time to get the resource usage.
-     * @return always 1 (100% of utilization), regardless the time given (which is completely ignored).
-     */
+    /// Gets the utilization percentage (in scale from \[0 to 1\]) of resource at a given simulation time.
+    ///
+    /// @param time the time to get the resource usage.
+    /// @return always 1 (100% of utilization), regardless the time given (which is completely ignored).
     @Override
     protected final double getUtilizationInternal(final double time) {
         return HUNDRED_PERCENT;

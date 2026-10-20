@@ -29,12 +29,10 @@ import lombok.experimental.Accessors;
 import org.apache.commons.lang3.StringUtils;
 import org.cloudsimplus.util.MathUtil;
 
-/**
- * An abstract class for implementing {@link Resource}s.
- *
- * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 1.2.0
- */
+/// An abstract class for implementing [Resource]s.
+///
+/// @author Manoel Campos da Silva Filho
+/// @since CloudSim Plus 1.2.0
 @Accessors(makeFinal = false) @Getter
 public abstract class ResourceAbstract implements Resource {
     protected long capacity;

@@ -18,13 +18,11 @@ import java.util.function.Predicate;
 
 import static java.util.Comparator.comparingDouble;
 
-/**
- * A VM selection policy that selects for migration the {@link Vm} with the Minimum Utilization (MU) of CPU.
- *
- * @author Anton Beloglazov
- * @author Manoel Campos da Silva Filho
- * @since CloudSim Toolkit 3.0
- */
+/// A VM selection policy that selects for migration the [Vm] with the Minimum Utilization (MU) of CPU.
+///
+/// @author Anton Beloglazov
+/// @author Manoel Campos da Silva Filho
+/// @since CloudSim Toolkit 3.0
 public class VmSelectionPolicyMinimumUtilization implements VmSelectionPolicy {
     @Override
     public Optional<Vm> getVmToMigrate(final Host host) {

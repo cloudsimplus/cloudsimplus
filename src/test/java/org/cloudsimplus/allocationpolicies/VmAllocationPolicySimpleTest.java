@@ -40,9 +40,7 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-/**
- * @author Manoel Campos da Silva Filho
- */
+/// @author Manoel Campos da Silva Filho
 public class VmAllocationPolicySimpleTest {
     public static final int HOST_MIPS = 1000;
     public static final int HOST_RAM = 10000;
@@ -55,14 +53,12 @@ public class VmAllocationPolicySimpleTest {
         policy = createVmAllocationPolicy(4, 2, 6, 5);
     }
 
-    /**
-     * Creates a VmAllocationPolicy.
-     *
-     * @param freePesByHost an array containing the number of free PEs for each host of the
-     *                      allocation policy, that will be assigned to the freePesList.
-     *                      This array will define the number of Hosts and its PEs.
-     * @return
-     */
+    /// Creates a VmAllocationPolicy.
+    ///
+    /// @param freePesByHost an array containing the number of free PEs for each host of the
+    /// allocation policy, that will be assigned to the freePesList.
+    /// This array will define the number of Hosts and its PEs.
+    /// @return
     private VmAllocationPolicySimple createVmAllocationPolicy(int... freePesByHost) {
         final Map<Host, Long> hostFreePesMap = new HashMap<>(freePesByHost.length);
         final List<Host> hosts = new ArrayList<>(freePesByHost.length);

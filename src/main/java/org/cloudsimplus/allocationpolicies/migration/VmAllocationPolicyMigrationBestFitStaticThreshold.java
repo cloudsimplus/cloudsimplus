@@ -20,41 +20,35 @@ import java.util.function.Predicate;
 import static java.util.Comparator.comparingDouble;
 import org.jspecify.annotations.Nullable;
 
-/**
- * A {@link VmAllocationPolicyMigration} that uses a Static CPU utilization Threshold (THR) to
- * detect host {@link #getUnderUtilizationThreshold() under} and
- * {@link #getOverUtilizationThreshold(Host) over} utilization.
- *
- * <p>It's a <b>Best Fit policy</b> which selects the Host having the most used amount of CPU
- * MIPS to place a given VM, <b>disregarding energy consumption</b>.</p>
- *
- * @author Anton Beloglazov
- * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 1.0
- */
+/// A [VmAllocationPolicyMigration] that uses a Static CPU utilization Threshold (THR) to
+/// detect host [under][#getUnderUtilizationThreshold()] and
+/// [over][#getOverUtilizationThreshold(Host)] utilization.
+///
+/// It's a **Best Fit policy** which selects the Host having the most used amount of CPU
+/// MIPS to place a given VM, **disregarding energy consumption**.
+///
+/// @author Anton Beloglazov
+/// @author Manoel Campos da Silva Filho
+/// @since CloudSim Plus 1.0
 public class VmAllocationPolicyMigrationBestFitStaticThreshold extends VmAllocationPolicyMigrationStaticThreshold {
 
-    /**
-     * Creates a VmAllocationPolicy.
-     * It uses a {@link #DEF_OVER_UTILIZATION_THRESHOLD default over utilization threshold}
-     * and a {@link #DEF_UNDER_UTILIZATION_THRESHOLD default under utilization threshold}.
-     *
-     * @param vmSelectionPolicy the {@link VmAllocationPolicyMigration#getVmSelectionPolicy() policy}
-     *                          that defines how VMs are selected for migration
-     * @see #setUnderUtilizationThreshold(double)
-     * @see #setOverUtilizationThreshold(double)
-     */
+    /// Creates a VmAllocationPolicy.
+    /// It uses a [default over utilization threshold][#DEF_OVER_UTILIZATION_THRESHOLD]
+    /// and a [default under utilization threshold][#DEF_UNDER_UTILIZATION_THRESHOLD].
+    ///
+    /// @param vmSelectionPolicy the [policy][VmAllocationPolicyMigration#getVmSelectionPolicy()]
+    /// that defines how VMs are selected for migration
+    /// @see #setUnderUtilizationThreshold(double)
+    /// @see #setOverUtilizationThreshold(double)
     public VmAllocationPolicyMigrationBestFitStaticThreshold(final VmSelectionPolicy vmSelectionPolicy) {
         this(vmSelectionPolicy, DEF_OVER_UTILIZATION_THRESHOLD);
     }
 
-    /**
-     * Creates a VmAllocationPolicy with a given over utilization threshold.
-     *
-     * @param vmSelectionPolicy the {@link VmAllocationPolicyMigration#getVmSelectionPolicy() policy}
-     *                          that defines how VMs are selected for migration
-     * @param overUtilizationThreshold {@link #setOverUtilizationThreshold(double) the over utilization threshold percent (between 0 and 1)}
-     */
+    /// Creates a VmAllocationPolicy with a given over utilization threshold.
+    ///
+    /// @param vmSelectionPolicy the [policy][VmAllocationPolicyMigration#getVmSelectionPolicy()]
+    /// that defines how VMs are selected for migration
+    /// @param overUtilizationThreshold [the over utilization threshold percent (between 0 and 1)][#setOverUtilizationThreshold(double)]
     public VmAllocationPolicyMigrationBestFitStaticThreshold(
         final VmSelectionPolicy vmSelectionPolicy,
         final double overUtilizationThreshold)
@@ -62,15 +56,13 @@ public class VmAllocationPolicyMigrationBestFitStaticThreshold extends VmAllocat
         this(vmSelectionPolicy, overUtilizationThreshold, null);
     }
 
-    /**
-     * Creates a new VmAllocationPolicy, changing the {@link Function} to select a Host for a Vm.
-     * @param vmSelectionPolicy vmSelectionPolicy the {@link VmAllocationPolicyMigration#getVmSelectionPolicy() policy}
-     *                          that defines how VMs are selected for migration
-     * @param overUtilizationThreshold {@link #setOverUtilizationThreshold(double) the over utilization threshold percent (between 0 and 1)}
-     * @param findHostForVmFunction a {@link Function} to select a Host for a given Vm.
-     *                              Passing null makes the Function to be set as the default {@link #findHostForVm(Vm)}.
-     * @see VmAllocationPolicy#setFindHostForVmFunction(java.util.function.BiFunction)
-     */
+    /// Creates a new VmAllocationPolicy, changing the [Function] to select a Host for a Vm.
+    /// @param vmSelectionPolicy vmSelectionPolicy the [policy][VmAllocationPolicyMigration#getVmSelectionPolicy()]
+    /// that defines how VMs are selected for migration
+    /// @param overUtilizationThreshold [the over utilization threshold percent (between 0 and 1)][#setOverUtilizationThreshold(double)]
+    /// @param findHostForVmFunction a [Function] to select a Host for a given Vm.
+    /// Passing null makes the Function to be set as the default [#findHostForVm(Vm)].
+    /// @see VmAllocationPolicy#setFindHostForVmFunction(java.util.function.BiFunction)
     public VmAllocationPolicyMigrationBestFitStaticThreshold(
         final VmSelectionPolicy vmSelectionPolicy,
         final double overUtilizationThreshold,
@@ -79,19 +71,16 @@ public class VmAllocationPolicyMigrationBestFitStaticThreshold extends VmAllocat
         super(vmSelectionPolicy, overUtilizationThreshold, findHostForVmFunction);
     }
 
-    /**
-     * Gets the Host having the least available MIPS capacity (max used MIPS).
-     *
-     * <p>This method doesn't apply the additional filters from the super class.
-     * This way, Host selection is performed ignoring energy consumption.
-     * However, all the basic filters defined in the super class are ensured, since
-     * this method is called just after they are applied.
-     * </p>
-     *
-     * @param vm {@inheritDoc}
-     * @param predicate {@inheritDoc}
-     * @return {@inheritDoc}
-     */
+    /// Gets the Host having the least available MIPS capacity (max used MIPS).
+    ///
+    /// This method doesn't apply the additional filters from the super class.
+    /// This way, Host selection is performed ignoring energy consumption.
+    /// However, all the basic filters defined in the super class are ensured, since
+    /// this method is called just after they are applied.
+    ///
+    /// @param vm {@inheritDoc}
+    /// @param predicate {@inheritDoc}
+    /// @return {@inheritDoc}
     @Override
     protected Optional<Host> findHostForVmInternal(final Vm vm, final Predicate<Host> predicate) {
         /* It's ignoring the super class intentionally to avoid the additional filtering performed there

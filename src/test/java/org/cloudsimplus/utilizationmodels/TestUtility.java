@@ -31,23 +31,17 @@ import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-/**
- * A utility class used by {@link UtilizationModelDynamic} tests.
- *
- * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 4.0.0
- */
+/// A utility class used by [UtilizationModelDynamic] tests.
+///
+/// @author Manoel Campos da Silva Filho
+/// @since CloudSim Plus 4.0.0
 final class TestUtility {
-    /**
-     * The number of seconds that the utilization will be tested.
-     * For each second from 0 to this number, a {@link UtilizationModelDynamic#getUtilization(double)}
-     * will be called to test the expected value.
-     */
+    /// The number of seconds that the utilization will be tested.
+    /// For each second from 0 to this number, a [UtilizationModelDynamic#getUtilization(double)]
+    /// will be called to test the expected value.
     private static final int NUM_TIMES_TEST_USAGE = 10;
 
-    /**
-     * A private constructor to avoid class instantiation.
-     */
+    /// A private constructor to avoid class instantiation.
     private TestUtility(){/**/}
 
     static UtilizationModelDynamic createUtilizationModel(final double usagePercentInc, final double initUsage) {

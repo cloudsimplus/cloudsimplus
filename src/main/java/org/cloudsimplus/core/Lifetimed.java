@@ -27,32 +27,24 @@ import org.cloudsimplus.cloudlets.Cloudlet;
 import org.cloudsimplus.datacenters.Datacenter;
 import org.cloudsimplus.vms.Vm;
 
-/**
- * Represents objects that may have a defined lifetime set (such as {@link Cloudlet} and {@link Vm}),
- * indicating how long they must live.
- * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 8.2.0
- */
+/// Represents objects that may have a defined lifetime set (such as [Cloudlet] and [Vm]),
+/// indicating how long they must live.
+/// @author Manoel Campos da Silva Filho
+/// @since CloudSim Plus 8.2.0
 public interface Lifetimed extends Startable {
-    /**
-     * Gets lifetime which indicates the maximum execution time
-     * @see #setLifeTime(double)
-     * @return the lifeTime (in seconds) or {@link Double#MAX_VALUE} indicating no lifeTime is set
-     */
+    /// Gets lifetime which indicates the maximum execution time
+    /// @see #setLifeTime(double)
+    /// @return the lifeTime (in seconds) or [Double#MAX_VALUE] indicating no lifeTime is set
     double getLifeTime();
 
-    /**
-     * Sets the lifetime which indicates the maximum execution time.
-     * The lifetime must be larger than {@link Datacenter#getSchedulingInterval()}.
-     *
-     * @param lifeTime lifeTime to set (in seconds) or {@link Double#MAX_VALUE} to indicate there is no lifeTime
-     */
+    /// Sets the lifetime which indicates the maximum execution time.
+    /// The lifetime must be larger than [Datacenter#getSchedulingInterval()].
+    ///
+    /// @param lifeTime lifeTime to set (in seconds) or [Double#MAX_VALUE] to indicate there is no lifeTime
     Lifetimed setLifeTime(double lifeTime);
 
-    /**
-     * @return true to indicate the lifetime is reached, false otherwise.
-     * @see #setLifeTime(double)
-     */
+    /// @return true to indicate the lifetime is reached, false otherwise.
+    /// @see #setLifeTime(double)
     default boolean isLifeTimeReached(){
         return getTotalExecutionTime() >= getLifeTime();
     }

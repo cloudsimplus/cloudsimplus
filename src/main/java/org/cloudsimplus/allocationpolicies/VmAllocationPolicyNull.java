@@ -33,12 +33,10 @@ import java.util.*;
 import java.util.function.BiFunction;
 import org.jspecify.annotations.Nullable;
 
-/**
- * A class that implements the Null Object Design Pattern for the {@link VmAllocationPolicy} class.
- *
- * @author Manoel Campos da Silva Filho
- * @see VmAllocationPolicy#NULL
- */
+/// A class that implements the Null Object Design Pattern for the [VmAllocationPolicy] class.
+///
+/// @author Manoel Campos da Silva Filho
+/// @see VmAllocationPolicy#NULL
 final class VmAllocationPolicyNull implements VmAllocationPolicy {
     @Override public Datacenter getDatacenter() {
         return Datacenter.NULL;

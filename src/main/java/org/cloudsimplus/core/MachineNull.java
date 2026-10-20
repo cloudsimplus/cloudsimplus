@@ -29,13 +29,11 @@ import org.cloudsimplus.resources.ResourceManageable;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * A class that implements the Null Object Design Pattern for {@link Machine} objects.
- *
- * @author Manoel Campos da Silva Filho
- * @see Machine#NULL
- * @since CloudSim 1.2.0
- */
+/// A class that implements the Null Object Design Pattern for [Machine] objects.
+///
+/// @author Manoel Campos da Silva Filho
+/// @see Machine#NULL
+/// @since CloudSim 1.2.0
 final class MachineNull implements Machine {
     @Override public Resource getBw() { return Resource.NULL; }
     @Override public Resource getRam() { return Resource.NULL; }

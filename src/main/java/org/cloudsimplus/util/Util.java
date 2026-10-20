@@ -27,19 +27,15 @@ import org.apache.commons.lang3.StringUtils;
 
 import static org.cloudsimplus.util.MathUtil.percentValue;
 
-/**
- * A utility class with general purpose functions.
- * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 6.0.0
- */
+/// A utility class with general purpose functions.
+/// @author Manoel Campos da Silva Filho
+/// @since CloudSim Plus 6.0.0
 public final class Util {
-    /** A private constructor to avoid class instantiation. */
+    /// A private constructor to avoid class instantiation.
     private Util(){/**/}
 
-    /**
-     * Makes the current thread to sleep for a given amount ot milliseconds.
-     * @param millis the time to sleep in milliseconds
-     */
+    /// Makes the current thread to sleep for a given amount ot milliseconds.
+    /// @param millis the time to sleep in milliseconds
     public static void sleep(final long millis) {
         try {
             Thread.sleep(millis);
@@ -47,42 +43,38 @@ public final class Util {
         }
     }
 
-    /**
-     * Prints a progress bar at the command line for any general process
-     * represented by several tasks (steps). The bar is updated at the current line.
-     * If nothing is printed between updates, the bar is shown at the same place.
-     * You can use it like the sample below:
-     * {@snippet :
-     *  final int total = 100;
-     *  for (int i = 0; i <= total; i++) {
-     *      Util.sleep(120); //simulates some task (use your own code here)
-     *      Util.printProgress(i, total);
-     *  }
-     * }
-     * @param current the index of the current finished task (step)
-     * @param total the total number of tasks (steps)
-     * @see #printProgress(int, int, boolean)
-     */
+    /// Prints a progress bar at the command line for any general process
+    /// represented by several tasks (steps). The bar is updated at the current line.
+    /// If nothing is printed between updates, the bar is shown at the same place.
+    /// You can use it like the sample below:
+    /// {@snippet :
+    ///  final int total = 100;
+    ///  for (int i = 0; i <= total; i++) {
+    ///      Util.sleep(120); //simulates some task (use your own code here)
+    ///      Util.printProgress(i, total);
+    ///  }
+    /// }
+    /// @param current the index of the current finished task (step)
+    /// @param total the total number of tasks (steps)
+    /// @see #printProgress(int, int, boolean)
     public static void printProgress(final int current, final int total){
         printProgress(current, total, false);
     }
 
-    /**
-     * Prints a progress bar at the command line for any general process
-     * represented by several tasks (steps).
-     * You can use it like the sample below:
-     * {@snippet :
-     *  final int total = 100;
-     *  for (int i = 0; i <= total; i++) {
-     *      Util.sleep(120); //simulates some task (use your own code here)
-     *      Util.printProgress(i, total);
-     *  }
-     * }
-     * @param current the index of the current finished task (step)
-     * @param total the total number of tasks (steps)
-     * @param progressBarInNewLine indicates if the progress bar is to be printed in a new line or not
-     * @see #printProgress(int, int)
-     */
+    /// Prints a progress bar at the command line for any general process
+    /// represented by several tasks (steps).
+    /// You can use it like the sample below:
+    /// {@snippet :
+    ///  final int total = 100;
+    ///  for (int i = 0; i <= total; i++) {
+    ///      Util.sleep(120); //simulates some task (use your own code here)
+    ///      Util.printProgress(i, total);
+    ///  }
+    /// }
+    /// @param current the index of the current finished task (step)
+    /// @param total the total number of tasks (steps)
+    /// @param progressBarInNewLine indicates if the progress bar is to be printed in a new line or not
+    /// @see #printProgress(int, int)
     public static void printProgress(final int current, final int total, final boolean progressBarInNewLine){
         final String progress = StringUtils.repeat('#', current);
 
@@ -91,21 +83,17 @@ public final class Util {
         System.out.printf(format, " ", progress, percentValue(current, total), current, total);
     }
 
-    /**
-     * Creates a square matrix with a given size
-     * @param size the matrix size, defining the number of columns and rows
-     * @return the new square matrix
-     */
+    /// Creates a square matrix with a given size
+    /// @param size the matrix size, defining the number of columns and rows
+    /// @return the new square matrix
     public static double[][] newSquareMatrix(final int size) {
         return new double[size][size];
     }
 
-    /**
-     * Creates a square matrix with a given size
-     * @param size the matrix size, defining the number of columns and rows
-     * @param defaultValue default value for all matrix positions.
-     * @return the new square matrix
-     */
+    /// Creates a square matrix with a given size
+    /// @param size the matrix size, defining the number of columns and rows
+    /// @param defaultValue default value for all matrix positions.
+    /// @return the new square matrix
     public static double[][] newSquareMatrix(final int size, final double defaultValue) {
         final var matrix = newSquareMatrix(size);
         for (final double[] line : matrix) {
@@ -117,10 +105,8 @@ public final class Util {
         return matrix;
     }
 
-    /**
-     * {@return the file extension including the dot}
-     * @param fileName file name to extract extension
-     */
+    /// {@return the file extension including the dot}
+    /// @param fileName file name to extract extension
     public static String getFileExtension(final String fileName){
         final int i = fileName.lastIndexOf(".");
         return i == -1 ? "" : fileName.substring(i).toLowerCase();

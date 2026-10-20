@@ -27,37 +27,25 @@ import static java.util.stream.Collectors.toList;
 /// @since CloudSim Toolkit 1.0
 public class FloydWarshall {
 
-    /**
-     * Number of vertices (network nodes).
-     */
+    /// Number of vertices (network nodes).
     @Getter
     private final int numVertices;
 
-    /**
-     * List with the indexes of all vertices, from 0 to {@link #numVertices} - 1.
-     */
+    /// List with the indexes of all vertices, from 0 to [#numVertices] - 1.
     private final List<Integer> vertices;
 
-    /**
-     * Weights when k is equal to -1 (used for dynamic programming).
-     */
+    /// Weights when k is equal to -1 (used for dynamic programming).
     private final double[][] dkMinusOne;
 
-    /**
-     * The predecessor matrix (used for dynamic programming).
-     */
+    /// The predecessor matrix (used for dynamic programming).
     private final int[][] pk;
 
-    /**
-     * Used for dynamic programming.
-     */
+    /// Used for dynamic programming.
     private final int[][] pkMinusOne;
 
-    /**
-     * Creates a matrix of network nodes.
-     *
-     * @param numVertices number of network nodes
-     */
+    /// Creates a matrix of network nodes.
+    ///
+    /// @param numVertices number of network nodes
     public FloydWarshall(final int numVertices) {
         this.numVertices = MathUtil.nonNegative(numVertices, "Number of vertices");
         this.vertices = IntStream.range(0, numVertices).boxed().collect(toList());
@@ -66,26 +54,22 @@ public class FloydWarshall {
         this.pkMinusOne = new int[numVertices][numVertices];
     }
 
-    /**
-     * Computes the shortest path between a vertex to all the other ones,
-     * for all existing vertices.
-     * This is represented by the delay between every pair of vertices.
-     *
-     * @param originalDelayMatrix original delay matrix
-     * @return the new delay matrix (dk)
-     */
+    /// Computes the shortest path between a vertex to all the other ones,
+    /// for all existing vertices.
+    /// This is represented by the delay between every pair of vertices.
+    ///
+    /// @param originalDelayMatrix original delay matrix
+    /// @return the new delay matrix (dk)
     public double[][] computeShortestPaths(final double[][] originalDelayMatrix) {
         savePreviousDelays(originalDelayMatrix);
         return computeShortestPaths();
     }
 
-    /**
-     * Computes the shortest path between a vertex to all the other ones,
-     * for all existing vertices.
-     * This is represented by the delay between every pair of vertices.
-     *
-     * @return the new delay matrix (dk)
-     */
+    /// Computes the shortest path between a vertex to all the other ones,
+    /// for all existing vertices.
+    /// This is represented by the delay between every pair of vertices.
+    ///
+    /// @return the new delay matrix (dk)
     private double[][] computeShortestPaths() {
         final double[][] dk = new double[numVertices][numVertices];
 
@@ -96,14 +80,12 @@ public class FloydWarshall {
         return dk;
     }
 
-    /**
-     * Computes the shortest path between a vertex to all the other ones,
-     * for all existing vertices, limited to a maximum number of hops.
-     * This is represented by the delay between every pair of vertices.
-     *
-     * @param dk the delay matrix to be updated
-     * @param k maximum number of hops to try finding the shortest path between each vertex i and j
-     */
+    /// Computes the shortest path between a vertex to all the other ones,
+    /// for all existing vertices, limited to a maximum number of hops.
+    /// This is represented by the delay between every pair of vertices.
+    ///
+    /// @param dk the delay matrix to be updated
+    /// @param k maximum number of hops to try finding the shortest path between each vertex i and j
     private void computeShortestPathForSpecificNumberOfHops(final double[][] dk, final int k) {
         for(final int i: vertices) {
             computeShortestPathFromVertexToAllVertices(dk, k, i);
@@ -115,14 +97,12 @@ public class FloydWarshall {
         });
     }
 
-    /**
-     * Iterates over the path from one vertex to all the other ones, for all existing vertices,
-     * updating some matrices as defined by a {@link BiConsumer}.
-     *
-     * @param updater a {@link BiConsumer} that updates all elements of any matrices, where the parameters
-     *                that this BiConsumer receives are the index i and j representing the path
-     *                between two vertices, for all existing vertices
-     */
+    /// Iterates over the path from one vertex to all the other ones, for all existing vertices,
+    /// updating some matrices as defined by a [BiConsumer].
+    ///
+    /// @param updater a [BiConsumer] that updates all elements of any matrices, where the parameters
+    /// that this BiConsumer receives are the index i and j representing the path
+    /// between two vertices, for all existing vertices
     private void updateMatrices(final BiConsumer<Integer, Integer> updater){
         for(final int i: vertices) {
             for(final int j: vertices) {
@@ -131,15 +111,13 @@ public class FloydWarshall {
         }
     }
 
-    /**
-     * Computes the shortest path between only a specific vertex to all the other ones,
-     * limited to a maximum number of hops, and then updating the delay matrix.
-     * This is represented by the delay between every pair of vertices.
-     *
-     * @param dk the delay matrix to be updated
-     * @param k maximum number of hops to try finding the shortest path between each vertex i and j
-     * @param i the index of the vertex to compute its distance to all the other vertices
-     */
+    /// Computes the shortest path between only a specific vertex to all the other ones,
+    /// limited to a maximum number of hops, and then updating the delay matrix.
+    /// This is represented by the delay between every pair of vertices.
+    ///
+    /// @param dk the delay matrix to be updated
+    /// @param k maximum number of hops to try finding the shortest path between each vertex i and j
+    /// @param i the index of the vertex to compute its distance to all the other vertices
     private void computeShortestPathFromVertexToAllVertices(final double[][] dk, final int k, final int i) {
         for(final int j: vertices) {
             pk[i][j] = -1;
@@ -155,11 +133,9 @@ public class FloydWarshall {
         }
     }
 
-    /**
-     * Saves the delay matrix before updating.
-     *
-     * @param originalDelayMatrix the original delay matrix
-     */
+    /// Saves the delay matrix before updating.
+    ///
+    /// @param originalDelayMatrix the original delay matrix
     private void savePreviousDelays(final double[][] originalDelayMatrix) {
         for(final int i: vertices) {
             for(final int j: vertices) {
@@ -174,9 +150,7 @@ public class FloydWarshall {
         }
     }
 
-    /**
-     * @return a <b>copy</b> of the predecessor matrix.
-     */
+    /// @return a **copy** of the predecessor matrix.
     public int[][] getPk() {
         return Arrays.copyOf(pk, pk.length);
     }

@@ -23,10 +23,8 @@
  */
 package org.cloudsimplus.builders.tables;
 
-/**
- * Generates tabular data in LaTeX format.
- * @author marwenbenhajhassine
- */
+/// Generates tabular data in LaTeX format.
+/// @author marwenbenhajhassine
 public class LatexTable extends AbstractTable {
     public LatexTable() {
         super();
@@ -55,9 +53,7 @@ public class LatexTable extends AbstractTable {
         getPrintStream().println(" }");
     }
 
-    /**
-     * Adds column specifiers which creates columsn and define how they are aligned in the LaTex Table.
-    */
+    /// Adds column specifiers which creates columsn and define how they are aligned in the LaTex Table.
     public void colNumberSpecifier() {
         final String columnSpecs = "|c".repeat(this.colCount());
         getPrintStream().printf("%s|", columnSpecs);

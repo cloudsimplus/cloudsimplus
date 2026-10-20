@@ -10,44 +10,30 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.stream.Stream;
 
-/**
- * An interface to be implemented by event queues.
- *
- * @author Marcos Dias de Assuncao
- * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 1.0
- */
+/// An interface to be implemented by event queues.
+///
+/// @author Marcos Dias de Assuncao
+/// @author Manoel Campos da Silva Filho
+/// @since CloudSim Plus 1.0
 public sealed interface EventQueue permits DeferredQueue, FutureQueue {
-    /**
-     * Adds a new event to the queue, preserving the temporal order of the events.
-     *
-     * @param newEvent The event to be added
-     */
+    /// Adds a new event to the queue, preserving the temporal order of the events.
+    ///
+    /// @param newEvent The event to be added
     void addEvent(SimEvent newEvent);
 
-    /**
-     * @return an iterator to the elements into the queue.
-     */
+    /// @return an iterator to the elements into the queue.
     Iterator<SimEvent> iterator();
 
-    /**
-     * @return a stream to the elements into the queue.
-     */
+    /// @return a stream to the elements into the queue.
     Stream<SimEvent> stream();
 
-    /**
-     * @return the size of this event queue.
-     */
+    /// @return the size of this event queue.
     int size();
 
-    /**
-     * {@return true if the queue is empty, false otherwise}
-     */
+    /// {@return true if the queue is empty, false otherwise}
     boolean isEmpty();
 
-    /**
-     * @return the first element of the queue.
-     * @throws NoSuchElementException when the queue is empty
-     */
+    /// @return the first element of the queue.
+    /// @throws NoSuchElementException when the queue is empty
     SimEvent first() throws NoSuchElementException;
 }

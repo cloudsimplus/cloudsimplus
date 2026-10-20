@@ -38,19 +38,15 @@ import static org.cloudsimplus.mocks.CloudSimMocker.createMock;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-/**
- * Tests for {@link Vm#getCreationTime()} and {@link Vm#getCreationWaitTime()}
- * @author Manoel Campos
- */
+/// Tests for [Vm#getCreationTime()] and [Vm#getCreationWaitTime()]
+/// @author Manoel Campos
 class VmCreationTimeTest {
     private final VmSimple vm = VmTestUtil.createVm(0, 2);
     private final DatacenterBrokerSimple broker = new DatacenterBrokerSimple(new CloudSimPlus());
 
     @BeforeEach void setUp() { broker.submitVm(vm); }
 
-    /**
-     * Creation wait time is zero when the VM is not created yet.
-     */
+    /// Creation wait time is zero when the VM is not created yet.
     @Test
     void noCreationWaitTimeForNotCreatedVmAndFirstSubmission() {
         Preconditions.condition(vm.isFinished(), "Vm must not be created");
@@ -58,9 +54,7 @@ class VmCreationTimeTest {
         assertEquals( 0, vm.getCreationWaitTime());
     }
 
-    /**
-     * Creation wait time is zero when the VM is created right away after submission.
-     */
+    /// Creation wait time is zero when the VM is created right away after submission.
     @Test
     void noCreationWaitTimeForCreatedVmAndFirstSubmission() {
         vm.setCreated(true);
@@ -68,9 +62,7 @@ class VmCreationTimeTest {
         assertEquals(0, vm.getCreationWaitTime());
     }
 
-    /**
-     * Tests that simulate the advance of the simulation clock by using a mocked {@link CloudSimPlus} instance.
-     */
+    /// Tests that simulate the advance of the simulation clock by using a mocked [CloudSimPlus] instance.
     @Nested
     class ClockRunningSimulation {
         private final List<Double> clockTimes = List.of(0.0, 5.0, 10.0, 12.0, 16.0); // list of times for consecutive simulation.clock() calls

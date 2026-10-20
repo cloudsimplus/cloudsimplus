@@ -72,29 +72,24 @@ public class CloudletSchedulerTimeShared extends CloudletSchedulerAbstract {
     @Serial
     private static final long serialVersionUID = 2115862129708036038L;
 
-    /**
-     * {@inheritDoc}
-     *
-     * <p>
-     * <b>For this scheduler, this list is always empty, once the VM PEs
-     * are shared across all Cloudlets running inside a VM. Each Cloudlet has
-     * the opportunity to use the PEs for a given time-slice.</b></p>
-     *
-     * @return {@inheritDoc}
-     */
+    /// {@inheritDoc}
+    ///
+    /// **For this scheduler, this list is always empty, once the VM PEs
+    /// are shared across all Cloudlets running inside a VM. Each Cloudlet has
+    /// the opportunity to use the PEs for a given time-slice.**
+    ///
+    /// @return {@inheritDoc}
     @Override
     public List<CloudletExecution> getCloudletWaitingList() {
         //The method was overridden here just to extend its JavaDoc.
         return super.getCloudletWaitingList();
     }
 
-    /**
-     * Moves a Cloudlet that was paused and has just been resumed to the
-     * Cloudlet execution list.
-     *
-     * @param cloudlet the Cloudlet to move from the paused to the exec lit
-     * @return the Cloudlet expected finish time
-     */
+    /// Moves a Cloudlet that was paused and has just been resumed to the
+    /// Cloudlet execution list.
+    ///
+    /// @param cloudlet the Cloudlet to move from the paused to the exec lit
+    /// @return the Cloudlet expected finish time
     private double movePausedCloudletToExecListAndGetExpectedFinishTime(final CloudletExecution cloudlet) {
         getCloudletPausedList().remove(cloudlet);
         addCloudletToExecList(cloudlet);
@@ -108,17 +103,15 @@ public class CloudletSchedulerTimeShared extends CloudletSchedulerAbstract {
                 .orElse(0.0);
     }
 
-    /**
-     * This time-shared scheduler shares the CPU time between all executing
-     * cloudlets, giving the same CPU time-slice for each Cloudlet to execute.
-     * It always allows any submitted Cloudlets to be immediately added to the
-     * execution list. By this way, it doesn't matter what Cloudlet is being
-     * submitted, since it will always include it in the execution list.
-     *
-     * @param cloudlet the Cloudlet that will be added to the execution list.
-     * @return always <b>true</b> to indicate that any submitted Cloudlet can be
-     * immediately added to the execution list
-     */
+    /// This time-shared scheduler shares the CPU time between all executing
+    /// cloudlets, giving the same CPU time-slice for each Cloudlet to execute.
+    /// It always allows any submitted Cloudlets to be immediately added to the
+    /// execution list. By this way, it doesn't matter what Cloudlet is being
+    /// submitted, since it will always include it in the execution list.
+    ///
+    /// @param cloudlet the Cloudlet that will be added to the execution list.
+    /// @return always **true** to indicate that any submitted Cloudlet can be
+    /// immediately added to the execution list
     @Override
     protected boolean canExecuteCloudletInternal(final CloudletExecution cloudlet) {
         return true;

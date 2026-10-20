@@ -23,13 +23,11 @@
  */
 package org.cloudsimplus.builders.tables;
 
-/**
- * A column of an {@link CsvTable}. The class generates the CSV code
- * that represents a column in the table.
- *
- * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 1.0
- */
+/// A column of an [CsvTable]. The class generates the CSV code
+/// that represents a column in the table.
+///
+/// @author Manoel Campos da Silva Filho
+/// @since CloudSim Plus 1.0
 public class CsvTableColumn extends AbstractTableColumn {
     public CsvTableColumn(final String title) {
         this(title, "");
@@ -61,22 +59,18 @@ public class CsvTableColumn extends AbstractTableColumn {
         return super.generateData(data);
     }
 
-    /**
-     * Align a string to the right side, based on the length of the title
-     * header of the column.
-     * @param str the string to be aligned
-     * @return the aligned string
-     */
+    /// Align a string to the right side, based on the length of the title
+    /// header of the column.
+    /// @param str the string to be aligned
+    /// @return the aligned string
     protected String alignStringRight(final String str) {
         return alignStringRight(str, generateTitleHeader().length());
     }
 
-    /**
-     * Align a string to the right side, based on a given length.
-     * @param str the string to be aligned
-     * @param length the length to align the string to
-     * @return the aligned string
-     */
+    /// Align a string to the right side, based on a given length.
+    /// @param str the string to be aligned
+    /// @param length the length to align the string to
+    /// @return the aligned string
     public static String alignStringRight(final String str, final int length) {
         final String fmt = "%%%ds".formatted(length);
         return fmt.formatted(str);

@@ -29,10 +29,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-/**
- *
- * @author Manoel Campos da Silva Filho
- */
+/// @author Manoel Campos da Silva Filho
 public class HarddriveStorageTest {
     private static final int CAPACITY = 1000;
 
@@ -131,10 +128,8 @@ public class HarddriveStorageTest {
         assertThrows(IllegalArgumentException.class, () -> instance.setMaxTransferRate(0));
     }
 
-    /**
-     * Creates a hard drive with the {@link #CAPACITY} capacity.
-     * @return
-     */
+    /// Creates a hard drive with the [#CAPACITY] capacity.
+    /// @return
     private HarddriveStorage createHardDrive() {
         return createHardDrive(CAPACITY);
     }

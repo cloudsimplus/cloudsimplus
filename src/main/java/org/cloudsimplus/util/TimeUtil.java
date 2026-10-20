@@ -35,35 +35,33 @@ package org.cloudsimplus.util;
 /// @since CloudSim Plus 4.4.2
 /// @see MathUtil
 public final class TimeUtil {
-    /** Number of seconds in one minute. */
+    /// Number of seconds in one minute.
     private static final double MINUTE_SECS = 60;
 
-    /** Number of seconds in one hour. */
+    /// Number of seconds in one hour.
     private static final double HOUR_SECS   = 60 * MINUTE_SECS;
 
-    /** Number of seconds in one day. */
+    /// Number of seconds in one day.
     private static final double DAY_SECS    = 24 * HOUR_SECS;
 
-    /** Number of seconds in one month. */
+    /// Number of seconds in one month.
     private static final double MONTH_SECS  = 30 * DAY_SECS;
 
-    /** Number of seconds in one year. */
+    /// Number of seconds in one year.
     private static final double YEAR_SECS   = 12 * MONTH_SECS;
 
-    /** A private default constructor to avoid class instantiation. */
+    /// A private default constructor to avoid class instantiation.
     private TimeUtil(){/**/}
 
-    /**
-     * Converts a given number of seconds to the most suitable unit, i.e.,
-     * the highest unit that results in the lower converted value.
-     * For instance, if a value such as 80400 seconds is given, it will be converted to
-     * 1 day. It is not converted to hour, for instance, because it will return 24 (hours):
-     * a value which is higher than 1 (day).
-     *
-     * @param seconds the number of seconds to convert to a suitable unit
-     * @return a String containing the converted value followed by the name of the converted unit
-     *         (e.g. "2.6 days")
-     */
+    /// Converts a given number of seconds to the most suitable unit, i.e.,
+    /// the highest unit that results in the lower converted value.
+    /// For instance, if a value such as 80400 seconds is given, it will be converted to
+    /// 1 day. It is not converted to hour, for instance, because it will return 24 (hours):
+    /// a value which is higher than 1 (day).
+    ///
+    /// @param seconds the number of seconds to convert to a suitable unit
+    /// @return a String containing the converted value followed by the name of the converted unit
+    /// (e.g. "2.6 days")
     public static String secondsToStr(final double seconds) {
         if(seconds < MINUTE_SECS) {
             return convertSeconds(seconds, 1, "second");
@@ -88,127 +86,110 @@ public final class TimeUtil {
         return convertSeconds(seconds, YEAR_SECS, "year");
     }
 
-    /**
-     * Converts a number of seconds to a time unit defined by a conversion factor.
-     * @param seconds the number of seconds to convert to a time unit
-     * @param conversionFactor the conversion factor used to divide the number of seconds to convert to the desired unit
-     * @param unit the name of the unit to convert to (such as second, minute, hour, day, month or year)
-     * @return a String containing the value converted to the given unit, followed by the name of the unit
-     */
+    /// Converts a number of seconds to a time unit defined by a conversion factor.
+    /// @param seconds the number of seconds to convert to a time unit
+    /// @param conversionFactor the conversion factor used to divide the number of seconds to convert to the desired unit
+    /// @param unit the name of the unit to convert to (such as second, minute, hour, day, month or year)
+    /// @return a String containing the value converted to the given unit, followed by the name of the unit
     private static String convertSeconds(final double seconds, final double conversionFactor, final String unit){
         final double convertedTime = seconds/conversionFactor;
         return "%.2f %s".formatted(convertedTime, convertedTime >= 2 ? unit+"s" : unit);
     }
 
-    /**
-     * @return the computer actual time in seconds.
-     */
+    /// @return the computer actual time in seconds.
     public static double currentTimeSecs() {
         return System.currentTimeMillis()/1000.0;
     }
 
-    /**
-     * Gets the real elapsed time from the given time in seconds.
-     * This is not a simulated time, but the actual time
-     * some operation you want to measure took to finish.
-     * @param startTimeSeconds the start time in seconds you may get from {@link #currentTimeSecs()}
-     * @return the real elapsed time in seconds
-     */
+    /// Gets the real elapsed time from the given time in seconds.
+    /// This is not a simulated time, but the actual time
+    /// some operation you want to measure took to finish.
+    /// @param startTimeSeconds the start time in seconds you may get from [#currentTimeSecs()]
+    /// @return the real elapsed time in seconds
     public static double elapsedSeconds(final double startTimeSeconds){
         return currentTimeSecs() - startTimeSeconds;
     }
 
-    /**
-     * Gets the real elapsed time from the given time in seconds.
-     * This is not a simulated time, but the actual time
-     * some operation you want to measure took to finish.
-     * @param startTimeSeconds the start time in seconds you may get from {@link #currentTimeSecs()}
-     * @return the real elapsed time in seconds
-     */
+    /// Gets the real elapsed time from the given time in seconds.
+    /// This is not a simulated time, but the actual time
+    /// some operation you want to measure took to finish.
+    /// @param startTimeSeconds the start time in seconds you may get from [#currentTimeSecs()]
+    /// @return the real elapsed time in seconds
     public static long elapsedSeconds(final long startTimeSeconds){
         return (long)elapsedSeconds((double)startTimeSeconds);
     }
 
-    /**
-     * Converts any value in micro (μ) to milli (m) scale,
-     * such as microseconds to milliseconds.
-     *
-     * <p>The existing {@link java.util.concurrent.TimeUnit} and {@link java.time.Duration} classes
-     * don't provide the double precision required here.</p>
-     *
-     * @param micro the value in micro (μ) scale
-     * @return the value in milli (m) scale
-     */
+    /// Converts any value in micro (μ) to milli (m) scale,
+    /// such as microseconds to milliseconds.
+    ///
+    /// The existing [java.util.concurrent.TimeUnit] and [java.time.Duration] classes
+    /// don't provide the double precision required here.
+    ///
+    /// @param micro the value in micro (μ) scale
+    /// @return the value in milli (m) scale
     public static double microToMilli(final double micro){
         return micro/1000.0;
     }
 
-    /**
-     * Converts a value in microseconds (μ) to seconds.
-     * <p>The existing {@link java.util.concurrent.TimeUnit} and {@link java.time.Duration} classes
-     * don't provide the double precision required here.</p>
-     *
-     * @param micro the value in microseconds (μ)
-     * @return the value in seconds
-     */
+    /// Converts a value in microseconds (μ) to seconds.
+    ///
+    /// The existing [java.util.concurrent.TimeUnit] and [java.time.Duration] classes
+    /// don't provide the double precision required here.
+    ///
+    /// @param micro the value in microseconds (μ)
+    /// @return the value in seconds
     public static double microToSeconds(final double micro) {
         return microToMilli(micro)/1000.0;
     }
 
-    /**
-     * Converts a value in minutes to seconds.
-     * <p>The existing {@link java.util.concurrent.TimeUnit} and {@link java.time.Duration} classes
-     * don't provide the double precision required here.</p>
-     *
-     * @param minutes the value in minutes
-     * @return the value in seconds
-     */
+    /// Converts a value in minutes to seconds.
+    ///
+    /// The existing [java.util.concurrent.TimeUnit] and [java.time.Duration] classes
+    /// don't provide the double precision required here.
+    ///
+    /// @param minutes the value in minutes
+    /// @return the value in seconds
     public static double minutesToSeconds(final double minutes) {
         return minutes*60.0;
     }
 
-    /**
-     * Converts a value in milliseconds to minutes.
-     * <p>The existing {@link java.util.concurrent.TimeUnit} and {@link java.time.Duration} classes
-     * don't provide the double precision required here.</p>
-     *
-     * @param milli the value in milliseconds
-     * @return the value in minutes
-     */
+    /// Converts a value in milliseconds to minutes.
+    ///
+    /// The existing [java.util.concurrent.TimeUnit] and [java.time.Duration] classes
+    /// don't provide the double precision required here.
+    ///
+    /// @param milli the value in milliseconds
+    /// @return the value in minutes
     public static double millisecsToMinutes(final long milli) {
         return milli/(1000.0*60);
     }
 
-    /**
-     * Converts a value in seconds to minutes.
-     * <p>The existing {@link java.util.concurrent.TimeUnit} and {@link java.time.Duration} classes
-     * don't provide the double precision required here.</p>
-     *
-     * @param seconds the value in seconds
-     * @return the value in minutes
-     */
+    /// Converts a value in seconds to minutes.
+    ///
+    /// The existing [java.util.concurrent.TimeUnit] and [java.time.Duration] classes
+    /// don't provide the double precision required here.
+    ///
+    /// @param seconds the value in seconds
+    /// @return the value in minutes
     public static double secondsToMinutes(final double seconds) {
         return seconds/60.0;
     }
 
-    /**
-     * Converts a value in seconds to hours.
-     * <p>The existing {@link java.util.concurrent.TimeUnit} and {@link java.time.Duration} classes
-     * don't provide the double precision required here.</p>
-     *
-     * @param seconds the value in seconds
-     * @return the value in hours
-     */
+    /// Converts a value in seconds to hours.
+    ///
+    /// The existing [java.util.concurrent.TimeUnit] and [java.time.Duration] classes
+    /// don't provide the double precision required here.
+    ///
+    /// @param seconds the value in seconds
+    /// @return the value in hours
     public static double secondsToHours(final double seconds) {
         return secondsToMinutes(seconds)/60.0;
     }
 
-    /**
-     * Converts a value in seconds to days.
-     *
-     * @param seconds the value in seconds
-     * @return the value in days
-     */
+    /// Converts a value in seconds to days.
+    ///
+    /// @param seconds the value in seconds
+    /// @return the value in days
     public static double secondsToDays(final double seconds) {
         return hoursToDays(secondsToHours(seconds));
     }

@@ -23,13 +23,11 @@
  */
 package org.cloudsimplus.builders.tables;
 
-/**
- * A column of a text (ASCII) table. The class generates the string
- * that represents a column in a text table.
- *
- * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 1.0
- */
+/// A column of a text (ASCII) table. The class generates the string
+/// that represents a column in a text table.
+///
+/// @author Manoel Campos da Silva Filho
+/// @since CloudSim Plus 1.0
 public class TextTableColumn extends CsvTableColumn {
     public TextTableColumn(final String title, final String subTitle) {
         this(title, subTitle, "");

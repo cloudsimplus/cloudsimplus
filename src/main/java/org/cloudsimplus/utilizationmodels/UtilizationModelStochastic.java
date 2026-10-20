@@ -35,26 +35,20 @@ import org.jspecify.annotations.Nullable;
 /// @since CloudSim Toolkit 2.0
 public class UtilizationModelStochastic extends UtilizationModelAbstract {
 
-    /**
-     * The Random Number Generator (RNG).
-     */
+    /// The Random Number Generator (RNG).
     @Getter @Setter @NonNull
     private ContinuousDistribution randomGenerator;
 
-    /**
-     * The utilization history map, where each key is a time and
-     * each value is the resource utilization at that time.
-     */
+    /// The utilization history map, where each key is a time and
+    /// each value is the resource utilization at that time.
     private Map<Double, Double> historyMap;
 
-    /**
-     * The previous time the utilization was requested.
-     * The value is used to improve performance of the {@link #getUtilization(double)} method,
-     * which is crucial for large scale simulations.
-     *
-     * @see #getUtilization()
-     * @see #getUtilization(double)
-     */
+    /// The previous time the utilization was requested.
+    /// The value is used to improve performance of the [#getUtilization(double)] method,
+    /// which is crucial for large scale simulations.
+    ///
+    /// @see #getUtilization()
+    /// @see #getUtilization(double)
     private double previousTime;
 
     /// The max value already stored in the [#previousTime].
@@ -101,85 +95,73 @@ public class UtilizationModelStochastic extends UtilizationModelAbstract {
     @Getter @Setter
     private boolean alwaysGenNewRandUtilization;
 
-    /**
-     * Instantiates a stochastic utilization model
-     * that defines the resource utilization in percentage.
-     * The resource utilization history is enabled by default.
-     *
-     * @see #setUnit(Unit)
-     * @see #setHistoryEnabled(boolean)
-     * @see #isAlwaysGenNewRandUtilization()
-     */
+    /// Instantiates a stochastic utilization model
+    /// that defines the resource utilization in percentage.
+    /// The resource utilization history is enabled by default.
+    ///
+    /// @see #setUnit(Unit)
+    /// @see #setHistoryEnabled(boolean)
+    /// @see #isAlwaysGenNewRandUtilization()
     public UtilizationModelStochastic() {
         this(Unit.PERCENTAGE);
     }
 
-    /**
-     * Instantiates a stochastic utilization model
-     * where the resource utilization is defined in the given unit.
-     * The resource utilization history is enabled by default.
-     *
-     * @param unit the {@link Unit} that determines how the resource is used (for instance, if
-     *             the resource usage is defined in percentage of the Vm resource or in absolute values)
-     * @see #setHistoryEnabled(boolean)
-     * @see #isAlwaysGenNewRandUtilization()
-     */
+    /// Instantiates a stochastic utilization model
+    /// where the resource utilization is defined in the given unit.
+    /// The resource utilization history is enabled by default.
+    ///
+    /// @param unit the [Unit] that determines how the resource is used (for instance, if
+    /// the resource usage is defined in percentage of the Vm resource or in absolute values)
+    /// @see #setHistoryEnabled(boolean)
+    /// @see #isAlwaysGenNewRandUtilization()
     public UtilizationModelStochastic(final Unit unit) {
         this(unit, StatisticalDistribution.defaultSeed());
     }
 
-    /**
-     * Instantiates a stochastic utilization model
-     * where the resource utilization is defined in the given unit.
-     * The resource utilization history is enabled by default.
-     *
-     * @param unit the {@link Unit} that determines how the resource is used (for instance, if
-     *             the resource usage is defined in percentage of the Vm resource or in absolute values)
-     * @param seed the seed to initialize the random number generator.
-     * @see #setHistoryEnabled(boolean)
-     * @see #isAlwaysGenNewRandUtilization()
-     */
+    /// Instantiates a stochastic utilization model
+    /// where the resource utilization is defined in the given unit.
+    /// The resource utilization history is enabled by default.
+    ///
+    /// @param unit the [Unit] that determines how the resource is used (for instance, if
+    /// the resource usage is defined in percentage of the Vm resource or in absolute values)
+    /// @param seed the seed to initialize the random number generator.
+    /// @see #setHistoryEnabled(boolean)
+    /// @see #isAlwaysGenNewRandUtilization()
     public UtilizationModelStochastic(final Unit unit, final long seed) {
         this(unit, new UniformDistr(seed));
     }
 
-    /**
-     * Instantiates a stochastic utilization model
-     * that defines the resource utilization in percentage.
-     * The resource utilization history is enabled by default.
-     *
-     * @param seed the seed to initialize the random number generator.
-     * @see #setHistoryEnabled(boolean)
-     * @see #isAlwaysGenNewRandUtilization()
-     */
+    /// Instantiates a stochastic utilization model
+    /// that defines the resource utilization in percentage.
+    /// The resource utilization history is enabled by default.
+    ///
+    /// @param seed the seed to initialize the random number generator.
+    /// @see #setHistoryEnabled(boolean)
+    /// @see #isAlwaysGenNewRandUtilization()
     public UtilizationModelStochastic(final long seed) {
         this(Unit.PERCENTAGE, new UniformDistr(seed));
     }
 
-    /**
-     * Instantiates a stochastic utilization model based on a given Pseudo Random Number Generator (PRNG).
-     * It defines the resource utilization in percentage.
-     * The resource utilization history is enabled by default.
-     *
-     * @param prng the Pseudo Random Number Generator (PRNG) to generate utilization values
-     * @see #setUnit(Unit)
-     * @see #setHistoryEnabled(boolean)
-     * @see #isAlwaysGenNewRandUtilization()
-     */
+    /// Instantiates a stochastic utilization model based on a given Pseudo Random Number Generator (PRNG).
+    /// It defines the resource utilization in percentage.
+    /// The resource utilization history is enabled by default.
+    ///
+    /// @param prng the Pseudo Random Number Generator (PRNG) to generate utilization values
+    /// @see #setUnit(Unit)
+    /// @see #setHistoryEnabled(boolean)
+    /// @see #isAlwaysGenNewRandUtilization()
     public UtilizationModelStochastic(final ContinuousDistribution prng) {
         this(Unit.PERCENTAGE, prng);
     }
 
-    /**
-     * Instantiates a stochastic new utilization model based on a given Pseudo Random Number Generator (PRNG).
-     * The resource utilization history is enabled by default.
-     *
-     * @param unit the {@link Unit} that determines how the resource is used (for instance, if
-     *             the resource usage is defined in percentage of the Vm resource or in absolute values)
-     * @param prng the Pseudo Random Number Generator (PRNG) to generate utilization values
-     * @see #setHistoryEnabled(boolean)
-     * @see #isAlwaysGenNewRandUtilization()
-     */
+    /// Instantiates a stochastic new utilization model based on a given Pseudo Random Number Generator (PRNG).
+    /// The resource utilization history is enabled by default.
+    ///
+    /// @param unit the [Unit] that determines how the resource is used (for instance, if
+    /// the resource usage is defined in percentage of the Vm resource or in absolute values)
+    /// @param prng the Pseudo Random Number Generator (PRNG) to generate utilization values
+    /// @see #setHistoryEnabled(boolean)
+    /// @see #isAlwaysGenNewRandUtilization()
     public UtilizationModelStochastic(final Unit unit, @NonNull final ContinuousDistribution prng) {
         super(unit);
         this.previousTime = -1;
@@ -190,12 +172,10 @@ public class UtilizationModelStochastic extends UtilizationModelAbstract {
         setRandomGenerator(prng);
     }
 
-    /**
-     * {@inheritDoc}
-     * @see <a href="https://github.com/cloudsimplus/cloudsimplus/issues/197">Issue #197 for more details</a>
-     * @param time {@inheritDoc}
-     * @return {@inheritDoc}
-     */
+    /// {@inheritDoc}
+    /// @see <a href="https://github.com/cloudsimplus/cloudsimplus/issues/197">Issue #197 for more details</a>
+    /// @param time {@inheritDoc}
+    /// @return {@inheritDoc}
     @Override
     protected double getUtilizationInternal(final double time) {
         if (time == this.previousTime && !alwaysGenNewRandUtilization) {
@@ -236,12 +216,10 @@ public class UtilizationModelStochastic extends UtilizationModelAbstract {
         return historyMap.get(time);
     }
 
-    /**
-     * Save the utilization history to a file.
-     *
-     * @param filename the filename
-     * @throws IOException when the file cannot be accessed
-     */
+    /// Save the utilization history to a file.
+    ///
+    /// @param filename the filename
+    /// @throws IOException when the file cannot be accessed
     @SneakyThrows(IOException.class)
     public void saveHistory(final String filename) {
         try (var oos = new ObjectOutputStream(new FileOutputStream(filename))) {
@@ -249,12 +227,10 @@ public class UtilizationModelStochastic extends UtilizationModelAbstract {
         }
     }
 
-    /**
-     * Load a utilization history from a file.
-     *
-     * @param filename the filename
-     * @throws IOException when the file cannot be accessed
-     */
+    /// Load a utilization history from a file.
+    ///
+    /// @param filename the filename
+    /// @throws IOException when the file cannot be accessed
     @SuppressWarnings("unchecked")
     @SneakyThrows({IOException.class, ClassNotFoundException.class})
     public void loadHistory(final String filename) {

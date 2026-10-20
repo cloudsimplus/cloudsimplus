@@ -75,44 +75,32 @@ import java.util.function.Function;
 @Getter
 public final class GoogleMachineEventsTraceReader extends GoogleTraceReaderAbstract<Host> {
 
-    /**
-     * The maximum RAM capacity (in MB) for created Hosts.
-     */
+    /// The maximum RAM capacity (in MB) for created Hosts.
     private long maxRamCapacity;
 
-    /**
-     * The maximum number of {@link Pe}s (CPU cores) for created Hosts.
-     */
+    /// The maximum number of [Pe]s (CPU cores) for created Hosts.
     private int maxCpuCores;
 
-    /**
-     * The Datacenter where the Hosts with timestamp greater than 0 will be created.
-     */
+    /// The Datacenter where the Hosts with timestamp greater than 0 will be created.
     @Setter @NonNull
     private Datacenter datacenterForLaterHosts = Datacenter.NULL;
 
-    /**
-     * A {@link BiFunction} that will be called for every {@link Host} to be created
-     * from a line inside the trace file.
-     * The {@link BiFunction} will receive the number of {@link Pe}s (CPU cores)
-     * and RAM capacity for the Host to be created, returning the created Host.
-     * The provided function must instantiate the Host and define Host's CPU cores and RAM
-     * capacity, according to the received parameters.
-     * For other Hosts' configurations (such as storage capacity), the provided
-     * function must define the value as desired, since the trace file
-     * doesn't have any other information for such resources.
-     */
+    /// A [BiFunction] that will be called for every [Host] to be created
+    /// from a line inside the trace file.
+    /// The [BiFunction] will receive the number of [Pe]s (CPU cores)
+    /// and RAM capacity for the Host to be created, returning the created Host.
+    /// The provided function must instantiate the Host and define Host's CPU cores and RAM
+    /// capacity, according to the received parameters.
+    /// For other Hosts' configurations (such as storage capacity), the provided
+    /// function must define the value as desired, since the trace file
+    /// doesn't have any other information for such resources.
     @Getter(AccessLevel.NONE) @Setter
     private Function<MachineEvent, Host> hostCreationFunction;
 
-    /**
-     * The list of Hosts that will be available just after a given timestamp (i.e., `timestamp > 0`).
-     */
+    /// The list of Hosts that will be available just after a given timestamp (i.e., `timestamp > 0`).
     private final List<Host> laterAvailableHosts;
 
-    /**
-     * List of Hosts to be removed from the Datacenter.
-     */
+    /// List of Hosts to be removed from the Datacenter.
     private final List<Host> hostsForRemoval;
 
     /// Gets a [GoogleMachineEventsTraceReader] instance to read a "machine events" trace file
@@ -210,9 +198,7 @@ public final class GoogleMachineEventsTraceReader extends GoogleTraceReaderAbstr
         }
     }
 
-    /**
-     * Process all hosts events occurring for a timestamp greater than zero.
-     */
+    /// Process all hosts events occurring for a timestamp greater than zero.
     @Override
     protected void postProcess() {
         if (datacenterForLaterHosts.getSimulation().isRunning())
@@ -225,9 +211,7 @@ public final class GoogleMachineEventsTraceReader extends GoogleTraceReaderAbstr
         }
     }
 
-    /**
-     * Process the addition and removal of Hosts occurring for a timestamp greater than zero.
-     */
+    /// Process the addition and removal of Hosts occurring for a timestamp greater than zero.
     private void sendLaterHostsAdditionAndRemovalRequests() {
         final var cis = datacenterForLaterHosts.getSimulation().getCis();
         laterAvailableHosts.forEach(host -> cis.schedule(datacenterForLaterHosts, host.getStartTime(), CloudSimTag.HOST_ADD, host));
@@ -236,12 +220,10 @@ public final class GoogleMachineEventsTraceReader extends GoogleTraceReaderAbstr
         cis.getDatacenterList().forEach(this::sendHostsRemovalRequests);
     }
 
-    /**
-     * Send requests to remove Hosts from a given Datacenter.
-     *
-     * @param dc the first Datacenter to look for the Host to remove
-     *           since we don't have how to know from the trace in which Datacenter the Host is
-     */
+    /// Send requests to remove Hosts from a given Datacenter.
+    ///
+    /// @param dc the first Datacenter to look for the Host to remove
+    /// since we don't have how to know from the trace in which Datacenter the Host is
     private void sendHostsRemovalRequests(final Datacenter dc) {
         final CloudInformationService cis = dc.getSimulation().getCis();
 
@@ -260,26 +242,20 @@ public final class GoogleMachineEventsTraceReader extends GoogleTraceReaderAbstr
         return getEventType().process(this);
     }
 
-    /**
-     * @return the number of Hosts that are going to be created
-     * later, according to the timestamp in the trace file.
-     */
+    /// @return the number of Hosts that are going to be created
+    /// later, according to the timestamp in the trace file.
     public int getNumberOfLaterAvailableHosts() {
         return laterAvailableHosts.size();
     }
 
-    /**
-     * @return the number of Hosts to be removed from some Datacenter.
-     */
+    /// @return the number of Hosts to be removed from some Datacenter.
     public int getNumberOfHostsForRemoval() {
         return hostsForRemoval.size();
     }
 
-    /**
-     * Gets the enum value that represents the event type of the current trace line.
-     *
-     * @return the {@link MachineEventType} value
-     */
+    /// Gets the enum value that represents the event type of the current trace line.
+    ///
+    /// @return the [MachineEventType] value
     public MachineEventType getEventType() {
         return MachineEventType.getValue(MachineEventField.EVENT_TYPE.getValue(this));
     }
@@ -301,11 +277,9 @@ public final class GoogleMachineEventsTraceReader extends GoogleTraceReaderAbstr
         return host;
     }
 
-    /**
-     * Adds a Host to the List of Hosts to be removed from the Datacenter.
-     *
-     * @param host the Host to add
-     */
+    /// Adds a Host to the List of Hosts to be removed from the Datacenter.
+    ///
+    /// @param host the Host to add
     boolean addHostToRemovalList(final Host host) {
         return hostsForRemoval.add(host);
     }
@@ -320,11 +294,9 @@ public final class GoogleMachineEventsTraceReader extends GoogleTraceReaderAbstr
         return laterAvailableHosts.add(host);
     }
 
-    /**
-     * Sets the maximum RAM capacity (in MB) for created Hosts.
-     *
-     * @param maxRamCapacity the maximum RAM capacity (in MB) to set
-     */
+    /// Sets the maximum RAM capacity (in MB) for created Hosts.
+    ///
+    /// @param maxRamCapacity the maximum RAM capacity (in MB) to set
     public void setMaxRamCapacity(final long maxRamCapacity) {
         if (maxRamCapacity <= 0) {
             throw new IllegalArgumentException("RAM capacity must be greater than 0.");
@@ -332,11 +304,9 @@ public final class GoogleMachineEventsTraceReader extends GoogleTraceReaderAbstr
         this.maxRamCapacity = maxRamCapacity;
     }
 
-    /**
-     * Sets the maximum number of {@link Pe}s (CPU cores) for created Hosts.
-     *
-     * @param maxCpuCores the maximum number of {@link Pe}s (CPU cores) to set
-     */
+    /// Sets the maximum number of [Pe]s (CPU cores) for created Hosts.
+    ///
+    /// @param maxCpuCores the maximum number of [Pe]s (CPU cores) to set
     public void setMaxCpuCores(final int maxCpuCores) {
         if (maxCpuCores <= 0) {
             throw new IllegalArgumentException("Number of CPU cores must be greater than 0.");

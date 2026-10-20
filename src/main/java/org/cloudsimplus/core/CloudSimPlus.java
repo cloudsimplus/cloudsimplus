@@ -31,13 +31,11 @@ import org.cloudsimplus.listeners.EventListener;
 import java.util.HashSet;
 import java.util.Set;
 
-/**
- * Starts and manages cloud computing simulations running in the CloudSim Plus framework.
- * @author Manoel Campos da Silva Filho
- */
+/// Starts and manages cloud computing simulations running in the CloudSim Plus framework.
+/// @author Manoel Campos da Silva Filho
 public class CloudSimPlus extends CloudSim {
 
-    /** Default value for {@link #getMinTimeBetweenEvents()} (in seconds) */
+    /// Default value for [#getMinTimeBetweenEvents()] (in seconds)
     private static final double DEF_MIN_TIME_BETWEEN_EVENTS = 0.1;
 
     private final CircularTimeQueue clockQueue;
@@ -47,26 +45,22 @@ public class CloudSimPlus extends CloudSim {
     private final Set<EventListener<EventInfo>> onClockTickListeners;
     private final Set<EventListener<EventInfo>> onSimulationStartListeners;
 
-    /**
-     * Creates a CloudSim Plus simulation.
-     * Internally, it creates a {@link CloudInformationService}.
-     *
-     * @see CloudInformationService
-     * @see #CloudSimPlus(double)
-     */
+    /// Creates a CloudSim Plus simulation.
+    /// Internally, it creates a [CloudInformationService].
+    ///
+    /// @see CloudInformationService
+    /// @see #CloudSimPlus(double)
     public CloudSimPlus() {
         this(DEF_MIN_TIME_BETWEEN_EVENTS);
     }
 
-    /**
-     * Creates a CloudSim Plus simulation that tracks events happening in a time interval
-     * as little as the minTimeBetweenEvents parameter.
-     * Internally it creates a {@link CloudInformationService}.
-     *
-     * @param minTimeBetweenEvents the minimal period between events.
-     * Events within shorter periods after the last event are discarded.
-     * @see CloudInformationService
-     */
+    /// Creates a CloudSim Plus simulation that tracks events happening in a time interval
+    /// as little as the minTimeBetweenEvents parameter.
+    /// Internally it creates a [CloudInformationService].
+    ///
+    /// @param minTimeBetweenEvents the minimal period between events.
+    /// Events within shorter periods after the last event are discarded.
+    /// @see CloudInformationService
     public CloudSimPlus(final double minTimeBetweenEvents) {
         super(minTimeBetweenEvents);
         this.onEventProcessingListeners = new HashSet<>();
@@ -112,10 +106,8 @@ public class CloudSimPlus extends CloudSim {
         return wasPaused;
     }
 
-    /**
-     * {@inheritDoc}
-     * @see #onClockTickListeners
-     */
+    /// {@inheritDoc}
+    /// @see #onClockTickListeners
     @Override
     protected double setClock(double newTime) {
         final double oldTime = super.setClock(newTime);

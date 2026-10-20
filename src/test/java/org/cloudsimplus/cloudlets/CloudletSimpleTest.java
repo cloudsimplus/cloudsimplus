@@ -19,10 +19,8 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-/**
- * @author	Anton Beloglazov
- * @since	CloudSim Toolkit 2.0
- */
+/// @author	Anton Beloglazov
+/// @since	CloudSim Toolkit 2.0
 public class CloudletSimpleTest {
     static final int PES_NUMBER = 2;
 

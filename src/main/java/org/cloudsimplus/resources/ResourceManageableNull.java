@@ -23,13 +23,11 @@
  */
 package org.cloudsimplus.resources;
 
-/**
- * A class that implements the Null Object Design Pattern for
- * {@link ResourceManageable} class.
- *
- * @author Manoel Campos da Silva Filho
- * @see ResourceManageable#NULL
- */
+/// A class that implements the Null Object Design Pattern for
+/// [ResourceManageable] class.
+///
+/// @author Manoel Campos da Silva Filho
+/// @see ResourceManageable#NULL
 final class ResourceManageableNull implements ResourceManageable {
     @Override public boolean setCapacity(long newCapacity) {
         return false;

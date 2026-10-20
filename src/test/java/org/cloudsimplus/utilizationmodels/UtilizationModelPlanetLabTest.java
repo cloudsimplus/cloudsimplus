@@ -42,9 +42,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class UtilizationModelPlanetLabTest {
     private static final String TEMP_TRACE = "temp-planetlab-trace.txt";
 
-    /**
-     * Time interval (in seconds) in which the data inside a PlanetLab trace file is collected.
-     */
+    /// Time interval (in seconds) in which the data inside a PlanetLab trace file is collected.
     private static final int SCHEDULING_INTERVAL = 300;
 
     private static final String FILE = "146-179_surfsnel_dsl_internl_net_colostate_557.dat";

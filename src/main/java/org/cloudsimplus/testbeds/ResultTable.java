@@ -30,21 +30,17 @@ import java.util.List;
 import static java.util.stream.Collectors.joining;
 import static org.cloudsimplus.builders.tables.CsvTableColumn.alignStringRight;
 
-/**
- * Generates LaTeX tables from experiment's results.
- * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 7.0.1
- */
+/// Generates LaTeX tables from experiment's results.
+/// @author Manoel Campos da Silva Filho
+/// @since CloudSim Plus 7.0.1
 final class ResultTable<T extends Experiment<T>> {
     private final ExperimentRunner<T> runner;
     private final List<ConfidenceInterval> confidenceIntervals;
 
-    /**
-     * @param runner experiment runner that is collecting the results
-     * @param confidenceIntervals a List of
-     *                 {@link ConfidenceInterval} objects summarizing the results for different metrics
-     *                 from all simulation runs.
-     */
+    /// @param runner experiment runner that is collecting the results
+    /// @param confidenceIntervals a List of
+    /// [ConfidenceInterval] objects summarizing the results for different metrics
+    /// from all simulation runs.
     ResultTable(final ExperimentRunner<T> runner, final List<ConfidenceInterval> confidenceIntervals){
         this.runner = runner;
         this.confidenceIntervals = confidenceIntervals;
@@ -71,9 +67,7 @@ final class ResultTable<T extends Experiment<T>> {
         System.out.printf("Error Margin ;%s%n", errorMargins);
     }
 
-    /**
-     * Generates the LaTeX table for metrics results.
-     */
+    /// Generates the LaTeX table for metrics results.
     void buildLatexMetricsResultTable() {
         if(!runner.isLatexTableResultsGeneration()) {
             return;
@@ -108,11 +102,9 @@ final class ResultTable<T extends Experiment<T>> {
         return new StringBuilder(str);
     }
 
-    /**
-     * Creates a row for the LaTeX table containing the result metrics
-     * @param latex the StringBuilder where the LaTeX table is being built
-     * @param ci {@link ConfidenceInterval} summarizing results for this metric
-     */
+    /// Creates a row for the LaTeX table containing the result metrics
+    /// @param latex the StringBuilder where the LaTeX table is being built
+    /// @param ci [ConfidenceInterval] summarizing results for this metric
     private void latexRow(final StringBuilder latex, final ConfidenceInterval ci) {
         final var COL_SEPARATOR = " & ";
         //if there is only one metric sample, it doesn't show the ± symbol (LaTeX \pm), since there is no error margin

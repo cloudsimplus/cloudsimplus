@@ -25,20 +25,16 @@ public sealed interface VmAllocationPolicyMigrationDynamicUpperThreshold
     extends VmAllocationPolicyMigration
     permits VmAllocationPolicyMigrationDynamicUpperThresholdAbstract
 {
-    /**
-     * Sets the fallback VM allocation policy to be used when
-     * the over-utilization host detection doesn't have
-     * data to be computed.
-     *
-     * @param fallbackPolicy the new fallback vm allocation policy
-     */
+    /// Sets the fallback VM allocation policy to be used when
+    /// the over-utilization host detection doesn't have
+    /// data to be computed.
+    ///
+    /// @param fallbackPolicy the new fallback vm allocation policy
     VmAllocationPolicyMigrationDynamicUpperThreshold setFallbackVmAllocationPolicy(VmAllocationPolicyMigration fallbackPolicy);
 
-    /**
-     * @return the fallback VM allocation policy to be used when
-     * the over-utilization host detection doesn't have
-     * data to be computed
-     */
+    /// @return the fallback VM allocation policy to be used when
+    /// the over-utilization host detection doesn't have
+    /// data to be computed
     VmAllocationPolicyMigration getFallbackVmAllocationPolicy();
 
     /// Gets the safety parameter for the over utilization threshold in percentage, at scale from 0 to 1.
@@ -76,18 +72,16 @@ public sealed interface VmAllocationPolicyMigrationDynamicUpperThreshold
     /// trade-off between SLA violation and resource wastage.**
     double getSafetyParameter();
 
-    /**
-     * Computes the measure used internally to generate the dynamic host over-utilization
-     * threshold using some statistical method (such as the
-     * Median absolute deviation - MAD, InterQuartileRange - IRQ, Local Regression, etc.),
-     * depending on the implementing class.
-     * The method uses Host utilization history to compute such a metric.
-     *
-     * @param host the host to get the current utilization
-     * @return the computed measure for internal purposes
-     * @throws IllegalArgumentException when the measure could not be computed
-     * (for instance, because the Host doesn't have enough history to use)
-     * @see #getOverUtilizationThreshold(Host)
-     */
+    /// Computes the measure used internally to generate the dynamic host over-utilization
+    /// threshold using some statistical method (such as the
+    /// Median absolute deviation - MAD, InterQuartileRange - IRQ, Local Regression, etc.),
+    /// depending on the implementing class.
+    /// The method uses Host utilization history to compute such a metric.
+    ///
+    /// @param host the host to get the current utilization
+    /// @return the computed measure for internal purposes
+    /// @throws IllegalArgumentException when the measure could not be computed
+    /// (for instance, because the Host doesn't have enough history to use)
+    /// @see #getOverUtilizationThreshold(Host)
     double computeHostUtilizationMeasure(Host host) throws IllegalStateException;
 }

@@ -25,28 +25,22 @@ package org.cloudsimplus.core;
 
 import org.cloudsimplus.brokers.DatacenterBroker;
 
-/**
- * An interface for objects that have a Unique Identifier (UID)
- * that is compounded by a {@link DatacenterBroker} ID
- * and the object ID.
- *
- * @author Manoel Campos da Silva Filho
- */
+/// An interface for objects that have a Unique Identifier (UID)
+/// that is compounded by a [DatacenterBroker] ID
+/// and the object ID.
+///
+/// @author Manoel Campos da Silva Filho
 public interface UniquelyIdentifiable extends Identifiable {
-    /**
-     * Generates an Unique Identifier (UID).
-     *
-     * @param brokerId the id of the {@link DatacenterBroker}
-     * @param id the object id
-     * @return the generated UID
-     */
+    /// Generates an Unique Identifier (UID).
+    ///
+    /// @param brokerId the id of the [DatacenterBroker]
+    /// @param id the object id
+    /// @return the generated UID
     static String getUid(long brokerId, long id) {
         return brokerId + "-" + id;
     }
 
-    /**
-     * @return the Unique Identifier (UID) for the entity, that is compounded by the id
-     *         of a {@link DatacenterBroker} and the object id.
-     */
+    /// @return the Unique Identifier (UID) for the entity, that is compounded by the id
+    /// of a [DatacenterBroker] and the object id.
     String getUid();
 }

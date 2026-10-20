@@ -29,50 +29,42 @@ import java.util.function.BiFunction;
 
 import static java.util.stream.Collectors.toSet;
 
-/**
- * An abstract class that represents the policy
- * used by a {@link Datacenter} to choose a {@link Host} to place or migrate
- * a given {@link Vm}.
- *
- * <p>Each {@link Datacenter} must have its own instance of a {@link VmAllocationPolicy}.</p>
- *
- * @author Rodrigo N. Calheiros
- * @author Anton Beloglazov
- * @author Manoel Campos da Silva Filho
- * @since CloudSim Toolkit 1.0
- */
+/// An abstract class that represents the policy
+/// used by a [Datacenter] to choose a [Host] to place or migrate
+/// a given [Vm].
+///
+/// Each [Datacenter] must have its own instance of a [VmAllocationPolicy].
+///
+/// @author Rodrigo N. Calheiros
+/// @author Anton Beloglazov
+/// @author Manoel Campos da Silva Filho
+/// @since CloudSim Toolkit 1.0
 @Accessors(makeFinal = false) @Getter @Setter
 public non-sealed abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
-    /**
-     * WARNING: the function should not be called directly because it may be null.
-     * Use the {@link #findHostForVm(Vm)} instead.
-     *
-     * @see #setFindHostForVmFunction(BiFunction)
-     */
+    /// WARNING: the function should not be called directly because it may be null.
+    /// Use the [#findHostForVm(Vm)] instead.
+    ///
+    /// @see #setFindHostForVmFunction(BiFunction)
     @Nullable
     private BiFunction<VmAllocationPolicy, Vm, Optional<Host>> findHostForVmFunction;
 
-    /** @see #getDatacenter() */
+    /// @see #getDatacenter()
     @NonNull
     private Datacenter datacenter = Datacenter.NULL;
 
-    /** @see #getHostCountForParallelSearch() */
+    /// @see #getHostCountForParallelSearch()
     private int hostCountForParallelSearch;
 
-    /**
-     * Creates a VmAllocationPolicy.
-     */
+    /// Creates a VmAllocationPolicy.
     public VmAllocationPolicyAbstract() {
         //Passing null makes the class to use the default function to find a host for a VM.
         this(null);
     }
 
-    /**
-     * Creates a VmAllocationPolicy, changing the {@link BiFunction} to select a Host for a Vm.
-     *
-     * @param findHostForVmFunction a {@link BiFunction} to select a Host for a given Vm.
-     * @see VmAllocationPolicy#setFindHostForVmFunction(BiFunction)
-     */
+    /// Creates a VmAllocationPolicy, changing the [BiFunction] to select a Host for a Vm.
+    ///
+    /// @param findHostForVmFunction a [BiFunction] to select a Host for a given Vm.
+    /// @see VmAllocationPolicy#setFindHostForVmFunction(BiFunction)
     public VmAllocationPolicyAbstract(@Nullable final BiFunction<VmAllocationPolicy, Vm, Optional<Host>> findHostForVmFunction) {
         setFindHostForVmFunction(findHostForVmFunction);
         this.hostCountForParallelSearch = DEF_HOST_COUNT_PARALLEL_SEARCH;
@@ -96,34 +88,28 @@ public non-sealed abstract class VmAllocationPolicyAbstract implements VmAllocat
         return false;
     }
 
-    /**
-     * Performs the upscaling of Vm resource associated to a given scaling object.
-     *
-     * @param scaling the Vm scaling object
-     * @return true if the Vm was overloaded and the upscaling was performed, false otherwise
-     */
+    /// Performs the upscaling of Vm resource associated to a given scaling object.
+    ///
+    /// @param scaling the Vm scaling object
+    /// @return true if the Vm was overloaded and the upscaling was performed, false otherwise
     private boolean upScaleVmVertically(final VerticalVmScaling scaling) {
         return isRequestingCpuScaling(scaling) ? scaleVmPesUpOrDown(scaling) : upScaleVmNonCpuResource(scaling);
     }
 
-    /**
-     * Performs the down scaling of Vm resource associated to a given scaling object.
-     *
-     * @param scaling the Vm scaling object
-     * @return true if the downscaling was performed, false otherwise
-     */
+    /// Performs the down scaling of Vm resource associated to a given scaling object.
+    ///
+    /// @param scaling the Vm scaling object
+    /// @return true if the downscaling was performed, false otherwise
     private boolean downScaleVmVertically(final VerticalVmScaling scaling) {
         return isRequestingCpuScaling(scaling) ? scaleVmPesUpOrDown(scaling) : downScaleVmNonCpuResource(scaling);
     }
 
-    /**
-     * Performs the up or down scaling of Vm {@link Pe}s,
-     * depending on if the VM is under or overloaded.
-     *
-     * @param scaling the Vm scaling object
-     * @return true if the scaling was performed, false otherwise
-     * @see #upScaleVmVertically(VerticalVmScaling)
-     */
+    /// Performs the up or down scaling of Vm [Pe]s,
+    /// depending on if the VM is under or overloaded.
+    ///
+    /// @param scaling the Vm scaling object
+    /// @return true if the scaling was performed, false otherwise
+    /// @see #upScaleVmVertically(VerticalVmScaling)
     private boolean scaleVmPesUpOrDown(final VerticalVmScaling scaling) {
         final double pesNumberForScaling = scaling.getResourceAmountToScale();
         if (pesNumberForScaling == 0) {
@@ -159,36 +145,30 @@ public non-sealed abstract class VmAllocationPolicyAbstract implements VmAllocat
         return !vm.getHost().getVmScheduler().isSuitableForVm(vm, additionalVmMips);
     }
 
-    /**
-     * Checks if the scaling object is in charge of scaling CPU resource.
-     *
-     * @param scaling the Vm scaling object
-     * @return true if the scaling is for CPU, false if it is
-     * for any other kind of resource
-     */
+    /// Checks if the scaling object is in charge of scaling CPU resource.
+    ///
+    /// @param scaling the Vm scaling object
+    /// @return true if the scaling is for CPU, false if it is
+    /// for any other kind of resource
     private boolean isRequestingCpuScaling(final VerticalVmScaling scaling) {
         return Processor.class.equals(scaling.getResourceClass());
     }
 
-    /**
-     * Performs the upscaling of a Vm resource that is anything else than CPU.
-     *
-     * @param scaling the Vm scaling object
-     * @return true if the upscaling was performed, false otherwise
-     * @see #scaleVmPesUpOrDown(VerticalVmScaling)
-     * @see #upScaleVmVertically(VerticalVmScaling)
-     */
+    /// Performs the upscaling of a Vm resource that is anything else than CPU.
+    ///
+    /// @param scaling the Vm scaling object
+    /// @return true if the upscaling was performed, false otherwise
+    /// @see #scaleVmPesUpOrDown(VerticalVmScaling)
+    /// @see #upScaleVmVertically(VerticalVmScaling)
     private boolean upScaleVmNonCpuResource(final VerticalVmScaling scaling) {
         return scaling.allocateResourceForVm();
     }
 
-    /**
-     * Performs the downscaling of a Vm resource that is anything else than CPU.
-     *
-     * @param scaling the Vm scaling object
-     * @return true if the downscaling was performed, false otherwise
-     * @see #downScaleVmVertically(VerticalVmScaling)
-     */
+    /// Performs the downscaling of a Vm resource that is anything else than CPU.
+    ///
+    /// @param scaling the Vm scaling object
+    /// @return true if the downscaling was performed, false otherwise
+    /// @see #downScaleVmVertically(VerticalVmScaling)
     private boolean downScaleVmNonCpuResource(final VerticalVmScaling scaling) {
         final var resourceManageableClass = scaling.getResourceClass();
         final var vmResource = scaling.getVm().getResource(resourceManageableClass);
@@ -227,20 +207,16 @@ public non-sealed abstract class VmAllocationPolicyAbstract implements VmAllocat
         return allocateHostForVmInternal(vmList);
     }
 
-    /**
-     * If you override this method, you must call {@link #allocateHostForVm(Vm, Host)}
-     * for each suitable Host you have found that want to create a VM.
-     * @see #allocateHostForVm(List)
-     * @see Host#getSuitabilityFor(Vm)
-     */
+    /// If you override this method, you must call [#allocateHostForVm(Vm,Host)]
+    /// for each suitable Host you have found that want to create a VM.
+    /// @see #allocateHostForVm(List)
+    /// @see Host#getSuitabilityFor(Vm)
     protected Set<HostSuitability> allocateHostForVmInternal(final @NonNull List<Vm> vmList) {
         return vmList.stream().map(this::allocateHostForVm).collect(toSet());
     }
 
-    /**
-     * Allocates the host with less PEs in use for a given VM.
-     * {@inheritDoc}
-     */
+    /// Allocates the host with less PEs in use for a given VM.
+    /// {@inheritDoc}
     @Override
     public HostSuitability allocateHostForVm(final Vm vm) {
         if (datacenterHasNoHosts(vm)) {
@@ -262,18 +238,14 @@ public non-sealed abstract class VmAllocationPolicyAbstract implements VmAllocat
         return new HostSuitability(vm, "No suitable host found");
     }
 
-    /**
-     * @return true if the datacenter linked to this VmAllocationPolicy is empty (has no hosts);
-     *         false otherwise.
-     */
+    /// @return true if the datacenter linked to this VmAllocationPolicy is empty (has no hosts);
+    /// false otherwise.
     private boolean datacenterHasNoHosts() {
         return datacenterHasNoHosts(null);
     }
 
-    /**
-     * {@return true if the datacenter linked to this VmAllocationPolicy is empty (has no hosts); false otherwise}
-     * @param vm a Vm requested to be created or null if there is no Vm creation request
-     */
+    /// {@return true if the datacenter linked to this VmAllocationPolicy is empty (has no hosts); false otherwise}
+    /// @param vm a Vm requested to be created or null if there is no Vm creation request
     private boolean datacenterHasNoHosts(@Nullable final Vm vm) {
         final var vmStr = vm == null ? "Vm" : vm;
         if (getHostList().isEmpty()) {
@@ -332,14 +304,12 @@ public non-sealed abstract class VmAllocationPolicyAbstract implements VmAllocat
         ((HostAbstract)vm.getHost()).destroyVm(vm);
     }
 
-    /**
-     * {@inheritDoc}
-     * The default implementation of such a Function is provided by the method {@link #findHostForVm(Vm)}.
-     *
-     * @param findHostForVmFunction {@inheritDoc}.
-     *                              Passing null will cause the usage of the default method to find a Host for a VM.
-     * @see #defaultFindHostForVm(Vm)
-     */
+    /// {@inheritDoc}
+    /// The default implementation of such a Function is provided by the method [#findHostForVm(Vm)].
+    ///
+    /// @param findHostForVmFunction {@inheritDoc}.
+    /// Passing null will cause the usage of the default method to find a Host for a VM.
+    /// @see #defaultFindHostForVm(Vm)
     @Override
     public final VmAllocationPolicy setFindHostForVmFunction(@Nullable final BiFunction<VmAllocationPolicy, Vm, Optional<Host>> findHostForVmFunction) {
         this.findHostForVmFunction = findHostForVmFunction;
@@ -353,15 +323,13 @@ public non-sealed abstract class VmAllocationPolicyAbstract implements VmAllocat
         return optionalHost.map(host -> host.setActive(true));
     }
 
-    /**
-     * Provides the default implementation of the policy
-     * to find a suitable Host for a given VM.
-     *
-     * @param vm the VM to find a suitable Host to
-     * @return an {@link Optional} containing a suitable Host to place the VM;
-     *         or an empty {@link Optional} if no suitable Host was found
-     * @see #setFindHostForVmFunction(BiFunction)
-     */
+    /// Provides the default implementation of the policy
+    /// to find a suitable Host for a given VM.
+    ///
+    /// @param vm the VM to find a suitable Host to
+    /// @return an [Optional] containing a suitable Host to place the VM;
+    /// or an empty [Optional] if no suitable Host was found
+    /// @see #setFindHostForVmFunction(BiFunction)
     protected abstract Optional<Host> defaultFindHostForVm(Vm vm);
 
     @Override

@@ -29,23 +29,19 @@ import org.cloudsimplus.vms.Vm;
 
 import java.util.List;
 
-/**
- * An interface to provide a polymorphic way to access a given resource
- * like {@link Ram}, {@link Bandwidth}, {@link SimpleStorage}
- * or {@link Pe} from a List containing such different resources.
- * It is implemented by {@link Machine} such as a {@link Host} or {@link Vm}.
- *
- * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 1.0
- */
+/// An interface to provide a polymorphic way to access a given resource
+/// like [Ram], [Bandwidth], [SimpleStorage]
+/// or [Pe] from a List containing such different resources.
+/// It is implemented by [Machine] such as a [Host] or [Vm].
+///
+/// @author Manoel Campos da Silva Filho
+/// @since CloudSim Plus 1.0
 public interface Resourceful {
-    /**
-     * Gets a given {@link Resource}, such as {@link Ram} or {@link Bandwidth},
-     * from the List of the {@link Machine}'s resources.
-     *
-     * @param resourceClass the class of resource to get
-     * @return the {@link Resource} corresponding to the given class
-     */
+    /// Gets a given [Resource], such as [Ram] or [Bandwidth],
+    /// from the List of the [Machine]'s resources.
+    ///
+    /// @param resourceClass the class of resource to get
+    /// @return the [Resource] corresponding to the given class
     default ResourceManageable getResource(final Class<? extends ResourceManageable> resourceClass){
         return getResources()
                 .stream()
@@ -54,9 +50,7 @@ public interface Resourceful {
                 .orElse(ResourceManageable.NULL);
     }
 
-    /**
-     * @return a <b>read-only</b> list of resources the machine has.
-     * @see #getResource(Class)
-     */
+    /// @return a **read-only** list of resources the machine has.
+    /// @see #getResource(Class)
     List<ResourceManageable> getResources();
 }

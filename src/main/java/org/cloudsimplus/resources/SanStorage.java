@@ -32,59 +32,49 @@ import java.util.Optional;
 public class SanStorage extends HarddriveStorage {
     public static final double FILE_NOT_FOUND = -1;
 
-    /**
-     * A storage just to control the amount of space previously allocated
-     * to add reserved files. When the reserved files are effectively added
-     * to the Hard Drive, the reserved space for the file is removed for
-     * this attribute. The attribute is used to avoid adding a reserved file
-     * that the space wasn't previously reserved, which results in
-     * a wrong allocated space.
-     *
-     * @see #reserveSpace(int)
-     * @see #addReservedFile(File)
-     */
+    /// A storage just to control the amount of space previously allocated
+    /// to add reserved files. When the reserved files are effectively added
+    /// to the Hard Drive, the reserved space for the file is removed for
+    /// this attribute. The attribute is used to avoid adding a reserved file
+    /// that the space wasn't previously reserved, which results in
+    /// a wrong allocated space.
+    ///
+    /// @see #reserveSpace(int)
+    /// @see #addReservedFile(File)
     private final SimpleStorage reservedStorage;
 
-    /**
-     * The bandwidth of the SAN network (in Megabits/s).
-     */
+    /// The bandwidth of the SAN network (in Megabits/s).
     @Getter
     private double bandwidth;
 
-    /**
-     * The SAN's network latency (in seconds).
-     */
+    /// The SAN's network latency (in seconds).
     @Getter
     private double networkLatency;
 
-    /** @see #getFileNameList() */
+    /// @see #getFileNameList()
     private final List<String> fileNameList;
 
-    /** @see #getFileList() */
+    /// @see #getFileList()
     private final List<File> fileList;
 
-    /**
-     * Creates a SAN with a given capacity, latency, and bandwidth of the network connection.
-     *
-     * @param capacity       total storage capacity of the SAN (in MB)
-     * @param bandwidth      network bandwidth (in Megabits/s)
-     * @param networkLatency network latency (in seconds)
-     * @throws IllegalArgumentException when capacity is not valid
-     */
+    /// Creates a SAN with a given capacity, latency, and bandwidth of the network connection.
+    ///
+    /// @param capacity       total storage capacity of the SAN (in MB)
+    /// @param bandwidth      network bandwidth (in Megabits/s)
+    /// @param networkLatency network latency (in seconds)
+    /// @throws IllegalArgumentException when capacity is not valid
     public SanStorage(final long capacity, final double bandwidth, final double networkLatency) throws IllegalArgumentException {
         this("SanStorage" + capacity, capacity, bandwidth, networkLatency);
     }
 
-    /**
-     * Creates a SAN with a given capacity, latency, and bandwidth of the network connection
-     * and with a specific name.
-     *
-     * @param name           the name of the new storage device
-     * @param capacity       Storage device capacity (in MB)
-     * @param bandwidth      Network bandwidth (in Megabits/s)
-     * @param networkLatency Network latency (in seconds)
-     * @throws IllegalArgumentException when the name or the capacity are not valid
-     */
+    /// Creates a SAN with a given capacity, latency, and bandwidth of the network connection
+    /// and with a specific name.
+    ///
+    /// @param name           the name of the new storage device
+    /// @param capacity       Storage device capacity (in MB)
+    /// @param bandwidth      Network bandwidth (in Megabits/s)
+    /// @param networkLatency Network latency (in seconds)
+    /// @throws IllegalArgumentException when the name or the capacity are not valid
     public SanStorage(final String name, final long capacity, final double bandwidth, final double networkLatency) {
         super(name, capacity);
         this.setBandwidth(bandwidth);
@@ -161,12 +151,10 @@ public class SanStorage extends HarddriveStorage {
         return time + getTransferTime(file);
     }
 
-    /**
-     * Sets the bandwidth of the SAN network.
-     *
-     * @param bandwidth the bandwidth to set (in Megabits/s)
-     * @throws IllegalArgumentException when the bandwidth is lower or equal to zero
-     */
+    /// Sets the bandwidth of the SAN network.
+    ///
+    /// @param bandwidth the bandwidth to set (in Megabits/s)
+    /// @throws IllegalArgumentException when the bandwidth is lower or equal to zero
     public final void setBandwidth(final double bandwidth) {
         if (bandwidth <= 0) {
             throw new IllegalArgumentException("Bandwidth must be higher than zero");
@@ -175,12 +163,10 @@ public class SanStorage extends HarddriveStorage {
         this.bandwidth = bandwidth;
     }
 
-    /**
-     * Sets the latency of the SAN network.
-     *
-     * @param networkLatency the latency to set (in seconds)
-     * @throws IllegalArgumentException when the latency is lower or equal to zero
-     */
+    /// Sets the latency of the SAN network.
+    ///
+    /// @param networkLatency the latency to set (in seconds)
+    /// @throws IllegalArgumentException when the latency is lower or equal to zero
     public final void setNetworkLatency(final double networkLatency) {
         if (networkLatency <= 0) {
             throw new IllegalArgumentException("Latency must be higher than zero");
@@ -194,19 +180,15 @@ public class SanStorage extends HarddriveStorage {
         return getName();
     }
 
-    /**
-     * @return the number of files stored on this device.
-     */
+    /// @return the number of files stored on this device.
     public int getNumStoredFile() {
         return fileList.size();
     }
 
-    /**
-     * Makes reservation of space on the device to store a file.
-     *
-     * @param fileSize the size to be reserved (in MByte)
-     * @return true if reservation succeeded, false otherwise
-     */
+    /// Makes reservation of space on the device to store a file.
+    ///
+    /// @param fileSize the size to be reserved (in MByte)
+    /// @return true if reservation succeeded, false otherwise
     public boolean reserveSpace(final int fileSize) {
         if (getStorage().allocateResource(fileSize)) {
             reservedStorage.allocateResource(fileSize);
@@ -216,13 +198,11 @@ public class SanStorage extends HarddriveStorage {
         return false;
     }
 
-    /**
-     * Checks whether there is enough space on the storage for a certain file,
-     * according to its size.
-     *
-     * @param fileSize size of the file intended to be stored on the device (in MB)
-     * @return true if there is enough space available, false otherwise
-     */
+    /// Checks whether there is enough space on the storage for a certain file,
+    /// according to its size.
+    ///
+    /// @param fileSize size of the file intended to be stored on the device (in MB)
+    /// @return true if there is enough space available, false otherwise
     public boolean hasPotentialAvailableSpace(final long fileSize) {
         if (fileSize <= 0) {
             return false;
@@ -235,12 +215,10 @@ public class SanStorage extends HarddriveStorage {
         return getDeletedFilesTotalSize() > fileSize;
     }
 
-    /**
-     * Checks if the storage device has a specific file.
-     *
-     * @param fileName the name of the file to check if it's inside this storage device
-     * @return true if the storage device has the file, false otherwise.
-     */
+    /// Checks if the storage device has a specific file.
+    ///
+    /// @param fileName the name of the file to check if it's inside this storage device
+    /// @return true if the storage device has the file, false otherwise.
     public boolean hasFile(final String fileName) {
         return getFile(fileName).isPresent();
     }
@@ -276,37 +254,29 @@ public class SanStorage extends HarddriveStorage {
         return Optional.empty();
     }
 
-    /**
-     * @return a <b>read-only</b> list with the names of all files stored on the device.
-     */
+    /// @return a **read-only** list with the names of all files stored on the device.
     public List<String> getFileNameList() {
         return Collections.unmodifiableList(fileNameList);
     }
 
-    /**
-     * @return a <b>read-only</b> list with all files stored on the device.
-     */
+    /// @return a **read-only** list with all files stored on the device.
     public List<File> getFileList() {
         return Collections.unmodifiableList(fileList);
     }
 
-    /**
-     * Gets the transfer time of a given file.
-     *
-     * @param file the file to compute the transfer time (where its size is defined in MB)
-     * @return the transfer time (in seconds)
-     */
+    /// Gets the transfer time of a given file.
+    ///
+    /// @param file the file to compute the transfer time (where its size is defined in MB)
+    /// @return the transfer time (in seconds)
     public double getTransferTime(@NonNull final File file) {
         return getTransferTime(file.getSize());
     }
 
-    /**
-     * {@inheritDoc}
-     * The network latency is added to the transfer time.
-     *
-     * @param fileSize {@inheritDoc}
-     * @return {@inheritDoc}
-     */
+    /// {@inheritDoc}
+    /// The network latency is added to the transfer time.
+    ///
+    /// @param fileSize {@inheritDoc}
+    /// @return {@inheritDoc}
     @Override
     public double getTransferTime(final int fileSize) {
         // Gets the time to read from the local storage device (such as an HD or SSD).
@@ -327,12 +297,10 @@ public class SanStorage extends HarddriveStorage {
         return getFile(fileName).map(this::getTransferTime).orElse(FILE_NOT_FOUND);
     }
 
-    /**
-     * Gets the total time to add a file to the storage.
-     *
-     * @param file the file to compute the total addition time (where its size is defined in MB)
-     * @return the total file addition time (in seconds)
-     */
+    /// Gets the total time to add a file to the storage.
+    ///
+    /// @param file the file to compute the total addition time (where its size is defined in MB)
+    /// @return the total file addition time (in seconds)
     private double getTotalFileAddTime(@NonNull final File file) {
         final double seekTime = getSeekTime(file.getSize());
         final double transferTime = getTransferTime(file.getSize());
@@ -407,22 +375,18 @@ public class SanStorage extends HarddriveStorage {
             }).isPresent();
     }
 
-    /**
-     * Checks whether a file is saved in the storage or not.
-     *
-     * @param file the file we are looking for
-     * @return true if the file is in the storage, false otherwise
-     */
+    /// Checks whether a file is saved in the storage or not.
+    ///
+    /// @param file the file we are looking for
+    /// @return true if the file is in the storage, false otherwise
     public boolean contains(@NonNull final File file) {
         return contains(file.getName());
     }
 
-    /**
-     * Checks whether a file is saved in the storage or not.
-     *
-     * @param fileName the name of the file we are looking for
-     * @return true if the file is in the storage, false otherwise
-     */
+    /// Checks whether a file is saved in the storage or not.
+    ///
+    /// @param fileName the name of the file we are looking for
+    /// @return true if the file is in the storage, false otherwise
     public boolean contains(@NonNull final String fileName) {
         return fileNameList.contains(fileName);
     }

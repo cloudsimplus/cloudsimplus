@@ -23,20 +23,16 @@
  */
 package org.cloudsimplus.builders.tables;
 
-/**
- * Prints a table from a given data set, using a simple delimited text format.
- * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 1.0
- */
+/// Prints a table from a given data set, using a simple delimited text format.
+/// @author Manoel Campos da Silva Filho
+/// @since CloudSim Plus 1.0
 public class TextTable extends CsvTable {
     public TextTable() {
         this("");
     }
 
-    /**
-     * Creates a Table
-     * @param title the title of the table
-     */
+    /// Creates a Table
+    /// @param title the title of the table
     public TextTable(final String title) {
         super(title);
         setColumnSeparator("|");

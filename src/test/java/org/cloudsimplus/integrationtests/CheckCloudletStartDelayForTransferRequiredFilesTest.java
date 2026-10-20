@@ -42,23 +42,20 @@ import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-/**
- *
- * An Integration Test (IT) running a simulation scenario with 1 PM, 1 VM
- * and 1 cloudlet with a list of required files.
- * The test checks if the end of cloudlet execution was
- * correctly delayed by the time to transfer the file list
- * to the VM.
- *
- * <p>It is created a Storage Area Network (SAN) for the Datacenter and
- * a list of {@link File Files} is stored on it.
- * The name of these files are then added to the list
- * of required files of the created Cloudlet.
- * Thus, the time to transfer these files from the SAN
- * to the Vm has to be added to cloudlet finish time.</p>
- *
- * @author Manoel Campos da Silva Filho
- */
+/// An Integration Test (IT) running a simulation scenario with 1 PM, 1 VM
+/// and 1 cloudlet with a list of required files.
+/// The test checks if the end of cloudlet execution was
+/// correctly delayed by the time to transfer the file list
+/// to the VM.
+///
+/// It is created a Storage Area Network (SAN) for the Datacenter and
+/// a list of [Files][File] is stored on it.
+/// The name of these files are then added to the list
+/// of required files of the created Cloudlet.
+/// Thus, the time to transfer these files from the SAN
+/// to the Vm has to be added to cloudlet finish time.
+///
+/// @author Manoel Campos da Silva Filho
 public final class CheckCloudletStartDelayForTransferRequiredFilesTest {
     private static final int HOST_MIPS = 1000;
     private static final int HOST_PES = 2;
@@ -113,17 +110,13 @@ public final class CheckCloudletStartDelayForTransferRequiredFilesTest {
         files.forEach(storage::addFile);
     }
 
-    /**
-     * Gets the filenames from the list of {@link #files}.
-     */
+    /// Gets the filenames from the list of [#files].
     private List<String> getFileNames() {
         return files.stream().map(File::getName).toList();
     }
 
-    /**
-     * List of files to be stored by the Datacenter and that will be used
-     * by the created cloudlet.
-     */
+    /// List of files to be stored by the Datacenter and that will be used
+    /// by the created cloudlet.
     private void createListOfFiles() {
         files = IntStream.range(0, NUMBER_OF_FILES_TO_CREATE)
                          .mapToObj(id -> new File("file%d".formatted(id), FILE_SIZE_MB))

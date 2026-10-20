@@ -33,12 +33,10 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
 
-/**
- * A class that implements the Null Object Design Pattern for {@link VmCloner} objects.
- *
- * @author Manoel Campos da Silva Filho
- * @see VmCloner#NULL
- */
+/// A class that implements the Null Object Design Pattern for [VmCloner] objects.
+///
+/// @author Manoel Campos da Silva Filho
+/// @see VmCloner#NULL
 final class VmClonerNull implements VmCloner {
     @Override public int getClonedVmsNumber() {
         return 0;

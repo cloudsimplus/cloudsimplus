@@ -32,29 +32,21 @@ import org.cloudsimplus.vms.network.NetworkVm;
 @Accessors @Getter @Setter
 public class VmPacket implements NetworkPacket<NetworkVm> {
 
-    /**
-     * The VM sending the packet.
-     * This is the VM where the {@link #getSenderCloudlet() sending cloudlet} is running.
-     */
+    /// The VM sending the packet.
+    /// This is the VM where the [sending cloudlet][#getSenderCloudlet()] is running.
     @NonNull
     private NetworkVm source;
 
-    /**
-     * The VM that has to receive the packet.
-     * This is the VM where the {@link #getReceiverCloudlet() receiver cloudlet} is running.
-     */
+    /// The VM that has to receive the packet.
+    /// This is the VM where the [receiver cloudlet][#getReceiverCloudlet()] is running.
     @NonNull
     private NetworkVm destination;
 
-    /**
-     * The cloudlet sending the packet.
-     */
+    /// The cloudlet sending the packet.
     @NonNull
     private final NetworkCloudlet senderCloudlet;
 
-    /**
-     * The cloudlet that has to receive the packet.
-     */
+    /// The cloudlet that has to receive the packet.
     @NonNull
     private final NetworkCloudlet receiverCloudlet;
 
@@ -63,15 +55,13 @@ public class VmPacket implements NetworkPacket<NetworkVm> {
     private double sendTime;
     private double receiveTime;
 
-    /**
-     * Creates a packet to be sent to a VM inside the Host of the sender VM.
-     *
-     * @param sourceVm the VM sending the packet
-     * @param destinationVm the VM that has to receive the packet
-     * @param size data length of the packet in bytes
-     * @param senderCloudlet cloudlet sending the packet
-     * @param receiverCloudlet cloudlet that has to receive the packet
-     */
+    /// Creates a packet to be sent to a VM inside the Host of the sender VM.
+    ///
+    /// @param sourceVm the VM sending the packet
+    /// @param destinationVm the VM that has to receive the packet
+    /// @param size data length of the packet in bytes
+    /// @param senderCloudlet cloudlet sending the packet
+    /// @param receiverCloudlet cloudlet that has to receive the packet
     public VmPacket(
         final NetworkVm sourceVm,
         final NetworkVm destinationVm,

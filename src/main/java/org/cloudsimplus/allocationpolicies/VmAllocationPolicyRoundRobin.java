@@ -46,9 +46,7 @@ import java.util.Optional;
 /// @author Manoel Campos da Silva Filho
 /// @since CloudSim Plus 4.4.2
 public class VmAllocationPolicyRoundRobin extends VmAllocationPolicyAbstract {
-    /**
-     * The index of the last host used to place a VM.
-     */
+    /// The index of the last host used to place a VM.
     private int lastHostIndex;
 
     @Override

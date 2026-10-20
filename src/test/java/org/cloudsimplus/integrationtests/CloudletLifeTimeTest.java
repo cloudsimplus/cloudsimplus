@@ -48,10 +48,8 @@ import java.util.List;
 import static java.util.stream.IntStream.range;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-/**
- * An integration test to check if cloudlet lifetime is as expected using a datacenter scheduling interval or not.
- * @author Manoel Campos da Silva Filho
- */
+/// An integration test to check if cloudlet lifetime is as expected using a datacenter scheduling interval or not.
+/// @author Manoel Campos da Silva Filho
 public class CloudletLifeTimeTest {
 
     private static final int HOST_MIPS = 1000;
@@ -59,10 +57,8 @@ public class CloudletLifeTimeTest {
     private static final int HOST_RAM = 4000;
     private static final int CLOUDLET_LENGTH = 10_000;
 
-    /**
-     * Maximum time (in seconds) Cloudlets are allowed to execute.
-     * @see Lifetimed#setLifeTime(double)
-     */
+    /// Maximum time (in seconds) Cloudlets are allowed to execute.
+    /// @see Lifetimed#setLifeTime(double)
     private static final double CLOUDLET_LIFE_TIME = 5;
 
     private CloudSimPlus simulation;
@@ -93,11 +89,9 @@ public class CloudletLifeTimeTest {
         assertEquals(expectedFinishedLen, cloudlet.getFinishedLengthSoFar(), 10);
     }
 
-    /**
-     * Creates a scenario with our without scheduling interval
-     * @param schedulingInterval the desired scheduling or -1 for none
-     * @return finished cloudlet
-     */
+    /// Creates a scenario with our without scheduling interval
+    /// @param schedulingInterval the desired scheduling or -1 for none
+    /// @return finished cloudlet
     private Cloudlet createScenario(final int schedulingInterval) {
         simulation = new CloudSimPlus();
         Datacenter datacenter0 = createDatacenter(schedulingInterval);

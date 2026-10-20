@@ -27,58 +27,45 @@ import lombok.Getter;
 import lombok.NonNull;
 import org.cloudsimplus.power.models.PowerModel;
 
-/**
- * Power consumption measurement produced by a {@link PowerModel},
- * consisting of a static and a dynamic fraction (in Watts).
- * This measurement is performed on the entity that the PowerModel assigned to.
- *
- * <p>This is an <b>immutable</b> class providing operations
- * such as {@link #add(PowerMeasurement)} and {@link #multiply(double)} that return a new instance.</p>
- * @since CloudSim Plus 6.0.0
- */
+/// Power consumption measurement produced by a [PowerModel],
+/// consisting of a static and a dynamic fraction (in Watts).
+/// This measurement is performed on the entity that the PowerModel assigned to.
+///
+/// This is an **immutable** class providing operations
+/// such as [#add(PowerMeasurement)] and [#multiply(double)] that return a new instance.
+///
+/// @since CloudSim Plus 6.0.0
 @Getter
 public class PowerMeasurement {
 
-    /**
-     * The static power the entity consumes even if it's idle (in Watts).
-     */
+    /// The static power the entity consumes even if it's idle (in Watts).
     private final double staticPower;
 
-    /**
-     * The dynamic power the entity consumes, according to its CPU load (in Watts).
-     */
+    /// The dynamic power the entity consumes, according to its CPU load (in Watts).
     private final double dynamicPower;
 
-    /**
-     * Instantiates a power measurement with given static and dynamic power consumption.
-     * @param staticPower power (in watts) the entity consumes when idle
-     * @param dynamicPower power (in watts) the entity consumes, according to its CPU load
-     */
+    /// Instantiates a power measurement with given static and dynamic power consumption.
+    /// @param staticPower power (in watts) the entity consumes when idle
+    /// @param dynamicPower power (in watts) the entity consumes, according to its CPU load
     public PowerMeasurement(final double staticPower, final double dynamicPower) {
         this.staticPower = staticPower;
         this.dynamicPower = dynamicPower;
     }
 
-    /**
-     * Instantiates a power measurement with zero static and dynamic power consumption.
-     */
+    /// Instantiates a power measurement with zero static and dynamic power consumption.
     public PowerMeasurement() {
         this(0, 0);
     }
 
-    /**
-     * @return the total power consumed by the entity (in Watts)
-     */
+    /// @return the total power consumed by the entity (in Watts)
     public double getTotalPower() {
         return staticPower + dynamicPower;
     }
 
-    /**
-     * Adds up the values from the given measurement and this one,
-     * returning a new instance.
-     * @param measurement another measurement to add its values with this instance
-     * @return the new instance with the added up values
-     */
+    /// Adds up the values from the given measurement and this one,
+    /// returning a new instance.
+    /// @param measurement another measurement to add its values with this instance
+    /// @return the new instance with the added up values
     public PowerMeasurement add(@NonNull final PowerMeasurement measurement) {
         return new PowerMeasurement(
             staticPower + measurement.getStaticPower(),
@@ -86,12 +73,10 @@ public class PowerMeasurement {
         );
     }
 
-    /**
-     * Multiplies the values from this measurement by a given factor,
-     * returning a new instance.
-     * @param factor the factor to multiply the values of this measurement
-     * @return the new instance with the multiplied values
-     */
+    /// Multiplies the values from this measurement by a given factor,
+    /// returning a new instance.
+    /// @param factor the factor to multiply the values of this measurement
+    /// @return the new instance with the multiplied values
     public PowerMeasurement multiply(final double factor) {
         return new PowerMeasurement(staticPower * factor, dynamicPower * factor);
     }

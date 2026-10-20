@@ -40,10 +40,7 @@ import java.util.ArrayList;
 import static org.cloudsimplus.schedulers.cloudlet.CloudletSchedulerTimeSharedTestUtil.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-/**
- *
- * @author Manoel Campos da Silva Filho
- */
+/// @author Manoel Campos da Silva Filho
 public class CloudletSchedulerTimeSharedTest {
     private CloudletSchedulerTimeShared instance;
 
@@ -241,12 +238,10 @@ public class CloudletSchedulerTimeSharedTest {
         assertEquals(expected, instance.getRequestedCpuPercent(0));
     }
 
-    /**
-     * Runs 2 cloudlets requiring just 1 PE each one.
-     * These cloudlets are run in a CloudletScheduler having 2 PEs,
-     * one for each cloudlet. The cloudlet length is equals to the capacity of
-     * each PE, meaning that each cloudlet will finish in just one second.
-     */
+    /// Runs 2 cloudlets requiring just 1 PE each one.
+    /// These cloudlets are run in a CloudletScheduler having 2 PEs,
+    /// one for each cloudlet. The cloudlet length is equals to the capacity of
+    /// each PE, meaning that each cloudlet will finish in just one second.
     @Test
     public void testGetCloudletExecListWhenEmptyAfterFinishedCloudletsForTwoSchedulerPes() {
         final long mips = 1000;
@@ -260,14 +255,12 @@ public class CloudletSchedulerTimeSharedTest {
         assertEquals(0, instance.getCloudletExecList().size());
     }
 
-    /**
-     * Runs 2 cloudlets requiring just 1 PE each one.
-     * These cloudlets are run in a CloudletScheduler having just 1 PE
-     * that is shared between the cloudlets.
-     * The cloudlet length is equals to the capacity of
-     * each PE, meaning that each cloudlet will finish in 2 seconds
-     * because there is just 1 PE.
-     */
+    /// Runs 2 cloudlets requiring just 1 PE each one.
+    /// These cloudlets are run in a CloudletScheduler having just 1 PE
+    /// that is shared between the cloudlets.
+    /// The cloudlet length is equals to the capacity of
+    /// each PE, meaning that each cloudlet will finish in 2 seconds
+    /// because there is just 1 PE.
     @Test
     public void testGetCloudletExecListWhenEmptyAfterFinishedCloudletsForOneSchedulerPe() {
         final long mips = 1000;
@@ -283,11 +276,9 @@ public class CloudletSchedulerTimeSharedTest {
         assertEquals(0, instance.getCloudletExecList().size());
     }
 
-    /**
-     * Checks if VM RAM and BW used by a Cloudlet is released after
-     * it finishes and there is no other Cloudlet running.
-     * @see <a href="https://github.com/cloudsimplus/cloudsimplus/issues/429">Issue #429</a>
-     */
+    /// Checks if VM RAM and BW used by a Cloudlet is released after
+    /// it finishes and there is no other Cloudlet running.
+    /// @see <a href="https://github.com/cloudsimplus/cloudsimplus/issues/429">Issue #429</a>
     @Test
     public void testVmRamAndBwAreReleasedAfterLastCloudletFinishes() {
         final long mips = 1000;

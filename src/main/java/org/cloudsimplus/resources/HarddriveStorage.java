@@ -41,9 +41,7 @@ public class HarddriveStorage implements FileStorage {
     @Getter
     private final SimpleStorage storage;
 
-    /**
-     * The name of the storage device
-     */
+    /// The name of the storage device
     @Getter
     private final String name;
 
@@ -59,20 +57,16 @@ public class HarddriveStorage implements FileStorage {
     @Getter
     private double latency;
 
-    /**
-     * {@return the average seek time of the hard drive in seconds}
-     */
+    /// {@return the average seek time of the hard drive in seconds}
     @Getter
     private double avgSeekTime;
 
-    /**
-     * Creates a hard drive storage with a given name and capacity.
-     *
-     * @param name     the name of the new hard drive storage
-     * @param capacity the capacity in MByte
-     * @throws IllegalArgumentException when the name and the capacity are not valid
-     * @see #setPrng(ContinuousDistribution)
-     */
+    /// Creates a hard drive storage with a given name and capacity.
+    ///
+    /// @param name     the name of the new hard drive storage
+    /// @param capacity the capacity in MByte
+    /// @throws IllegalArgumentException when the name and the capacity are not valid
+    /// @see #setPrng(ContinuousDistribution)
     public HarddriveStorage(@NonNull final String name, final long capacity) throws IllegalArgumentException {
         if (StringUtils.isBlank(name)) {
             throw new IllegalArgumentException("Storage name cannot be empty.");
@@ -85,22 +79,18 @@ public class HarddriveStorage implements FileStorage {
         init();
     }
 
-    /**
-     * Creates a hard drive storage with a given capacity. In this case, the name of the storage
-     * is a default name.
-     *
-     * @param capacity the capacity in MByte
-     * @throws IllegalArgumentException when the capacity is not valid
-     */
+    /// Creates a hard drive storage with a given capacity. In this case, the name of the storage
+    /// is a default name.
+    ///
+    /// @param capacity the capacity in MByte
+    /// @throws IllegalArgumentException when the capacity is not valid
     public HarddriveStorage(final long capacity) throws IllegalArgumentException {
         this("HarddriveStorage", capacity);
     }
 
-    /**
-     * Initializes the hard drive. The most common parameters such
-     * as latency, average seek-time and maximum transfer rate are set.
-     * The default values are used to simulate the "Maxtor DiamondMax 10 ATA" hard disk.
-     */
+    /// Initializes the hard drive. The most common parameters such
+    /// as latency, average seek-time and maximum transfer rate are set.
+    /// The default values are used to simulate the "Maxtor DiamondMax 10 ATA" hard disk.
     private void init() {
         setLatency(DEF_LATENCY_SECS);
         setAvgSeekTime(DEF_SEEK_TIME_SECS);
@@ -127,12 +117,10 @@ public class HarddriveStorage implements FileStorage {
         return this;
     }
 
-    /**
-     * Sets the average seek time of the storage.
-     *
-     * @param seekTime the average seek time (in seconds)
-     * @return this instance
-     */
+    /// Sets the average seek time of the storage.
+    ///
+    /// @param seekTime the average seek time (in seconds)
+    /// @return this instance
     public HarddriveStorage setAvgSeekTime(final double seekTime) {
         this.avgSeekTime = MathUtil.nonNegative(seekTime, "seekTime");
         return this;
@@ -159,14 +147,12 @@ public class HarddriveStorage implements FileStorage {
         return getTransferTime(fileSize, getMaxTransferRate()) + getLatency();
     }
 
-    /**
-     * Gets the time to transfer a file (in MBytes)
-     * according to a given transfer speed (in Mbits/sec).
-     *
-     * @param fileSize the size of the file to compute the transfer time (in MBytes)
-     * @param speed    the speed (in MBits/sec) to compute the time to transfer the file
-     * @return the transfer time in seconds
-     */
+    /// Gets the time to transfer a file (in MBytes)
+    /// according to a given transfer speed (in Mbits/sec).
+    ///
+    /// @param fileSize the size of the file to compute the transfer time (in MBytes)
+    /// @param speed    the speed (in MBits/sec) to compute the time to transfer the file
+    /// @return the transfer time in seconds
     protected final double getTransferTime(final int fileSize, final double speed) {
         return BytesConversion.bytesToBits(fileSize) / speed;
     }

@@ -34,86 +34,62 @@ import java.util.EnumSet;
 import java.util.Optional;
 import java.util.Set;
 
-/**
- * Computes the confidence interval for any arbitrary metric
- * from results got from multiple simulation runs.
- *
- * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 6.5.3
- */
+/// Computes the confidence interval for any arbitrary metric
+/// from results got from multiple simulation runs.
+///
+/// @author Manoel Campos da Silva Filho
+/// @since CloudSim Plus 6.5.3
 @Getter
 public final class ConfidenceInterval {
-    /**
-     * The confidence level for computing the CI {@link #value} (in % from 0 to 1).
-     */
+    /// The confidence level for computing the CI [#value] (in % from 0 to 1).
     public static final double CONFIDENCE_LEVEL = 0.95;
 
-    /**
-     * The statistics that a {@link DoubleStatistics} object must compute
-     * to be used to create a ConfidenceInterval.
-     * For instance: {@code DoubleStatistics.of(ConfidenceInterval.REQUIRED_STATISTICS, values)}.
-     * @see #ConfidenceInterval(DoubleStatistics, String)
-     */
+    /// The statistics that a [DoubleStatistics] object must compute
+    /// to be used to create a ConfidenceInterval.
+    /// For instance: `DoubleStatistics.of(ConfidenceInterval.REQUIRED_STATISTICS, values)`.
+    /// @see #ConfidenceInterval(DoubleStatistics, String)
     public static final Set<Statistic> REQUIRED_STATISTICS =
         Collections.unmodifiableSet(EnumSet.of(Statistic.MEAN, Statistic.STANDARD_DEVIATION));
 
-    /**
-     * The name of the metric for which the Confidence Interval is computed.
-     */
+    /// The name of the metric for which the Confidence Interval is computed.
     private final String metricName;
 
-    /**
-     * The Confidence Interval value,
-     * which is the mean value for an arbitrary metric
-     * from multiple simulation runs.
-     * This value is usually referred to as just CI.
-     *
-     * @see #CONFIDENCE_LEVEL
-     */
+    /// The Confidence Interval value,
+    /// which is the mean value for an arbitrary metric
+    /// from multiple simulation runs.
+    /// This value is usually referred to as just CI.
+    ///
+    /// @see #CONFIDENCE_LEVEL
     private final double value;
 
-    /**
-     * The Standard Deviation.
-     */
+    /// The Standard Deviation.
     private final double stdDev;
 
-    /**
-     * The number of samples used to compute the Confidence Interval.
-     */
+    /// The number of samples used to compute the Confidence Interval.
     private final long samples;
 
-    /**
-     * The computed t-Distribution critical value.
-     * @see #computeCriticalValue(long)
-     */
+    /// The computed t-Distribution critical value.
+    /// @see #computeCriticalValue(long)
     private final double criticalValue;
 
-    /**
-     * The CI error margin (±), which defines the size of the interval in which
-     * results may lay between.
-     * The interval is between {@link #getLowerLimit()} and {@link #getUpperLimit()}.
-     */
+    /// The CI error margin (±), which defines the size of the interval in which
+    /// results may lay between.
+    /// The interval is between [#getLowerLimit()] and [#getUpperLimit()].
     private final double errorMargin;
 
-    /**
-     * The lower limit of the Confidence Interval,
-     * based on the {@link #getErrorMargin()}.
-     */
+    /// The lower limit of the Confidence Interval,
+    /// based on the [#getErrorMargin()].
     private final double lowerLimit;
 
-    /**
-     * The upper limit of the Confidence Interval,
-     * based on the {@link #getErrorMargin()}.
-     */
+    /// The upper limit of the Confidence Interval,
+    /// based on the [#getErrorMargin()].
     private final double upperLimit;
 
-    /**
-     * Creates a ConfidenceInterval (CI) object with 95% confidence level.
-     * @param stats the object containing the statistics for the arbitrary metric collected.
-     *              It must compute at least the {@link #REQUIRED_STATISTICS}.
-     * @param metricName the name of the metric for which the CI is computed.
-     * @throws IllegalArgumentException when the stats object doesn't compute the {@link #REQUIRED_STATISTICS}
-     */
+    /// Creates a ConfidenceInterval (CI) object with 95% confidence level.
+    /// @param stats the object containing the statistics for the arbitrary metric collected.
+    /// It must compute at least the [#REQUIRED_STATISTICS].
+    /// @param metricName the name of the metric for which the CI is computed.
+    /// @throws IllegalArgumentException when the stats object doesn't compute the [#REQUIRED_STATISTICS]
     public ConfidenceInterval(@NonNull final DoubleStatistics stats, @NonNull final String metricName) {
         this.metricName = metricName;
         final Optional<Double> optionalErrorMargin = errorMargin(stats);
@@ -184,12 +160,10 @@ public final class ConfidenceInterval {
         return Optional.of(criticalValue * stats.getAsDouble(Statistic.STANDARD_DEVIATION) / Math.sqrt(samples));
     }
 
-    /**
-     * Computes the Confidence Interval (CI) critical value for a given
-     * number of samples and confidence level.
-     * @param samples number of collected samples
-     * @return the Confidence Interval (CI) critical value
-     */
+    /// Computes the Confidence Interval (CI) critical value for a given
+    /// number of samples and confidence level.
+    /// @param samples number of collected samples
+    /// @return the Confidence Interval (CI) critical value
     private static double computeCriticalValue(final long samples) {
         /* Creates a T-Distribution with N-1 degrees of freedom
          * since we are computing the sample's confidence interval

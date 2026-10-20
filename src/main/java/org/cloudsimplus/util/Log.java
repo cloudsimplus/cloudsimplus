@@ -27,27 +27,21 @@ import ch.qos.logback.classic.Level;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * A utility class to enable changing logging
- * configuration such as the logging level.
- *
- * @since CloudSim Plus 3.0.0
- * @author Manoel Campos da Silva Filho
- */
+/// A utility class to enable changing logging
+/// configuration such as the logging level.
+///
+/// @since CloudSim Plus 3.0.0
+/// @author Manoel Campos da Silva Filho
 public final class Log {
 
-    /**
-     * A private constructor to avoid class instantiation.
-     */
+    /// A private constructor to avoid class instantiation.
     private Log(){}
 
-    /**
-     * Sets the logging {@link Level} for a given logger instance.
-     * You can enable just a specific type of log messages
-     * by using, for example, {@link Level#WARN} value.
-     * To completely disable the given logger, use {@link Level#OFF}.
-     * @param level the logging level to set
-     */
+    /// Sets the logging [Level] for a given logger instance.
+    /// You can enable just a specific type of log messages
+    /// by using, for example, [Level#WARN] value.
+    /// To completely disable the given logger, use [Level#OFF].
+    /// @param level the logging level to set
     public static void setLevel(final Logger logger, final Level level) {
         if (logger instanceof ch.qos.logback.classic.Logger logback)
             logback.setLevel(level);
@@ -57,13 +51,11 @@ public final class Log {
         }
     }
 
-    /**
-     * Sets the logging {@link Level} for <b>all logger instances</b>.
-     * You can enable just a specific type of log messages
-     * by using, for example, {@link Level#WARN} value.
-     * To completely disable logging, use {@link Level#OFF}.
-     * @param level the logging level to set
-     */
+    /// Sets the logging [Level] for **all logger instances**.
+    /// You can enable just a specific type of log messages
+    /// by using, for example, [Level#WARN] value.
+    /// To completely disable logging, use [Level#OFF].
+    /// @param level the logging level to set
     public static void setLevel(final Level level){
         final var root = LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
         setLevel(root, level);

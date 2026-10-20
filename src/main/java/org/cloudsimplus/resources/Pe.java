@@ -23,26 +23,20 @@ import org.cloudsimplus.vms.Vm;
 /// @author Manoel Campos da Silva Filho
 /// @since CloudSim Plus 1.0
 public interface Pe extends ChangeableId, ResourceManageable {
-    /**
-     * Status of PEs.
-     */
+    /// Status of PEs.
     enum Status {
-        /** Indicates the PE is FREE for allocation. */
+        /// Indicates the PE is FREE for allocation.
         FREE,
 
-        /** Indicates the PE is allocated and hence busy processing some Cloudlet. */
+        /// Indicates the PE is allocated and hence busy processing some Cloudlet.
         BUSY,
 
-        /**
-         * Indicates the PE is failed and hence it can't process any Cloudlet at this moment.
-         * This PE is failed because it belongs to a machine which is also failed.
-         */
+        /// Indicates the PE is failed and hence it can't process any Cloudlet at this moment.
+        /// This PE is failed because it belongs to a machine which is also failed.
         FAILED
     }
 
-    /**
-     * An attribute that implements the Null Object Design Pattern for {@link Pe} objects.
-     */
+    /// An attribute that implements the Null Object Design Pattern for [Pe] objects.
     Pe NULL = new PeNull();
 
     /// Gets the capacity of this Pe in [MIPS (Million Instructions Per Second)](https://en.wikipedia.org/wiki/Instructions_per_second).
@@ -86,36 +80,26 @@ public interface Pe extends ChangeableId, ResourceManageable {
     /// @return the PE provisioner
     PeProvisioner getPeProvisioner();
 
-    /**
-     * @return the status of the PE.
-     */
+    /// @return the status of the PE.
     Status getStatus();
 
     /// Sets the [status][#getStatus()] of the PE.
     /// @param status the new PE status
     Pe setStatus(Status status);
 
-    /**
-     * Checks if the PE is working (not failed).
-     * @return true if the PE is working, false otherwise
-     */
+    /// Checks if the PE is working (not failed).
+    /// @return true if the PE is working, false otherwise
     boolean isWorking();
 
-    /**
-     * Checks if the PE is failed.
-     * @return true if the PE is failed, false otherwise
-     */
+    /// Checks if the PE is failed.
+    /// @return true if the PE is failed, false otherwise
     boolean isFailed();
 
-    /**
-     * Checks if the PE is free to be used (it's idle).
-     * @return true if the PE is free, false otherwise
-     */
+    /// Checks if the PE is free to be used (it's idle).
+    /// @return true if the PE is free, false otherwise
     boolean isFree();
 
-    /**
-     * Checks if the PE is busy to be used (it's being used).
-     * @return true if the PE is busy, false otherwise
-     */
+    /// Checks if the PE is busy to be used (it's being used).
+    /// @return true if the PE is busy, false otherwise
     boolean isBusy();
 }

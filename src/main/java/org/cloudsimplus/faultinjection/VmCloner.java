@@ -33,87 +33,70 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
 
-/**
- * Enables cloning a {@link Vm} which was destroyed
- * due to a {@link HostFaultInjection Host Failure}.
- * It provides all the features to clone a Vm, simulating
- * the creating of another Vm from a snapshot of the failed one.
- * It also enables re-creating Cloudlets which were running
- * inside the failed VM.
- *
- * @author raysaoliveira
- * @since CloudSim Plus 1.2.3
- */
+/// Enables cloning a [Vm] which was destroyed
+/// due to a [Host Failure][HostFaultInjection].
+/// It provides all the features to clone a Vm, simulating
+/// the creating of another Vm from a snapshot of the failed one.
+/// It also enables re-creating Cloudlets which were running
+/// inside the failed VM.
+///
+/// @author raysaoliveira
+/// @since CloudSim Plus 1.2.3
 public interface VmCloner {
     Logger LOGGER = LoggerFactory.getLogger(VmCloner.class.getSimpleName());
     VmCloner NULL = new VmClonerNull();
 
-    /**
-     * @return the number of VMs cloned so far.
-     */
+    /// @return the number of VMs cloned so far.
     int getClonedVmsNumber();
 
-    /**
-     * Clones a given {@link Vm} using the Vm Cloner Function
-     * and their Cloudlets using the Cloudlets Cloner Function,
-     * binding the cloned Cloudlets to the cloned Vm.
-     *
-     * @param sourceVm the Vm to be cloned
-     * @return a {@link Map.Entry} where the key is the cloned Vm,
-     * and the value is the List of cloned Cloudlets.
-     * @see #setVmClonerFunction(UnaryOperator)
-     * @see #setCloudletsClonerFunction(Function)
-     */
+    /// Clones a given [Vm] using the Vm Cloner Function
+    /// and their Cloudlets using the Cloudlets Cloner Function,
+    /// binding the cloned Cloudlets to the cloned Vm.
+    ///
+    /// @param sourceVm the Vm to be cloned
+    /// @return a [Map.Entry] where the key is the cloned Vm,
+    /// and the value is the List of cloned Cloudlets.
+    /// @see #setVmClonerFunction(UnaryOperator)
+    /// @see #setCloudletsClonerFunction(Function)
     Map.Entry<Vm, List<Cloudlet>> clone(Vm sourceVm);
 
-    /**
-     * Sets the {@link UnaryOperator} to be used to clone {@link Vm}s.
-     * It is a Function that, when called internally, will create a clone of a specific Vm.
-     *
-     * @param vmClonerFunction the {@link Vm} cloner Function to set
-     */
+    /// Sets the [UnaryOperator] to be used to clone [Vm]s.
+    /// It is a Function that, when called internally, will create a clone of a specific Vm.
+    ///
+    /// @param vmClonerFunction the [Vm] cloner Function to set
     VmCloner setVmClonerFunction(UnaryOperator<Vm> vmClonerFunction);
 
-    /**
-     * Gets the {@link Function} to be used to clone Vm's {@link Cloudlet}s.
-     * When the given Function is called internally, creates a clone of cloudlets
-     * which were running inside a specific Vm.
-     *
-     * <p>Such a Function is used to recreate those Cloudlets
-     * inside a clone of the failed VM. In this case, all the Cloudlets are
-     * recreated from scratch into the cloned VM.
-     * This way, when they are submitted to a broker,
-     * they re-start execution from the beginning.
-     * </p>
-     *
-     * @param cloudletsClonerFunction the {@link Cloudlet}s cloner Function to set
-     */
+    /// Gets the [Function] to be used to clone Vm's [Cloudlet]s.
+    /// When the given Function is called internally, creates a clone of cloudlets
+    /// which were running inside a specific Vm.
+    ///
+    /// Such a Function is used to recreate those Cloudlets
+    /// inside a clone of the failed VM. In this case, all the Cloudlets are
+    /// recreated from scratch into the cloned VM.
+    /// This way, when they are submitted to a broker,
+    /// they re-start execution from the beginning.
+    ///
+    /// @param cloudletsClonerFunction the [Cloudlet]s cloner Function to set
     VmCloner setCloudletsClonerFunction(Function<Vm, List<Cloudlet>> cloudletsClonerFunction);
 
-    /**
-     * {@return the maximum number of times Vms will be cloned due to a failure}
-     * For instance, if this value is equal to 2,
-     * it means if all VMs from a given broker are destroyed (due to a failure) multiple times,
-     * a clone will be created only 2 times. If all VMs are destroyed again
-     * for the 3rd time, no clone will be created.
-     * The default value is 1.
-     */
+    /// {@return the maximum number of times Vms will be cloned due to a failure}
+    /// For instance, if this value is equal to 2,
+    /// it means if all VMs from a given broker are destroyed (due to a failure) multiple times,
+    /// a clone will be created only 2 times. If all VMs are destroyed again
+    /// for the 3rd time, no clone will be created.
+    /// The default value is 1.
     int getMaxClonesNumber();
 
-    /**
-     * Sets the maximum number of times Vms will be cloned due to a failure.
-     * For instance, if this value is equal to 2,
-     * it means if all VMs from a given broker are destroyed multiple times,
-     * a clone will be created only 2 times. If all VMs are destroyed again
-     * for the 3rd time, no clone will be created.
-     * The default value is 1.
-     *
-     * @param maxClonesNumber the value to set
-     */
+    /// Sets the maximum number of times Vms will be cloned due to a failure.
+    /// For instance, if this value is equal to 2,
+    /// it means if all VMs from a given broker are destroyed multiple times,
+    /// a clone will be created only 2 times. If all VMs are destroyed again
+    /// for the 3rd time, no clone will be created.
+    /// The default value is 1.
+    ///
+    /// @param maxClonesNumber the value to set
     VmCloner setMaxClonesNumber(int maxClonesNumber);
 
-    /**
-     * @return true if the maximum number of times Vms were cloned was reached, false otherwise
-     */
+    /// @return true if the maximum number of times Vms were cloned was reached, false otherwise
     boolean isMaxClonesNumberReached();
 }

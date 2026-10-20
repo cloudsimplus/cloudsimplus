@@ -30,28 +30,18 @@ import java.util.ArrayList;
 import java.util.List;
 import org.jspecify.annotations.Nullable;
 
-/**
- * A Host that support simulation of networked {@link Datacenter}s. It executes actions related to the management of packets
- * (sent and received) besides {@link Vm} management (e.g., creation and destruction).
- * A Host has a defined policy for provisioning memory and bw, as
- * well as an allocation policy for {@link Pe}'s to virtual machines.
- *
- * <p>Please refer to the following publication for more details:
- * <ul>
- * <li>
- * <a href="https://doi.org/10.1109/UCC.2011.24">
- * Saurabh Kumar Garg and Rajkumar Buyya, NetworkCloudSim: Modelling Parallel
- * Applications in Cloud Simulations, Proceedings of the 4th IEEE/ACM
- * International Conference on Utility and Cloud Computing (UCC 2011, IEEE CS
- * Press, USA), Melbourne, Australia, December 5-7, 2011.
- * </a>
- * </li>
- * </ul>
- * </p>
- *
- * @author Saurabh Kumar Garg
- * @since CloudSim Toolkit 3.0
- */
+/// A Host that support simulation of networked [Datacenter]s. It executes actions related to the management of packets
+/// (sent and received) besides [Vm] management (e.g., creation and destruction).
+/// A Host has a defined policy for provisioning memory and bw, as
+/// well as an allocation policy for [Pe]'s to virtual machines.
+///
+/// Please refer to the following publication for more details:
+///
+/// -
+///   [Saurabh Kumar Garg and Rajkumar Buyya, NetworkCloudSim: Modelling Parallel Applications in Cloud Simulations, Proceedings of the 4th IEEE/ACM International Conference on Utility and Cloud Computing (UCC 2011, IEEE CS Press, USA), Melbourne, Australia, December 5-7, 2011.](https://doi.org/10.1109/UCC.2011.24)
+///
+/// @author Saurabh Kumar Garg
+/// @since CloudSim Toolkit 3.0
 @Accessors
 public class NetworkHost extends HostSimple {
     public static final NetworkHost NULL = new NetworkHost();
@@ -60,36 +50,26 @@ public class NetworkHost extends HostSimple {
     @Getter
     private long totalDataTransferBytes;
 
-    /**
-     * A buffer of packets to send for VMs inside this Host.
-     */
+    /// A buffer of packets to send for VMs inside this Host.
     private final List<HostPacket> pktsToSendForLocalVms;
 
-    /**
-     * A buffer of packets to send for VMs outside this Host.
-     */
+    /// A buffer of packets to send for VMs outside this Host.
     private final List<HostPacket> pktsToSendForExternalVms;
 
-    /**
-     * List of received packets.
-     */
+    /// List of received packets.
     private final List<HostPacket> hostPktsReceived;
 
-    /**
-     * An Edge Switch the Host is directly connected to.
-     * TODO Setter is to be called only by the {@link EdgeSwitch#connectHost(NetworkHost)} method.
-     */
+    /// An Edge Switch the Host is directly connected to.
+    /// TODO Setter is to be called only by the [EdgeSwitch#connectHost(NetworkHost)] method.
     @Setter @Nullable
     private EdgeSwitch edgeSwitch;
 
-    /**
-     * Creates and starts up a NetworkHost using a {@link VmSchedulerSpaceShared} as default.
-     *
-     * @param ram the RAM capacity in Megabytes
-     * @param bw the Bandwidth (BW) capacity in Megabits/s
-     * @param storage the storage capacity in Megabytes
-     * @param peList the host's {@link Pe} list
-     */
+    /// Creates and starts up a NetworkHost using a [VmSchedulerSpaceShared] as default.
+    ///
+    /// @param ram the RAM capacity in Megabytes
+    /// @param bw the Bandwidth (BW) capacity in Megabits/s
+    /// @param storage the storage capacity in Megabytes
+    /// @param peList the host's [Pe] list
     public NetworkHost(final long ram, final long bw, final long storage, final List<Pe> peList) {
         super(ram, bw, storage, peList);
         hostPktsReceived = new ArrayList<>();
@@ -97,9 +77,7 @@ public class NetworkHost extends HostSimple {
         pktsToSendForLocalVms = new ArrayList<>();
     }
 
-    /**
-     * Creates a NetworkHost with no resources.
-     */
+    /// Creates a NetworkHost with no resources.
     private NetworkHost() {
         this(0, 0, 0, List.of(Pe.NULL));
         setId(-1);
@@ -114,9 +92,7 @@ public class NetworkHost extends HostSimple {
         return  nextFinishingCloudletTime;
     }
 
-    /**
-     * Receives packets and forwards them to target VMs and respective Cloudlets.
-     */
+    /// Receives packets and forwards them to target VMs and respective Cloudlets.
     private void receivePackets() {
         for (final HostPacket hostPkt : hostPktsReceived) {
             receivePacket(hostPkt.getVmPacket());
@@ -143,30 +119,24 @@ public class NetworkHost extends HostSimple {
                 getSimulation().clockStr(), getClass(), vmPacket.getDestination(), this);
     }
 
-    /**
-     * Receives a packet targeting some VM and sets the packet receive time.
-     *
-     * @param vmPacket the {@link VmPacket} to receive
-     * @return the targeting VM
-     */
+    /// Receives a packet targeting some VM and sets the packet receive time.
+    ///
+    /// @param vmPacket the [VmPacket] to receive
+    /// @return the targeting VM
     private Vm receiveVmPacket(final VmPacket vmPacket) {
         vmPacket.setReceiveTime(getSimulation().clock());
         return vmPacket.getDestination();
     }
 
-    /**
-     * Gets all packet lists from all VMs placed into the Host and sends them all.
-     * It checks whether a packet belongs to a local VM or to a VM hosted on another machine.
-     */
+    /// Gets all packet lists from all VMs placed into the Host and sends them all.
+    /// It checks whether a packet belongs to a local VM or to a VM hosted on another machine.
     private void sendAllPacketListsOfAllVms() {
         getVmList().forEach(this::collectAllPacketsToSendFromVm);
         sendPacketsToLocalVms();
         sendPacketsToExternalVms();
     }
 
-    /**
-     * Gets the packets from the local packets buffer and sends them to VMs inside this host.
-     */
+    /// Gets the packets from the local packets buffer and sends them to VMs inside this host.
     private void sendPacketsToLocalVms() {
         for (final HostPacket hostPkt : pktsToSendForLocalVms) {
             hostPkt.setSendTime(hostPkt.getReceiveTime());
@@ -184,10 +154,8 @@ public class NetworkHost extends HostSimple {
         pktsToSendForLocalVms.clear();
     }
 
-    /**
-     * {@return the Edge Switch the Host is directly connected to}
-     * @throws IllegalStateException when the Host is not connected to any switch
-     */
+    /// {@return the Edge Switch the Host is directly connected to}
+    /// @throws IllegalStateException when the Host is not connected to any switch
     public EdgeSwitch getEdgeSwitch() {
         if (edgeSwitch == null) {
             throw new IllegalStateException("%s is not connected to any %s".formatted(this, EdgeSwitch.class.getSimpleName()));
@@ -196,9 +164,7 @@ public class NetworkHost extends HostSimple {
         return edgeSwitch;
     }
 
-    /**
-     * Sends packets from the local packets buffer to VMs outside this host.
-     */
+    /// Sends packets from the local packets buffer to VMs outside this host.
     private void sendPacketsToExternalVms() {
         for (final HostPacket pkt : pktsToSendForExternalVms) {
             final double delay = getEdgeSwitch().downlinkTransferDelay(pkt, pktsToSendForExternalVms.size());
@@ -216,14 +182,13 @@ public class NetworkHost extends HostSimple {
         return vm.getCloudletScheduler().getTaskScheduler();
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * <p><b>It also creates and sets a {@link CloudletTaskScheduler} for each
-     * Vm that doesn't have one already.</b></p>
-     * @param vm {@inheritDoc}
-     * @return {@inheritDoc}
-     */
+    /// {@inheritDoc}
+    ///
+    /// **It also creates and sets a [CloudletTaskScheduler] for each
+    /// Vm that doesn't have one already.**
+    ///
+    /// @param vm {@inheritDoc}
+    /// @return {@inheritDoc}
     @Override
     public HostSuitability createVm(final Vm vm) {
         final HostSuitability suitability = super.createVm(vm);
@@ -238,11 +203,9 @@ public class NetworkHost extends HostSimple {
         }
     }
 
-    /**
-     * Collects all packets inside a specific packet list from a Vm, so that those packets can be sent further on.
-     *
-     * @param sourceVm the VM from where the packets will be sent
-     */
+    /// Collects all packets inside a specific packet list from a Vm, so that those packets can be sent further on.
+    ///
+    /// @param sourceVm the VM from where the packets will be sent
     private void collectAllPacketsToSendFromVm(final Vm sourceVm) {
         final CloudletTaskScheduler taskScheduler = getVmPacketScheduler(sourceVm);
         for (final VmPacket vmPkt : taskScheduler.getVmPacketsToSend()) {
@@ -252,12 +215,10 @@ public class NetworkHost extends HostSimple {
         taskScheduler.clearVmPacketsToSend();
     }
 
-    /**
-     * Collects a specific packet from a given Vm to join with other packets to be sent.
-     *
-     * @param vmPkt a packet to be sent from a Vm to another one
-     * @see #collectAllPacketsToSendFromVm(Vm)
-     */
+    /// Collects a specific packet from a given Vm to join with other packets to be sent.
+    ///
+    /// @param vmPkt a packet to be sent from a Vm to another one
+    /// @see #collectAllPacketsToSendFromVm(Vm)
     private void collectPacketToSendFromVm(final VmPacket vmPkt) {
         final var hostPkt = new HostPacket(this, vmPkt);
         final var receiverVm = vmPkt.getDestination();
@@ -267,12 +228,10 @@ public class NetworkHost extends HostSimple {
         pktsToSendList.add(hostPkt);
     }
 
-    /**
-     * Adds a packet to the list of received packets
-     * to further submit them to the respective target VMs and Cloudlets.
-     *
-     * @param hostPacket received network packet
-     */
+    /// Adds a packet to the list of received packets
+    /// to further submit them to the respective target VMs and Cloudlets.
+    ///
+    /// @param hostPacket received network packet
     public void addReceivedNetworkPacket(final HostPacket hostPacket){
         hostPktsReceived.add(hostPacket);
     }

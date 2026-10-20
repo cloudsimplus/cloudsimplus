@@ -23,16 +23,12 @@
  */
 package org.cloudsimplus.core;
 
-/**
- * An interface for objects that have to be identified by an id
- * and that also have a name.
- *
- * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 1.0
- */
+/// An interface for objects that have to be identified by an id
+/// and that also have a name.
+///
+/// @author Manoel Campos da Silva Filho
+/// @since CloudSim Plus 1.0
 public interface Nameable extends Identifiable {
-    /**
-     * @return the name of this entity
-     */
+    /// @return the name of this entity
     String getName();
 }

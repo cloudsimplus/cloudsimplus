@@ -45,14 +45,12 @@ public abstract non-sealed class PeProvisionerAbstract extends ResourceProvision
         setResources(pe, Vm::getProcessor);
     }
 
-    /**
-     * Checks if the {@link Pe} has a {@link PeProvisioner} assigned that is
-     * different from the current one.
-     *
-     * @param pe the Pe to check
-     * @return {@code true} if the Pe has a PeProvisioner different then the current one,
-     *         {@code false} otherwise.
-     */
+    /// Checks if the [Pe] has a [PeProvisioner] assigned that is
+    /// different from the current one.
+    ///
+    /// @param pe the Pe to check
+    /// @return `true` if the Pe has a PeProvisioner different then the current one,
+    /// `false` otherwise.
     private boolean isOtherProvisionerAssignedToPe(@NonNull final Pe pe) {
         return pe.getPeProvisioner() != null &&
             pe.getPeProvisioner() != PeProvisioner.NULL &&

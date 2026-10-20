@@ -50,97 +50,73 @@ import org.slf4j.LoggerFactory;
 public interface Heuristic<S extends HeuristicSolution<?>> {
     Logger LOGGER = LoggerFactory.getLogger(Heuristic.class.getSimpleName());
 
-    /**
-     * A property that implements the Null Object Design Pattern for {@link Heuristic} objects.
-     */
+    /// A property that implements the Null Object Design Pattern for [Heuristic] objects.
     Heuristic NULL = new HeuristicNull();
 
-    /**
-     * Computes the acceptance probability to define if a neighbor solution
-     * has to be accepted or not, compared to the {@link #getBestSolutionSoFar()}.
-     *
-     * @return the acceptance probability, in scale from [0 to 1] where:
-     * 0 is to maintain the {@link #getBestSolutionSoFar() current solution};
-     * 1 is to accept the neighbor solution;
-     * intermediate values define the probability that the neighbor solution
-     * will be randomly accepted.
-     */
+    /// Computes the acceptance probability to define if a neighbor solution
+    /// has to be accepted or not, compared to the [#getBestSolutionSoFar()].
+    ///
+    /// @return the acceptance probability, in scale from \[0 to 1\] where:
+    /// 0 is to maintain the [current solution][#getBestSolutionSoFar()];
+    /// 1 is to accept the neighbor solution;
+    /// intermediate values define the probability that the neighbor solution
+    /// will be randomly accepted.
     double getAcceptanceProbability();
 
-	/**
-	 * Gets a random number between 0 (inclusive) and maxValue (exclusive).
-	 *
-	 * @param maxValue the max value to get a random number (exclusive)
-	 * @return the random number
-	 */
+	/// Gets a random number between 0 (inclusive) and maxValue (exclusive).
+	///
+	/// @param maxValue the max value to get a random number (exclusive)
+	/// @return the random number
     int getRandomValue(int maxValue);
 
-    /**
-     * Checks if the solution search can be stopped,
-     * since a suitable solution was found or the number of iterations desired was reached.
-     *
-     * @return true if the solution search can be stopped, false otherwise.
-     */
+    /// Checks if the solution search can be stopped,
+    /// since a suitable solution was found or the number of iterations desired was reached.
+    ///
+    /// @return true if the solution search can be stopped, false otherwise.
     boolean isToStopSearch();
 
-    /**
-     * Gets the initial solution that the heuristic will start from to try to improve it.
-     * If no initial solution was generated yet, one should be randomly generated.
-     * @return the initial randomly generated solution
-     */
+    /// Gets the initial solution that the heuristic will start from to try to improve it.
+    /// If no initial solution was generated yet, one should be randomly generated.
+    /// @return the initial randomly generated solution
     S getInitialSolution();
 
-    /**
-     * @return the latest neighbor solution created
-     * @see #createNeighbor(HeuristicSolution)
-     */
+    /// @return the latest neighbor solution created
+    /// @see #createNeighbor(HeuristicSolution)
     S getNeighborSolution();
 
-    /**
-     * Creates a neighbor-solution cloning a source one
-     * and randomly changing some of its values.
-     * A neighbor solution is one that is close to the current solution
-     * and has just small changes.
-     *
-     * @param source the source to create a neighbor solution
-     * @return the cloned and randomly changed solution that represents a neighbor solution
-     */
+    /// Creates a neighbor-solution cloning a source one
+    /// and randomly changing some of its values.
+    /// A neighbor solution is one that is close to the current solution
+    /// and has just small changes.
+    ///
+    /// @param source the source to create a neighbor solution
+    /// @return the cloned and randomly changed solution that represents a neighbor solution
     S createNeighbor(S source);
 
-    /**
-     * @return the best solution found out up to now.
-     */
+    /// @return the best solution found out up to now.
     S getBestSolutionSoFar();
 
-    /**
-     * @return the number of times a neighbor solution will be searched
-     * at each iteration of the {@link #solve() solution finding}.
-     */
+    /// @return the number of times a neighbor solution will be searched
+    /// at each iteration of the [solution finding][#solve()].
     int getSearchesByIteration();
 
-    /**
-     * Sets the number of times a neighbor solution will be searched
-     * at each iteration of the {@link #solve() solution finding}.
-     *
-     * @param numberOfNeighborhoodSearches number of neighbor searches to perform at each iteration
-     */
+    /// Sets the number of times a neighbor solution will be searched
+    /// at each iteration of the [solution finding][#solve()].
+    ///
+    /// @param numberOfNeighborhoodSearches number of neighbor searches to perform at each iteration
     Heuristic<S> setSearchesByIteration(int numberOfNeighborhoodSearches);
 
-	/**
-	 * Starts the heuristic to find a suboptimal solution.
-	 * After the method finishes, you can call the {@link #getBestSolutionSoFar()}
-	 * to get the final solution.
-	 *
-	 * @return the final solution
-	 * @see #getBestSolutionSoFar()
-     *
-	 * TODO Try to parallelize the solution finding to reduce search time using Parallel Streams.
-	 */
+	/// Starts the heuristic to find a suboptimal solution.
+	/// After the method finishes, you can call the [#getBestSolutionSoFar()]
+	/// to get the final solution.
+	///
+	/// @return the final solution
+	/// @see #getBestSolutionSoFar()
+	///
+	/// TODO Try to parallelize the solution finding to reduce search time using Parallel Streams.
 	S solve();
 
-	/**
-	 * @return the time taken to finish the solution search (in seconds).
-	 * @see #solve()
-	 */
+	/// @return the time taken to finish the solution search (in seconds).
+	/// @see #solve()
 	double getSolveTime();
 }

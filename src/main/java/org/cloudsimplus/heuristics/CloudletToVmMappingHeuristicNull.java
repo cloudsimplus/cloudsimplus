@@ -29,13 +29,11 @@ import org.cloudsimplus.vms.Vm;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * A class to allow the implementation of Null Object Design Pattern
- * for {@link CloudletToVmMappingHeuristic} interface and extensions of it.
- *
- * @author Manoel Campos da Silva Filho
- * @see CloudletToVmMappingHeuristic#NULL
- */
+/// A class to allow the implementation of Null Object Design Pattern
+/// for [CloudletToVmMappingHeuristic] interface and extensions of it.
+///
+/// @author Manoel Campos da Silva Filho
+/// @see CloudletToVmMappingHeuristic#NULL
 class CloudletToVmMappingHeuristicNull extends HeuristicNull<CloudletToVmMappingSolution> implements CloudletToVmMappingHeuristic {
     @Override public List<Cloudlet> getCloudletList() { return Collections.emptyList(); }
     @Override public List<Vm> getVmList() { return Collections.emptyList(); }

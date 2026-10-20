@@ -25,20 +25,16 @@ package org.cloudsimplus.builders.tables;
 
 import org.apache.commons.lang3.StringUtils;
 
-/**
- * Prints a Markdown table from a given data set.
- * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 6.4.3
- */
+/// Prints a Markdown table from a given data set.
+/// @author Manoel Campos da Silva Filho
+/// @since CloudSim Plus 6.4.3
 public class MarkdownTable extends CsvTable {
     public MarkdownTable() {
         this("");
     }
 
-    /**
-     * Creates a Table
-     * @param title the title of the table
-     */
+    /// Creates a Table
+    /// @param title the title of the table
     public MarkdownTable(final String title) {
         super(title);
         setColumnSeparator("|");
@@ -66,9 +62,7 @@ public class MarkdownTable extends CsvTable {
         return createHorizontalLine(true);
     }
 
-    /**
-     * There is no need for a table closing in Markdown.
-     */
+    /// There is no need for a table closing in Markdown.
     @Override
     public void printTableClosing() {/**/}
 

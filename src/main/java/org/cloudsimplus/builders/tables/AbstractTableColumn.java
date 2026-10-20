@@ -27,70 +27,52 @@ import lombok.Getter;
 
 import static java.util.Objects.requireNonNullElse;
 
-/**
- * An abstract column of a table to be generated using a {@link Table} class.
- * @author Manoel Campos da Silva Filho
- */
+/// An abstract column of a table to be generated using a [Table] class.
+/// @author Manoel Campos da Silva Filho
 @Getter
 public non-sealed abstract class AbstractTableColumn implements TableColumn {
-    /**
-     * The title to be displayed at the top of the column.
-     */
+    /// The title to be displayed at the top of the column.
     private String title;
 
-    /**
-     * The subtitle to be displayed below the title of the column (optional).
-     */
+    /// The subtitle to be displayed below the title of the column (optional).
     private String subTitle;
 
-    /**
-     * The format to be used to display the content of the column,
-     * according to the {@link String#format(java.lang.String, java.lang.Object...)} (optional).
-     */
+    /// The format to be used to display the content of the column,
+    /// according to the [String#format(java.lang.String,java.lang.Object...)] (optional).
     private String format;
 
-    /**
-     * The table that the column belongs to.
-     */
+    /// The table that the column belongs to.
     @SuppressWarnings("NullAway.Init") // set by Table.addColumn() when not given in the constructor
     private Table table;
 
-    /**
-     * Creates a column with a specific title.
-     * @param table the table that the column belongs to.
-     * @param title the column title.
-     */
+    /// Creates a column with a specific title.
+    /// @param table the table that the column belongs to.
+    /// @param title the column title.
     public AbstractTableColumn(final Table table, final String title) {
         this(table, title, "");
     }
 
-    /**
-     * Creates a column with a specific title, subtitle and format.
-     * @param title the column title.
-     * @param subTitle the column subtitle.
-     * @param format the column format.
-     */
+    /// Creates a column with a specific title, subtitle and format.
+    /// @param title the column title.
+    /// @param subTitle the column subtitle.
+    /// @param format the column format.
     public AbstractTableColumn(final String title, final String subTitle, final String format) {
         this.title = title;
         this.subTitle = subTitle;
         this.setFormat(format);
     }
 
-    /**
-     * Creates a column with a specific title and subtitle for a given table.
-     * @param title the column title.
-     * @param subTitle the column subtitle.
-     */
+    /// Creates a column with a specific title and subtitle for a given table.
+    /// @param title the column title.
+    /// @param subTitle the column subtitle.
     public AbstractTableColumn(final Table table, final String title, final String subTitle) {
         this(title, subTitle);
         this.table = table;
     }
 
-    /**
-     * Creates a column with a specific title and subtitle.
-     * @param title the column title.
-     * @param subTitle the column subtitle.
-     */
+    /// Creates a column with a specific title and subtitle.
+    /// @param title the column title.
+    /// @param subTitle the column subtitle.
     public AbstractTableColumn(final String title, final String subTitle) {
         this(title, subTitle, "");
     }
@@ -124,12 +106,10 @@ public non-sealed abstract class AbstractTableColumn implements TableColumn {
         return this;
     }
 
-    /**
-     * Generates the string that represents the data of the column,
-     * formatted according to the {@link #getFormat() format}.
-     * @param data the data of the column to be formatted
-     * @return a string containing the formatted column data
-     */
+    /// Generates the string that represents the data of the column,
+    /// formatted according to the [format][#getFormat()].
+    /// @param data the data of the column to be formatted
+    /// @return a string containing the formatted column data
     @Override
     public String generateData(final Object data){
         if(format.isBlank()) {
@@ -139,12 +119,10 @@ public non-sealed abstract class AbstractTableColumn implements TableColumn {
         return format.formatted(data);
     }
 
-    /**
-     * Generates a header for the column, either for the title or subtitle header.
-     *
-     * @param str header title or subtitle
-     * @return the generated header string
-     */
+    /// Generates a header for the column, either for the title or subtitle header.
+    ///
+    /// @param str header title or subtitle
+    /// @return the generated header string
     protected abstract String generateHeader(String str);
 
     @Override
@@ -162,11 +140,9 @@ public non-sealed abstract class AbstractTableColumn implements TableColumn {
         return table.getColumns().indexOf(this);
     }
 
-    /**
-     * Indicates if the current column is the last one
-     * in the column list of the {@link #getTable() Table}.
-     * @return true if it is the last column, false otherwise.
-     */
+    /// Indicates if the current column is the last one
+    /// in the column list of the [Table][#getTable()].
+    /// @return true if it is the last column, false otherwise.
     protected boolean isLastColumn() {
         return getIndex() == getTable().getColumns().size()-1;
     }

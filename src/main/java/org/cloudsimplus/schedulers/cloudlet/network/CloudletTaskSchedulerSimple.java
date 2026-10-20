@@ -21,19 +21,17 @@ import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
-/**
- * A scheduling policy performed by a {@link Vm} to process {@link CloudletTask}s
- * belonging to a {@link NetworkCloudlet}.
- *
- * <p>It also schedules the network communication between Cloudlets,
- * managing the time a Cloudlet stays blocked waiting
- * the response of a network packet sent to another cloudlet.</p>
- *
- * @author Saurabh Kumar Garg
- * @author Manoel Campos da Silva Filho
- *
- * @since CloudSim Plus 1.0
- */
+/// A scheduling policy performed by a [Vm] to process [CloudletTask]s
+/// belonging to a [NetworkCloudlet].
+///
+/// It also schedules the network communication between Cloudlets,
+/// managing the time a Cloudlet stays blocked waiting
+/// the response of a network packet sent to another cloudlet.
+///
+/// @author Saurabh Kumar Garg
+/// @author Manoel Campos da Silva Filho
+///
+/// @since CloudSim Plus 1.0
 @Accessors
 public class CloudletTaskSchedulerSimple implements CloudletTaskScheduler {
     private static final Logger LOGGER = LoggerFactory.getLogger(CloudletTaskSchedulerSimple.class.getSimpleName());
@@ -41,19 +39,15 @@ public class CloudletTaskSchedulerSimple implements CloudletTaskScheduler {
     @Getter @Setter
     private Vm vm = Vm.NULL;
 
-    /** @see #getVmPacketsToSend() */
+    /// @see #getVmPacketsToSend()
     private final List<VmPacket> vmPacketsToSend;
 
-    /**
-     * A map of {@link VmPacket}'s received, where each key is the
-     * sender {@link Vm} and each value is the list of packets sent by that VM
-     * targeting the VM of this scheduler.
-     */
+    /// A map of [VmPacket]'s received, where each key is the
+    /// sender [Vm] and each value is the list of packets sent by that VM
+    /// targeting the VM of this scheduler.
     private final Map<Vm, List<VmPacket>> vmPacketsReceivedMap;
 
-    /**
-     * Creates a CloudletTaskSchedulerSimple.
-     */
+    /// Creates a CloudletTaskSchedulerSimple.
     public CloudletTaskSchedulerSimple() {
         super();
         vmPacketsToSend = new ArrayList<>();
@@ -118,14 +112,12 @@ public class CloudletTaskSchedulerSimple implements CloudletTaskScheduler {
                  .isPresent();
     }
 
-    /**
-     * Gets the list of packets to be sent from a given source
-     * cloudlet and adds this list to the list of all packets to send
-     * from the VM hosting that cloudlet.
-     *
-     * @param sourceCloudlet cloudlet to get the list of packets to send
-     * @param task the network task that will send the packets
-     */
+    /// Gets the list of packets to be sent from a given source
+    /// cloudlet and adds this list to the list of all packets to send
+    /// from the VM hosting that cloudlet.
+    ///
+    /// @param sourceCloudlet cloudlet to get the list of packets to send
+    /// @param task the network task that will send the packets
     private void addPacketsToBeSentFromVm(final NetworkCloudlet sourceCloudlet, final CloudletSendTask task) {
         LOGGER.trace(
             "{}: {}: {} pkts added to be sent from {} in {}",
@@ -137,13 +129,11 @@ public class CloudletTaskSchedulerSimple implements CloudletTaskScheduler {
         scheduleNextTaskIfCurrentIsFinished(sourceCloudlet);
     }
 
-    /**
-     * Process packets to be received by a given cloudlet and deliver them to it.
-     *
-     * @param destinationCloudlet a {@link NetworkCloudlet} that is waiting for packets,
-     *                                    which is going to be checked if there are packets targeting it.
-     * @param task the network task that will receive the packets
-     */
+    /// Process packets to be received by a given cloudlet and deliver them to it.
+    ///
+    /// @param destinationCloudlet a [NetworkCloudlet] that is waiting for packets,
+    /// which is going to be checked if there are packets targeting it.
+    /// @param task the network task that will receive the packets
     private void receivePackets(final NetworkCloudlet destinationCloudlet, final CloudletReceiveTask task) {
         final List<VmPacket> receivedPkts = getPacketsSentToCloudlet(task);
         // Assumption: the packet will not arrive in the same cycle
@@ -171,30 +161,26 @@ public class CloudletTaskSchedulerSimple implements CloudletTaskScheduler {
             pkt.getSize(), pkt.getSenderCloudlet(), pkt.getSource());
     }
 
-    /**
-     * Gets the current task by casting it to a generic type
-     * @param cloudlet the Cloudlet to get its current task by casting it
-     * @param <T> the generic type to cast the task to
-     * @return the current task after casting it
-     */
+    /// Gets the current task by casting it to a generic type
+    /// @param cloudlet the Cloudlet to get its current task by casting it
+    /// @param <T> the generic type to cast the task to
+    /// @return the current task after casting it
     private <T extends CloudletTask> Optional<T> getCloudletCurrentTask(final NetworkCloudlet cloudlet) {
         return cloudlet.getCurrentTask().map(task -> (T) task);
     }
 
-    /**
-     * Checks if there are packets sent to a given {@link NetworkCloudlet},
-     * to be processed by a {@link CloudletReceiveTask}, and returns them to be
-     * delivered for that Cloudlet.
-     *
-     * <p>It takes just the packets the task is still waiting for,
-     * keeping the remaining ones to other receive tasks (such as
-     * when multiple Cloudlets in the same VM send packets to the same Cloudlet).</p>
-     *
-     * @param receiveTask the {@link CloudletReceiveTask} that is waiting for packets
-     * @return the list of packets targeting the {@link NetworkCloudlet}; or an empty list
-     *         if there are no packets received targeting such a Cloudlet.
-     * @see CloudletReceiveTask#isPacketExpected(VmPacket)
-     */
+    /// Checks if there are packets sent to a given [NetworkCloudlet],
+    /// to be processed by a [CloudletReceiveTask], and returns them to be
+    /// delivered for that Cloudlet.
+    ///
+    /// It takes just the packets the task is still waiting for,
+    /// keeping the remaining ones to other receive tasks (such as
+    /// when multiple Cloudlets in the same VM send packets to the same Cloudlet).
+    ///
+    /// @param receiveTask the [CloudletReceiveTask] that is waiting for packets
+    /// @return the list of packets targeting the [NetworkCloudlet]; or an empty list
+    /// if there are no packets received targeting such a Cloudlet.
+    /// @see CloudletReceiveTask#isPacketExpected(VmPacket)
     private List<VmPacket> getPacketsSentToCloudlet(final CloudletReceiveTask receiveTask) {
         final List<VmPacket> pktsFromExpectedSenderVm = getListOfPacketsSentFromVm(receiveTask.getSourceVm());
 
@@ -206,12 +192,10 @@ public class CloudletTaskSchedulerSimple implements CloudletTaskScheduler {
                 .toList();
     }
 
-    /**
-     * Schedules the execution of the next Cloudlet task.
-     * @param cloudlet the Cloudlet whose next task is to be scheduled
-     * @return true if the current task is finished and the next one has started;
-     * false if the current task is not finished, or there aren't any more tasks to be executed.
-     */
+    /// Schedules the execution of the next Cloudlet task.
+    /// @param cloudlet the Cloudlet whose next task is to be scheduled
+    /// @return true if the current task is finished and the next one has started;
+    /// false if the current task is not finished, or there aren't any more tasks to be executed.
     private boolean scheduleNextTaskIfCurrentIsFinished(final NetworkCloudlet cloudlet) {
         if(!cloudlet.startNextTaskIfCurrentIsFinished(cloudlet.getSimulation().clock())){
             return false;
@@ -232,13 +216,11 @@ public class CloudletTaskSchedulerSimple implements CloudletTaskScheduler {
         return Collections.unmodifiableList(vmPacketsToSend);
     }
 
-    /**
-     * Gets the list of packets received that were sent from a given VM,
-     * targeting the VM of this scheduler.
-     *
-     * @param sourceVm VM to get the list of packets sent from
-     * @return the list of packets sent from the given VM
-     */
+    /// Gets the list of packets received that were sent from a given VM,
+    /// targeting the VM of this scheduler.
+    ///
+    /// @param sourceVm VM to get the list of packets sent from
+    /// @return the list of packets sent from the given VM
     private List<VmPacket> getListOfPacketsSentFromVm(final Vm sourceVm){
         return vmPacketsReceivedMap.getOrDefault(sourceVm, new ArrayList<>());
     }

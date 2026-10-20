@@ -7,20 +7,16 @@
  */
 package org.cloudsimplus.resources;
 
-/**
- * An interface to represent a physical or virtual resource (like RAM, CPU or
- * Bandwidth) with features to manage resource capacity and allocation.
- *
- * @author Uros Cibej
- * @author Anthony Sulistio
- * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 1.0
- */
+/// An interface to represent a physical or virtual resource (like RAM, CPU or
+/// Bandwidth) with features to manage resource capacity and allocation.
+///
+/// @author Uros Cibej
+/// @author Anthony Sulistio
+/// @author Manoel Campos da Silva Filho
+/// @since CloudSim Plus 1.0
 public interface ResourceManageable extends Resource {
 
-    /**
-     * An attribute that implements the Null Object Design Pattern for {@link ResourceManageable} objects.
-     */
+    /// An attribute that implements the Null Object Design Pattern for [ResourceManageable] objects.
     ResourceManageable NULL = new ResourceManageableNull();
 
     /// Try to set the [resource capacity][#getCapacity()].
@@ -31,14 +27,12 @@ public interface ResourceManageable extends Resource {
     /// @see #getAllocatedResource()
     boolean setCapacity(long newCapacity);
 
-    /**
-     * Sum a given amount (negative or positive) of capacity to the total
-     * resource capacity.
-     *
-     * @param amountToSum the amount to sum in the current total capacity.
-     * If a positive number is given, the total capacity is increased; otherwise, it's decreased.
-     * @return true if the total capacity was changed; false otherwise
-     */
+    /// Sum a given amount (negative or positive) of capacity to the total
+    /// resource capacity.
+    ///
+    /// @param amountToSum the amount to sum in the current total capacity.
+    /// If a positive number is given, the total capacity is increased; otherwise, it's decreased.
+    /// @return true if the total capacity was changed; false otherwise
     boolean sumCapacity(long amountToSum);
 
     /// Try to add a given amount to the [resource capacity][#getCapacity()].
@@ -68,17 +62,15 @@ public interface ResourceManageable extends Resource {
     ///         false otherwise
     boolean allocateResource(long amountToAllocate);
 
-    /**
-     * Try to allocate in this resource, the amount of resource specified by the capacity of the given resource.
-     * This method is commonly used to allocate a specific
-     * amount from a physical resource (this Resource instance)
-     * to a virtualized resource (the given Resource).
-     *
-     * @param resource the resource to try to allocate its capacity from the current resource
-     * @return true if required capacity from the given resource is greater than 0,
-     *         and there available resource to allocate; false otherwise
-     * @see #allocateResource(long)
-     */
+    /// Try to allocate in this resource, the amount of resource specified by the capacity of the given resource.
+    /// This method is commonly used to allocate a specific
+    /// amount from a physical resource (this Resource instance)
+    /// to a virtualized resource (the given Resource).
+    ///
+    /// @param resource the resource to try to allocate its capacity from the current resource
+    /// @return true if required capacity from the given resource is greater than 0,
+    /// and there available resource to allocate; false otherwise
+    /// @see #allocateResource(long)
     default boolean allocateResource(Resource resource){
         return allocateResource(resource.getCapacity());
     }
@@ -94,34 +86,30 @@ public interface ResourceManageable extends Resource {
     /// and there is available resource to allocate; false otherwise
     boolean setAllocatedResource(long newTotalAllocatedResource);
 
-    /**
-     * Try to set the current total amount of allocated resource, changing it to the
-     * given value. It doesn't increase the current allocated resource by the
-     * given amount, instead, it changes the allocated resource to that
-     * specified amount.
-     *
-     * <p>This method is just a shorthand to avoid explicitly converting a double to long.</p>
-     *
-     /// @param newTotalAllocatedResource the new total amount of resource to
-     /// allocate, changing the allocated resource to this new amount.
-     /// @return true if the `newTotalAllocatedResource` is not negative,
-     /// and there is available resource to allocate; false otherwise
-     */
+    /// Try to set the current total amount of allocated resource, changing it to the
+    /// given value. It doesn't increase the current allocated resource by the
+    /// given amount, instead, it changes the allocated resource to that
+    /// specified amount.
+    ///
+    /// This method is just a shorthand to avoid explicitly converting a double to long.
+    ///
+    /// /// @param newTotalAllocatedResource the new total amount of resource to
+    /// /// allocate, changing the allocated resource to this new amount.
+    /// /// @return true if the `newTotalAllocatedResource` is not negative,
+    /// /// and there is available resource to allocate; false otherwise
     default boolean setAllocatedResource(final double newTotalAllocatedResource){
         return setAllocatedResource((long)newTotalAllocatedResource);
     }
 
-    /**
-     * Try to deallocate all the capacity of the given resource from this resource.
-     * This method is commonly used to deallocate a specific
-     * amount of a physical resource (this Resource instance)
-     * that was being used by a virtualized resource (the given Resource).
-     *
-     * @param resource the resource that its capacity will be deallocated
-     * @return true if the capacity of the given resource is greater than 0,
-     *         and there is available resource to deallocate; false otherwise
-     * @see #deallocateResource(long)
-     */
+    /// Try to deallocate all the capacity of the given resource from this resource.
+    /// This method is commonly used to deallocate a specific
+    /// amount of a physical resource (this Resource instance)
+    /// that was being used by a virtualized resource (the given Resource).
+    ///
+    /// @param resource the resource that its capacity will be deallocated
+    /// @return true if the capacity of the given resource is greater than 0,
+    /// and there is available resource to deallocate; false otherwise
+    /// @see #deallocateResource(long)
     default boolean deallocateResource(final Resource resource){
         return deallocateResource(resource.getCapacity());
     }
@@ -144,28 +132,22 @@ public interface ResourceManageable extends Resource {
     ///         and there is enough resource to deallocate; false otherwise
     boolean deallocateAndRemoveResource(long amountToDeallocate);
 
-    /**
-     * De-allocates all allocated resources, restoring the total available
-     * resource to the resource capacity.
-     *
-     * @return the amount of resource freed
-     */
+    /// De-allocates all allocated resources, restoring the total available
+    /// resource to the resource capacity.
+    ///
+    /// @return the amount of resource freed
     long deallocateAllResources();
 
-    /**
-     * Checks if there is a specific amount of resource being used.
-     *
-     * @param amountToCheck the amount of resource to check if it's used.
-     * @return true if the specified amount is being used; false otherwise
-     */
+    /// Checks if there is a specific amount of resource being used.
+    ///
+    /// @param amountToCheck the amount of resource to check if it's used.
+    /// @return true if the specified amount is being used; false otherwise
     boolean isResourceAmountBeingUsed(long amountToCheck);
 
-    /**
-     * Checks if it is possible to change the current allocated resource to a
-     * new amount, depending on the available resource remaining.
-     *
-     * @param newTotalAllocatedResource the new total amount of resource to allocate.
-     * @return true, if it is possible to allocate the new total resource; false otherwise
-     */
+    /// Checks if it is possible to change the current allocated resource to a
+    /// new amount, depending on the available resource remaining.
+    ///
+    /// @param newTotalAllocatedResource the new total amount of resource to allocate.
+    /// @return true, if it is possible to allocate the new total resource; false otherwise
     boolean isSuitable(long newTotalAllocatedResource);
 }

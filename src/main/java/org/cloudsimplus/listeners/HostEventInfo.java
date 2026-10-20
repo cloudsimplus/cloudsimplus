@@ -25,30 +25,24 @@ package org.cloudsimplus.listeners;
 
 import org.cloudsimplus.hosts.Host;
 
-/**
- * An interface that represents data to be passed
- * to {@link EventListener} objects that are registered to be notified
- * when some events happen for a given {@link Host}.
- *
- * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 1.0
- *
- * @see VmHostEventInfo
- * @see HostUpdatesVmsProcessingEventInfo
- */
+/// An interface that represents data to be passed
+/// to [EventListener] objects that are registered to be notified
+/// when some events happen for a given [Host].
+///
+/// @author Manoel Campos da Silva Filho
+/// @since CloudSim Plus 1.0
+///
+/// @see VmHostEventInfo
+/// @see HostUpdatesVmsProcessingEventInfo
 public interface HostEventInfo extends EventInfo {
 
-    /**
-     * @return the {@link Host} for which the event happened.
-     */
+    /// @return the [Host] for which the event happened.
     Host getHost();
 
-    /**
-     * Gets a {@code HostEventInfo} instance from the given parameters.
-     *
-     * @param listener the listener to be notified about the event
-     * @param time the time the event happened
-     */
+    /// Gets a `HostEventInfo` instance from the given parameters.
+    ///
+    /// @param listener the listener to be notified about the event
+    /// @param time the time the event happened
     static HostEventInfo of(final EventListener<? extends EventInfo> listener, final Host host, final double time) {
         return new HostEventInfo() {
             @Override public Host getHost() { return host; }

@@ -34,12 +34,10 @@ import java.util.List;
 
 import static java.util.Collections.emptyList;
 
-/**
- * A class that implements the Null Object Design Pattern for {@link Switch} class.
- *
- * @author Manoel Campos da Silva Filho
- * @see Switch#NULL
- */
+/// A class that implements the Null Object Design Pattern for [Switch] class.
+///
+/// @author Manoel Campos da Silva Filho
+/// @see Switch#NULL
 final class SwitchNull implements Switch, SimEntityNullBase {
     private static final NetworkDatacenter DATACENTER = new NetworkDatacenter(Simulation.NULL, emptyList(), VmAllocationPolicy.NULL);
 

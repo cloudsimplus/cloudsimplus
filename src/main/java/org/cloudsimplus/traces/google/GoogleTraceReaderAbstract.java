@@ -75,55 +75,45 @@ abstract class GoogleTraceReaderAbstract<T extends Identifiable> extends TraceRe
         return availableObjectsMap.values();
     }
 
-    /**
-     * Executes any pre-process before starting to read the trace file,
-     * such as checking if required attributes were set.
-     *
-     * @TODO Such a method should be defined as a Functional attribute.
-     *       Since it won't be implemented by every subclass, by it being abstract,
-     *       forces to subclasses to implement it (even if just including an empty method).
-     */
+    /// Executes any pre-process before starting to read the trace file,
+    /// such as checking if required attributes were set.
+    ///
+    /// @TODO Such a method should be defined as a Functional attribute.
+    /// Since it won't be implemented by every subclass, by it being abstract,
+    /// forces to subclasses to implement it (even if just including an empty method).
     protected abstract void preProcess();
 
-    /**
-     * Executes any post-process after the trace file was totally parsed.
-     *
-     * @TODO Such a method should be defined as a Functional attribute.
-     *       Since it won't be implemented by every subclass, by it being abstract,
-     *       forces to subclasses to implement it (even if just including an empty method).
-     */
+    /// Executes any post-process after the trace file was totally parsed.
+    ///
+    /// @TODO Such a method should be defined as a Functional attribute.
+    /// Since it won't be implemented by every subclass, by it being abstract,
+    /// forces to subclasses to implement it (even if just including an empty method).
     protected abstract void postProcess();
 
-    /**
-     * Process the parsed line according to the event type.
-     *
-     * @param parsedLineArray an array containing the field values from the last parsed trace line.
-     * @return true if the parsed line was processed, false otherwise
-     */
+    /// Process the parsed line according to the event type.
+    ///
+    /// @param parsedLineArray an array containing the field values from the last parsed trace line.
+    /// @return true if the parsed line was processed, false otherwise
     /* default */ final boolean processParsedLine(final String[] parsedLineArray) {
         this.setLastParsedLineArray(parsedLineArray);
         return processParsedLineInternal();
     }
 
-    /**
-     * Process the last parsed trace line.
-     * @return true if the parsed line was processed, false otherwise
-     *
-     * @see #processParsedLine(String[])
-     * @see #getLastParsedLineArray()
-     */
+    /// Process the last parsed trace line.
+    /// @return true if the parsed line was processed, false otherwise
+    ///
+    /// @see #processParsedLine(String[])
+    /// @see #getLastParsedLineArray()
     protected abstract boolean processParsedLineInternal();
 
-    /**
-     * Schedules an event created while reading the trace file.
-     * Since such events are created before the simulation starts,
-     * but they are just sent when it starts (after the first clock tick),
-     * events whose time is lower than the current clock are scheduled to happen now.
-     * Otherwise, they would be in the past.
-     *
-     * @param evt the event to schedule, which time is the absolute time defined in the trace
-     * @see <a href="https://github.com/cloudsimplus/cloudsimplus/issues/563">#563</a>
-     */
+    /// Schedules an event created while reading the trace file.
+    /// Since such events are created before the simulation starts,
+    /// but they are just sent when it starts (after the first clock tick),
+    /// events whose time is lower than the current clock are scheduled to happen now.
+    /// Otherwise, they would be in the past.
+    ///
+    /// @param evt the event to schedule, which time is the absolute time defined in the trace
+    /// @see <a href="https://github.com/cloudsimplus/cloudsimplus/issues/563">#563</a>
     protected static void scheduleTraceEvent(final SimEvent evt) {
         final var source = evt.getSource();
         final double delay = Math.max(0, evt.getTime() - source.getSimulation().clock());
@@ -134,19 +124,15 @@ abstract class GoogleTraceReaderAbstract<T extends Identifiable> extends TraceRe
         return "%.1f".formatted(percent*100);
     }
 
-    /**
-     * Adds an object T to the list of available objects.
-     * @param object the object T to add
-     * @return true if the object was added, false otherwise
-     * @see #availableObjectsMap
-     */
+    /// Adds an object T to the list of available objects.
+    /// @param object the object T to add
+    /// @return true if the object was added, false otherwise
+    /// @see #availableObjectsMap
     /* default */ final boolean addAvailableObject(final T object){
         return availableObjectsMap.put(object.getId(), Objects.requireNonNull(object)) == null;
     }
 
-    /**
-     * @return the number of objects available (created) so far.
-     */
+    /// @return the number of objects available (created) so far.
     protected final int availableObjectsCount(){
         return availableObjectsMap.size();
     }
@@ -155,12 +141,10 @@ abstract class GoogleTraceReaderAbstract<T extends Identifiable> extends TraceRe
         return availableObjectsMap.values();
     }
 
-    /**
-     * Find an object created from the trace file.
-     * @param id id of the object to find
-     * @return an Optional containing the object if found;
-     *         an empty Optional otherwise.
-     */
+    /// Find an object created from the trace file.
+    /// @param id id of the object to find
+    /// @return an Optional containing the object if found;
+    /// an empty Optional otherwise.
     protected final Optional<T> findObject(final long id) {
         return Optional.ofNullable(availableObjectsMap.get(id));
     }

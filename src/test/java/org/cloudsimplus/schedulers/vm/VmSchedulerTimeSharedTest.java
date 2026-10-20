@@ -26,10 +26,8 @@ import java.util.stream.LongStream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-/**
- * @author Anton Beloglazov
- * @since CloudSim Toolkit 2.0
- */
+/// @author Anton Beloglazov
+/// @since CloudSim Toolkit 2.0
 public class VmSchedulerTimeSharedTest {
     private static final double MIPS = 1000;
     private static final int VM_PES_NUMBER = 2;

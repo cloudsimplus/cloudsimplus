@@ -27,10 +27,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-/**
- *
- * @author Manoel Campos da Silva Filho
- */
+/// @author Manoel Campos da Silva Filho
 public class UtilizationModelNullTest {
     private static final int EXPECTED_UTILIZATION = 0;
 

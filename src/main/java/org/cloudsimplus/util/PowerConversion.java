@@ -23,30 +23,24 @@
  */
 package org.cloudsimplus.util;
 
-/**
- * Utility class that provides a set of methods for power/energy conversion.
- *
- * @author Manoel Campos da Silva Filho
- * @see TimeUtil
- * @see MathUtil
- * @see BytesConversion
- */
+/// Utility class that provides a set of methods for power/energy conversion.
+///
+/// @author Manoel Campos da Silva Filho
+/// @see TimeUtil
+/// @see MathUtil
+/// @see BytesConversion
 public final class PowerConversion {
     private static final double KILO = 1000;
     private static final double MEGA = KILO * KILO;
     private static final double GIGA = MEGA * KILO;
     private static final double TERA = GIGA * KILO;
 
-    /**
-     * A private constructor to avoid class instantiation.
-     */
+    /// A private constructor to avoid class instantiation.
     private PowerConversion(){/**/}
 
-    /**
-     * Converts watt-seconds (joule) to kWh.
-     * @param power the power in Ws
-     * @return the power in kWh
-     */
+    /// Converts watt-seconds (joule) to kWh.
+    /// @param power the power in Ws
+    /// @return the power in kWh
     public static double wattSecondsToKWattHours(final double power) {
         return power * KILO / 3600.0;
     }

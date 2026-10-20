@@ -46,7 +46,7 @@ import java.util.List;
 /// @since CloudSim Plus 2.3.5
 public class DatacenterStorage {
 
-	/** @see #getStorageList() */
+	/// @see #getStorageList()
     private List<SanStorage> storageList;
 
     @Getter @Setter
@@ -63,22 +63,18 @@ public class DatacenterStorage {
     	this.setStorageList(storageList);
     }
 
-    /**
-     * Checks whether the storageList has the given file.
-     *
-     * @param file a file to be searched
-     * @return true if successful, false otherwise
-     */
+    /// Checks whether the storageList has the given file.
+    ///
+    /// @param file a file to be searched
+    /// @return true if successful, false otherwise
     public boolean contains(@NonNull final File file) {
         return contains(file.getName());
     }
 
-    /**
-     * Checks whether the storageList has the given file.
-     *
-     * @param fileName a file name to be searched
-     * @return true if successful, false otherwise
-     */
+    /// Checks whether the storageList has the given file.
+    ///
+    /// @param fileName a file name to be searched
+    /// @return true if successful, false otherwise
     public boolean contains(final String fileName) {
         if (StringUtils.isBlank(fileName)) {
             return false;
@@ -105,9 +101,7 @@ public class DatacenterStorage {
         return this;
     }
 
-    /**
-     * Assigns all files from all storage devices to this Datacenter.
-     */
+    /// Assigns all files from all storage devices to this Datacenter.
     private void setAllFilesOfAllStoragesToThisDatacenter() {
         storageList.stream()
                 .map(SanStorage::getFileList)
@@ -115,12 +109,10 @@ public class DatacenterStorage {
                 .forEach(file -> file.setDatacenter(this.getDatacenter()));
     }
 
-	/**
-     * Predict the total time to transfer a list of files.
-     *
-     * @param requiredFiles the files to be transferred
-     * @return the total predicted time to transfer the files (in seconds)
-     */
+	/// Predict the total time to transfer a list of files.
+	///
+	/// @param requiredFiles the files to be transferred
+	/// @return the total predicted time to transfer the files (in seconds)
     public double predictFileTransferTime(final List<String> requiredFiles) {
         double totalTime = 0.0;
 
@@ -131,13 +123,11 @@ public class DatacenterStorage {
         return totalTime;
     }
 
-    /**
-     * Try to get a file from a storage device in the {@link #storageList}
-     * and computes the time to transfer it from that device.
-     *
-     * @param fileName the name of the file to try finding and get the transfer time
-     * @return the time to transfer the file (in seconds) or {@link SanStorage#FILE_NOT_FOUND} if not found.
-     */
+    /// Try to get a file from a storage device in the [#storageList]
+    /// and computes the time to transfer it from that device.
+    ///
+    /// @param fileName the name of the file to try finding and get the transfer time
+    /// @return the time to transfer the file (in seconds) or [SanStorage#FILE_NOT_FOUND] if not found.
     private double timeToTransferFileFromStorage(final String fileName) {
         for (final SanStorage storage: getStorageList()) {
             final double transferTime = storage.getTransferTime(fileName);
@@ -149,11 +139,9 @@ public class DatacenterStorage {
         return SanStorage.FILE_NOT_FOUND;
     }
 
-    /**
-     * Adds a file to the first storage device that has enough capacity
-     * @param file the file to add
-     * @return a tag from {@link DataCloudTags} informing the result of the operation
-     */
+    /// Adds a file to the first storage device that has enough capacity
+    /// @param file the file to add
+    /// @return a tag from [DataCloudTags] informing the result of the operation
     public int addFile(@NonNull final File file) {
         if (contains(file.getName())) {
             return DataCloudTags.FILE_ADD_ERROR_EXIST_READ_ONLY;

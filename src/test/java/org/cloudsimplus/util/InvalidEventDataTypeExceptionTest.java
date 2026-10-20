@@ -34,9 +34,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-/**
- * @author Manoel Campos da Silva Filho
- */
+/// @author Manoel Campos da Silva Filho
 class InvalidEventDataTypeExceptionTest {
     private static final String TAG_NAME = "CLOUDLET_UPDATE_ATTRIBUTES";
     private static final String REQUIRED_CLASS = "Runnable";

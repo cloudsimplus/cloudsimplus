@@ -27,53 +27,44 @@ import org.apache.commons.rng.UniformRandomProvider;
 
 import java.util.concurrent.ThreadLocalRandom;
 
-/**
- * A {@link UniformRandomProvider} that internally uses the {@link ThreadLocalRandom},
- * a very fast Pseudo-Random Number Generator (PRNG)
- * with higher performance than {@link java.util.Random}, mainly in concurrent environments.
- * The {@link ThreadLocalRandom} may also be faster than some PRNGs available in
- * <a href="https://commons.apache.org/proper/commons-rng/">Apache Commons RNG</a>,
- * despite it probably has worse statistical properties.
- *
- * <p>This generator has some drawbacks.
- * It only generates the seed internally and doesn't allow setting an explicit seed.
- * There is also no way to get the generated seed.
- * This latter issue makes it impossible to reproduce a
- * simulation experiment to verify the generated results if the seed is unknown.
- * </p>
- *
- * <p>
- * Finally, it doesn't allow applying the
- * <a href="https://en.wikipedia.org/wiki/Antithetic_variates">Antithetic Variates Technique</a>
- * to try reducing the variance of experiments using the generated numbers.
- * Classes such as {@link UniformDistr} provide such a feature if the
- * underlying PRNG allows setting a seed.
- * That is explained because the technique is applied when multiple runs of the same simulation
- * are executed.
- * In such a scenario, the second half of experiments have to use the seeds from the first half.
- * </p>
- *
- * <p>The {@link UniformRandomProvider} interface just requires implementing {@link #nextLong()}.
- * The other methods are overridden to directly call the equivalent {@link ThreadLocalRandom} ones,
- * which is faster.</p>
- *
- * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 4.3.9
- */
+/// A [UniformRandomProvider] that internally uses the [ThreadLocalRandom],
+/// a very fast Pseudo-Random Number Generator (PRNG)
+/// with higher performance than [java.util.Random], mainly in concurrent environments.
+/// The [ThreadLocalRandom] may also be faster than some PRNGs available in
+/// [Apache Commons RNG](https://commons.apache.org/proper/commons-rng/),
+/// despite it probably has worse statistical properties.
+///
+/// This generator has some drawbacks.
+/// It only generates the seed internally and doesn't allow setting an explicit seed.
+/// There is also no way to get the generated seed.
+/// This latter issue makes it impossible to reproduce a
+/// simulation experiment to verify the generated results if the seed is unknown.
+///
+/// Finally, it doesn't allow applying the
+/// [Antithetic Variates Technique](https://en.wikipedia.org/wiki/Antithetic_variates)
+/// to try reducing the variance of experiments using the generated numbers.
+/// Classes such as [UniformDistr] provide such a feature if the
+/// underlying PRNG allows setting a seed.
+/// That is explained because the technique is applied when multiple runs of the same simulation
+/// are executed.
+/// In such a scenario, the second half of experiments have to use the seeds from the first half.
+///
+/// The [UniformRandomProvider] interface just requires implementing [#nextLong()].
+/// The other methods are overridden to directly call the equivalent [ThreadLocalRandom] ones,
+/// which is faster.
+///
+/// @author Manoel Campos da Silva Filho
+/// @since CloudSim Plus 4.3.9
 public final class JDKThreadLocalRandomGenerator implements UniformRandomProvider {
     private static final JDKThreadLocalRandomGenerator INSTANCE = new JDKThreadLocalRandomGenerator();
 
-    /**
-     * A private constructor to avoid class instantiation.
-     * @see #getInstance()
-     */
+    /// A private constructor to avoid class instantiation.
+    /// @see #getInstance()
     private JDKThreadLocalRandomGenerator(){/**/}
 
-    /**
-     * {@return the single instance of this generator}
-     * Since it just calls the {@link ThreadLocalRandom} of the current thread,
-     * a single instance can be shared, even by different threads.
-     */
+    /// {@return the single instance of this generator}
+    /// Since it just calls the [ThreadLocalRandom] of the current thread,
+    /// a single instance can be shared, even by different threads.
     public static JDKThreadLocalRandomGenerator getInstance() {
         return INSTANCE;
     }

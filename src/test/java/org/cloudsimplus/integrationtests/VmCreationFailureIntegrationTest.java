@@ -51,60 +51,55 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-/**
- *
- * An Integration Test (IT) to check a simulation scenario with 1 PM that has
- * capacity to host just 1 of the user's VMs. Two cloudlets are submitted to the
- * same VM and run using the CloudletSchedulerSpaceShared.
- * The Integration Test performs several tests that aren't described here in
- * order to avoid the documentation being out-of-date in case the IT is changed.
- *
- * <p>To check which verifications are being performed, take a look at methods such as
- * {@link #assertThatBrokerCloudletsHaveTheExpectedExecutionTimes(DatacenterBroker)}
- * and all the others that start with "assertThat". Those method names were
- * defined to give an exact notion of what is being tested.</p>
- *
- * <p>The IT uses the new VM listeners to get notified when a host is allocated,
- * deallocated for a given VM and when a VM fails to be created due to lack of
- * host resources. It also relies on the new CloudSim Plus
- * {@link CloudSimPlus#addOnEventProcessingListener(EventListener) process event listener} to be notified every time
- * when any event is processed by CloudSimPlus. By this way, it is possible to
- * verify, for instance, if the resource usage of a given host at a given time
- * is as expected.</p>
- *
- * <i><b>NOTE</b>:See the profile section in the pom.xml for details on how to
- * run all tests, including Functional/Integration Tests.</i>
- *
- * @see Vm#addOnHostAllocationListener(EventListener)
- * @see Vm#addOnHostDeallocationListener(EventListener)
- * @see Vm#addOnCreationFailureListener(EventListener)
- * @see CloudSimPlus#addOnEventProcessingListener(EventListener)
- * @see Cloudlet#addOnFinishListener(EventListener)
- *
- * @author Manoel Campos da Silva Filho
- */
+/// An Integration Test (IT) to check a simulation scenario with 1 PM that has
+/// capacity to host just 1 of the user's VMs. Two cloudlets are submitted to the
+/// same VM and run using the CloudletSchedulerSpaceShared.
+/// The Integration Test performs several tests that aren't described here in
+/// order to avoid the documentation being out-of-date in case the IT is changed.
+///
+/// To check which verifications are being performed, take a look at methods such as
+/// [#assertThatBrokerCloudletsHaveTheExpectedExecutionTimes(DatacenterBroker)]
+/// and all the others that start with "assertThat". Those method names were
+/// defined to give an exact notion of what is being tested.
+///
+/// The IT uses the new VM listeners to get notified when a host is allocated,
+/// deallocated for a given VM and when a VM fails to be created due to lack of
+/// host resources. It also relies on the new CloudSim Plus
+/// [process event listener][CloudSimPlus#addOnEventProcessingListener(EventListener)] to be notified every time
+/// when any event is processed by CloudSimPlus. By this way, it is possible to
+/// verify, for instance, if the resource usage of a given host at a given time
+/// is as expected.
+///
+/// ***NOTE**:See the profile section in the pom.xml for details on how to
+/// run all tests, including Functional/Integration Tests.*
+///
+/// @see Vm#addOnHostAllocationListener(EventListener)
+/// @see Vm#addOnHostDeallocationListener(EventListener)
+/// @see Vm#addOnCreationFailureListener(EventListener)
+/// @see CloudSimPlus#addOnEventProcessingListener(EventListener)
+/// @see Cloudlet#addOnFinishListener(EventListener)
+///
+/// @author Manoel Campos da Silva Filho
 public final class VmCreationFailureIntegrationTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(VmCreationFailureIntegrationTest.class.getSimpleName());
 
-    /** The number of times a host was allocated to a VM. */
+    /// The number of times a host was allocated to a VM.
     private int numberOfHostAllocations;
 
-    /** The number of times a host was deallocated to a VM. */
+    /// The number of times a host was deallocated to a VM.
     private int numberOfHostDeallocations;
 
-    /** The number of times a VM failed to be created due to lack of host resources. */
+    /// The number of times a VM failed to be created due to lack of host resources.
     private int numberOfVmCreationFailures;
 
     private SimulationScenarioBuilder scenario;
     private CloudSimPlus simulation;
 
-    /**
-     * A Listener that will be called every time a Host is
-     * allocated to a given VM. It tries to assert that the Host 0 was allocated
-     * to the Vm 0 at the expected time.
-     *
-     * @param evt
-     */
+    /// A Listener that will be called every time a Host is
+    /// allocated to a given VM. It tries to assert that the Host 0 was allocated
+    /// to the Vm 0 at the expected time.
+    ///
+    /// @param evt
     private void onHostAllocation(final VmHostEventInfo evt) {
         numberOfHostAllocations++;
         /*LOGGER.info(
@@ -116,13 +111,11 @@ public final class VmCreationFailureIntegrationTest {
         }
     }
 
-    /**
-     * A Listener that will be called every time a Host is
-     * deallocated to a given VM. It tries to assert that the Host 0 was
-     * deallocated to the Vm 0 at the expected time.
-     *
-     * @param evt
-     */
+    /// A Listener that will be called every time a Host is
+    /// deallocated to a given VM. It tries to assert that the Host 0 was
+    /// deallocated to the Vm 0 at the expected time.
+    ///
+    /// @param evt
     private void onHostDeallocation(final VmHostEventInfo evt) {
         numberOfHostDeallocations++;
         LOGGER.info(
@@ -134,13 +127,11 @@ public final class VmCreationFailureIntegrationTest {
         }
     }
 
-    /**
-     * A listener that will be called every time a Vm failed to be created
-     * due to lack of host resources.
-     *
-     * @param evt
-     * @see Vm#addOnCreationFailureListener(EventListener)}
-     */
+    /// A listener that will be called every time a Vm failed to be created
+    /// due to lack of host resources.
+    ///
+    /// @param evt
+    /// @see Vm#addOnCreationFailureListener(EventListener)}
     private void onVmCreationFailure(final VmDatacenterEventInfo evt) {
         numberOfVmCreationFailures++;
         final int expectedFailedVms = 1;
@@ -151,12 +142,10 @@ public final class VmCreationFailureIntegrationTest {
         assertEquals(expectedFailedVms, numberOfVmCreationFailures, msg);
     }
 
-    /**
-     * A function used by an event processing listener
-     * that will be called every time an event is processed by {@link CloudSimPlus}.
-     * @param evt
-     * @see CloudSimPlus#addOnEventProcessingListener(EventListener)
-     */
+    /// A function used by an event processing listener
+    /// that will be called every time an event is processed by [CloudSimPlus].
+    /// @param evt
+    /// @see CloudSimPlus#addOnEventProcessingListener(EventListener)
     private void onEventProcessing(final SimEvent evt) {
         //LOGGER.info("* onEventProcessing at time {}: {}", evt.getTime(), evt);
         final int time = (int) evt.getTime();
@@ -165,16 +154,14 @@ public final class VmCreationFailureIntegrationTest {
         }
     }
 
-    /**
-     * A function used by a VM update processing listener
-     * that will be called every time the processing of a Vm is updated inside its host.
-     * Considering there is only one Host and only 1 VM where its cloudlets use a
-     * {@link UtilizationModelFull} for CPU utilization model,
-     * at any time, the amount of available Host CPU should be the same.
-     *
-     * @param evt
-     * @see Vm#addOnUpdateProcessingListener(EventListener)}
-     */
+    /// A function used by a VM update processing listener
+    /// that will be called every time the processing of a Vm is updated inside its host.
+    /// Considering there is only one Host and only 1 VM where its cloudlets use a
+    /// [UtilizationModelFull] for CPU utilization model,
+    /// at any time, the amount of available Host CPU should be the same.
+    ///
+    /// @param evt
+    /// @see Vm#addOnUpdateProcessingListener(EventListener)}
     private void onUpdateVmProcessing(final VmHostEventInfo evt) {
         assertEquals(200, evt.getHost().getTotalAvailableMips());
     }

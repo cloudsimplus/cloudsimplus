@@ -27,11 +27,9 @@ import lombok.Getter;
 import lombok.Setter;
 import org.cloudsimplus.util.MathUtil;
 
-/**
- * A base implementation for {@link ExecDelayable} entities.
- * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 8.3.0
- */
+/// A base implementation for [ExecDelayable] entities.
+/// @author Manoel Campos da Silva Filho
+/// @since CloudSim Plus 8.3.0
 @Getter
 public abstract class ExecDelayableAbstract extends StartableAbstract implements ExecDelayable {
     private double startupDelay;

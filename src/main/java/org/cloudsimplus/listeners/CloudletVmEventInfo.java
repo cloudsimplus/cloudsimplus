@@ -26,70 +26,60 @@ package org.cloudsimplus.listeners;
 import org.cloudsimplus.cloudlets.Cloudlet;
 import org.cloudsimplus.vms.Vm;
 
-/**
- * An interface that represents data to be passed
- * to {@link EventListener} objects that are registered to be notified
- * when some events happen for a given {@link Cloudlet}
- * running inside a {@link Vm}.
- *
- * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 1.0
- *
- * @see Cloudlet#addOnUpdateProcessingListener(EventListener)
- * @see Cloudlet#addOnFinishListener(EventListener)
- */
+/// An interface that represents data to be passed
+/// to [EventListener] objects that are registered to be notified
+/// when some events happen for a given [Cloudlet]
+/// running inside a [Vm].
+///
+/// @author Manoel Campos da Silva Filho
+/// @since CloudSim Plus 1.0
+///
+/// @see Cloudlet#addOnUpdateProcessingListener(EventListener)
+/// @see Cloudlet#addOnFinishListener(EventListener)
 public interface CloudletVmEventInfo extends CloudletEventInfo, VmEventInfo {
-    /**
-     * Gets a {@code CloudletVmEventInfo} instance from the given parameters.
-     * The {@link #getTime()} is the current simulation time.
-     *
-     * @param listener the listener to be notified about the event
-     * @param cloudlet the {@link Cloudlet} that fired the event
-     * @param vm the {@link Vm} where the Cloudlet is or was running into,
-     *            depending on the fired event, such as the
-     *            {@link Cloudlet#addOnUpdateProcessingListener(EventListener) OnUpdateCloudletProcessing}
-     *           or {@link Cloudlet#addOnFinishListener(EventListener) OnCloudletFinish}
-     */
+    /// Gets a `CloudletVmEventInfo` instance from the given parameters.
+    /// The [#getTime()] is the current simulation time.
+    ///
+    /// @param listener the listener to be notified about the event
+    /// @param cloudlet the [Cloudlet] that fired the event
+    /// @param vm the [Vm] where the Cloudlet is or was running into,
+    /// depending on the fired event, such as the
+    /// [OnUpdateCloudletProcessing][Cloudlet#addOnUpdateProcessingListener(EventListener)]
+    /// or [OnCloudletFinish][Cloudlet#addOnFinishListener(EventListener)]
     static CloudletVmEventInfo of(final EventListener<? extends EventInfo> listener, final Cloudlet cloudlet, final Vm vm){
         return of(listener, cloudlet.getSimulation().clock(), cloudlet, vm);
     }
 
-    /**
-     * Gets a {@code CloudletVmEventInfo} instance from the given parameters.
-     * The {@link #getVm() Vm} attribute is defined as the {@link Vm} where the {@link Cloudlet}
-     * is running.
-     *
-     * @param time the time the event happened
-     * @param cloudlet the {@link Cloudlet} that fired the event
-     * @see #of(EventListener, Cloudlet, Vm)
-     */
+    /// Gets a `CloudletVmEventInfo` instance from the given parameters.
+    /// The [Vm][#getVm()] attribute is defined as the [Vm] where the [Cloudlet]
+    /// is running.
+    ///
+    /// @param time the time the event happened
+    /// @param cloudlet the [Cloudlet] that fired the event
+    /// @see #of(EventListener, Cloudlet, Vm)
     static CloudletVmEventInfo of(final EventListener<? extends EventInfo> listener, final double time, final Cloudlet cloudlet){
         return of(listener, time, cloudlet, cloudlet.getVm());
     }
 
-    /**
-     * Gets a {@code CloudletVmEventInfo} instance from the given parameters.
-     * The {@link #getVm() Vm} attribute is defined as the {@link Vm} where the {@link Cloudlet}
-     * is running and the {@link #getTime()} is the current simulation time.
-     *
-     * @param cloudlet the {@link Cloudlet} that fired the event
-     * @see #of(EventListener, Cloudlet, Vm)
-     */
+    /// Gets a `CloudletVmEventInfo` instance from the given parameters.
+    /// The [Vm][#getVm()] attribute is defined as the [Vm] where the [Cloudlet]
+    /// is running and the [#getTime()] is the current simulation time.
+    ///
+    /// @param cloudlet the [Cloudlet] that fired the event
+    /// @see #of(EventListener, Cloudlet, Vm)
     static CloudletVmEventInfo of(final EventListener<? extends EventInfo> listener, final Cloudlet cloudlet){
         return of(listener, cloudlet, cloudlet.getVm());
     }
 
-    /**
-     * Gets a {@code CloudletVmEventInfo} instance from the given parameters.
-     *
-     * @param listener the listener to be notified about the event
-     * @param time the time the event happened
-     * @param cloudlet the {@link Cloudlet} that fired the event
-     * @param vm the {@link Vm} where the Cloudlet is or was running into,
-     *            depending on the fired event, such as the
-     *            {@link Cloudlet#addOnUpdateProcessingListener(EventListener) OnUpdateCloudletProcessing}
-     *           or {@link Cloudlet#addOnFinishListener(EventListener) OnCloudletFinish}
-     */
+    /// Gets a `CloudletVmEventInfo` instance from the given parameters.
+    ///
+    /// @param listener the listener to be notified about the event
+    /// @param time the time the event happened
+    /// @param cloudlet the [Cloudlet] that fired the event
+    /// @param vm the [Vm] where the Cloudlet is or was running into,
+    /// depending on the fired event, such as the
+    /// [OnUpdateCloudletProcessing][Cloudlet#addOnUpdateProcessingListener(EventListener)]
+    /// or [OnCloudletFinish][Cloudlet#addOnFinishListener(EventListener)]
     static CloudletVmEventInfo of(final EventListener<? extends EventInfo> listener, final double time, final Cloudlet cloudlet, final Vm vm){
         return new CloudletVmEventInfo() {
             @Override public Cloudlet getCloudlet() { return cloudlet; }

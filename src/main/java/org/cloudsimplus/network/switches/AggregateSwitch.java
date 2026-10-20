@@ -13,58 +13,38 @@ import org.cloudsimplus.datacenters.network.NetworkDatacenter;
 import org.cloudsimplus.network.HostPacket;
 import org.cloudsimplus.util.BytesConversion;
 
-/**
- * This class represents an Aggregate Switch in a Datacenter network.
- * It interacts with another Datacenter to exchange packets.
- *
- * <p>Please refer to the following publication for more details:
- * <ul>
- * <li>
- * <a href="https://doi.org/10.1109/UCC.2011.24">
- * Saurabh Kumar Garg and Rajkumar Buyya, NetworkCloudSim: Modelling Parallel
- * Applications in Cloud Simulations, Proceedings of the 4th IEEE/ACM
- * International Conference on Utility and Cloud Computing (UCC 2011, IEEE CS
- * Press, USA), Melbourne, Australia, December 5-7, 2011.
- * </a>
- * </li>
- * </ul>
- * </p>
- *
- * @author Saurabh Kumar Garg
- * @author Manoel Campos da Silva Filho
- *
- * @since CloudSim Toolkit 1.0
- */
+/// This class represents an Aggregate Switch in a Datacenter network.
+/// It interacts with another Datacenter to exchange packets.
+///
+/// Please refer to the following publication for more details:
+///
+/// -
+///   [Saurabh Kumar Garg and Rajkumar Buyya, NetworkCloudSim: Modelling Parallel Applications in Cloud Simulations, Proceedings of the 4th IEEE/ACM International Conference on Utility and Cloud Computing (UCC 2011, IEEE CS Press, USA), Melbourne, Australia, December 5-7, 2011.](https://doi.org/10.1109/UCC.2011.24)
+///
+/// @author Saurabh Kumar Garg
+/// @author Manoel Campos da Silva Filho
+///
+/// @since CloudSim Toolkit 1.0
 public class AggregateSwitch extends AbstractSwitch {
-    /**
-     * The level (layer) of the Switch in the network topology.
-     */
+    /// The level (layer) of the Switch in the network topology.
     public static final int LEVEL = 1;
 
-    /**
-     * Default delay of {@link AggregateSwitch} in milliseconds.
-     */
+    /// Default delay of [AggregateSwitch] in milliseconds.
     public static final double SWITCHING_DELAY = 0.00245;
 
-    /**
-     * Default downlink bandwidth of {@link AggregateSwitch} in Megabits/s.
-     * It also represents the uplink bandwidth of the connected Edge Datacenter.
-     */
+    /// Default downlink bandwidth of [AggregateSwitch] in Megabits/s.
+    /// It also represents the uplink bandwidth of the connected Edge Datacenter.
     public static final long DOWNLINK_BW =  (long) BytesConversion.MEGA * 100 * 8;
 
-    /**
-     * Default number of aggregation switch ports that defines the number of
-     * {@link EdgeSwitch} that can be connected to it.
-     */
+    /// Default number of aggregation switch ports that defines the number of
+    /// [EdgeSwitch] that can be connected to it.
     public static final int PORTS = 1;
 
-    /**
-     * Instantiates an Aggregate Switch, specifying the Datacenter which is
-     * connected to its downlink and uplink ports and corresponding bandwidths.
-     *
-     * @param simulation the CloudSimPlus instance that represents the simulation the Entity belongs
-     * @param dc The Datacenter where the switch is connected to
-     */
+    /// Instantiates an Aggregate Switch, specifying the Datacenter which is
+    /// connected to its downlink and uplink ports and corresponding bandwidths.
+    ///
+    /// @param simulation the CloudSimPlus instance that represents the simulation the Entity belongs
+    /// @param dc The Datacenter where the switch is connected to
     public AggregateSwitch(final CloudSimPlus simulation, final NetworkDatacenter dc) {
         super(simulation, dc);
         setUplinkBandwidth(RootSwitch.DOWNLINK_BW);
@@ -95,11 +75,9 @@ public class AggregateSwitch extends AbstractSwitch {
         else addPacketToBeSentToFirstUplinkSwitch(netPkt);
     }
 
-    /**
-     * Checks if the Aggregate Switch is connected to a given {@link EdgeSwitch}.
-     * @param edgeSwitch the Edge Switch to check if the Aggregate Switch is connected to
-     * @return true if the Edge Switch was found, false otherwise
-     */
+    /// Checks if the Aggregate Switch is connected to a given [EdgeSwitch].
+    /// @param edgeSwitch the Edge Switch to check if the Aggregate Switch is connected to
+    /// @return true if the Edge Switch was found, false otherwise
     private boolean findConnectedEdgeSwitch(final Switch edgeSwitch) {
         return getDownlinkSwitches().stream().anyMatch(edgeSwitch::equals);
     }

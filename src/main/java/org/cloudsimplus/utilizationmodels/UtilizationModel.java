@@ -12,55 +12,39 @@ import org.cloudsimplus.core.Simulation;
 import org.cloudsimplus.schedulers.cloudlet.CloudletScheduler;
 import org.cloudsimplus.vms.Vm;
 
-/**
- * An interface to be implemented to provide a
- * fine-grained control over resource usage by a {@link Cloudlet}.
- *
- * @author Anton Beloglazov
- * @author Manoel Campos da Silva Filho
- * @since CloudSim Toolkit 2.0
- */
+/// An interface to be implemented to provide a
+/// fine-grained control over resource usage by a [Cloudlet].
+///
+/// @author Anton Beloglazov
+/// @author Manoel Campos da Silva Filho
+/// @since CloudSim Toolkit 2.0
 public sealed interface UtilizationModel permits UtilizationModelAbstract, UtilizationModelNull {
-    /**
-     * Defines the unit of the resource utilization.
-     * @see #getUtilization(double)
-     * @see #getUtilization()
-     */
+    /// Defines the unit of the resource utilization.
+    /// @see #getUtilization(double)
+    /// @see #getUtilization()
     enum Unit {
-        /**
-         * Indicate that the resource utilization is defined in percentage values
-         * in scale from 0..1 (where 1 is 100%).
-         */
+        /// Indicate that the resource utilization is defined in percentage values
+        /// in scale from 0..1 (where 1 is 100%).
         PERCENTAGE,
 
-        /**
-         * Indicate that the resource utilization is defined in absolute values.
-         */
+        /// Indicate that the resource utilization is defined in absolute values.
         ABSOLUTE
     }
 
-    /**
-     * An attribute that implements the Null Object Design Pattern for {@link UtilizationModel} objects.
-     * A {@link Cloudlet} using such a utilization model
-     * for one of its resources will not consume any amount of that resource ever.
-     */
+    /// An attribute that implements the Null Object Design Pattern for [UtilizationModel] objects.
+    /// A [Cloudlet] using such a utilization model
+    /// for one of its resources will not consume any amount of that resource ever.
     UtilizationModel NULL = new UtilizationModelNull();
 
-    /**
-     * @return the simulation that this UtilizationModel belongs to.
-     */
+    /// @return the simulation that this UtilizationModel belongs to.
     Simulation getSimulation();
 
-    /**
-     * @return the {@link Unit} in which the resource utilization is defined.
-     */
+    /// @return the [Unit] in which the resource utilization is defined.
     Unit getUnit();
 
-    /**
-     * Sets the simulation that this UtilizationModel belongs to.
-     *
-     * @param simulation the Simulation instance to set
-     */
+    /// Sets the simulation that this UtilizationModel belongs to.
+    ///
+    /// @param simulation the Simulation instance to set
     UtilizationModel setSimulation(Simulation simulation);
 
     /// Gets the **expected** utilization of resource at a given simulation time.

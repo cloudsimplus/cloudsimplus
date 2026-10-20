@@ -18,61 +18,41 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Optional;
 
-/**
- * Allows simulating a Root switch that connects {@link Datacenter}s to
- * an external network. It interacts with another Datacenter to exchange
- * packets.
- *
- * <p>Please refer to the following publication for more details:
- * <ul>
- * <li>
- * <a href="https://doi.org/10.1109/UCC.2011.24">
- * Saurabh Kumar Garg and Rajkumar Buyya, NetworkCloudSim: Modelling Parallel
- * Applications in Cloud Simulations, Proceedings of the 4th IEEE/ACM
- * International Conference on Utility and Cloud Computing (UCC 2011, IEEE CS
- * Press, USA), Melbourne, Australia, December 5-7, 2011.
- * </a>
- * </li>
- * </ul>
- * </p>
- *
- * @author Saurabh Kumar Garg
- * @author Manoel Campos da Silva Filho
- *
- * @since CloudSim Toolkit 3.0
- */
+/// Allows simulating a Root switch that connects [Datacenter]s to
+/// an external network. It interacts with another Datacenter to exchange
+/// packets.
+///
+/// Please refer to the following publication for more details:
+///
+/// -
+///   [Saurabh Kumar Garg and Rajkumar Buyya, NetworkCloudSim: Modelling Parallel Applications in Cloud Simulations, Proceedings of the 4th IEEE/ACM International Conference on Utility and Cloud Computing (UCC 2011, IEEE CS Press, USA), Melbourne, Australia, December 5-7, 2011.](https://doi.org/10.1109/UCC.2011.24)
+///
+/// @author Saurabh Kumar Garg
+/// @author Manoel Campos da Silva Filho
+///
+/// @since CloudSim Toolkit 3.0
 public class RootSwitch extends AbstractSwitch {
     private static final Logger LOGGER = LoggerFactory.getLogger(RootSwitch.class.getSimpleName());
 
-    /**
-     * The level (layer) of the switch in the network topology.
-     */
+    /// The level (layer) of the switch in the network topology.
     public static final int LEVEL = 0;
 
-    /**
-     * Default number of root switch ports that defines the number of
-     * {@link AggregateSwitch}es that can be connected to it.
-     */
+    /// Default number of root switch ports that defines the number of
+    /// [AggregateSwitch]es that can be connected to it.
     public static final int PORTS = 1;
 
-    /**
-     * Default switching delay in milliseconds.
-     */
+    /// Default switching delay in milliseconds.
     public static final double SWITCHING_DELAY = 0.00285;
 
-    /**
-     * The downlink bandwidth of RootSwitch in Megabits/s.
-     * It also represents the uplink bandwidth of connected aggregation Datacenter.
-     */
+    /// The downlink bandwidth of RootSwitch in Megabits/s.
+    /// It also represents the uplink bandwidth of connected aggregation Datacenter.
     public static final long DOWNLINK_BW = (long) BytesConversion.gigaToMega(40 * 8); // 40000 Megabits (40 Gigabits)
 
-    /**
-     * Instantiates a Root Switch, specifying which another Datacenter is connected
-     * to its downlink ports and corresponding bandwidths.
-     *
-     * @param simulation the CloudSimPlus instance that represents the simulation the Switch belongs to
-     * @param dc the Datacenter where the Switch is connected to
-     */
+    /// Instantiates a Root Switch, specifying which another Datacenter is connected
+    /// to its downlink ports and corresponding bandwidths.
+    ///
+    /// @param simulation the CloudSimPlus instance that represents the simulation the Switch belongs to
+    /// @param dc the Datacenter where the Switch is connected to
     public RootSwitch(final CloudSimPlus simulation, final NetworkDatacenter dc) {
         super(simulation, dc);
         setDownlinkBandwidth(DOWNLINK_BW);
@@ -93,12 +73,10 @@ public class RootSwitch extends AbstractSwitch {
         );
     }
 
-    /**
-     * Finds which {@link AggregateSwitch} is connected to a given {@link EdgeSwitch}
-     * @param edgeSwitch the edge switch to find the AggregateSwitch that it is connected to
-     * @return an {@link Optional} with the AggregateSwitch that is connected to the given
-     * EdgeSwitch; or an empty Optional if not found.
-     */
+    /// Finds which [AggregateSwitch] is connected to a given [EdgeSwitch]
+    /// @param edgeSwitch the edge switch to find the AggregateSwitch that it is connected to
+    /// @return an [Optional] with the AggregateSwitch that is connected to the given
+    /// EdgeSwitch; or an empty Optional if not found.
     private Optional<Switch> findAggregateConnectedToEdgeSwitch(final Switch edgeSwitch) {
         //List of Aggregate Switches connected to this Root Switch
         final var aggregateSwitchList = getDownlinkSwitches();

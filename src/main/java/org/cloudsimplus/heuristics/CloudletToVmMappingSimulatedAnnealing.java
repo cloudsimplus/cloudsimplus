@@ -45,10 +45,8 @@ public class CloudletToVmMappingSimulatedAnnealing
       extends SimulatedAnnealingAbstract<CloudletToVmMappingSolution>
       implements CloudletToVmMappingHeuristic
 {
-    /**
-     * Number of {@link CloudletToVmMappingSolution} created so far.
-     * At the end of the simulations, it indicates the total number of solutions created.
-     */
+    /// Number of [CloudletToVmMappingSolution] created so far.
+    /// At the end of the simulations, it indicates the total number of solutions created.
     @Getter
     private static int solutions = 0;
 
@@ -60,14 +58,12 @@ public class CloudletToVmMappingSimulatedAnnealing
     @Getter @Setter @NonNull
     private List<Cloudlet> cloudletList = List.of();
 
-    /**
-     * Creates a Simulated Annealing Heuristic for solving Cloudlets to VMs mapping.
-     *
-     * @param initialTemperature the system initial temperature
-     * @param random a pseudo-random number generator
-     * @see #setColdTemperature(double)
-     * @see #setCoolingRate(double)
-     */
+    /// Creates a Simulated Annealing Heuristic for solving Cloudlets to VMs mapping.
+    ///
+    /// @param initialTemperature the system initial temperature
+    /// @param random a pseudo-random number generator
+    /// @see #setColdTemperature(double)
+    /// @see #setCoolingRate(double)
     public CloudletToVmMappingSimulatedAnnealing(final double initialTemperature, final ContinuousDistribution random) {
         super(random, CloudletToVmMappingSolution.class);
 	    setCurrentTemperature(initialTemperature);
@@ -97,9 +93,7 @@ public class CloudletToVmMappingSimulatedAnnealing
         return initialSolution;
     }
 
-    /**
-     * @return a random Vm from the {@link #getVmList() available VMs list}.
-     */
+    /// @return a random Vm from the [available VMs list][#getVmList()].
     private Vm getRandomVm() {
         final int idx = getRandomValue(vmList.size());
         return vmList.get(idx);

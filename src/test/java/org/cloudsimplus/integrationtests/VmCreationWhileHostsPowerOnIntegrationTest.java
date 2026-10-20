@@ -44,14 +44,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-/**
- * An Integration Test (IT) to check that when no Host is powered on,
- * but some are being powered on, the broker postpones the creation of VMs
- * until a Host is powered on,
- * instead of failing to create the VMs.
- *
- * @see <a href="https://github.com/cloudsimplus/cloudsimplus-examples/issues/30">Issue #30 in the examples repository</a>
- */
+/// An Integration Test (IT) to check that when no Host is powered on,
+/// but some are being powered on, the broker postpones the creation of VMs
+/// until a Host is powered on,
+/// instead of failing to create the VMs.
+///
+/// @see <a href="https://github.com/cloudsimplus/cloudsimplus-examples/issues/30">Issue #30 in the examples repository</a>
 final class VmCreationWhileHostsPowerOnIntegrationTest {
     private static final int TIMEOUT_SECS = 10;
     private static final int HOST_PES = 4;
@@ -89,11 +87,9 @@ final class VmCreationWhileHostsPowerOnIntegrationTest {
         assertEquals(0, dc.getPoweringOnHostsNumber());
     }
 
-    /**
-     * Uses Datacenters with Hosts powering on at different times,
-     * to check VMs are created as soon as the first Host is powered on
-     * and that each Datacenter notifying the broker doesn't create VMs twice.
-     */
+    /// Uses Datacenters with Hosts powering on at different times,
+    /// to check VMs are created as soon as the first Host is powered on
+    /// and that each Datacenter notifying the broker doesn't create VMs twice.
     @Test
     @Timeout(value = TIMEOUT_SECS, threadMode = Timeout.ThreadMode.SEPARATE_THREAD)
     void createsVmsOnceWhenHostsInMultipleDatacentersArePoweredOn() {
@@ -110,10 +106,8 @@ final class VmCreationWhileHostsPowerOnIntegrationTest {
         }
     }
 
-    /**
-     * Submits VMs when a Host has already been powering on for some time,
-     * to check VMs wait just the remaining time for the Host to be powered on.
-     */
+    /// Submits VMs when a Host has already been powering on for some time,
+    /// to check VMs wait just the remaining time for the Host to be powered on.
     @Test
     @Timeout(value = TIMEOUT_SECS, threadMode = Timeout.ThreadMode.SEPARATE_THREAD)
     void createsVmsSubmittedWhileHostIsPoweringOnRightAfterItIsPoweredOn() {

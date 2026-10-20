@@ -26,11 +26,9 @@ package org.cloudsimplus.core;
 import lombok.Getter;
 import lombok.Setter;
 
-/**
- * A base implementation for {@link Startable} entities.
- * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 8.2.0
- */
+/// A base implementation for [Startable] entities.
+/// @author Manoel Campos da Silva Filho
+/// @since CloudSim Plus 8.2.0
 @Getter @Setter
 public abstract class StartableAbstract implements Startable {
     private double startTime = NOT_ASSIGNED;
@@ -71,16 +69,12 @@ public abstract class StartableAbstract implements Startable {
         return this;
     }
 
-    /**
-     * Notifies when the entity is actually started.
-     * @param time the new start time
-     */
+    /// Notifies when the entity is actually started.
+    /// @param time the new start time
     protected abstract void onStart(double time);
 
-    /**
-     * Notifies when the entity is actually finished.
-     * @param time the new finish time
-     */
+    /// Notifies when the entity is actually finished.
+    /// @param time the new finish time
     protected abstract void onFinish(double time);
 
 }

@@ -34,13 +34,9 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-/**
- * @author Manoel Campos da Silva Filho
- */
+/// @author Manoel Campos da Silva Filho
 public class CloudSimTagTest {
-    /**
-     * List of constants from the class under test.
-     */
+    /// List of constants from the class under test.
     private static List<Field> constants;
 
     @BeforeAll
@@ -48,9 +44,7 @@ public class CloudSimTagTest {
         constants = getDeclaredConstants(CloudSimTag.class);
     }
 
-    /**
-     * Checks if there are different constants defined with the same value.
-     */
+    /// Checks if there are different constants defined with the same value.
     @Test
     public void testConstantsWithSameValue(){
         for (final Field field : constants) {
@@ -79,33 +73,27 @@ public class CloudSimTagTest {
             .formatted(field.getName(), anotherField.getName(), value);
     }
 
-    /**
-     * Sets a field to be accessible, enabling to get its value using Reflection.
-     * @param field the field to make accessible via Reflection
-     */
+    /// Sets a field to be accessible, enabling to get its value using Reflection.
+    /// @param field the field to make accessible via Reflection
     private static void setAccessible(final Field field) {
         field.setAccessible(true);
     }
 
-    /**
-     * Checks if a given field is a constant or not
-     * @param field the field to check
-     * @return true if the field is a constant, false otherwise
-     */
+    /// Checks if a given field is a constant or not
+    /// @param field the field to check
+    /// @return true if the field is a constant, false otherwise
     private static boolean isFieldConstant(final Field field){
         return Modifier.isFinal(field.getModifiers()) && Modifier.isStatic(field.getModifiers());
     }
 
-    /**
-     * Try to get a constant with the same value of the given one.
-     *
-     * @param fields The list of Fields referring to the constants belonging to a class
-     * @param field the {@link Field} object that gives access to the
-     *              constant.
-     * @return another {@link Field} referring to a constant with the same
-     * value of the given one; or the given field if there is no other constant with
-     * the same value of the given field.
-     */
+    /// Try to get a constant with the same value of the given one.
+    ///
+    /// @param fields The list of Fields referring to the constants belonging to a class
+    /// @param field the [Field] object that gives access to the
+    /// constant.
+    /// @return another [Field] referring to a constant with the same
+    /// value of the given one; or the given field if there is no other constant with
+    /// the same value of the given field.
     public static Field getAnotherConstWithSameValue(final List<Field> fields, final Field field){
         Object fValue = null;
         Object fieldValue = null;

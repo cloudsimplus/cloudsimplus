@@ -34,11 +34,9 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-/**
- * @author Sun Lingyu
- * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 7.2.1
- */
+/// @author Sun Lingyu
+/// @author Manoel Campos da Silva Filho
+/// @since CloudSim Plus 7.2.1
 public final class CheckCloudletLifetimeTest {
     private static final int HOST_MIPS = 1000;
     private static final int HOST_PES = 1;

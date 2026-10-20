@@ -28,73 +28,55 @@ import org.cloudsimplus.cloudlets.Cloudlet;
 import org.cloudsimplus.datacenters.Datacenter;
 import org.cloudsimplus.vms.Vm;
 
-/**
- * Represents an object that is owned by a {@link DatacenterBroker},
- * namely {@link Vm} and {@link Cloudlet}.
- * @author raysaoliveira
- */
+/// Represents an object that is owned by a [DatacenterBroker],
+/// namely [Vm] and [Cloudlet].
+/// @author raysaoliveira
 public sealed interface CustomerEntity
     extends UniquelyIdentifiable, ChangeableId, SubmissionDelayable, Lifetimed, ExecDelayable
     permits Cloudlet, Vm, CustomerEntityAbstract
 {
 
-    /**
-     * @return the last time the entity was finished (in seconds);
-     * or {@link #NOT_ASSIGNED} means if it has not stopped or has not even started yet.
-     */
+    /// @return the last time the entity was finished (in seconds);
+    /// or [#NOT_ASSIGNED] means if it has not stopped or has not even started yet.
     double getFinishTime();
 
-    /**
-     * @return the {@link DatacenterBroker} that represents the owner of this object;
-     *         or <b>{@link DatacenterBroker#NULL}</b> if a broker has not been set yet
-     */
+    /// @return the [DatacenterBroker] that represents the owner of this object;
+    /// or **[DatacenterBroker#NULL]** if a broker has not been set yet
     DatacenterBroker getBroker();
 
-    /**
-     * Sets a {@link DatacenterBroker} that represents the owner of this object.
-     *
-     * @param broker the {@link DatacenterBroker} to set
-     */
+    /// Sets a [DatacenterBroker] that represents the owner of this object.
+    ///
+    /// @param broker the [DatacenterBroker] to set
     CustomerEntity setBroker(DatacenterBroker broker);
 
-    /**
-     * Sets the last Datacenter where the entity was tried to be created.
-     * @param lastTriedDatacenter the datacenter to set
-     */
+    /// Sets the last Datacenter where the entity was tried to be created.
+    /// @param lastTriedDatacenter the datacenter to set
     CustomerEntity setLastTriedDatacenter(Datacenter lastTriedDatacenter);
 
-    /** @return the last Datacenter where the entity was tried to be created. */
+    /// @return the last Datacenter where the entity was tried to be created.
     Datacenter getLastTriedDatacenter();
 
-    /**
-     * @return the last time (in seconds) the entity arrived at the broker, before being
-     * submitted to a Datacenter; or {@link #NOT_ASSIGNED} if it has not arrived yet.
-     * @see #getSubmissionDelay()
-     */
+    /// @return the last time (in seconds) the entity arrived at the broker, before being
+    /// submitted to a Datacenter; or [#NOT_ASSIGNED] if it has not arrived yet.
+    /// @see #getSubmissionDelay()
     double getBrokerArrivalTime();
 
-    /**
-     * Sets the last time the entity arrived at the broker, before being
-     * submitted to a Datacenter.
-     *
-     * @param time the absolute time to set
-     */
+    /// Sets the last time the entity arrived at the broker, before being
+    /// submitted to a Datacenter.
+    ///
+    /// @param time the absolute time to set
     CustomerEntity setBrokerArrivalTime(double time);
 
-    /**
-     * @return the last time (in seconds) the entity was created into a Datacenter,
-     *         or {@link #NOT_ASSIGNED} if it has not been created yet.
-     * @see #getSubmissionDelay()
-     */
+    /// @return the last time (in seconds) the entity was created into a Datacenter,
+    /// or [#NOT_ASSIGNED] if it has not been created yet.
+    /// @see #getSubmissionDelay()
     double getCreationTime();
 
-    /**
-     * Gets the total time the entity had to wait before being created,
-     * either due to a given {@link #getSubmissionDelay() submission delay}
-     * or because there was no suitable Host available after the VM submission.
-     *
-     * @return the total wait time (in seconds) or {@link #NOT_ASSIGNED} if the entity was not created yet.
-     * @see #getSubmissionDelay()
-     */
+    /// Gets the total time the entity had to wait before being created,
+    /// either due to a given [submission delay][#getSubmissionDelay()]
+    /// or because there was no suitable Host available after the VM submission.
+    ///
+    /// @return the total wait time (in seconds) or [#NOT_ASSIGNED] if the entity was not created yet.
+    /// @see #getSubmissionDelay()
     double getCreationWaitTime();
 }

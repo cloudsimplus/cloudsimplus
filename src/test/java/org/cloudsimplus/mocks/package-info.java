@@ -1,6 +1,4 @@
-/**
- * Provides helper classes to create <a href="https://en.wikipedia.org/wiki/Mock_object">Mock Objects</a>.
- *
- * @author Manoel Campos da Silva Filho
- */
+/// Provides helper classes to create [Mock Objects](https://en.wikipedia.org/wiki/Mock_object).
+///
+/// @author Manoel Campos da Silva Filho
 package org.cloudsimplus.mocks;

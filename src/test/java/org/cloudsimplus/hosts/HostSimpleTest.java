@@ -44,10 +44,8 @@ import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-/**
- * @author Anton Beloglazov
- * @since CloudSim Toolkit 2.0
- */
+/// @author Anton Beloglazov
+/// @since CloudSim Toolkit 2.0
 public class HostSimpleTest {
     private static final int ID = 0;
     private static final long STORAGE = Conversion.MILLION;
@@ -133,11 +131,9 @@ public class HostSimpleTest {
         assertTrue(host.isSuitableForVm(vm));
     }
 
-    /**
-     * If the total HOST_MIPS a VM is requesting is lower or equal to the total available HOST_MIPS
-     * from the physical PEs but the number of available PEs is lower then the
-     * PEs requested, the test must fail at least for a {@link VmSchedulerSpaceShared}.
-     */
+    /// If the total HOST_MIPS a VM is requesting is lower or equal to the total available HOST_MIPS
+    /// from the physical PEs but the number of available PEs is lower then the
+    /// PEs requested, the test must fail at least for a [VmSchedulerSpaceShared].
     @Test
     public void isSuitableForVmWhenThereIsNotEnoughPes(){
         host.setVmScheduler(new VmSchedulerSpaceShared());
@@ -243,10 +239,8 @@ public class HostSimpleTest {
         assertEquals(0, targetHost.getAvailableStorage());
     }
 
-    /**
-     * During migration, by default, just 10% of capacity is allocated (it's the migration overhead).
-     * @see VmScheduler#DEF_VM_MIGRATION_CPU_OVERHEAD
-     */
+    /// During migration, by default, just 10% of capacity is allocated (it's the migration overhead).
+    /// @see VmScheduler#DEF_VM_MIGRATION_CPU_OVERHEAD
     @Test
     public void testAddMigratingInVmAndCheckAllocatedMips() {
         final int pesNumber = 1;
@@ -620,22 +614,18 @@ public class HostSimpleTest {
         assertEquals(expected, actual);
     }
 
-    /**
-     * It is expected a mutable list since that list is sorted during VM migration process.
-     */
+    /// It is expected a mutable list since that list is sorted during VM migration process.
     @Test
     void testGetMigratableVmsReturnsMutableList() {
         final Host host = createHostSimple(0, 2);
         assertDoesNotThrow(() -> host.getMigratableVms().add(Vm.NULL));
     }
 
-    /**
-     * Creates a mock VM to test the utilization of some resource
-     * @param vmResource a new instance of a resource to be attached to the VM and to be tested
-     * @param vmResourceFunction the VM function that is able to get the provided resource stored on the VM
-     * @param usedResource the amount of resource to be allocated from the total capacity
-     * @return
-     */
+    /// Creates a mock VM to test the utilization of some resource
+    /// @param vmResource a new instance of a resource to be attached to the VM and to be tested
+    /// @param vmResourceFunction the VM function that is able to get the provided resource stored on the VM
+    /// @param usedResource the amount of resource to be allocated from the total capacity
+    /// @return
     private Vm createMockVm(final ResourceManageable vmResource, final Function<Vm, Resource> vmResourceFunction, final long usedResource){
         final Vm vm = Mockito.mock(VmAbstract.class);
         vmResource.allocateResource(usedResource);

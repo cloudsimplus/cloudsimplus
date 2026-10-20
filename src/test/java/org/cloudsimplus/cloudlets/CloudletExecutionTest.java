@@ -27,9 +27,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-/**
- * @author Manoel Campos da Silva Filho
- */
+/// @author Manoel Campos da Silva Filho
 class CloudletExecutionTest {
     private final CloudletExecution instance = new CloudletExecution(Cloudlet.NULL);
 

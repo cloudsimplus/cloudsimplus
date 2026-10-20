@@ -35,51 +35,39 @@ import org.cloudsimplus.network.switches.EdgeSwitch;
 @Getter @Setter
 public final class HostPacket implements NetworkPacket<NetworkHost> {
 
-    /**
-     * Information about the virtual sender and receiver entities of the packet
-     * (the sender and receiver Cloudlet and their respective VMs).
-     */
+    /// Information about the virtual sender and receiver entities of the packet
+    /// (the sender and receiver Cloudlet and their respective VMs).
     private final VmPacket vmPacket;
 
-    /**
-     * The {@link Host} that this packet is coming from (the sender).
-     */
+    /// The [Host] that this packet is coming from (the sender).
     private NetworkHost source;
 
-    /**
-     * The {@link Host} that the packet is going to (the receiver).
-     */
+    /// The [Host] that the packet is going to (the receiver).
     private NetworkHost destination = NetworkHost.NULL;
 
     private double sendTime;
     private double receiveTime;
 
-    /**
-     * Creates a packet to be sent through the network between two hosts.
-     *
-     * @param sourceHost host sending the packet
-     * @param vmPacket vm packet containing information of sender and receiver Cloudlets and their VMs.
-     */
+    /// Creates a packet to be sent through the network between two hosts.
+    ///
+    /// @param sourceHost host sending the packet
+    /// @param vmPacket vm packet containing information of sender and receiver Cloudlets and their VMs.
     public HostPacket(final NetworkHost sourceHost, @NonNull final VmPacket vmPacket) {
         this.vmPacket = vmPacket;
         this.sendTime = vmPacket.getSendTime();
         this.setSource(sourceHost);
     }
 
-    /**
-     * {@inheritDoc}
-     * It is the size of the enclosing {@link VmPacket}.
-     * @return {@inheritDoc}
-     */
+    /// {@inheritDoc}
+    /// It is the size of the enclosing [VmPacket].
+    /// @return {@inheritDoc}
     @Override
     public long getSize() {
         return vmPacket.getSize();
     }
 
-    /**
-     * Gets the {@link EdgeSwitch} that the Host where the VM receiving a packet is connected to.
-     * @return the Edge Switch connected to the Host where the targeting VM is placed
-     */
+    /// Gets the [EdgeSwitch] that the Host where the VM receiving a packet is connected to.
+    /// @return the Edge Switch connected to the Host where the targeting VM is placed
     public EdgeSwitch getVmEdgeSwitch() {
         return vmPacket.getDestinationHost().getEdgeSwitch();
     }

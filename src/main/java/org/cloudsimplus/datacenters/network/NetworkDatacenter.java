@@ -42,18 +42,16 @@ import static java.util.stream.Collectors.toList;
 /// @author Manoel Campos da Silva Filho
 public class NetworkDatacenter extends DatacenterSimple {
 
-    /** @see #getSwitchMap() */
+    /// @see #getSwitchMap()
     private final List<Switch> switchMap;
 
-    /**
-     * Creates a NetworkDatacenter with the given parameters.
-     *
-     * @param simulation The {@link CloudSimPlus} instance that represents the simulation the Entity belongs to
-     * @param hostList list of {@link Host}s that will compound the Datacenter
-     * @param vmAllocationPolicy the policy to be used to allocate {@link Vm}s into hosts
-     *
-     * @throws IllegalArgumentException when this Host has zero {@link Pe}s
-     */
+    /// Creates a NetworkDatacenter with the given parameters.
+    ///
+    /// @param simulation The [CloudSimPlus] instance that represents the simulation the Entity belongs to
+    /// @param hostList list of [Host]s that will compound the Datacenter
+    /// @param vmAllocationPolicy the policy to be used to allocate [Vm]s into hosts
+    ///
+    /// @throws IllegalArgumentException when this Host has zero [Pe]s
     public NetworkDatacenter(
         final Simulation simulation,
         final List<? extends NetworkHost> hostList,
@@ -63,14 +61,12 @@ public class NetworkDatacenter extends DatacenterSimple {
         setVmAllocationPolicy(vmAllocationPolicy);
     }
 
-    /**
-     * Creates a NetworkDatacenter that uses a {@link VmAllocationPolicySimple} as default.
-     *
-     * @param simulation The {@link CloudSimPlus} instance that represents the simulation the Entity belongs to
-     * @param hostList list of {@link Host}s that will compound the Datacenter
-     *
-     * @throws IllegalArgumentException when this Host has zero {@link Pe}s
-     */
+    /// Creates a NetworkDatacenter that uses a [VmAllocationPolicySimple] as default.
+    ///
+    /// @param simulation The [CloudSimPlus] instance that represents the simulation the Entity belongs to
+    /// @param hostList list of [Host]s that will compound the Datacenter
+    ///
+    /// @throws IllegalArgumentException when this Host has zero [Pe]s
     public NetworkDatacenter(
         final Simulation simulation,
         final List<? extends NetworkHost> hostList)
@@ -79,27 +75,21 @@ public class NetworkDatacenter extends DatacenterSimple {
         switchMap = new ArrayList<>();
     }
 
-    /**
-     * @return a list of all {@link EdgeSwitch}s in the Datacenter network.
-     * @see #getSwitchMap()
-     */
+    /// @return a list of all [EdgeSwitch]s in the Datacenter network.
+    /// @see #getSwitchMap()
     public List<Switch> getEdgeSwitch() {
         return switchMap.stream()
                 .filter(swt -> swt.getLevel() == EdgeSwitch.LEVEL)
                 .collect(toList());
     }
 
-    /**
-     * Adds a {@link Switch} to the Datacenter.
-     * @param swt the Switch to be added
-     */
+    /// Adds a [Switch] to the Datacenter.
+    /// @param swt the Switch to be added
     public void addSwitch(final Switch swt){
         switchMap.add(swt);
     }
 
-    /**
-     * @return a <b>read-only</b> list of network Datacenter's {@link Switch}es.
-     */
+    /// @return a **read-only** list of network Datacenter's [Switch]es.
     // TODO This method and attribute must be renamed to switchList
     public List<Switch> getSwitchMap() {
         return Collections.unmodifiableList(switchMap);

@@ -32,11 +32,9 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-/**
- * @author	Anton Beloglazov
- * @author Manoel Campos da Silva Filho
- * @since	CloudSim Plus 1.3.0
- */
+/// @author	Anton Beloglazov
+/// @author Manoel Campos da Silva Filho
+/// @since	CloudSim Plus 1.3.0
 public class CloudletSimpleFilesTest {
     private static final String FILE1 = "file1.txt";
     private static final String FILE2 = "file2.txt";

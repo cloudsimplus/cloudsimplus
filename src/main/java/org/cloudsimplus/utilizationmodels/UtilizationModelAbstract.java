@@ -14,17 +14,13 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.cloudsimplus.core.Simulation;
 
-/**
- * An abstract class to implement {@link UtilizationModel}s.
- * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 1.2
- */
+/// An abstract class to implement [UtilizationModel]s.
+/// @author Manoel Campos da Silva Filho
+/// @since CloudSim Plus 1.2
 @Accessors @Getter
 public abstract non-sealed class UtilizationModelAbstract implements UtilizationModel {
-    /**
-     * Indicates that values lower or equal to this will be considered as zero.
-     * This constant is used to compare utilization values to avoid floating point precision issues.
-     */
+    /// Indicates that values lower or equal to this will be considered as zero.
+    /// This constant is used to compare utilization values to avoid floating point precision issues.
     public static final double ALMOST_ZERO = 0.0000000001;
 
     @Setter @NonNull
@@ -44,10 +40,8 @@ public abstract non-sealed class UtilizationModelAbstract implements Utilization
         this.setUnit(unit);
     }
 
-    /**
-     * Sets the {@link Unit} in which the resource utilization is defined.
-     * @param unit {@link Unit} to set
-     */
+    /// Sets the [Unit] in which the resource utilization is defined.
+    /// @param unit [Unit] to set
     protected final void setUnit(@NonNull final Unit unit) {
         this.unit = unit;
     }
@@ -69,11 +63,9 @@ public abstract non-sealed class UtilizationModelAbstract implements Utilization
 
     protected abstract double getUtilizationInternal(double time);
 
-    /**
-     * Checks if a given field has a valid value, considering that the minimum value is zero.
-     * @param fieldName the name of the field to display at the Exception when the value is invalid
-     * @param fieldValue the current value of the field
-     */
+    /// Checks if a given field has a valid value, considering that the minimum value is zero.
+    /// @param fieldName the name of the field to display at the Exception when the value is invalid
+    /// @param fieldValue the current value of the field
     protected void validateUtilizationField(final String fieldName, final double fieldValue) {
         validateUtilizationField(fieldName, fieldValue, 0);
     }

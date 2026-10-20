@@ -26,19 +26,15 @@ import org.cloudsimplus.vms.Vm;
 /// @since CloudSim Toolkit 2.0
 public class PeProvisionerSimple extends PeProvisionerAbstract {
 
-    /**
-     * Instantiates a new PeProvisionerSimple. The {@link Pe} it will manage will be set
-     * just at the Pe instantiation.
-     */
+    /// Instantiates a new PeProvisionerSimple. The [Pe] it will manage will be set
+    /// just at the Pe instantiation.
     public PeProvisionerSimple() {
         super(Pe.NULL, vm -> ResourceManageable.NULL);
     }
 
-    /**
-     * Instantiates a new PeProvisionerSimple for a given {@link Pe}.
-     *
-     * @param pe the PE that will be managed by the provisioner
-     */
+    /// Instantiates a new PeProvisionerSimple for a given [Pe].
+    ///
+    /// @param pe the PE that will be managed by the provisioner
     public PeProvisionerSimple(final Pe pe){
         super(pe, Vm::getProcessor);
         pe.setPeProvisioner(this);

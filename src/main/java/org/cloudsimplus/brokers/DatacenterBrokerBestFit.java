@@ -29,32 +29,26 @@ import org.cloudsimplus.vms.Vm;
 
 import java.util.Comparator;
 
-/**
- * A {@link DatacenterBroker} that uses a <a href="https://en.wikipedia.org/wiki/Best-fit_bin_packing">Best Fit</a>
- * mapping between submitted cloudlets and VMs, trying to place a Cloudlet
- * at the best suitable Vm that can be found (according to the required Cloudlet's PEs).
- * The Broker then places the submitted VMs at the first Datacenter found.
- * If there isn't capacity in that one, it will try other available ones.
- *
- * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 4.3.8
- */
+/// A [DatacenterBroker] that uses a [Best Fit](https://en.wikipedia.org/wiki/Best-fit_bin_packing)
+/// mapping between submitted cloudlets and VMs, trying to place a Cloudlet
+/// at the best suitable Vm that can be found (according to the required Cloudlet's PEs).
+/// The Broker then places the submitted VMs at the first Datacenter found.
+/// If there isn't capacity in that one, it will try other available ones.
+///
+/// @author Manoel Campos da Silva Filho
+/// @since CloudSim Plus 4.3.8
 public class DatacenterBrokerBestFit extends DatacenterBrokerSimple {
 
-    /**
-     * Creates a DatacenterBroker.
-     *
-     * @param simulation The {@link CloudSimPlus} instance that represents the simulation the broker is related to
-     */
+    /// Creates a DatacenterBroker.
+    ///
+    /// @param simulation The [CloudSimPlus] instance that represents the simulation the broker is related to
     public DatacenterBrokerBestFit(final CloudSimPlus simulation) {
         super(simulation);
     }
 
-    /**
-     * Selects the VM with the lowest number of PEs that is able to run a given Cloudlet.
-     * @param cloudlet the Cloudlet to find a VM to run it
-     * @return the VM selected for the Cloudlet or {@link Vm#NULL} if no suitable VM was found
-     */
+    /// Selects the VM with the lowest number of PEs that is able to run a given Cloudlet.
+    /// @param cloudlet the Cloudlet to find a VM to run it
+    /// @return the VM selected for the Cloudlet or [Vm#NULL] if no suitable VM was found
     @Override
     public Vm defaultVmMapper(final Cloudlet cloudlet) {
         if (cloudlet.isBoundToVm()) {

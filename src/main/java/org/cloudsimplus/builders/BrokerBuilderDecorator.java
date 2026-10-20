@@ -52,23 +52,17 @@ import java.util.function.Consumer;
 public class BrokerBuilderDecorator implements BrokerBuilderInterface {
     private final BrokerBuilder builder;
 
-    /**
-     * The VmBuilder in charge of creating VMs
-     * to the latest DatacenterBroker created by this BrokerBuilder
-     */
+    /// The VmBuilder in charge of creating VMs
+    /// to the latest DatacenterBroker created by this BrokerBuilder
     @Getter
     private final VmBuilder vmBuilder;
 
-    /**
-     * The CloudletBuilder in charge of creating Cloudlets
-     * to the latest DatacenterBroker created by this BrokerBuilder
-     */
+    /// The CloudletBuilder in charge of creating Cloudlets
+    /// to the latest DatacenterBroker created by this BrokerBuilder
     @Getter
     private final CloudletBuilder cloudletBuilder;
 
-    /**
-     * The latest created broker
-     */
+    /// The latest created broker
     @Getter
     private final DatacenterBroker broker;
 

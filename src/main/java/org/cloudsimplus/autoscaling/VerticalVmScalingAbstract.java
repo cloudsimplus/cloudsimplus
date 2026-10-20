@@ -38,14 +38,13 @@ import org.cloudsimplus.vms.Vm;
 
 import java.util.function.Function;
 
-/**
- * An abstract class for implementing {@link VerticalVmScaling}.
- * <p>The constructors define a {@link ResourceScalingGradual}
- * as the default {@link ResourceScaling}.</p>
- *
- * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 7.0.4
- */
+/// An abstract class for implementing [VerticalVmScaling].
+///
+/// The constructors define a [ResourceScalingGradual]
+/// as the default [ResourceScaling].
+///
+/// @author Manoel Campos da Silva Filho
+/// @since CloudSim Plus 7.0.4
 @Accessors
 public non-sealed abstract class VerticalVmScalingAbstract extends VmScalingAbstract implements VerticalVmScaling {
     @Getter @NonNull
@@ -62,21 +61,19 @@ public non-sealed abstract class VerticalVmScalingAbstract extends VmScalingAbst
     private double scalingFactor;
     private Resource vmResource = Resource.NULL;
 
-    /**
-     * Creates a VerticalVmScaling.
-     *
-     * @param resourceClassToScale the class of Vm resource that this scaling object will request
-     *                             up or down scaling (such as {@link Ram}.class,
-     *                             {@link Bandwidth}.class or {@link Processor}.class).
-     * @param resourceScaling {@link ResourceScaling} that defines how the resource has to be resized.
-     * @param scalingFactor the factor (a percentage value between 0 and 1)
-     *                      that will be used to scale a Vm resource up or down,
-     *                      whether such a resource is over or underloaded, according to the
-     *                      defined predicates.
-     *                      In the case of upscaling, value 1 will scale the resource in 100%,
-     *                      doubling its capacity.
-     * @see VerticalVmScaling#setResourceScaling(ResourceScaling)
-     */
+    /// Creates a VerticalVmScaling.
+    ///
+    /// @param resourceClassToScale the class of Vm resource that this scaling object will request
+    /// up or down scaling (such as [Ram].class,
+    /// [Bandwidth].class or [Processor].class).
+    /// @param resourceScaling [ResourceScaling] that defines how the resource has to be resized.
+    /// @param scalingFactor the factor (a percentage value between 0 and 1)
+    /// that will be used to scale a Vm resource up or down,
+    /// whether such a resource is over or underloaded, according to the
+    /// defined predicates.
+    /// In the case of upscaling, value 1 will scale the resource in 100%,
+    /// doubling its capacity.
+    /// @see VerticalVmScaling#setResourceScaling(ResourceScaling)
     public VerticalVmScalingAbstract(
         final Class<? extends ResourceManageable> resourceClassToScale,
         final ResourceScaling resourceScaling, final double scalingFactor)
@@ -89,12 +86,10 @@ public non-sealed abstract class VerticalVmScalingAbstract extends VmScalingAbst
         this.setScalingFactor(scalingFactor);
     }
 
-    /**
-     * Validates the class of Vm resource that this scaling object will request up or down scaling.
-     * Such a class can be {@link Ram}.class, {@link Bandwidth}.class or {@link Pe}.class.
-     * @param resourceClass the resource class to set
-     * @return the validated resource class
-     */
+    /// Validates the class of Vm resource that this scaling object will request up or down scaling.
+    /// Such a class can be [Ram].class, [Bandwidth].class or [Pe].class.
+    /// @param resourceClass the resource class to set
+    /// @return the validated resource class
     private Class<? extends ResourceManageable> validateResourceClass(@NonNull final Class<? extends ResourceManageable> resourceClass) {
         if(Pe.class.equals(resourceClass)){
             return Processor.class;
@@ -175,24 +170,21 @@ public non-sealed abstract class VerticalVmScalingAbstract extends VmScalingAbst
         return vm -> 0.0;
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * <p>If a {@link ResourceScaling} implementation such as
-     * {@link ResourceScalingGradual} or {@link ResourceScalingInstantaneous} is used,
-     * it will rely on the {@link #getScalingFactor()} to compute the amount of resource to scale.
-     * </p>
-     *
-     * <h3>NOTE:</h3>
-     * <b>The return of this method is rounded up to avoid
-     * values smaller than 1. For instance, up scaling the number of CPUs in 0.5
-     * means that half of a CPU should be added to the VM. Since number of CPUs is
-     * an integer value, this 0.5 will be converted to zero, causing no effect.
-     * For other resources such as RAM, adding 0.5 MB has not practical advantages either.
-     * This way, the value is always rounded up.
-     *
-     * @return {@inheritDoc}
-     */
+    /// {@inheritDoc}
+    ///
+    /// If a [ResourceScaling] implementation such as
+    /// [ResourceScalingGradual] or [ResourceScalingInstantaneous] is used,
+    /// it will rely on the [#getScalingFactor()] to compute the amount of resource to scale.
+    ///
+    /// **NOTE:**
+    /// The return of this method is rounded up to avoid
+    /// values smaller than 1. For instance, up scaling the number of CPUs in 0.5
+    /// means that half of a CPU should be added to the VM. Since number of CPUs is
+    /// an integer value, this 0.5 will be converted to zero, causing no effect.
+    /// For other resources such as RAM, adding 0.5 MB has not practical advantages either.
+    /// This way, the value is always rounded up.
+    ///
+    /// @return {@inheritDoc}
     @Override
     public double getResourceAmountToScale() {
         return Math.ceil(resourceScaling.getResourceAmountToScale(this));

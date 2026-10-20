@@ -27,29 +27,23 @@ import org.cloudsimplus.cloudlets.Cloudlet;
 import org.cloudsimplus.hosts.Host;
 import org.cloudsimplus.vms.Vm;
 
-/**
- * An interface that represents data to be passed
- * to {@link EventListener} objects that are registered to be notified
- * after a {@link Host} updates the processing of its {@link Vm}s.
- *
- * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 1.0
- *
- * @see Host#removeOnUpdateProcessingListener(EventListener)
- */
+/// An interface that represents data to be passed
+/// to [EventListener] objects that are registered to be notified
+/// after a [Host] updates the processing of its [Vm]s.
+///
+/// @author Manoel Campos da Silva Filho
+/// @since CloudSim Plus 1.0
+///
+/// @see Host#removeOnUpdateProcessingListener(EventListener)
 public interface HostUpdatesVmsProcessingEventInfo extends HostEventInfo  {
-    /**
-     * @return the expected completion time of the next finishing cloudlet
-     */
+    /// @return the expected completion time of the next finishing cloudlet
     double getNextCloudletCompletionTime();
 
-    /**
-     * Gets a {@code HostUpdatesVmsProcessingEventInfo} instance from the given parameters.
-     *
-     * @param listener the listener to be notified about the event
-     * @param host the {@link Host} where the event happened
-     * @param nextCloudletCompletionTime the expected time for completion of the next {@link Cloudlet} (in seconds)
-     */
+    /// Gets a `HostUpdatesVmsProcessingEventInfo` instance from the given parameters.
+    ///
+    /// @param listener the listener to be notified about the event
+    /// @param host the [Host] where the event happened
+    /// @param nextCloudletCompletionTime the expected time for completion of the next [Cloudlet] (in seconds)
     static HostUpdatesVmsProcessingEventInfo of(final EventListener<HostUpdatesVmsProcessingEventInfo> listener, final Host host, final double nextCloudletCompletionTime) {
         final double time = host.getSimulation().clock();
         return new HostUpdatesVmsProcessingEventInfo() {

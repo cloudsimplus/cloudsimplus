@@ -29,13 +29,11 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.cloudsimplus.vms.Vm;
 
-/**
- * An abstract class for implementing {@link HorizontalVmScaling} and
- * {@link VerticalVmScaling}.
- *
- * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 1.1.0
- */
+/// An abstract class for implementing [HorizontalVmScaling] and
+/// [VerticalVmScaling].
+///
+/// @author Manoel Campos da Silva Filho
+/// @since CloudSim Plus 1.1.0
 @Accessors(makeFinal = false)
 public non-sealed abstract class VmScalingAbstract implements VmScaling {
     private double lastProcessingTime;
@@ -47,30 +45,24 @@ public non-sealed abstract class VmScalingAbstract implements VmScaling {
         this.vm = Vm.NULL;
     }
 
-    /**
-     * {@return true if it's time to check weather the Vm is over and underloaded, false otherwise}
-     * @param time current simulation time
-     */
+    /// {@return true if it's time to check weather the Vm is over and underloaded, false otherwise}
+    /// @param time current simulation time
     protected boolean isTimeToCheckPredicate(final double time) {
         return time > lastProcessingTime && (long) time % getVm().getHost().getDatacenter().getSchedulingInterval() == 0;
     }
 
-    /**
-     * Performs the actual request to scale the Vm up or down,
-     * depending on whether it is over or underloaded, respectively.
-     * This method is automatically called by
-     * {@link VmScaling#requestUpScalingIfPredicateMatches(org.cloudsimplus.listeners.VmHostEventInfo)}
-     * when it is verified that the Vm is over or underloaded.
-     *
-     * @param time current simulation time
-     * @return true if the request was actually sent, false otherwise
-     */
+    /// Performs the actual request to scale the Vm up or down,
+    /// depending on whether it is over or underloaded, respectively.
+    /// This method is automatically called by
+    /// [VmScaling#requestUpScalingIfPredicateMatches(org.cloudsimplus.listeners.VmHostEventInfo)]
+    /// when it is verified that the Vm is over or underloaded.
+    ///
+    /// @param time current simulation time
+    /// @return true if the request was actually sent, false otherwise
     protected abstract boolean requestScaling(double time);
 
-    /**
-     * Sets the last time the scheduler checked for VM overload.
-     * @param lastProcessingTime the current simulation time will be set as the last processing time
-     */
+    /// Sets the last time the scheduler checked for VM overload.
+    /// @param lastProcessingTime the current simulation time will be set as the last processing time
     protected void setLastProcessingTime(final double lastProcessingTime) {
         this.lastProcessingTime = lastProcessingTime;
     }

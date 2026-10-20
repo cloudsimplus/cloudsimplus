@@ -26,14 +26,12 @@ package org.cloudsimplus.utilizationmodels;
 import org.cloudsimplus.cloudlets.Cloudlet;
 import org.cloudsimplus.core.Simulation;
 
-/**
- * A class that implements the Null Object Design Pattern for {@link UtilizationModel}
- * class. A {@link Cloudlet} using such a utilization model for one of its resources
- * will not consume any amount of that resource ever.
- *
- * @author Manoel Campos da Silva Filho
- * @see UtilizationModel#NULL
- */
+/// A class that implements the Null Object Design Pattern for [UtilizationModel]
+/// class. A [Cloudlet] using such a utilization model for one of its resources
+/// will not consume any amount of that resource ever.
+///
+/// @author Manoel Campos da Silva Filho
+/// @see UtilizationModel#NULL
 final class UtilizationModelNull implements UtilizationModel {
     @Override public Simulation getSimulation() {
         return Simulation.NULL;

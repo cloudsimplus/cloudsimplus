@@ -45,12 +45,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-/**
- * A class that implements the Null Object Design Pattern for the {@link Host} class.
- *
- * @author Manoel Campos da Silva Filho
- * @see Host#NULL
- */
+/// A class that implements the Null Object Design Pattern for the [Host] class.
+///
+/// @author Manoel Campos da Silva Filho
+/// @see Host#NULL
 final class HostNull implements Host {
     @Override public int compareTo(Host host) { return 0; }
     @Override public boolean addMigratingInVm(Vm vm) {

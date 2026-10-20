@@ -13,19 +13,17 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.cloudsimplus.hosts.Host;
 
-/**
- * Represents static properties of a Datacenter such as architecture,
- * Operating System (OS), cost and {@link Distribution Distribution}.
- * Each {@link Datacenter} must have its own instance of this class.
- * By default, all instances are created as {@link Distribution#PRIVATE PRIVATE} datacenters.
- *
- * @author Manzur Murshed
- * @author Rajkumar Buyya
- * @author Rodrigo N. Calheiros
- * @author Anton Beloglazov
- * @author Manoel Campos da Silva Filho
- * @since CloudSim Toolkit 1.0
- */
+/// Represents static properties of a Datacenter such as architecture,
+/// Operating System (OS), cost and [Distribution][Distribution].
+/// Each [Datacenter] must have its own instance of this class.
+/// By default, all instances are created as [PRIVATE][Distribution#PRIVATE] datacenters.
+///
+/// @author Manzur Murshed
+/// @author Rajkumar Buyya
+/// @author Rodrigo N. Calheiros
+/// @author Anton Beloglazov
+/// @author Manoel Campos da Silva Filho
+/// @since CloudSim Toolkit 1.0
 @Accessors @Getter @Setter
 public non-sealed class DatacenterCharacteristicsSimple implements DatacenterCharacteristics {
     @NonNull
@@ -39,40 +37,34 @@ public non-sealed class DatacenterCharacteristicsSimple implements DatacenterCha
     private double costPerStorage;
     private double costPerBw;
 
-    /**
-     * Creates a DatacenterCharacteristics with no costs for
-     * {@link #getCostPerBw() BW},
-     * {@link #getCostPerMem() RAM} and {@link #getCostPerStorage() Storage}.
-     * The datacenter {@link #getDistribution() distribution} type is set as {@link Distribution#PRIVATE} by default.
-     *
-     * @see DatacenterCharacteristicsSimple#DatacenterCharacteristicsSimple(double, double, double)
-     * @see DatacenterCharacteristicsSimple#DatacenterCharacteristicsSimple(double, double, double, double)
-     */
+    /// Creates a DatacenterCharacteristics with no costs for
+    /// [BW][#getCostPerBw()],
+    /// [RAM][#getCostPerMem()] and [Storage][#getCostPerStorage()].
+    /// The datacenter [distribution][#getDistribution()] type is set as [Distribution#PRIVATE] by default.
+    ///
+    /// @see DatacenterCharacteristicsSimple#DatacenterCharacteristicsSimple(double, double, double)
+    /// @see DatacenterCharacteristicsSimple#DatacenterCharacteristicsSimple(double, double, double, double)
     DatacenterCharacteristicsSimple(final Datacenter datacenter){
         this(0, 0, 0, 0);
         setDatacenter(datacenter);
     }
 
-    /**
-     * Creates a DatacenterCharacteristics with no cost for {@link #getCostPerBw() BW}.
-     * The datacenter {@link #getDistribution() distribution} type is set as {@link Distribution#PRIVATE} by default.
-     *
-     * @see DatacenterCharacteristicsSimple#DatacenterCharacteristicsSimple(Datacenter)
-     * @see DatacenterCharacteristicsSimple#DatacenterCharacteristicsSimple(double, double, double, double)
-     */
+    /// Creates a DatacenterCharacteristics with no cost for [BW][#getCostPerBw()].
+    /// The datacenter [distribution][#getDistribution()] type is set as [Distribution#PRIVATE] by default.
+    ///
+    /// @see DatacenterCharacteristicsSimple#DatacenterCharacteristicsSimple(Datacenter)
+    /// @see DatacenterCharacteristicsSimple#DatacenterCharacteristicsSimple(double, double, double, double)
     public DatacenterCharacteristicsSimple(
         final double costPerSecond, final double costPerMem, final double costPerStorage)
     {
         this(costPerSecond, costPerMem, costPerStorage, 0);
     }
 
-    /**
-     * Creates a DatacenterCharacteristics.
-     * The datacenter {@link #getDistribution() distribution} type is set as {@link Distribution#PRIVATE} by default.
-     *
-     * @see DatacenterCharacteristicsSimple#DatacenterCharacteristicsSimple(Datacenter)
-     * @see DatacenterCharacteristicsSimple#DatacenterCharacteristicsSimple(double, double, double)
-     */
+    /// Creates a DatacenterCharacteristics.
+    /// The datacenter [distribution][#getDistribution()] type is set as [Distribution#PRIVATE] by default.
+    ///
+    /// @see DatacenterCharacteristicsSimple#DatacenterCharacteristicsSimple(Datacenter)
+    /// @see DatacenterCharacteristicsSimple#DatacenterCharacteristicsSimple(double, double, double)
     public DatacenterCharacteristicsSimple(
         final double costPerSecond,  final double costPerMem,
         final double costPerStorage, final double costPerBw)

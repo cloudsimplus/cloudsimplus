@@ -26,18 +26,14 @@ package org.cloudsimplus.traces.google;
 import org.cloudsimplus.cloudlets.Cloudlet;
 import org.cloudsimplus.core.CloudSimTag;
 
-/**
- * Defines the type of {@link TaskEvent} (a line) in the trace file
- * that represents the state of the job.
- * Each enum instance is a possible value for the {@link TaskEventField#EVENT_TYPE} field.
- *
- * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 4.0.0
- */
+/// Defines the type of [TaskEvent] (a line) in the trace file
+/// that represents the state of the job.
+/// Each enum instance is a possible value for the [TaskEventField#EVENT_TYPE] field.
+///
+/// @author Manoel Campos da Silva Filho
+/// @since CloudSim Plus 4.0.0
 public enum TaskEventType {
-    /**
-     * 0: A task or job became eligible for scheduling.
-     */
+    /// 0: A task or job became eligible for scheduling.
     SUBMIT{
         @Override
         protected boolean process(final GoogleTaskEventsTraceReader reader) {
@@ -68,11 +64,9 @@ public enum TaskEventType {
         }
     },
 
-    /**
-     * 1: A job or task was scheduled on a machine
-     * (it may not start running immediately due to code-shipping time, etc.).
-     * For jobs, this occurs the first time any task of the job is scheduled on a machine.
-     */
+    /// 1: A job or task was scheduled on a machine
+    /// (it may not start running immediately due to code-shipping time, etc.).
+    /// For jobs, this occurs the first time any task of the job is scheduled on a machine.
     SCHEDULE{
         @Override
         protected boolean process(final GoogleTaskEventsTraceReader reader) {
@@ -80,12 +74,10 @@ public enum TaskEventType {
         }
     },
 
-    /**
-     * 2: A task or job was de-scheduled because of a higher priority task or job,
-     * because the scheduler over-committed and the actual demand exceeded the machine capacity,
-     * because the machine on which it was running became unusable (e.g. taken offline for repairs),
-     * or because a disk holding the task’s data was lost.
-     */
+    /// 2: A task or job was de-scheduled because of a higher priority task or job,
+    /// because the scheduler over-committed and the actual demand exceeded the machine capacity,
+    /// because the machine on which it was running became unusable (e.g. taken offline for repairs),
+    /// or because a disk holding the task’s data was lost.
     EVICT{
         @Override
         protected boolean process(final GoogleTaskEventsTraceReader reader) {
@@ -93,10 +85,8 @@ public enum TaskEventType {
         }
     },
 
-    /**
-     * 3: A task or job was de-scheduled (or, in rare cases, ceased to be eligible
-     * for scheduling while it was pending) due to a task failure.
-     */
+    /// 3: A task or job was de-scheduled (or, in rare cases, ceased to be eligible
+    /// for scheduling while it was pending) due to a task failure.
     FAIL{
         @Override
         protected boolean process(final GoogleTaskEventsTraceReader reader) {
@@ -104,9 +94,7 @@ public enum TaskEventType {
         }
     },
 
-    /**
-     * 4: A task or job completed normally.
-     */
+    /// 4: A task or job completed normally.
     FINISH{
         @Override
         protected boolean process(final GoogleTaskEventsTraceReader reader) {
@@ -114,10 +102,8 @@ public enum TaskEventType {
         }
     },
 
-    /**
-     * 5: A task or job was canceled by the user or a driver program or because
-     * another job or task on which this job was dependent died.
-     */
+    /// 5: A task or job was canceled by the user or a driver program or because
+    /// another job or task on which this job was dependent died.
     KILL{
         @Override
         protected boolean process(final GoogleTaskEventsTraceReader reader) {
@@ -125,10 +111,8 @@ public enum TaskEventType {
         }
     },
 
-    /**
-     * 6: A task or job was presumably terminated, but a record indicating its
-     * termination was missing from our source data.
-     */
+    /// 6: A task or job was presumably terminated, but a record indicating its
+    /// termination was missing from our source data.
     LOST{
         @Override
         protected boolean process(final GoogleTaskEventsTraceReader reader) {
@@ -136,10 +120,8 @@ public enum TaskEventType {
         }
     },
 
-    /**
-     * 7: A task or job’s scheduling class, resource requirements, or
-     * constraints were updated while it was waiting to be scheduled.
-     */
+    /// 7: A task or job’s scheduling class, resource requirements, or
+    /// constraints were updated while it was waiting to be scheduled.
     UPDATE_PENDING{
         @Override
         protected boolean process(final GoogleTaskEventsTraceReader reader) {
@@ -147,10 +129,8 @@ public enum TaskEventType {
         }
     },
 
-    /**
-     * 8: A task or job’s scheduling class, resource requirements, or
-     * constraints were updated while it was scheduled.
-     */
+    /// 8: A task or job’s scheduling class, resource requirements, or
+    /// constraints were updated while it was scheduled.
     UPDATE_RUNNING{
         @Override
         protected boolean process(final GoogleTaskEventsTraceReader reader) {
@@ -158,28 +138,22 @@ public enum TaskEventType {
         }
     };
 
-    /**
-     * Gets an enum instance from its ordinal value.
-     * @param ordinal the ordinal value to get the enum instance from
-     * @return the enum instance
-     */
+    /// Gets an enum instance from its ordinal value.
+    /// @param ordinal the ordinal value to get the enum instance from
+    /// @return the enum instance
     public static TaskEventType getValue(final int ordinal){
         return values()[ordinal];
     }
 
-    /**
-     * Executes an operation with the Cloudlet according to the Event Type.
-     * Each enum value must implement this method to include its own processing logic.
-     *
-     * @return true if trace line for the event type was processed, false otherwise
-     */
+    /// Executes an operation with the Cloudlet according to the Event Type.
+    /// Each enum value must implement this method to include its own processing logic.
+    ///
+    /// @return true if trace line for the event type was processed, false otherwise
     protected abstract boolean process(GoogleTaskEventsTraceReader reader);
 
-    /**
-     * Gets the enum value that represents the event type of the current trace line.
-     *
-     * @return the {@link MachineEventType} value
-     */
+    /// Gets the enum value that represents the event type of the current trace line.
+    ///
+    /// @return the [MachineEventType] value
     protected static TaskEventType of(final GoogleTaskEventsTraceReader reader) {
         return TaskEventField.EVENT_TYPE.getValue(reader);
     }

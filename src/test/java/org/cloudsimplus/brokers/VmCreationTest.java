@@ -43,10 +43,8 @@ class VmCreationTest {
         assertFalse(vmCreation.isRetryFailedVms());
     }
 
-    /**
-     * After resetting, failed VMs must be retried again.
-     * @see <a href="https://github.com/cloudsimplus/cloudsimplus/issues/579">Issue #579</a>
-     */
+    /// After resetting, failed VMs must be retried again.
+    /// @see <a href="https://github.com/cloudsimplus/cloudsimplus/issues/579">Issue #579</a>
     @Test
     void resetCurrentRetriesEnablesRetryingFailedVmsAgain() {
         final var vmCreation = new VmCreation(RETRY_DELAY, MAX_RETRIES);

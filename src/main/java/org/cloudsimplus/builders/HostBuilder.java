@@ -41,31 +41,25 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import org.jspecify.annotations.Nullable;
 
-/**
- * A Builder class to create {@link Host} objects
- * using the default configurations defined in the {@link Host} class.
- *
- * @see HostSimple#setDefaultRamCapacity(long)
- * @see HostSimple#setDefaultBwCapacity(long)
- * @see HostSimple#setDefaultStorageCapacity(long)
- *
- * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 1.0
- */
+/// A Builder class to create [Host] objects
+/// using the default configurations defined in the [Host] class.
+///
+/// @see HostSimple#setDefaultRamCapacity(long)
+/// @see HostSimple#setDefaultBwCapacity(long)
+/// @see HostSimple#setDefaultStorageCapacity(long)
+///
+/// @author Manoel Campos da Silva Filho
+/// @since CloudSim Plus 1.0
 @Accessors(chain = true)
 public class HostBuilder implements Builder {
     @Getter @Setter private double mips = 2000;
     @Getter @Setter private int    pes = 1;
 
-    /**
-     * The list of all created Hosts
-     */
+    /// The list of all created Hosts
     @Getter private final List<Host> hosts;
 
-    /**
-     * A {@link Function} used to create Hosts.
-     * It must receive a list of {@link Pe} for the Host it will create.
-     */
+    /// A [Function] used to create Hosts.
+    /// It must receive a list of [Pe] for the Host it will create.
     @Setter @NonNull private Function<List<Pe>, Host> hostCreationFunction;
     @Setter @NonNull private EventListener<HostUpdatesVmsProcessingEventInfo> onUpdateVmsProcessingListener = EventListener.NULL;
     @Setter @Nullable private Supplier<VmScheduler> vmSchedulerSupplier;
@@ -76,20 +70,16 @@ public class HostBuilder implements Builder {
         this.hostCreationFunction = this::defaultHostCreationFunction;
     }
 
-    /**
-     * Creates a single Host and stores it internally.
-     * @return this builder
-     * @see #getHosts()
-     */
+    /// Creates a single Host and stores it internally.
+    /// @return this builder
+    /// @see #getHosts()
     public HostBuilder create() {
         return create(1);
     }
 
-    /**
-     * Creates a list of Hosts and stores it internally.
-     * @return this builder
-     * @see #getHosts()
-     */
+    /// Creates a list of Hosts and stores it internally.
+    /// @return this builder
+    /// @see #getHosts()
     public HostBuilder create(final int amount) {
         validateAmount(amount);
 

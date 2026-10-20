@@ -16,16 +16,14 @@ import org.junit.jupiter.api.Test;
 import static org.cloudsimplus.vms.VmTestUtil.createVm;
 import static org.junit.jupiter.api.Assertions.*;
 
-/**
- * @author		Anton Beloglazov
- * @since		CloudSim Toolkit 2.0
- */
+/// @author		Anton Beloglazov
+/// @since		CloudSim Toolkit 2.0
 public class ResourceProvisionerSimpleTest {
     private static final long CAPACITY = 1000;
     private static final long HALF_CAPACITY = CAPACITY / 2;
     private static final long QUARTER_OF_CAPACITY = CAPACITY / 4;
 
-    /** @see #createSimpleProvisioner()  */
+    /// @see #createSimpleProvisioner()
     private ResourceProvisionerSimple provisioner;
 
     @BeforeEach
@@ -33,10 +31,8 @@ public class ResourceProvisionerSimpleTest {
         provisioner = createSimpleProvisioner();
     }
 
-    /**
-     * Creates a provisioner for any generic resource. It in fact doesn't matter
-     * if it is for HOST_RAM, CPU, HOST_BW or any other possible resource.
-     */
+    /// Creates a provisioner for any generic resource. It in fact doesn't matter
+    /// if it is for HOST_RAM, CPU, HOST_BW or any other possible resource.
     private ResourceProvisionerSimple createSimpleProvisioner() {
         return new ResourceProvisionerSimple(new Ram(CAPACITY), vm -> ((VmSimple)vm).getRam());
     }
@@ -147,11 +143,9 @@ public class ResourceProvisionerSimpleTest {
         assertEquals(0, vm2.getRam().getAllocatedResource());
     }
 
-    /**
-     * Checks that provisioning a resource to a VM doesn't make
-     * the VM resource 100% used, since no Cloudlet is using it yet.
-     * @see <a href="https://github.com/cloudsimplus/cloudsimplus/issues/557">Issue #557</a>
-     */
+    /// Checks that provisioning a resource to a VM doesn't make
+    /// the VM resource 100% used, since no Cloudlet is using it yet.
+    /// @see <a href="https://github.com/cloudsimplus/cloudsimplus/issues/557">Issue #557</a>
     @Test
     public void testAllocateResourceForVmDoesNotMakeVmResourceUsed() {
         final VmSimple vm = createVm(0, HALF_CAPACITY);
@@ -162,11 +156,9 @@ public class ResourceProvisionerSimpleTest {
         assertEquals(0, vm.getRam().getAllocatedResource());
     }
 
-    /**
-     * Checks that re-provisioning a resource to a VM (such as in vertical scaling)
-     * keeps the PM resource accounting right and doesn't change
-     * the amount used by the VM, when it fits the new capacity.
-     */
+    /// Checks that re-provisioning a resource to a VM (such as in vertical scaling)
+    /// keeps the PM resource accounting right and doesn't change
+    /// the amount used by the VM, when it fits the new capacity.
     @Test
     public void testReallocateResourceForVmWhenVmResourceIsBeingUsed() {
         final VmSimple vm = createVm(0, HALF_CAPACITY);
@@ -184,10 +176,8 @@ public class ResourceProvisionerSimpleTest {
         assertEquals(QUARTER_OF_CAPACITY, vm.getRam().getAllocatedResource());
     }
 
-    /**
-     * Checks that downscaling a VM resource below the amount used by the VM
-     * clears such a usage, so that the new capacity can be set.
-     */
+    /// Checks that downscaling a VM resource below the amount used by the VM
+    /// clears such a usage, so that the new capacity can be set.
     @Test
     public void testReallocateResourceForVmWhenVmResourceUsageIsHigherThanNewCapacity() {
         final VmSimple vm = createVm(0, HALF_CAPACITY);

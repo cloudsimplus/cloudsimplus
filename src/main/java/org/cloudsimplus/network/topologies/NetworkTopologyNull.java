@@ -25,12 +25,10 @@ package org.cloudsimplus.network.topologies;
 
 import org.cloudsimplus.core.SimEntity;
 
-/**
- * A class that implements the Null Object Design Pattern for {@link NetworkTopology} class.
- *
- * @author Manoel Campos da Silva Filho
- * @see NetworkTopology#NULL
- */
+/// A class that implements the Null Object Design Pattern for [NetworkTopology] class.
+///
+/// @author Manoel Campos da Silva Filho
+/// @see NetworkTopology#NULL
 final class NetworkTopologyNull implements NetworkTopology {
     @Override public void addLink(SimEntity src, SimEntity dest, double bandwidth, double lat) {/**/}
     @Override public void removeLink(SimEntity src, SimEntity dest) {/**/}

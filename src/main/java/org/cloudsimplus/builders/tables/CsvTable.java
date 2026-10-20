@@ -27,12 +27,10 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.stream.Collectors;
 
-/**
- * Prints a table from a given data set, using a Comma Separated Text (CSV) format.
- *
- * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 1.0
- */
+/// Prints a table from a given data set, using a Comma Separated Text (CSV) format.
+///
+/// @author Manoel Campos da Silva Filho
+/// @since CloudSim Plus 1.0
 public class CsvTable extends AbstractTable {
     public CsvTable() {
         this("");
@@ -43,28 +41,20 @@ public class CsvTable extends AbstractTable {
         this.setColumnSeparator(",");
     }
 
-    /**
-     * CSV files don't have a title.
-     */
+    /// CSV files don't have a title.
     @Override
     public void printTitle() {/**/}
 
-    /**
-     * CSV files don't have a table opening line.
-     */
+    /// CSV files don't have a table opening line.
     @Override
     public void printTableOpening() {/**/}
 
-    /**
-     * CSV files don't have a table closing line.
-     */
+    /// CSV files don't have a table closing line.
     @Override
     public void printTableClosing() {/**/}
 
-    /**
-     * CSV files don't have a row opening line.
-     * @return
-     */
+    /// CSV files don't have a row opening line.
+    /// @return
     @Override
     protected String rowOpening() { return ""; }
 
@@ -78,9 +68,7 @@ public class CsvTable extends AbstractTable {
         return "";
     }
 
-    /**
-     * @return a horizontal line with the same width of the table
-     */
+    /// @return a horizontal line with the same width of the table
     protected String createHorizontalLine(final boolean includeColSeparator) {
         if(includeColSeparator){
             final StringBuilder sb = new StringBuilder(rowOpening());
@@ -97,27 +85,21 @@ public class CsvTable extends AbstractTable {
         return stringRepeat(getLineSeparator(), getLengthOfColumnHeadersRow()) + "%n";
     }
 
-    /**
-     * {@return a string repeated a given number of times}
-     * @param str the string to repeat
-     * @param timesToRepeat the number of times to repeat the string
-     */
+    /// {@return a string repeated a given number of times}
+    /// @param str the string to repeat
+    /// @param timesToRepeat the number of times to repeat the string
     protected final String stringRepeat(final String str, final int timesToRepeat) {
         return new String(new char[timesToRepeat]).replace("\0", str);
     }
 
-    /**
-     * @return the number of characters of the column headers row
-     */
+    /// @return the number of characters of the column headers row
     protected final int getLengthOfColumnHeadersRow(){
         return getColumns().stream().mapToInt(col -> col.generateTitleHeader().length()).sum();
     }
 
-    /**
-     * Gets a string and returns a copy centralized along the table width.
-     * @param str the string to be centralized
-     * @return the centralized version of the string
-     */
+    /// Gets a string and returns a copy centralized along the table width.
+    /// @param str the string to be centralized
+    /// @return the centralized version of the string
     protected String getCentralizedString(final String str) {
         final int indentationLength = (getLengthOfColumnHeadersRow() - str.length())/2;
         return "%n%s%s%n".formatted(StringUtils.repeat(" ", indentationLength), str);

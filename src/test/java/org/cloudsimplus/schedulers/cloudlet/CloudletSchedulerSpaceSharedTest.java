@@ -37,10 +37,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-/**
- *
- * @author Manoel Campos da Silva Filho
- */
+/// @author Manoel Campos da Silva Filho
 public class CloudletSchedulerSpaceSharedTest {
 
     @Test
@@ -157,9 +154,7 @@ public class CloudletSchedulerSpaceSharedTest {
         assertFalse(instance.getCloudletExecList().isEmpty());
     }
 
-    /**
-     * Verify That Submitted Cloudlet Was Added To Wait List By Checking Submit Return Value
-     */
+    /// Verify That Submitted Cloudlet Was Added To Wait List By Checking Submit Return Value
     @Test
     public void testCloudletSubmitWhenThereAreMoreCloudletsThanPes1() {
         final int pes = 1;
@@ -176,9 +171,7 @@ public class CloudletSchedulerSpaceSharedTest {
         assertEquals(expResult, result);
     }
 
-    /**
-     * Verify That Submitted Cloudlet Was Added To Wait List By Checking Such List
-     */
+    /// Verify That Submitted Cloudlet Was Added To Wait List By Checking Such List
     @Test
     public void testCloudletSubmitWhenThereAreMoreCloudletsThanPes2() {
         final int pes = 1;
@@ -204,9 +197,7 @@ public class CloudletSchedulerSpaceSharedTest {
         assertTrue(instance.isThereEnoughFreePesForCloudlet(cloudlet));
     }
 
-    /**
-     * When There Are One Pe And One Already Running Cloudlet
-     */
+    /// When There Are One Pe And One Already Running Cloudlet
     @Test
     public void testIsThereEnoughFreePesForCloudlet1() {
         final int cloudletPes = 1;
@@ -219,9 +210,7 @@ public class CloudletSchedulerSpaceSharedTest {
         assertFalse(instance.isThereEnoughFreePesForCloudlet(cloudlet1));
     }
 
-    /**
-     * When There Are Two Pes And One Already Running Cloudlet
-     */
+    /// When There Are Two Pes And One Already Running Cloudlet
     @Test
     public void testIsThereEnoughFreePesForCloudlet2() {
         final int cloudletPes = 1;
@@ -235,9 +224,7 @@ public class CloudletSchedulerSpaceSharedTest {
         assertTrue(instance.isThereEnoughFreePesForCloudlet(cloudlet1));
     }
 
-    /**
-     * When There Are Four Pes And One Already Running Cloudlet Requiring Two Pes
-     */
+    /// When There Are Four Pes And One Already Running Cloudlet Requiring Two Pes
     @Test
     public void testIsThereEnoughFreePesForCloudlet3() {
         final int cloudletPes = 2;
@@ -329,11 +316,9 @@ public class CloudletSchedulerSpaceSharedTest {
         assertEquals(expResult, result);
     }
 
-    /**
-     * Submits 4 cloudlets that require one PE each one,
-     * but since there is just 2 VM PEs, just 2 cloudlets
-     * will be added to exec list.
-     */
+    /// Submits 4 cloudlets that require one PE each one,
+    /// but since there is just 2 VM PEs, just 2 cloudlets
+    /// will be added to exec list.
     @Test
     public void testGetTotalUtilizationOfCpuWhenMoreCloudletsThanPes() {
         final long mips = 1000;
@@ -401,11 +386,9 @@ public class CloudletSchedulerSpaceSharedTest {
         assertEquals(expected, instance.getRequestedCpuPercent(0));
     }
 
-    /**
-     * Submits 3 cloudlets that require 2 PEs each one, totalling 6 required PES.
-     * However, since there is just 4 VM PEs, just 2 cloudlets
-     * will be added to exec list.
-     */
+    /// Submits 3 cloudlets that require 2 PEs each one, totalling 6 required PES.
+    /// However, since there is just 4 VM PEs, just 2 cloudlets
+    /// will be added to exec list.
     @Test
     public void testGetTotalUtilizationOfCpuWhenDualPesCloudlets2() {
         final long mips = 1000;
@@ -418,11 +401,9 @@ public class CloudletSchedulerSpaceSharedTest {
         assertEquals(expected, instance.getRequestedCpuPercent(0));
     }
 
-    /**
-     * Submits 3 cloudlets that require 2 PEs each one, totalling 6 required PES.
-     * However, since there is just 3 VM PEs, just 1 Cloudlet
-     * will be added to exec list, that will use 2 of the 3 VM PEs.
-     */
+    /// Submits 3 cloudlets that require 2 PEs each one, totalling 6 required PES.
+    /// However, since there is just 3 VM PEs, just 1 Cloudlet
+    /// will be added to exec list, that will use 2 of the 3 VM PEs.
     @Test
     public void testGetTotalUtilizationOfCpuWhenDualPesCloudlets() {
         final long mips = 1000;

@@ -28,17 +28,13 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-/**
- * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 4.0.0
- */
+/// @author Manoel Campos da Silva Filho
+/// @since CloudSim Plus 4.0.0
 public class GoogleMachineEventsTraceReaderTest {
 
-    /**
-     * Ensures the order or enums is not changed,
-     * because that will cause the enums ordinal values to change.
-     * These values are defined in the Google Cluster Data documentation.
-     */
+    /// Ensures the order or enums is not changed,
+    /// because that will cause the enums ordinal values to change.
+    /// These values are defined in the Google Cluster Data documentation.
     @Test
     public void testEventType(){
         assertAll(
@@ -48,11 +44,9 @@ public class GoogleMachineEventsTraceReaderTest {
         );
     }
 
-    /**
-     * Ensures the order or enums is not changed,
-     * because that will cause the enums ordinal values to change.
-     * These values are defined in the Google Cluster Data documentation.
-     */
+    /// Ensures the order or enums is not changed,
+    /// because that will cause the enums ordinal values to change.
+    /// These values are defined in the Google Cluster Data documentation.
     @Test
     public void testFieldIndex(){
         assertAll(

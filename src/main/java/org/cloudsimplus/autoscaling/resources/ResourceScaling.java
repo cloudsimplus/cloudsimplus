@@ -26,37 +26,31 @@ package org.cloudsimplus.autoscaling.resources;
 import org.cloudsimplus.autoscaling.VerticalVmScaling;
 import org.cloudsimplus.datacenters.Datacenter;
 
-/**
- * A {@link FunctionalInterface} to define how the capacity of the resource to be scaled by
- * a {@link VerticalVmScaling} will be resized,
- * according to the defined {@link VerticalVmScaling#getScalingFactor() scaling factor}.
- *
- * <p>The interval in which the under and overload conditions are checked
- * is defined by the {@link Datacenter#getSchedulingInterval()}.
- * This way, during one interval and another, there may be some
- * SLA violation if the resource is overloaded between these intervals.</p>
- *
- * <p>There are some implementations of this functional interface such as
- * {@link ResourceScalingGradual} and {@link ResourceScalingInstantaneous}.
- * New ones can be defined using Lambda Expressions.</p>
- *
- * @author Manoel Campos da Silva Filho
- * @since CloudSim 1.2.0
- * @see ResourceScalingGradual
- * @see ResourceScalingInstantaneous
- */
+/// A [FunctionalInterface] to define how the capacity of the resource to be scaled by
+/// a [VerticalVmScaling] will be resized,
+/// according to the defined [scaling factor][VerticalVmScaling#getScalingFactor()].
+///
+/// The interval in which the under and overload conditions are checked
+/// is defined by the [Datacenter#getSchedulingInterval()].
+/// This way, during one interval and another, there may be some
+/// SLA violation if the resource is overloaded between these intervals.
+///
+/// There are some implementations of this functional interface such as
+/// [ResourceScalingGradual] and [ResourceScalingInstantaneous].
+/// New ones can be defined using Lambda Expressions.
+///
+/// @author Manoel Campos da Silva Filho
+/// @since CloudSim 1.2.0
+/// @see ResourceScalingGradual
+/// @see ResourceScalingInstantaneous
 @FunctionalInterface
 public interface ResourceScaling {
-    /**
-     * An attribute that implements the Null Object Design Pattern for {@link ResourceScaling}
-     * objects.
-     */
+    /// An attribute that implements the Null Object Design Pattern for [ResourceScaling]
+    /// objects.
     ResourceScaling NULL = scalingInstance -> 0;
 
-    /**
-     * {@return the computed amount of resource to scale up or down,
-     * depending on if the resource is over or underloaded, respectively}
-     * @param vmScaling the {@link VerticalVmScaling} object that is in charge to scale a resource.
-     */
+    /// {@return the computed amount of resource to scale up or down,
+    /// depending on if the resource is over or underloaded, respectively}
+    /// @param vmScaling the [VerticalVmScaling] object that is in charge to scale a resource.
     double getResourceAmountToScale(VerticalVmScaling vmScaling);
 }

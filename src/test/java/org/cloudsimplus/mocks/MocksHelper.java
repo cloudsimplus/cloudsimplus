@@ -31,38 +31,30 @@ import org.mockito.Mockito;
 
 import java.util.function.Consumer;
 
-/**
- * A utility class to create Mock objects.
- *
- * @author Manoel Campos da Silva Filho
- */
+/// A utility class to create Mock objects.
+///
+/// @author Manoel Campos da Silva Filho
 public final class MocksHelper {
-    /**
-     * A private constructor to avoid the class to be instantiated.
-     */
+    /// A private constructor to avoid the class to be instantiated.
     private MocksHelper() {}
 
-    /**
-     * Creates a mocked DatacenterBroker where the {@link DatacenterBroker#getId()}
-     * is expected to be called just once. For such a call, it will be returned
-     * the given id.
-     *
-     * @param brokerId the id to return for the expected call of {@link DatacenterBroker#getId()}
-     * @return a mocked DatacenterBroker
-     */
+    /// Creates a mocked DatacenterBroker where the [DatacenterBroker#getId()]
+    /// is expected to be called just once. For such a call, it will be returned
+    /// the given id.
+    ///
+    /// @param brokerId the id to return for the expected call of [DatacenterBroker#getId()]
+    /// @return a mocked DatacenterBroker
     public static DatacenterBroker createMockBroker(int brokerId) {
         return createMockBroker(brokerId, 1);
     }
 
-    /**
-     * Creates a mocked DatacenterBroker where the {@link DatacenterBroker#getId()}
-     * is expected to be called a given number of times. For each call, it will be returned
-     * the given id.
-     *
-     * @param brokerId the id to return for each call of {@link DatacenterBroker#getId()}
-     * @param expectedCallsToGetId the number of times the {@link DatacenterBroker#getId()} is expected to be called
-     * @return a mocked DatacenterBroker
-     */
+    /// Creates a mocked DatacenterBroker where the [DatacenterBroker#getId()]
+    /// is expected to be called a given number of times. For each call, it will be returned
+    /// the given id.
+    ///
+    /// @param brokerId the id to return for each call of [DatacenterBroker#getId()]
+    /// @param expectedCallsToGetId the number of times the [DatacenterBroker#getId()] is expected to be called
+    /// @return a mocked DatacenterBroker
     public static DatacenterBroker createMockBroker(long brokerId, int expectedCallsToGetId) {
         final DatacenterBroker broker = Mockito.mock(DatacenterBroker.class);
         Mockito.when(broker.getId()).thenReturn(brokerId);
@@ -73,12 +65,10 @@ public final class MocksHelper {
         return createMockBroker(cloudsim, broker -> {});
     }
 
-    /**
-     * Creates a DatacenterBroker mock object.
-     * @param cloudsim the CloudSimPlus instance or mock to use
-     * @param consumer a {@link Runnable} that can be used for additional {@link Mockito#when(Object) calls}
-     * @return
-     */
+    /// Creates a DatacenterBroker mock object.
+    /// @param cloudsim the CloudSimPlus instance or mock to use
+    /// @param consumer a [Runnable] that can be used for additional [calls][Mockito#when(Object)]
+    /// @return
     public static DatacenterBroker createMockBroker(final Simulation cloudsim, final Consumer<DatacenterBroker> consumer) {
         final DatacenterBroker broker = Mockito.mock(DatacenterBrokerAbstract.class);
         Mockito.when(broker.getSimulation()).thenReturn(cloudsim);

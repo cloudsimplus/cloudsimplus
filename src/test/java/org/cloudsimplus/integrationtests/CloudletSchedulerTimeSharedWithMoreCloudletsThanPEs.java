@@ -40,18 +40,15 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-/**
- *
- * An Integration Test (IT) running a simulation scenario with 1 PM of 2 PEs,
- * 1 VM of 2 PEs and 4 cloudlet in that VM.
- * The VM uses a {@link CloudletSchedulerTimeShared}. As the number of Cloudlets
- * is the double of VM's PEs, all cloudlets will spend the double of the
- * time to finish, because they will concur for CPU.
- * Since all 4 Cloudlets runs in the same VM,
- * they are configure to use just 25% of the VM RAM each one.
- *
- * @author Manoel Campos da Silva Filho
- */
+/// An Integration Test (IT) running a simulation scenario with 1 PM of 2 PEs,
+/// 1 VM of 2 PEs and 4 cloudlet in that VM.
+/// The VM uses a [CloudletSchedulerTimeShared]. As the number of Cloudlets
+/// is the double of VM's PEs, all cloudlets will spend the double of the
+/// time to finish, because they will concur for CPU.
+/// Since all 4 Cloudlets runs in the same VM,
+/// they are configure to use just 25% of the VM RAM each one.
+///
+/// @author Manoel Campos da Silva Filho
 public final class CloudletSchedulerTimeSharedWithMoreCloudletsThanPEs {
     private static final int HOST_MIPS = 1000;
     private static final int HOST_PES = 2;

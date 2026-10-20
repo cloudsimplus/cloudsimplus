@@ -27,39 +27,31 @@ import org.cloudsimplus.cloudlets.Cloudlet;
 import org.cloudsimplus.core.CloudSimPlus;
 import org.cloudsimplus.vms.Vm;
 
-/**
- * A {@link DatacenterBroker} that uses a <a href="https://en.wikipedia.org/wiki/First-fit_bin_packing">First Fit</a>
- * mapping between submitted cloudlets and VMs, trying to place a Cloudlet
- * at the first suitable Vm which can be found (according to the required Cloudlet's PEs).
- * The Broker then places the submitted VMs at the first Datacenter found.
- * If there isn't capacity in that one, it will try other available ones.
- *
- * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 4.6.0
- */
+/// A [DatacenterBroker] that uses a [First Fit](https://en.wikipedia.org/wiki/First-fit_bin_packing)
+/// mapping between submitted cloudlets and VMs, trying to place a Cloudlet
+/// at the first suitable Vm which can be found (according to the required Cloudlet's PEs).
+/// The Broker then places the submitted VMs at the first Datacenter found.
+/// If there isn't capacity in that one, it will try other available ones.
+///
+/// @author Manoel Campos da Silva Filho
+/// @since CloudSim Plus 4.6.0
 public class DatacenterBrokerFirstFit extends DatacenterBrokerSimple {
-    /**
-     * The index of the last Vm used to place a Cloudlet.
-     */
+    /// The index of the last Vm used to place a Cloudlet.
     private int lastVmIndex;
 
-    /**
-     * Creates a DatacenterBroker.
-     *
-     * @param simulation The {@link CloudSimPlus} instance that represents the simulation the broker is related to
-     */
+    /// Creates a DatacenterBroker.
+    ///
+    /// @param simulation The [CloudSimPlus] instance that represents the simulation the broker is related to
     public DatacenterBrokerFirstFit(final CloudSimPlus simulation) {
         super(simulation);
     }
 
-    /**
-     * Selects the first VM with the lowest number of PEs that is able to run a given Cloudlet.
-     * In case the algorithm can't find such a VM, it uses the
-     * default DatacenterBroker VM mapper as a fallback.
-     *
-     * @param cloudlet the Cloudlet to find a VM to run it
-     * @return the VM selected for the Cloudlet or {@link Vm#NULL} if no suitable VM was found
-     */
+    /// Selects the first VM with the lowest number of PEs that is able to run a given Cloudlet.
+    /// In case the algorithm can't find such a VM, it uses the
+    /// default DatacenterBroker VM mapper as a fallback.
+    ///
+    /// @param cloudlet the Cloudlet to find a VM to run it
+    /// @return the VM selected for the Cloudlet or [Vm#NULL] if no suitable VM was found
     @Override
     public Vm defaultVmMapper(final Cloudlet cloudlet) {
         if (cloudlet.isBoundToVm()) {

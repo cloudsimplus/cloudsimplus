@@ -41,42 +41,37 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
     /// if a different value isn't provided to the constructors.
     public static final int DEF_DATA_SAMPLES = 288;
 
-    /**
-     * The default interval between each data line inside a
-     * PlanetLab trace file (in seconds)
-     */
+    /// The default interval between each data line inside a
+    /// PlanetLab trace file (in seconds)
     public static final int DEF_SCHEDULING_INTERVAL = 300;
 
-    /**
-     * The resource utilization for an entire day, in intervals
-     * defined by {@link #schedulingInterval}
-     * (each line on available trace files represent resource utilization for a time
-     * interval of 5 minutes).
-     * The size of the array is defined according to the number of utilization samples
-     * specified in the constructor.
-     *
-     * <p>If there is a {@link #mapper} Function set,
-     * the values are returned and stored according to the operation performed
-     * by such a Function. If no mapper Function is set, the values
-     * are returned and stored as read from the trace file (always in scale from 0 to 1).</p>
-     *
-     * @see #readWorkloadFile(InputStreamReader, int)
-     */
+    /// The resource utilization for an entire day, in intervals
+    /// defined by [#schedulingInterval]
+    /// (each line on available trace files represent resource utilization for a time
+    /// interval of 5 minutes).
+    /// The size of the array is defined according to the number of utilization samples
+    /// specified in the constructor.
+    ///
+    /// If there is a [#mapper] Function set,
+    /// the values are returned and stored according to the operation performed
+    /// by such a Function. If no mapper Function is set, the values
+    /// are returned and stored as read from the trace file (always in scale from 0 to 1).
+    ///
+    /// @see #readWorkloadFile(InputStreamReader, int)
     protected final double[] utilization;
 
-    /**
-     * A {@link UnaryOperator} `Function` that will be used to map the utilization values
-     * read from the trace value to a different value.
-     * That Function is useful when you don't want to use the values from the trace as they are,
-     * but you want to scale the values applying any mathematical operation over them.
-     * For instance, you can provide a mapper `Function` that scale the values in 10 times,
-     * by giving a Lambda Expression such as {@snippet : value -> value * 10}
-     * in the mapper parameter of some constructor.
-     *
-     * <p>If a mapper Function is not set, the values are used as read from the trace file,
-     * without any change (except that the scale is always converted to [0..1]).</p>
-     * @see #UtilizationModelPlanetLab(String, UnaryOperator)
-     */
+    /// A [UnaryOperator] `Function` that will be used to map the utilization values
+    /// read from the trace value to a different value.
+    /// That Function is useful when you don't want to use the values from the trace as they are,
+    /// but you want to scale the values applying any mathematical operation over them.
+    /// For instance, you can provide a mapper `Function` that scale the values in 10 times,
+    /// by giving a Lambda Expression such as {@snippet : value -> value * 10}
+    /// in the mapper parameter of some constructor.
+    ///
+    /// If a mapper Function is not set, the values are used as read from the trace file,
+    /// without any change (except that the scale is always converted to \[0..1\]).
+    ///
+    /// @see #UtilizationModelPlanetLab(String, UnaryOperator)
     private final UnaryOperator<Double> mapper;
 
     /// The time interval (in seconds) in which precise
@@ -171,24 +166,22 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
         this(workloadFilePath, schedulingInterval, -1);
     }
 
-    /**
-     * Creates a PlanetLab resource utilization model from a trace
-     * file <b>outside</b> the application's resource directory.
-     *
-     * @param workloadFilePath the path of a PlanetLab datacenter workload file.
-     * @param schedulingInterval the time interval in which precise utilization can be got from the file
-     * @param dataSamples number of samples to read from the workload file.
-     *                    If -1 is given, it checks if the first line of the trace has a comment.
-     *                    In this case, that comment is expected to represent the number of lines
-     *                    inside the trace, and it will be used to accordingly create an array
-     *                    of that size to store the values read from the trace.
-     *                    If the file doesn't have such a comment with a valid line number,
-     *                    it will be tried to read just {@link #DEF_DATA_SAMPLES} lines
-     *                    from the trace.
-     * @throws NumberFormatException when a value inside the side is not a valid number
-     * @see #getSchedulingInterval()
-     * @see #getInstance(String)
-     */
+    /// Creates a PlanetLab resource utilization model from a trace
+    /// file **outside** the application's resource directory.
+    ///
+    /// @param workloadFilePath the path of a PlanetLab datacenter workload file.
+    /// @param schedulingInterval the time interval in which precise utilization can be got from the file
+    /// @param dataSamples number of samples to read from the workload file.
+    /// If -1 is given, it checks if the first line of the trace has a comment.
+    /// In this case, that comment is expected to represent the number of lines
+    /// inside the trace, and it will be used to accordingly create an array
+    /// of that size to store the values read from the trace.
+    /// If the file doesn't have such a comment with a valid line number,
+    /// it will be tried to read just [#DEF_DATA_SAMPLES] lines
+    /// from the trace.
+    /// @throws NumberFormatException when a value inside the side is not a valid number
+    /// @see #getSchedulingInterval()
+    /// @see #getInstance(String)
     public UtilizationModelPlanetLab(final String workloadFilePath, final double schedulingInterval, final int dataSamples) throws NumberFormatException {
         /* The default mapper Function doesn't change the value read from the trace file.
          Therefore, the value is used as it is. */
@@ -230,27 +223,26 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
         this(newReader(workloadFilePath), DEF_SCHEDULING_INTERVAL, -1, mapper);
     }
 
-    /**
-     * Creates a PlanetLab UtilizationModel
-     * where the utilization data is provided directly utilization array parameter.
-     * This can be used when you don't want to load the utilization data from a file.
-     *
-     * @param utilization the resource utilization data for an entire day, in intervals
-     *        defined by a scheduling interval.
-     *        If the data inside the array represents resource utilization in intervals
-     *        of 5 minutes, your scheduling interval must be 300 seconds.
-     * @param schedulingInterval the time interval in which precise utilization can be got from the file
-     * @param mapper A {@link UnaryOperator} `Function` that will be used to map the utilization values
-     * read from the trace value to a different value.
-     * That `Function` is useful when you don't want to use the values from the trace as they are,
-     * but you want to scale the values applying any mathematical operation over them.
-     * For instance, you can provide a mapper `Function` that scales the values in 10 times,
-     * by giving a Lambda Expression such as {@code value -> value * 10}.
-     *
-     * <p>If a mapper `Function` is not set, the values are used as read from the trace file,
-     * without any change (except that the scale is always converted to [0..1]).</p>
-     * @throws NumberFormatException when a value inside the side is not a valid number
-     */
+    /// Creates a PlanetLab UtilizationModel
+    /// where the utilization data is provided directly utilization array parameter.
+    /// This can be used when you don't want to load the utilization data from a file.
+    ///
+    /// @param utilization the resource utilization data for an entire day, in intervals
+    /// defined by a scheduling interval.
+    /// If the data inside the array represents resource utilization in intervals
+    /// of 5 minutes, your scheduling interval must be 300 seconds.
+    /// @param schedulingInterval the time interval in which precise utilization can be got from the file
+    /// @param mapper A [UnaryOperator] `Function` that will be used to map the utilization values
+    /// read from the trace value to a different value.
+    /// That `Function` is useful when you don't want to use the values from the trace as they are,
+    /// but you want to scale the values applying any mathematical operation over them.
+    /// For instance, you can provide a mapper `Function` that scales the values in 10 times,
+    /// by giving a Lambda Expression such as `value -> value * 10`.
+    ///
+    /// If a mapper `Function` is not set, the values are used as read from the trace file,
+    /// without any change (except that the scale is always converted to \[0..1\]).
+    ///
+    /// @throws NumberFormatException when a value inside the side is not a valid number
     public UtilizationModelPlanetLab(
         final double[] utilization,
         final double schedulingInterval,
@@ -283,26 +275,24 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
         return ResourceLoader.newInputStreamReader(workloadFilePath, UtilizationModelPlanetLab.class);
     }
 
-    /**
-     * Reads the planet lab workload file in which each one of its lines
-     * is a resource utilization percentage to be used for a different simulation time.
-     * The number of the line represents the simulation time to which
-     * the value in such a line will be used as a resource utilization percentage.
-     * For instance, line 0 represents a resource utilization percentage for
-     * simulation time 0.
-     *
-     * @param reader the {@link InputStreamReader} to read the file
-     * @param dataSamples number of samples to read from the workload file.
-     *                    If -1 is given, it checks if the first line of the trace has a comment.
-     *                    In this case, that comment is expected to represent the number of lines
-     *                    inside the trace, and it will be used to accordingly create an array
-     *                    of that size to store the values read from the trace.
-     *                    If the file doesn't have such a comment with a valid line number,
-     *                    it will be tried to read just {@link #DEF_DATA_SAMPLES} lines from the trace.
-     * @return an array containing the utilization values read from the trace file (in scale from 0 to 1)
-     * @throws UncheckedIOException when the trace file cannot be read
-     * @see #utilization
-     */
+    /// Reads the planet lab workload file in which each one of its lines
+    /// is a resource utilization percentage to be used for a different simulation time.
+    /// The number of the line represents the simulation time to which
+    /// the value in such a line will be used as a resource utilization percentage.
+    /// For instance, line 0 represents a resource utilization percentage for
+    /// simulation time 0.
+    ///
+    /// @param reader the [InputStreamReader] to read the file
+    /// @param dataSamples number of samples to read from the workload file.
+    /// If -1 is given, it checks if the first line of the trace has a comment.
+    /// In this case, that comment is expected to represent the number of lines
+    /// inside the trace, and it will be used to accordingly create an array
+    /// of that size to store the values read from the trace.
+    /// If the file doesn't have such a comment with a valid line number,
+    /// it will be tried to read just [#DEF_DATA_SAMPLES] lines from the trace.
+    /// @return an array containing the utilization values read from the trace file (in scale from 0 to 1)
+    /// @throws UncheckedIOException when the trace file cannot be read
+    /// @see #utilization
     @SneakyThrows(IOException.class)
     private double[] readWorkloadFile(@NonNull final InputStreamReader reader, int dataSamples) {
         double[] utilization = {0};
@@ -325,18 +315,16 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
         return utilization;
     }
 
-    /**
-     * Try to get the number of lines from the trace file (data samples).
-     * @param line the first line read from the trace
-     * @param dataSamples The number of lines to read.
-     *                    If it's negative, that means it will try to get the
-     *                    number of lines directly from the file.
-     *                    The trace may have its number of lines as a comment in the first line of the file.
-     * @return the given data sample if it's a positive number;
-     *         the default data sample if the given value is negative
-     *         and the file doesn't contain the number of lines in the first line;
-     *         the number of lines read from the file
-     */
+    /// Try to get the number of lines from the trace file (data samples).
+    /// @param line the first line read from the trace
+    /// @param dataSamples The number of lines to read.
+    /// If it's negative, that means it will try to get the
+    /// number of lines directly from the file.
+    /// The trace may have its number of lines as a comment in the first line of the file.
+    /// @return the given data sample if it's a positive number;
+    /// the default data sample if the given value is negative
+    /// and the file doesn't contain the number of lines in the first line;
+    /// the number of lines read from the file
     private int parseDataSamples(final String line, int dataSamples) {
         if(dataSamples < 0){
             dataSamples = isComment(line) ? MathUtil.parseInt(line.substring(1), DEF_DATA_SAMPLES) : DEF_DATA_SAMPLES;
@@ -345,9 +333,7 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
         return Math.max(2, dataSamples);
     }
 
-    /**
-     * @return the number of data samples actually read from the trace file.
-     */
+    /// @return the number of data samples actually read from the trace file.
     public int getDataSamples(){
         return utilization.length;
     }
@@ -451,12 +437,10 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
         return index >= 0 ? index : (utilization.length - startIndex) + endIndex;
     }
 
-    /**
-     * Sets the scheduling interval.
-     *
-     * @param schedulingInterval the scheduling interval to set
-     * @see #getSchedulingInterval()
-     */
+    /// Sets the scheduling interval.
+    ///
+    /// @param schedulingInterval the scheduling interval to set
+    /// @see #getSchedulingInterval()
     public final void setSchedulingInterval(final double schedulingInterval) {
         if(schedulingInterval <= 0){
             throw new IllegalArgumentException("Scheduling interval must greater than 0. The given value is " + schedulingInterval);

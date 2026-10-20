@@ -27,16 +27,14 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-/**
- * Unit tests for the class Ram.
- * Currently, testing this class is enough to test
- all the related classes ResourceBw, ResourceCpu, etc,
- once that these classes extend Ram
- but in fact don't include any new attribute or method.
- See the documentation of the class {@link Ram} for
- * more details.
- * @author Manoel Campos da Silva Filho
- */
+/// Unit tests for the class Ram.
+/// Currently, testing this class is enough to test
+/// all the related classes ResourceBw, ResourceCpu, etc,
+/// once that these classes extend Ram
+/// but in fact don't include any new attribute or method.
+/// See the documentation of the class [Ram] for
+/// more details.
+/// @author Manoel Campos da Silva Filho
 public class RamTest {
     private static final long CAPACITY = 1000;
     private static final long DOUBLE_CAPACITY = CAPACITY*2;

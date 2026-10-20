@@ -46,14 +46,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-/**
- * An Integration Test (IT) to check that a VM that can't be placed in
- * the only existing Datacenter is retried just the maximum number of times
- * defined in the broker's {@link org.cloudsimplus.brokers.VmCreation},
- * instead of being retried forever.
- *
- * @see <a href="https://github.com/cloudsimplus/cloudsimplus-examples/issues/31">Issue #31 in the examples repository</a>
- */
+/// An Integration Test (IT) to check that a VM that can't be placed in
+/// the only existing Datacenter is retried just the maximum number of times
+/// defined in the broker's [org.cloudsimplus.brokers.VmCreation],
+/// instead of being retried forever.
+///
+/// @see <a href="https://github.com/cloudsimplus/cloudsimplus-examples/issues/31">Issue #31 in the examples repository</a>
 final class VmCreationRetryIntegrationTest {
     private static final int TIMEOUT_SECS = 10;
     private static final int HOST_PES = 4;
@@ -113,9 +111,7 @@ final class VmCreationRetryIntegrationTest {
         return new HostSimple(peList);
     }
 
-    /**
-     * Creates VMs that require all Host PEs, so that only the first one can be placed.
-     */
+    /// Creates VMs that require all Host PEs, so that only the first one can be placed.
     private static List<Vm> createVms() {
         final var vmList = new ArrayList<Vm>(VMS);
         for (int i = 0; i < VMS; i++) {

@@ -55,28 +55,22 @@ import java.util.function.Function;
 /// @since CloudSim Plus 4.0.0
 @Getter @Setter
 public final class MachineEvent extends MachineDataBase {
-    /**
-     * the time the event happened (converted to seconds).
-     * @see MachineEventField#TIMESTAMP
-     */
+    /// the time the event happened (converted to seconds).
+    /// @see MachineEventField#TIMESTAMP
     private double timestamp;
 
-    /**
-     * The actual RAM capacity to be assigned to a Host,
-     * according the {@link GoogleMachineEventsTraceReader#getMaxRamCapacity()}.
-     * @see MachineEventField#RAM_CAPACITY
-     */
+    /// The actual RAM capacity to be assigned to a Host,
+    /// according the [GoogleMachineEventsTraceReader#getMaxRamCapacity()].
+    /// @see MachineEventField#RAM_CAPACITY
     private long ram;
 
-    /**
-     * The actual number of {@link Pe}s (CPU cores) to be assigned to a Host,
-     * according the {@link GoogleMachineEventsTraceReader#getMaxCpuCores()}.
-     *
-     * @see MachineEventField#CPU_CAPACITY
-     */
+    /// The actual number of [Pe]s (CPU cores) to be assigned to a Host,
+    /// according the [GoogleMachineEventsTraceReader#getMaxCpuCores()].
+    ///
+    /// @see MachineEventField#CPU_CAPACITY
     private int cpuCores;
 
-    /** Constructor just to generate the Builder inner class. */
+    /// Constructor just to generate the Builder inner class.
     @lombok.Builder
     private MachineEvent(double timestamp, long ram, int cpuCores, long machineId) {
         super(machineId);

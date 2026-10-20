@@ -64,48 +64,34 @@ import java.util.List;
 public final class GoogleTaskUsageTraceReader extends GoogleTraceReaderAbstract<Cloudlet> {
     private final List<CloudSimEvent> cloudletUsageChangeEvents;
 
-    /**
-     * A {@link GoogleTaskEventsTraceReader} used to create Cloudlets from a task events trace file.
-     */
+    /// A [GoogleTaskEventsTraceReader] used to create Cloudlets from a task events trace file.
     private final GoogleTaskEventsTraceReader taskEventsReader;
 
-    /**
-     * The index of each field in the trace file.
-     */
+    /// The index of each field in the trace file.
     public enum FieldIndex implements TraceField<GoogleTaskUsageTraceReader> {
-        /**
-         * 0: The index of the field containing the start time of the measurement period
-         * (stored in microsecond but converted to seconds when read from the file).
-         */
+        /// 0: The index of the field containing the start time of the measurement period
+        /// (stored in microsecond but converted to seconds when read from the file).
         START_TIME{
-            /**
-             * {@return the start time converted to seconds}
-             * @param reader the reader for the trace file
-             */
+            /// {@return the start time converted to seconds}
+            /// @param reader the reader for the trace file
             @Override
             public Double getValue(final GoogleTaskUsageTraceReader reader) {
                 return TimeUtil.microToSeconds(reader.getFieldDoubleValue(this));
             }
         },
 
-        /**
-         * 1: The index of the field containing the end time of the measurement period
-         * (stored in microsecond but converted to seconds when read from the file).
-         */
+        /// 1: The index of the field containing the end time of the measurement period
+        /// (stored in microsecond but converted to seconds when read from the file).
         END_TIME{
-            /**
-             * {@return the end time converted to seconds}
-             * @param reader the reader for the trace file
-             */
+            /// {@return the end time converted to seconds}
+            /// @param reader the reader for the trace file
             @Override
             public Double getValue(final GoogleTaskUsageTraceReader reader) {
                 return TimeUtil.microToSeconds(reader.getFieldDoubleValue(this));
             }
         },
 
-        /**
-         * 2: The index of the field containing the id of the job this task belongs to.
-         */
+        /// 2: The index of the field containing the id of the job this task belongs to.
         JOB_ID{
             @Override
             public Long getValue(final GoogleTaskUsageTraceReader reader) {
@@ -113,9 +99,7 @@ public final class GoogleTaskUsageTraceReader extends GoogleTraceReaderAbstract<
             }
         },
 
-        /**
-         * 3: The index of the field containing the task index within the job.
-         */
+        /// 3: The index of the field containing the task index within the job.
         TASK_INDEX{
             @Override
             public Long getValue(final GoogleTaskUsageTraceReader reader) {
@@ -123,11 +107,9 @@ public final class GoogleTaskUsageTraceReader extends GoogleTraceReaderAbstract<
             }
         },
 
-        /**
-         * 4: The index of the field containing the machineID.
-         * If the field is present, indicates the machine onto which the task was scheduled,
-         * otherwise, the reader will return -1 as default value.
-         */
+        /// 4: The index of the field containing the machineID.
+        /// If the field is present, indicates the machine onto which the task was scheduled,
+        /// otherwise, the reader will return -1 as default value.
         MACHINE_ID{
             @Override
             public Long getValue(final GoogleTaskUsageTraceReader reader) {
@@ -135,9 +117,7 @@ public final class GoogleTaskUsageTraceReader extends GoogleTraceReaderAbstract<
             }
         },
 
-        /**
-         * 5: The index of the field containing the mean CPU usage rate (in percentage from 0 to 1).
-         */
+        /// 5: The index of the field containing the mean CPU usage rate (in percentage from 0 to 1).
         MEAN_CPU_USAGE_RATE{
             @Override
             public Double getValue(final GoogleTaskUsageTraceReader reader) {
@@ -145,11 +125,9 @@ public final class GoogleTaskUsageTraceReader extends GoogleTraceReaderAbstract<
             }
         },
 
-        /**
-         * 6: The index of the field containing the canonical memory usage,
-         * i.e., the number of user-accessible pages,
-         * including page cache but excluding some pages marked as stale.
-         */
+        /// 6: The index of the field containing the canonical memory usage,
+        /// i.e., the number of user-accessible pages,
+        /// including page cache but excluding some pages marked as stale.
         CANONICAL_MEMORY_USAGE {
             @Override
             public Double getValue(final GoogleTaskUsageTraceReader reader) {
@@ -157,12 +135,10 @@ public final class GoogleTaskUsageTraceReader extends GoogleTraceReaderAbstract<
             }
         },
 
-        /**
-         * 7: The index of the field containing the assigned memory usage,
-         * i.e., memory usage based on the memory actually assigned (but not necessarily used)
-         * to the container where the task was running inside the
-         * Google Cluster.
-         */
+        /// 7: The index of the field containing the assigned memory usage,
+        /// i.e., memory usage based on the memory actually assigned (but not necessarily used)
+        /// to the container where the task was running inside the
+        /// Google Cluster.
         ASSIGNED_MEMORY_USAGE {
             @Override
             public Double getValue(final GoogleTaskUsageTraceReader reader) {
@@ -170,10 +146,8 @@ public final class GoogleTaskUsageTraceReader extends GoogleTraceReaderAbstract<
             }
         },
 
-        /**
-         * 8: The index of the field containing the unmapped page cache memory usage,
-         * i.e., Linux page cache (file-backed memory) not mapped into any userspace process.
-         */
+        /// 8: The index of the field containing the unmapped page cache memory usage,
+        /// i.e., Linux page cache (file-backed memory) not mapped into any userspace process.
         UNMAPPED_PAGE_CACHE_MEMORY_USAGE {
             @Override
             public Double getValue(final GoogleTaskUsageTraceReader reader) {
@@ -181,10 +155,8 @@ public final class GoogleTaskUsageTraceReader extends GoogleTraceReaderAbstract<
             }
         },
 
-        /**
-         * 9: The index of the field containing the total page cache memory usage,
-         * i.e., the total Linux page cache (file-backed memory).
-         */
+        /// 9: The index of the field containing the total page cache memory usage,
+        /// i.e., the total Linux page cache (file-backed memory).
         TOTAL_PAGE_CACHE_MEMORY_USAGE {
             @Override
             public Double getValue(final GoogleTaskUsageTraceReader reader) {
@@ -192,12 +164,10 @@ public final class GoogleTaskUsageTraceReader extends GoogleTraceReaderAbstract<
             }
         },
 
-        /**
-         * 10: The index of the field containing the maximum memory usage,
-         * i.e., the maximum value of the canonical memory usage
-         * measurement observed over the measurement interval.
-         * This value is not available for some tasks.
-         */
+        /// 10: The index of the field containing the maximum memory usage,
+        /// i.e., the maximum value of the canonical memory usage
+        /// measurement observed over the measurement interval.
+        /// This value is not available for some tasks.
         MAXIMUM_MEMORY_USAGE {
             @Override
             public Double getValue(final GoogleTaskUsageTraceReader reader) {
@@ -205,9 +175,7 @@ public final class GoogleTaskUsageTraceReader extends GoogleTraceReaderAbstract<
             }
         },
 
-        /**
-         * 11: The index of the field containing the mean disk I/O time.
-         */
+        /// 11: The index of the field containing the mean disk I/O time.
         MEAN_DISK_IO_TIME {
             @Override
             public Double getValue(final GoogleTaskUsageTraceReader reader) {
@@ -215,13 +183,11 @@ public final class GoogleTaskUsageTraceReader extends GoogleTraceReaderAbstract<
             }
         },
 
-        /**
-         * 12: The index of the field containing the mean local disk space used.
-         * Represents runtime local disk capacity usage.
-         * Disk usage required for binaries and other read-only pre-staged runtime files is not included.
-         * Additionally, most disk space used by distributed,
-         * persistent storage (e.g. GFS, Colossus) is not accounted for in this trace.
-         */
+        /// 12: The index of the field containing the mean local disk space used.
+        /// Represents runtime local disk capacity usage.
+        /// Disk usage required for binaries and other read-only pre-staged runtime files is not included.
+        /// Additionally, most disk space used by distributed,
+        /// persistent storage (e.g. GFS, Colossus) is not accounted for in this trace.
         MEAN_LOCAL_DISK_SPACE_USED {
             @Override
             public Double getValue(final GoogleTaskUsageTraceReader reader) {
@@ -229,10 +195,8 @@ public final class GoogleTaskUsageTraceReader extends GoogleTraceReaderAbstract<
             }
         },
 
-        /**
-         * 13: The index of the field containing the maximum CPU usage
-         * observed over the measurement interval.
-         */
+        /// 13: The index of the field containing the maximum CPU usage
+        /// observed over the measurement interval.
         MAXIMUM_CPU_USAGE {
             @Override
             public Double getValue(final GoogleTaskUsageTraceReader reader) {
@@ -240,10 +204,8 @@ public final class GoogleTaskUsageTraceReader extends GoogleTraceReaderAbstract<
             }
         },
 
-        /**
-         * 14: The index of the field containing the maximum disk IO time
-         * observed over the measurement interval.
-         */
+        /// 14: The index of the field containing the maximum disk IO time
+        /// observed over the measurement interval.
         MAXIMUM_DISK_IO_TIME {
             @Override
             public Double getValue(final GoogleTaskUsageTraceReader reader) {
@@ -334,7 +296,7 @@ public final class GoogleTaskUsageTraceReader extends GoogleTraceReaderAbstract<
         return super.process();
     }
 
-    /** There is not pre-process for this implementation. */
+    /// There is not pre-process for this implementation.
     @Override
     protected void preProcess(){/**/}
 
@@ -343,12 +305,10 @@ public final class GoogleTaskUsageTraceReader extends GoogleTraceReaderAbstract<
         simulation.addOnSimulationStartListener(this::onSimulationStart);
     }
 
-    /**
-     * Adds an event listener which is notified when the simulation starts,
-     * so that the messages to change Cloudlet resource usage are sent.
-     *
-     * @param info the simulation start event information
-     */
+    /// Adds an event listener which is notified when the simulation starts,
+    /// so that the messages to change Cloudlet resource usage are sent.
+    ///
+    /// @param info the simulation start event information
     private void onSimulationStart(final EventInfo info) {
         cloudletUsageChangeEvents.forEach(GoogleTraceReaderAbstract::scheduleTraceEvent);
     }
@@ -362,10 +322,8 @@ public final class GoogleTaskUsageTraceReader extends GoogleTraceReaderAbstract<
                 .isPresent();
     }
 
-    /**
-     * Send a message to the broker to request change in a Cloudlet resource usage.
-     * @return true if the request was created, false otherwise
-     */
+    /// Send a message to the broker to request change in a Cloudlet resource usage.
+    /// @return true if the request was created, false otherwise
     private boolean requestCloudletUsageChange(final Cloudlet cloudlet, final TaskUsage taskUsage)
     {
         final Runnable resourceUsageUpdateRunnable = () -> {
@@ -408,22 +366,20 @@ public final class GoogleTaskUsageTraceReader extends GoogleTraceReaderAbstract<
         return false;
     }
 
-    /**
-     * Creates a {@link UtilizationModel} based on another one.
-     * If the given instance is a {@link UtilizationModelDynamic}, that instance is cloned.
-     * Otherwise, a UtilizationModelDynamic is created without cloning
-     * another instance (that means it won't have the configurations
-     * defined by another model).
-     * Anyway, the initial utilization of the created {@link UtilizationModelDynamic}
-     * is set as the given parameter.
-     *
-     * @param source the utilization model that will be used as based to
-     * @param initialUtilization a percentage value (in scale from 0 to 1)
-     *                           to define the current utilization for the created
-     *                           {@link UtilizationModelDynamic}
-     * @return an {@link UtilizationModelDynamic} instance with the current utilization equals
-     *         to the given parameter
-     */
+    /// Creates a [UtilizationModel] based on another one.
+    /// If the given instance is a [UtilizationModelDynamic], that instance is cloned.
+    /// Otherwise, a UtilizationModelDynamic is created without cloning
+    /// another instance (that means it won't have the configurations
+    /// defined by another model).
+    /// Anyway, the initial utilization of the created [UtilizationModelDynamic]
+    /// is set as the given parameter.
+    ///
+    /// @param source the utilization model that will be used as based to
+    /// @param initialUtilization a percentage value (in scale from 0 to 1)
+    /// to define the current utilization for the created
+    /// [UtilizationModelDynamic]
+    /// @return an [UtilizationModelDynamic] instance with the current utilization equals
+    /// to the given parameter
     private UtilizationModel createUtilizationModel(final UtilizationModel source, final double initialUtilization){
         if(source instanceof UtilizationModelDynamic umDynamic){
             return new UtilizationModelDynamic(umDynamic, initialUtilization);

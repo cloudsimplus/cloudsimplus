@@ -30,12 +30,10 @@ import org.cloudsimplus.hosts.Host;
 import org.cloudsimplus.power.PowerMeter;
 import org.cloudsimplus.util.MathUtil;
 
-/**
- * Abstract implementation of a {@link Host} {@link PowerModel}.
- *
- * @since CloudSim Plus 6.0.0
- * @see PowerMeter
- */
+/// Abstract implementation of a [Host] [PowerModel].
+///
+/// @since CloudSim Plus 6.0.0
+/// @see PowerMeter
 @Accessors(makeFinal = false) @Getter
 public abstract non-sealed class PowerModelHostAbstract implements PowerModelHost {
     @Setter
@@ -48,13 +46,11 @@ public abstract non-sealed class PowerModelHostAbstract implements PowerModelHos
     private double totalShutDownTime;
     private int totalStartups;
 
-    /**
-     * Checks if a power value (in Watts) is valid.
-     * @param power the value to validate (in Watts)
-     * @param fieldName the name of the field/variable storing the value
-     * @return the given power if it's valid
-     * @throws IllegalArgumentException when the value is smaller than 1
-     */
+    /// Checks if a power value (in Watts) is valid.
+    /// @param power the value to validate (in Watts)
+    /// @param fieldName the name of the field/variable storing the value
+    /// @return the given power if it's valid
+    /// @throws IllegalArgumentException when the value is smaller than 1
     protected static double validatePower(final double power, final String fieldName) {
         MathUtil.nonNegative(power, fieldName);
 
@@ -72,9 +68,7 @@ public abstract non-sealed class PowerModelHostAbstract implements PowerModelHos
         return getPowerInternal(utilizationFraction);
     }
 
-    /**
-     * @see #getPower(double)
-     */
+    /// @see #getPower(double)
     protected abstract double getPowerInternal(double utilizationFraction);
 
     @Override

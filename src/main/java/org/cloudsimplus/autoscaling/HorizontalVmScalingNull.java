@@ -29,13 +29,11 @@ import org.cloudsimplus.vms.Vm;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-/**
- * A class that implements the Null Object Design Pattern for {@link HorizontalVmScaling}
- * class.
- *
- * @author Manoel Campos da Silva Filho
- * @see HorizontalVmScaling#NULL
- */
+/// A class that implements the Null Object Design Pattern for [HorizontalVmScaling]
+/// class.
+///
+/// @author Manoel Campos da Silva Filho
+/// @see HorizontalVmScaling#NULL
 final class HorizontalVmScalingNull implements HorizontalVmScaling {
     @Override public Supplier<Vm> getVmSupplier() {
         return () -> Vm.NULL;

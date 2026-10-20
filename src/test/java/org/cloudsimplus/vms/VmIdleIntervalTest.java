@@ -31,16 +31,12 @@ import org.junit.platform.commons.util.Preconditions;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-/**
- * Tests for {@link Vm#getIdleInterval()}
- * @author Manoel Campos
- */
+/// Tests for [Vm#getIdleInterval()]
+/// @author Manoel Campos
 class VmIdleIntervalTest {
     private final Vm vm = VmTestUtil.createVm(0, 2);
 
-    /**
-     * Idle time just starts to count when the VM is created.
-     */
+    /// Idle time just starts to count when the VM is created.
     @Test
     void getIdleIntervalIsZeroWhenVmWasNotCreatedToIndicateItWasNeverIdle() {
         Preconditions.condition(vm.getLastBusyTime() == -1, "Vm should be idle");

@@ -44,12 +44,10 @@ import java.util.Collections;
 import java.util.List;
 import org.jspecify.annotations.Nullable;
 
-/**
- * A class that implements the Null Object Design Pattern for {@link Vm} objects.
- *
- * @author Manoel Campos da Silva Filho
- * @see Vm#NULL
- */
+/// A class that implements the Null Object Design Pattern for [Vm] objects.
+///
+/// @author Manoel Campos da Silva Filho
+/// @see Vm#NULL
 final class VmNull implements Vm {
     @Override public Vm setId(long id) { return this; }
     @Override public long getId() {

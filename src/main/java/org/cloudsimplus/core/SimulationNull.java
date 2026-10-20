@@ -34,12 +34,10 @@ import java.util.List;
 import java.util.function.Predicate;
 import org.jspecify.annotations.Nullable;
 
-/**
- * A class that implements the Null Object Design Pattern for {@link Simulation} class.
- *
- * @author Manoel Campos da Silva Filho
- * @see Simulation#NULL
- */
+/// A class that implements the Null Object Design Pattern for [Simulation] class.
+///
+/// @author Manoel Campos da Silva Filho
+/// @see Simulation#NULL
 final class SimulationNull implements Simulation {
     @Override public boolean isThereAnyFutureEvt(Predicate<SimEvent> predicate) { return false; }
     @Override public boolean isTerminationTimeSet() { return false; }

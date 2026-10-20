@@ -30,12 +30,10 @@ import org.cloudsimplus.vms.Vm;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * A class that implements the Null Object Design Pattern for {@link CloudletTaskScheduler} class.
- *
- * @author Manoel Campos da Silva Filho
- * @see CloudletTaskScheduler#NULL
- */
+/// A class that implements the Null Object Design Pattern for [CloudletTaskScheduler] class.
+///
+/// @author Manoel Campos da Silva Filho
+/// @see CloudletTaskScheduler#NULL
 final class CloudletTaskSchedulerNull implements CloudletTaskScheduler {
     @Override public Vm getVm() {
         return Vm.NULL;

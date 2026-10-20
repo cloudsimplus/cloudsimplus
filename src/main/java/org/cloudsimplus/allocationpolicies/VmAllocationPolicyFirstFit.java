@@ -52,7 +52,7 @@ import java.util.Optional;
 /// @see VmAllocationPolicyBestFit
 /// @see VmAllocationPolicySimple
 public class VmAllocationPolicyFirstFit extends VmAllocationPolicyAbstract {
-    /** The index of the last host where a VM was placed. */
+    /// The index of the last host where a VM was placed.
     @Getter(AccessLevel.PROTECTED)
     @Setter(AccessLevel.NONE)
     private int lastHostIndex;
@@ -77,9 +77,8 @@ public class VmAllocationPolicyFirstFit extends VmAllocationPolicyAbstract {
         return Optional.empty();
     }
 
-    /**
-     * Increment the index to move to the next Host.
-     * If the end of the Host list is reached, starts from the beginning. */
+    /// Increment the index to move to the next Host.
+    /// If the end of the Host list is reached, starts from the beginning.
     protected void incLastHostIndex() {
         lastHostIndex = ++lastHostIndex % getHostList().size();
     }

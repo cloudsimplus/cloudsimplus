@@ -23,15 +23,11 @@
  */
 package org.cloudsimplus.core;
 
-/**
- * Defines an entity that holds/manages other ones.
- * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 6.0.2
- */
+/// Defines an entity that holds/manages other ones.
+/// @author Manoel Campos da Silva Filho
+/// @since CloudSim Plus 6.0.2
 public interface Sizeable {
-    /**
-     * @return the size of the entity, represented
-     *         by the number of internal other entities/elements it holds.
-     */
+    /// @return the size of the entity, represented
+    /// by the number of internal other entities/elements it holds.
     long size();
 }

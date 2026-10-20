@@ -47,16 +47,14 @@ import static java.util.stream.Collectors.toCollection;
 import static java.util.stream.Collectors.toList;
 import org.jspecify.annotations.Nullable;
 
-/**
- * An abstract class to implement experiment runners.
- * They run an experiment a given number of times and collect
- * statistics about the execution.
- * The runner represents a testbed compounded of a set of experiments that it runs.
- *
- * @param <T> the type of {@link Experiment} the runner will execute
- * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 1.0
- */
+/// An abstract class to implement experiment runners.
+/// They run an experiment a given number of times and collect
+/// statistics about the execution.
+/// The runner represents a testbed compounded of a set of experiments that it runs.
+///
+/// @param <T> the type of [Experiment] the runner will execute
+/// @author Manoel Campos da Silva Filho
+/// @since CloudSim Plus 1.0
 @Getter @Accessors
 public abstract class ExperimentRunner<T extends Experiment<T>> extends AbstractRunnable {
     /// If experiments are executed in parallel, each experiment verbosity is disabled;
@@ -69,11 +67,9 @@ public abstract class ExperimentRunner<T extends Experiment<T>> extends Abstract
     ///
     private final boolean parallel;
 
-    /**
-     * Checks if a progress bar is to be printed to show when each experiment run finishes.
-     * It's just printed when the number of simulations is greater than 1
-     * and experiments are not set as verbose. It's shown by default if those conditions are met.
-     */
+    /// Checks if a progress bar is to be printed to show when each experiment run finishes.
+    /// It's just printed when the number of simulations is greater than 1
+    /// and experiments are not set as verbose. It's shown by default if those conditions are met.
     @Setter
     private boolean showProgress;
 
@@ -82,14 +78,12 @@ public abstract class ExperimentRunner<T extends Experiment<T>> extends Abstract
 
     private int firstExperimentCreated = -1;
 
-    /**
-     * The seed to be used for the first executed experiment.
-     * The seed for each subsequent experiment is this seed plus the index of the experiment.
-     */
+    /// The seed to be used for the first executed experiment.
+    /// The seed for each subsequent experiment is this seed plus the index of the experiment.
     private final long baseSeed;
 
-    /** List of seeds used for each experiment.
-     * @see #addSeed(long)  */
+    /// List of seeds used for each experiment.
+    /// @see #addSeed(long)
     private final List<Long> seeds;
 
     /// The number of times the experiment will be executed to get
@@ -99,14 +93,10 @@ public abstract class ExperimentRunner<T extends Experiment<T>> extends Abstract
 
     private final AtomicInteger finishedRuns;
 
-    /**
-     * Time in seconds the experiments started.
-     */
+    /// Time in seconds the experiments started.
     private long experimentsStartTimeSecs;
 
-    /**
-     * Time in seconds the experiments took to finish.
-     */
+    /// Time in seconds the experiments took to finish.
     private long experimentsExecutionTimeSecs;
 
     /// Checks if the "Antithetic Variates Technique" is to be applied to reduce results variance.
@@ -114,11 +104,9 @@ public abstract class ExperimentRunner<T extends Experiment<T>> extends Abstract
     /// @link [Antithetic variates](https://en.wikipedia.org/wiki/Antithetic_variates)
     private final boolean applyAntitheticVariates;
 
-    /**
-     * The number of batches in which the simulation runs will be divided.
-     * If this number is greater than 1, the "Batch Means Method" is used to
-     * reduce the correlation between experiment runs.
-     */
+    /// The number of batches in which the simulation runs will be divided.
+    /// If this number is greater than 1, the "Batch Means Method" is used to
+    /// reduce the correlation between experiment runs.
     private final int batchesNumber;
 
     /// A Map containing a List of values for each metric to be computed.
@@ -135,36 +123,28 @@ public abstract class ExperimentRunner<T extends Experiment<T>> extends Abstract
     /// @see Experiment#setAfterExperimentFinish(Consumer)
     private final Map<String, List<Double>> metricsMap;
 
-    /**
-     * A description for this experiment which is shown when it starts.
-     * It's also used to generate a caption for the LaTeX table.
-     * @see #setLatexTableResultsGeneration(boolean)
-     */
+    /// A description for this experiment which is shown when it starts.
+    /// It's also used to generate a caption for the LaTeX table.
+    /// @see #setLatexTableResultsGeneration(boolean)
     @Setter
     private String description = "";
 
-    /**
-     * An id used to identify the experiment results table generated in formats such as LaTeX
-     * for computed metrics.
-     * @see #latexTableResultsGeneration
-     */
+    /// An id used to identify the experiment results table generated in formats such as LaTeX
+    /// for computed metrics.
+    /// @see #latexTableResultsGeneration
     @Setter
     private String resultsTableId = "";
 
-    /**
-     * Checks if generation of a result table in LaTeX format for computed metrics is enabled.
-     */
+    /// Checks if generation of a result table in LaTeX format for computed metrics is enabled.
     @Setter
     private boolean latexTableResultsGeneration;
     @Nullable
     private List<Experiment<T>> experiments;
 
-    /**
-     * Creates an experiment runner with a given {@link #getBaseSeed() base seed}
-     * that runs sequentially.
-     * @param baseSeed the seed to be used as base for each experiment seed
-     * @param simulationRuns the number of times the experiment will be executed
-     */
+    /// Creates an experiment runner with a given [base seed][#getBaseSeed()]
+    /// that runs sequentially.
+    /// @param baseSeed the seed to be used as base for each experiment seed
+    /// @param simulationRuns the number of times the experiment will be executed
     protected ExperimentRunner(final long baseSeed, final int simulationRuns) {
         this(baseSeed, simulationRuns, false);
     }
@@ -279,47 +259,38 @@ public abstract class ExperimentRunner<T extends Experiment<T>> extends Abstract
         }
     }
 
-    /**
-     * Checks if it is to use the "Batch Means Method" and the number of
-     * simulation runs is not multiple of the number of batches.
-     */
+    /// Checks if it is to use the "Batch Means Method" and the number of
+    /// simulation runs is not multiple of the number of batches.
     private boolean isApplyBatchMeansAndSimulationRunsIsNotMultipleOfBatches() {
         return isApplyBatchMeansMethod() && getSimulationRuns() % getBatchesNumber() != 0;
     }
 
-    /**
-     * @return the batch size rounded by the {@link Math#ceil(double)} method.
-     */
+    /// @return the batch size rounded by the [Math#ceil(double)] method.
     public int batchSizeCeil() {
         return (int) Math.ceil(simulationRuns / (double) batchesNumber);
     }
 
-    /**
-     *
-     * Checks if the "Batch Means Method" is to be applied to reduce correlation
-     * between the results for different experiment runs.
-     * That happens if the number of simulation runs and the number of batches are compatible.
-     * @return true if the "Batch Means Method" is to be applied, false otherwise.
-     */
+    /// Checks if the "Batch Means Method" is to be applied to reduce correlation
+    /// between the results for different experiment runs.
+    /// That happens if the number of simulation runs and the number of batches are compatible.
+    /// @return true if the "Batch Means Method" is to be applied, false otherwise.
     public boolean isApplyBatchMeansMethod() {
         final boolean batchesGreaterThan1 = batchesNumber > 1;
         final boolean runsIsGraterThanBatches = simulationRuns > batchesNumber;
         return batchesGreaterThan1 && runsIsGraterThanBatches;
     }
 
-    /**
-     * Gets a list of samples and apply the "Batch Means Method" to reduce
-     * samples correlation, if the "Batch Means Method"
-     * {@link #isApplyBatchMeansMethod() is to be applied}.
-     *
-     * @param samples the list with samples to apply the "Batch Means Method".
-     *                Samples size is defined by the {@link #getSimulationRuns()}.
-     * @return the samples list after applying the "Batch Means Method", in case
-     * the method is enabled to be applied, which will reduce the array to the
-     * number of batches defined by {@link #getBatchesNumber()} (each value in
-     * the returned array will be the mean of every sample batch). Otherwise,
-     * returns the same given array
-     */
+    /// Gets a list of samples and apply the "Batch Means Method" to reduce
+    /// samples correlation, if the "Batch Means Method"
+    /// [is to be applied][#isApplyBatchMeansMethod()].
+    ///
+    /// @param samples the list with samples to apply the "Batch Means Method".
+    /// Samples size is defined by the [#getSimulationRuns()].
+    /// @return the samples list after applying the "Batch Means Method", in case
+    /// the method is enabled to be applied, which will reduce the array to the
+    /// number of batches defined by [#getBatchesNumber()] (each value in
+    /// the returned array will be the mean of every sample batch). Otherwise,
+    /// returns the same given array
     protected List<Double> computeBatchMeans(final List<Double> samples) {
         if (!isApplyBatchMeansMethod()) {
             return samples;
@@ -371,20 +342,16 @@ public abstract class ExperimentRunner<T extends Experiment<T>> extends Abstract
         return i*k + j;
     }
 
-    /**
-     * Checks if the experiment will run a single time or not.
-     * @return true if the experiment will run a single time,
-     *         false if there are multiple simulation runs.
-     */
+    /// Checks if the experiment will run a single time or not.
+    /// @return true if the experiment will run a single time,
+    /// false if there are multiple simulation runs.
     public boolean isSingleRun(){
         return simulationRuns == 1;
     }
 
-    /**
-     * Adjusts the current number of simulations to be equal to its closer
-     * multiple of the batches' number.
-     * @return this ExperimentRunner object
-     */
+    /// Adjusts the current number of simulations to be equal to its closer
+    /// multiple of the batches' number.
+    /// @return this ExperimentRunner object
     private ExperimentRunner<T> setSimulationRunsAsMultipleOfBatchNumber() {
         final double batches = getBatchesNumber();
         simulationRuns = (int)(batches * Math.ceil(simulationRuns / batches));
@@ -428,19 +395,17 @@ public abstract class ExperimentRunner<T extends Experiment<T>> extends Abstract
         return randomGenCreator.apply(getSeed(experimentIndex));
     }
 
-    /**
-     * Creates a pseudo random number generator (PRNG) for an experiment run that
-     * generates uniform values between [0..1[.
-     * If it is to apply the {@link #isApplyAntitheticVariates() "Antithetic Variates Technique"}
-     * to reduce results variance, the second half of experiments will use the
-     * seeds from the first half.
-     *
-     * @param experimentIndex index of the experiment's run to create a PRNG
-     * @return the created PRNG
-     *
-     * @see UniformDistr#isApplyAntitheticVariates()
-     * @see #createRandomGen(int, double, double)
-     */
+    /// Creates a pseudo random number generator (PRNG) for an experiment run that
+    /// generates uniform values between \[0..1\[.
+    /// If it is to apply the ["Antithetic Variates Technique"][#isApplyAntitheticVariates()]
+    /// to reduce results variance, the second half of experiments will use the
+    /// seeds from the first half.
+    ///
+    /// @param experimentIndex index of the experiment's run to create a PRNG
+    /// @return the created PRNG
+    ///
+    /// @see UniformDistr#isApplyAntitheticVariates()
+    /// @see #createRandomGen(int, double, double)
     public ContinuousDistribution createRandomGen(final int experimentIndex) {
         return createRandomGen(experimentIndex,0, 1);
     }
@@ -469,27 +434,21 @@ public abstract class ExperimentRunner<T extends Experiment<T>> extends Abstract
                simulationRuns > 1 && currentExperimentIndex >= halfSimulationRuns();
     }
 
-    /**
-     * Adds a seed to the list of seeds used for each experiment.
-     *
-     * @param seed seed of the current experiment to add to the list
-     */
+    /// Adds a seed to the list of seeds used for each experiment.
+    ///
+    /// @param seed seed of the current experiment to add to the list
     void addSeed(final long seed) {
         if(!seeds.contains(seed)){
             seeds.add(seed);
         }
     }
 
-    /**
-     * @return the half of {@link #getSimulationRuns()}
-     */
+    /// @return the half of [#getSimulationRuns()]
     public int halfSimulationRuns() {
         return simulationRuns / 2;
     }
 
-    /**
-     * Setups and starts the execution of all experiments sequentially or in {@link #parallel}.
-     */
+    /// Setups and starts the execution of all experiments sequentially or in [#parallel].
     @Override
     public void run() {
         final var experimentList = createAllExperimentsBeforeFirstRun();
@@ -523,12 +482,11 @@ public abstract class ExperimentRunner<T extends Experiment<T>> extends Abstract
             simulationRuns, TimeUtil.secondsToStr(experimentsExecutionTimeSecs), LocalTime.now());
     }
 
-    /** Since experiments may execute in parallel and during the execution
-     * they access the shared seeds list, all experiments have to
-     * be created before starting execution.
-     * Otherwise, if they are run in parallel, we get {@link IndexOutOfBoundsException}.
-     * @return the list of created experiments
-     */
+    /// Since experiments may execute in parallel and during the execution
+    /// they access the shared seeds list, all experiments have to
+    /// be created before starting execution.
+    /// Otherwise, if they are run in parallel, we get [IndexOutOfBoundsException].
+    /// @return the list of created experiments
     private List<Experiment<T>> createAllExperimentsBeforeFirstRun() {
         if(experiments == null) {
             experiments = IntStream.range(0, simulationRuns).mapToObj(this::createExperiment).collect(toList());
@@ -553,36 +511,30 @@ public abstract class ExperimentRunner<T extends Experiment<T>> extends Abstract
         return parallel ? experiments.stream().parallel() : experiments.stream();
     }
 
-    /**
-     * Template method that creates an experiment to be run for the i'th time.
-     *
-     * @param index a number that identifies the experiment
-     * @return the created experiment
-     * @see #createExperimentInternal(int)
-     */
+    /// Template method that creates an experiment to be run for the i'th time.
+    ///
+    /// @param index a number that identifies the experiment
+    /// @return the created experiment
+    /// @see #createExperimentInternal(int)
     private Experiment<T> createExperiment(final int index) {
         print((index + 1) % 100 == 0 ? ". Run #%d%n".formatted(index + 1) : ".");
         setFirstExperimentCreated(index);
         return createExperimentInternal(index);
     }
 
-    /**
-     * Creates an experiment to be run for the i'th time.
-     *
-     * @param index a number that identifies the experiment
-     * @return the created experiment
-     * @see #createExperiment(int)
-     */
+    /// Creates an experiment to be run for the i'th time.
+    ///
+    /// @param index a number that identifies the experiment
+    /// @return the created experiment
+    /// @see #createExperiment(int)
     protected abstract T createExperimentInternal(int index);
 
-    /**
-     * Computes final simulation results, including mean, standard deviations and
-     * confidence intervals for a given metric computed across all simulation runs.
-     *
-     * @param metricEntry a map entry represented by the name of the metric and
-     *                    its list of values across multiple simulation runs
-     * @return the computed {@link ConfidenceInterval} from the provided values for the metric
-     */
+    /// Computes final simulation results, including mean, standard deviations and
+    /// confidence intervals for a given metric computed across all simulation runs.
+    ///
+    /// @param metricEntry a map entry represented by the name of the metric and
+    /// its list of values across multiple simulation runs
+    /// @return the computed [ConfidenceInterval] from the provided values for the metric
     protected ConfidenceInterval computeFinalResults(final Map.Entry<String, List<Double>> metricEntry){
         final List<Double> metricValues = metricEntry.getValue();
         final DoubleStatistics stats = computeFinalStatistics(metricValues);
@@ -674,10 +626,8 @@ public abstract class ExperimentRunner<T extends Experiment<T>> extends Abstract
         return finishedRuns.get();
     }
 
-    /**
-     * Increments the number of finished runs and returns the updated value.
-     * @return the incremented number of finished runs
-     */
+    /// Increments the number of finished runs and returns the updated value.
+    /// @return the incremented number of finished runs
     final int incFinishedRuns() {
         return finishedRuns.incrementAndGet();
     }

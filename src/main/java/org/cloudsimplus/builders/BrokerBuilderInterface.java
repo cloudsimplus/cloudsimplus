@@ -29,22 +29,18 @@ import org.cloudsimplus.brokers.DatacenterBrokerSimple;
 import java.util.List;
 import java.util.function.Consumer;
 
-/**
- * An interface to classes that build {@link DatacenterBrokerSimple} objects.
- *
- * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 1.0
- */
+/// An interface to classes that build [DatacenterBrokerSimple] objects.
+///
+/// @author Manoel Campos da Silva Filho
+/// @since CloudSim Plus 1.0
 interface BrokerBuilderInterface extends Builder {
     BrokerBuilderDecorator create();
 
-    /**
-     * Creates a broker
-     * @param brokerConsumer a {@link Consumer} that will
-     *                       perform some configuration
-     *                       with the just created broker
-     * @return this broker builder
-     */
+    /// Creates a broker
+    /// @param brokerConsumer a [Consumer] that will
+    /// perform some configuration
+    /// with the just created broker
+    /// @return this broker builder
     BrokerBuilderDecorator create(Consumer<DatacenterBroker> brokerConsumer);
     DatacenterBroker findBroker(int id);
     List<DatacenterBroker> getBrokers();

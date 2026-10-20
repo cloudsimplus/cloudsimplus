@@ -33,65 +33,53 @@ import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.groupingBy;
 
-/**
- * A possible solution for mapping a set of Cloudlets to a set of Vm's.
- * It represents a solution generated using a {@link Heuristic} implementation.
- *
- * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 1.0
- */
+/// A possible solution for mapping a set of Cloudlets to a set of Vm's.
+/// It represents a solution generated using a [Heuristic] implementation.
+///
+/// @author Manoel Campos da Silva Filho
+/// @since CloudSim Plus 1.0
 public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudlet, Vm>> {
-    /**
-     * When two double values are subtracted to check if they are equal zero,
-     * there may be some precision issues. This value is used to check the absolute
-     * difference between two values.
-     * It is used to avoid that solutions with little decimal deviations are
-     * considered different from each other.
-     */
+    /// When two double values are subtracted to check if they are equal zero,
+    /// there may be some precision issues. This value is used to check the absolute
+    /// difference between two values.
+    /// It is used to avoid that solutions with little decimal deviations are
+    /// considered different from each other.
     public static final double MIN_DIFF = 0.0001;
 
-    /** @see #getResult() */
+    /// @see #getResult()
     private final Map<Cloudlet, Vm> cloudletVmMap;
 
-    /** The id used to identify the index of the solution inside the set of all solutions created. */
+    /// The id used to identify the index of the solution inside the set of all solutions created.
     @Getter
     private final int id;
 
-    /**
-     * Indicates if the {@link #getCost()} has to be recomputed due to changes in {@link #cloudletVmMap}.
-     * When it is computed, its value is stored to be used
-     * in later calls until the map is changed again, so that improving performance.
-     */
+    /// Indicates if the [#getCost()] has to be recomputed due to changes in [#cloudletVmMap].
+    /// When it is computed, its value is stored to be used
+    /// in later calls until the map is changed again, so that improving performance.
     private boolean recomputeCost = true;
 
-    /**
-     * The last computed cost value, since the
-     * last time the {@link #cloudletVmMap} was changed.
-     * @see #getCost()
-     * @see #recomputeCost
-     */
+    /// The last computed cost value, since the
+    /// last time the [#cloudletVmMap] was changed.
+    /// @see #getCost()
+    /// @see #recomputeCost
     private double lastCost;
 
     @Getter
     private final Heuristic heuristic;
 
-    /**
-     * Creates a new solution for mapping a set of cloudlets to VMs using
-     * a given {@link Heuristic} implementation.
-     *
-     * @param heuristic the heuristic implementation used to configure the solution being created.
-     */
+    /// Creates a new solution for mapping a set of cloudlets to VMs using
+    /// a given [Heuristic] implementation.
+    ///
+    /// @param heuristic the heuristic implementation used to configure the solution being created.
     public CloudletToVmMappingSolution(final Heuristic heuristic){
         this(heuristic, new HashMap<>(), 0);
     }
 
-    /**
-     * Creates a new solution for mapping a set of cloudlets to VMs using
-     * a given {@link Heuristic} implementation.
-     *
-     * @param heuristic the heuristic implementation used to configure the solution being created.
-     * @param id unique solution id to identify the index of the solution inside the set of all solutions created
-     */
+    /// Creates a new solution for mapping a set of cloudlets to VMs using
+    /// a given [Heuristic] implementation.
+    ///
+    /// @param heuristic the heuristic implementation used to configure the solution being created.
+    /// @param id unique solution id to identify the index of the solution inside the set of all solutions created
     public CloudletToVmMappingSolution(final Heuristic heuristic, final int id){
         this(heuristic, new HashMap<>(), id);
     }
@@ -102,12 +90,10 @@ public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudl
         this.id = id;
     }
 
-    /**
-     * Clones a given solution.
-     *
-     * @param solution the solution to be cloned
-     * @param id unique solution id to identify the index of the solution inside the set of all solutions created
-     */
+    /// Clones a given solution.
+    ///
+    /// @param solution the solution to be cloned
+    /// @param id unique solution id to identify the index of the solution inside the set of all solutions created
     public CloudletToVmMappingSolution(@NonNull final CloudletToVmMappingSolution solution, final int id){
         this(solution.heuristic, new HashMap<>(solution.cloudletVmMap), id);
         this.recomputeCost = solution.recomputeCost;
@@ -115,12 +101,10 @@ public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudl
         this.cloudletVmMap.putAll(solution.cloudletVmMap);
     }
 
-    /**
-     * Binds a cloudlet to be executed by a given Vm.
-     *
-     * @param cloudlet the cloudlet to be added to a Vm
-     * @param vm the Vm to assign a cloudlet to
-     */
+    /// Binds a cloudlet to be executed by a given Vm.
+    ///
+    /// @param cloudlet the cloudlet to be added to a Vm
+    /// @param vm the Vm to assign a cloudlet to
     public void bindCloudletToVm(@NonNull final Cloudlet cloudlet, @NonNull final Vm vm){
         cloudletVmMap.put(cloudlet, vm);
         recomputeCost = true;
@@ -134,11 +118,9 @@ public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudl
                 .sum();
     }
 
-    /**
-     * @return a Map of Cloudlets grouped by their VMs,
-     * where each key is a VM and the value is a List of Map Entries
-     * containing the Cloudlets running in that VM.
-     */
+    /// @return a Map of Cloudlets grouped by their VMs,
+    /// where each key is a VM and the value is a List of Map Entries
+    /// containing the Cloudlets running in that VM.
     private Map<Vm, List<Map.Entry<Cloudlet, Vm>>> groupCloudletsByVm() {
         return cloudletVmMap
                 .entrySet()
@@ -146,12 +128,10 @@ public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudl
                 .collect(groupingBy(Map.Entry::getValue));
     }
 
-    /**
-     * {@inheritDoc}
-     * It computes the cost of the entire mapping between VMs and Cloudlets.
-     *
-     * @return {@inheritDoc}
-     */
+    /// {@inheritDoc}
+    /// It computes the cost of the entire mapping between VMs and Cloudlets.
+    ///
+    /// @return {@inheritDoc}
     @Override
     public double getCost() {
         recomputeCostIfRequested();
@@ -165,42 +145,36 @@ public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudl
         }
     }
 
-    /**
-     * It computes the costs of the entire mapping between VMs and cloudlets.
-     *
-     * @param forceRecompute indicate if the cost has to be recomputed anyway
-     * @return the cost of the entire mapping between VMs and cloudlets
-     * @see #getCost()
-     */
+    /// It computes the costs of the entire mapping between VMs and cloudlets.
+    ///
+    /// @param forceRecompute indicate if the cost has to be recomputed anyway
+    /// @return the cost of the entire mapping between VMs and cloudlets
+    /// @see #getCost()
     public double getCost(final boolean forceRecompute) {
         recomputeCost |= forceRecompute;
         return getCost();
     }
 
-    /**
-     * Computes the cost of all Cloudlets hosted by a given Vm.
-     * The cost is based on the number of PEs from the VM that
-     * will be idle or overloaded.
-     *
-     * @param entry a Map Entry where the key is a VM hosting some Cloudlets
-     *              and the value is the Cloudlets hosted in this VM.
-     * @return the VM cost to host the Cloudlets
-     */
+    /// Computes the cost of all Cloudlets hosted by a given Vm.
+    /// The cost is based on the number of PEs from the VM that
+    /// will be idle or overloaded.
+    ///
+    /// @param entry a Map Entry where the key is a VM hosting some Cloudlets
+    /// and the value is the Cloudlets hosted in this VM.
+    /// @return the VM cost to host the Cloudlets
     public double getVmCost(final Map.Entry<Vm, List<Map.Entry<Cloudlet, Vm>>> entry) {
         final Vm vm = entry.getKey();
         final var cloudletList = convertMapEntryListToCloudletList(entry.getValue());
         return getVmCost(vm, cloudletList);
     }
 
-    /**
-     * Computes the cost of all Cloudlets hosted by a given Vm.
-     * The cost is based on the number of PEs from the VM that
-     * will be idle or overloaded.
-     *
-     * @param vm the VM to compute the cost to host some Cloudlets
-     * @param cloudlets the list of Cloudlets to be hosted by the VM to compute the cost
-     * @return the VM cost to host the Cloudlets
-     */
+    /// Computes the cost of all Cloudlets hosted by a given Vm.
+    /// The cost is based on the number of PEs from the VM that
+    /// will be idle or overloaded.
+    ///
+    /// @param vm the VM to compute the cost to host some Cloudlets
+    /// @param cloudlets the list of Cloudlets to be hosted by the VM to compute the cost
+    /// @return the VM cost to host the Cloudlets
     public double getVmCost(final Vm vm, final List<Cloudlet> cloudlets) {
         return Math.abs(vm.getPesNumber() - getTotalCloudletsPes(cloudlets));
     }
@@ -212,11 +186,9 @@ public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudl
             .toList();
     }
 
-    /**
-     * Gets the total number of PEs from a list of Cloudlets
-     * @param cloudletListForVm the list of Cloudlets to get the total number of PEs
-     * @return the total number of PEs from all given Cloudlets
-     */
+    /// Gets the total number of PEs from a list of Cloudlets
+    /// @param cloudletListForVm the list of Cloudlets to get the total number of PEs
+    /// @return the total number of PEs from all given Cloudlets
     private long getTotalCloudletsPes(final List<Cloudlet> cloudletListForVm) {
         return cloudletListForVm
                 .stream()
@@ -224,16 +196,14 @@ public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudl
                 .sum();
     }
 
-    /**
-     * Compares this solution with another given one, based on the solution cost.
-     * The current object is considered to be:
-     * - equal to the given object if they have the same cost;
-     * - greater than the given object if it has a lower cost;
-     * - lower than the given object if it has a higher cost;
-     *
-     * @param solution the solution to compare this instance to
-     * @return {@inheritDoc}
-     */
+    /// Compares this solution with another given one, based on the solution cost.
+    /// The current object is considered to be:
+    /// - equal to the given object if they have the same cost;
+    /// - greater than the given object if it has a lower cost;
+    /// - lower than the given object if it has a higher cost;
+    ///
+    /// @param solution the solution to compare this instance to
+    /// @return {@inheritDoc}
     @Override
     public int compareTo(@NonNull final HeuristicSolution solution) {
         final double diff = this.getCost() - solution.getCost();
@@ -244,28 +214,24 @@ public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudl
         return diff > 0 ? -1 : 1;
     }
 
-    /**
-     * @return the actual solution, providing the mapping between Cloudlets and Vm's.
-     */
+    /// @return the actual solution, providing the mapping between Cloudlets and Vm's.
     @Override
     public Map<Cloudlet, Vm> getResult() {
         return Collections.unmodifiableMap(cloudletVmMap);
     }
 
-    /**
-     * Swap the VMs of 2 randomly selected cloudlets
-     * in the {@link #cloudletVmMap} in order to
-     * provide a neighbor solution.
-     *
-     * <p>The method changes the given Map entries, moving the
-     * cloudlet of the first entry to the Vm of the second entry
-     * and vice versa.</p>
-     *
-     * @param entries a List of 2 entries containing Cloudlets to swap their VMs.
-     * If the entries don't have 2 elements, the method will
-     * return without performing any change in the entries.
-     * @return true if the VMs of the Cloudlets where swapped, false otherwise
-     */
+    /// Swap the VMs of 2 randomly selected cloudlets
+    /// in the [#cloudletVmMap] in order to
+    /// provide a neighbor solution.
+    ///
+    /// The method changes the given Map entries, moving the
+    /// cloudlet of the first entry to the Vm of the second entry
+    /// and vice versa.
+    ///
+    /// @param entries a List of 2 entries containing Cloudlets to swap their VMs.
+    /// If the entries don't have 2 elements, the method will
+    /// return without performing any change in the entries.
+    /// @return true if the VMs of the Cloudlets where swapped, false otherwise
     protected final boolean swapVmsOfTwoMapEntries(final List<Map.Entry<Cloudlet, Vm>> entries) {
         if(entries == null || entries.size() != 2 || entries.get(0) == null || entries.get(1) == null) {
             return false;
@@ -279,31 +245,27 @@ public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudl
         return recomputeCost = true;
     }
 
-    /**
-     * Swap the VMs of 2 randomly selected cloudlets
-     * in the {@link #cloudletVmMap} in order to
-     * provide a neighbor solution.
-     *
-     * <p>The method changes the given Map entries, moving the
-     * cloudlet of the first entry to the Vm of the second entry
-     * and vice versa.</p>
-     *
-     * @see #swapVmsOfTwoMapEntries(List)
-     * @return true if the Cloudlet's VMs where swapped, false otherwise
-     */
+    /// Swap the VMs of 2 randomly selected cloudlets
+    /// in the [#cloudletVmMap] in order to
+    /// provide a neighbor solution.
+    ///
+    /// The method changes the given Map entries, moving the
+    /// cloudlet of the first entry to the Vm of the second entry
+    /// and vice versa.
+    ///
+    /// @see #swapVmsOfTwoMapEntries(List)
+    /// @return true if the Cloudlet's VMs where swapped, false otherwise
     boolean swapVmsOfTwoRandomSelectedMapEntries() {
         return swapVmsOfTwoMapEntries(getRandomMapEntries());
     }
 
-    /**
-     * Try to get 2 randomly selected entries from the {@link #cloudletVmMap}.
-     *
-     * @return a List with 2 entries from the {@link #cloudletVmMap} if the map size is at least 2;
-     *         a unitary List if the map has only 1 entry;
-     *         or an empty List if there is no entry in the map.
-     *
-     * @see #swapVmsOfTwoMapEntries(List)
-     */
+    /// Try to get 2 randomly selected entries from the [#cloudletVmMap].
+    ///
+    /// @return a List with 2 entries from the [#cloudletVmMap] if the map size is at least 2;
+    /// a unitary List if the map has only 1 entry;
+    /// or an empty List if there is no entry in the map.
+    ///
+    /// @see #swapVmsOfTwoMapEntries(List)
     protected List<Map.Entry<Cloudlet, Vm>> getRandomMapEntries() {
         if(cloudletVmMap.isEmpty()) {
             return new ArrayList<>();
@@ -316,10 +278,8 @@ public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudl
         return createListWithTwoRandomEntries();
     }
 
-    /**
-     * @return a single-entry List with either the first {@link #cloudletVmMap} entry,
-     *         or an empty List in case no entry is found.
-     */
+    /// @return a single-entry List with either the first [#cloudletVmMap] entry,
+    /// or an empty List in case no entry is found.
     private List<Map.Entry<Cloudlet, Vm>> createListWithFirstMapEntry() {
         return cloudletVmMap
                 .entrySet()
@@ -328,11 +288,9 @@ public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudl
                 .collect(Collectors.toList());
     }
 
-    /**
-     * @return a List with 2 randomly selected entries from the {@link #cloudletVmMap}.
-     * The way the method is called ensures there are at least two entries
-     * in the {@link #cloudletVmMap}.
-     */
+    /// @return a List with 2 randomly selected entries from the [#cloudletVmMap].
+    /// The way the method is called ensures there are at least two entries
+    /// in the [#cloudletVmMap].
     private List<Map.Entry<Cloudlet, Vm>> createListWithTwoRandomEntries() {
         final int size = cloudletVmMap.size();
         final int firstIdx = heuristic.getRandomValue(size);

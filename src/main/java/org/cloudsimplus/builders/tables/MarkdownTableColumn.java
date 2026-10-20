@@ -23,13 +23,11 @@
  */
 package org.cloudsimplus.builders.tables;
 
-/**
- * A column of a {@link MarkdownTable}. The class generates the string
- * that represents a column in the table.
- *
- * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 6.4.3
- */
+/// A column of a [MarkdownTable]. The class generates the string
+/// that represents a column in the table.
+///
+/// @author Manoel Campos da Silva Filho
+/// @since CloudSim Plus 6.4.3
 public class MarkdownTableColumn extends CsvTableColumn {
     public MarkdownTableColumn(final String title, final String subTitle) {
         this(title, subTitle, "");
