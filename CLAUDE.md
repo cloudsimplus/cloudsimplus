@@ -115,3 +115,19 @@ Time and space complexity are crucial. CloudSim Plus is used for large-scale sim
 - Unit tests mirror the main source structure under `src/test/java/org/cloudsimplus/`.
 - Integration tests in `src/test/java/org/cloudsimplus/integrationtests/` run full simulations and only execute with `-Pintegration-tests`.
 - Mocking helpers in `src/test/java/org/cloudsimplus/mocks/` (`CloudSimMocker`, `MocksHelper`) create mocked `Simulation` objects with a controlled clock.
+
+### Run related examples before pushing
+
+After changing code, check if there is a related example in the [cloudsimplus-examples](https://github.com/cloudsimplus/cloudsimplus-examples) project (usually cloned next to this one, at `../cloudsimplus-examples`), such as an example that uses the changed classes. If there is one, run it locally **before pushing**:
+
+```bash
+# Install the changed framework in the local Maven repository.
+# The examples depend on the same SNAPSHOT version, so they use this build.
+mvn clean install -DskipTests
+
+# Run the example from the examples project
+cd ../cloudsimplus-examples
+sh bootstrap.sh org.cloudsimplus.examples.<package>.<ExampleClassName>
+```
+
+Check that the example finishes without exceptions and that its results still make sense. If there is no related example, say so.
