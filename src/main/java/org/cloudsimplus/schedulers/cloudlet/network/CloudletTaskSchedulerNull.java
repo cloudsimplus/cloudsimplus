@@ -53,4 +53,7 @@ final class CloudletTaskSchedulerNull implements CloudletTaskScheduler {
     @Override public boolean isCloudletWaitingForPackets(Cloudlet cloudlet) {
         return false;
     }
+    @Override public double getNextTaskUpdateDelay(Cloudlet cloudlet) {
+        return Double.MAX_VALUE;
+    }
 }

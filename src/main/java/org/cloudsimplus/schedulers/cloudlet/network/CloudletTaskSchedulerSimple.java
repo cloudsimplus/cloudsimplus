@@ -47,6 +47,12 @@ public class CloudletTaskSchedulerSimple implements CloudletTaskScheduler {
     /// targeting the VM of this scheduler.
     private final Map<Vm, List<VmPacket>> vmPacketsReceivedMap;
 
+    /// Indicates if a warning was already logged for a [CloudletReceiveTask]
+    /// [waiting too long][CloudletReceiveTask#isWaitingTooLong(double)] in the VM of this scheduler.
+    /// The warning is logged just for the first task, to point to the likely cause of a simulation
+    /// that looks stuck, without flooding the log.
+    private boolean waitWarningLogged;
+
     /// Creates a CloudletTaskSchedulerSimple.
     public CloudletTaskSchedulerSimple() {
         super();
@@ -112,6 +118,31 @@ public class CloudletTaskSchedulerSimple implements CloudletTaskScheduler {
                  .isPresent();
     }
 
+    @Override
+    public double getNextTaskUpdateDelay(@NonNull final Cloudlet cloudlet) {
+        if (!(cloudlet instanceof NetworkCloudlet nc)) {
+            return Double.MAX_VALUE;
+        }
+
+        final double time = cloudlet.getSimulation().clock();
+        return nc.getCurrentTask()
+                 .filter(CloudletReceiveTask.class::isInstance)
+                 .map(CloudletReceiveTask.class::cast)
+                 .map(task -> Math.min(task.getRemainingTimeout(time), getRemainingWaitWarningTime(task, time)))
+                 .orElse(Double.MAX_VALUE);
+    }
+
+    /// Gets the time remaining to warn that a task is waiting too long.
+    ///
+    /// @param task the task to check
+    /// @param currentTime the current simulation time (in seconds)
+    /// @return the time remaining (in seconds) to warn that the task is waiting too long;
+    /// or [Double#MAX_VALUE] if the warning was already logged in this VM.
+    /// @see CloudletReceiveTask#getRemainingWaitWarningTime(double)
+    private double getRemainingWaitWarningTime(final CloudletReceiveTask task, final double currentTime) {
+        return waitWarningLogged ? Double.MAX_VALUE : task.getRemainingWaitWarningTime(currentTime);
+    }
+
     /// Gets the list of packets to be sent from a given source
     /// cloudlet and adds this list to the list of all packets to send
     /// from the VM hosting that cloudlet.
@@ -145,12 +176,42 @@ public class CloudletTaskSchedulerSimple implements CloudletTaskScheduler {
          from the list of the sender VM */
         getListOfPacketsSentFromVm(task.getSourceVm()).removeAll(receivedPkts);
 
-        /*
-         * TODO The task has to wait the reception
-         *      of the expected packets up to a given timeout.
-         *      After that, the task has to stop waiting and fail.
-         */
+        if (task.finishIfTimedOut(destinationCloudlet.getSimulation().clock())) {
+            logTimedOutTask(destinationCloudlet, task);
+        }
+
+        warnIfWaitingTooLong(destinationCloudlet, task);
         scheduleNextTaskIfCurrentIsFinished(destinationCloudlet);
+    }
+
+    /// Logs a warning if a task without a timeout has been waiting for packets
+    /// longer than the [CloudletReceiveTask#WAIT_WARNING_TIME].
+    /// The warning is logged just for the first task in the VM.
+    ///
+    /// @param destinationCloudlet the Cloudlet the task belongs to
+    /// @param task the task waiting for packets
+    private void warnIfWaitingTooLong(final NetworkCloudlet destinationCloudlet, final CloudletReceiveTask task) {
+        final double time = destinationCloudlet.getSimulation().clock();
+        if (waitWarningLogged || !task.isWaitingTooLong(time)) {
+            return;
+        }
+
+        waitWarningLogged = true;
+        LOGGER.warn(
+            "{}: {}: {} in {} has been waiting for {} seconds for packets from {} and received {} of {} expected packets. " +
+            "If they are never sent, the Cloudlet waits forever. Set a timeout with CloudletReceiveTask.setTimeout() to stop waiting. " +
+            "Further warnings like this for this VM are not shown.",
+            destinationCloudlet.getSimulation().clockStr(), getClass().getSimpleName(),
+            destinationCloudlet, destinationCloudlet.getVm(), task.getWaitingTime(time), task.getSourceVm(),
+            task.getPacketsReceived().size(), task.getExpectedPacketsToReceive());
+    }
+
+    private void logTimedOutTask(final NetworkCloudlet destinationCloudlet, final CloudletReceiveTask task) {
+        LOGGER.warn(
+            "{}: {}: {} in {} timed out after waiting {} seconds for packets from {}. It received {} of {} expected packets.",
+            destinationCloudlet.getSimulation().clockStr(), getClass().getSimpleName(),
+            destinationCloudlet, destinationCloudlet.getVm(), task.getTimeout(), task.getSourceVm(),
+            task.getPacketsReceived().size(), task.getExpectedPacketsToReceive());
     }
 
     private void logReceivedPacket(final NetworkCloudlet destinationCloudlet, final VmPacket pkt) {

@@ -7,6 +7,7 @@
  */
 package org.cloudsimplus.cloudlets.network;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
@@ -37,7 +38,10 @@ import org.jspecify.annotations.Nullable;
 /// so it may finish before the Cloudlet it depends on.
 ///
 /// If fewer packets are sent than expected, the task waits forever
-/// and the Cloudlet never finishes, since there is no timeout for receiving packets yet.
+/// and the Cloudlet never finishes, unless a [timeout][#setTimeout(double)] is set.
+/// When the timeout is reached, the task stops waiting and the Cloudlet moves to its next task.
+/// If there is no timeout, a warning is logged for the first task in a VM
+/// that waits longer than [#WAIT_WARNING_TIME].
 ///
 /// **WARNING:** A Cloudlet waiting for packets keeps using its PEs.
 /// If you use a [org.cloudsimplus.schedulers.cloudlet.CloudletSchedulerSpaceShared]
@@ -54,33 +58,15 @@ import org.jspecify.annotations.Nullable;
 ///
 /// @since CloudSim Toolkit 1.0
 ///
-/// TODO For how long will the task be waiting for packets?
-/// The sender task has a defined amount of packets to send, but
-/// the receiver doesn't have to know how many packets to wait for.
-/// Considering a real distributed app such as a web app, the sender can be
-/// a browser and the receiver a web server. In this case,
-/// the web server runs indefinitely. However, the simulation
-/// has to have a time interval. For instance, it may be simulated
-/// the operation of this distributed app for 24 hours.
-/// This way, the receiver task could have a specific amount
-/// of time to run. In the web app scenario, the web server just
-/// keep running, waiting for any client to send packets to it,
-/// but it is not required that a client do that. The web app
-/// may not be accessed during this time.
-/// On other hand, the client may send packets to the server
-/// and require a response. It then waits for this response
-/// and must have a timeout period, so that the client can:
-/// (i) stop waiting a reply, (ii) then move to the next task or finish.
-///
-/// Each task has to have a status (such as the Cloudlet itself)
-/// to define if it was executed successfully or not.
-/// For instance, a CloudletReceiveTask that is waiting to receive
-/// a list of packets can be configured to finish
-/// after a given timeout without receiving the expected packets.
-///
-/// How is the network delay being computed?
+/// TODO How is the network delay being computed?
 @Getter @Setter
 public non-sealed class CloudletReceiveTask extends CloudletTask {
+    /// The time (in seconds) a task without a [timeout][#getTimeout()] can wait for packets
+    /// before a warning is logged, telling the user the Cloudlet may be waiting
+    /// for packets that are never sent.
+    /// The warning is logged just for the first task in each VM that waits that long.
+    public static final double WAIT_WARNING_TIME = 60;
+
     private final List<VmPacket> packetsReceived;
 
     /// The number of packets that are expected to be received.
@@ -95,6 +81,19 @@ public non-sealed class CloudletReceiveTask extends CloudletTask {
     /// or null if packets from any Cloudlet inside the [source VM][#getSourceVm()] are accepted.
     @Nullable
     private final NetworkCloudlet senderCloudlet;
+
+    /// The maximum time (in seconds) the task waits for the expected packets,
+    /// counted from the time the task starts.
+    /// When it's reached, the task finishes without all the packets and is [timed out][#isTimedOut()].
+    /// Zero (the default) means the task waits forever.
+    /// In this case, a warning may be logged if the task waits too long (see [#WAIT_WARNING_TIME]).
+    @Setter(AccessLevel.NONE)
+    private double timeout;
+
+    /// Indicates if the task finished because the [#getTimeout()] was reached
+    /// before receiving all the expected packets.
+    @Setter(AccessLevel.NONE)
+    private boolean timedOut;
 
     /// Creates a new task that accepts packets from any Cloudlet inside the given VM.
     /// If multiple Cloudlets in that VM send packets to the Cloudlet of this task,
@@ -156,5 +155,88 @@ public non-sealed class CloudletReceiveTask extends CloudletTask {
     /// @return a read-only list of received packets
     public List<VmPacket> getPacketsReceived() {
         return Collections.unmodifiableList(packetsReceived);
+    }
+
+    /// Sets the maximum time (in seconds) the task waits for the expected packets.
+    ///
+    /// @param timeout the timeout to set, or zero to wait forever
+    /// @return this task
+    /// @see #getTimeout()
+    public CloudletReceiveTask setTimeout(final double timeout) {
+        if (timeout < 0) {
+            throw new IllegalArgumentException("Timeout cannot be negative.");
+        }
+
+        this.timeout = timeout;
+        return this;
+    }
+
+    /// @return true if a [#getTimeout()] is set, false if the task waits forever
+    public boolean hasTimeout() {
+        return timeout > 0;
+    }
+
+    /// Gets the time remaining for the task to time out.
+    ///
+    /// @param currentTime the current simulation time (in seconds)
+    /// @return the time remaining (in seconds) for the task to time out;
+    /// or [Double#MAX_VALUE] if the task has no timeout, hasn't started or is finished.
+    public double getRemainingTimeout(final double currentTime) {
+        if (!hasTimeout() || !isWaiting()) {
+            return Double.MAX_VALUE;
+        }
+
+        return Math.max(0, timeout - getWaitingTime(currentTime));
+    }
+
+    /// Gets the time the task has been waiting for packets.
+    ///
+    /// @param currentTime the current simulation time (in seconds)
+    /// @return the time (in seconds) since the task started;
+    /// or 0 if the task hasn't started or is finished.
+    public double getWaitingTime(final double currentTime) {
+        return isWaiting() ? Math.max(0, currentTime - getStartTime()) : 0;
+    }
+
+    /// Checks if the task has no [#getTimeout()] and has been waiting
+    /// for packets for at least [#WAIT_WARNING_TIME].
+    ///
+    /// @param currentTime the current simulation time (in seconds)
+    /// @return true if the task is waiting too long, false otherwise
+    public boolean isWaitingTooLong(final double currentTime) {
+        return getRemainingWaitWarningTime(currentTime) == 0;
+    }
+
+    /// Gets the time remaining for the task to reach the [#WAIT_WARNING_TIME].
+    ///
+    /// @param currentTime the current simulation time (in seconds)
+    /// @return the time remaining (in seconds) for the task to be waiting too long;
+    /// or [Double#MAX_VALUE] if the task has a timeout, hasn't started or is finished.
+    public double getRemainingWaitWarningTime(final double currentTime) {
+        if (hasTimeout() || !isWaiting()) {
+            return Double.MAX_VALUE;
+        }
+
+        return Math.max(0, WAIT_WARNING_TIME - getWaitingTime(currentTime));
+    }
+
+    /// @return true if the task has started and is still waiting for packets, false otherwise
+    private boolean isWaiting() {
+        return getStartTime() >= 0 && isActive();
+    }
+
+    /// Finishes the task if its [#getTimeout()] is reached,
+    /// so that the Cloudlet stops waiting for packets.
+    ///
+    /// @param currentTime the current simulation time (in seconds)
+    /// @return true if the task has just timed out, false otherwise
+    public boolean finishIfTimedOut(final double currentTime) {
+        if (getRemainingTimeout(currentTime) > 0) {
+            return false;
+        }
+
+        timedOut = true;
+        setFinished(true);
+        return true;
     }
 }

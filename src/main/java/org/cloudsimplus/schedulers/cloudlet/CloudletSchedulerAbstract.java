@@ -557,7 +557,8 @@ public abstract non-sealed class CloudletSchedulerAbstract implements CloudletSc
         taskScheduler.processCloudletTasks(cle.getCloudlet(), partialFinishedMI);
         final double estimatedFinishTime = cloudletEstimatedFinishTime(cle, currentTime);
         cle.setLastOverSubscriptionDelay(maxDelay);
-        return maxDelay == 0 ? estimatedFinishTime : Math.min(maxDelay, estimatedFinishTime);
+        final double nextDelay = maxDelay == 0 ? estimatedFinishTime : Math.min(maxDelay, estimatedFinishTime);
+        return Math.min(nextDelay, taskScheduler.getNextTaskUpdateDelay(cle.getCloudlet()));
     }
 
     /// {@return the maximum delay caused by oversubscription of resources}
