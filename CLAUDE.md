@@ -125,9 +125,14 @@ After changing code, check if there is a related example in the [cloudsimplus-ex
 # The examples depend on the same SNAPSHOT version, so they use this build.
 mvn clean install -DskipTests
 
-# Run the example from the examples project
+# Rebuild the examples jar, so it includes the framework just installed.
+# Don't rely on `bootstrap.sh <class>` alone: it only builds the jar if it doesn't exist,
+# so it may run an old jar with the previous framework code.
 cd ../cloudsimplus-examples
-sh bootstrap.sh org.cloudsimplus.examples.<package>.<ExampleClassName>
+mvn clean package -DskipTests
+
+# Run the example (some examples are in the org.cloudbus.cloudsim.examples package)
+java -cp target/cloudsimplus-examples-*-with-dependencies.jar org.cloudsimplus.examples.<package>.<ExampleClassName>
 ```
 
-Check that the example finishes without exceptions and that its results still make sense. If there is no related example, say so.
+Check that the example finishes without exceptions and that its results still make sense. If the change may affect the results, also run the example against `master` and compare the outputs. If there is no related example, say so.
