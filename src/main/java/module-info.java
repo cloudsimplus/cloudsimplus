@@ -1,6 +1,4 @@
-/**
- * CloudSim Plus: a framework for modeling and simulation of cloud computing infrastructures and services.
- */
+/// CloudSim Plus: a framework for modeling and simulation of cloud computing infrastructures and services.
 module cloudsimplus {
     /* Modules whose types are part of the CloudSim Plus public API
      * (for instance, in method parameters or return types).

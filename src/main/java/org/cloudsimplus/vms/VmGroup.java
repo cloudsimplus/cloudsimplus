@@ -47,16 +47,12 @@ import static java.util.Objects.requireNonNull;
 /// @author Manoel Campos da Silva Filho
 /// @since CloudSim Plus 4.6.0
 public class VmGroup extends VmSimple {
-    /**
-     * The List of VMs belonging to this group.
-     */
+    /// The List of VMs belonging to this group.
     @Getter
     private final List<Vm> vmList;
 
-    /**
-     * Creates a VmGroup for a List of VMs.
-     * @param vmList the List of VMs to create the group
-     */
+    /// Creates a VmGroup for a List of VMs.
+    /// @param vmList the List of VMs to create the group
     public VmGroup(@NonNull final List<Vm> vmList) {
         super(getMaxMips(vmList), getTotalPes(vmList));
 
@@ -76,30 +72,26 @@ public class VmGroup extends VmSimple {
         setTimeZone(Double.MIN_VALUE);
     }
 
-    /**
-     * Creates a VmGroup for a List of VMs to be placed
-     * at the datacenter closest to a given timezone.
-     * All VMs will be changed to the given time zone.
-     * @param vmList the List of VMs to create the group
-     * @param timeZone the timezone of the Datacenter where it's expected the VMs to be placed
-     *                 as close as possible
-     * @see DatacenterBroker#setSelectClosestDatacenter(boolean)
-     */
+    /// Creates a VmGroup for a List of VMs to be placed
+    /// at the datacenter closest to a given timezone.
+    /// All VMs will be changed to the given time zone.
+    /// @param vmList the List of VMs to create the group
+    /// @param timeZone the timezone of the Datacenter where it's expected the VMs to be placed
+    /// as close as possible
+    /// @see DatacenterBroker#setSelectClosestDatacenter(boolean)
     public VmGroup(final List<Vm> vmList, final double timeZone) {
         this(vmList);
         setTimeZone(timeZone);
     }
 
-    /**
-     * Creates a VmGroup for a List of VMs to be placed
-     * at the datacenter closest to a given timezone.
-     * All VMs will be changed to the given time zone.
-     * @param id the VmGroup ID
-     * @param vmList the List of VMs to create the group
-     * @param timeZone the time zone of the Datacenter where it's expected the VMs to be placed
-     *                 as close as possible
-     * @see DatacenterBroker#setSelectClosestDatacenter(boolean)
-     */
+    /// Creates a VmGroup for a List of VMs to be placed
+    /// at the datacenter closest to a given timezone.
+    /// All VMs will be changed to the given time zone.
+    /// @param id the VmGroup ID
+    /// @param vmList the List of VMs to create the group
+    /// @param timeZone the time zone of the Datacenter where it's expected the VMs to be placed
+    /// as close as possible
+    /// @see DatacenterBroker#setSelectClosestDatacenter(boolean)
     public VmGroup(final long id, final List<Vm> vmList, final double timeZone) {
         this(vmList, timeZone);
         setId(id);
@@ -130,48 +122,36 @@ public class VmGroup extends VmSimple {
         return this;
     }
 
-    /**
-     * {@return the max MIPS capacity a VM inside the List is requiring}
-     * @param vmList the List of VMs to create the group
-     */
+    /// {@return the max MIPS capacity a VM inside the List is requiring}
+    /// @param vmList the List of VMs to create the group
     private static double getMaxMips(final List<Vm> vmList){
         return requireNonNull(vmList).stream().mapToDouble(Vm::getMips).max().orElse(0.0);
     }
 
-    /**
-     * @return the total number of PEs from all VMs inside the List.
-     */
+    /// @return the total number of PEs from all VMs inside the List.
     private static long getTotalPes(final List<Vm> vmList){
         return vmList.stream().mapToLong(Vm::getPesNumber).sum();
     }
 
-    /**
-     * Sets the RAM capacity of the VmGroup as the total RAM of all VMs.
-     */
+    /// Sets the RAM capacity of the VmGroup as the total RAM of all VMs.
     private void setTotalRam() {
         final long total = vmList.stream().map(Vm::getRam).mapToLong(Resource::getCapacity).sum();
         setRam(total);
     }
 
-    /**
-     * Sets the BW capacity of the VmGroup as the total BW of all VMs.
-     */
+    /// Sets the BW capacity of the VmGroup as the total BW of all VMs.
     private void setTotalBw() {
         final long total = vmList.stream().map(Vm::getBw).mapToLong(Resource::getCapacity).sum();
         setBw(total);
     }
 
-    /**
-     * Sets the Storage capacity of the VmGroup as the total Storage of all VMs.
-     */
+    /// Sets the Storage capacity of the VmGroup as the total Storage of all VMs.
     private void setTotalStorage() {
         final long total = vmList.stream().map(Vm::getStorage).mapToLong(Resource::getCapacity).sum();
         setSize(total);
     }
 
-    /**
-     * @return the number of VMs inside this group.
-     */
+    /// @return the number of VMs inside this group.
     public int size(){
         return vmList.size();
     }

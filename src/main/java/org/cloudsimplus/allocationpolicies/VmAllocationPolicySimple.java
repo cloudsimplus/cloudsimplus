@@ -36,28 +36,22 @@ import org.jspecify.annotations.Nullable;
 /// @see VmAllocationPolicyFirstFit
 /// @see VmAllocationPolicyBestFit
 public class VmAllocationPolicySimple extends VmAllocationPolicyAbstract {
-    /**
-     * Creates a VmAllocationPolicy.
-     */
+    /// Creates a VmAllocationPolicy.
     public VmAllocationPolicySimple() {
         super();
     }
 
-    /**
-     * Creates a VmAllocationPolicy, changing the {@link Function} to select a Host for a Vm
-     * in order to define a different policy.
-     *
-     * @param findHostForVmFunction a {@link Function} to select a Host for a given Vm.
-     * @see VmAllocationPolicy#setFindHostForVmFunction(java.util.function.BiFunction)
-     */
+    /// Creates a VmAllocationPolicy, changing the [Function] to select a Host for a Vm
+    /// in order to define a different policy.
+    ///
+    /// @param findHostForVmFunction a [Function] to select a Host for a given Vm.
+    /// @see VmAllocationPolicy#setFindHostForVmFunction(java.util.function.BiFunction)
     public VmAllocationPolicySimple(@Nullable final BiFunction<VmAllocationPolicy, Vm, Optional<Host>> findHostForVmFunction) {
         super(findHostForVmFunction);
     }
 
-    /**
-     * Gets the first suitable host from the {@link #getHostList()} that has the fewest number of used PEs (i.e, higher free PEs).
-     * @return an {@link Optional} containing a suitable Host to place the VM or an empty {@link Optional} if not found
-     */
+    /// Gets the first suitable host from the [#getHostList()] that has the fewest number of used PEs (i.e, higher free PEs).
+    /// @return an [Optional] containing a suitable Host to place the VM or an empty [Optional] if not found
     @Override
     protected Optional<Host> defaultFindHostForVm(final Vm vm) {
         final Comparator<Host> comparator = comparing(Host::isActive).thenComparingLong(Host::getFreePesNumber);

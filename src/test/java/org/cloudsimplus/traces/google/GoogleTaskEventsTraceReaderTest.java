@@ -45,10 +45,8 @@ import java.util.stream.IntStream;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-/**
- * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 4.0.0
- */
+/// @author Manoel Campos da Silva Filho
+/// @since CloudSim Plus 4.0.0
 public class GoogleTaskEventsTraceReaderTest {
     private static final int PES = 4;
     private static final double MIPS = 1000;
@@ -56,21 +54,17 @@ public class GoogleTaskEventsTraceReaderTest {
     private static final double FINISH_TIME = 10;
     private static final int TIMEOUT_SECS = 30;
 
-    /**
-     * A trace where a task is submitted and scheduled at timestamp 0,
-     * then finished at {@link #FINISH_TIME} (timestamps are in microseconds).
-     */
+    /// A trace where a task is submitted and scheduled at timestamp 0,
+    /// then finished at [#FINISH_TIME] (timestamps are in microseconds).
     private static final String TRACE_STARTING_AT_TIME_ZERO = """
         0,,1,0,0,0,user,3,9,0.5,0.1,0.1,0
         0,,1,0,0,1,user,3,9,0.5,0.1,0.1,0
         10000000,,1,0,0,4,user,3,9,0.5,0.1,0.1,0
         """;
 
-    /**
-     * Checks that trace events happening before the first simulation clock tick
-     * are processed instead of being detected as past events.
-     * See <a href="https://github.com/cloudsimplus/cloudsimplus/issues/563">#563</a>.
-     */
+    /// Checks that trace events happening before the first simulation clock tick
+    /// are processed instead of being detected as past events.
+    /// See [#563](https://github.com/cloudsimplus/cloudsimplus/issues/563).
     @Test @Timeout(TIMEOUT_SECS)
     public void eventsAtTimestampZeroAreProcessed(@TempDir final Path tempDir) throws IOException {
         final var simulation = new CloudSimPlus();
@@ -94,11 +88,9 @@ public class GoogleTaskEventsTraceReaderTest {
             .setUtilizationModelRam(new UtilizationModelDynamic(0, event.getResourceRequestForRam()));
     }
 
-    /**
-     * Ensures the order or enums is not changed,
-     * because that will cause the enums ordinal values to change.
-     * These values are defined in the Google Cluster Data documentation.
-     */
+    /// Ensures the order or enums is not changed,
+    /// because that will cause the enums ordinal values to change.
+    /// These values are defined in the Google Cluster Data documentation.
     @Test
     public void testEventType(){
         assertAll(
@@ -114,11 +106,9 @@ public class GoogleTaskEventsTraceReaderTest {
         );
     }
 
-    /**
-     * Ensures the order or enums is not changed,
-     * because that will cause the enums ordinal values to change.
-     * These values are defined in the Google Cluster Data documentation.
-     */
+    /// Ensures the order or enums is not changed,
+    /// because that will cause the enums ordinal values to change.
+    /// These values are defined in the Google Cluster Data documentation.
     @Test
     public void testMissingInfo(){
         assertAll(
@@ -128,12 +118,10 @@ public class GoogleTaskEventsTraceReaderTest {
         );
     }
 
-    /**
-     * Ensures the order or enums is not changed,
-     * because that will cause the enums ordinal values to change.
-     * These values are defined in the Google Cluster Data documentation
-     * and indicate the order of the fields inside the trace file.
-     */
+    /// Ensures the order or enums is not changed,
+    /// because that will cause the enums ordinal values to change.
+    /// These values are defined in the Google Cluster Data documentation
+    /// and indicate the order of the fields inside the trace file.
     @Test
     public void testFieldIndex(){
         assertAll(

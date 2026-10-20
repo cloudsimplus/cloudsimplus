@@ -23,80 +23,56 @@
  */
 package org.cloudsimplus.core;
 
-/**
- * An entity that can be started and stopped.
- * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 8.2.0
- */
+/// An entity that can be started and stopped.
+/// @author Manoel Campos da Silva Filho
+/// @since CloudSim Plus 8.2.0
 public interface Startable {
-    /**
-     * Indicates that some attribute was not set and therefore its value should be ignored.
-     */
+    /// Indicates that some attribute was not set and therefore its value should be ignored.
     int NOT_ASSIGNED = -1;
 
-    /**
-     * @return the last time the machine was started up (in seconds);
-     *         or {@link #NOT_ASSIGNED} if it was not started yet.
-     */
+    /// @return the last time the machine was started up (in seconds);
+    /// or [#NOT_ASSIGNED] if it was not started yet.
     double getStartTime();
 
-    /**
-     * @return true if the entity has started and it's not finished yet; false otherwise.
-     */
+    /// @return true if the entity has started and it's not finished yet; false otherwise.
     default boolean hasStarted(){
         return !isFinished() && getStartTime() > NOT_ASSIGNED;
     }
 
-    /**
-     * @return true if this entity has finished execution; false otherwise
-     */
+    /// @return true if this entity has finished execution; false otherwise
     boolean isFinished();
 
-    /**
-     * Sets the current entity startup time.
-     * The value {@link #NOT_ASSIGNED} means it was not started yet.
-     *
-     * @param startTime the start time to set (in seconds)
-     * @return this entity
-     */
+    /// Sets the current entity startup time.
+    /// The value [#NOT_ASSIGNED] means it was not started yet.
+    ///
+    /// @param startTime the start time to set (in seconds)
+    /// @return this entity
     Startable setStartTime(double startTime);
 
-    /**
-     * @return the time the entity was stopped (in seconds);
-     *         or {@link #NOT_ASSIGNED} if it has not stopped or has not even started yet.
-     */
+    /// @return the time the entity was stopped (in seconds);
+    /// or [#NOT_ASSIGNED] if it has not stopped or has not even started yet.
     double getFinishTime();
 
-    /**
-     * Sets the time the entity was stopped (in seconds).
-     * The value {@link #NOT_ASSIGNED} means the entity has not stopped or has not even started yet.
-     *
-     * @param stopTime the stop time to set (in seconds)
-     * @return this entity
-     */
+    /// Sets the time the entity was stopped (in seconds).
+    /// The value [#NOT_ASSIGNED] means the entity has not stopped or has not even started yet.
+    ///
+    /// @param stopTime the stop time to set (in seconds)
+    /// @return this entity
     Startable setFinishTime(double stopTime);
 
-    /**
-     * Gets the last time the entity was running some process or {@link #NOT_ASSIGNED} if it has not been busy yet.
-     * @return the last busy time (in seconds)
-     */
+    /// Gets the last time the entity was running some process or [#NOT_ASSIGNED] if it has not been busy yet.
+    /// @return the last busy time (in seconds)
     double getLastBusyTime();
 
-    /**
-     * Set the last time the entity was running some process.
-     * @param time the time to set ({@link #NOT_ASSIGNED} to indicate the entity has not been busy yet)
-     * @return this entity
-     */
+    /// Set the last time the entity was running some process.
+    /// @param time the time to set ([#NOT_ASSIGNED] to indicate the entity has not been busy yet)
+    /// @return this entity
     Startable setLastBusyTime(double time);
 
-    /**
-     * @return the {@link CloudSimPlus} instance that represents the simulation this Entity belongs to.
-     */
+    /// @return the [CloudSimPlus] instance that represents the simulation this Entity belongs to.
     Simulation getSimulation();
 
-    /**
-     * @return the total execution time of the entity so far (in seconds),
-     *         if the entity has finished already or not.
-     */
+    /// @return the total execution time of the entity so far (in seconds),
+    /// if the entity has finished already or not.
     double getTotalExecutionTime();
 }

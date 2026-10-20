@@ -25,21 +25,17 @@ package org.cloudsimplus.resources;
 
 import org.cloudsimplus.vms.Vm;
 
-/**
- * Represents the RAM resource of a {@link Vm} in Megabytes.
- * Such a class allows managing the RAM capacity and allocation.
- *
- * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 8.3.0
- */
+/// Represents the RAM resource of a [Vm] in Megabytes.
+/// Such a class allows managing the RAM capacity and allocation.
+///
+/// @author Manoel Campos da Silva Filho
+/// @since CloudSim Plus 8.3.0
 public final class VmRam extends Ram {
     private final Vm vm;
 
-    /**
-     * Creates a RAM resource.
-     *
-     * @param capacity the RAM capacity in Megabytes
-     */
+    /// Creates a RAM resource.
+    ///
+    /// @param capacity the RAM capacity in Megabytes
     public VmRam(final Vm vm, final long capacity) {
         super(capacity);
         this.vm = vm;

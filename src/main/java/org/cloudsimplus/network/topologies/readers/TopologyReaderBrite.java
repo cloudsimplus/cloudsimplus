@@ -32,9 +32,7 @@ import java.util.function.Function;
 public class TopologyReaderBrite implements TopologyReader {
     private ParsingState state = ParsingState.NOTHING;
 
-    /**
-     * The network Topological Graph.
-     */
+    /// The network Topological Graph.
     @Getter
     private TopologicalGraph graph = new TopologicalGraph();
 
@@ -59,18 +57,16 @@ public class TopologyReaderBrite implements TopologyReader {
         return graph;
     }
 
-    /**
-     * Gets a line from a file and parses its fields, considering that all fields have the same type.
-     *
-     * @param nodeLine the line to be parsed
-     * @param parsedFields an output array that will be filled with the values of the parsed fields.
-     *                     The array is given empty and returned with the parsed values.
-     *                     The number of elements in the array defines the number of fields to be parsed.
-     * @param castFunction a function that will convert the String value from each parsed field to
-     *                     the elements type of the output array.
-     * @param <T>          the elements type of the output array
-     * @return true if any field was parsed, false otherwise
-     */
+    /// Gets a line from a file and parses its fields, considering that all fields have the same type.
+    ///
+    /// @param nodeLine the line to be parsed
+    /// @param parsedFields an output array that will be filled with the values of the parsed fields.
+    /// The array is given empty and returned with the parsed values.
+    /// The number of elements in the array defines the number of fields to be parsed.
+    /// @param castFunction a function that will convert the String value from each parsed field to
+    /// the elements type of the output array.
+    /// @param <T>          the elements type of the output array
+    /// @return true if any field was parsed, false otherwise
     <T extends Number> boolean parseLine(
         final String nodeLine, final T[] parsedFields, final Function<String, T> castFunction)
     {

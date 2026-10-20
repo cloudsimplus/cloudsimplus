@@ -21,11 +21,9 @@
  *     You should have received a copy of the GNU General Public License
  *     along with CloudSim Plus. If not, see <http://www.gnu.org/licenses/>.
  */
-/**
- * Provides base classes to enable implementing testbeds in a repeatable manner,
- * allowing a researcher to execute several simulation runs
- * for a given experiment and collect statistical data using a scientific approach.
- *
- * @author Manoel Campos da Silva Filho
- */
+/// Provides base classes to enable implementing testbeds in a repeatable manner,
+/// allowing a researcher to execute several simulation runs
+/// for a given experiment and collect statistical data using a scientific approach.
+///
+/// @author Manoel Campos da Silva Filho
 package org.cloudsimplus.testbeds;

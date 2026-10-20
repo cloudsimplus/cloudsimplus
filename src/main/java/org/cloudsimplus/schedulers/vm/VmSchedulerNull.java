@@ -27,12 +27,10 @@ import org.cloudsimplus.hosts.Host;
 import org.cloudsimplus.schedulers.MipsShare;
 import org.cloudsimplus.vms.Vm;
 
-/**
- * A class that implements the Null Object Design Pattern for {@link VmScheduler} class.
- *
- * @author Manoel Campos da Silva Filho
- * @see VmScheduler#NULL
- */
+/// A class that implements the Null Object Design Pattern for [VmScheduler] class.
+///
+/// @author Manoel Campos da Silva Filho
+/// @see VmScheduler#NULL
 final class VmSchedulerNull implements VmScheduler {
     @Override public boolean allocatePesForVm(Vm vm, MipsShare requestedMips) {
         return false;

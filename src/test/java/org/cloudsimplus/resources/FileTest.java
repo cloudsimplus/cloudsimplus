@@ -28,10 +28,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-/**
- *
- * @author Manoel Campos da Silva Filho
- */
+/// @author Manoel Campos da Silva Filho
 public class FileTest {
     private static final String OWNER = "Manoel Campos";
     private static final String NAME = "file1.txt";

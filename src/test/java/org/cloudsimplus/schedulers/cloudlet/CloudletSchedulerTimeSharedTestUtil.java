@@ -33,23 +33,17 @@ import org.cloudsimplus.utilizationmodels.UtilizationModelDynamic;
 import org.cloudsimplus.vms.VmSimple;
 import org.mockito.Mockito;
 
-/**
- * An utility class used by Vm tests.
- *
- * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 4.0.0
- */
+/// An utility class used by Vm tests.
+///
+/// @author Manoel Campos da Silva Filho
+/// @since CloudSim Plus 4.0.0
 final class CloudletSchedulerTimeSharedTestUtil {
-    /**
-     * A private constructor to avoid class instantiation.
-     */
+    /// A private constructor to avoid class instantiation.
     private CloudletSchedulerTimeSharedTestUtil(){/**/}
 
-    /**
-     * Creates a mock CloudletExecutionInfo.
-     * @param id Cloudlet id
-     * @return the created mock Cloudlet
-     */
+    /// Creates a mock CloudletExecutionInfo.
+    /// @param id Cloudlet id
+    /// @return the created mock Cloudlet
     /* default */ static CloudletExecution createCloudletExecInfo(final long id){
         final CloudletExecution cloudlet = Mockito.mock(CloudletExecution.class);
         Mockito.when(cloudlet.getId()).thenReturn(id);
@@ -71,28 +65,24 @@ final class CloudletSchedulerTimeSharedTestUtil {
         instance.getCloudletPausedList().add(new CloudletExecution(cloudlet));
     }
 
-    /**
-     * Creates a scheduler with a list of running cloudlets, where each Cloudlet has just one PE.
-     *
-     * @param mips the MIPS capacity of each PE from the VM's scheduler
-     * @param vmPes number of PEs of the VM's scheduler
-     * @param cloudlets number of Cloudlets to create
-     * @return the new scheduler
-     */
+    /// Creates a scheduler with a list of running cloudlets, where each Cloudlet has just one PE.
+    ///
+    /// @param mips the MIPS capacity of each PE from the VM's scheduler
+    /// @param vmPes number of PEs of the VM's scheduler
+    /// @param cloudlets number of Cloudlets to create
+    /// @return the new scheduler
     /* default */ static CloudletSchedulerTimeShared newSchedulerWithSingleCoreRunningCloudlets(
         final long mips, final int vmPes, final int cloudlets)
     {
         return newSchedulerWithRunningCloudlets(mips, vmPes, cloudlets, 1);
     }
 
-    /**
-     * Creates a scheduler with a list of running cloudlets.
-     * @param mips the MIPS capacity of each PE from the VM's scheduler
-     * @param vmPes number of PEs of the VM's scheduler
-     * @param cloudlets number of Cloudlets to create
-     * @param cloudletPes the number of PEs for each Cloudlet
-     * @return the new scheduler
-     */
+    /// Creates a scheduler with a list of running cloudlets.
+    /// @param mips the MIPS capacity of each PE from the VM's scheduler
+    /// @param vmPes number of PEs of the VM's scheduler
+    /// @param cloudlets number of Cloudlets to create
+    /// @param cloudletPes the number of PEs for each Cloudlet
+    /// @return the new scheduler
     /* default */ static CloudletSchedulerTimeShared newSchedulerWithRunningCloudlets(
         final long mips, final int vmPes, final int cloudlets, final int cloudletPes)
     {

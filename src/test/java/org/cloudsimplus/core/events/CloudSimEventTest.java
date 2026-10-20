@@ -34,9 +34,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-/**
- * @author Manoel Campos da Silva Filho
- */
+/// @author Manoel Campos da Silva Filho
 class CloudSimEventTest {
     private static final double CLOCK = 5;
     private static final double DELAY = 3;
@@ -62,11 +60,9 @@ class CloudSimEventTest {
         assertThrows(IllegalArgumentException.class, () -> new CloudSimEvent(-1, entity, TAG, DATA));
     }
 
-    /**
-     * Checks that a copy keeps the absolute time of the original event,
-     * instead of adding it to the current simulation time again.
-     * @see <a href="https://github.com/cloudsimplus/cloudsimplus/issues/561">Issue #561</a>
-     */
+    /// Checks that a copy keeps the absolute time of the original event,
+    /// instead of adding it to the current simulation time again.
+    /// @see <a href="https://github.com/cloudsimplus/cloudsimplus/issues/561">Issue #561</a>
     @Test
     void copyKeepsTimeOfOriginalEvent() {
         final var original = new CloudSimEvent(DELAY, entity, TAG, DATA);

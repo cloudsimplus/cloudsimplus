@@ -20,24 +20,20 @@ import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
 
-/**
- * An abstract class for implementation of {@link VmScheduler}s.
- *
- * @author Rodrigo N. Calheiros
- * @author Anton Beloglazov
- * @author Manoel Campos da Silva Filho
- * @since CloudSim Toolkit 1.0
- */
+/// An abstract class for implementation of [VmScheduler]s.
+///
+/// @author Rodrigo N. Calheiros
+/// @author Anton Beloglazov
+/// @author Manoel Campos da Silva Filho
+/// @since CloudSim Toolkit 1.0
 @Getter
 public abstract non-sealed class VmSchedulerAbstract implements VmScheduler {
     private Host host;
     private final double vmMigrationCpuOverhead;
 
-    /**
-     * Creates a VmScheduler, defining a CPU overhead for VM migration.
-     * @param vmMigrationCpuOverhead the percentage of Host's CPU usage increase when a
-     * VM is migrating in or out the Host. The value is in scale from 0 to 1 (where 1 is 100%).
-     */
+    /// Creates a VmScheduler, defining a CPU overhead for VM migration.
+    /// @param vmMigrationCpuOverhead the percentage of Host's CPU usage increase when a
+    /// VM is migrating in or out the Host. The value is in scale from 0 to 1 (where 1 is 100%).
     public VmSchedulerAbstract(final double vmMigrationCpuOverhead){
         if(vmMigrationCpuOverhead < 0 || vmMigrationCpuOverhead >= 1){
             throw new IllegalArgumentException("vmMigrationCpuOverhead must be a percentage value between [0 and 1[");
@@ -91,21 +87,17 @@ public abstract non-sealed class VmSchedulerAbstract implements VmScheduler {
         return false;
     }
 
-    /**
-     * Sets the status of physical PEs from a Host used by a given VM to BUSY.
-     * The number of Host PEs changed is equal to the number of PEs required by the VM.
-     * @param vm the VM to set the status of its used physical PEs
-     * */
+    /// Sets the status of physical PEs from a Host used by a given VM to BUSY.
+    /// The number of Host PEs changed is equal to the number of PEs required by the VM.
+    /// @param vm the VM to set the status of its used physical PEs
     private void updateHostPesStatusToBusy(final Vm vm) {
         updateHostPesStatus(host.getFreePeList(), vm.getPesNumber(), Pe.Status.BUSY);
     }
 
-    /**
-     * Sets the status of physical PEs from a Host used by a given VM.
-     * @param peList the list of physical PEs from which the corresponding virtual PEs will have the status changed
-     * @param vPesNumber the number of Virtual PEs that correspond to the number of physical PEs to have their status changed
-     * @param newStatus the new status to set
-     */
+    /// Sets the status of physical PEs from a Host used by a given VM.
+    /// @param peList the list of physical PEs from which the corresponding virtual PEs will have the status changed
+    /// @param vPesNumber the number of Virtual PEs that correspond to the number of physical PEs to have their status changed
+    /// @param newStatus the new status to set
     private void updateHostPesStatus(final List<Pe> peList, final long vPesNumber, final Pe.Status newStatus) {
         if(vPesNumber <= 0) {
             return;
@@ -132,22 +124,18 @@ public abstract non-sealed class VmSchedulerAbstract implements VmScheduler {
         updateHostUsedPesToFree(removedPes);
     }
 
-    /**
-     * Sets the status of physical PEs used by a destroyed VM to FREE.
-     * That works for any kind of scheduler, such as time- and space-shared one.
-     * @param removedPes number of PEs actually removed from the destroyed VM
-     */
+    /// Sets the status of physical PEs used by a destroyed VM to FREE.
+    /// That works for any kind of scheduler, such as time- and space-shared one.
+    /// @param removedPes number of PEs actually removed from the destroyed VM
     private void updateHostUsedPesToFree(final long removedPes) {
         updateHostPesStatus(host.getBusyPeList(), removedPes, Pe.Status.FREE);
     }
 
-    /**
-     * Tries to remove a given number of PEs allocated to a VM
-     * @param vm the VM to remove PEs
-     * @param mipsShare the VM MIPS share where to remove PEs from
-     * @param pesToRemove the number of PEs to remove
-     * @return the number of actual removed PEs
-     */
+    /// Tries to remove a given number of PEs allocated to a VM
+    /// @param vm the VM to remove PEs
+    /// @param mipsShare the VM MIPS share where to remove PEs from
+    /// @param pesToRemove the number of PEs to remove
+    /// @return the number of actual removed PEs
     protected final long removePesFromVm(final Vm vm, final MipsShare mipsShare, final long pesToRemove) {
         return mipsShare.remove(Math.min(vm.getPesNumber(), pesToRemove));
     }
@@ -186,20 +174,16 @@ public abstract non-sealed class VmSchedulerAbstract implements VmScheduler {
         return getAllocatedMips(vm).totalMips();
     }
 
-    /**
-     * @return PE capacity in MIPS.
-     *
-     * @TODO It considers that all PEs have the same capacity, which has been
-     *       shown it isn't assured. The peList received by the VmScheduler can have
-     *       heterogeneous PEs.
-     */
+    /// @return PE capacity in MIPS.
+    ///
+    /// @TODO It considers that all PEs have the same capacity, which has been
+    /// shown it isn't assured. The peList received by the VmScheduler can have
+    /// heterogeneous PEs.
     public long getPeCapacity() {
         return getWorkingPeList().isEmpty() ? 0 : getWorkingPeList().get(0).getCapacity();
     }
 
-    /**
-     * @return the list of working PEs from the Host, <b>excluding failed PEs</b>.
-     */
+    /// @return the list of working PEs from the Host, **excluding failed PEs**.
     public final List<Pe> getWorkingPeList() {
         return host.getWorkingPeList();
     }
@@ -221,20 +205,18 @@ public abstract non-sealed class VmSchedulerAbstract implements VmScheduler {
         return host.getTotalMipsCapacity() - allocatedMips;
     }
 
-    /**
-     * Gets the sum of MIPS requested by each VM PE, including
-     * the CPU overhead if the VM is migration into this Host.
-     *
-     * <p>For instance, consider the migration overhead is 10% and
-     * the total requested MIPS of a VM is 1000 MIPS.
-     * It will be allocated just 900 MIPS, but from these values, this method
-     * returns the 1000 MIPS, which is the actual MIPS being
-     * used by the Host (900 by the VM and 100 by the migration overhead).</p>
-     *
-     * @param vm the VM to get the requested MIPS sum
-     * @return the actual requested MIPS sum across all VM PEs,
-     * including the CPU overhead of the VM is in migration to this Host
-     */
+    /// Gets the sum of MIPS requested by each VM PE, including
+    /// the CPU overhead if the VM is migration into this Host.
+    ///
+    /// For instance, consider the migration overhead is 10% and
+    /// the total requested MIPS of a VM is 1000 MIPS.
+    /// It will be allocated just 900 MIPS, but from these values, this method
+    /// returns the 1000 MIPS, which is the actual MIPS being
+    /// used by the Host (900 by the VM and 100 by the migration overhead).
+    ///
+    /// @param vm the VM to get the requested MIPS sum
+    /// @return the actual requested MIPS sum across all VM PEs,
+    /// including the CPU overhead of the VM is in migration to this Host
     private double actualVmTotalRequestedMips(final VmSimple vm) {
         final double totalVmRequestedMips = vm.getAllocatedMips().totalMips();
 
@@ -301,13 +283,11 @@ public abstract non-sealed class VmSchedulerAbstract implements VmScheduler {
         return this;
     }
 
-    /**
-     * Checks if the {@link VmScheduler} has a {@link Host} assigned that is
-     * different from the given one
-     *
-     * @param host the Host to check if the assigned scheduler's Host is different from
-     * @return true if the Host assigned to this VmScheduler is different from the given one, false otherwise
-     */
+    /// Checks if the [VmScheduler] has a [Host] assigned that is
+    /// different from the given one
+    ///
+    /// @param host the Host to check if the assigned scheduler's Host is different from
+    /// @return true if the Host assigned to this VmScheduler is different from the given one, false otherwise
     private boolean isOtherHostAssigned(@NonNull final Host host) {
         /* It's used != instead of !equals() because when a VmScheduler is set to a Host,
          * the Host may not have an ID yet.

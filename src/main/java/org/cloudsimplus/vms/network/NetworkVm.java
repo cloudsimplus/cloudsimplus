@@ -40,19 +40,15 @@ import java.util.List;
 public class NetworkVm extends VmSimple {
     public static final NetworkVm NULL = new NetworkVm();
 
-    /**
-     * List of {@link NetworkCloudlet} of the VM.
-     */
+    /// List of [NetworkCloudlet] of the VM.
     @NonNull
     private List<NetworkCloudlet> cloudletList;
 
-    /**
-     * List of packets received by the VM.
-     */
+    /// List of packets received by the VM.
     @NonNull
     private List<VmPacket> receivedPacketList = new ArrayList<>();
 
-    /** Indicates if the VM is free or not. */
+    /// Indicates if the VM is free or not.
     private boolean free;
 
     /// Creates a NetworkVm with 1024 MEGA of RAM, 1000 Megabits/s of Bandwidth
@@ -69,9 +65,7 @@ public class NetworkVm extends VmSimple {
         cloudletList = new ArrayList<>();
     }
 
-    /**
-     * Creates a VM with no resources.
-     */
+    /// Creates a VM with no resources.
     private NetworkVm(){
         this(-1, 0, 1);
     }

@@ -26,12 +26,10 @@ package org.cloudsimplus.resources;
 import org.cloudsimplus.provisioners.PeProvisioner;
 import org.cloudsimplus.provisioners.PeProvisionerSimple;
 
-/**
- * A class that implements the Null Object Design Pattern for {@link Pe} class.
- *
- * @author Manoel Campos da Silva Filho
- * @see Pe#NULL
- */
+/// A class that implements the Null Object Design Pattern for [Pe] class.
+///
+/// @author Manoel Campos da Silva Filho
+/// @see Pe#NULL
 final class PeNull implements Pe {
     @Override public long getAvailableResource() {
         return 0;

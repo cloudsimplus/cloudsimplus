@@ -40,14 +40,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
-/**
- * Verifies that {@code expectedFreePesNumber} does not overflow
- * beyond the total VM PEs when a Cloudlet requires more PEs
- * than the VM has available.
- *
- * @author Theodoros Aslanidis
- * @see <a href="https://github.com/cloudsimplus/cloudsimplus/issues/546">Issue #546</a>
- */
+/// Verifies that `expectedFreePesNumber` does not overflow
+/// beyond the total VM PEs when a Cloudlet requires more PEs
+/// than the VM has available.
+///
+/// @author Theodoros Aslanidis
+/// @see <a href="https://github.com/cloudsimplus/cloudsimplus/issues/546">Issue #546</a>
 public final class VmExpectedFreePesOverflowTest {
     // Constants that matter to the test.
     private static final int VM_PES = 2;
@@ -87,11 +85,9 @@ public final class VmExpectedFreePesOverflowTest {
         return new PeSimple(HOST_MIPS);
     }
 
-    /**
-     * When a Cloudlet requires more PEs than the VM has,
-     * {@code expectedFreePesNumber} must never exceed the total VM PEs
-     * after the Cloudlet finishes.
-     */
+    /// When a Cloudlet requires more PEs than the VM has,
+    /// `expectedFreePesNumber` must never exceed the total VM PEs
+    /// after the Cloudlet finishes.
     @Test
     public void expectedFreePesDoesNotExceedVmPesAfterCloudletFinish() {
         assumeTrue(CLOUDLET_PES_HIGHER_THAN_VM_CAPACITY > VM_PES,

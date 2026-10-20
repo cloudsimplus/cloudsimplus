@@ -27,10 +27,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-/**
- *
- * @author Manoel Campos da Silva Filho
- */
+/// @author Manoel Campos da Silva Filho
 public class ResourceProvisionerTest {
 
 

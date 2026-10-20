@@ -26,14 +26,12 @@ package org.cloudsimplus.core;
 import org.cloudsimplus.core.events.SimEvent;
 import org.jspecify.annotations.Nullable;
 
-/**
- * A base interface used internally to implement the Null Object Design Pattern
- * for interfaces extending {@link SimEntity}.
- * It's just used to avoid the boilerplate code in such Null Object implementations.
- *
- * @author Manoel Campos da Silva Filho
- * @see SimEntity#NULL
- */
+/// A base interface used internally to implement the Null Object Design Pattern
+/// for interfaces extending [SimEntity].
+/// It's just used to avoid the boilerplate code in such Null Object implementations.
+///
+/// @author Manoel Campos da Silva Filho
+/// @see SimEntity#NULL
 public interface SimEntityNullBase extends SimEntity {
     @Override default State getState() { return State.FINISHED; }
     @Override default SimEntity setState(State state) { return this; }

@@ -34,18 +34,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
-/**
- * A Builder class to create {@link Pe} objects.
- *
- * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 1.0
- */
+/// A Builder class to create [Pe] objects.
+///
+/// @author Manoel Campos da Silva Filho
+/// @since CloudSim Plus 1.0
 @Accessors(chain = true)
 public class PeBuilder implements Builder {
-    /**
-     * A {@link Function} that is accountable to create {@link Pe}
-     * by this builder. The Function receives the MIPS and return the created {@link Pe} .
-     */
+    /// A [Function] that is accountable to create [Pe]
+    /// by this builder. The Function receives the MIPS and return the created [Pe] .
     @NonNull @Setter
     private Function<Double, Pe> peSupplier;
 

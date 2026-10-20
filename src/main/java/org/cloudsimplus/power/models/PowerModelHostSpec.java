@@ -21,13 +21,11 @@ import java.util.Arrays;
 /// @author Manoel Campos da Silva Filho
 /// @since CloudSim Plus 6.0.0
 public class PowerModelHostSpec extends PowerModelHostAbstract {
-    /**
-     * Since {@link #powerSpecs} represents the power consumption data
-     * according to CPU utilization, as shorter the size of such a List,
-     * less accurate is the power consumption, according to CPU utilization.
-     * Check the mentioned attribute for details.
-     * Less than 2 entries don't make sense, since for any CPU utilization, the power consumption will be the same.
-     */
+    /// Since [#powerSpecs] represents the power consumption data
+    /// according to CPU utilization, as shorter the size of such a List,
+    /// less accurate is the power consumption, according to CPU utilization.
+    /// Check the mentioned attribute for details.
+    /// Less than 2 entries don't make sense, since for any CPU utilization, the power consumption will be the same.
     public static final int MIN_POWER_CONSUMPTION_DATA_SIZE = 2;
 
     /// An array where each element represents the power consumption (in Watts)
@@ -44,16 +42,14 @@ public class PowerModelHostSpec extends PowerModelHostAbstract {
     @Getter
     private final double[] powerSpecs;
 
-    /**
-     * Instantiates a PowerModelHostSpec providing
-     * the power consumption data of the entity for different
-     * CPU utilization percentages.
-     *
-     * @param powerSpecs an array where each element represents the power consumption
-     *                   (in Watts) of the entity for specific
-     * CPU utilization percentage. Check {@link #getPowerSpecs()} for more details about this data.
-     * @see #getInstance(String)
-     */
+    /// Instantiates a PowerModelHostSpec providing
+    /// the power consumption data of the entity for different
+    /// CPU utilization percentages.
+    ///
+    /// @param powerSpecs an array where each element represents the power consumption
+    /// (in Watts) of the entity for specific
+    /// CPU utilization percentage. Check [#getPowerSpecs()] for more details about this data.
+    /// @see #getInstance(String)
     public PowerModelHostSpec(@NonNull final double[] powerSpecs) {
         super();
         if (powerSpecs.length >= MIN_POWER_CONSUMPTION_DATA_SIZE) {

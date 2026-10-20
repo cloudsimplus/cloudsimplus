@@ -23,12 +23,10 @@
  */
 package org.cloudsimplus.datacenters;
 
-/**
- * A class that implements the Null Object Design Pattern for {@link Datacenter} class.
- *
- * @author Manoel Campos da Silva Filho
- * @see DatacenterCharacteristics#NULL
- */
+/// A class that implements the Null Object Design Pattern for [Datacenter] class.
+///
+/// @author Manoel Campos da Silva Filho
+/// @see DatacenterCharacteristics#NULL
 final class DatacenterCharacteristicsNull implements DatacenterCharacteristics {
     @Override public double getCostPerBw() {
         return 0;

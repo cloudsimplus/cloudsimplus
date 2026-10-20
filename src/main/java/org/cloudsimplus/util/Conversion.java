@@ -23,35 +23,27 @@
  */
 package org.cloudsimplus.util;
 
-/**
- * Utility class that provides a set of methods for general data conversion.
- *
- * @author Manoel Campos da Silva Filho
- * @see TimeUtil
- * @see MathUtil
- * @see BytesConversion
- */
+/// Utility class that provides a set of methods for general data conversion.
+///
+/// @author Manoel Campos da Silva Filho
+/// @see TimeUtil
+/// @see MathUtil
+/// @see BytesConversion
 public final class Conversion {
-    /**
-     * A value that represents 100% in a scale from 0 to 1.
-     */
+    /// A value that represents 100% in a scale from 0 to 1.
     public static final double HUNDRED_PERCENT = 1.0;
 
-    /** One million in absolute value,
-     * usually used to convert to and from
-     * Number of Instructions (I) and Million Instructions (MI) units. */
+    /// One million in absolute value,
+    /// usually used to convert to and from
+    /// Number of Instructions (I) and Million Instructions (MI) units.
     public static final int MILLION = 1_000_000;
 
-    /**
-     * A private constructor to avoid class instantiation.
-     */
+    /// A private constructor to avoid class instantiation.
     private Conversion(){/**/}
 
-    /**
-     * Converts a boolean value to int
-     * @param bool the boolean value to convert
-     * @return 1 if the boolean value is true, 0 otherwise.
-     */
+    /// Converts a boolean value to int
+    /// @param bool the boolean value to convert
+    /// @return 1 if the boolean value is true, 0 otherwise.
     public static int boolToInt(final boolean bool){
         return bool ? 1 : 0;
     }

@@ -29,26 +29,20 @@ import org.cloudsimplus.datacenters.Datacenter;
 import org.cloudsimplus.hosts.HostSuitability;
 import org.cloudsimplus.vms.Vm;
 
-/**
- * An interface that represents data to be passed
- * to {@link EventListener} objects that are registered to be notified
- * when a {@link Vm} migration is successful or not.
- *
- * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 6.0.3
- */
+/// An interface that represents data to be passed
+/// to [EventListener] objects that are registered to be notified
+/// when a [Vm] migration is successful or not.
+///
+/// @author Manoel Campos da Silva Filho
+/// @since CloudSim Plus 6.0.3
 @Getter
 public final class DatacenterVmMigrationEventInfo implements VmDatacenterEventInfo {
-    /**
-     * The VM that started a migration process.
-     */
+    /// The VM that started a migration process.
     private final Vm vm;
 
     private final double time;
 
-    /**
-     * Information about the suitability of the Host for the given VM.
-     */
+    /// Information about the suitability of the Host for the given VM.
     private final HostSuitability suitability;
 
     private final EventListener<DatacenterVmMigrationEventInfo> listener;
@@ -69,21 +63,17 @@ public final class DatacenterVmMigrationEventInfo implements VmDatacenterEventIn
         return vm.getHost().getDatacenter();
     }
 
-    /**
-     * @return true or false to indicate if the VM was successfully migrated or not.
-     */
+    /// @return true or false to indicate if the VM was successfully migrated or not.
     public boolean isMigrationSuccessful() {
         return suitability.fully();
     }
 
-    /**
-     * Gets a {@code DatacenterVmMigrationEventInfo} instance from the given parameters.
-     * The {@link #getDatacenter() Datacenter} attribute is defined as the {@link Datacenter} where the {@link Vm}
-     * is running and the {@link #getTime()} is the current simulation time.
-     * @param listener the listener to be notified about the event
-     * @param vm the {@link Vm} that fired the event
-     * @param suitability information about the suitability of the Host for the given VM.
-     */
+    /// Gets a `DatacenterVmMigrationEventInfo` instance from the given parameters.
+    /// The [Datacenter][#getDatacenter()] attribute is defined as the [Datacenter] where the [Vm]
+    /// is running and the [#getTime()] is the current simulation time.
+    /// @param listener the listener to be notified about the event
+    /// @param vm the [Vm] that fired the event
+    /// @param suitability information about the suitability of the Host for the given VM.
     public static DatacenterVmMigrationEventInfo of(final EventListener<DatacenterVmMigrationEventInfo> listener, final Vm vm, final HostSuitability suitability) {
         return new DatacenterVmMigrationEventInfo(vm, suitability, listener);
     }

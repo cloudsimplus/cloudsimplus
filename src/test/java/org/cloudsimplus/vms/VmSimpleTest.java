@@ -26,10 +26,8 @@ import org.mockito.Mockito;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-/**
- * @author Anton Beloglazov
- * @since CloudSim Toolkit 2.0
- */
+/// @author Anton Beloglazov
+/// @since CloudSim Toolkit 2.0
 public class VmSimpleTest {
     private static final int BROKER_ID = 0;
     private CloudletSchedulerTimeShared cloudletScheduler;
@@ -350,11 +348,9 @@ public class VmSimpleTest {
         assertTrue(vm.getCurrentRequestedMips().isEmpty());
     }
 
-    /**
-     * Checks that a CloudletScheduler passed in the constructor is preserved
-     * and not overwritten during VM initialization.
-     * @see <a href="https://github.com/cloudsimplus/cloudsimplus/issues/542">Issue #542</a>
-     */
+    /// Checks that a CloudletScheduler passed in the constructor is preserved
+    /// and not overwritten during VM initialization.
+    /// @see <a href="https://github.com/cloudsimplus/cloudsimplus/issues/542">Issue #542</a>
     @Test
     public void cloudletSchedulerPassedInConstructorIsPreserved() {
         final var scheduler = new CloudletSchedulerSpaceShared();

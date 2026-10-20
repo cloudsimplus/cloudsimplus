@@ -27,22 +27,16 @@ import org.cloudsimplus.datacenters.Datacenter;
 import org.cloudsimplus.hosts.Host;
 import org.cloudsimplus.power.models.PowerModel;
 
-/**
- * Interface for power-aware entities such as {@link Host}s, {@link Datacenter}s
- * and other entities that can be introduced.
- *
- * @since CloudSim Plus 6.0.0
- * @param <T> type of the {@link PowerModel} objects the entity will use.
- */
+/// Interface for power-aware entities such as [Host]s, [Datacenter]s
+/// and other entities that can be introduced.
+///
+/// @since CloudSim Plus 6.0.0
+/// @param <T> type of the [PowerModel] objects the entity will use.
 public interface PowerAware<T extends PowerModel> {
-    /**
-     * @return the model defining how the entity consumes power.
-     */
+    /// @return the model defining how the entity consumes power.
     T getPowerModel();
 
-    /**
-     * Sets the model defining how the entity consumes power.
-     * @param powerModel the model to set
-     */
+    /// Sets the model defining how the entity consumes power.
+    /// @param powerModel the model to set
     PowerAware<T> setPowerModel(T powerModel);
 }

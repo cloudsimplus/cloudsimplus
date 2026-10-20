@@ -47,17 +47,13 @@ public class SlaMetric {
     private List<SlaMetricDimension> dimensions;
     private String name;
 
-    /**
-     * Creates an SLA metric with no name.
-     */
+    /// Creates an SLA metric with no name.
     public SlaMetric(){
         this("");
     }
 
-    /**
-     * Creates an SLA metric
-     * @param name the metric name
-     */
+    /// Creates an SLA metric
+    /// @param name the metric name
     public SlaMetric(@NonNull final String name){
         this.name = name;
         this.dimensions = new ArrayList<>();
@@ -73,11 +69,9 @@ public class SlaMetric {
         return this;
     }
 
-    /**
-     * @return a {@link SlaMetricDimension} representing the minimum value expected for the metric.
-     * If the {@link SlaMetricDimension#getValue()} is a negative number, it means
-     * there is no minimum value.
-     */
+    /// @return a [SlaMetricDimension] representing the minimum value expected for the metric.
+    /// If the [SlaMetricDimension#getValue()] is a negative number, it means
+    /// there is no minimum value.
     public SlaMetricDimension getMinDimension() {
         return dimensions
                 .stream()
@@ -86,11 +80,9 @@ public class SlaMetric {
                 .orElse(DEFAULT_MIN_DIMENSION);
     }
 
-    /**
-     * @return a {@link SlaMetricDimension} representing the maximum value expected for the metric.
-     * If the {@link SlaMetricDimension#getValue()} is equals to {@link Double#MAX_VALUE},
-     * it means there is no maximum value.
-     */
+    /// @return a [SlaMetricDimension] representing the maximum value expected for the metric.
+    /// If the [SlaMetricDimension#getValue()] is equals to [Double#MAX_VALUE],
+    /// it means there is no maximum value.
     public SlaMetricDimension getMaxDimension() {
         return dimensions
                 .stream()

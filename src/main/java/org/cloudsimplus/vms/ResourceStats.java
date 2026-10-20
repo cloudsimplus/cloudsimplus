@@ -32,14 +32,12 @@ import org.cloudsimplus.resources.Resource;
 
 import java.util.function.Function;
 
-/**
- * A base class for computing statistics about {@link Resource} utilization
- * for a given machine ({@link Vm} or {@link Host}). Such a resource can be, for instance, CPU, RAM or BW.
- *
- * @param <T> The kind of machine to collect resource utilization statistics, such as {@link Vm} or {@link Host}
- * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 6.1.0
- */
+/// A base class for computing statistics about [Resource] utilization
+/// for a given machine ([Vm] or [Host]). Such a resource can be, for instance, CPU, RAM or BW.
+///
+/// @param <T> The kind of machine to collect resource utilization statistics, such as [Vm] or [Host]
+/// @author Manoel Campos da Silva Filho
+/// @since CloudSim Plus 6.1.0
 public class ResourceStats<T extends Machine> {
     private final Function<T, Double> resourceUtilizationFunction;
     private final T machine;
@@ -47,12 +45,10 @@ public class ResourceStats<T extends Machine> {
     private double previousTime;
     private double previousUtilization;
 
-    /**
-     * Creates a ResourceStats to collect resource utilization statistics.
-     * @param machine the machine where the statistics will be collected from (which can be a Vm or Host)
-     * @param resourceUtilizationFunction a {@link Function} that receives a Machine
-     *                                    and returns the current resource utilization for that machine
-     */
+    /// Creates a ResourceStats to collect resource utilization statistics.
+    /// @param machine the machine where the statistics will be collected from (which can be a Vm or Host)
+    /// @param resourceUtilizationFunction a [Function] that receives a Machine
+    /// and returns the current resource utilization for that machine
     protected ResourceStats(@NonNull final T machine, @NonNull final Function<T, Double> resourceUtilizationFunction){
         this.resourceUtilizationFunction = resourceUtilizationFunction;
         this.machine = machine;
@@ -60,12 +56,10 @@ public class ResourceStats<T extends Machine> {
             Statistic.MIN, Statistic.MAX, Statistic.MEAN, Statistic.STANDARD_DEVIATION, Statistic.VARIANCE);
     }
 
-    /**
-     * Collects the current resource utilization percentage (in scale from 0 to 1)
-     * for the given time to the statistics.
-     * @param time current simulation time (in seconds)
-     * @return true if data was collected, false otherwise (meaning it's not time to collect data).
-     */
+    /// Collects the current resource utilization percentage (in scale from 0 to 1)
+    /// for the given time to the statistics.
+    /// @param time current simulation time (in seconds)
+    /// @return true if data was collected, false otherwise (meaning it's not time to collect data).
     public boolean add(final double time) {
         try {
             if (isNotTimeToAddHistory(time)) {
@@ -94,66 +88,50 @@ public class ResourceStats<T extends Machine> {
         }
     }
 
-    /**
-     * @return the minimum resource utilization percentage (from 0 to 1),
-     *         or {@link Double#NaN} if no sample was collected.
-     */
+    /// @return the minimum resource utilization percentage (from 0 to 1),
+    /// or [Double#NaN] if no sample was collected.
     public double getMin(){
         return get(Statistic.MIN);
     }
 
-    /**
-     * @return the maximum resource utilization percentage (from 0 to 1),
-     *         or {@link Double#NaN} if no sample was collected.
-     */
+    /// @return the maximum resource utilization percentage (from 0 to 1),
+    /// or [Double#NaN] if no sample was collected.
     public double getMax(){
         return get(Statistic.MAX);
     }
 
-    /**
-     * @return the average resource utilization percentage (from 0 to 1),
-     *         or {@link Double#NaN} if no sample was collected.
-     */
+    /// @return the average resource utilization percentage (from 0 to 1),
+    /// or [Double#NaN] if no sample was collected.
     public double getMean(){
         return get(Statistic.MEAN);
     }
 
-    /**
-     * @return the Standard Deviation of resource utilization percentage (from 0 to 1),
-     *         or {@link Double#NaN} if no sample was collected.
-     */
+    /// @return the Standard Deviation of resource utilization percentage (from 0 to 1),
+    /// or [Double#NaN] if no sample was collected.
     public double getStandardDeviation(){
         return get(Statistic.STANDARD_DEVIATION);
     }
 
-    /**
-     * @return the (sample) variance of resource utilization percentage (from 0 to 1),
-     *         or {@link Double#NaN} if no sample was collected.
-     */
+    /// @return the (sample) variance of resource utilization percentage (from 0 to 1),
+    /// or [Double#NaN] if no sample was collected.
     public double getVariance(){
         return get(Statistic.VARIANCE);
     }
 
-    /**
-     * Gets the value of a statistic.
-     * @param statistic the statistic to get
-     * @return the statistic value or {@link Double#NaN} if no sample was collected
-     *         (some statistics, such as min and max, would return infinite values otherwise)
-     */
+    /// Gets the value of a statistic.
+    /// @param statistic the statistic to get
+    /// @return the statistic value or [Double#NaN] if no sample was collected
+    /// (some statistics, such as min and max, would return infinite values otherwise)
     private double get(final Statistic statistic) {
         return isEmpty() ? Double.NaN : stats.getAsDouble(statistic);
     }
 
-    /**
-     * @return the number of collected resource utilization samples.
-     */
+    /// @return the number of collected resource utilization samples.
     public double count(){
         return stats.getCount();
     }
 
-    /**
-     * @return true if no resource utilization sample was collected, false otherwise.
-     */
+    /// @return true if no resource utilization sample was collected, false otherwise.
     public boolean isEmpty(){ return count() == 0; }
 
     /// {@return true if it's time to add utilization history, false otherwise}
@@ -191,9 +169,7 @@ public class ResourceStats<T extends Machine> {
         return machine;
     }
 
-    /**
-     * @return the previous time that resource statistics were computed.
-     */
+    /// @return the previous time that resource statistics were computed.
     protected double getPreviousTime() {
         return previousTime;
     }

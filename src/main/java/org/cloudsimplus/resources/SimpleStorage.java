@@ -23,21 +23,17 @@
  */
 package org.cloudsimplus.resources;
 
-/**
- * A simple storage that just manages the device capacity and
- * raw allocated (used) space (in Megabytes).
- * It doesn't deal with files, neither with file system operations such as
- * file inclusion or deletion.
- * Such a class allows managing the storage capacity and allocation.
- *
- * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 1.0
- */
+/// A simple storage that just manages the device capacity and
+/// raw allocated (used) space (in Megabytes).
+/// It doesn't deal with files, neither with file system operations such as
+/// file inclusion or deletion.
+/// Such a class allows managing the storage capacity and allocation.
+///
+/// @author Manoel Campos da Silva Filho
+/// @since CloudSim Plus 1.0
 public final class SimpleStorage extends ResourceManageableAbstract {
-    /**
-     * Creates a Storage device.
-     * @param capacity the storage capacity in Megabytes (MB)
-     */
+    /// Creates a Storage device.
+    /// @param capacity the storage capacity in Megabytes (MB)
     public SimpleStorage(long capacity) {
         super(capacity, "MB");
     }

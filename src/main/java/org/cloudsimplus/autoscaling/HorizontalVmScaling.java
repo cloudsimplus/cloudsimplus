@@ -56,24 +56,18 @@ public sealed interface HorizontalVmScaling extends VmScaling
 {
     Predicate<Vm> FALSE_PREDICATE = vm -> false;
 
-    /**
-     * An attribute that implements the Null Object Design Pattern for {@link HorizontalVmScaling}
-     * objects.
-     */
+    /// An attribute that implements the Null Object Design Pattern for [HorizontalVmScaling]
+    /// objects.
     HorizontalVmScaling NULL = new HorizontalVmScalingNull();
 
-    /**
-     * @return a Supplier that will be used to create VMs when
-     * the Load Balancer detects that the current Broker's VMs are overloaded
-     */
+    /// @return a Supplier that will be used to create VMs when
+    /// the Load Balancer detects that the current Broker's VMs are overloaded
     Supplier<Vm> getVmSupplier();
 
-    /**
-     * Sets a {@link Supplier} that will be used to create VMs when
-     * the Load Balancer detects that the current Broker's VMs are overloaded.
-     *
-     * @param supplier the supplier to set
-     */
+    /// Sets a [Supplier] that will be used to create VMs when
+    /// the Load Balancer detects that the current Broker's VMs are overloaded.
+    ///
+    /// @param supplier the supplier to set
     HorizontalVmScaling setVmSupplier(Supplier<Vm> supplier);
 
     /// Requests a horizontal scale if a Vm is overloaded, according to the
@@ -96,31 +90,27 @@ public sealed interface HorizontalVmScaling extends VmScaling
     @Override
     boolean requestUpScalingIfPredicateMatches(VmHostEventInfo evt);
 
-    /**
-     * @return the {@link Predicate} that defines when a {@link #getVm() Vm} is overloaded or not,
-     * that will make the Vm's {@link DatacenterBroker} to upscale the VM.
-     * The upscaling is performed by creating new VMs to run new arrived Cloudlets
-     * and then balance the load.
-     *
-     * @see #setOverloadPredicate(Predicate)
-     */
+    /// @return the [Predicate] that defines when a [Vm][#getVm()] is overloaded or not,
+    /// that will make the Vm's [DatacenterBroker] to upscale the VM.
+    /// The upscaling is performed by creating new VMs to run new arrived Cloudlets
+    /// and then balance the load.
+    ///
+    /// @see #setOverloadPredicate(Predicate)
     Predicate<Vm> getOverloadPredicate();
 
-    /**
-     * Sets a {@link Predicate} that defines when a {@link #getVm() Vm} is overloaded or not,
-     * making the {@link DatacenterBroker} to upscale the VM.
-     * The upscaling is performed by creating new VMs to run new arrived Cloudlets
-     * to balance the load.
-     *
-     * @param predicate a predicate that checks certain conditions
-     *                  to define a {@link #getVm() Vm} as overloaded.
-     *                  The predicate receives the Vm that has to be checked.
-     *                  Such a condition can be defined, for instance,
-     *                  based on Vm's {@link Vm#getCpuPercentUtilization(double) CPU usage}
-     *                  and/or any other VM resource usage.
-     *                  Despite the VmScaling is already linked to a {@link #getVm() Vm},
-     *                  the Vm parameter for the {@link Predicate} enables reusing the same predicate
-     *                  to detect overload of different VMs.
-     */
+    /// Sets a [Predicate] that defines when a [Vm][#getVm()] is overloaded or not,
+    /// making the [DatacenterBroker] to upscale the VM.
+    /// The upscaling is performed by creating new VMs to run new arrived Cloudlets
+    /// to balance the load.
+    ///
+    /// @param predicate a predicate that checks certain conditions
+    /// to define a [Vm][#getVm()] as overloaded.
+    /// The predicate receives the Vm that has to be checked.
+    /// Such a condition can be defined, for instance,
+    /// based on Vm's [CPU usage][Vm#getCpuPercentUtilization(double)]
+    /// and/or any other VM resource usage.
+    /// Despite the VmScaling is already linked to a [Vm][#getVm()],
+    /// the Vm parameter for the [Predicate] enables reusing the same predicate
+    /// to detect overload of different VMs.
     HorizontalVmScaling setOverloadPredicate(Predicate<Vm> predicate);
 }

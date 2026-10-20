@@ -23,21 +23,17 @@
  */
 package org.cloudsimplus.builders.tables;
 
-/**
- * A generator of HTML tables.
- *
- * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 1.0
- */
+/// A generator of HTML tables.
+///
+/// @author Manoel Campos da Silva Filho
+/// @since CloudSim Plus 1.0
 public class HtmlTable extends AbstractTable {
     public HtmlTable() {
         super();
     }
 
-    /**
-     * Creates a Table
-     * @param title the title of the table
-     */
+    /// Creates a Table
+    /// @param title the title of the table
     public HtmlTable(final String title) {
         super(title);
     }

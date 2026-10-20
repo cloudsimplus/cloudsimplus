@@ -16,10 +16,8 @@ import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-/**
- * @author	Anton Beloglazov
- * @since	CloudSim Toolkit 2.0
- */
+/// @author	Anton Beloglazov
+/// @since	CloudSim Toolkit 2.0
 public class UtilizationModelStochasticTest {
     private UtilizationModelStochastic utilizationModel;
 
@@ -53,13 +51,11 @@ public class UtilizationModelStochasticTest {
         assertEquals(expected, result);
     }
 
-    /**
-     * Since the {@link UtilizationModelStochastic#getUtilization(double)} may just
-     * return previously generated utilization value for a given time or it can
-     * generate an utilization value if the method was never called with a given time,
-     * we check if, when calling the method with a time that was previously used,
-     * if it returns the same value instead of generating a new random one.
-     */
+    /// Since the [UtilizationModelStochastic#getUtilization(double)] may just
+    /// return previously generated utilization value for a given time or it can
+    /// generate an utilization value if the method was never called with a given time,
+    /// we check if, when calling the method with a time that was previously used,
+    /// if it returns the same value instead of generating a new random one.
     @Test
     public void testUtilizationCallSequence() {
         final int MAX_TIME = 4;
@@ -87,9 +83,7 @@ public class UtilizationModelStochasticTest {
         }
     }
 
-    /**
-     * A Pseudo Random Number Generator (PRNG) that always returns -1.
-     */
+    /// A Pseudo Random Number Generator (PRNG) that always returns -1.
     private final class NegativePrng extends UniformDistr{
         @Override
         public double sample() {

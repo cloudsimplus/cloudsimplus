@@ -25,19 +25,15 @@ package org.cloudsimplus.listeners;
 
 import org.cloudsimplus.cloudlets.Cloudlet;
 
-/**
- * An interface that represents data to be passed
- * to {@link EventListener} objects that are registered to be notified
- * when some events happen for a given {@link Cloudlet}.
- *
- * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 1.0
- *
- * @see CloudletVmEventInfo
- */
+/// An interface that represents data to be passed
+/// to [EventListener] objects that are registered to be notified
+/// when some events happen for a given [Cloudlet].
+///
+/// @author Manoel Campos da Silva Filho
+/// @since CloudSim Plus 1.0
+///
+/// @see CloudletVmEventInfo
 public interface CloudletEventInfo extends EventInfo {
-    /**
-     * @return the {@link Cloudlet} for which the event happened.
-     */
+    /// @return the [Cloudlet] for which the event happened.
     Cloudlet getCloudlet();
 }

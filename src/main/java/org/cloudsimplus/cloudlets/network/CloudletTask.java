@@ -30,36 +30,26 @@ import org.cloudsimplus.core.Identifiable;
 /// share a common set of attributes that should be defined by a common interface.
 @Getter @Setter
 public abstract sealed class CloudletTask implements Identifiable permits CloudletExecutionTask, CloudletSendTask, CloudletReceiveTask{
-    /** The id of the task. */
+    /// The id of the task.
     private long id;
 
-    /**
-     * The time the task started executing (in seconds), or -1 if not started yet.
-     */
+    /// The time the task started executing (in seconds), or -1 if not started yet.
     private double startTime;
 
-    /**
-     * The time the task finished (in seconds) or -1 if not finished yet.
-     */
+    /// The time the task finished (in seconds) or -1 if not finished yet.
     @Getter @Setter(AccessLevel.NONE)
     private double finishTime;
 
-    /**
-     * The memory amount used by the task (in Megabytes).
-     */
+    /// The memory amount used by the task (in Megabytes).
     private long memory;
 
-    /**
-     * The {@link NetworkCloudlet} that the task belongs to.
-     */
+    /// The [NetworkCloudlet] that the task belongs to.
     @NonNull
     @SuppressWarnings("NullAway.Init") // set when the task is added to a NetworkCloudlet
     private NetworkCloudlet cloudlet;
 
-    /**
-     * Creates a task.
-     * @param id task id
-     */
+    /// Creates a task.
+    /// @param id task id
     public CloudletTask(final int id) {
         super();
         this.id = id;
@@ -68,31 +58,25 @@ public abstract sealed class CloudletTask implements Identifiable permits Cloudl
         this.memory = 0;
     }
 
-    /**
-     * Checks if the task is finished or not.
-     *
-     * @return true if the task has finished, false otherwise
-     * @see #isActive()
-     */
+    /// Checks if the task is finished or not.
+    ///
+    /// @return true if the task has finished, false otherwise
+    /// @see #isActive()
     public boolean isFinished(){
         return finishTime > -1;
     }
 
-    /**
-     * Checks if the task is active (it's not finished).
-     *
-     * @return true if the task is active, false otherwise
-     * @see #isFinished()
-     */
+    /// Checks if the task is active (it's not finished).
+    ///
+    /// @return true if the task is active, false otherwise
+    /// @see #isFinished()
     public boolean isActive(){
         return !isFinished();
     }
 
-    /**
-     * Sets the task as finished or not
-     * @param finished true to set the task as finished, false otherwise
-     * @throws RuntimeException when the task is already finished, and you try to set it as unfinished
-     */
+    /// Sets the task as finished or not
+    /// @param finished true to set the task as finished, false otherwise
+    /// @throws RuntimeException when the task is already finished, and you try to set it as unfinished
     protected void setFinished(final boolean finished){
         if(isFinished() && !finished) {
             throw new IllegalStateException("The task is already finished. You cannot set it as unfinished.");

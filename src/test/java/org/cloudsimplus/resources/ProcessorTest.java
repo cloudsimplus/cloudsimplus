@@ -28,10 +28,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-/**
- *
- * @author Manoel Campos da Silva Filho
- */
+/// @author Manoel Campos da Silva Filho
 public class ProcessorTest {
     private static final double PE_MIPS = 1000;
     private static final int NUMBER_OF_PES = 2;
@@ -43,10 +40,8 @@ public class ProcessorTest {
         assertEquals(expResult, instance.getTotalMips());
     }
 
-    /**
-     * Creates a processing using the default values.
-     * @return the created processor
-     */
+    /// Creates a processing using the default values.
+    /// @return the created processor
     private static Processor createDefaultProcessor() {
         return new Processor(Vm.NULL, NUMBER_OF_PES, PE_MIPS);
     }

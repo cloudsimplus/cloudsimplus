@@ -27,30 +27,22 @@ import lombok.Getter;
 import org.cloudsimplus.power.PowerMeasurement;
 import org.cloudsimplus.power.PowerMeter;
 
-/**
- * Simple power model for hosts with linear power consumption
- * according to the CPU utilization percentage.
- * @since CloudSim Plus 6.0.0
- * @see PowerMeter
- */
+/// Simple power model for hosts with linear power consumption
+/// according to the CPU utilization percentage.
+/// @since CloudSim Plus 6.0.0
+/// @see PowerMeter
 @Getter
 public class PowerModelHostSimple extends PowerModelHostAbstract {
-    /**
-     * The maximum power (in watts) the host consumes under a full load.
-     */
+    /// The maximum power (in watts) the host consumes under a full load.
     private final double maxPower;
 
-    /**
-     * The static power (in watts) the host consumes when idle.
-     */
+    /// The static power (in watts) the host consumes when idle.
     private final double staticPower;
 
-    /**
-     * Instantiates a {@link PowerModelHostSimple} by specifying its static and max power usage.
-     *
-     * @param maxPower power (in watts) the host consumes under a full load.
-     * @param staticPower power (in watts) the host consumes when idle.
-     */
+    /// Instantiates a [PowerModelHostSimple] by specifying its static and max power usage.
+    ///
+    /// @param maxPower power (in watts) the host consumes under a full load.
+    /// @param staticPower power (in watts) the host consumes when idle.
     public PowerModelHostSimple(final double maxPower, final double staticPower) {
         super();
         if (maxPower < staticPower) {
@@ -77,11 +69,9 @@ public class PowerModelHostSimple extends PowerModelHostAbstract {
         return staticPower + dynamicPower(utilizationFraction);
     }
 
-    /**
-     * Computes the dynamic power consumed, according to the CPU utilization percentage.
-     * @param utilizationFraction the utilization percentage (between [0 and 1]) of the host.
-     * @return the dynamic power supply in Watts (W)
-     */
+    /// Computes the dynamic power consumed, according to the CPU utilization percentage.
+    /// @param utilizationFraction the utilization percentage (between \[0 and 1\]) of the host.
+    /// @return the dynamic power supply in Watts (W)
     private double dynamicPower(final double utilizationFraction) {
         return (maxPower - staticPower) * utilizationFraction;
     }

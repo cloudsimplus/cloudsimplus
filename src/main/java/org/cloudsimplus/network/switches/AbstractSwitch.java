@@ -27,12 +27,10 @@ import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
-/**
- * An abstract class for implementing Network {@link Switch}es.
- *
- * @author Saurabh Kumar Garg
- * @author Manoel Campos da Silva Filho
- */
+/// An abstract class for implementing Network [Switch]es.
+///
+/// @author Saurabh Kumar Garg
+/// @author Manoel Campos da Silva Filho
 @Accessors
 public abstract non-sealed class AbstractSwitch extends CloudSimEntity implements Switch {
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractSwitch.class.getSimpleName());
@@ -58,22 +56,16 @@ public abstract non-sealed class AbstractSwitch extends CloudSimEntity implement
     @Getter
     private final List<Switch> downlinkSwitches;
 
-    /**
-     * Map of packets sent to Datacenter on the uplink, where each key is a Switch
-     * and the corresponding value is the list of packets to be sent to that Switch.
-     */
+    /// Map of packets sent to Datacenter on the uplink, where each key is a Switch
+    /// and the corresponding value is the list of packets to be sent to that Switch.
     private final Map<Switch, List<HostPacket>> uplinkSwitchPacketMap;
 
-    /**
-     * Map of packets sent to Datacenter on the downlink, where each key is a
-     * switch and the corresponding value is the list of packets to be sent to that switch.
-     */
+    /// Map of packets sent to Datacenter on the downlink, where each key is a
+    /// switch and the corresponding value is the list of packets to be sent to that switch.
     private final Map<Switch, List<HostPacket>> downlinkSwitchPacketMap;
 
-    /**
-     * Map of packets sent to hosts connected in the switch, where each key is a
-     * host and the corresponding value is the list of packets to be sent to that host.
-     */
+    /// Map of packets sent to hosts connected in the switch, where each key is a
+    /// host and the corresponding value is the list of packets to be sent to that host.
     private final Map<NetworkHost, List<HostPacket>> packetToHostMap;
 
     public AbstractSwitch(final CloudSimPlus simulation, final NetworkDatacenter dc) {
@@ -103,10 +95,8 @@ public abstract non-sealed class AbstractSwitch extends CloudSimEntity implement
         }
     }
 
-    /**
-     * Process a packet sent to a host.
-     * @param evt the packet sent
-     */
+    /// Process a packet sent to a host.
+    /// @param evt the packet sent
     protected void processHostPacket(final SimEvent evt) {
         if(evt.getData() instanceof HostPacket pkt) {
             final NetworkHost host = pkt.getDestination();
@@ -115,49 +105,39 @@ public abstract non-sealed class AbstractSwitch extends CloudSimEntity implement
         else throw new IllegalStateException("NETWORK_EVENT_HOST SimEvent data must be a HostPacket");
     }
 
-    /**
-     * Sends a packet from uplink to Datacenter connected through a downlink port.
-     * @param evt event/packet to process
-     */
+    /// Sends a packet from uplink to Datacenter connected through a downlink port.
+    /// @param evt event/packet to process
     protected void processPacketDown(final SimEvent evt) {
         // A packet coming from an up-level router has to be sent downward.
         getSimulation().cancelAll(this, new PredicateType(CloudSimTag.NETWORK_EVENT_SEND));
         schedule(this, getSwitchingDelay(), CloudSimTag.NETWORK_EVENT_SEND);
     }
 
-    /**
-     * Gets the Host where a VM is placed.
-     * @param vm the VM to get its Host
-     * @return the Host where the VM is placed
-     */
+    /// Gets the Host where a VM is placed.
+    /// @param vm the VM to get its Host
+    /// @return the Host where the VM is placed
     protected NetworkHost getVmHost(final Vm vm) {
         return (NetworkHost)vm.getHost();
     }
 
-    /**
-     * Sends a packet from a down switch or host to the Datacenter connected through an uplink port.
-     * @param evt Event/packet to process
-     */
+    /// Sends a packet from a down switch or host to the Datacenter connected through an uplink port.
+    /// @param evt Event/packet to process
     protected void processPacketUp(final SimEvent evt) {
         // A packet coming from a down-level router has to be sent up.
         getSimulation().cancelAll(this, new PredicateType(CloudSimTag.NETWORK_EVENT_SEND));
         schedule(this, switchingDelay, CloudSimTag.NETWORK_EVENT_SEND);
     }
 
-    /**
-     * Sends a packet to hosts connected to the Switch.
-     */
+    /// Sends a packet to hosts connected to the Switch.
     private void processPacketForward() {
         forwardPacketsToDownlinkSwitches();
         forwardPacketsToUplinkSwitches();
         forwardPacketsToHosts();
     }
 
-    /**
-     * Gets the packets to be sent to each downlink Switch and forwards them.
-     *
-     * @see #downlinkSwitchPacketMap
-     */
+    /// Gets the packets to be sent to each downlink Switch and forwards them.
+    ///
+    /// @see #downlinkSwitchPacketMap
     private void forwardPacketsToDownlinkSwitches() {
         for (final var targetSwitch: downlinkSwitchPacketMap.keySet()) {
             final var hostPktList = getDownlinkSwitchPacketList(targetSwitch);
@@ -166,11 +146,9 @@ public abstract non-sealed class AbstractSwitch extends CloudSimEntity implement
         }
     }
 
-    /**
-     * Gets the packets to be sent to each uplink Switch and forwards them.
-     *
-     * @see #uplinkSwitchPacketMap
-     */
+    /// Gets the packets to be sent to each uplink Switch and forwards them.
+    ///
+    /// @see #uplinkSwitchPacketMap
     private void forwardPacketsToUplinkSwitches() {
         for (final var targetSwitch : uplinkSwitchPacketMap.keySet()) {
             final var hostPktList = getUplinkSwitchPacketList(targetSwitch);
@@ -191,11 +169,9 @@ public abstract non-sealed class AbstractSwitch extends CloudSimEntity implement
         packetList.clear();
     }
 
-    /**
-     * Gets the packets to be sent to each Host and forwards them.
-     *
-     * @see #packetToHostMap
-     */
+    /// Gets the packets to be sent to each Host and forwards them.
+    ///
+    /// @see #packetToHostMap
     private void forwardPacketsToHosts() {
         for (final NetworkHost host : packetToHostMap.keySet()) {
             final var hostPktList = getHostPacketList(host);
@@ -213,32 +189,28 @@ public abstract non-sealed class AbstractSwitch extends CloudSimEntity implement
         return packetTransferDelay(packet, uplinkBandwidth, simultaneousPackets);
     }
 
-    /**
-     * Computes the network delay for sending a packet through the network,
-     * considering that a list of packets will be sent simultaneously.
-     *
-     * @param netPkt     the packet to be sent
-     * @param bwCapacity the total bandwidth capacity (in Megabits/s)
-     * @param simultaneousPackets number of packets to be simultaneously sent
-     * @return the expected time to transfer the packet through the network (in seconds)
-     */
+    /// Computes the network delay for sending a packet through the network,
+    /// considering that a list of packets will be sent simultaneously.
+    ///
+    /// @param netPkt     the packet to be sent
+    /// @param bwCapacity the total bandwidth capacity (in Megabits/s)
+    /// @param simultaneousPackets number of packets to be simultaneously sent
+    /// @return the expected time to transfer the packet through the network (in seconds)
     protected double packetTransferDelay(
         final HostPacket netPkt, final double bwCapacity, final int simultaneousPackets)
     {
         return BytesConversion.bytesToMegaBits(netPkt.getSize()) / bandwidthByPacket(bwCapacity, simultaneousPackets);
     }
 
-    /**
-     * Considering a list of packets to be sent,
-     * gets the amount of available bandwidth for each packet,
-     * assuming that the bandwidth is shared equally among all packets.
-     *
-     * @param bwCapacity the total bandwidth capacity to share among
-     *                   the packets to be sent (in Megabits/s)
-     * @param simultaneousPackets number of packets to be simultaneously sent
-     * @return the available bandwidth for each packet in the list of packets to send (in Megabits/s)
-     *         or the total bandwidth capacity if the packet list has 0 or 1 element
-     */
+    /// Considering a list of packets to be sent,
+    /// gets the amount of available bandwidth for each packet,
+    /// assuming that the bandwidth is shared equally among all packets.
+    ///
+    /// @param bwCapacity the total bandwidth capacity to share among
+    /// the packets to be sent (in Megabits/s)
+    /// @param simultaneousPackets number of packets to be simultaneously sent
+    /// @return the available bandwidth for each packet in the list of packets to send (in Megabits/s)
+    /// or the total bandwidth capacity if the packet list has 0 or 1 element
     protected double bandwidthByPacket(final double bwCapacity, final int simultaneousPackets) {
         return simultaneousPackets == 0 ? bwCapacity : bwCapacity / (double)simultaneousPackets;
     }
@@ -269,38 +241,30 @@ public abstract non-sealed class AbstractSwitch extends CloudSimEntity implement
         this.switchingDelay = MathUtil.nonNegative(switchingDelay, "switchingDelay");
     }
 
-    /**
-     * Gets the list of packets to be sent to a downlink Switch.
-     * @param downlinkSwitch the Switch to get the list of packets to send
-     * @return the list of packets to be sent to the given Switch.
-     */
+    /// Gets the list of packets to be sent to a downlink Switch.
+    /// @param downlinkSwitch the Switch to get the list of packets to send
+    /// @return the list of packets to be sent to the given Switch.
     protected List<HostPacket> getDownlinkSwitchPacketList(final Switch downlinkSwitch) {
         return downlinkSwitchPacketMap.getOrDefault(downlinkSwitch, new ArrayList<>());
     }
 
-    /**
-     * Gets the list of packets to be sent to an uplink Switch.
-     * @param uplinkSwitch the Switch to get the list of packets to send
-     * @return the list of packets to be sent to the given Switch.
-     */
+    /// Gets the list of packets to be sent to an uplink Switch.
+    /// @param uplinkSwitch the Switch to get the list of packets to send
+    /// @return the list of packets to be sent to the given Switch.
     protected List<HostPacket> getUplinkSwitchPacketList(final Switch uplinkSwitch) {
         return uplinkSwitchPacketMap.getOrDefault(uplinkSwitch, new ArrayList<>());
     }
 
-    /**
-     * Gets the list of packets to be sent to a Host.
-     * @param host the host to get the list of packets to send
-     * @return the list of packets to be sent to the given Host.
-     */
+    /// Gets the list of packets to be sent to a Host.
+    /// @param host the host to get the list of packets to send
+    /// @return the list of packets to be sent to the given Host.
     protected List<HostPacket> getHostPacketList(final NetworkHost host) {
         return packetToHostMap.getOrDefault(host, new ArrayList<>());
     }
 
-    /**
-     * Adds a packet that will be sent to a downlink {@link Switch}.
-     * @param downlinkSwitch the target Switch
-     * @param packet the packet to be sent
-     */
+    /// Adds a packet that will be sent to a downlink [Switch].
+    /// @param downlinkSwitch the target Switch
+    /// @param packet the packet to be sent
     protected void addPacketToSendToDownlinkSwitch(final Switch downlinkSwitch, final HostPacket packet) {
         computeMapValue(downlinkSwitchPacketMap, downlinkSwitch, packet);
     }
@@ -310,32 +274,26 @@ public abstract non-sealed class AbstractSwitch extends CloudSimEntity implement
         addPacketToSendToUplinkSwitch(uplinkSw, netPkt);
     }
 
-    /**
-     * Adds a packet that will be sent to an uplink {@link Switch}.
-     * @param uplinkSwitch the target Switch
-     * @param packet the packet to be sent
-     */
+    /// Adds a packet that will be sent to an uplink [Switch].
+    /// @param uplinkSwitch the target Switch
+    /// @param packet the packet to be sent
     protected void addPacketToSendToUplinkSwitch(final Switch uplinkSwitch, final HostPacket packet) {
         computeMapValue(uplinkSwitchPacketMap, uplinkSwitch, packet);
     }
 
-    /**
-     * Adds a packet that will be sent to a {@link NetworkHost}.
-     * @param host the target {@link NetworkHost}
-     * @param packet the packet to be sent
-     */
+    /// Adds a packet that will be sent to a [NetworkHost].
+    /// @param host the target [NetworkHost]
+    /// @param packet the packet to be sent
     protected void addPacketToSendToHost(final NetworkHost host, final HostPacket packet) {
         computeMapValue(packetToHostMap, host, packet);
     }
 
-    /**
-     * Computes a value for a multimap: a map where each value is a List.
-     * @param map the map to compute a value (to add a value to a List mapped to a key)
-     * @param key the key to access the mapped List
-     * @param valueToAdd the value to add to the List
-     * @param <K> type of the map key
-     * @param <V> type of the map value
-     */
+    /// Computes a value for a multimap: a map where each value is a List.
+    /// @param map the map to compute a value (to add a value to a List mapped to a key)
+    /// @param key the key to access the mapped List
+    /// @param valueToAdd the value to add to the List
+    /// @param <K> type of the map key
+    /// @param <V> type of the map value
     private <K, V> void computeMapValue(final Map<K, List<V>> map, final K key, final V valueToAdd) {
         map.compute(key, (k, list) -> list == null ? new ArrayList<>() : list).add(valueToAdd);
     }

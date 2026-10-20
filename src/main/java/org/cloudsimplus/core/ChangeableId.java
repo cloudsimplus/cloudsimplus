@@ -23,18 +23,14 @@
  */
 package org.cloudsimplus.core;
 
-/**
- * An interface for objects that have to be identified by an id
- * and that such id can be changed.
- *
- * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 1.0
- */
+/// An interface for objects that have to be identified by an id
+/// and that such id can be changed.
+///
+/// @author Manoel Campos da Silva Filho
+/// @since CloudSim Plus 1.0
 public interface ChangeableId extends Identifiable {
-    /**
-     * Sets the id of the object.
-     * -1 indicates the object has no initial ID and one may be provided further on by some other entity.
-     * @param id the id to set
-     */
+    /// Sets the id of the object.
+    /// -1 indicates the object has no initial ID and one may be provided further on by some other entity.
+    /// @param id the id to set
     ChangeableId setId(long id);
 }

@@ -39,25 +39,22 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
-/**
- *
- * An Integration Test (IT) running a simulation scenario with 1 PM, 2 VMs
- * and 1 Cloudlet in each VM. The Cloudlets use a {@link UtilizationModelFull} for
- * CPU usage. The IT checks if the amount of available
- * CPU of the host is as expected along the simulation time.
- *
- * <p>It is created one broker for each VM and one VM finishes executing
- * prior to the other. This way, the IT checks if the CPU used by the
- * finished VM is freed on the host.</p>
- *
- * <p>Creating the VMs for the same broker
- * doesn't make the finished VM to be automatically destroyed by default.
- * In this case, only after all user VMs are finished that they are
- * destroyed in order to free resources.</p>
- *
- * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 1.0.0
- */
+/// An Integration Test (IT) running a simulation scenario with 1 PM, 2 VMs
+/// and 1 Cloudlet in each VM. The Cloudlets use a [UtilizationModelFull] for
+/// CPU usage. The IT checks if the amount of available
+/// CPU of the host is as expected along the simulation time.
+///
+/// It is created one broker for each VM and one VM finishes executing
+/// prior to the other. This way, the IT checks if the CPU used by the
+/// finished VM is freed on the host.
+///
+/// Creating the VMs for the same broker
+/// doesn't make the finished VM to be automatically destroyed by default.
+/// In this case, only after all user VMs are finished that they are
+/// destroyed in order to free resources.
+///
+/// @author Manoel Campos da Silva Filho
+/// @since CloudSim Plus 1.0.0
 public final class CheckHostAvailableMipsTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(CheckHostAvailableMipsTest.class.getSimpleName());
 
@@ -103,14 +100,12 @@ public final class CheckHostAvailableMipsTest {
         }
     }
 
-    /**
-     * A lambda function used by the {@link Host#addOnUpdateProcessingListener(EventListener)}
-     * that will be called every time a host updates the processing of its VMs.
-     * It checks if the amount of available Host CPU is as expected,
-     * every time a host updates the processing of all its VMs.
-     *
-     * @param evt
-     */
+    /// A lambda function used by the [Host#addOnUpdateProcessingListener(EventListener)]
+    /// that will be called every time a host updates the processing of its VMs.
+    /// It checks if the amount of available Host CPU is as expected,
+    /// every time a host updates the processing of all its VMs.
+    ///
+    /// @param evt
     private void onUpdateVmsProcessing(final HostUpdatesVmsProcessingEventInfo evt) {
         final double time = (int)evt.getTime();
         final double expectedAvailableHostMips = getExpectedAvailableHostMips(time);

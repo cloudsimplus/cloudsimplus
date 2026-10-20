@@ -28,12 +28,10 @@ import org.cloudsimplus.core.events.SimEvent;
 
 import java.io.Serial;
 
-/**
- * An exception to be thrown when the type of the {@link SimEvent#getData()}
- * is not as expected for a given tag from {@link CloudSimTag}.
- * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 7.0.1
- */
+/// An exception to be thrown when the type of the [SimEvent#getData()]
+/// is not as expected for a given tag from [CloudSimTag].
+/// @author Manoel Campos da Silva Filho
+/// @since CloudSim Plus 7.0.1
 public class InvalidEventDataTypeException extends IllegalStateException {
     @Serial
     private static final long serialVersionUID = -3905805615156717344L;

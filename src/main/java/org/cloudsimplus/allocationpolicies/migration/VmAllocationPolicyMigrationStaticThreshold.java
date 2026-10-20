@@ -19,42 +19,36 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import org.jspecify.annotations.Nullable;
 
-/**
- * A VM allocation policy that uses a static CPU utilization threshold to detect
- * host over utilization.
- * <b>It's a First Fit policy which selects the first Host found with most efficient power usage to place a given VM.</b>
- *
- * @author Anton Beloglazov
- * @since CloudSim Toolkit 3.0
- */
+/// A VM allocation policy that uses a static CPU utilization threshold to detect
+/// host over utilization.
+/// **It's a First Fit policy which selects the first Host found with most efficient power usage to place a given VM.**
+///
+/// @author Anton Beloglazov
+/// @since CloudSim Toolkit 3.0
 public class VmAllocationPolicyMigrationStaticThreshold extends VmAllocationPolicyMigrationAbstract {
     public static final double DEF_OVER_UTILIZATION_THRESHOLD = 0.9;
 
-    /** @see #getOverUtilizationThreshold(Host) */
+    /// @see #getOverUtilizationThreshold(Host)
     @Getter(AccessLevel.NONE)
     private double overUtilizationThreshold;
 
-    /**
-     * Creates a VmAllocationPolicy.
-     * It uses a {@link #DEF_OVER_UTILIZATION_THRESHOLD default over utilization threshold}
-     * and a {@link #DEF_UNDER_UTILIZATION_THRESHOLD default under utilization threshold}.
-     *
-     * @param vmSelectionPolicy the {@link VmAllocationPolicyMigration#getVmSelectionPolicy() policy}
-     *                          that defines how VMs are selected for migration
-     * @see #setUnderUtilizationThreshold(double)
-     * @see #setOverUtilizationThreshold(double)
-     */
+    /// Creates a VmAllocationPolicy.
+    /// It uses a [default over utilization threshold][#DEF_OVER_UTILIZATION_THRESHOLD]
+    /// and a [default under utilization threshold][#DEF_UNDER_UTILIZATION_THRESHOLD].
+    ///
+    /// @param vmSelectionPolicy the [policy][VmAllocationPolicyMigration#getVmSelectionPolicy()]
+    /// that defines how VMs are selected for migration
+    /// @see #setUnderUtilizationThreshold(double)
+    /// @see #setOverUtilizationThreshold(double)
     public VmAllocationPolicyMigrationStaticThreshold(final VmSelectionPolicy vmSelectionPolicy) {
         this(vmSelectionPolicy, DEF_OVER_UTILIZATION_THRESHOLD, null);
     }
 
-    /**
-     * Creates a VmAllocationPolicy.
-     *
-     * @param vmSelectionPolicy the {@link VmAllocationPolicyMigration#getVmSelectionPolicy() policy}
-     *                          that defines how VMs are selected for migration
-     * @param overUtilizationThreshold {@link #setOverUtilizationThreshold(double) the over utilization threshold percent (between 0 and 1)}
-     */
+    /// Creates a VmAllocationPolicy.
+    ///
+    /// @param vmSelectionPolicy the [policy][VmAllocationPolicyMigration#getVmSelectionPolicy()]
+    /// that defines how VMs are selected for migration
+    /// @param overUtilizationThreshold [the over utilization threshold percent (between 0 and 1)][#setOverUtilizationThreshold(double)]
     public VmAllocationPolicyMigrationStaticThreshold(
         final VmSelectionPolicy vmSelectionPolicy,
         final double overUtilizationThreshold)
@@ -62,15 +56,13 @@ public class VmAllocationPolicyMigrationStaticThreshold extends VmAllocationPoli
         this(vmSelectionPolicy, overUtilizationThreshold, null);
     }
 
-    /**
-     * Creates a VmAllocationPolicy, changing the {@link Function} to select a Host for a Vm.
-     * @param vmSelectionPolicy the {@link VmAllocationPolicyMigration#getVmSelectionPolicy() policy}
-     *                          that defines how VMs are selected for migration
-     * @param overUtilizationThreshold {@link #setOverUtilizationThreshold(double) the over utilization threshold percent (between 0 and 1)}
-     * @param findHostForVmFunction a {@link Function} to select a Host for a given Vm.
-     *                              Passing null makes the Function to be set as the default {@link #findHostForVm(Vm)}.
-     * @see VmAllocationPolicy#setFindHostForVmFunction(java.util.function.BiFunction)
-     */
+    /// Creates a VmAllocationPolicy, changing the [Function] to select a Host for a Vm.
+    /// @param vmSelectionPolicy the [policy][VmAllocationPolicyMigration#getVmSelectionPolicy()]
+    /// that defines how VMs are selected for migration
+    /// @param overUtilizationThreshold [the over utilization threshold percent (between 0 and 1)][#setOverUtilizationThreshold(double)]
+    /// @param findHostForVmFunction a [Function] to select a Host for a given Vm.
+    /// Passing null makes the Function to be set as the default [#findHostForVm(Vm)].
+    /// @see VmAllocationPolicy#setFindHostForVmFunction(java.util.function.BiFunction)
     public VmAllocationPolicyMigrationStaticThreshold(
         final VmSelectionPolicy vmSelectionPolicy,
         final double overUtilizationThreshold,
@@ -80,11 +72,9 @@ public class VmAllocationPolicyMigrationStaticThreshold extends VmAllocationPoli
         setOverUtilizationThreshold(overUtilizationThreshold);
     }
 
-    /**
-     * Sets the static host CPU utilization threshold to detect over utilization.
-     *
-     * @param overUtilizationThreshold a percentage value between 0 and 1
-     */
+    /// Sets the static host CPU utilization threshold to detect over utilization.
+    ///
+    /// @param overUtilizationThreshold a percentage value between 0 and 1
     public final void setOverUtilizationThreshold(final double overUtilizationThreshold) {
         if(overUtilizationThreshold <= 0 || overUtilizationThreshold >= 1){
             throw new IllegalArgumentException("Over utilization threshold must be greater than 0 and lower than 1.");
@@ -93,18 +83,14 @@ public class VmAllocationPolicyMigrationStaticThreshold extends VmAllocationPoli
         this.overUtilizationThreshold = overUtilizationThreshold;
     }
 
-    /**
-     * Gets the static host CPU utilization threshold to detect over
-     * utilization. It is a percentage value from 0 to 1 that can be changed
-     * when creating an instance of the class.
-     *
-     * <p>
-     * <b>This implementation always returns the same over utilization threshold for any given host.</b>
-     * </p>
-     *
-     * @param host {@inheritDoc}
-     * @return {@inheritDoc} (that is the same for any given host)
-     */
+    /// Gets the static host CPU utilization threshold to detect over
+    /// utilization. It is a percentage value from 0 to 1 that can be changed
+    /// when creating an instance of the class.
+    ///
+    /// **This implementation always returns the same over utilization threshold for any given host.**
+    ///
+    /// @param host {@inheritDoc}
+    /// @return {@inheritDoc} (that is the same for any given host)
     @Override
     public double getOverUtilizationThreshold(final Host host) {
         return overUtilizationThreshold;

@@ -26,30 +26,22 @@ package org.cloudsimplus.traces.google;
 import org.cloudsimplus.resources.Pe;
 import org.cloudsimplus.util.TimeUtil;
 
-/**
- * The index of each field in the Google Machine Events trace file.
- * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 4.0.0
- */
+/// The index of each field in the Google Machine Events trace file.
+/// @author Manoel Campos da Silva Filho
+/// @since CloudSim Plus 4.0.0
 public enum MachineEventField implements TraceField<GoogleMachineEventsTraceReader> {
-    /**
-     * 0: The index of the field containing the time the event happened (in microsecond).
-     */
+    /// 0: The index of the field containing the time the event happened (in microsecond).
     TIMESTAMP {
-        /**
-         * Gets the timestamp converted to milliseconds.
-         * @param reader the reader for the trace file
-         * @return
-         */
+        /// Gets the timestamp converted to milliseconds.
+        /// @param reader the reader for the trace file
+        /// @return
         @Override
         public Double getValue(final GoogleMachineEventsTraceReader reader) {
             return TimeUtil.microToSeconds(reader.getFieldDoubleValue(this));
         }
     },
 
-    /**
-     * 1: The index of the field containing the machine ID.
-     */
+    /// 1: The index of the field containing the machine ID.
     MACHINE_ID {
         @Override
         public Long getValue(final GoogleMachineEventsTraceReader reader) {
@@ -57,10 +49,8 @@ public enum MachineEventField implements TraceField<GoogleMachineEventsTraceRead
         }
     },
 
-    /**
-     * 2: The index of the field containing the type of event.
-     * The possible values for this field are the ordinal values of the enum {@link MachineEventType}.
-     */
+    /// 2: The index of the field containing the type of event.
+    /// The possible values for this field are the ordinal values of the enum [MachineEventType].
     EVENT_TYPE {
         @Override
         public Integer getValue(final GoogleMachineEventsTraceReader reader) {
@@ -68,10 +58,8 @@ public enum MachineEventField implements TraceField<GoogleMachineEventsTraceRead
         }
     },
 
-    /**
-     * 3: The index of the platform ID, which is an opaque string representing
-     * the micro-architecture and chipset version of the machine.
-     */
+    /// 3: The index of the platform ID, which is an opaque string representing
+    /// the micro-architecture and chipset version of the machine.
     PLATFORM_ID {
         @Override
         public Integer getValue(final GoogleMachineEventsTraceReader reader) {
@@ -79,16 +67,12 @@ public enum MachineEventField implements TraceField<GoogleMachineEventsTraceRead
         }
     },
 
-    /**
-     * 4: The index of the CPU capacity field in the trace,
-     * that represents a percentage (between 0 and 1)
-     * of the {@link GoogleMachineEventsTraceReader#getMaxCpuCores()}.
-     */
+    /// 4: The index of the CPU capacity field in the trace,
+    /// that represents a percentage (between 0 and 1)
+    /// of the [GoogleMachineEventsTraceReader#getMaxCpuCores()].
     CPU_CAPACITY {
-        /**
-         * Gets the actual number of {@link Pe}s (CPU cores) to be assigned to a Host,
-         * according the {@link GoogleMachineEventsTraceReader#getMaxCpuCores()}.
-         */
+        /// Gets the actual number of [Pe]s (CPU cores) to be assigned to a Host,
+        /// according the [GoogleMachineEventsTraceReader#getMaxCpuCores()].
         @Override
         public Integer getValue(final GoogleMachineEventsTraceReader reader) {
             final double fieldValue = reader.getFieldDoubleValue(this);
@@ -96,16 +80,12 @@ public enum MachineEventField implements TraceField<GoogleMachineEventsTraceRead
         }
     },
 
-    /**
-     * 5: The index of the RAM capacity field in the trace,
-     * that represents a percentage (between 0 and 1)
-     * of the {@link GoogleMachineEventsTraceReader#getMaxRamCapacity()} ()}.
-     */
+    /// 5: The index of the RAM capacity field in the trace,
+    /// that represents a percentage (between 0 and 1)
+    /// of the [GoogleMachineEventsTraceReader#getMaxRamCapacity()] ()}.
     RAM_CAPACITY {
-        /**
-         * Gets the actual RAM capacity to be assigned to a Host,
-         * according the {@link GoogleMachineEventsTraceReader#getMaxRamCapacity()}.
-         */
+        /// Gets the actual RAM capacity to be assigned to a Host,
+        /// according the [GoogleMachineEventsTraceReader#getMaxRamCapacity()].
         @Override
         public Long getValue(final GoogleMachineEventsTraceReader reader) {
             final double fieldValue = reader.getFieldDoubleValue(this);

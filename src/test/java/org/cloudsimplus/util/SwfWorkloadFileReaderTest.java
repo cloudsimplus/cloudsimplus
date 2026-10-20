@@ -40,9 +40,7 @@ public class SwfWorkloadFileReaderTest {
     private static final int    SWF_FILE_JOBS = 188041;
     private static final String ZIP_FILE = "NASA-iPSC-1993-3.1-cln.swf.zip";
 
-    /**
-     * Number of jobs of the NASA file inside the zip archive.
-     */
+    /// Number of jobs of the NASA file inside the zip archive.
     private static final int ZIP_FILE_JOBS = 18239;
 
     @Test

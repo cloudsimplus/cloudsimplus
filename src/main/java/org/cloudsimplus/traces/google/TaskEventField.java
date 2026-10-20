@@ -26,21 +26,15 @@ package org.cloudsimplus.traces.google;
 import org.cloudsimplus.brokers.DatacenterBroker;
 import org.cloudsimplus.util.TimeUtil;
 
-/**
- * The index of each field in a Google Task Events trace file.
- * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 4.0.0
- */
+/// The index of each field in a Google Task Events trace file.
+/// @author Manoel Campos da Silva Filho
+/// @since CloudSim Plus 4.0.0
 public enum TaskEventField implements TraceField<GoogleTaskEventsTraceReader> {
-    /**
-     * 0: The index of the field containing the time the event happened (stored in microsecond
-     * but converted to seconds when read from the file).
-     */
+    /// 0: The index of the field containing the time the event happened (stored in microsecond
+    /// but converted to seconds when read from the file).
     TIMESTAMP {
-        /**
-         * {@return the timestamp converted to seconds}
-         * @param reader the reader for the trace file
-         */
+        /// {@return the timestamp converted to seconds}
+        /// @param reader the reader for the trace file
         @Override
         public Double getValue(final GoogleTaskEventsTraceReader reader) {
             return TimeUtil.microToSeconds(reader.getFieldDoubleValue(this));
@@ -62,9 +56,7 @@ public enum TaskEventField implements TraceField<GoogleTaskEventsTraceReader> {
         }
     },
 
-    /**
-     * 2: The index of the field containing the id of the job this task belongs to.
-     */
+    /// 2: The index of the field containing the id of the job this task belongs to.
     JOB_ID {
         @Override
         public Long getValue(final GoogleTaskEventsTraceReader reader) {
@@ -72,9 +64,7 @@ public enum TaskEventField implements TraceField<GoogleTaskEventsTraceReader> {
         }
     },
 
-    /**
-     * 3: The index of the field containing the task index within the job.
-     */
+    /// 3: The index of the field containing the task index within the job.
     TASK_INDEX {
         @Override
         public Long getValue(final GoogleTaskEventsTraceReader reader) {
@@ -82,11 +72,9 @@ public enum TaskEventField implements TraceField<GoogleTaskEventsTraceReader> {
         }
     },
 
-    /**
-     * 4: The index of the field containing the machineID.
-     * If the field is present, indicates the machine onto which the task was scheduled,
-     * otherwise, the reader will return -1 as default value.
-     */
+    /// 4: The index of the field containing the machineID.
+    /// If the field is present, indicates the machine onto which the task was scheduled,
+    /// otherwise, the reader will return -1 as default value.
     MACHINE_ID {
         @Override
         public Long getValue(final GoogleTaskEventsTraceReader reader) {
@@ -94,9 +82,7 @@ public enum TaskEventField implements TraceField<GoogleTaskEventsTraceReader> {
         }
     },
 
-    /**
-     * 5: The index of the field containing the type of event.
-     */
+    /// 5: The index of the field containing the type of event.
     EVENT_TYPE {
         @Override
         public TaskEventType getValue(final GoogleTaskEventsTraceReader reader) {
@@ -104,11 +90,9 @@ public enum TaskEventField implements TraceField<GoogleTaskEventsTraceReader> {
         }
     },
 
-    /**
-     * 6: The index of the field containing the hashed username provided as an opaque
-     * base64-encoded string that can be tested for equality.
-     * For each distinct username, a corresponding {@link DatacenterBroker} is created.
-     */
+    /// 6: The index of the field containing the hashed username provided as an opaque
+    /// base64-encoded string that can be tested for equality.
+    /// For each distinct username, a corresponding [DatacenterBroker] is created.
     USERNAME {
         @Override
         public String getValue(final GoogleTaskEventsTraceReader reader) {

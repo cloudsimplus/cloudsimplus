@@ -37,14 +37,12 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-/**
- * Verifies that after all Cloudlets finish execution on a VM,
- * both {@code freePesNumber} and {@code expectedFreePesNumber}
- * are correctly updated to the total number of VM PEs.
- *
- * @author Theodoros Aslanidis
- * @see <a href="https://github.com/cloudsimplus/cloudsimplus/issues/544">Issue #544</a>
- */
+/// Verifies that after all Cloudlets finish execution on a VM,
+/// both `freePesNumber` and `expectedFreePesNumber`
+/// are correctly updated to the total number of VM PEs.
+///
+/// @author Theodoros Aslanidis
+/// @see <a href="https://github.com/cloudsimplus/cloudsimplus/issues/544">Issue #544</a>
 public final class VmFreePesAfterCloudletsFinishTest {
     // Constants that matter for the tests.
     private static final int VM_PES = 2;
@@ -81,10 +79,8 @@ public final class VmFreePesAfterCloudletsFinishTest {
         return new PeSimple(HOST_MIPS);
     }
 
-    /**
-     * After all Cloudlets finish, both freePesNumber and expectedFreePesNumber
-     * must be equal to the total VM PEs.
-     */
+    /// After all Cloudlets finish, both freePesNumber and expectedFreePesNumber
+    /// must be equal to the total VM PEs.
     @Test
     public void freePesEqualsVmPesAfterAllCloudletsFinish() {
         simulation.start();

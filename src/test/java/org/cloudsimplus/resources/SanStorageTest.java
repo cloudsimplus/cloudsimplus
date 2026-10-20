@@ -32,10 +32,7 @@ import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-/**
- *
- * @author Manoel Campos da Silva Filho
- */
+/// @author Manoel Campos da Silva Filho
 public class SanStorageTest {
     private static final String NO_PREVIOUS_SPACE = "The reserved file was added but its space was not previously reserved.";
     private static final int TOTAL_FILES_TO_CREATE = 5;
@@ -232,12 +229,10 @@ public class SanStorageTest {
         assertEquals(NETWORK_LATENCY, san.getNetworkLatency());
     }
 
-    /**
-     * Creates a list of ficticious numbered File instances
-     * @param totalFiles The number of files to be created
-     * @param fileSize the size of each file
-     * @return
-     */
+    /// Creates a list of ficticious numbered File instances
+    /// @param totalFiles The number of files to be created
+    /// @param fileSize the size of each file
+    /// @return
     public static List<File> createFileList(final int totalFiles, final int fileSize) {
         final var fileList = new ArrayList<File>();
         for(int i = 1; i <= totalFiles; i++){
@@ -247,13 +242,11 @@ public class SanStorageTest {
         return fileList;
     }
 
-    /**
-     * Creates a fictitious File instance with a fileName "file%d", where %d is the fileNumber given.
-     * @param fileNumber The number of the file
-     * @param fileSize The size of the file
-     * @return a File instance
-     * @throws IllegalArgumentException
-     */
+    /// Creates a fictitious File instance with a fileName "file%d", where %d is the fileNumber given.
+    /// @param fileNumber The number of the file
+    /// @param fileSize The size of the file
+    /// @return a File instance
+    /// @throws IllegalArgumentException
     private static File createNumberedFile(final int fileNumber, final int fileSize) {
         final var fileName = "file%d.txt".formatted(fileNumber);
         return new File(fileName, fileSize);
@@ -328,10 +321,8 @@ public class SanStorageTest {
         assertFalse(san.reserveSpace(FILE_SIZE*10));
     }
 
-    /**
-     * Try to add a reserved file which the space was not previously reserved.
-     * An exception must be thrown in that case.
-     */
+    /// Try to add a reserved file which the space was not previously reserved.
+    /// An exception must be thrown in that case.
     @Test
     public void testReserveSpaceNotReservedFile1() {
         final int fileSize = FILE_SIZE;
@@ -386,10 +377,8 @@ public class SanStorageTest {
         assertFalse(san.addReservedFile(file) > 0);
     }
 
-    /**
-     * Try to add a reserved file which the space was not previously reserved.
-     * An exception must be thrown in that case.
-     */
+    /// Try to add a reserved file which the space was not previously reserved.
+    /// An exception must be thrown in that case.
     @Test
     public void testReserveSpaceNotReservedFile2() {
         final int fileSize = FILE_SIZE;
@@ -418,11 +407,9 @@ public class SanStorageTest {
         assertEquals(available, san.getAllocatedResource());
     }
 
-    /**
-     * Try to add a reserved file which the space was not totally reserved
-     * before.
-     * An exception must be thrown in that case.
-     */
+    /// Try to add a reserved file which the space was not totally reserved
+    /// before.
+    /// An exception must be thrown in that case.
     @Test
     public void testReserveSpaceNotReservedFile3() {
         final int fileSize = FILE_SIZE;
@@ -497,11 +484,9 @@ public class SanStorageTest {
         assertThrows(NullPointerException.class, () -> san.getFile(null));
     }
 
-    /**
-     * Adds and internally created file list to a Hard Drive
-     * @param instance the Hard Drive to add the files
-     * @return the list of created files
-     */
+    /// Adds and internally created file list to a Hard Drive
+    /// @param instance the Hard Drive to add the files
+    /// @return the list of created files
     private List<File> createListOfFilesAndAddToHardDrive(SanStorage instance) {
         final var fileList = createFileList(TOTAL_FILES_TO_CREATE, FILE_SIZE);
         assertTrue(instance.addFile(fileList)>0);

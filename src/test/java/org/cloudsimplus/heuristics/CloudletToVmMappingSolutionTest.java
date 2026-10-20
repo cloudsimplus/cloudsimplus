@@ -35,10 +35,7 @@ import java.util.Map;
 import static java.util.AbstractMap.SimpleEntry;
 import static org.junit.jupiter.api.Assertions.*;
 
-/**
- *
- * @author Manoel Campos da Silva Filho
- */
+/// @author Manoel Campos da Silva Filho
 public class CloudletToVmMappingSolutionTest {
     @Test
     public void testGetFitness() {

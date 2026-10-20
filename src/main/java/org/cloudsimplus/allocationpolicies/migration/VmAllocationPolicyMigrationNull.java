@@ -35,12 +35,10 @@ import java.util.*;
 import java.util.function.BiFunction;
 import org.jspecify.annotations.Nullable;
 
-/**
- * A class that implements the Null Object Design Pattern for {@link VmAllocationPolicyMigration}.
- *
- * @author Manoel Campos da Silva Filho
- * @see VmAllocationPolicyMigration#NULL
- */
+/// A class that implements the Null Object Design Pattern for [VmAllocationPolicyMigration].
+///
+/// @author Manoel Campos da Silva Filho
+/// @see VmAllocationPolicyMigration#NULL
 final class VmAllocationPolicyMigrationNull implements VmAllocationPolicyMigration {
     @Override public Datacenter getDatacenter() { return Datacenter.NULL; }
     @Override public VmAllocationPolicy setDatacenter(Datacenter datacenter) { return this; }

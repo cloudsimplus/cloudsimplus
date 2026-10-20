@@ -37,13 +37,11 @@ import java.util.zip.GZIPInputStream;
 import java.util.zip.ZipInputStream;
 import org.jspecify.annotations.Nullable;
 
-/**
- * Reads and parses data inside text, zip and gzip files.
- *
- * @author Manoel Campos da Silva Filho
- * @author Anton Beloglazov
- * @since CloudSim Plus 8.1.0
- */
+/// Reads and parses data inside text, zip and gzip files.
+///
+/// @author Manoel Campos da Silva Filho
+/// @author Anton Beloglazov
+/// @since CloudSim Plus 8.1.0
 public class FileReader {
     public static final String DEF_FIELD_DELIMITER_REGEX = "\\s+";
 
@@ -59,20 +57,16 @@ public class FileReader {
     @Getter
     private int lastLineNumber;
 
-    /**
-     * The maximum number of lines from the trace reader that will be read.
-     * {@link Integer#MAX_VALUE} indicates that all lines will be read.
-     */
+    /// The maximum number of lines from the trace reader that will be read.
+    /// [Integer#MAX_VALUE] indicates that all lines will be read.
     @Getter
     private int maxLinesToRead;
 
     private String[] commentString = {";", "#"};
 
-    /**
-     * Creates a file reader that considers spaces as field delimiter.
-     * @param filePath path of the file to read
-     * @see #getSingleLineReader(String)
-     */
+    /// Creates a file reader that considers spaces as field delimiter.
+    /// @param filePath path of the file to read
+    /// @see #getSingleLineReader(String)
     public FileReader(@NonNull final String filePath) {
         this(DEF_FIELD_DELIMITER_REGEX, filePath, Integer.MAX_VALUE);
     }
@@ -81,46 +75,38 @@ public class FileReader {
         this(fieldDelimiterRegex, filePath, Integer.MAX_VALUE);
     }
 
-    /**
-     * Creates a file reader that considers spaces as field delimiter.
-     * @param filePath path of the file to read
-     * @param maxLinesToRead The maximum number of lines from the trace reader that will be read.
-     *                       {@link Integer#MAX_VALUE} indicates that all lines will be read.
-     * @see #getSingleLineReader(String)
-     */
+    /// Creates a file reader that considers spaces as field delimiter.
+    /// @param filePath path of the file to read
+    /// @param maxLinesToRead The maximum number of lines from the trace reader that will be read.
+    /// [Integer#MAX_VALUE] indicates that all lines will be read.
+    /// @see #getSingleLineReader(String)
     public FileReader(@NonNull final String filePath, final int maxLinesToRead) {
         this(DEF_FIELD_DELIMITER_REGEX, filePath, maxLinesToRead);
     }
 
-    /**
-     * Creates a file reader.
-     * @param fieldDelimiterRegex A regex defining how fields are delimited in the trace file.
-     *                            See {@link #getFieldDelimiterRegex()} for details.
-     * @param filePath path of the file to read
-     * @param maxLinesToRead The maximum number of lines from the trace reader that will be read.
-     *                       {@link Integer#MAX_VALUE} indicates that all lines will be read.
-     * @see #getSingleLineReader(String)
-     */
+    /// Creates a file reader.
+    /// @param fieldDelimiterRegex A regex defining how fields are delimited in the trace file.
+    /// See [#getFieldDelimiterRegex()] for details.
+    /// @param filePath path of the file to read
+    /// @param maxLinesToRead The maximum number of lines from the trace reader that will be read.
+    /// [Integer#MAX_VALUE] indicates that all lines will be read.
+    /// @see #getSingleLineReader(String)
     public FileReader(final String fieldDelimiterRegex, @NonNull final String filePath, final int maxLinesToRead) {
         this.fieldDelimiterRegex = fieldDelimiterRegex;
         this.filePath = filePath;
         this.maxLinesToRead = maxLinesToRead;
     }
 
-    /**
-     * Gets a reader that parses only the first line inside the given file,
-     * considering space as the field delimiter
-     * @param filePath the path of the file to read
-     * @return the file reader
-     */
+    /// Gets a reader that parses only the first line inside the given file,
+    /// considering space as the field delimiter
+    /// @param filePath the path of the file to read
+    /// @return the file reader
     public static FileReader getSingleLineReader(@NonNull final String filePath){
         return new FileReader(filePath, 1);
     }
 
-    /**
-     * Sets Strings that identify the start of a comment line.
-     * @param commentString the comment Strings to set
-     */
+    /// Sets Strings that identify the start of a comment line.
+    /// @param commentString the comment Strings to set
     public FileReader setCommentString(@NonNull final String... commentString) {
         if (commentString.length == 0) {
             throw new IllegalArgumentException("A comment String is required");
@@ -131,21 +117,17 @@ public class FileReader {
         return this;
     }
 
-    /**
-     * Gets the Strings that identifies the start of a comment line.
-     * <br>For instance <b>; # % //</b>, according to the file to read.
-     */
+    /// Gets the Strings that identifies the start of a comment line.
+    /// <br>For instance **; # % //**, according to the file to read.
     public String[] getCommentString() {
         return Arrays.copyOf(commentString, commentString.length);
     }
 
-    /**
-     * Sets the maximum number of lines from the workload reader that will be read.
-     * {@link Integer#MAX_VALUE} indicates that all lines will be read.
-     *
-     * @param maxLinesToRead the maximum number of lines to set
-     * @return the file reader
-     */
+    /// Sets the maximum number of lines from the workload reader that will be read.
+    /// [Integer#MAX_VALUE] indicates that all lines will be read.
+    ///
+    /// @param maxLinesToRead the maximum number of lines to set
+    /// @return the file reader
     public final FileReader setMaxLinesToRead(final int maxLinesToRead) {
         if (maxLinesToRead <= 0) {
             throw new IllegalArgumentException("Maximum number of lines to read from the trace must be greater than 0. If you want to read the entire file, provide Integer.MAX_VALUE.");
@@ -159,25 +141,21 @@ public class FileReader {
         return Arrays.stream(commentString).anyMatch(line::startsWith);
     }
 
-    /**
-     * Reads a trace file indicated by the {@link #getFilePath()}.
-     *
-     * @return the last parsed line
-     * @throws UncheckedIOException if there was any error reading the file
-     */
+    /// Reads a trace file indicated by the [#getFilePath()].
+    ///
+    /// @return the last parsed line
+    /// @throws UncheckedIOException if there was any error reading the file
     public String[] readFile() {
         return readFile(parsedLine -> true);
     }
 
-    /**
-     * Reads a trace file indicated by the {@link #getFilePath()}.
-     * It performs additional processing after parsing the line.
-     *
-     * @param processParsedLineFunc a {@link Function} that receives each parsed line as an array
-     *                              and performs an operation over it, returning true if the operation was executed
-     * @return the last parsed line
-     * @throws UncheckedIOException if there was any error reading the file
-     */
+    /// Reads a trace file indicated by the [#getFilePath()].
+    /// It performs additional processing after parsing the line.
+    ///
+    /// @param processParsedLineFunc a [Function] that receives each parsed line as an array
+    /// and performs an operation over it, returning true if the operation was executed
+    /// @return the last parsed line
+    /// @throws UncheckedIOException if there was any error reading the file
     protected String[] readFile(final Function<String[], Boolean> processParsedLineFunc) {
         try {
             final var ext = Util.getFileExtension(getFilePath());
@@ -192,15 +170,13 @@ public class FileReader {
         }
     }
 
-    /**
-     * Reads a trace file inside a zip.
-     *
-     * @param is a {@link InputStream} to read the file
-     * @param processParsedLineFunc a {@link Function} that receives each parsed line as an array
-     *                              and performs an operation over it, returning true if the operation was executed
-     * @return the last parsed line
-     * @throws IOException if there was any error reading the file
-     */
+    /// Reads a trace file inside a zip.
+    ///
+    /// @param is a [InputStream] to read the file
+    /// @param processParsedLineFunc a [Function] that receives each parsed line as an array
+    /// and performs an operation over it, returning true if the operation was executed
+    /// @return the last parsed line
+    /// @throws IOException if there was any error reading the file
     @SneakyThrows(IOException.class)
     private String[] readZipFile(
         @NonNull final InputStream is,
@@ -216,15 +192,13 @@ public class FileReader {
         return new String[0];
     }
 
-    /**
-     * Reads a trace file from an {@link InputStream} linked to a file in any supported format.
-     *
-     * @param is a {@link InputStream} to read the file
-     * @param processParsedLineFunc a {@link Function} that receives each parsed line as an array
-     *                              and performs an operation over it, returning true if the operation was executed.
-     * @return the last parsed line
-     * @throws IOException if there was any error reading the file
-     */
+    /// Reads a trace file from an [InputStream] linked to a file in any supported format.
+    ///
+    /// @param is a [InputStream] to read the file
+    /// @param processParsedLineFunc a [Function] that receives each parsed line as an array
+    /// and performs an operation over it, returning true if the operation was executed.
+    /// @return the last parsed line
+    /// @throws IOException if there was any error reading the file
     @SneakyThrows(IOException.class)
     private String[] readFileInternal(
         @NonNull final InputStream is,
@@ -245,14 +219,12 @@ public class FileReader {
         return parsedLine;
     }
 
-    /**
-     * Reads the next line of the trace file.
-     *
-     * @param reader the object that is reading the trace file
-     * @return the line read; otherwise null if there isn't any more lines to read or if
-     * the number of lines to read was reached
-     * @see #getMaxLinesToRead()
-     */
+    /// Reads the next line of the trace file.
+    ///
+    /// @param reader the object that is reading the trace file
+    /// @return the line read; otherwise null if there isn't any more lines to read or if
+    /// the number of lines to read was reached
+    /// @see #getMaxLinesToRead()
     @SneakyThrows
     private @Nullable String readNextLine(final BufferedReader reader) {
         if (reader.ready() && lastLineNumber <= maxLinesToRead - 1) {

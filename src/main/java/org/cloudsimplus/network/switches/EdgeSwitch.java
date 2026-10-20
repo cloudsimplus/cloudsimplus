@@ -19,62 +19,42 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * Represents an Edge Switch in a Datacenter network, which can be connected to {@link NetworkHost}s.
- * It interacts with another Datacenter to exchange packets.
- *
- * <br>Please refer to the following publication for more details:<br>
- * <ul>
- * <li>
- * <a href="https://doi.org/10.1109/UCC.2011.24">
- * Saurabh Kumar Garg and Rajkumar Buyya, NetworkCloudSim: Modelling Parallel
- * Applications in Cloud Simulations, Proceedings of the 4th IEEE/ACM
- * International Conference on Utility and Cloud Computing (UCC 2011, IEEE CS
- * Press, USA), Melbourne, Australia, December 5-7, 2011.
- * </a>
- * </ul>
- *
- * @author Saurabh Kumar Garg
- * @author Manoel Campos da Silva Filho
- *
- * @since CloudSim Toolkit 3.0
- */
+/// Represents an Edge Switch in a Datacenter network, which can be connected to [NetworkHost]s.
+/// It interacts with another Datacenter to exchange packets.
+///
+/// <br>Please refer to the following publication for more details:<br>
+///
+/// -
+///   [Saurabh Kumar Garg and Rajkumar Buyya, NetworkCloudSim: Modelling Parallel Applications in Cloud Simulations, Proceedings of the 4th IEEE/ACM International Conference on Utility and Cloud Computing (UCC 2011, IEEE CS Press, USA), Melbourne, Australia, December 5-7, 2011.](https://doi.org/10.1109/UCC.2011.24)
+///
+/// @author Saurabh Kumar Garg
+/// @author Manoel Campos da Silva Filho
+///
+/// @since CloudSim Toolkit 3.0
 public class EdgeSwitch extends AbstractSwitch {
-    /**
-     * The level (layer) of the Switch in the network topology.
-     */
+    /// The level (layer) of the Switch in the network topology.
     public static final int LEVEL = 2;
 
-    /**
-     * Default number of ports that defines the number of
-     * {@link Host} that can be connected to the Switch.
-     */
+    /// Default number of ports that defines the number of
+    /// [Host] that can be connected to the Switch.
     public static final int PORTS = 4;
 
-    /**
-     * Default downlink bandwidth of {@link EdgeSwitch} in Megabits/s.
-     * It also represents the uplink bandwidth of connected hosts.
-     */
+    /// Default downlink bandwidth of [EdgeSwitch] in Megabits/s.
+    /// It also represents the uplink bandwidth of connected hosts.
     private static final long DEF_DOWNLINK_BW = 100 * 8;
 
-    /**
-     * Default switching delay in milliseconds.
-     */
+    /// Default switching delay in milliseconds.
     private static final double DEF_SWITCHING_DELAY = 0.00157;
 
-    /**
-     * List of hosts connected to the Switch.
-     */
+    /// List of hosts connected to the Switch.
     private final List<NetworkHost> hostList;
 
-    /**
-     * Instantiates a {@link EdgeSwitch}, specifying the Datacenter which is connected to its
-     * downlink and uplink ports and corresponding bandwidths. In this Switch,
-     * downlink ports aren't connected to another Switch but to Hosts.
-     *
-     * @param simulation the CloudSimPlus instance that represents the simulation the Switch belongs to
-     * @param dc the Datacenter where the Switch is connected to
-     */
+    /// Instantiates a [EdgeSwitch], specifying the Datacenter which is connected to its
+    /// downlink and uplink ports and corresponding bandwidths. In this Switch,
+    /// downlink ports aren't connected to another Switch but to Hosts.
+    ///
+    /// @param simulation the CloudSimPlus instance that represents the simulation the Switch belongs to
+    /// @param dc the Datacenter where the Switch is connected to
     public EdgeSwitch(final CloudSimPlus simulation, final NetworkDatacenter dc) {
         super(simulation, dc);
 
@@ -129,29 +109,23 @@ public class EdgeSwitch extends AbstractSwitch {
         return LEVEL;
     }
 
-    /**
-     * @return a <b>read-only</b> list of Hosts connected to the switch.
-     */
+    /// @return a **read-only** list of Hosts connected to the switch.
     public List<NetworkHost> getHostList() {
         return Collections.unmodifiableList(hostList);
     }
 
-    /**
-     * Connects a {@link NetworkHost} to the Switch, by adding it to the
-     * {@link #getHostList()}.
-     * @param host the host to be connected to the switch
-     */
+    /// Connects a [NetworkHost] to the Switch, by adding it to the
+    /// [#getHostList()].
+    /// @param host the host to be connected to the switch
     public void connectHost(@NonNull final NetworkHost host) {
         hostList.add(host);
         host.setEdgeSwitch(this);
     }
 
-    /**
-     * Disconnects a {@link NetworkHost} from the Switch, by removing it from the
-     * {@link #getHostList()}.
-     * @param host the host to be disconnected from the Switch
-     * @return true if the Host was connected to the Switch, false otherwise
-     */
+    /// Disconnects a [NetworkHost] from the Switch, by removing it from the
+    /// [#getHostList()].
+    /// @param host the host to be disconnected from the Switch
+    /// @return true if the Host was connected to the Switch, false otherwise
     public boolean disconnectHost(@NonNull final NetworkHost host) {
         if(hostList.remove(host)){
             host.setEdgeSwitch(null);

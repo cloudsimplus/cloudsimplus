@@ -36,37 +36,33 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
 
-/**
- * A basic implementation of a {@link VmCloner}.
- *
- * @author raysaoliveira
- * @since CloudSim Plus 1.2.2
- */
+/// A basic implementation of a [VmCloner].
+///
+/// @author raysaoliveira
+/// @since CloudSim Plus 1.2.2
 @Accessors
 public class VmClonerSimple implements VmCloner {
-    /** @see #setVmClonerFunction(UnaryOperator)  */
+    /// @see #setVmClonerFunction(UnaryOperator)
     @Setter @NonNull
     private UnaryOperator<Vm> vmClonerFunction;
 
-    /** @see #setCloudletsClonerFunction(Function)  */
+    /// @see #setCloudletsClonerFunction(Function)
     @Setter @NonNull
     private Function<Vm, List<Cloudlet>> cloudletsClonerFunction;
 
-    /** @see #getMaxClonesNumber() */
+    /// @see #getMaxClonesNumber()
     @Getter @Setter
     private int maxClonesNumber;
 
-    /** @see #getClonedVmsNumber() */
+    /// @see #getClonedVmsNumber()
     @Getter
     private int clonedVmsNumber;
 
-    /**
-     * Creates a {@link Vm} cloner which clones Vm at maximum once after all VMs fail on a given broker.
-     *
-     * @param vmClonerFunction the {@link UnaryOperator} to be used to clone {@link Vm}s.
-     * @param cloudletsClonerFunction the {@link Function} to be used to clone Vm's {@link Cloudlet}s.
-     * @see #setMaxClonesNumber(int)
-     */
+    /// Creates a [Vm] cloner which clones Vm at maximum once after all VMs fail on a given broker.
+    ///
+    /// @param vmClonerFunction the [UnaryOperator] to be used to clone [Vm]s.
+    /// @param cloudletsClonerFunction the [Function] to be used to clone Vm's [Cloudlet]s.
+    /// @see #setMaxClonesNumber(int)
     public VmClonerSimple(final UnaryOperator<Vm> vmClonerFunction, final Function<Vm, List<Cloudlet>> cloudletsClonerFunction){
         this.maxClonesNumber = 1;
         setVmClonerFunction(vmClonerFunction);

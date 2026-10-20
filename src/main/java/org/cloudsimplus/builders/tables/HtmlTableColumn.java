@@ -23,13 +23,11 @@
  */
 package org.cloudsimplus.builders.tables;
 
-/**
- * A column of an {@link HtmlTable}. The class generates the HTML code
- * that represents a column in the table.
- *
- * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 1.0
- */
+/// A column of an [HtmlTable]. The class generates the HTML code
+/// that represents a column in the table.
+///
+/// @author Manoel Campos da Silva Filho
+/// @since CloudSim Plus 1.0
 public class HtmlTableColumn extends AbstractTableColumn {
     public HtmlTableColumn(final String title, final String subTitle) {
         this(title, subTitle, "");

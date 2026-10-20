@@ -38,9 +38,7 @@ import org.cloudsimplus.hosts.Host;
 /// @author Manoel Campos da Silva Filho
 /// @since CloudSim Plus 4.0.0
 public enum MachineEventType {
-    /**
-     * 0: A {@link Host} became available to the cluster - all machines in the trace will have an ADD event.
-     */
+    /// 0: A [Host] became available to the cluster - all machines in the trace will have an ADD event.
     ADD{
         @Override
         protected boolean process(final GoogleMachineEventsTraceReader reader) {
@@ -50,9 +48,7 @@ public enum MachineEventType {
         }
     },
 
-    /**
-     * 1: A {@link Host} was removed from the cluster. Removals can occur due to failures or maintenance.
-     */
+    /// 1: A [Host] was removed from the cluster. Removals can occur due to failures or maintenance.
     REMOVE{
         @Override
         protected boolean process(final GoogleMachineEventsTraceReader reader) {
@@ -62,18 +58,14 @@ public enum MachineEventType {
         }
     },
 
-    /**
-     * 2: A {@link Host} available to the cluster had its available resources changed.
-     */
+    /// 2: A [Host] available to the cluster had its available resources changed.
     UPDATE{
-        /**
-         * Update events aren't being processed yet.
-         *
-         * @param reader the trace file reader
-         * @return always false to indicate the method is not implemented yet
-         *
-         * @TODO Update events are NOT being processed yet.
-         */
+        /// Update events aren't being processed yet.
+        ///
+        /// @param reader the trace file reader
+        /// @return always false to indicate the method is not implemented yet
+        ///
+        /// @TODO Update events are NOT being processed yet.
         @Override
         protected boolean process(final GoogleMachineEventsTraceReader reader) {
             System.err.printf("%s: Update events are NOT being processed yet.%n", getClass().getSimpleName());
@@ -81,21 +73,17 @@ public enum MachineEventType {
         }
     };
 
-    /**
-     * Gets an enum instance from its ordinal value.
-     * @param ordinal the ordinal value to get the enum instance from
-     * @return the enum instance
-     */
+    /// Gets an enum instance from its ordinal value.
+    /// @param ordinal the ordinal value to get the enum instance from
+    /// @return the enum instance
     public static MachineEventType getValue(final int ordinal){
         return values()[ordinal];
     }
 
-    /**
-     * Executes an operation with the Hosts according to the Event Type.
-     * Each enum value must implement this method to include its own processing logic.
-     *
-     * @param reader the trace file reader
-     * @return true if trace line for the event type was processed, false otherwise
-     */
+    /// Executes an operation with the Hosts according to the Event Type.
+    /// Each enum value must implement this method to include its own processing logic.
+    ///
+    /// @param reader the trace file reader
+    /// @return true if trace line for the event type was processed, false otherwise
     protected abstract boolean process(GoogleMachineEventsTraceReader reader);
 }

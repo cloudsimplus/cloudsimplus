@@ -28,12 +28,10 @@ import org.cloudsimplus.core.Simulation;
 import org.cloudsimplus.listeners.EventInfo;
 import org.cloudsimplus.listeners.EventListener;
 
-/**
- * A class that implements the Null Object Design Pattern for {@link SimEvent} class.
- *
- * @author Manoel Campos da Silva Filho
- * @see SimEvent#NULL
- */
+/// A class that implements the Null Object Design Pattern for [SimEvent] class.
+///
+/// @author Manoel Campos da Silva Filho
+/// @see SimEvent#NULL
 final class SimEventNull implements SimEvent {
     @Override public SimEvent setSimulation(Simulation simulation) { return this; }
     @Override public Type getType() { return Type.NULL; }

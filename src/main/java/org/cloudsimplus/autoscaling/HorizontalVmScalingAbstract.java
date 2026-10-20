@@ -34,11 +34,9 @@ import org.slf4j.LoggerFactory;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-/**
- * An abstract class for implementing {@link HorizontalVmScaling}.
- * @author Manoel Campos
- * @since CloudSim Plus 9.0.0
- */
+/// An abstract class for implementing [HorizontalVmScaling].
+/// @author Manoel Campos
+/// @since CloudSim Plus 9.0.0
 public non-sealed class HorizontalVmScalingAbstract extends VmScalingAbstract implements HorizontalVmScaling {
     private static final Logger LOGGER = LoggerFactory.getLogger(HorizontalVmScalingSimple.class.getSimpleName());
 
@@ -48,11 +46,9 @@ public non-sealed class HorizontalVmScalingAbstract extends VmScalingAbstract im
     @Getter @Setter @NonNull
     private Predicate<Vm> overloadPredicate;
 
-    /**
-     * The last number of Cloudlet creation requests
-     * received by the broker. This is not related to the VM,
-     * but the overall Cloudlet creation requests.
-     */
+    /// The last number of Cloudlet creation requests
+    /// received by the broker. This is not related to the VM,
+    /// but the overall Cloudlet creation requests.
     private long cloudletCreationRequests;
 
     public HorizontalVmScalingAbstract() {
@@ -79,10 +75,8 @@ public non-sealed class HorizontalVmScalingAbstract extends VmScalingAbstract im
         return true;
     }
 
-    /**
-     * {@return true to indicate if new Cloudlets were submitted
-     * to the broker since the last time this method was called, false otherwise}
-     */
+    /// {@return true to indicate if new Cloudlets were submitted
+    /// to the broker since the last time this method was called, false otherwise}
     private boolean haveNewCloudletsArrived() {
         return getVm().getBroker().getCloudletCreatedList().size() > cloudletCreationRequests;
     }

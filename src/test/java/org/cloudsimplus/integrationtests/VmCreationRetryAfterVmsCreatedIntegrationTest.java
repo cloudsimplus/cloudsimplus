@@ -44,16 +44,14 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-/**
- * An Integration Test (IT) to check that a VM submitted during simulation runtime,
- * after all previously submitted VMs were created, is retried when it can't be placed,
- * instead of being moved to the failed list right away.
- *
- * <p>The first VM uses all Host PEs, so the second one can only be placed after the
- * first one finishes and is destroyed.</p>
- *
- * @see <a href="https://github.com/cloudsimplus/cloudsimplus/issues/579">Issue #579</a>
- */
+/// An Integration Test (IT) to check that a VM submitted during simulation runtime,
+/// after all previously submitted VMs were created, is retried when it can't be placed,
+/// instead of being moved to the failed list right away.
+///
+/// The first VM uses all Host PEs, so the second one can only be placed after the
+/// first one finishes and is destroyed.
+///
+/// @see <a href="https://github.com/cloudsimplus/cloudsimplus/issues/579">Issue #579</a>
 final class VmCreationRetryAfterVmsCreatedIntegrationTest {
     private static final int TIMEOUT_SECS = 10;
     private static final int HOST_PES = 4;
@@ -87,10 +85,8 @@ final class VmCreationRetryAfterVmsCreatedIntegrationTest {
         assertTrue(broker.getVmCreatedList().contains(lateVm), lateVm + " should have been created");
     }
 
-    /**
-     * Submits the late VM after the first one is created,
-     * when there is no other VM waiting to be created.
-     */
+    /// Submits the late VM after the first one is created,
+    /// when there is no other VM waiting to be created.
     private void submitLateVm(final EventInfo info) {
         if (lateVmSubmitted || !firstVm.isCreated() || info.getTime() <= firstVm.getStartTime()) {
             return;

@@ -36,63 +36,47 @@ import java.util.Objects;
 /// @author raysaoliveira
 /// @since CloudSim Plus 1.0
 public class VmCost {
-    /**
-     * The VM for which the total monetary cost will be computed.
-     */
+    /// The VM for which the total monetary cost will be computed.
     @Getter
     private final Vm vm;
 
-    /**
-     * Creates an instance to compute the monetary cost ($) to run a given VM.
-     * @param vm the VM to compute its monetary cost
-     */
+    /// Creates an instance to compute the monetary cost ($) to run a given VM.
+    /// @param vm the VM to compute its monetary cost
     public VmCost(final Vm vm) {
         this.vm = Objects.requireNonNull(vm);
     }
 
-    /**
-     * {@return the characteristics of the Datacenter where the VM is running}
-     * Such characteristics include the price to run a VM in such a Datacenter.
-     */
+    /// {@return the characteristics of the Datacenter where the VM is running}
+    /// Such characteristics include the price to run a VM in such a Datacenter.
     private DatacenterCharacteristics getDcCharacteristics() {
         return vm.getHost().getDatacenter().getCharacteristics();
     }
 
-    /**
-     * @return the memory monetary cost ($) of the resource allocated to the VM
-     */
+    /// @return the memory monetary cost ($) of the resource allocated to the VM
     public double getMemoryCost() {
         return getDcCharacteristics().getCostPerMem() * vm.getRam().getCapacity();
     }
 
-    /**
-     * @return the bandwidth monetary cost ($) of the resource allocated to the VM
-     */
+    /// @return the bandwidth monetary cost ($) of the resource allocated to the VM
     public double getBwCost() {
         return getDcCharacteristics().getCostPerBw() * vm.getBw().getCapacity();
     }
 
-    /**
-     * @return the processing monetary cost ($) of the PEs allocated from the PM hosting the VM,
-     * considering the VM's PEs number and total execution time.
-     */
+    /// @return the processing monetary cost ($) of the PEs allocated from the PM hosting the VM,
+    /// considering the VM's PEs number and total execution time.
     public double getProcessingCost() {
         final double hostMips = vm.getHost().getMips();
         final double costPerMI = hostMips == 0 ? 0.0 : getDcCharacteristics().getCostPerSecond() / hostMips;
         return costPerMI * vm.getTotalMipsCapacity() * vm.getTotalExecutionTime();
     }
 
-    /**
-     * @return the storage monetary cost ($) of the resource allocated to the VM
-     */
+    /// @return the storage monetary cost ($) of the resource allocated to the VM
     public double getStorageCost() {
         return getDcCharacteristics().getCostPerStorage() * vm.getStorage().getCapacity();
     }
 
-    /**
-     * @return the total monetary cost ($) of all resources allocated to the VM,
-     * namely the processing power, bandwidth, memory and storage.
-     */
+    /// @return the total monetary cost ($) of all resources allocated to the VM,
+    /// namely the processing power, bandwidth, memory and storage.
     public double getTotalCost() {
         return getProcessingCost() + getStorageCost() + getMemoryCost() + getBwCost();
     }

@@ -37,12 +37,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
-/**
- * A Builder class to createDatacenter {@link DatacenterSimple} objects.
- *
- * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 1.0
- */
+/// A Builder class to createDatacenter [DatacenterSimple] objects.
+///
+/// @author Manoel Campos da Silva Filho
+/// @since CloudSim Plus 1.0
 @Accessors(chain = true)
 public class DatacenterBuilder implements Builder {
     private static final String DC_NAME_FORMAT = "Datacenter%d";
@@ -58,10 +56,8 @@ public class DatacenterBuilder implements Builder {
     private int createdDatacenters;
     @Setter @NonNull private List<SanStorage> storageList;
 
-    /**
-     * A {@link Function} used to create Datacenters.
-     * It must receive a list of {@link Host} for the Datacenter it will create.
-     */
+    /// A [Function] used to create Datacenters.
+    /// It must receive a list of [Host] for the Datacenter it will create.
     @Setter @NonNull private Function<List<Host>, Datacenter> datacenterCreationFunction;
 
 	public DatacenterBuilder(final SimulationScenarioBuilder scenario) {

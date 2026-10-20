@@ -39,12 +39,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
 
-/**
- * A class that implements the Null Object Design Pattern for {@link Datacenter} class.
- *
- * @author Manoel Campos da Silva Filho
- * @see Datacenter#NULL
- */
+/// A class that implements the Null Object Design Pattern for [Datacenter] class.
+///
+/// @author Manoel Campos da Silva Filho
+/// @see Datacenter#NULL
 final class DatacenterNull implements Datacenter, SimEntityNullBase {
     private static final DatacenterStorage STORAGE = new DatacenterStorage();
 

@@ -23,13 +23,11 @@
  */
 package org.cloudsimplus.resources;
 
-/**
- * A class that implements the Null Object Design Pattern for {@link FileStorage} class.
- *
- * @author Manoel Campos da Silva Filho
- * @see FileStorage#NULL
- * @since CloudSim Plus 6.3.0
- */
+/// A class that implements the Null Object Design Pattern for [FileStorage] class.
+///
+/// @author Manoel Campos da Silva Filho
+/// @see FileStorage#NULL
+/// @since CloudSim Plus 6.3.0
 final class FileStorageNull implements FileStorage {
     @Override public double getMaxTransferRate() { return 0; }
     @Override public FileStorage setMaxTransferRate(double maxTransferRate) { return this; }

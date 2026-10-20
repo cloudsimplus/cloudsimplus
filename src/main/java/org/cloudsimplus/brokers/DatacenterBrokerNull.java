@@ -39,13 +39,11 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import org.jspecify.annotations.Nullable;
 
-/**
- * A class that implements the Null Object Design Pattern for {@link DatacenterBroker}
- * class.
- *
- * @author Manoel Campos da Silva Filho
- * @see DatacenterBroker#NULL
- */
+/// A class that implements the Null Object Design Pattern for [DatacenterBroker]
+/// class.
+///
+/// @author Manoel Campos da Silva Filho
+/// @see DatacenterBroker#NULL
 final class DatacenterBrokerNull implements DatacenterBroker, SimEntityNullBase {
     @Override public int compareTo(SimEntity entity) { return 0; }
     @Override public boolean bindCloudletToVm(Cloudlet cloudlet, Vm vm) {

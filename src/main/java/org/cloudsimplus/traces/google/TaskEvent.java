@@ -61,18 +61,14 @@ import java.util.function.Function;
 public final class TaskEvent extends TaskData {
     private int priority;
 
-    /**
-     * The scheduling class that roughly represents how latency-sensitive the task is.
-     * The scheduling class is represented by a single number,
-     * with 3 representing a more latency-sensitive task (e.g., serving revenue-generating user requests)
-     * and 0 representing a non-production task (e.g., development, non-business-critical analyses, etc.).
-     * @see TaskEventField#SCHEDULING_CLASS
-     */
+    /// The scheduling class that roughly represents how latency-sensitive the task is.
+    /// The scheduling class is represented by a single number,
+    /// with 3 representing a more latency-sensitive task (e.g., serving revenue-generating user requests)
+    /// and 0 representing a non-production task (e.g., development, non-business-critical analyses, etc.).
+    /// @see TaskEventField#SCHEDULING_CLASS
     private int schedulingClass;
 
-    /**
-     * The event type.
-     */
+    /// The event type.
     @Setter(AccessLevel.NONE)
     private TaskEventType type;
 
@@ -136,44 +132,34 @@ public final class TaskEvent extends TaskData {
     @Setter
     private double resourceRequestForLocalDiskSpace;
 
-    /**
-     * The hashed username provided as an opaque base64-encoded string that can be tested for equality.
-     * @see TaskEventField#USERNAME
-     */
+    /// The hashed username provided as an opaque base64-encoded string that can be tested for equality.
+    /// @see TaskEventField#USERNAME
     private String userName;
 
-    /**
-     * The time the event happened (converted to seconds).
-     * @see TaskEventField#TIMESTAMP
-     */
+    /// The time the event happened (converted to seconds).
+    /// @see TaskEventField#TIMESTAMP
     private double timestamp;
 
-    /**
-     * Computes the actual number of CPU cores (PEs) to be assigned to
-     * a Cloudlet, according to the {@link #getResourceRequestForCpuCores() percentage of CPUs to be used}
-     * and a given maximum number of existing CPUs.
-     * @param maxCpuCores the maximum number of existing CPUs the Cloudlet can use (that can be defined as the number of VM's CPUs)
-     * @return the actual number of CPU cores the Cloudlet will require
-     */
+    /// Computes the actual number of CPU cores (PEs) to be assigned to
+    /// a Cloudlet, according to the [percentage of CPUs to be used][#getResourceRequestForCpuCores()]
+    /// and a given maximum number of existing CPUs.
+    /// @param maxCpuCores the maximum number of existing CPUs the Cloudlet can use (that can be defined as the number of VM's CPUs)
+    /// @return the actual number of CPU cores the Cloudlet will require
     public long actualCpuCores(final long maxCpuCores){
         return (long)(resourceRequestForCpuCores*maxCpuCores);
     }
 
-    /**
-     * Sets the {@link TaskEventType} according to the enum ordinal.
-     * @param type the int value of the task event type
-     * @return this instance
-     */
+    /// Sets the [TaskEventType] according to the enum ordinal.
+    /// @param type the int value of the task event type
+    /// @return this instance
     public TaskEvent setType(final int type) {
         this.type = TaskEventType.getValue(type);
         return this;
     }
 
-    /**
-     * Creates a TaskEvent from the current processed line from a Google Task Events trace file.
-     * @param reader the trace file reader
-     * @return this instance
-     */
+    /// Creates a TaskEvent from the current processed line from a Google Task Events trace file.
+    /// @param reader the trace file reader
+    /// @return this instance
     public static TaskEvent of(final GoogleTaskEventsTraceReader reader) {
         final var builder = new Builder();
         /* TODO The tasks with the same username must run inside the same user's VM,

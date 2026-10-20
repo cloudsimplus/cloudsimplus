@@ -28,17 +28,13 @@ import org.mockito.stubbing.OngoingStubbing;
 
 import java.util.function.Consumer;
 
-/**
- * A class that provides a set of methods to datacenter the {@link Datacenter} class
- * using {@link Mockito}. Each method in this class provides a datacenter for a
- * method with the same name in the Datacenter class.
- *
- * @author Manoel Campos da Silva Filho
- */
+/// A class that provides a set of methods to datacenter the [Datacenter] class
+/// using [Mockito]. Each method in this class provides a datacenter for a
+/// method with the same name in the Datacenter class.
+///
+/// @author Manoel Campos da Silva Filho
 public final class DatacenterMocker {
-    /**
-     * The created Datacenter datacenter object.
-     */
+    /// The created Datacenter datacenter object.
     private final Datacenter datacenter;
     private final DatacenterCharacteristics characteristics;
 

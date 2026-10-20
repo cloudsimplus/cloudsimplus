@@ -13,81 +13,59 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
-/**
- * Represents a graph containing vertices (nodes) and edges (links),
- * used for input with a network-layer.
- *
- * <p>Graphical-Output Restrictions:
- * <ul>
- * <li>EdgeColors: GraphicalProperties.getColorEdge</li>
- * <li>NodeColors: GraphicalProperties.getColorNode</li>
- * </ul>
- * </p>
- *
- * @author Thomas Hohnstein
- * @since CloudSim Toolkit 1.0
- */
+/// Represents a graph containing vertices (nodes) and edges (links),
+/// used for input with a network-layer.
+///
+/// Graphical-Output Restrictions:
+///
+/// - EdgeColors: GraphicalProperties.getColorEdge
+/// - NodeColors: GraphicalProperties.getColorNode
+///
+/// @author Thomas Hohnstein
+/// @since CloudSim Toolkit 1.0
 public class TopologicalGraph {
-    /**
-     * The links (edges) of the network graph.
-     */
+    /// The links (edges) of the network graph.
     private final List<TopologicalLink> linksList;
 
-    /**
-     * The nodes (vertices) of the network graph.
-     */
+    /// The nodes (vertices) of the network graph.
     private final List<TopologicalNode> nodeList;
 
-    /**
-     * Creates an empty network topology graph.
-     */
+    /// Creates an empty network topology graph.
     public TopologicalGraph() {
         linksList = new LinkedList<>();
         nodeList = new LinkedList<>();
     }
 
-    /**
-     * Adds a link between two topological nodes.
-     *
-     * @param edge the topological link
-     */
+    /// Adds a link between two topological nodes.
+    ///
+    /// @param edge the topological link
     public void addLink(final TopologicalLink edge) {
         linksList.add(Objects.requireNonNull(edge));
     }
 
-    /**
-     * Adds a Topological Node to this graph.
-     *
-     * @param node the topological node to add
-     */
+    /// Adds a Topological Node to this graph.
+    ///
+    /// @param node the topological node to add
     public void addNode(final TopologicalNode node) {
         nodeList.add(Objects.requireNonNull(node));
     }
 
-    /**
-     * @return the number of nodes contained inside the topological-graph.
-     */
+    /// @return the number of nodes contained inside the topological-graph.
     public int getNumberOfNodes() {
         return nodeList.size();
     }
 
-    /**
-     * @return the number of links contained inside the topological-graph.
-     */
+    /// @return the number of links contained inside the topological-graph.
     public int getNumberOfLinks() {
         return linksList.size();
     }
 
-    /**
-     * @return a <b>read-only</b> List of all network-graph links.
-     */
+    /// @return a **read-only** List of all network-graph links.
     public List<TopologicalLink> getLinksList() {
         return Collections.unmodifiableList(linksList);
     }
 
-    /**
-     * @return a <b>read-only</b> list of nodes from the network graph.
-     */
+    /// @return a **read-only** list of nodes from the network graph.
     public List<TopologicalNode> getNodeList() {
         return Collections.unmodifiableList(nodeList);
     }

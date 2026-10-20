@@ -31,33 +31,27 @@ import java.util.Objects;
 
 import static org.cloudsimplus.util.TimeUtil.hoursToMinutes;
 
-/**
- * An interface to be implemented by objects that
- * are physically placed into some time zone,
- * such as {@link Datacenter} and {@link Vm}.
- *
- * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 4.6.0
- * @see <a href="https://en.wikipedia.org/wiki/Time_zone">Time zone</a>
- */
+/// An interface to be implemented by objects that
+/// are physically placed into some time zone,
+/// such as [Datacenter] and [Vm].
+///
+/// @author Manoel Campos da Silva Filho
+/// @since CloudSim Plus 4.6.0
+/// @see <a href="https://en.wikipedia.org/wiki/Time_zone">Time zone</a>
 public interface TimeZoned {
     int MIN_TIME_ZONE_OFFSET = -12;
     int MAX_TIME_ZONE_OFFSET =  14;
 
-    /**
-     * Gets the time zone offset, a value between [{@link #MIN_TIME_ZONE_OFFSET} and {@link #MAX_TIME_ZONE_OFFSET}],
-     * in which the object is physically located.
-     *
-     * @return the time zone offset
-     */
+    /// Gets the time zone offset, a value between \[[#MIN_TIME_ZONE_OFFSET] and [#MAX_TIME_ZONE_OFFSET]\],
+    /// in which the object is physically located.
+    ///
+    /// @return the time zone offset
     double getTimeZone();
 
-    /**
-     * Sets the time zone offset between [{@link #MIN_TIME_ZONE_OFFSET} and {@link #MAX_TIME_ZONE_OFFSET}].
-     *
-     * @param timeZone the new time zone offset
-     * @return this instance
-     */
+    /// Sets the time zone offset between \[[#MIN_TIME_ZONE_OFFSET] and [#MAX_TIME_ZONE_OFFSET]\].
+    ///
+    /// @param timeZone the new time zone offset
+    /// @return this instance
     TimeZoned setTimeZone(double timeZone);
 
     default double validateTimeZone(final double timeZone) {
@@ -69,14 +63,12 @@ public interface TimeZoned {
         return timeZone;
     }
 
-    /**
-     * Selects the {@link Datacenter} closest to a given {@link Vm}, based on their {@link #getTimeZone() time zone}.
-     * It considers the Datacenter list is already sorted by timezone.
-     *
-     * @param vm to Vm to try placing into the closest Datacenter
-     * @param datacenters the list of available Datacenters, sorted by timezone
-     * @return the first selected Datacenter
-     */
+    /// Selects the [Datacenter] closest to a given [Vm], based on their [time zone][#getTimeZone()].
+    /// It considers the Datacenter list is already sorted by timezone.
+    ///
+    /// @param vm to Vm to try placing into the closest Datacenter
+    /// @param datacenters the list of available Datacenters, sorted by timezone
+    /// @return the first selected Datacenter
     static Datacenter closestDatacenter(final Vm vm, final List<Datacenter> datacenters){
         if(Objects.requireNonNull(datacenters).isEmpty()){
             throw new IllegalArgumentException("The list of Datacenters is empty.");
@@ -107,13 +99,11 @@ public interface TimeZoned {
         return currentDc;
     }
 
-    /**
-     * Computes the distance between this and other {@link TimeZoned} object,
-     * considering their time zone offset values.
-     *
-     * @param other the other {@link TimeZoned} object to check the distance to
-     * @return a positive integer value representing the distance between the objects
-     */
+    /// Computes the distance between this and other [TimeZoned] object,
+    /// considering their time zone offset values.
+    ///
+    /// @param other the other [TimeZoned] object to check the distance to
+    /// @return a positive integer value representing the distance between the objects
     default double distance(final TimeZoned other) {
         return Math.abs(other.getTimeZone() - this.getTimeZone());
     }

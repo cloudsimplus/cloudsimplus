@@ -28,13 +28,11 @@ import org.cloudsimplus.vms.Vm;
 
 import java.util.Optional;
 
-/**
- * A class that implements the Null Object Design Pattern for {@link VmSelectionPolicy} class.
- *
- * @author Manoel Campos da Silva Filho
- * @see VmSelectionPolicy#NULL
- * @since CloudSim Plus 4.1.2
- */
+/// A class that implements the Null Object Design Pattern for [VmSelectionPolicy] class.
+///
+/// @author Manoel Campos da Silva Filho
+/// @see VmSelectionPolicy#NULL
+/// @since CloudSim Plus 4.1.2
 final class VmSelectionPolicyNull implements VmSelectionPolicy {
     @Override public Optional<Vm> getVmToMigrate(Host host) { return Optional.empty(); }
 }

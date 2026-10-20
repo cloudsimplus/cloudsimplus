@@ -32,25 +32,21 @@ import org.cloudsimplus.selectionpolicies.VmSelectionPolicy;
 /// @author Manoel Campos da Silva Filho
 public class VmAllocationPolicyMigrationDynamicUpperThresholdFirstFit extends VmAllocationPolicyMigrationDynamicUpperThresholdAbstract {
 
-    /**
-     * Creates a VmAllocationPolicy with a {@link #getSafetyParameter() safety parameter} equals to 0
-     * and no {@link #getFallbackVmAllocationPolicy() fallback policy}.
-     *
-     * @param vmSelectionPolicy the {@link VmAllocationPolicyMigration#getVmSelectionPolicy() policy}
-     *                          that defines how VMs are selected for migration
-     */
+    /// Creates a VmAllocationPolicy with a [safety parameter][#getSafetyParameter()] equals to 0
+    /// and no [fallback policy][#getFallbackVmAllocationPolicy()].
+    ///
+    /// @param vmSelectionPolicy the [policy][VmAllocationPolicyMigration#getVmSelectionPolicy()]
+    /// that defines how VMs are selected for migration
     public VmAllocationPolicyMigrationDynamicUpperThresholdFirstFit(final VmSelectionPolicy vmSelectionPolicy) {
         this(vmSelectionPolicy, 0, VmAllocationPolicyMigration.NULL);
     }
 
-    /**
-     * Creates a VmAllocationPolicy.
-     *
-     * @param vmSelectionPolicy the {@link VmAllocationPolicyMigration#getVmSelectionPolicy() policy} that defines how VMs are selected for migration
-     * @param safetyParameter            {@link VmAllocationPolicyMigrationDynamicUpperThreshold#getSafetyParameter() the safety parameter}
-     * @param fallbackVmAllocationPolicy {@link VmAllocationPolicyMigrationDynamicUpperThreshold#getFallbackVmAllocationPolicy() the fallback VM allocation policy} to be used when
-     * the over utilization host detection doesn't have data to be computed
-     */
+    /// Creates a VmAllocationPolicy.
+    ///
+    /// @param vmSelectionPolicy the [policy][VmAllocationPolicyMigration#getVmSelectionPolicy()] that defines how VMs are selected for migration
+    /// @param safetyParameter            [the safety parameter][VmAllocationPolicyMigrationDynamicUpperThreshold#getSafetyParameter()]
+    /// @param fallbackVmAllocationPolicy [the fallback VM allocation policy][VmAllocationPolicyMigrationDynamicUpperThreshold#getFallbackVmAllocationPolicy()] to be used when
+    /// the over utilization host detection doesn't have data to be computed
     public VmAllocationPolicyMigrationDynamicUpperThresholdFirstFit(
         final VmSelectionPolicy vmSelectionPolicy,
         final double safetyParameter,

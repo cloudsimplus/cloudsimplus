@@ -91,204 +91,170 @@ public sealed interface VerticalVmScaling extends VmScaling
     permits VerticalVmScalingAbstract, VerticalVmScalingNull
 {
 
-    /**
-     * An attribute that implements the Null Object Design Pattern for {@link VerticalVmScaling}
-     * objects.
-     */
+    /// An attribute that implements the Null Object Design Pattern for [VerticalVmScaling]
+    /// objects.
     VerticalVmScaling NULL = new VerticalVmScalingNull();
 
-    /**
-     * {@return the class of Vm resource that up or down scaling will be requested}
-     * Such a class can be {@link Ram}, {@link Bandwidth} or {@link Pe}.
-     * @see #getResource()
-     */
+    /// {@return the class of Vm resource that up or down scaling will be requested}
+    /// Such a class can be [Ram], [Bandwidth] or [Pe].
+    /// @see #getResource()
     Class<? extends ResourceManageable> getResourceClass();
 
-    /**
-     * {@return the factor that will be used to scale a Vm resource up or down,
-     * whether such a resource is over or underloaded, according to the
-     * defined predicates}
-     *
-     * <p>If the resource to scale is a {@link Pe}, this is the absolute number of PEs
-     * to request adding or removing when the VM is over or underloaded, respectively.
-     * For any other kind of resource, this is a percentage value in scale from 0 to 1.
-     * Every time the VM needs to be scaled up or down, this factor will be applied
-     * to increase or decrease a specific VM allocated resource.</p>
-     *
-     * @see #getUpperThresholdFunction()
-     */
+    /// {@return the factor that will be used to scale a Vm resource up or down,
+    /// whether such a resource is over or underloaded, according to the
+    /// defined predicates}
+    ///
+    /// If the resource to scale is a [Pe], this is the absolute number of PEs
+    /// to request adding or removing when the VM is over or underloaded, respectively.
+    /// For any other kind of resource, this is a percentage value in scale from 0 to 1.
+    /// Every time the VM needs to be scaled up or down, this factor will be applied
+    /// to increase or decrease a specific VM allocated resource.
+    ///
+    /// @see #getUpperThresholdFunction()
     double getScalingFactor();
 
-    /**
-     * Sets the factor that will be used to scale a Vm resource up or down,
-     * whether such a resource is over or underloaded, according to the
-     * defined predicates.
-     *
-     * <p>If the resource to scale is a {@link Pe}, this is the absolute number of PEs
-     * to request adding or removing when the VM is over or underloaded, respectively.
-     * For any other kind of resource, this is a percentage value in scale from 0 to 1.
-     * Every time the VM needs to be scaled up or down, this factor will be applied
-     * to increase or decrease a specific VM allocated resource.</p>
-     *
-     * @param scalingFactor the scaling factor to set which may be an absolute value
-     *                      (for {@link Pe} scaling) or percentage (for scaling other resources)
-     * @see #getUpperThresholdFunction()
-     * @return this VerticalVmScaling object
-     */
+    /// Sets the factor that will be used to scale a Vm resource up or down,
+    /// whether such a resource is over or underloaded, according to the
+    /// defined predicates.
+    ///
+    /// If the resource to scale is a [Pe], this is the absolute number of PEs
+    /// to request adding or removing when the VM is over or underloaded, respectively.
+    /// For any other kind of resource, this is a percentage value in scale from 0 to 1.
+    /// Every time the VM needs to be scaled up or down, this factor will be applied
+    /// to increase or decrease a specific VM allocated resource.
+    ///
+    /// @param scalingFactor the scaling factor to set which may be an absolute value
+    /// (for [Pe] scaling) or percentage (for scaling other resources)
+    /// @see #getUpperThresholdFunction()
+    /// @return this VerticalVmScaling object
     VerticalVmScaling setScalingFactor(double scalingFactor);
 
-    /**
-     * Gets the lower or upper resource utilization threshold {@link Function},
-     * depending on if the Vm resource is under or overloaded, respectively.
-     *
-     * @return the lower resource utilization threshold function if the Vm resource
-     * is underloaded; upper resource utilization threshold function if the Vm resource
-     * is overloaded; or a function that always returns 0 if the Vm isn't in any of these conditions.
-     * @see #getLowerThresholdFunction()
-     * @see #getUpperThresholdFunction()
-     */
+    /// Gets the lower or upper resource utilization threshold [Function],
+    /// depending on if the Vm resource is under or overloaded, respectively.
+    ///
+    /// @return the lower resource utilization threshold function if the Vm resource
+    /// is underloaded; upper resource utilization threshold function if the Vm resource
+    /// is overloaded; or a function that always returns 0 if the Vm isn't in any of these conditions.
+    /// @see #getLowerThresholdFunction()
+    /// @see #getUpperThresholdFunction()
     Function<Vm, Double> getResourceUsageThresholdFunction();
 
-    /**
-     * {@return true if the Vm is underloaded, false otherwise}
-     * That is based on the {@link #getLowerThresholdFunction()}.
-     */
+    /// {@return true if the Vm is underloaded, false otherwise}
+    /// That is based on the [#getLowerThresholdFunction()].
     boolean isVmUnderloaded();
 
-    /**
-     * {@return true if the Vm is overloaded, false otherwise}
-     * That is based on the {@link #getUpperThresholdFunction()}.
-     */
+    /// {@return true if the Vm is overloaded, false otherwise}
+    /// That is based on the [#getUpperThresholdFunction()].
     boolean isVmOverloaded();
 
-    /**
-     * {@return the actual Vm Resource this scaling object is in charge of scaling}
-     */
+    /// {@return the actual Vm Resource this scaling object is in charge of scaling}
     Resource getResource();
 
-    /**
-     * {@return the absolute amount of the Vm resource which has to be scaled up or down}
-     * That is based on the {@link #getScalingFactor() scaling factor}.
-     *
-     * @see #getResourceClass()
-     */
+    /// {@return the absolute amount of the Vm resource which has to be scaled up or down}
+    /// That is based on the [scaling factor][#getScalingFactor()].
+    ///
+    /// @see #getResourceClass()
     double getResourceAmountToScale();
 
-    /**
-     * Performs a vertical scale if the Vm is overloaded, according to the
-     * {@link #getUpperThresholdFunction()} predicate,
-     * increasing the Vm resource to which the scaling object is linked to
-     * (that may be RAM, CPU, BW, etc.), according to the {@link #getScalingFactor() scaling factor}.
-     *
-     * <p>The time interval in which it will be checked if the Vm is overloaded
-     * depends on the {@link Datacenter#getSchedulingInterval()} value.
-     * Make sure to set such a value to enable the periodic overload verification.</p>
-     *
-     * @param evt event information containing the Vm to be scaled
-     * @see #getScalingFactor()
-     */
+    /// Performs a vertical scale if the Vm is overloaded, according to the
+    /// [#getUpperThresholdFunction()] predicate,
+    /// increasing the Vm resource to which the scaling object is linked to
+    /// (that may be RAM, CPU, BW, etc.), according to the [scaling factor][#getScalingFactor()].
+    ///
+    /// The time interval in which it will be checked if the Vm is overloaded
+    /// depends on the [Datacenter#getSchedulingInterval()] value.
+    /// Make sure to set such a value to enable the periodic overload verification.
+    ///
+    /// @param evt event information containing the Vm to be scaled
+    /// @see #getScalingFactor()
     @Override
     boolean requestUpScalingIfPredicateMatches(VmHostEventInfo evt);
 
-    /**
-     * {@return a Function that defines the upper utilization threshold for a Vm
-     * which indicates if it is overloaded or not}
-     * If it is overloaded, the Vm's {@link DatacenterBroker} will request to up scale the VM.
-     * The up scaling is performed by increasing the amount of the {@link #getResourceClass() resource}
-     * the scaling is associated to.
-     *
-     * <p>This function must receive a {@link Vm} and return the upper utilization threshold
-     * for it as a percentage value between 0 and 1 (where 1 is 100%).
-     * The VM will be defined as overloaded if the utilization of the {@link Resource}
-     * this scaling object is related to is higher than the value returned by the {@link Function}
-     * returned by this method.</p>
-     *
-     * @see #setUpperThresholdFunction(Function)
-     */
+    /// {@return a Function that defines the upper utilization threshold for a Vm
+    /// which indicates if it is overloaded or not}
+    /// If it is overloaded, the Vm's [DatacenterBroker] will request to up scale the VM.
+    /// The up scaling is performed by increasing the amount of the [resource][#getResourceClass()]
+    /// the scaling is associated to.
+    ///
+    /// This function must receive a [Vm] and return the upper utilization threshold
+    /// for it as a percentage value between 0 and 1 (where 1 is 100%).
+    /// The VM will be defined as overloaded if the utilization of the [Resource]
+    /// this scaling object is related to is higher than the value returned by the [Function]
+    /// returned by this method.
+    ///
+    /// @see #setUpperThresholdFunction(Function)
     Function<Vm, Double> getUpperThresholdFunction();
 
-    /**
-     * Sets a {@link Function} that defines the upper utilization threshold for a {@link #getVm() Vm}
-     * which indicates if it is overloaded or not.
-     * If it is overloaded, the Vm's {@link DatacenterBroker} will request to up scale the VM.
-     * The up scaling is performed by increasing the amount of the
-     * {@link #getResourceClass() resource} the scaling is associated to.
-     *
-     * <p>This function must receive a {@link Vm} and return the upper utilization threshold
-     * for it as a percentage value between 0 and 1 (where 1 is 100%).</p>
-     *
-     * <p>By setting the upper threshold as a {@link Function} instead of a directly
-     * storing a {@link Double} value which represent the threshold, it is possible
-     * to define the threshold dynamically instead of using a static value.
-     * Furthermore, the threshold function can be reused for scaling objects of
-     * different VMs.</p>
-     *
-     * @param upperThresholdFunction the upper utilization threshold function to set.
-     * The VM will be defined as overloaded if the utilization of the {@link Resource}
-     * this scaling object is related to is higher than the value returned by this {@link Function}.
-     * @return this VerticalVmScaling object
-     */
+    /// Sets a [Function] that defines the upper utilization threshold for a [Vm][#getVm()]
+    /// which indicates if it is overloaded or not.
+    /// If it is overloaded, the Vm's [DatacenterBroker] will request to up scale the VM.
+    /// The up scaling is performed by increasing the amount of the
+    /// [resource][#getResourceClass()] the scaling is associated to.
+    ///
+    /// This function must receive a [Vm] and return the upper utilization threshold
+    /// for it as a percentage value between 0 and 1 (where 1 is 100%).
+    ///
+    /// By setting the upper threshold as a [Function] instead of a directly
+    /// storing a [Double] value which represent the threshold, it is possible
+    /// to define the threshold dynamically instead of using a static value.
+    /// Furthermore, the threshold function can be reused for scaling objects of
+    /// different VMs.
+    ///
+    /// @param upperThresholdFunction the upper utilization threshold function to set.
+    /// The VM will be defined as overloaded if the utilization of the [Resource]
+    /// this scaling object is related to is higher than the value returned by this [Function].
+    /// @return this VerticalVmScaling object
     VerticalVmScaling setUpperThresholdFunction(Function<Vm, Double> upperThresholdFunction);
 
-    /**
-     * {@return a Function that defines the lower utilization threshold for a Vm
-     * which indicates if it is underloaded or not}
-     * If it is underloaded, the Vm's {@link DatacenterBroker} will request to down scale the VM.
-     * The down scaling is performed by decreasing the amount of the
-     * {@link #getResourceClass() resource} the scaling is associated to.
-     *
-     * <p>This function must receive a {@link Vm} and return the lower utilization threshold
-     * for it as a percentage value between 0 and 1 (where 1 is 100%).
-     * The VM will be defined as underloaded if the utilization of the {@link Resource}
-     * this scaling object is related to is lower than the value returned by the {@link Function}
-     * returned by this method.</p>
-     *
-     * @see #setLowerThresholdFunction(Function)
-     */
+    /// {@return a Function that defines the lower utilization threshold for a Vm
+    /// which indicates if it is underloaded or not}
+    /// If it is underloaded, the Vm's [DatacenterBroker] will request to down scale the VM.
+    /// The down scaling is performed by decreasing the amount of the
+    /// [resource][#getResourceClass()] the scaling is associated to.
+    ///
+    /// This function must receive a [Vm] and return the lower utilization threshold
+    /// for it as a percentage value between 0 and 1 (where 1 is 100%).
+    /// The VM will be defined as underloaded if the utilization of the [Resource]
+    /// this scaling object is related to is lower than the value returned by the [Function]
+    /// returned by this method.
+    ///
+    /// @see #setLowerThresholdFunction(Function)
     Function<Vm, Double> getLowerThresholdFunction();
 
-    /**
-     * Sets a {@link Function} that defines the lower utilization threshold for a {@link #getVm() Vm}
-     * which indicates if it is underloaded or not.
-     * If it is underloaded, the Vm's {@link DatacenterBroker} will request to down scale the VM.
-     * The down scaling is performed by decreasing the amount of the
-     * {@link #getResourceClass() resource} the scaling is associated to.
-     *
-     * <p>This function must receive a {@link Vm} and return the lower utilization threshold
-     * for it as a percentage value between 0 and 1 (where 1 is 100%).
-     * By setting the lower threshold as a {@link Function} instead of a directly
-     * storing a {@link Double} value which represent the threshold, it is possible
-     * to define the threshold dynamically instead of using a static value.
-     * Furthermore, the threshold function can be reused for scaling objects of
-     * different VMs.</p>
-     *
-     * @param lowerThresholdFunction the lower utilization threshold function to set.
-     * The VM will be defined as underloaded if the utilization of the {@link Resource}
-     * this scaling object is related to is lower than the value returned by this {@link Function}.
-     * @return this VerticalVmScaling object
-     */
+    /// Sets a [Function] that defines the lower utilization threshold for a [Vm][#getVm()]
+    /// which indicates if it is underloaded or not.
+    /// If it is underloaded, the Vm's [DatacenterBroker] will request to down scale the VM.
+    /// The down scaling is performed by decreasing the amount of the
+    /// [resource][#getResourceClass()] the scaling is associated to.
+    ///
+    /// This function must receive a [Vm] and return the lower utilization threshold
+    /// for it as a percentage value between 0 and 1 (where 1 is 100%).
+    /// By setting the lower threshold as a [Function] instead of a directly
+    /// storing a [Double] value which represent the threshold, it is possible
+    /// to define the threshold dynamically instead of using a static value.
+    /// Furthermore, the threshold function can be reused for scaling objects of
+    /// different VMs.
+    ///
+    /// @param lowerThresholdFunction the lower utilization threshold function to set.
+    /// The VM will be defined as underloaded if the utilization of the [Resource]
+    /// this scaling object is related to is lower than the value returned by this [Function].
+    /// @return this VerticalVmScaling object
     VerticalVmScaling setLowerThresholdFunction(Function<Vm, Double> lowerThresholdFunction);
 
-    /**
-     * Sets the {@link ResourceScaling} that defines how the resource has to be resized.
-     *
-     * @param resourceScaling the {@link ResourceScaling} to set
-     * @return this VerticalVmScaling object
-     */
+    /// Sets the [ResourceScaling] that defines how the resource has to be resized.
+    ///
+    /// @param resourceScaling the [ResourceScaling] to set
+    /// @return this VerticalVmScaling object
     VerticalVmScaling setResourceScaling(ResourceScaling resourceScaling);
 
-    /**
-     * Gets the current amount allocated to the {@link #getResource() resource}
-     * managed by this scaling object.
-     * It is just a shortcut to {@code getVmResourceToScale.getAllocatedResource()}.
-     * @return the amount of allocated resource
-     */
+    /// Gets the current amount allocated to the [resource][#getResource()]
+    /// managed by this scaling object.
+    /// It is just a shortcut to `getVmResourceToScale.getAllocatedResource()`.
+    /// @return the amount of allocated resource
     long getAllocatedResource();
 
-    /**
-     * Tries to allocate more resources for a VM, if there is availability.
-     * @return true if resources were allocated to the VM, false otherwise
-     */
+    /// Tries to allocate more resources for a VM, if there is availability.
+    /// @return true if resources were allocated to the VM, false otherwise
     boolean allocateResourceForVm();
 
     void logResourceUnavailable();

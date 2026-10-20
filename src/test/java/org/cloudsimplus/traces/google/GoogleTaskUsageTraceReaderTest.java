@@ -29,17 +29,13 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-/**
- * @author Manoel Campos da Silva Filho
- */
+/// @author Manoel Campos da Silva Filho
 public class GoogleTaskUsageTraceReaderTest {
 
-    /**
-     * Ensures the order or enums is not changed,
-     * because that will cause the enums ordinal values to change.
-     * These values are defined in the Google Cluster Data documentation
-     * and indicate the order of the fields inside the trace file.
-     */
+    /// Ensures the order or enums is not changed,
+    /// because that will cause the enums ordinal values to change.
+    /// These values are defined in the Google Cluster Data documentation
+    /// and indicate the order of the fields inside the trace file.
     @Test
     public void testFieldIndex(){
         assertAll(

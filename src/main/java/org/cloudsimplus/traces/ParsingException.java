@@ -23,11 +23,9 @@
  */
 package org.cloudsimplus.traces;
 
-/**
- * An exception when parsing a trace file.
- * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 7.0.4
- */
+/// An exception when parsing a trace file.
+/// @author Manoel Campos da Silva Filho
+/// @since CloudSim Plus 7.0.4
 public class ParsingException extends RuntimeException {
     public ParsingException(final String msg, final Exception e){
         super(msg, e);

@@ -29,12 +29,10 @@ import org.cloudsimplus.vms.Vm;
 
 import java.util.function.Function;
 
-/**
- * A class that implements the Null Object Design Pattern for {@link ResourceProvisioner} class.
- *
- * @author Manoel Campos da Silva Filho
- * @see ResourceProvisioner#NULL
- */
+/// A class that implements the Null Object Design Pattern for [ResourceProvisioner] class.
+///
+/// @author Manoel Campos da Silva Filho
+/// @see ResourceProvisioner#NULL
 non-sealed class ResourceProvisionerNull implements ResourceProvisioner {
     @Override public boolean allocateResourceForVm(Vm vm, long newTotalVmResourceCapacity) {
         return false;

@@ -46,13 +46,11 @@ public final class SlaMetricDimension {
     @NonNull
     private String name;
 
-    /**
-     * The unit of the dimension, if "Percent" or "Absolute".
-     * When the unit is "Percent", the values are defined
-     * in scale from 0 to 100%, but they are stored in this class
-     * in scale from 0 to 1, because percentage values
-     * are defined in this scale everywhere.
-     */
+    /// The unit of the dimension, if "Percent" or "Absolute".
+    /// When the unit is "Percent", the values are defined
+    /// in scale from 0 to 100%, but they are stored in this class
+    /// in scale from 0 to 1, because percentage values
+    /// are defined in this scale everywhere.
     @NonNull
     private String unit;
     private double value;
@@ -67,15 +65,13 @@ public final class SlaMetricDimension {
         setValue(value);
     }
 
-    /**
-     * {@return the value of the dimension in absolute or percentage}
-     * The unit is according to the {@link #getUnit()}.
-     *
-     * <p>When the unit is "Percent", the values are defined
-     * in scale from 0 to 100%, but they are stored in this class
-     * in scale from 0 to 1, because percentage values
-     * are defined in this scale everywhere.</p>
-     */
+    /// {@return the value of the dimension in absolute or percentage}
+    /// The unit is according to the [#getUnit()].
+    ///
+    /// When the unit is "Percent", the values are defined
+    /// in scale from 0 to 100%, but they are stored in this class
+    /// in scale from 0 to 1, because percentage values
+    /// are defined in this scale everywhere.
     public double getValue() {
         return isPercent() ? value/100.0 : value;
     }
@@ -88,10 +84,8 @@ public final class SlaMetricDimension {
         return this.name.trim().equals(MIN_VALUE_NAME);
     }
 
-    /**
-     * Checks if the unit is defined in percentage values.
-     * @return true if the unit is "Percent", false it's "Absolute"
-     */
+    /// Checks if the unit is defined in percentage values.
+    /// @return true if the unit is "Percent", false it's "Absolute"
     public boolean isPercent() {
         return "Percent".equalsIgnoreCase(unit);
     }

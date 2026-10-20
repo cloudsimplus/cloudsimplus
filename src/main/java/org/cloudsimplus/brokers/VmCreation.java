@@ -29,117 +29,89 @@ import lombok.Setter;
 import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.vms.Vm;
 
-/**
- * Keeps track of the number of VM creation requests and retries sent by a {@link DatacenterBroker}
- * and enables configuring creation retries.
- * VM creation fails when the broker can't find a suitable Host for placement.
- *
- * @author Manoel Campos da Silva Filho
- * @author sohamchari
- * @since CloudSim Plus 7.3.1
- */
+/// Keeps track of the number of VM creation requests and retries sent by a [DatacenterBroker]
+/// and enables configuring creation retries.
+/// VM creation fails when the broker can't find a suitable Host for placement.
+///
+/// @author Manoel Campos da Silva Filho
+/// @author sohamchari
+/// @since CloudSim Plus 7.3.1
 @Getter @Setter
 public class VmCreation {
 
-    /**
-     * Default number of times the broker will try to recreated failed VMs.
-     * @see #setMaxRetries(int)
-     */
+    /// Default number of times the broker will try to recreated failed VMs.
+    /// @see #setMaxRetries(int)
     public static final int DEF_CURRENT_VM_CREATION_RETRIES = 5;
 
-    /**
-     * A delay (in seconds) for the broker to retry allocating VMs
-     * that couldn't be placed due to lack of suitable active Hosts.
-     *
-     * <ul>
-     *  <li>A value larger than zero indicates the broker will retry
-     *  to place a failed VM as soon as new VMs/Cloudlets
-     *  are submitted or after the given delay.</li>
-     *  <li>otherwise, indicates that failed VMs will be just added to the
-     *  {@link DatacenterBroker#getVmFailedList()} and the user simulation have to deal with it.
-     *  If the VM has an {@link Vm#addOnCreationFailureListener(EventListener) OnCreationFailureListener},
-     *  it will be notified about the failure.</li>
-     * </ul>
-     */
+    /// A delay (in seconds) for the broker to retry allocating VMs
+    /// that couldn't be placed due to lack of suitable active Hosts.
+    ///
+    /// - A value larger than zero indicates the broker will retry
+    ///   to place a failed VM as soon as new VMs/Cloudlets
+    ///   are submitted or after the given delay.
+    /// - otherwise, indicates that failed VMs will be just added to the
+    ///   [DatacenterBroker#getVmFailedList()] and the user simulation have to deal with it.
+    ///   If the VM has an [OnCreationFailureListener][Vm#addOnCreationFailureListener(EventListener)],
+    ///   it will be notified about the failure.
     private double retryDelay;
 
-    /**
-     * The maximum number of times the broker will try to find a host to create (place) the VM.
-     */
+    /// The maximum number of times the broker will try to find a host to create (place) the VM.
     private int maxRetries;
 
-    /**
-     * The current number of times failed VMs were tried to be recreated.
-     * @see #getMaxRetries()
-     */
+    /// The current number of times failed VMs were tried to be recreated.
+    /// @see #getMaxRetries()
     @Setter(AccessLevel.NONE)
     private int retries;
 
-    /**
-     * The number of VM creation requests considering all submitted VMs.
-     */
+    /// The number of VM creation requests considering all submitted VMs.
     @Setter(AccessLevel.NONE)
     private int creationRequests;
 
-    /**
-     * Creates an object with default values.
-     */
+    /// Creates an object with default values.
     public VmCreation() {
         this.retryDelay = 5;
         this.maxRetries = DEF_CURRENT_VM_CREATION_RETRIES;
     }
 
-    /**
-     * Creates an object with the given values for the attributes.
-     * @param retryDelay a delay (in seconds) for the broker to retry allocating VMs
-     *                            that couldn't be placed due to lack of suitable active Hosts.
-     * @param maxRetries the maximum number of times the broker will try to find a host to create (place) the VM.
-     */
+    /// Creates an object with the given values for the attributes.
+    /// @param retryDelay a delay (in seconds) for the broker to retry allocating VMs
+    /// that couldn't be placed due to lack of suitable active Hosts.
+    /// @param maxRetries the maximum number of times the broker will try to find a host to create (place) the VM.
     public VmCreation(final double retryDelay, final int maxRetries) {
         this.retryDelay = retryDelay;
         this.maxRetries = maxRetries;
     }
 
-    /**
-     * Creates an object with all attributes equal to zero.
-     * @return the created object
-     */
+    /// Creates an object with all attributes equal to zero.
+    /// @return the created object
     public static VmCreation ofZero(){
         return new VmCreation(0, 0);
     }
 
-    /**
-     * {@return true if the broker has to retry allocating VMs that couldn't be placed due to lack of suitable Hosts,
-     * false otherwise.}
-     * @see #setRetryDelay(double)
-     * @see #setMaxRetries(int)
-     */
+    /// {@return true if the broker has to retry allocating VMs that couldn't be placed due to lack of suitable Hosts,
+    /// false otherwise.}
+    /// @see #setRetryDelay(double)
+    /// @see #setMaxRetries(int)
     public boolean isRetryFailedVms() {
         return retryDelay > 0 && retries < maxRetries;
     }
 
-    /**
-     * Increments the current number of times failed VMs were tried to be recreated.
-     */
+    /// Increments the current number of times failed VMs were tried to be recreated.
     public void incCurrentRetries() {
         this.retries++;
     }
 
-    /**
-     * Resets the current number of times failed VMs were tried to be recreated,
-     * so that failed VMs can be retried up to the {@link #getMaxRetries() max number of retries} again.
-     *
-     * @see #incCurrentRetries()
-     */
+    /// Resets the current number of times failed VMs were tried to be recreated,
+    /// so that failed VMs can be retried up to the [max number of retries][#getMaxRetries()] again.
+    ///
+    /// @see #incCurrentRetries()
     public void resetCurrentRetries() {
         this.retries = 0;
     }
 
-    /**
-     * Increments/decrements the number of VM creation requests.
-     * @param value a positive or negative value to allow increment or decrement, respectively
-     * @see #resetCurrentRetries()
-     */
+    /// Increments/decrements the number of VM creation requests.
+    /// @param value a positive or negative value to allow increment or decrement, respectively
+    /// @see #resetCurrentRetries()
     public void incCreationRequests(final int value) {
         this.creationRequests += value;
     }

@@ -49,19 +49,17 @@ import java.util.stream.IntStream;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-/**
- * Checks that {@link CloudletReceiveTask}s of a {@link NetworkCloudlet}
- * with multiple parent cloudlets running in the same VM receive just the packets they expect,
- * so that the simulation doesn't get stuck (issue #537).
- *
- * <p>The scenario is a small DAG: cloudlets A and B run in VM 0 and both send one packet
- * to cloudlet C, which runs in VM 1 (in another host).
- * C has one receive task for A's packet (R_A), then another one for B's packet (R_B).</p>
- *
- * <p>It also checks that a cloudlet waiting for packets doesn't take a share of the VM's CPU (issue #556).</p>
- *
- * @author Manoel Campos da Silva Filho
- */
+/// Checks that [CloudletReceiveTask]s of a [NetworkCloudlet]
+/// with multiple parent cloudlets running in the same VM receive just the packets they expect,
+/// so that the simulation doesn't get stuck (issue #537).
+///
+/// The scenario is a small DAG: cloudlets A and B run in VM 0 and both send one packet
+/// to cloudlet C, which runs in VM 1 (in another host).
+/// C has one receive task for A's packet (R_A), then another one for B's packet (R_B).
+///
+/// It also checks that a cloudlet waiting for packets doesn't take a share of the VM's CPU (issue #556).
+///
+/// @author Manoel Campos da Silva Filho
 class CloudletTaskSchedulerSimpleTest {
     private static final int HOSTS = 2;
     private static final int HOST_PES = 2;
@@ -88,10 +86,8 @@ class CloudletTaskSchedulerSimpleTest {
         broker.submitVmList(vmList);
     }
 
-    /**
-     * A and B finish at the same time, so their packets arrive together
-     * and R_A could take both packets, making R_B wait forever.
-     */
+    /// A and B finish at the same time, so their packets arrive together
+    /// and R_A could take both packets, making R_B wait forever.
     @Test
     void allCloudletsFinishWhenParentPacketsArriveTogether() {
         final var dag = new Dag(LENGTH, LENGTH, true);
@@ -100,10 +96,8 @@ class CloudletTaskSchedulerSimpleTest {
         assertReceivedFromRightSender(dag);
     }
 
-    /**
-     * B finishes first, so its packet arrives before A's one.
-     * R_A must not take B's packet.
-     */
+    /// B finishes first, so its packet arrives before A's one.
+    /// R_A must not take B's packet.
     @Test
     void receiveTaskIgnoresPacketFromAnotherSenderInTheSameVm() {
         final var dag = new Dag(LENGTH, LENGTH / 2, true);
@@ -112,10 +106,8 @@ class CloudletTaskSchedulerSimpleTest {
         assertReceivedFromRightSender(dag);
     }
 
-    /**
-     * Receive tasks created without a sender cloudlet just know the source VM.
-     * Even so, each task must take only the number of packets it expects.
-     */
+    /// Receive tasks created without a sender cloudlet just know the source VM.
+    /// Even so, each task must take only the number of packets it expects.
     @Test
     void allCloudletsFinishWhenReceiveTasksDontKnowTheSender() {
         final var dag = new Dag(LENGTH, LENGTH, false);
@@ -125,11 +117,9 @@ class CloudletTaskSchedulerSimpleTest {
         assertEquals(1, dag.receiveFromB.getPacketsReceived().size());
     }
 
-    /**
-     * While C is waiting for A's packet, it must not take a share of VM 1's CPU.
-     * This way, the other 2 cloudlets in VM 1 (which has 2 PEs) must get
-     * a full PE each (issue #556).
-     */
+    /// While C is waiting for A's packet, it must not take a share of VM 1's CPU.
+    /// This way, the other 2 cloudlets in VM 1 (which has 2 PEs) must get
+    /// a full PE each (issue #556).
     @Test
     void cloudletWaitingForPacketsDoesNotTakeCpuShare() {
         final var dag = new Dag(LENGTH * 3, LENGTH, true);
@@ -169,9 +159,7 @@ class CloudletTaskSchedulerSimpleTest {
         assertEquals(expectedSender, pkts.getFirst().getSenderCloudlet());
     }
 
-    /**
-     * The cloudlets of the DAG A → C ← B and the receive tasks of C.
-     */
+    /// The cloudlets of the DAG A → C ← B and the receive tasks of C.
     private final class Dag {
         private final NetworkCloudlet a;
         private final NetworkCloudlet b;
@@ -179,12 +167,10 @@ class CloudletTaskSchedulerSimpleTest {
         private final CloudletReceiveTask receiveFromA;
         private final CloudletReceiveTask receiveFromB;
 
-        /**
-         * @param lengthA length of A's execution task (in MI)
-         * @param lengthB length of B's execution task (in MI)
-         * @param receiveTasksKnowSender whether C's receive tasks are created with the sender cloudlet
-         *                               or just with the source VM
-         */
+        /// @param lengthA length of A's execution task (in MI)
+        /// @param lengthB length of B's execution task (in MI)
+        /// @param receiveTasksKnowSender whether C's receive tasks are created with the sender cloudlet
+        /// or just with the source VM
         Dag(final long lengthA, final long lengthB, final boolean receiveTasksKnowSender) {
             a = createCloudlet(vmList.get(0));
             b = createCloudlet(vmList.get(0));

@@ -31,11 +31,9 @@ import lombok.experimental.Accessors;
 import org.cloudsimplus.brokers.DatacenterBroker;
 import org.cloudsimplus.datacenters.Datacenter;
 
-/**
- * A base class for {@link CustomerEntity} implementations.
- * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 4.0.3
- */
+/// A base class for [CustomerEntity] implementations.
+/// @author Manoel Campos da Silva Filho
+/// @since CloudSim Plus 4.0.3
 @Accessors @Getter @Setter @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
 public non-sealed abstract class CustomerEntityAbstract extends ExecDelayableAbstract implements CustomerEntity {
     @EqualsAndHashCode.Include

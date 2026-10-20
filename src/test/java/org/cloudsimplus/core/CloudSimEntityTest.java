@@ -36,16 +36,12 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
-/**
- * @author Manoel Campos da Silva Filho
- */
+/// @author Manoel Campos da Silva Filho
 class CloudSimEntityTest {
     private static final int TAG = CloudSimTag.CLOUDLET_SUBMIT;
 
-    /**
-     * Checks that the deferred event is not lost when there is a buffered event.
-     * See <a href="https://github.com/cloudsimplus/cloudsimplus/issues/562">#562</a>.
-     */
+    /// Checks that the deferred event is not lost when there is a buffered event.
+    /// See [#562](https://github.com/cloudsimplus/cloudsimplus/issues/562).
     @Test
     void runProcessesBufferedEventThenDeferredOne() {
         final var simulation = CloudSimMocker.createMock(CloudSimMocker::isRunning);
@@ -60,9 +56,7 @@ class CloudSimEntityTest {
         assertEquals(List.of(bufferedEvt, deferredEvt), entity.processedEvents);
     }
 
-    /**
-     * An entity that just records the events it processes.
-     */
+    /// An entity that just records the events it processes.
     private static final class EventRecorderEntity extends CloudSimEntity {
         private final List<SimEvent> processedEvents = new ArrayList<>();
 

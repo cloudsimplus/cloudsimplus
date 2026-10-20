@@ -33,43 +33,33 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-/**
- * An abstract base class for implementing data tables to present simulation results.
- *
- * @author Manoel Campos da Silva Filho
- */
+/// An abstract base class for implementing data tables to present simulation results.
+///
+/// @author Manoel Campos da Silva Filho
 @Getter
 public non-sealed abstract class AbstractTable implements Table {
-    /**
-     * The {@link PrintStream} used to print the generated table.
-     */
+    /// The [PrintStream] used to print the generated table.
     @Setter
     private PrintStream printStream;
 
-    /**
-     * {@return the list} of columns of the table
-     */
+    /// {@return the list} of columns of the table
     private final List<TableColumn> columns;
 
-    /**
-     * {@return the list} of columns of the table
-     */
+    /// {@return the list} of columns of the table
     private String title;
 
-    /** @see #getRows() */
+    /// @see #getRows()
     private final List<List<Object>> rows;
 
-    /** @see #getColumnSeparator() */
+    /// @see #getColumnSeparator()
     private String columnSeparator = "";
 
     public AbstractTable(){
         this("");
     }
 
-    /**
-     * Creates a Table
-     * @param title Title of the table
-     */
+    /// Creates a Table
+    /// @param title Title of the table
     public AbstractTable(final String title){
         this.printStream = System.out;
         this.columns = new ArrayList<>();
@@ -94,10 +84,8 @@ public non-sealed abstract class AbstractTable implements Table {
         return this;
     }
 
-    /**
-     * {@return the data to be printed}, where each row contains
-     * a list of columns data.
-     */
+    /// {@return the data to be printed}, where each row contains
+    /// a list of columns data.
     protected List<List<Object>> getRows() {
         return rows;
     }
@@ -109,17 +97,13 @@ public non-sealed abstract class AbstractTable implements Table {
         return row;
     }
 
-    /**
-     * {@return true if there is at least a column with a subtitle, false if no column has a subtitle}
-     */
+    /// {@return true if there is at least a column with a subtitle, false if no column has a subtitle}
     private boolean isThereAnySubtitledColumn(){
         return columns.stream().anyMatch(col -> !col.getSubTitle().isBlank());
     }
 
-    /**
-     * Prints a row of the table.
-     * @param row a row containing the data for each column.
-     */
+    /// Prints a row of the table.
+    /// @param row a row containing the data for each column.
     private void printRow(final List<Object> row) {
         printStream.printf(rowOpening());
         final List<TableColumn> cols =
@@ -167,34 +151,22 @@ public non-sealed abstract class AbstractTable implements Table {
         printStream.printf(rowClosing());
     }
 
-    /**
-     * Prints the string to open the table.
-     */
+    /// Prints the string to open the table.
     protected abstract void printTableOpening();
 
-    /**
-     * Prints the table title.
-     */
+    /// Prints the table title.
     protected abstract void printTitle();
 
-    /**
-     * {@return the string that has to precede each printed row}
-     */
+    /// {@return the string that has to precede each printed row}
     protected abstract String rowOpening();
 
-    /**
-     * {@return the string to close a row}
-     */
+    /// {@return the string to close a row}
     protected abstract String rowClosing();
 
-    /**
-     * {@return the string that has to precede the subtitle head}
-     */
+    /// {@return the string that has to precede the subtitle head}
     protected abstract String subtitleHeaderOpening();
 
-    /**
-     * Prints the string to close the table.
-     */
+    /// Prints the string to close the table.
     protected abstract void printTableClosing();
 
     @Override
@@ -215,22 +187,18 @@ public non-sealed abstract class AbstractTable implements Table {
         return newColumn(title, "", "");
     }
 
-    /**
-     * Adds a column to the end of the table.
-     * @param column the column to add
-     * @return this table instance
-     */
+    /// Adds a column to the end of the table.
+    /// @param column the column to add
+    /// @return this table instance
     protected final TableColumn addColumn(final TableColumn column) {
         return addColumn(column, columns.size());
     }
 
-    /**
-     * Adds a column at a given position of the table.
-     *
-     * @param column the column to add
-     * @param index  the position in the table to add the column
-     * @return this table instance
-     */
+    /// Adds a column at a given position of the table.
+    ///
+    /// @param column the column to add
+    /// @param index  the position in the table to add the column
+    /// @return this table instance
     protected final TableColumn addColumn(final TableColumn column, final int index) {
         column.setTable(this);
         if(index > colCount())

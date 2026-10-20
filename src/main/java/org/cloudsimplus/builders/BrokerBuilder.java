@@ -31,12 +31,10 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.function.Consumer;
 
-/**
- * A Builder class to create {@link DatacenterBrokerSimple} objects.
- *
- * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 1.0
- */
+/// A Builder class to create [DatacenterBrokerSimple] objects.
+///
+/// @author Manoel Campos da Silva Filho
+/// @since CloudSim Plus 1.0
 public class BrokerBuilder implements BrokerBuilderInterface {
     private final List<DatacenterBroker> brokers;
     private final SimulationScenarioBuilder scenario;

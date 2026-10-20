@@ -9,24 +9,22 @@ package org.cloudsimplus.resources;
 
 import org.cloudsimplus.util.MathUtil;
 
-/**
- * A class that represents simple resources such as RAM, CPU, Bandwidth or Pe.
- * It stores, for instance, the resource capacity and amount of free available resource.
- *
- * <p>The class is abstract just to ensure there will be a specific subclass
- * for each kind of resource, allowing to differentiate, for example,
- * a RAM Resource from a BW Resource.
- * The VM class also relies on this differentiation for generically getting a
- * required resource.</p>
- *
- * @author Uros Cibej
- * @author Anthony Sulistio
- * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 1.0
- */
+/// A class that represents simple resources such as RAM, CPU, Bandwidth or Pe.
+/// It stores, for instance, the resource capacity and amount of free available resource.
+///
+/// The class is abstract just to ensure there will be a specific subclass
+/// for each kind of resource, allowing to differentiate, for example,
+/// a RAM Resource from a BW Resource.
+/// The VM class also relies on this differentiation for generically getting a
+/// required resource.
+///
+/// @author Uros Cibej
+/// @author Anthony Sulistio
+/// @author Manoel Campos da Silva Filho
+/// @since CloudSim Plus 1.0
 public abstract class ResourceManageableAbstract extends ResourceAbstract implements ResourceManageable {
 
-    /** @see #getAvailableResource() */
+    /// @see #getAvailableResource()
     private long availableResource;
 
     public ResourceManageableAbstract(final long capacity, final String unit) {
@@ -74,26 +72,22 @@ public abstract class ResourceManageableAbstract extends ResourceAbstract implem
         return setCapacity(getCapacity()-capacityToRemove);
     }
 
-    /**
-     * Sum a given amount (negative or positive) of available (free) resource to the total
-     * available resource.
-     * @param amountToSum the amount to sum in the current total available resource.
-     *                    If a positive number is given, it increases the total available resource;
-     *                    otherwise decreases it.
-     * @return true if the total available resource was changed; false otherwise
-     */
+    /// Sum a given amount (negative or positive) of available (free) resource to the total
+    /// available resource.
+    /// @param amountToSum the amount to sum in the current total available resource.
+    /// If a positive number is given, it increases the total available resource;
+    /// otherwise decreases it.
+    /// @return true if the total available resource was changed; false otherwise
     protected boolean sumAvailableResource(final long amountToSum){
         final long newTotalAvailableResource = getAvailableResource() + amountToSum;
         return setAvailableResource(newTotalAvailableResource);
     }
 
-    /**
-     * Sets the given amount as available resource.
-     *
-     * @param newAvailableResource the new amount of available resource to set
-     * @return true if {@code availableResource > 0 and availableResource <= capacity};
-     *         false otherwise
-     */
+    /// Sets the given amount as available resource.
+    ///
+    /// @param newAvailableResource the new amount of available resource to set
+    /// @return true if `availableResource > 0 and availableResource <= capacity`;
+    /// false otherwise
     protected final boolean setAvailableResource(final long newAvailableResource) {
         if(newAvailableResource < 0 || newAvailableResource > getCapacity()) {
             return false;
@@ -138,13 +132,11 @@ public abstract class ResourceManageableAbstract extends ResourceAbstract implem
         return removeCapacity(amountToDeallocate);
     }
 
-    /**
-     * Gets the actual amount of resource that can be deallocated.
-     * If the amount requested to deallocate is greater than the allocated one,
-     * returns just the allocated amount. Otherwise, return the exact requested amount.
-     * @param amountToDeallocate the amount requested to deallocate
-     * @return the actual amount to deallocate
-     */
+    /// Gets the actual amount of resource that can be deallocated.
+    /// If the amount requested to deallocate is greater than the allocated one,
+    /// returns just the allocated amount. Otherwise, return the exact requested amount.
+    /// @param amountToDeallocate the amount requested to deallocate
+    /// @return the actual amount to deallocate
     private long getActualAmountToDeallocate(final long amountToDeallocate) {
         return Math.min(amountToDeallocate, this.getAllocatedResource());
     }

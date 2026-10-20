@@ -38,13 +38,11 @@ import org.cloudsimplus.vms.Vm;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * A class that implements the Null Object Design Pattern for {@link Cloudlet}
- * class.
- *
- * @author Manoel Campos da Silva Filho
- * @see Cloudlet#NULL
- */
+/// A class that implements the Null Object Design Pattern for [Cloudlet]
+/// class.
+///
+/// @author Manoel Campos da Silva Filho
+/// @see Cloudlet#NULL
 final class CloudletNull implements Cloudlet {
     @Override public Cloudlet setId(long id) { return this; }
     @Override public long getId() {

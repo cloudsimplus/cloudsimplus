@@ -40,37 +40,30 @@ import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-/**
- * An abstract class for implementing {@link DatacenterBroker}s.
- *
- * @author Rodrigo N. Calheiros
- * @author Anton Beloglazov
- * @author Manoel Campos da Silva Filho
- */
+/// An abstract class for implementing [DatacenterBroker]s.
+///
+/// @author Rodrigo N. Calheiros
+/// @author Anton Beloglazov
+/// @author Manoel Campos da Silva Filho
 @Accessors @Getter @Setter
 public non-sealed abstract class DatacenterBrokerAbstract extends CloudSimEntity implements DatacenterBroker {
-    /**
-     * A default {@link Function} which always returns {@link #DEF_VM_DESTRUCTION_DELAY}
-     * to indicate that any VM should not be immediately destroyed after it becomes idle.
-     * This way, using this Function, the broker will destroy VMs only after:
-     * <ul>
-     *   <li>all submitted Cloudlets from all its VMs are finished and there are no waiting Cloudlets;</li>
-     *   <li>or all running Cloudlets are finished and there are some of them waiting their VMs to be created.</li>
-     * </ul>
-     *
-     * @see #setVmDestructionDelayFunction(Function)
-     */
+    /// A default [Function] which always returns [#DEF_VM_DESTRUCTION_DELAY]
+    /// to indicate that any VM should not be immediately destroyed after it becomes idle.
+    /// This way, using this Function, the broker will destroy VMs only after:
+    ///
+    /// - all submitted Cloudlets from all its VMs are finished and there are no waiting Cloudlets;
+    /// - or all running Cloudlets are finished and there are some of them waiting their VMs to be created.
+    ///
+    /// @see #setVmDestructionDelayFunction(Function)
     private static final Function<Vm, Double> DEF_VM_DESTRUCTION_DELAY_FUNC = vm -> DEF_VM_DESTRUCTION_DELAY;
 
     private boolean selectClosestDatacenter;
 
     private boolean batchVmCreation;
 
-    /**
-     * A List of registered event listeners for the onVmsCreatedListeners event.
-     *
-     * @see #addOnVmsCreatedListener(EventListener)
-     */
+    /// A List of registered event listeners for the onVmsCreatedListeners event.
+    ///
+    /// @see #addOnVmsCreatedListener(EventListener)
     @Getter(AccessLevel.NONE)
     private final List<EventListener<DatacenterBrokerEventInfo>> onVmsCreatedListeners;
 
@@ -95,17 +88,15 @@ public non-sealed abstract class DatacenterBrokerAbstract extends CloudSimEntity
     @NonNull
     private Datacenter lastSelectedDc;
 
-    /**
-     * Last Vm selected to run some Cloudlets.
-     */
+    /// Last Vm selected to run some Cloudlets.
     @Getter(AccessLevel.NONE) @Setter(AccessLevel.NONE)
     private Vm lastSelectedVm;
 
-    /** @see #setDatacenterMapper(BiFunction) */
+    /// @see #setDatacenterMapper(BiFunction)
     @NonNull
     private BiFunction<Datacenter, Vm, Datacenter> datacenterMapper;
 
-    /** @see #setVmMapper(Function) */
+    /// @see #setVmMapper(Function)
     @NonNull
     @Getter(AccessLevel.NONE)
     private Function<Cloudlet, Vm> vmMapper;
@@ -113,29 +104,27 @@ public non-sealed abstract class DatacenterBrokerAbstract extends CloudSimEntity
     @Getter(AccessLevel.NONE)
     private Function<Vm, Double> vmDestructionDelayFunction;
 
-    /**
-     * {@inheritDoc}
-     * <p>If null is given, VMs won't be sorted and follow submission order.</p>
-     * @see #setVmComparator(Comparator) */
+    /// {@inheritDoc}
+    ///
+    /// If null is given, VMs won't be sorted and follow submission order.
+    ///
+    /// @see #setVmComparator(Comparator)
     @Getter(AccessLevel.NONE)
     @Nullable
     private Comparator<Vm> vmComparator;
 
-    /**
-     * {@inheritDoc}
-     * <p>If null is given, Cloudlets won't be sorted and follow submission order.</p>
-     */
+    /// {@inheritDoc}
+    ///
+    /// If null is given, Cloudlets won't be sorted and follow submission order.
     @Getter(AccessLevel.NONE)
     @Nullable
     private Comparator<Cloudlet> cloudletComparator;
 
-    /** @see #getDatacenterList() */
+    /// @see #getDatacenterList()
     @Getter(AccessLevel.PROTECTED)
     private List<Datacenter> datacenterList;
 
-    /**
-     * Indicates if the last time checked, there were waiting cloudlets or not.
-     */
+    /// Indicates if the last time checked, there were waiting cloudlets or not.
     @Getter(AccessLevel.NONE) @Setter(AccessLevel.NONE)
     private boolean wereThereWaitingCloudlets;
 
@@ -145,24 +134,20 @@ public non-sealed abstract class DatacenterBrokerAbstract extends CloudSimEntity
     @Getter(AccessLevel.NONE) @Setter(AccessLevel.NONE)
     private Vm lastSubmittedVm;
 
-    /**
-     * Indicates if a shutdown request was already sent or not.
-     */
+    /// Indicates if a shutdown request was already sent or not.
     @Getter(AccessLevel.NONE) @Setter(AccessLevel.NONE)
     private boolean shutdownRequested;
 
-    /** @see #isShutdownWhenIdle()  */
+    /// @see #isShutdownWhenIdle()
     private boolean shutdownWhenIdle;
 
     @Getter(AccessLevel.NONE) @Setter(AccessLevel.NONE)
     private boolean vmCreationRetrySent;
 
-    /**
-     * Creates a DatacenterBroker giving a specific name.
-     *
-     * @param simulation the {@link CloudSimPlus} instance that represents the simulation the Entity is related to
-     * @param name the DatacenterBroker name
-     */
+    /// Creates a DatacenterBroker giving a specific name.
+    ///
+    /// @param simulation the [CloudSimPlus] instance that represents the simulation the Entity is related to
+    /// @param name the DatacenterBroker name
     public DatacenterBrokerAbstract(final CloudSimPlus simulation, final String name) {
         super(simulation);
         if(name != null && !name.isEmpty()) {
@@ -208,25 +193,23 @@ public non-sealed abstract class DatacenterBrokerAbstract extends CloudSimEntity
         return submitVmList(list);
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * <p>The individual submission delay of VMs inside a group will be ignored.
-     * Only the submission delay directly set for the {@link VmGroup} will be considered.</p>
-     *
-     * <p>If the entity already started (the simulation is running),
-     * the creation of previously submitted VMs was already requested
-     * by the {@link #start()} method, which is called just once.
-     * This way, this method will immediately request the creation of these
-     * submitted VMs in order to allow VM creation after
-     * the simulation has started. This avoids the developer to
-     * dynamically create brokers just to submit VMs or Cloudlets during
-     * simulation execution.</p>
-     *
-     * @param list {@inheritDoc}
-     * @return {@inheritDoc}
-     * @see VmGroup
-     */
+    /// {@inheritDoc}
+    ///
+    /// The individual submission delay of VMs inside a group will be ignored.
+    /// Only the submission delay directly set for the [VmGroup] will be considered.
+    ///
+    /// If the entity already started (the simulation is running),
+    /// the creation of previously submitted VMs was already requested
+    /// by the [#start()] method, which is called just once.
+    /// This way, this method will immediately request the creation of these
+    /// submitted VMs in order to allow VM creation after
+    /// the simulation has started. This avoids the developer to
+    /// dynamically create brokers just to submit VMs or Cloudlets during
+    /// simulation execution.
+    ///
+    /// @param list {@inheritDoc}
+    /// @return {@inheritDoc}
+    /// @see VmGroup
     @Override
     public DatacenterBroker submitVmList(final List<? extends Vm> list) {
         sortVmsIfComparatorIsSet(list);
@@ -248,13 +231,11 @@ public non-sealed abstract class DatacenterBrokerAbstract extends CloudSimEntity
         return this;
     }
 
-    /**
-     * Configures attributes for each {@link CustomerEntity} into a given list.
-     *
-     * @param customerEntities the List of {@link CustomerEntity} to configure.
-     *                         Such entities can be a {@link Cloudlet}, {@link Vm}, {@link VmGroup}
-     *                         or any object that implements {@link CustomerEntity}.
-     */
+    /// Configures attributes for each [CustomerEntity] into a given list.
+    ///
+    /// @param customerEntities the List of [CustomerEntity] to configure.
+    /// Such entities can be a [Cloudlet], [Vm], [VmGroup]
+    /// or any object that implements [CustomerEntity].
     private void configureEntities(final List<? extends CustomerEntity> customerEntities) {
         for (final var entity : customerEntities) {
             entity.setBroker(this);
@@ -268,15 +249,13 @@ public non-sealed abstract class DatacenterBrokerAbstract extends CloudSimEntity
         }
     }
 
-    /**
-     * Defines IDs for a list of {@link CustomerEntity}s that don't
-     * have one assigned already. Such entities can be a {@link Cloudlet},
-     * {@link Vm}, {@link VmGroup} or any object that implements {@link CustomerEntity}.
-     *
-     * @param list                list of Customer Entities to define an ID
-     * @param lastSubmittedEntity the last Customer Entity that was submitted to the broker
-     * @return the last Customer Entity in the given List, or the lastSubmittedEntity if the List is empty
-     */
+    /// Defines IDs for a list of [CustomerEntity]s that don't
+    /// have one assigned already. Such entities can be a [Cloudlet],
+    /// [Vm], [VmGroup] or any object that implements [CustomerEntity].
+    ///
+    /// @param list                list of Customer Entities to define an ID
+    /// @param lastSubmittedEntity the last Customer Entity that was submitted to the broker
+    /// @return the last Customer Entity in the given List, or the lastSubmittedEntity if the List is empty
     private <T extends CustomerEntity> T setIdForEntitiesWithoutOne(final List<? extends T> list, T lastSubmittedEntity) {
         return Simulation.setIdForEntitiesWithoutOne(list, lastSubmittedEntity);
     }
@@ -326,23 +305,21 @@ public non-sealed abstract class DatacenterBrokerAbstract extends CloudSimEntity
         return submitCloudletList(list);
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * <p>If the entity already started (the simulation is running),
-     * the creation of previously submitted Cloudlets was already requested
-     * by the {@link #start()} method, which is called just once.
-     * This way, this method will immediately request the creation of these
-     * submitted Cloudlets if all submitted VMs were already created,
-     * in order to allow Cloudlet creation after
-     * the simulation has started. This avoids the developer to
-     * dynamically create brokers just to submit VMs or Cloudlets during
-     * simulation execution.</p>
-     *
-     * @param list {@inheritDoc}
-     * @see #submitCloudletList(List, double)
-     * @return {@inheritDoc}
-     */
+    /// {@inheritDoc}
+    ///
+    /// If the entity already started (the simulation is running),
+    /// the creation of previously submitted Cloudlets was already requested
+    /// by the [#start()] method, which is called just once.
+    /// This way, this method will immediately request the creation of these
+    /// submitted Cloudlets if all submitted VMs were already created,
+    /// in order to allow Cloudlet creation after
+    /// the simulation has started. This avoids the developer to
+    /// dynamically create brokers just to submit VMs or Cloudlets during
+    /// simulation execution.
+    ///
+    /// @param list {@inheritDoc}
+    /// @see #submitCloudletList(List, double)
+    /// @return {@inheritDoc}
     @Override
     public DatacenterBroker submitCloudletList(final List<? extends Cloudlet> list) {
         if (list.isEmpty()) {
@@ -371,13 +348,11 @@ public non-sealed abstract class DatacenterBrokerAbstract extends CloudSimEntity
         return this;
     }
 
-    /**
-     * Binds a list of Cloudlets to a given {@link Vm}, so that those Cloudlets will execute on that Vm.
-     * If the {@link Vm} is {@link Vm#NULL}, the Cloudlets will not be bound.
-     *
-     * @param cloudlets the List of Cloudlets to be bound to a VM
-     * @param vm        the VM to bind the Cloudlets to
-     */
+    /// Binds a list of Cloudlets to a given [Vm], so that those Cloudlets will execute on that Vm.
+    /// If the [Vm] is [Vm#NULL], the Cloudlets will not be bound.
+    ///
+    /// @param cloudlets the List of Cloudlets to be bound to a VM
+    /// @param vm        the VM to bind the Cloudlets to
     private void bindCloudletsToVm(final List<? extends Cloudlet> cloudlets, Vm vm) {
         if (Vm.NULL.equals(vm)) {
             return;
@@ -406,16 +381,14 @@ public non-sealed abstract class DatacenterBrokerAbstract extends CloudSimEntity
         }
     }
 
-    /**
-     * Sets the delay for a list of {@link CustomerEntity}s that don't
-     * have a delay assigned already. Such entities can be a {@link Cloudlet},
-     * {@link Vm} or any object that implements {@link CustomerEntity}.
-     *
-     * <p>If the delay is defined as a negative number, objects' delay won't be changed.</p>
-     *
-     * @param entities list of Customer Entities to set their delays
-     * @param submissionDelay the submission delay to set (in seconds)
-     */
+    /// Sets the delay for a list of [CustomerEntity]s that don't
+    /// have a delay assigned already. Such entities can be a [Cloudlet],
+    /// [Vm] or any object that implements [CustomerEntity].
+    ///
+    /// If the delay is defined as a negative number, objects' delay won't be changed.
+    ///
+    /// @param entities list of Customer Entities to set their delays
+    /// @param submissionDelay the submission delay to set (in seconds)
     private void setDelayForEntitiesWithNoDelay(final List<? extends CustomerEntity> entities, final double submissionDelay) {
         if (submissionDelay < 0) {
             return;
@@ -481,15 +454,13 @@ public non-sealed abstract class DatacenterBrokerAbstract extends CloudSimEntity
         };
     }
 
-    /**
-     * Requests the creation of waiting VMs again.
-     * If there are VM creation requests waiting for an ack,
-     * the retry is ignored, since those acks will request the creation of VMs that fail.
-     * That happens when multiple Datacenters notify that a Host was powered on.
-     *
-     * @return true if some VM creation request was sent, false otherwise
-     * @see Datacenter#addBrokerWaitingHostPowerOn(DatacenterBroker)
-     */
+    /// Requests the creation of waiting VMs again.
+    /// If there are VM creation requests waiting for an ack,
+    /// the retry is ignored, since those acks will request the creation of VMs that fail.
+    /// That happens when multiple Datacenters notify that a Host was powered on.
+    ///
+    /// @return true if some VM creation request was sent, false otherwise
+    /// @see Datacenter#addBrokerWaitingHostPowerOn(DatacenterBroker)
     private boolean processVmCreationRetry() {
         vmCreationRetrySent = false;
         if (vmCreation.getCreationRequests() > 0) {
@@ -513,16 +484,14 @@ public non-sealed abstract class DatacenterBrokerAbstract extends CloudSimEntity
         return false;
     }
 
-    /**
-     * Sets the status of a received Cloudlet to {@link Cloudlet.Status#READY}
-     * so that the Cloudlet can be selected to start running as soon as possible
-     * by a {@link CloudletScheduler}.
-     *
-     * <p>This tag is commonly used when Cloudlets are created
-     * from a trace file such as a {@link GoogleTaskEventsTraceReader Google Cluster Trace}.</p>
-     *
-     * @param evt the event to process
-     */
+    /// Sets the status of a received Cloudlet to [Cloudlet.Status#READY]
+    /// so that the Cloudlet can be selected to start running as soon as possible
+    /// by a [CloudletScheduler].
+    ///
+    /// This tag is commonly used when Cloudlets are created
+    /// from a trace file such as a [Google Cluster Trace][GoogleTaskEventsTraceReader].
+    ///
+    /// @param evt the event to process
     private boolean processCloudletReady(final SimEvent evt){
         final var cloudlet = (Cloudlet)evt.getData();
         if(cloudlet.getStatus() == Cloudlet.Status.PAUSED)
@@ -547,11 +516,9 @@ public non-sealed abstract class DatacenterBrokerAbstract extends CloudSimEntity
         return true;
     }
 
-    /**
-     * Process the request to finish a Cloudlet with an indefinite length,
-     * setting its length as the current number of processed MI.
-     * @param evt the event data
-     */
+    /// Process the request to finish a Cloudlet with an indefinite length,
+    /// setting its length as the current number of processed MI.
+    /// @param evt the event data
     private boolean processCloudletFinish(final SimEvent evt){
         final var cloudlet = (Cloudlet)evt.getData();
         logCloudletStatusChange(cloudlet, "finish running");
@@ -590,10 +557,8 @@ public non-sealed abstract class DatacenterBrokerAbstract extends CloudSimEntity
         return true;
     }
 
-    /**
-     * Updates the processing of the Host where a Cloudlet's VM is running.
-     * @param cloudlet the cloudlet to get the Host from its VM
-     */
+    /// Updates the processing of the Host where a Cloudlet's VM is running.
+    /// @param cloudlet the cloudlet to get the Host from its VM
     private void updateHostProcessing(final Cloudlet cloudlet) {
         cloudlet.getVm().getHost().updateProcessing(getSimulation().clock());
     }
@@ -620,12 +585,10 @@ public non-sealed abstract class DatacenterBrokerAbstract extends CloudSimEntity
         throw new InvalidEventDataTypeException(evt, "VM_VERTICAL_SCALING", "VerticalVmScaling");
     }
 
-    /**
-     * Process a request to get the list of all Datacenters registered in the
-     * Cloud Information Service (CIS) of the {@link #getSimulation() simulation}.
-     *
-     * @param evt a CloudSimEvent object
-     */
+    /// Process a request to get the list of all Datacenters registered in the
+    /// Cloud Information Service (CIS) of the [simulation][#getSimulation()].
+    ///
+    /// @param evt a CloudSimEvent object
     private void processDatacenterListRequest(final SimEvent evt) {
         if(evt.getData() instanceof List dcList) {
             setDatacenterList(dcList);
@@ -637,25 +600,22 @@ public non-sealed abstract class DatacenterBrokerAbstract extends CloudSimEntity
         throw new InvalidEventDataTypeException(evt, "DC_LIST_REQUEST", "List<Datacenter>");
     }
 
-    /**
-     * Process the ack received from a Datacenter to a broker's request for
-     * creation of a Vm in that Datacenter.
-     *
-     * <p>Uses regressive index loop to avoid ConcurrentModificationException.
-     * The issue happens because the broker sends its vmWaitingList to the Datacenter,
-     * which returns back the same list in this event.
-     * This way, the local vmList points to the vmWaitingList.
-     * Since we are iterating over vmList and removing Vms from vmWaitingList,
-     * the issue happens.
-     * A solution is to make the broker send a copy of the vmWaitingList to the Datacenter,
-     * but that imposes a performance and memory consumption penalty.
-     * Using a forward indexed loop causes some VM to be missed when a VM is removed from
-     * the vmWaitingList.
-     * </p>
-     *
-     * @param evt a SimEvent object
-     * @return true if the VM was created successfully, false otherwise
-     */
+    /// Process the ack received from a Datacenter to a broker's request for
+    /// creation of a Vm in that Datacenter.
+    ///
+    /// Uses regressive index loop to avoid ConcurrentModificationException.
+    /// The issue happens because the broker sends its vmWaitingList to the Datacenter,
+    /// which returns back the same list in this event.
+    /// This way, the local vmList points to the vmWaitingList.
+    /// Since we are iterating over vmList and removing Vms from vmWaitingList,
+    /// the issue happens.
+    /// A solution is to make the broker send a copy of the vmWaitingList to the Datacenter,
+    /// but that imposes a performance and memory consumption penalty.
+    /// Using a forward indexed loop causes some VM to be missed when a VM is removed from
+    /// the vmWaitingList.
+    ///
+    /// @param evt a SimEvent object
+    /// @return true if the VM was created successfully, false otherwise
     private boolean processVmCreateResponseFromDatacenter(final SimEvent evt) {
         //Data can be a single Vm or List<Vm> (in the former situation, gets the single Vm as a List)
         final var vmList = VmAbstract.getList(evt.getData());
@@ -696,12 +656,10 @@ public non-sealed abstract class DatacenterBrokerAbstract extends CloudSimEntity
         return createdVms > 0;
     }
 
-    /**
-     * {@return true if all VMs submitted with no delay were created, false otherwise}
-     * Only after those VMs are created, cloudlets creation is requested.
-     * Otherwise, all waiting cloudlets would be sent to the
-     * first created VM.
-     */
+    /// {@return true if all VMs submitted with no delay were created, false otherwise}
+    /// Only after those VMs are created, cloudlets creation is requested.
+    /// Otherwise, all waiting cloudlets would be sent to the
+    /// first created VM.
     private boolean allNonDelayedVmsCreated() {
         return vmWaitingList.stream().noneMatch(vm -> vm.getSubmissionDelay() == 0);
     }
@@ -723,12 +681,10 @@ public non-sealed abstract class DatacenterBrokerAbstract extends CloudSimEntity
         }
     }
 
-    /**
-     * After the response (ack) of all VM creation requests were received,
-     * but not all VMs could be created
-     * (which means some acks informed about Vm creation failures),
-     * try to find another Datacenter to request the creation of the VMs in the waiting list.
-     */
+    /// After the response (ack) of all VM creation requests were received,
+    /// but not all VMs could be created
+    /// (which means some acks informed about Vm creation failures),
+    /// try to find another Datacenter to request the creation of the VMs in the waiting list.
     private void requestCreationOfWaitingVmsToFallbackDatacenter() {
         this.lastSelectedDc = Datacenter.NULL;
         if (vmWaitingList.isEmpty() || requestDatacenterToCreateWaitingVms(true, false)) {
@@ -759,26 +715,23 @@ public non-sealed abstract class DatacenterBrokerAbstract extends CloudSimEntity
         else shutdown();
     }
 
-    /**
-     * Request the creation of {@link #getVmWaitingList() waiting VMs} in some Datacenter.
-     *
-     * <p>If it's trying a fallback datacenter and the {@link #selectClosestDatacenter} is enabled,
-     * that means the function assigned to the {@link #datacenterMapper} is the
-     * {@link #closestDatacenterMapper(Datacenter, Vm)}
-     * which has failed to find a suitable Datacenter for the VM.
-     * This way, it uses the {@link #defaultDatacenterMapper(Datacenter, Vm)} instead.
-     * </p>
-     *
-     * @param isFallbackDatacenter true to indicate that a fallback Datacenter will be tried,
-     *                             after the previous one was not able to create all waiting VMs;
-     *                             false to indicate it will try the default datacenter.
-     * @param creationRetry true to indicate it's a retry to create failed VMs
-     *                      (which enables trying again Datacenters already tried before), false otherwise
-     * @return true if some VM creation request was sent to a Datacenter
-     *         (or the requests were postponed until some Host is powered on);
-     *         false if all Datacenters were tried and not all VMs could be created
-     * @see #submitVmList(java.util.List)
-     */
+    /// Request the creation of [waiting VMs][#getVmWaitingList()] in some Datacenter.
+    ///
+    /// If it's trying a fallback datacenter and the [#selectClosestDatacenter] is enabled,
+    /// that means the function assigned to the [#datacenterMapper] is the
+    /// [#closestDatacenterMapper(Datacenter,Vm)]
+    /// which has failed to find a suitable Datacenter for the VM.
+    /// This way, it uses the [#defaultDatacenterMapper(Datacenter,Vm)] instead.
+    ///
+    /// @param isFallbackDatacenter true to indicate that a fallback Datacenter will be tried,
+    /// after the previous one was not able to create all waiting VMs;
+    /// false to indicate it will try the default datacenter.
+    /// @param creationRetry true to indicate it's a retry to create failed VMs
+    /// (which enables trying again Datacenters already tried before), false otherwise
+    /// @return true if some VM creation request was sent to a Datacenter
+    /// (or the requests were postponed until some Host is powered on);
+    /// false if all Datacenters were tried and not all VMs could be created
+    /// @see #submitVmList(java.util.List)
     private boolean requestDatacenterToCreateWaitingVms(final boolean isFallbackDatacenter, final boolean creationRetry) {
         if(vmWaitingList.isEmpty())
             return false;
@@ -809,19 +762,17 @@ public non-sealed abstract class DatacenterBrokerAbstract extends CloudSimEntity
         return sentRequests > 0;
     }
 
-    /**
-     * Checks if no Host is powered on in any available Datacenter, but some are being powered on.
-     * In that case, no VM can be placed right now.
-     * This way, the creation of waiting VMs is postponed until a Host is powered on,
-     * when the Datacenter sends a {@link CloudSimTag#VM_CREATE_RETRY} to this broker.
-     * That doesn't count as a VM creation retry.
-     *
-     * <p>If no Host is powered on and none is being powered on,
-     * VM creation is not postponed, since the {@link VmAllocationPolicy} may power Hosts on as needed.</p>
-     *
-     * @return true if VM creation was postponed, false otherwise
-     * @see Datacenter#addBrokerWaitingHostPowerOn(DatacenterBroker)
-     */
+    /// Checks if no Host is powered on in any available Datacenter, but some are being powered on.
+    /// In that case, no VM can be placed right now.
+    /// This way, the creation of waiting VMs is postponed until a Host is powered on,
+    /// when the Datacenter sends a [CloudSimTag#VM_CREATE_RETRY] to this broker.
+    /// That doesn't count as a VM creation retry.
+    ///
+    /// If no Host is powered on and none is being powered on,
+    /// VM creation is not postponed, since the [VmAllocationPolicy] may power Hosts on as needed.
+    ///
+    /// @return true if VM creation was postponed, false otherwise
+    /// @see Datacenter#addBrokerWaitingHostPowerOn(DatacenterBroker)
     private boolean postponeVmCreationUntilHostPowerOn() {
         if (hasActiveHost()) {
             return false;
@@ -859,16 +810,14 @@ public non-sealed abstract class DatacenterBrokerAbstract extends CloudSimEntity
                     datacenterMapper.apply(lastSelectedDc, vm);
     }
 
-    /**
-     * Try to request the creation of a single VM into a given datacenter
-     * @param dc the target Datacenter to try creating the VM (or {@link Datacenter#NULL} if no DC is available)
-     * @param isFallbackDatacenter indicate if the given Datacenter was selected when
-     *                             a previous one doesn't have enough capacity to place the requested VM
-     * @param vm the VM to be placed
-     * @return 1 to indicate a VM creation request was sent to the datacenter;
-     *         0 to indicate the request was not sent due to lack of an available datacenter
-     * @see #requestVmCreation(Datacenter, boolean, Object)
-     */
+    /// Try to request the creation of a single VM into a given datacenter
+    /// @param dc the target Datacenter to try creating the VM (or [Datacenter#NULL] if no DC is available)
+    /// @param isFallbackDatacenter indicate if the given Datacenter was selected when
+    /// a previous one doesn't have enough capacity to place the requested VM
+    /// @param vm the VM to be placed
+    /// @return 1 to indicate a VM creation request was sent to the datacenter;
+    /// 0 to indicate the request was not sent due to lack of an available datacenter
+    /// @see #requestVmCreation(Datacenter, boolean, Object)
     private int requestSingleVmCreation(final Datacenter dc, final boolean isFallbackDatacenter, final Vm vm) {
         /* It was not passed List.of(vm) to the calling method,
            after declaring the last parameter as List<Vm>,
@@ -877,14 +826,12 @@ public non-sealed abstract class DatacenterBrokerAbstract extends CloudSimEntity
         return requestVmCreation(dc, isFallbackDatacenter, vm);
     }
 
-    /**
-     * Try to request the creation of a single VM or a {@code List<Vm>} into the datacenter of the first Vm.
-     * @param dc the target Datacenter to try creating the VM (or {@link Datacenter#NULL} if no DC is available)
-     * @param isFallbackDatacenter
-     * @param vmOrList a single Vm object or a {@code List<Vm>}
-     * @return 1 to indicate a VM creation request was sent to the datacenter;
-     *         0 to indicate the request was not sent due to lack of an available datacenter
-     */
+    /// Try to request the creation of a single VM or a `List<Vm>` into the datacenter of the first Vm.
+    /// @param dc the target Datacenter to try creating the VM (or [Datacenter#NULL] if no DC is available)
+    /// @param isFallbackDatacenter
+    /// @param vmOrList a single Vm object or a `List<Vm>`
+    /// @return 1 to indicate a VM creation request was sent to the datacenter;
+    /// 0 to indicate the request was not sent due to lack of an available datacenter
     private <T> int requestVmCreation(final Datacenter dc, final boolean isFallbackDatacenter, final T vmOrList) {
         if(vmOrList instanceof List<?> list && list.isEmpty() )
             return 0;
@@ -901,12 +848,9 @@ public non-sealed abstract class DatacenterBrokerAbstract extends CloudSimEntity
         return 1;
     }
 
-    /**
-     *
-     * @param dc
-     * @param isFallbackDatacenter
-     * @param vmOrList a single Vm object or a {@code List<Vm>}
-     */
+    /// @param dc
+    /// @param isFallbackDatacenter
+    /// @param vmOrList a single Vm object or a `List<Vm>`
     private <T> void logVmCreationRequest(final Datacenter dc, final boolean isFallbackDatacenter, final T vmOrList) {
         final var fallbackMsg = isFallbackDatacenter ? " (due to lack of a suitable Host in previous one)" : "";
         final var vm = VmAbstract.getFirstVm(vmOrList);
@@ -927,12 +871,10 @@ public non-sealed abstract class DatacenterBrokerAbstract extends CloudSimEntity
         return vmCreatedList.size() + vmWaitingList.size() + vmFailedList.size();
     }
 
-    /**
-     * Process a response from a Datacenter informing that it was able to
-     * create the VM requested by the broker.
-     *
-     * @param vm Vm that succeeded to be created inside the Datacenter
-     */
+    /// Process a response from a Datacenter informing that it was able to
+    /// create the VM requested by the broker.
+    ///
+    /// @param vm Vm that succeeded to be created inside the Datacenter
     private void processSuccessVmCreationInDatacenter(final Vm vm) {
         if(vm instanceof VmGroup vmGroup){
             int createdVms = 0;
@@ -956,11 +898,9 @@ public non-sealed abstract class DatacenterBrokerAbstract extends CloudSimEntity
         notifyOnVmsCreatedListeners();
     }
 
-    /**
-     * Processes the end of execution of a given cloudlet inside a Vm.
-     *
-     * @param evt a SimEvent object containing the cloudlet that has just finished executing and returned to the broker
-     */
+    /// Processes the end of execution of a given cloudlet inside a Vm.
+    ///
+    /// @param evt a SimEvent object containing the cloudlet that has just finished executing and returned to the broker
     private boolean processCloudletReturn(final SimEvent evt) {
         final var cloudlet = (Cloudlet) evt.getData();
         cloudletFinishedList.add(cloudlet);
@@ -980,10 +920,8 @@ public non-sealed abstract class DatacenterBrokerAbstract extends CloudSimEntity
         return true;
     }
 
-    /**
-     * Request the destruction of VMs after all running cloudlets have finished and returned to the broker.
-     * If there is no waiting Cloudlet, request all VMs to be destroyed.
-     */
+    /// Request the destruction of VMs after all running cloudlets have finished and returned to the broker.
+    /// If there is no waiting Cloudlet, request all VMs to be destroyed.
     private void requestVmDestructionAfterAllCloudletsFinished() {
         for (int i = vmExecList.size() - 1; i >= 0; i--) {
             requestIdleVmDestruction(vmExecList.get(i));
@@ -1038,25 +976,21 @@ public non-sealed abstract class DatacenterBrokerAbstract extends CloudSimEntity
         }
     }
 
-    /**
-     * Checks if an event must be sent to verify if a VM became idle.
-     * That will happen when the {@link #setVmDestructionDelayFunction(Function) VM destruction delay}
-     * is set and is not multiple of the {@link Datacenter#getSchedulingInterval()}
-     *
-     * <p>
-     * In such a situation, that means it is required to send additional events to check if a VM became idle.
-     * No additional events are required when:
-     * <ul>
-     *   <li>the VM destruction delay was not set (VMs will be destroyed only when the broker is shutdown);</li>
-     *   <li>the delay was set, and it's multiple of the scheduling interval
-     *   (VM idleness will be checked in the interval defined by the {@link Datacenter#getSchedulingInterval()}).</li>
-     * </ul>
-     *
-     * Avoiding additional messages improves performance of large scale simulations.
-     * </p>
-     * @param vm the Vm to check
-     * @return true if a message to check VM idleness has to be sent, false otherwise
-     */
+    /// Checks if an event must be sent to verify if a VM became idle.
+    /// That will happen when the [VM destruction delay][#setVmDestructionDelayFunction(Function)]
+    /// is set and is not multiple of the [Datacenter#getSchedulingInterval()]
+    ///
+    /// In such a situation, that means it is required to send additional events to check if a VM became idle.
+    /// No additional events are required when:
+    ///
+    /// - the VM destruction delay was not set (VMs will be destroyed only when the broker is shutdown);
+    /// - the delay was set, and it's multiple of the scheduling interval
+    ///   (VM idleness will be checked in the interval defined by the [Datacenter#getSchedulingInterval()]).
+    ///
+    /// Avoiding additional messages improves performance of large scale simulations.
+    ///
+    /// @param vm the Vm to check
+    /// @return true if a message to check VM idleness has to be sent, false otherwise
     private boolean isVmIdlenessVerificationRequired(final VmSimple vm) {
         if(vm.hasStartedSomeCloudlet() && vm.getCloudletScheduler().isEmpty()){
             final int schedulingInterval = (int)vm.getHost().getDatacenter().getSchedulingInterval();
@@ -1067,9 +1001,7 @@ public non-sealed abstract class DatacenterBrokerAbstract extends CloudSimEntity
         return false;
     }
 
-    /**
-     * {@return true if the broker is still alive and idle, so that it may be shutdown, false otherwise}
-     */
+    /// {@return true if the broker is still alive and idle, so that it may be shutdown, false otherwise}
     private boolean isTimeToShutdownBroker() {
         return isAlive() && isTimeToTerminateSimulation() && shutdownWhenIdle && isBrokerIdle();
     }
@@ -1082,16 +1014,14 @@ public non-sealed abstract class DatacenterBrokerAbstract extends CloudSimEntity
         return cloudletWaitingList.isEmpty() && vmWaitingList.isEmpty() && vmExecList.isEmpty();
     }
 
-    /**
-     * Request Datacenters to create the Cloudlets in the
-     * {@link #getCloudletWaitingList() waiting list}.
-     * If there aren't available VMs to host all cloudlets,
-     * the creation of some of them will be postponed.
-     *
-     * <p>This method is called after all submitted VMs are created in some Datacenter.</p>
-     *
-     * @see #submitCloudletList(java.util.List)
-     */
+    /// Request Datacenters to create the Cloudlets in the
+    /// [waiting list][#getCloudletWaitingList()].
+    /// If there aren't available VMs to host all cloudlets,
+    /// the creation of some of them will be postponed.
+    ///
+    /// This method is called after all submitted VMs are created in some Datacenter.
+    ///
+    /// @see #submitCloudletList(java.util.List)
     protected void requestDatacentersToCreateWaitingCloudlets() {
         schedule(CloudSimTag.CLOUDLET_CREATION);
     }
@@ -1133,10 +1063,8 @@ public non-sealed abstract class DatacenterBrokerAbstract extends CloudSimEntity
         return createdCloudlets > 0;
     }
 
-    /**
-     * {@return the startup delay (in seconds) of a VM running a given Cloudlet if the VM is booting up, or 0 if it's already running}
-     * @param cloudlet the cloudlet to get the VM startup delay
-     */
+    /// {@return the startup delay (in seconds) of a VM running a given Cloudlet if the VM is booting up, or 0 if it's already running}
+    /// @param cloudlet the cloudlet to get the VM startup delay
     private static double getVmStartupDelay(final Cloudlet cloudlet) {
         return cloudlet.getVm().isStartingUp() ? cloudlet.getVm().getStartupDelay() : 0;
     }
@@ -1183,10 +1111,8 @@ public non-sealed abstract class DatacenterBrokerAbstract extends CloudSimEntity
             lastSelectedVm, lastSelectedVm.getHost(), delayMsg);
     }
 
-    /**
-     * {@return true if all waiting Cloudlets were submitted to some VM, false otherwise}
-     * @param createdCloudlets number of Cloudlets previously waiting that have been just created
-     */
+    /// {@return true if all waiting Cloudlets were submitted to some VM, false otherwise}
+    /// @param createdCloudlets number of Cloudlets previously waiting that have been just created
     private boolean allWaitingCloudletsSubmittedToVm(final int createdCloudlets) {
         if (!cloudletWaitingList.isEmpty()) {
             return false;
@@ -1255,21 +1181,17 @@ public non-sealed abstract class DatacenterBrokerAbstract extends CloudSimEntity
         return (List<T>) new ArrayList<>(cloudletFinishedList);
     }
 
-    /**
-     * Gets a Vm at a given index from the {@link #getVmExecList() list of created VMs}.
-     *
-     * @param vmIndex the index where a VM has to be got from the created VM list
-     * @return the VM at the given index or {@link Vm#NULL} if the index is invalid
-     */
+    /// Gets a Vm at a given index from the [list of created VMs][#getVmExecList()].
+    ///
+    /// @param vmIndex the index where a VM has to be got from the created VM list
+    /// @return the VM at the given index or [Vm#NULL] if the index is invalid
     protected Vm getVmFromCreatedList(final int vmIndex) {
         return vmIndex >= 0 && vmIndex < vmExecList.size() ? vmExecList.get(vmIndex) : Vm.NULL;
     }
 
-    /**
-     * Sets the list of available datacenters.
-     *
-     * @param datacenterList the new datacenter list
-     */
+    /// Sets the list of available datacenters.
+    ///
+    /// @param datacenterList the new datacenter list
     private void setDatacenterList(final List<Datacenter> datacenterList) {
         this.datacenterList = new ArrayList<>(datacenterList);
         if(selectClosestDatacenter){
@@ -1277,10 +1199,8 @@ public non-sealed abstract class DatacenterBrokerAbstract extends CloudSimEntity
         }
     }
 
-    /**
-     * {@return the Datacenter where a VM is placed}
-     * @param vm the VM to get its Datacenter
-     */
+    /// {@return the Datacenter where a VM is placed}
+    /// @param vm the VM to get its Datacenter
     protected Datacenter getDatacenter(final Vm vm) {
         return vm.getHost().getDatacenter();
     }
@@ -1313,59 +1233,52 @@ public non-sealed abstract class DatacenterBrokerAbstract extends CloudSimEntity
         return this;
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * <p>If null is given, the default VM destruction delay function will be used.</p>
-     * @param function {@inheritDoc}
-     * @return {@inheritDoc}
-     */
+    /// {@inheritDoc}
+    ///
+    /// If null is given, the default VM destruction delay function will be used.
+    ///
+    /// @param function {@inheritDoc}
+    /// @return {@inheritDoc}
     @Override
     public DatacenterBroker setVmDestructionDelayFunction(@Nullable final Function<Vm, Double> function) {
         this.vmDestructionDelayFunction = function == null ? DEF_VM_DESTRUCTION_DELAY_FUNC : function;
         return this;
     }
 
-    /**
-     * Selects a Datacenter to request the creating of waiting VMs.
-     * This is the default policy used to select a Datacenter to run {@link #getVmWaitingList() waiting VMs},
-     * if the {@link #isSelectClosestDatacenter() selection of the closest datacenter} is disabled.
-     * @param lastDatacenter the last selected Datacenter
-     * @param vm the VM trying to be created
-     * @return the selected datacenter or {@link Datacenter#NULL} if no suitable Datacenter was found
-     * @see DatacenterBroker#setDatacenterMapper(BiFunction)
-     * @see #closestDatacenterMapper(Datacenter, Vm)
-     */
+    /// Selects a Datacenter to request the creating of waiting VMs.
+    /// This is the default policy used to select a Datacenter to run [waiting VMs][#getVmWaitingList()],
+    /// if the [selection of the closest datacenter][#isSelectClosestDatacenter()] is disabled.
+    /// @param lastDatacenter the last selected Datacenter
+    /// @param vm the VM trying to be created
+    /// @return the selected datacenter or [Datacenter#NULL] if no suitable Datacenter was found
+    /// @see DatacenterBroker#setDatacenterMapper(BiFunction)
+    /// @see #closestDatacenterMapper(Datacenter, Vm)
     protected abstract Datacenter defaultDatacenterMapper(Datacenter lastDatacenter, Vm vm);
 
-    /**
-     * Selects the closest Datacenter to request the creating of waiting VMs, according to their timezone offset.
-     * This policy is just used if the {@link #isSelectClosestDatacenter() selection of the closest datacenter} is enabled.
-     *
-     * @param lastDatacenter the last selected Datacenter
-     * @param vm the VM trying to be created
-     * @return the selected datacenter or {@link Datacenter#NULL} if no suitable Datacenter was found
-     * @see #defaultDatacenterMapper(Datacenter, Vm)
-     * @see #setSelectClosestDatacenter(boolean)
-     */
+    /// Selects the closest Datacenter to request the creating of waiting VMs, according to their timezone offset.
+    /// This policy is just used if the [selection of the closest datacenter][#isSelectClosestDatacenter()] is enabled.
+    ///
+    /// @param lastDatacenter the last selected Datacenter
+    /// @param vm the VM trying to be created
+    /// @return the selected datacenter or [Datacenter#NULL] if no suitable Datacenter was found
+    /// @see #defaultDatacenterMapper(Datacenter, Vm)
+    /// @see #setSelectClosestDatacenter(boolean)
     protected Datacenter closestDatacenterMapper(final Datacenter lastDatacenter, final Vm vm) {
         return TimeZoned.closestDatacenter(vm, getDatacenterList());
     }
 
-    /**
-     * Selects a VM to execute a given Cloudlet.
-     * The method defines the default policy used to map VMs for Cloudlets
-     * that are waiting to be created.
-     *
-     * <p>Since this policy can be dynamically changed
-     * by calling {@link #setVmMapper(Function)},
-     * this method will always return the default policy
-     * provided by the subclass where the method is being called.</p>
-     *
-     * @param cloudlet the cloudlet that needs a VM to execute
-     * @return the selected Vm for the cloudlet or {@link Vm#NULL} if no suitable VM was found
-     *
-     * @see #setVmMapper(Function)
-     */
+    /// Selects a VM to execute a given Cloudlet.
+    /// The method defines the default policy used to map VMs for Cloudlets
+    /// that are waiting to be created.
+    ///
+    /// Since this policy can be dynamically changed
+    /// by calling [#setVmMapper(Function)],
+    /// this method will always return the default policy
+    /// provided by the subclass where the method is being called.
+    ///
+    /// @param cloudlet the cloudlet that needs a VM to execute
+    /// @return the selected Vm for the cloudlet or [Vm#NULL] if no suitable VM was found
+    ///
+    /// @see #setVmMapper(Function)
     protected abstract Vm defaultVmMapper(Cloudlet cloudlet);
 }

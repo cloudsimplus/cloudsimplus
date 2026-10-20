@@ -31,14 +31,12 @@ import org.cloudsimplus.vms.Vm;
 
 import java.util.function.Function;
 
-/**
- * A class that implements the Null Object Design Pattern for {@link VerticalVmScaling}
- * class.
- *
- * @author Manoel Campos da Silva Filho
- * @see VerticalVmScaling#NULL
- * @since CloudSim Plus 1.2.0
- */
+/// A class that implements the Null Object Design Pattern for [VerticalVmScaling]
+/// class.
+///
+/// @author Manoel Campos da Silva Filho
+/// @see VerticalVmScaling#NULL
+/// @since CloudSim Plus 1.2.0
 final class VerticalVmScalingNull implements VerticalVmScaling {
     @Override public Class<? extends ResourceManageable> getResourceClass() { return ResourceManageable.class; }
     @Override public double getScalingFactor() {

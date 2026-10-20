@@ -25,103 +25,77 @@ package org.cloudsimplus.builders.tables;
 
 import java.util.List;
 
-/**
- * An interface for classes that generate tables from a given data set to show simulation results,
- * following the Builder Design Pattern.
- *
- * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 1.0
- */
+/// An interface for classes that generate tables from a given data set to show simulation results,
+/// following the Builder Design Pattern.
+///
+/// @author Manoel Campos da Silva Filho
+/// @since CloudSim Plus 1.0
 public sealed interface Table permits AbstractTable {
-    /**
-     * Adds a new empty row to the list of rows, so that data can be added to the row further.
-     * @return the new empty row
-     */
+    /// Adds a new empty row to the list of rows, so that data can be added to the row further.
+    /// @return the new empty row
     List<Object> newRow();
 
-    /**
-     * Creates a column with a given title.
-     * The created column is not added to the table.
-     *
-     * @param title The title of the column to create.
-     * @return The created column
-     * @see #newColumn(String, String)
-     * @see #newColumn(String, String, String)
-     */
+    /// Creates a column with a given title.
+    /// The created column is not added to the table.
+    ///
+    /// @param title The title of the column to create.
+    /// @return The created column
+    /// @see #newColumn(String, String)
+    /// @see #newColumn(String, String, String)
     TableColumn newColumn(String title);
 
-    /**
-     * Creates a column with a given title and subtitle.
-     * The created column is not added to the table.
-     *
-     * @param title The title of the column to be added.
-     * @param subTitle The subtitle of the column to be added.
-     * @return the created column
-     * @see #newColumn(String)
-     * @see #newColumn(String, String, String)
-     */
+    /// Creates a column with a given title and subtitle.
+    /// The created column is not added to the table.
+    ///
+    /// @param title The title of the column to be added.
+    /// @param subTitle The subtitle of the column to be added.
+    /// @return the created column
+    /// @see #newColumn(String)
+    /// @see #newColumn(String, String, String)
     TableColumn newColumn(String title, String subTitle);
 
-    /**
-     * Cretes a column with a given title, subtitle and format.
-     * The created column is not added to the table.
-     *
-     * @param title The title of the column to be added.
-     * @param subtitle The subtitle of the column to be added.
-     * @param format format to print the column data
-     * @return the created column
-     * @see #newColumn(String)
-     * @see #newColumn(String, String)
-     */
+    /// Cretes a column with a given title, subtitle and format.
+    /// The created column is not added to the table.
+    ///
+    /// @param title The title of the column to be added.
+    /// @param subtitle The subtitle of the column to be added.
+    /// @param format format to print the column data
+    /// @return the created column
+    /// @see #newColumn(String)
+    /// @see #newColumn(String, String)
     TableColumn newColumn(String title, String subtitle, String format);
 
-    /**
-     * Adds a list of columns (with given titles) to the end of the
-     * table's columns to be printed, where the column data
-     * will be printed without a specific format.
-     *
-     * @param columnTitles The titles of the columns
-     * @return the {@link Table} instance.
-     * @see #newColumn(String)
-     */
+    /// Adds a list of columns (with given titles) to the end of the
+    /// table's columns to be printed, where the column data
+    /// will be printed without a specific format.
+    ///
+    /// @param columnTitles The titles of the columns
+    /// @return the [Table] instance.
+    /// @see #newColumn(String)
     Table addColumnList(String... columnTitles);
 
-    /**
-     * {@return the table title}
-     */
+    /// {@return the table title}
     String getTitle();
 
-    /**
-     * {@return the table instance}
-     * @param title the table title to set
-     */
+    /// {@return the table instance}
+    /// @param title the table title to set
     Table setTitle(String title);
 
-    /**
-     * {@return the list of columns of the table}
-     */
+    /// {@return the list of columns of the table}
     List<TableColumn> getColumns();
 
-    /**
-     * {@return the number of columns}
-     */
+    /// {@return the number of columns}
     int colCount();
 
-    /**
-     * {@return the string used to separate one column from another (optional)}
-     */
+    /// {@return the string used to separate one column from another (optional)}
     String getColumnSeparator();
 
-    /**
-     * Sets the string used to separate one column from another.
-     * It's optional to set a column separator.
-     * @param columnSeparator the separator
-     * @return this table instance
-     */
+    /// Sets the string used to separate one column from another.
+    /// It's optional to set a column separator.
+    /// @param columnSeparator the separator
+    /// @return this table instance
     Table setColumnSeparator(String columnSeparator);
 
-    /**
-     * Prints the table.
-     */
+    /// Prints the table.
     void print();
 }

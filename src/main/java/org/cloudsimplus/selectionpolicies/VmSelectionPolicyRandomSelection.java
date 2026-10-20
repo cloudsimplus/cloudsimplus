@@ -16,31 +16,25 @@ import org.cloudsimplus.vms.Vm;
 
 import java.util.Optional;
 
-/**
- * A VM selection policy that randomly selects {@link Vm}s to migrate from a host.
- * It uses a uniform Pseudo Random Number Generator (PRNG) as default to select VMs.
- *
- * @author Anton Beloglazov
- * @author Manoel Campos da Silva Filho
- * @since CloudSim Toolkit 3.0
- */
+/// A VM selection policy that randomly selects [Vm]s to migrate from a host.
+/// It uses a uniform Pseudo Random Number Generator (PRNG) as default to select VMs.
+///
+/// @author Anton Beloglazov
+/// @author Manoel Campos da Silva Filho
+/// @since CloudSim Toolkit 3.0
 public class VmSelectionPolicyRandomSelection implements VmSelectionPolicy {
     private final ContinuousDistribution rand;
 
-    /**
-     * Creates a PowerVmSelectionPolicyRandomSelection using
-     * a uniform Pseudo Random Number Generator (PRNG) as default to select VMs to migrate.
-     */
+    /// Creates a PowerVmSelectionPolicyRandomSelection using
+    /// a uniform Pseudo Random Number Generator (PRNG) as default to select VMs to migrate.
     public VmSelectionPolicyRandomSelection(){
         this(new UniformDistr());
     }
 
-    /**
-     * Creates a PowerVmSelectionPolicyRandomSelection using a given
-     * Pseudo Random Number Generator (PRNG) to select VMs to migrate.
-     *
-     * @param rand a Pseudo Random Number Generator (PRNG) to randomly select VMs to migrate.
-     */
+    /// Creates a PowerVmSelectionPolicyRandomSelection using a given
+    /// Pseudo Random Number Generator (PRNG) to select VMs to migrate.
+    ///
+    /// @param rand a Pseudo Random Number Generator (PRNG) to randomly select VMs to migrate.
     public VmSelectionPolicyRandomSelection(@NonNull final ContinuousDistribution rand){
         super();
         this.rand = rand;

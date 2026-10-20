@@ -27,10 +27,8 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-/**
- * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 4.4.2
- */
+/// @author Manoel Campos da Silva Filho
+/// @since CloudSim Plus 4.4.2
 public class TimeUtilTest {
 
     @Test

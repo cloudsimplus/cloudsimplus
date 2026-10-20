@@ -32,31 +32,23 @@ import org.cloudsimplus.distributions.ContinuousDistribution;
 
 import java.lang.reflect.InvocationTargetException;
 
-/**
- * An abstract class for {@link Heuristic} implementations.
- *
- * @param <S> The {@link HeuristicSolution class of solutions} the heuristic will deal with.
- *            It starts with an initial solution (usually random, depending on each subclass implementation)
- *            and executes the search to find a satisfying solution (defined by a stop criteria).
- * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 1.0
- */
+/// An abstract class for [Heuristic] implementations.
+///
+/// @param <S> The [class of solutions][HeuristicSolution] the heuristic will deal with.
+/// It starts with an initial solution (usually random, depending on each subclass implementation)
+/// and executes the search to find a satisfying solution (defined by a stop criteria).
+/// @author Manoel Campos da Silva Filho
+/// @since CloudSim Plus 1.0
 @Accessors @Getter
 public abstract class HeuristicAbstract<S extends HeuristicSolution<?>>  implements Heuristic<S> {
-	/**
-	 * Reference to the generic class that will be used to instantiate objects.
-	 */
+	/// Reference to the generic class that will be used to instantiate objects.
     @Getter(AccessLevel.NONE)
     private final Class<S> solutionClass;
 
-    /**
-     * A pseudo-random number generator
-     */
+    /// A pseudo-random number generator
 	private final ContinuousDistribution random;
 
-    /**
-     * The number of neighborhood searches by each iteration of the heuristic.
-     */
+    /// The number of neighborhood searches by each iteration of the heuristic.
     @Setter
     private int searchesByIteration;
 
@@ -66,12 +58,10 @@ public abstract class HeuristicAbstract<S extends HeuristicSolution<?>>  impleme
 
 	private double solveTime;
 
-	/**
-	 * Creates a heuristic.
-	 *
-	 * @param random a pseudo-random number generator
-	 * @param solutionClass reference to the generic class that will be used to instantiate heuristic solutions
-	 */
+	/// Creates a heuristic.
+	///
+	/// @param random a pseudo-random number generator
+	/// @param solutionClass reference to the generic class that will be used to instantiate heuristic solutions
 	public HeuristicAbstract(@NonNull final ContinuousDistribution random, @NonNull final Class<S> solutionClass){
         this.random = random;
         this.solutionClass = solutionClass;
@@ -80,10 +70,8 @@ public abstract class HeuristicAbstract<S extends HeuristicSolution<?>>  impleme
 		setNeighborSolution(bestSolutionSoFar);
 	}
 
-	/**
-	 * Sets the time taken to solve the heuristic.
-	 * @param solveTime the time to set (in seconds)
-	 */
+	/// Sets the time taken to solve the heuristic.
+	/// @param solveTime the time to set (in seconds)
 	protected void setSolveTime(final double solveTime) {
 		this.solveTime = solveTime;
 	}
@@ -97,9 +85,7 @@ public abstract class HeuristicAbstract<S extends HeuristicSolution<?>>  impleme
 	    }
 	}
 
-	/**
-	 * Updates the state of the system to keep looking for a suboptimal solution.
-	 */
+	/// Updates the state of the system to keep looking for a suboptimal solution.
 	protected abstract void updateSystemState();
 
 	@Override
@@ -134,18 +120,14 @@ public abstract class HeuristicAbstract<S extends HeuristicSolution<?>>  impleme
         }
     }
 
-    /**
-     * Sets a solution as the current one.
-     * @param solution the solution to set as the current one.
-     */
+    /// Sets a solution as the current one.
+    /// @param solution the solution to set as the current one.
     protected final void setBestSolutionSoFar(final S solution) {
         this.bestSolutionSoFar = solution;
     }
 
-	/**
-	 * Sets a solution as the neighbor one.
-	 * @param solution the solution to set as the neighbor one.
-	 */
+	/// Sets a solution as the neighbor one.
+	/// @param solution the solution to set as the neighbor one.
     protected final void setNeighborSolution(final S solution) {
         this.neighborSolution = solution;
     }

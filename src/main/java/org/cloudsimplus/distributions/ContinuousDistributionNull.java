@@ -23,12 +23,10 @@
  */
 package org.cloudsimplus.distributions;
 
-/**
- * A class that implements the Null Object Design Pattern for {@link ContinuousDistribution} class.
- *
- * @author Manoel Campos da Silva Filho
- * @see ContinuousDistribution#NULL
- */
+/// A class that implements the Null Object Design Pattern for [ContinuousDistribution] class.
+///
+/// @author Manoel Campos da Silva Filho
+/// @see ContinuousDistribution#NULL
 final class ContinuousDistributionNull implements ContinuousDistribution {
     @Override public double originalSample() { return 0; }
     @Override public double density(double x) { return 0; }

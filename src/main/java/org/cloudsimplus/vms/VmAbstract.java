@@ -51,36 +51,26 @@ import org.cloudsimplus.utilizationmodels.BootModel;
 import java.util.*;
 import org.jspecify.annotations.Nullable;
 
-/**
- * A base class for implementing {@link Vm}s.
- *
- * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 8.3.0
- */
+/// A base class for implementing [Vm]s.
+///
+/// @author Manoel Campos da Silva Filho
+/// @since CloudSim Plus 8.3.0
 @Accessors(makeFinal = false) @Getter
 public non-sealed abstract class VmAbstract extends CustomerEntityAbstract implements Vm {
-    /**
-     * Gets the Default RAM capacity (in MB) for creating VMs.
-     * This value is used when the RAM capacity is not given in a VM constructor.
-     */
+    /// Gets the Default RAM capacity (in MB) for creating VMs.
+    /// This value is used when the RAM capacity is not given in a VM constructor.
     private static long defaultRamCapacity = 1024;
 
-    /**
-     * Gets the Default Bandwidth capacity (in Mbps) for creating VMs.
-     * This value is used when the BW capacity is not given in a VM constructor.
-     */
+    /// Gets the Default Bandwidth capacity (in Mbps) for creating VMs.
+    /// This value is used when the BW capacity is not given in a VM constructor.
     private static long defaultBwCapacity = 100;
 
-    /**
-     * Gets the Default Storage capacity (in MB) for creating VMs.
-     * This value is used when the Storage capacity is not given in a VM constructor.
-     */
+    /// Gets the Default Storage capacity (in MB) for creating VMs.
+    /// This value is used when the Storage capacity is not given in a VM constructor.
     private static long defaultStorageCapacity = 1024;
 
     protected final Processor processor;
-    /**
-     * @see #getStateHistory()
-     */
+    /// @see #getStateHistory()
     protected final List<VmStateHistoryEntry> stateHistory;
     protected final List<EventListener<VmHostEventInfo>> onMigrationStartListeners;
     protected final List<EventListener<VmHostEventInfo>> onMigrationFinishListeners;
@@ -123,12 +113,10 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
     private VerticalVmScaling peVerticalScaling;
     private VmResourceStats cpuUtilizationStats;
 
-    /**
-     * A copy constructor that creates a VM based on the configuration of another one.
-     * The created VM will have the same MIPS capacity, number of PEs,
-     * BW, RAM and size of the given VM, but a default {@link CloudletScheduler} and no {@link DatacenterBroker}.
-     * @param sourceVm the VM to be cloned
-     */
+    /// A copy constructor that creates a VM based on the configuration of another one.
+    /// The created VM will have the same MIPS capacity, number of PEs,
+    /// BW, RAM and size of the given VM, but a default [CloudletScheduler] and no [DatacenterBroker].
+    /// @param sourceVm the VM to be cloned
     public VmAbstract(final Vm sourceVm) {
         this(-1, (long)sourceVm.getMips(), sourceVm.getPesNumber());
         this.setBw(sourceVm.getBw().getCapacity())
@@ -169,70 +157,56 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
         mutableAttributesInit();
     }
 
-    /**
-     * Sets the Default RAM capacity (in MB) for creating VMs.
-     * This value is used when the RAM capacity is not given in a VM constructor.
-     */
+    /// Sets the Default RAM capacity (in MB) for creating VMs.
+    /// This value is used when the RAM capacity is not given in a VM constructor.
     public static void setDefaultRamCapacity(final long defaultCapacity) {
         Machine.validateCapacity(defaultCapacity);
         defaultRamCapacity = defaultCapacity;
     }
 
-    /**
-     * Sets the Default Bandwidth capacity (in Mbps) for creating VMs.
-     * This value is used when the BW capacity is not given in a VM constructor.
-     */
+    /// Sets the Default Bandwidth capacity (in Mbps) for creating VMs.
+    /// This value is used when the BW capacity is not given in a VM constructor.
     public static void setDefaultBwCapacity(final long defaultCapacity) {
         Machine.validateCapacity(defaultCapacity);
         defaultBwCapacity = defaultCapacity;
     }
 
-    /**
-     * Sets the Default Storage capacity (in MB) for creating VMs.
-     * This value is used when the Storage capacity is not given in a VM constructor.
-     */
+    /// Sets the Default Storage capacity (in MB) for creating VMs.
+    /// This value is used when the Storage capacity is not given in a VM constructor.
     public static void setDefaultStorageCapacity(final long defaultCapacity) {
         Machine.validateCapacity(defaultCapacity);
         defaultStorageCapacity = defaultCapacity;
     }
 
-    /**
-     * Accepts a Vm or {@code List<Vm>}. If a Vm is given, it is returned.
-     * If a List is given, returns the first VM in that List.
-     * @param vmOrList a single Vm object or a {@code List<Vm>}
-     * @return the Vm object or the first Vm inside the List (according to the given parameter)
-     * @param <T> the type of the parameter, which may be a Vm or {@code List<Vm>}
-     */
+    /// Accepts a Vm or `List<Vm>`. If a Vm is given, it is returned.
+    /// If a List is given, returns the first VM in that List.
+    /// @param vmOrList a single Vm object or a `List<Vm>`
+    /// @return the Vm object or the first Vm inside the List (according to the given parameter)
+    /// @param <T> the type of the parameter, which may be a Vm or `List<Vm>`
     public static <T> VmAbstract getFirstVm(final T vmOrList) {
         return isVmList(vmOrList) ? ((List<VmAbstract>) vmOrList).get(0) : (VmAbstract) vmOrList;
     }
 
-    /**
-     * Accepts a Vm or {@code List<Vm>} and return a {@code List<Vm>}
-     * @param vmOrList a single Vm object or a {@code List<Vm>}
-     * @return a List with 1 Vm object if a Vm instance is given; or a {@code List<Vm>} if a List is given
-     * @param <T> the type of the parameter, which may be a Vm or {@code List<Vm>}
-     */
+    /// Accepts a Vm or `List<Vm>` and return a `List<Vm>`
+    /// @param vmOrList a single Vm object or a `List<Vm>`
+    /// @return a List with 1 Vm object if a Vm instance is given; or a `List<Vm>` if a List is given
+    /// @param <T> the type of the parameter, which may be a Vm or `List<Vm>`
     public static <T> List<Vm> getList(final T vmOrList) {
         return isVmList(vmOrList) ? ((List<Vm>) vmOrList) : List.of((Vm) vmOrList);
     }
 
-    /**
-     * Checks if an object is a Vm or {@code List<Vm>}.
-     * @param vmOrList a Vm {@code List<Vm>}
-     * @return true if it's a {@code List<Vm>}, false otherwise
-     * @param <T> the type of the parameter, which may be a Vm or {@code List<Vm>}
-     */
+    /// Checks if an object is a Vm or `List<Vm>`.
+    /// @param vmOrList a Vm `List<Vm>`
+    /// @return true if it's a `List<Vm>`, false otherwise
+    /// @param <T> the type of the parameter, which may be a Vm or `List<Vm>`
     public static <T> boolean isVmList(final T vmOrList) {
         return vmOrList instanceof List<?>;
     }
 
-    /**
-     * Accepts a single Vm object or a {@code List<Vm>} and returns the number of Vms in the given object.
-     * @param vmOrList a Vm {@code List<Vm>}
-     * @return 1 if the given object is a single Vm object, {@link List#size()} if it's a List.
-     * @param <T> the type of the parameter, which may be a Vm or {@code List<Vm>}
-     */
+    /// Accepts a single Vm object or a `List<Vm>` and returns the number of Vms in the given object.
+    /// @param vmOrList a Vm `List<Vm>`
+    /// @return 1 if the given object is a single Vm object, [List#size()] if it's a List.
+    /// @param <T> the type of the parameter, which may be a Vm or `List<Vm>`
     public static <T> int getVmCount(final T vmOrList) {
         return isVmList(vmOrList) ? ((List<Vm>)vmOrList).size() : 1;
     }
@@ -280,11 +254,9 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
         return isStartingUp() ? bootProcessing() : cloudletsProcessing(currentTime, mipsShare);
     }
 
-    /**
-     * Process the VM boot up.
-     * @return the remaining startup time that indicates how longer the boot process will take
-     * so that the vm processing is updated after that time.
-     */
+    /// Process the VM boot up.
+    /// @return the remaining startup time that indicates how longer the boot process will take
+    /// so that the vm processing is updated after that time.
     private double bootProcessing() {
         final var dc = host.getDatacenter();
         final double nextProcessingTime = dc.getSchedulingInterval() > -1 ? dc.getSchedulingInterval() : getRemainingStartupTime();
@@ -316,11 +288,9 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
         return nextSimulationDelay - decimals < 0 ? nextSimulationDelay : nextSimulationDelay - decimals;
     }
 
-    /**
-     * Sets the current number of free PEs.
-     *
-     * @return the new free pes number
-     */
+    /// Sets the current number of free PEs.
+    ///
+    /// @return the new free pes number
     public Vm setFreePesNumber(long freePesNumber) {
         if (freePesNumber < 0) {
             freePesNumber = 0;
@@ -331,38 +301,30 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
         return this;
     }
 
-    /**
-     * Frees all PEs of this VM, setting the {@link #freePesNumber} to the total number of PEs.
-     */
+    /// Frees all PEs of this VM, setting the [#freePesNumber] to the total number of PEs.
     public void freeAllPes() {
         setFreePesNumber(getPesNumber());
     }
 
-    /**
-     * Adds a given number of expected free PEs to the total number of expected free PEs.
-     * This value is updated as cloudlets are assigned to VMs but not submitted to the broker for running yet.
-     *
-     * @param pesToAdd the number of expected free PEs to add
-     */
+    /// Adds a given number of expected free PEs to the total number of expected free PEs.
+    /// This value is updated as cloudlets are assigned to VMs but not submitted to the broker for running yet.
+    ///
+    /// @param pesToAdd the number of expected free PEs to add
     public Vm addExpectedFreePesNumber(final long pesToAdd) {
         return setExpectedFreePesNumber(expectedFreePesNumber + pesToAdd);
     }
 
-    /**
-     * Adds a given number of expected free PEs to the total number of expected free PEs.
-     * This value is updated as cloudlets are assigned to VMs but not submitted to the broker for running yet.
-     *
-     * @param pesToRemove the number of expected free PEs to remove
-     */
+    /// Adds a given number of expected free PEs to the total number of expected free PEs.
+    /// This value is updated as cloudlets are assigned to VMs but not submitted to the broker for running yet.
+    ///
+    /// @param pesToRemove the number of expected free PEs to remove
     public Vm removeExpectedFreePesNumber(final long pesToRemove) {
         return setExpectedFreePesNumber(expectedFreePesNumber - pesToRemove);
     }
 
-    /**
-     * Sets the expected free PEs number before the VM starts executing.
-     *
-     * @param expectedFreePes the expected free PEs number to set
-     */
+    /// Sets the expected free PEs number before the VM starts executing.
+    ///
+    /// @param expectedFreePes the expected free PEs number to set
     private Vm setExpectedFreePesNumber(final long expectedFreePes) {
         this.expectedFreePesNumber = Math.clamp(expectedFreePes, 0, getPesNumber());
         return this;
@@ -465,10 +427,8 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
         notifyOnHostDeallocationListeners(host);
     }
 
-    /**
-     * Checks if the VM has ever started some Cloudlet.
-     * @return true if the VM has started some Cloudlet, false otherwise
-     */
+    /// Checks if the VM has ever started some Cloudlet.
+    /// @return true if the VM has started some Cloudlet, false otherwise
     public boolean hasStartedSomeCloudlet() {
         return getLastBusyTime() > NOT_ASSIGNED;
     }
@@ -478,12 +438,10 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
         return processor.getMips();
     }
 
-    /**
-     * Sets the individual MIPS capacity of any VM's PE, considering that all
-     * PEs have the same capacity.
-     *
-     * @param mips the new mips for every VM's PE
-     */
+    /// Sets the individual MIPS capacity of any VM's PE, considering that all
+    /// PEs have the same capacity.
+    ///
+    /// @param mips the new mips for every VM's PE
     protected final void setMips(final double mips) {
         processor.setMips(mips);
     }
@@ -497,11 +455,9 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
         processor.setCapacity(pesNumber);
     }
 
-    /**
-     * Sets a new {@link Ram} resource for the Vm.
-     *
-     * @param ram the Ram resource to set
-     */
+    /// Sets a new [Ram] resource for the Vm.
+    ///
+    /// @param ram the Ram resource to set
     private void setRam(@NonNull final VmRam ram) {
         this.ram = ram;
     }
@@ -516,11 +472,9 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
         return this;
     }
 
-    /**
-     * Sets a new {@link Bandwidth} resource for the Vm.
-     *
-     * @param bw the Bandwidth resource to set
-     */
+    /// Sets a new [Bandwidth] resource for the Vm.
+    ///
+    /// @param bw the Bandwidth resource to set
     private void setBw(@NonNull final Bandwidth bw) {
         this.bw = bw;
     }
@@ -534,11 +488,9 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
         return this;
     }
 
-    /**
-     * Sets a new {@link SimpleStorage} resource for the Vm.
-     *
-     * @param storage the storage resource to set
-     */
+    /// Sets a new [SimpleStorage] resource for the Vm.
+    ///
+    /// @param storage the storage resource to set
     protected void setStorage(@NonNull final SimpleStorage storage) {
         this.storage = storage;
     }
@@ -552,12 +504,10 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
         return this;
     }
 
-    /**
-     * Sets the PM that hosts the VM.
-     *
-     * @param host Host to run the VM
-     * @return this Vm
-     */
+    /// Sets the PM that hosts the VM.
+    ///
+    /// @param host Host to run the VM
+    /// @return this Vm
     public Vm setHost(@NonNull final Host host) {
         this.host = host;
         return this;
@@ -574,11 +524,9 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
         return this;
     }
 
-    /**
-     * Notifies the listeners when the VM starts migration to a target Host.
-     *
-     * @param targetHost the Host the VM is migrating to
-     */
+    /// Notifies the listeners when the VM starts migration to a target Host.
+    ///
+    /// @param targetHost the Host the VM is migrating to
     public void updateMigrationStartListeners(final Host targetHost) {
         // TODO: Workaround - Uses indexed for to avoid ConcurrentModificationException
         for (int i = 0; i < onMigrationStartListeners.size(); i++) {
@@ -587,11 +535,9 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
         }
     }
 
-    /**
-     * Notifies the listeners when the VM finishes migration to a target Host.
-     *
-     * @param targetHost the Host the VM has just migrated to
-     */
+    /// Notifies the listeners when the VM finishes migration to a target Host.
+    ///
+    /// @param targetHost the Host the VM has just migrated to
     public void updateMigrationFinishListeners(final Host targetHost) {
         // TODO: Workaround - Uses indexed for to avoid ConcurrentModificationException
         for (int i = 0; i < onMigrationFinishListeners.size(); i++) {
@@ -606,12 +552,10 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
             storage.getAvailableResource() >= cloudlet.getFileSize();
     }
 
-    /**
-     * Changes the created status of the Vm inside the Host.
-     *
-     * @param requestCreation true to indicate the VM was created inside the Host; false otherwise
-     * @see #isCreated()
-     */
+    /// Changes the created status of the Vm inside the Host.
+    ///
+    /// @param requestCreation true to indicate the VM was created inside the Host; false otherwise
+    /// @see #isCreated()
     public void setCreated(final boolean requestCreation) {
         if (requestCreation && !this.created) {
             setCreationTime();
@@ -791,9 +735,7 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
         }
     }
 
-    /**
-     * Notifies all registered listeners when the processing of the Vm is updated in its {@link Host}.
-     */
+    /// Notifies all registered listeners when the processing of the Vm is updated in its [Host].
     public void notifyOnUpdateProcessingListeners() {
         // TODO: Workaround - Uses indexed for to avoid ConcurrentModificationException
         for (int i = 0; i < onUpdateProcessingListeners.size(); i++) {

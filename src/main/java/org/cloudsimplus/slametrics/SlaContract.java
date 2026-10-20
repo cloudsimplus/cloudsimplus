@@ -65,43 +65,35 @@ public class SlaContract {
     @Getter @ToString.Include
     private List<SlaMetric> metrics;
 
-    /**
-     * Creates a {@link SlaContract}.
-     * If you want to get a contract from a JSON file,
-     * you shouldn't call the constructor directly.
-     * Instead, use the {@link #getInstance(String)} instead.
-     *
-     * <p>This constructor is just provided to enable the {@link Gson} object
-     * to use reflection to instantiate a SlaContract.</p>
-     */
+    /// Creates a [SlaContract].
+    /// If you want to get a contract from a JSON file,
+    /// you shouldn't call the constructor directly.
+    /// Instead, use the [#getInstance(String)] instead.
+    ///
+    /// This constructor is just provided to enable the [Gson] object
+    /// to use reflection to instantiate a SlaContract.
     public SlaContract() {
         this.metrics = new ArrayList<>();
     }
 
-    /**
-     * Gets an {@link SlaContract} from a JSON file inside the <b>application's resource directory</b>.
-     * @param jsonFilePath the <b>relative path</b> to the JSON file representing the
-     *                     SLA contract to read
-     * @return a {@link SlaContract} read from the JSON file
-     */
+    /// Gets an [SlaContract] from a JSON file inside the **application's resource directory**.
+    /// @param jsonFilePath the **relative path** to the JSON file representing the
+    /// SLA contract to read
+    /// @return a [SlaContract] read from the JSON file
     public static SlaContract getInstance(final String jsonFilePath) {
         return getInstanceInternal(ResourceLoader.newInputStream(jsonFilePath, SlaContract.class));
     }
 
-    /**
-     * Gets an {@link SlaContract} from a JSON file.
-     *
-     * @param inputStream a {@link InputStream} to read the file
-     * @return a {@link SlaContract} read from the JSON file
-     */
+    /// Gets an [SlaContract] from a JSON file.
+    ///
+    /// @param inputStream a [InputStream] to read the file
+    /// @return a [SlaContract] read from the JSON file
     private static SlaContract getInstanceInternal(final InputStream inputStream) {
         return new Gson().fromJson(new InputStreamReader(inputStream), SlaContract.class);
     }
 
-    /**
-     * Sets the list of metrics for this SLA contract.
-     * @param metrics the metrics to set
-     */
+    /// Sets the list of metrics for this SLA contract.
+    /// @param metrics the metrics to set
     public void setMetrics(final List<SlaMetric> metrics) {
         // Since the contract can be read from a file, the metrics can be in fact null.
         this.metrics = Objects.requireNonNullElse(metrics, new ArrayList<>());
@@ -139,9 +131,7 @@ public class SlaContract {
         return getSlaMetric(FAULT_TOLERANCE_LEVEL);
     }
 
-    /**
-     * @return the maximum price a customer expects to pay hourly for all his/her running VMs.
-     */
+    /// @return the maximum price a customer expects to pay hourly for all his/her running VMs.
     public double getMaxPrice() {
         return getPriceMetric().getMaxDimension().getValue();
     }

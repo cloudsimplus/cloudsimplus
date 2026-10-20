@@ -28,12 +28,10 @@ import org.cloudsimplus.core.CloudSimPlus;
 import org.cloudsimplus.hosts.Host;
 import org.cloudsimplus.vms.Vm;
 
-/**
- * A builder to help getting instance of other CloudSimPlus object builders.
- *
- * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 1.0
- */
+/// A builder to help getting instance of other CloudSimPlus object builders.
+///
+/// @author Manoel Campos da Silva Filho
+/// @since CloudSim Plus 1.0
 @Getter
 public class SimulationScenarioBuilder {
     private final DatacenterBuilder datacenterBuilder;

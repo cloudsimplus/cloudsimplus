@@ -16,26 +16,22 @@ import org.cloudsimplus.resources.SimpleStorage;
 import org.cloudsimplus.schedulers.cloudlet.CloudletScheduler;
 import org.cloudsimplus.schedulers.cloudlet.CloudletSchedulerTimeShared;
 
-/**
- * Implements the basic features of a Virtual Machine (VM), which runs inside a
- * {@link Host} that may be shared among other VMs. It processes
- * {@link Cloudlet}s (applications). This processing happens according to a policy,
- * defined by the {@link CloudletScheduler}. Each VM has an owner/user represented
- * by a {@link DatacenterBroker}, which can submit cloudlets to the VM to execute them.
- *
- * @author Rodrigo N. Calheiros
- * @author Anton Beloglazov
- * @author Manoel Campos da Silva Filho
- * @since CloudSim Toolkit 1.0
- */
+/// Implements the basic features of a Virtual Machine (VM), which runs inside a
+/// [Host] that may be shared among other VMs. It processes
+/// [Cloudlet]s (applications). This processing happens according to a policy,
+/// defined by the [CloudletScheduler]. Each VM has an owner/user represented
+/// by a [DatacenterBroker], which can submit cloudlets to the VM to execute them.
+///
+/// @author Rodrigo N. Calheiros
+/// @author Anton Beloglazov
+/// @author Manoel Campos da Silva Filho
+/// @since CloudSim Toolkit 1.0
 public class VmSimple extends VmAbstract {
-    /**
-     * A copy constructor that creates a VM based on the configuration of another one.
-     * The created VM will have the same MIPS capacity, number of PEs,
-     * BW, RAM and size of the given VM, but a default {@link CloudletScheduler} and no {@link DatacenterBroker}.
-     * @param sourceVm the VM to be cloned
-     * @see #VmSimple(double, long)
-     */
+    /// A copy constructor that creates a VM based on the configuration of another one.
+    /// The created VM will have the same MIPS capacity, number of PEs,
+    /// BW, RAM and size of the given VM, but a default [CloudletScheduler] and no [DatacenterBroker].
+    /// @param sourceVm the VM to be cloned
+    /// @see #VmSimple(double, long)
     public VmSimple(final Vm sourceVm) {
         super(sourceVm);
     }
@@ -135,12 +131,10 @@ public class VmSimple extends VmAbstract {
         return "%s %d%s".formatted(type, getId(), desc);
     }
 
-    /**
-     * Compare this Vm with another one based on {@link #getTotalMipsCapacity()}.
-     *
-     * @param obj the Vm to compare to
-     * @return {@inheritDoc}
-     */
+    /// Compare this Vm with another one based on [#getTotalMipsCapacity()].
+    ///
+    /// @param obj the Vm to compare to
+    /// @return {@inheritDoc}
     @Override
     public int compareTo(@NonNull final Vm obj) {
         if(this.equals(obj)) {

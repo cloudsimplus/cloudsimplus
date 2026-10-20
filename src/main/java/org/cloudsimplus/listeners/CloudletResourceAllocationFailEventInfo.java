@@ -27,47 +27,37 @@ import org.cloudsimplus.cloudlets.Cloudlet;
 import org.cloudsimplus.resources.ResourceManageable;
 import org.cloudsimplus.schedulers.cloudlet.CloudletScheduler;
 
-/**
- * An interface that represents data to be passed
- * to {@link EventListener} objects that are registered to be notified
- * when a {@link CloudletScheduler} <b>is not able to allocate the amount of resource a {@link Cloudlet}
- * is requesting due to lack of available capacity</b>.
- *
- * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 5.4.3
- */
+/// An interface that represents data to be passed
+/// to [EventListener] objects that are registered to be notified
+/// when a [CloudletScheduler] **is not able to allocate the amount of resource a [Cloudlet]
+/// is requesting due to lack of available capacity**.
+///
+/// @author Manoel Campos da Silva Filho
+/// @since CloudSim Plus 5.4.3
 public interface CloudletResourceAllocationFailEventInfo extends CloudletEventInfo {
-    /**
-     * @return the class of the resource the Cloudlet is requesting.
-     */
+    /// @return the class of the resource the Cloudlet is requesting.
     Class<? extends ResourceManageable> getResourceClass();
 
-    /**
-     * {@return amount of resources being requested and which is not currently available}
-     * The unit depends on the type of the {@link #getResourceClass()} resource.
-     */
+    /// {@return amount of resources being requested and which is not currently available}
+    /// The unit depends on the type of the [#getResourceClass()] resource.
     long getRequestedAmount();
 
-    /**
-     * {@return amount of resource amount that was available before allocating for the Cloudlet}
-     * The unit depends on the type of the {@link #getResourceClass()} resource.
-     */
+    /// {@return amount of resource amount that was available before allocating for the Cloudlet}
+    /// The unit depends on the type of the [#getResourceClass()] resource.
     long getAvailableAmount();
 
     @Override
     EventListener<CloudletResourceAllocationFailEventInfo> getListener();
 
-    /**
-     * Gets a {@code EventInfo} instance from the given parameters.
-     *
-     * @param listener the listener to be notified about the event
-     * @param cloudlet the Cloudlet requesting the resource
-     * @param resourceClass the class of the resource the Cloudlet is requesting
-     * @param requestedAmount the requested resource amount (the unit depends on the resource requested)
-     * @param availableAmount the amount of resource amount that was available before allocating
-     *                        for the Cloudlet (the unit depends on the resource requested)
-     * @param time the time the event happened
-     */
+    /// Gets a `EventInfo` instance from the given parameters.
+    ///
+    /// @param listener the listener to be notified about the event
+    /// @param cloudlet the Cloudlet requesting the resource
+    /// @param resourceClass the class of the resource the Cloudlet is requesting
+    /// @param requestedAmount the requested resource amount (the unit depends on the resource requested)
+    /// @param availableAmount the amount of resource amount that was available before allocating
+    /// for the Cloudlet (the unit depends on the resource requested)
+    /// @param time the time the event happened
     static CloudletResourceAllocationFailEventInfo of(
         final EventListener<CloudletResourceAllocationFailEventInfo> listener,
         final Cloudlet cloudlet,

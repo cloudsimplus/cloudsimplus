@@ -41,12 +41,10 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.BiFunction;
 
-/**
- * A Builder class to create {@link Cloudlet} objects.
- *
- * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 1.0
- */
+/// A Builder class to create [Cloudlet] objects.
+///
+/// @author Manoel Campos da Silva Filho
+/// @since CloudSim Plus 1.0
 @Accessors(chain = true)
 public class CloudletBuilder implements Builder {
     @Getter @Setter private long length = 10000;
@@ -55,9 +53,7 @@ public class CloudletBuilder implements Builder {
     @Getter @Setter private int  pes = 1;
     @Setter private double lifeTime = Double.MAX_VALUE;
 
-    /**
-     * The VM to be bind to created cloudlets.
-     */
+    /// The VM to be bind to created cloudlets.
     @Setter private Vm vm = Vm.NULL;
     @Setter @NonNull private UtilizationModel utilizationModelRam;
     @Setter @NonNull private UtilizationModel utilizationModelCpu;
@@ -71,10 +67,8 @@ public class CloudletBuilder implements Builder {
     private final BrokerBuilderDecorator brokerBuilder;
     private final DatacenterBrokerSimple broker;
 
-    /**
-     * A {@link BiFunction} used to create Cloudlets.
-     * It must receive the length of the Cloudlet (in MI) and the number of PEs it will require.
-     */
+    /// A [BiFunction] used to create Cloudlets.
+    /// It must receive the length of the Cloudlet (in MI) and the number of PEs it will require.
     @Setter private BiFunction<Long,Integer, Cloudlet> cloudletCreationFunction;
 
     @Setter private EventListener<CloudletVmEventInfo> onCloudletFinishListener = EventListener.NULL;
@@ -140,23 +134,19 @@ public class CloudletBuilder implements Builder {
 	    return new CloudletSimple(length, pes);
     }
 
-    /**
-     * Submits the list of created cloudlets to the latest created broker.
-     * @return the CloudletBuilder instance
-     */
+    /// Submits the list of created cloudlets to the latest created broker.
+    /// @return the CloudletBuilder instance
     public CloudletBuilder submitCloudlets(){
         broker.submitCloudletList(cloudlets);
         return this;
     }
 
-    /**
-     * Sets the same utilization model for CPU, RAM and BW.
-     * By this way, at a time t, every one of the 3 resources will use the same percentage
-     * of its capacity.
-     *
-     * @param utilizationModel the utilization model to set
-     * @return this builder
-     */
+    /// Sets the same utilization model for CPU, RAM and BW.
+    /// By this way, at a time t, every one of the 3 resources will use the same percentage
+    /// of its capacity.
+    ///
+    /// @param utilizationModel the utilization model to set
+    /// @return this builder
     public final CloudletBuilder setUtilizationModelCpuRamAndBw(final UtilizationModel utilizationModel) {
         Objects.requireNonNull(utilizationModel);
         this.utilizationModelCpu = utilizationModel;

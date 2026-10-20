@@ -43,29 +43,23 @@ import java.util.function.BiFunction;
 import java.util.function.Supplier;
 import org.jspecify.annotations.Nullable;
 
-/**
- * A Builder class to create {@link Vm} objects using the default
- * values defined in {@link Vm} class.
- *
- * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 1.0
- *
- * @see VmSimple#setDefaultRamCapacity(long)
- * @see VmSimple#setDefaultBwCapacity(long)
- * @see VmSimple#setDefaultStorageCapacity(long)
- */
+/// A Builder class to create [Vm] objects using the default
+/// values defined in [Vm] class.
+///
+/// @author Manoel Campos da Silva Filho
+/// @since CloudSim Plus 1.0
+///
+/// @see VmSimple#setDefaultRamCapacity(long)
+/// @see VmSimple#setDefaultBwCapacity(long)
+/// @see VmSimple#setDefaultStorageCapacity(long)
 @Accessors(chain = true)
 public class VmBuilder implements Builder {
-    /**
-     * A {@link BiFunction} used to create VMs.
-     * It must receive the MIPS capacity of each {@link Pe} and the number of PEs for the VM it will create.
-     */
+    /// A [BiFunction] used to create VMs.
+    /// It must receive the MIPS capacity of each [Pe] and the number of PEs for the VM it will create.
     @Setter @NonNull private BiFunction<Double, Long, Vm> vmCreationFunction;
     @Getter @Setter private double mips = 1000;
 
-    /**
-     * Default number of {@link Pe}s to create.
-     */
+    /// Default number of [Pe]s to create.
     @Getter @Setter private long pes = 1;
     private int numberOfCreatedVms;
     private final DatacenterBrokerSimple broker;
@@ -81,18 +75,14 @@ public class VmBuilder implements Builder {
         this.vmCreationFunction = this::defaultVmCreationFunction;
     }
 
-    /**
-     * Creates and submits one VM to its broker.
-     * @return this builder
-     */
+    /// Creates and submits one VM to its broker.
+    /// @return this builder
     public VmBuilder createAndSubmit() {
         return createAndSubmit(1);
     }
 
-    /**
-     * Creates and submits a list of VM to its broker.
-     * @return this builder
-     */
+    /// Creates and submits a list of VM to its broker.
+    /// @return this builder
     public VmBuilder createAndSubmit(final int amount) {
         final List<Vm> vms = new ArrayList<>(amount);
         for (int i = 0; i < amount; i++) {

@@ -23,12 +23,10 @@
  */
 package org.cloudsimplus.resources;
 
-/**
- * A class that implements the Null Object Design Pattern for {@link Resource} class.
- *
- * @author Manoel Campos da Silva Filho
- * @see Resource#NULL
- */
+/// A class that implements the Null Object Design Pattern for [Resource] class.
+///
+/// @author Manoel Campos da Silva Filho
+/// @see Resource#NULL
 final class ResourceNull implements Resource {
     @Override public long getAvailableResource() { return 0; }
     @Override public long getAllocatedResource() {

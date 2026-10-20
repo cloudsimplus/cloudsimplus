@@ -29,9 +29,7 @@ import org.junit.jupiter.api.Test;
 import static org.cloudsimplus.utilizationmodels.UtilizationModel.Unit;
 import static org.junit.jupiter.api.Assertions.*;
 
-/**
- * @author Manoel Campos da Silva Filho
- */
+/// @author Manoel Campos da Silva Filho
 public class UtilizationModelDynamicTest {
 
     @Test
@@ -107,12 +105,10 @@ public class UtilizationModelDynamicTest {
         assertThrows(IllegalArgumentException.class, () -> new UtilizationModelDynamic(-1.1));
     }
 
-    /**
-     * Despite the initial utilization is greater than 1,
-     * since {@link UtilizationModel#isOverCapacityRequestAllowed()}
-     * default value is false,
-     * the max percent utilization allowed is 1 (100%)-
-     */
+    /// Despite the initial utilization is greater than 1,
+    /// since [UtilizationModel#isOverCapacityRequestAllowed()]
+    /// default value is false,
+    /// the max percent utilization allowed is 1 (100%)-
     @Test
     public void testConstructorWhenUtilizationPercentageIncrementGreaterThan1() {
         final double initialUtilizationPercent = 1.1;
@@ -134,12 +130,10 @@ public class UtilizationModelDynamicTest {
         assertThrows(IllegalArgumentException.class, () -> new UtilizationModelDynamic(Unit.PERCENTAGE, -1.1));
     }
 
-    /**
-     * Despite the initial utilization is greater than 1,
-     * since {@link UtilizationModel#isOverCapacityRequestAllowed()}
-     * default value is false,
-     * the max percent utilization allowed is 1 (100%)-
-     */
+    /// Despite the initial utilization is greater than 1,
+    /// since [UtilizationModel#isOverCapacityRequestAllowed()]
+    /// default value is false,
+    /// the max percent utilization allowed is 1 (100%)-
     @Test
     public void testConstructorWhenInitialValueGreaterThan1() {
         final int initialUtilization = 2;

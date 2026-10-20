@@ -31,18 +31,16 @@ import java.util.List;
 
 import static java.util.Objects.requireNonNullElse;
 
-/**
- * Builds a table for printing simulation results from a list of Cloudlets.
- * It defines a set of default columns but new ones can be added
- * dynamically using the {@code addColumn()} methods.
- *
- * <p>The basic usage of the class is by calling its constructor,
- * giving a list of Cloudlets to be printed, and then
- * calling the {@link #build()} method.</p>
- *
- * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 1.0
- */
+/// Builds a table for printing simulation results from a list of Cloudlets.
+/// It defines a set of default columns but new ones can be added
+/// dynamically using the `addColumn()` methods.
+///
+/// The basic usage of the class is by calling its constructor,
+/// giving a list of Cloudlets to be printed, and then
+/// calling the [#build()] method.
+///
+/// @author Manoel Campos da Silva Filho
+/// @since CloudSim Plus 1.0
 @Getter
 public class CloudletsTableBuilder extends TableBuilderAbstract<Cloudlet> {
     public static final String DEF_FORMAT = "%d";
@@ -52,44 +50,32 @@ public class CloudletsTableBuilder extends TableBuilderAbstract<Cloudlet> {
     private static final String ID = "ID";
     private static final String MI = "MI";
 
-    /**
-     * The format for time columns.
-     */
+    /// The format for time columns.
     private String timeFormat = "%.1f";
 
-    /**
-     * The format for ID columns.
-     */
+    /// The format for ID columns.
     private String idFormat = DEF_FORMAT;
 
-    /**
-     * The format for cloudlet length columns.
-     */
+    /// The format for cloudlet length columns.
     private String lengthFormat = DEF_FORMAT;
 
-    /**
-     * The format for columns indicating number of PEs.
-     */
+    /// The format for columns indicating number of PEs.
     private String peFormat = DEF_FORMAT;
 
-    /**
-     * Instantiates a builder to print the list of Cloudlets using the
-     * default {@link MarkdownTable}.
-     * To use a different {@link Table}, check the alternative constructors.
-     *
-     * @param list the list of Cloudlets to print
-     */
+    /// Instantiates a builder to print the list of Cloudlets using the
+    /// default [MarkdownTable].
+    /// To use a different [Table], check the alternative constructors.
+    ///
+    /// @param list the list of Cloudlets to print
     public CloudletsTableBuilder(final List<? extends Cloudlet> list) {
         super(list);
     }
 
-    /**
-     * Instantiates a builder to print the list of Cloudlets using the
-     * given {@link Table}.
-     *
-     * @param list the list of Cloudlets to print
-     * @param table the {@link Table} used to build the table with the Cloudlets data
-     */
+    /// Instantiates a builder to print the list of Cloudlets using the
+    /// given [Table].
+    ///
+    /// @param list the list of Cloudlets to print
+    /// @param table the [Table] used to build the table with the Cloudlets data
     public CloudletsTableBuilder(final List<? extends Cloudlet> list, final Table table) {
         super(list, table);
     }
@@ -118,36 +104,28 @@ public class CloudletsTableBuilder extends TableBuilderAbstract<Cloudlet> {
         addColumn(getTable().newColumn("ExecTime", SECONDS, timeFormat), Cloudlet::getTotalExecutionTime);
     }
 
-    /**
-     * Sets the format for time columns.
-     */
+    /// Sets the format for time columns.
     public CloudletsTableBuilder setTimeFormat(final String timeFormat) {
         this.timeFormat = requireNonNullElse(timeFormat, "");
         return this;
     }
 
-    /**
-     * Sets the format for cloudlet length columns.
-     * @return this table builder
-     */
+    /// Sets the format for cloudlet length columns.
+    /// @return this table builder
     public CloudletsTableBuilder setLengthFormat(final String lengthFormat) {
         this.lengthFormat = requireNonNullElse(lengthFormat, "");
         return this;
     }
 
-    /**
-     * Sets the format for ID columns.
-     * @return this table builder
-     */
+    /// Sets the format for ID columns.
+    /// @return this table builder
     public CloudletsTableBuilder setIdFormat(final String idFormat) {
         this.idFormat = requireNonNullElse(idFormat, "");
         return this;
     }
 
-    /**
-     * Sets the format for columns indicating number of PEs.
-     * @return this table builder
-     */
+    /// Sets the format for columns indicating number of PEs.
+    /// @return this table builder
     public CloudletsTableBuilder setPeFormat(final String peFormat) {
         this.peFormat = requireNonNullElse(peFormat, "");
         return this;

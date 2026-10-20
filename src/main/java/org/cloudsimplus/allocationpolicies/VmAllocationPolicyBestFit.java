@@ -46,12 +46,10 @@ import java.util.stream.Stream;
 /// @see VmAllocationPolicyFirstFit
 /// @see VmAllocationPolicySimple
 public class VmAllocationPolicyBestFit extends VmAllocationPolicyAbstract {
-    /**
-     * Gets the first suitable host from the {@link #getHostList()}
-     * that has the highest number of PEs in use (i.e. the least number of free PEs).
-     * @return an {@link Optional} containing a suitable Host to place the VM;
-     *         or an empty {@link Optional} if not found
-     */
+    /// Gets the first suitable host from the [#getHostList()]
+    /// that has the highest number of PEs in use (i.e. the least number of free PEs).
+    /// @return an [Optional] containing a suitable Host to place the VM;
+    /// or an empty [Optional] if not found
     @Override
     protected Optional<Host> defaultFindHostForVm(final Vm vm) {
         /* Since it's being used the min operation, the active comparator must be reversed so that

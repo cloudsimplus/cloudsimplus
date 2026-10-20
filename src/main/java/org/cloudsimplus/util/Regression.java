@@ -27,42 +27,34 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
-/**
- * Provides utility methods to compute regressions.
- * @since CloudSim Plus 7.0.1
- * @see <a href="https://en.wikipedia.org/wiki/Regression_analysis">Regression Analysis</a>
- */
+/// Provides utility methods to compute regressions.
+/// @since CloudSim Plus 7.0.1
+/// @see <a href="https://en.wikipedia.org/wiki/Regression_analysis">Regression Analysis</a>
 public final class Regression {
 
-    /** A private constructor to avoid class instantiation. */
+    /// A private constructor to avoid class instantiation.
     private Regression(){/**/}
 
-    /**
-     * {@return a new instance of a simple linear regression}
-     * @param x the independent variable
-     * @param y the dependent variable
-     * @see LinearRegression#of(double[], double[])
-     */
+    /// {@return a new instance of a simple linear regression}
+    /// @param x the independent variable
+    /// @param y the dependent variable
+    /// @see LinearRegression#of(double[], double[])
     public static LinearRegression newLinearRegression(final double[] x, final double[] y) {
         return LinearRegression.of(x, y);
     }
 
-    /**
-     * {@return a new instance of a multiple linear regression}
-     * @param x the independent variables, where each row is an observation and each column is a variable
-     * @param y the dependent variable
-     * @see LinearRegression#of(double[][], double[])
-     */
+    /// {@return a new instance of a multiple linear regression}
+    /// @param x the independent variables, where each row is an observation and each column is a variable
+    /// @param y the dependent variable
+    /// @see LinearRegression#of(double[][], double[])
     public static LinearRegression newLinearRegression(final double[][] x, final double[] y) {
         return LinearRegression.of(x, y);
     }
 
-    /**
-     * {@return a new instance of a weighted linear regression}
-     * @param x the independent variable
-     * @param y the dependent variable
-     * @param weights the weights to apply to x and y
-     */
+    /// {@return a new instance of a weighted linear regression}
+    /// @param x the independent variable
+    /// @param y the dependent variable
+    /// @param weights the weights to apply to x and y
     public static LinearRegression newWeightedLinearRegression(
         final double[] x, final double[] y, final double[] weights)
     {
@@ -85,22 +77,18 @@ public final class Regression {
         return newLinearRegression(weightedX, weightedY);
     }
 
-    /**
-     * {@return an array containing the Local Regression (LOESS) parameter estimates}
-     *
-     * @param y the dependent variable
-     * @see <a href="https://www.itl.nist.gov/div898/handbook/pmd/section1/pmd144.htm">LOESS</a>
-     */
+    /// {@return an array containing the Local Regression (LOESS) parameter estimates}
+    ///
+    /// @param y the dependent variable
+    /// @see <a href="https://www.itl.nist.gov/div898/handbook/pmd/section1/pmd144.htm">LOESS</a>
     public static double[] getLoessParameterEstimates(final double... y) {
         final double[] x = createIndependentArray(y.length);
         final var regression = newWeightedLinearRegression(x, y, getTricubeWeights(y.length));
         return regression.getParameterEstimates();
     }
 
-    /**
-     * {@return an array containing the robust LOESS parameter estimates}
-     * @param y the dependent variable
-     */
+    /// {@return an array containing the robust LOESS parameter estimates}
+    /// @param y the dependent variable
     public static double[] getRobustLoessParameterEstimates(final double... y) {
         final double[] x = createIndependentArray(y.length);
         final var tricubeRegression = newWeightedLinearRegression(x, y, getTricubeWeights(y.length));
@@ -118,10 +106,8 @@ public final class Regression {
         return estimates;
     }
 
-    /**
-     * {@return an array containing the tricube weights with n elements}
-     * @param weightsNumber the number of weights
-     */
+    /// {@return an array containing the tricube weights with n elements}
+    /// @param weightsNumber the number of weights
     private static double[] getTricubeWeights(final int weightsNumber) {
         final double[] weights = new double[weightsNumber];
         final double top = weightsNumber - 1; //spread
@@ -134,10 +120,8 @@ public final class Regression {
         return weights;
     }
 
-    /**
-     * {@return an array containing the tricube bisquare weightsBytesConversion
-     * @param residuals the residual array
-     */
+    /// {@return an array containing the tricube bisquare weightsBytesConversion
+    /// @param residuals the residual array
     private static double[] getTricubeBisquareWeights(final double... residuals) {
         final double[] weights = getTricubeWeights(residuals.length);
         final double[] weights2 = new double[residuals.length];
@@ -151,10 +135,8 @@ public final class Regression {
         return weights2;
     }
 
-    /**
-     * {@return the computed correlation coefficients for a set of data}
-     * @param data the data to compute the correlation coefficients
-     */
+    /// {@return the computed correlation coefficients for a set of data}
+    /// @param data the data to compute the correlation coefficients
     public static List<Double> correlationCoefficients(final double[][] data) {
         final int rows = data.length;
         final int cols = data[0].length;
@@ -178,11 +160,9 @@ public final class Regression {
         return correlationCoefficients;
     }
 
-    /**
-     * {@return a new array representing the independent variable for computing a linear regression}
-     *
-     * @param length the length of the array to create
-     */
+    /// {@return a new array representing the independent variable for computing a linear regression}
+    ///
+    /// @param length the length of the array to create
     private static double[] createIndependentArray(final int length) {
         final double[] x = new double[length];
         for (int i = 0; i < length; i++) {
@@ -192,10 +172,8 @@ public final class Regression {
         return x;
     }
 
-    /**
-     * {@return a new matrix that is the transpose of the given one} (rows become columns)
-     * @param matrix the matrix to transpose (it must be rectangular)
-     */
+    /// {@return a new matrix that is the transpose of the given one} (rows become columns)
+    /// @param matrix the matrix to transpose (it must be rectangular)
     private static double[][] transpose(final double[][] matrix) {
         final double[][] transposed = new double[matrix[0].length][matrix.length];
         for (int i = 0; i < matrix.length; i++) {

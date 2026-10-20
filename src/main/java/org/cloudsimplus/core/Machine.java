@@ -29,72 +29,52 @@ import org.cloudsimplus.resources.Resource;
 import org.cloudsimplus.resources.Resourceful;
 import org.cloudsimplus.vms.Vm;
 
-/**
- * Represents either a: (i) Physical Machine (PM) which implements the {@link Host} interface;
- * or (ii) Virtual Machine (VM), which implements the {@link Vm} interface.
- *
- * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 5.1.4
- * @param <T> the type of the storage device for the machine
- */
+/// Represents either a: (i) Physical Machine (PM) which implements the [Host] interface;
+/// or (ii) Virtual Machine (VM), which implements the [Vm] interface.
+///
+/// @author Manoel Campos da Silva Filho
+/// @since CloudSim Plus 5.1.4
+/// @param <T> the type of the storage device for the machine
 public sealed interface Machine<T extends Resource>
     extends ChangeableId, Resourceful, ExecDelayable
     permits Vm, PhysicalMachine, MachineNull
 {
-    /**
-     * An attribute that implements the Null Object Design Pattern for {@link Machine} objects.
-     */
+    /// An attribute that implements the Null Object Design Pattern for [Machine] objects.
     Machine NULL = new MachineNull();
 
-    /**
-     * @return a resource representing the machine bandwidth (bw) in Megabits/s.
-     */
+    /// @return a resource representing the machine bandwidth (bw) in Megabits/s.
     Resource getBw();
 
-    /**
-     * @return a resource representing the machine memory in Megabytes.
-     */
+    /// @return a resource representing the machine memory in Megabytes.
     Resource getRam();
 
-    /**
-     * @return the storage device of the machine with capacity in Megabytes.
-     */
+    /// @return the storage device of the machine with capacity in Megabytes.
     T getStorage();
 
-    /**
-     * @return the overall number of {@link Pe}s the machine has,
-     *         that include PEs of all statuses, including failed PEs.
-     */
+    /// @return the overall number of [Pe]s the machine has,
+    /// that include PEs of all statuses, including failed PEs.
     long getPesNumber();
 
-    /**
-     * @return the individual MIPS capacity of any machine's {@link Pe},
-     *         considering that all PEs have the same capacity.
-     */
+    /// @return the individual MIPS capacity of any machine's [Pe],
+    /// considering that all PEs have the same capacity.
     double getMips();
 
-    /**
-     * @return total MIPS capacity across all PEs of the machine.
-     */
+    /// @return total MIPS capacity across all PEs of the machine.
     double getTotalMipsCapacity();
 
-    /**
-     * @return the {@link CloudSimPlus} instance that represents the simulation the Entity belongs to.
-     */
+    /// @return the [CloudSimPlus] instance that represents the simulation the Entity belongs to.
     Simulation getSimulation();
 
-    /**
-     * Checks if the Machine has been idle for a given amount of time (in seconds).
-     * @param time the time interval to check if the Machine has been idle (in seconds).
-     *             If time is zero, it will be checked if the Machine is currently idle.
-     *             If it's negative, even if the Machine is idle, it's considered
-     *             that it isn't idle enough. This is useful if you don't want to perform
-     *             any operation when the machine becomes idle (for instance,
-     *             if idle machines might be shut down and a negative value is given,
-     *             they won't).
-     * @return true if the Machine has been idle as long as the given time;
-     *         false if it's active or isn't idle long enough
-     */
+    /// Checks if the Machine has been idle for a given amount of time (in seconds).
+    /// @param time the time interval to check if the Machine has been idle (in seconds).
+    /// If time is zero, it will be checked if the Machine is currently idle.
+    /// If it's negative, even if the Machine is idle, it's considered
+    /// that it isn't idle enough. This is useful if you don't want to perform
+    /// any operation when the machine becomes idle (for instance,
+    /// if idle machines might be shut down and a negative value is given,
+    /// they won't).
+    /// @return true if the Machine has been idle as long as the given time;
+    /// false if it's active or isn't idle long enough
     default boolean isIdleEnough(final double time) {
         if(time < 0) {
             return false;
@@ -103,10 +83,8 @@ public sealed interface Machine<T extends Resource>
         return getIdleInterval() >= time;
     }
 
-    /**
-     * Gets the time interval the Machine has been idle.
-     * @return the idle time interval (in seconds) or 0 if the Machine is not idle
-     */
+    /// Gets the time interval the Machine has been idle.
+    /// @return the idle time interval (in seconds) or 0 if the Machine is not idle
     default double getIdleInterval() {
         final double clock = getSimulation().clock();
 
@@ -117,23 +95,17 @@ public sealed interface Machine<T extends Resource>
         return clock - lastBusyTime;
     }
 
-    /**
-     * @return the last time the Machine was running some process (in seconds).
-     */
+    /// @return the last time the Machine was running some process (in seconds).
     double getLastBusyTime();
 
-    /**
-     * @return true if the Machine is currently idle, false otherwise
-     */
+    /// @return true if the Machine is currently idle, false otherwise
     default boolean isIdle(){
         return getIdleInterval() > 0;
     }
 
-    /**
-     * Validates a capacity for a machine resource.
-     * @param capacity the capacity to check
-     * @throws IllegalArgumentException if the given capacity is zero or negative
-     */
+    /// Validates a capacity for a machine resource.
+    /// @param capacity the capacity to check
+    /// @throws IllegalArgumentException if the given capacity is zero or negative
     static void validateCapacity(final double capacity){
         if(capacity <= 0){
             throw new IllegalArgumentException("Capacity must be greater than zero");

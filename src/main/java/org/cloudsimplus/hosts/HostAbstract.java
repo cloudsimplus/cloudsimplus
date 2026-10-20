@@ -52,70 +52,60 @@ import java.util.function.Predicate;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
-/**
- * A base class for implementing {@link Host}s.
- *
- * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 8.3.0
- */
+/// A base class for implementing [Host]s.
+///
+/// @author Manoel Campos da Silva Filho
+/// @since CloudSim Plus 8.3.0
 @Accessors @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
 public non-sealed abstract class HostAbstract extends ExecDelayableAbstract implements Host {
-    /**
-     * The Default RAM capacity (in MB) for creating Hosts.
-     * This value is used when the RAM capacity is not given in a Host constructor.
-     */
+    /// The Default RAM capacity (in MB) for creating Hosts.
+    /// This value is used when the RAM capacity is not given in a Host constructor.
     @Getter
     protected static long defaultRamCapacity = (long) BytesConversion.gigaToMega(10);
 
-    /**
-     * The Default Bandwidth capacity (in Mbps) for creating Hosts.
-     * This value is used when the BW capacity is not given in a Host constructor.
-     */
+    /// The Default Bandwidth capacity (in Mbps) for creating Hosts.
+    /// This value is used when the BW capacity is not given in a Host constructor.
     @Getter
     protected static long defaultBwCapacity = 1000;
 
-    /**
-     * The Default Storage capacity (in MB) for creating Hosts.
-     * This value is used when the Storage capacity is not given in a Host constructor.
-     */
+    /// The Default Storage capacity (in MB) for creating Hosts.
+    /// This value is used when the Storage capacity is not given in a Host constructor.
     @Getter
     protected static long defaultStorageCapacity = (long) BytesConversion.gigaToMega(500);
 
     protected final Ram ram;
     protected final Bandwidth bw;
 
-    /** @see #getStorage() */
+    /// @see #getStorage()
     protected final HarddriveStorage disk;
 
-    /** @see #getStateHistory() */
+    /// @see #getStateHistory()
     protected final List<HostStateHistoryEntry> stateHistory;
 
-    /** @see #getVmsMigratingIn() */
+    /// @see #getVmsMigratingIn()
     protected final Set<Vm> vmsMigratingIn;
 
-    /** @see #getVmsMigratingOut() */
+    /// @see #getVmsMigratingOut()
     protected final Set<Vm> vmsMigratingOut;
 
-    /** @see #addOnUpdateProcessingListener(EventListener) */
+    /// @see #addOnUpdateProcessingListener(EventListener)
     protected final Set<EventListener<HostUpdatesVmsProcessingEventInfo>> onUpdateProcessingListeners;
 
-    /** @see #addOnStartupListener(EventListener) (EventListener) */
+    /// @see #addOnStartupListener(EventListener) (EventListener)
     protected final List<EventListener<HostEventInfo>> onStartupListeners;
 
-    /** @see #addOnShutdownListener(EventListener) (EventListener) */
+    /// @see #addOnShutdownListener(EventListener) (EventListener)
     protected final List<EventListener<HostEventInfo>> onShutdownListeners;
 
     protected final List<Vm> vmCreatedList;
 
-    /** @see #getVmList() */
+    /// @see #getVmList()
     private final List<Vm> vmList = new ArrayList<>();
 
     @Getter @Setter @EqualsAndHashCode.Include
     protected long id;
 
-    /**
-     * Indicate whether the Host must be automatically started up when the assigned Datacenter is initialized or not.
-     */
+    /// Indicate whether the Host must be automatically started up when the assigned Datacenter is initialized or not.
     @Getter
     protected boolean activateOnDatacenterStartup;
 
@@ -128,15 +118,14 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
     @Getter
     protected HostResourceStats cpuUtilizationStats;
 
-    /** @see #getResources() */
+    /// @see #getResources()
     protected List<ResourceManageable> resources;
 
     protected List<ResourceProvisioner> provisioners;
 
-    /**
-     * {@inheritDoc}
-     * <p><b>It's enabled by default.</b></p>
-     */
+    /// {@inheritDoc}
+    ///
+    /// **It's enabled by default.**
     @Getter @Setter
     protected boolean lazySuitabilityEvaluation;
 
@@ -152,20 +141,16 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
     @Getter
     private boolean active;
 
-    /**
-     * Indicates if a power on/off operation is in progress.
-     */
+    /// Indicates if a power on/off operation is in progress.
     private boolean activationChangeInProgress;
 
-    /**
-     * Indicates if the Host is waiting its {@link #getStartupDelay() startup delay} to be powered on.
-     */
+    /// Indicates if the Host is waiting its [startup delay][#getStartupDelay()] to be powered on.
     private boolean poweringOn;
 
     @Getter
     private double firstStartTime = -1;
 
-    /** @see #getTotalUpTime() */
+    /// @see #getTotalUpTime()
     private double totalUpTime;
 
     @Getter @NonNull
@@ -260,28 +245,22 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
         this.idleShutdownDeadline = DEF_IDLE_SHUTDOWN_DEADLINE;
     }
 
-    /**
-     * Sets the Default RAM capacity (in MB) for creating Hosts.
-     * This value is used when the RAM capacity is not given in a Host constructor.
-     */
+    /// Sets the Default RAM capacity (in MB) for creating Hosts.
+    /// This value is used when the RAM capacity is not given in a Host constructor.
     public static void setDefaultRamCapacity(final long defaultCapacity) {
         Machine.validateCapacity(defaultCapacity);
         defaultRamCapacity = defaultCapacity;
     }
 
-    /**
-     * Sets the Default Bandwidth capacity (in Mbps) for creating Hosts.
-     * This value is used when the BW capacity is not given in a Host constructor.
-     */
+    /// Sets the Default Bandwidth capacity (in Mbps) for creating Hosts.
+    /// This value is used when the BW capacity is not given in a Host constructor.
     public static void setDefaultBwCapacity(final long defaultCapacity) {
         Machine.validateCapacity(defaultCapacity);
         defaultBwCapacity = defaultCapacity;
     }
 
-    /**
-     * Sets the Default Storage capacity (in MB) for creating Hosts.
-     * This value is used when the Storage capacity is not given in a Host constructor.
-     */
+    /// Sets the Default Storage capacity (in MB) for creating Hosts.
+    /// This value is used when the Storage capacity is not given in a Host constructor.
     public static void setDefaultStorageCapacity(final long defaultCapacity) {
         Machine.validateCapacity(defaultCapacity);
         defaultStorageCapacity = defaultCapacity;
@@ -358,16 +337,14 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
         return suitability;
     }
 
-    /**
-     * Try to allocate all resources that a VM requires (Storage, RAM, BW and MIPS)
-     * to be placed at this Host.
-     *
-     * @param vm          the VM to try allocating resources to
-     * @param inMigration indicates whether the VM is migrating into the Host
-     *                    or it is being just created for the first time.
-     * @return a {@link HostSuitability} to indicate if the Vm was placed into the host or not
-     * (if the Host doesn't have enough resources to place the Vm)
-     */
+    /// Try to allocate all resources that a VM requires (Storage, RAM, BW and MIPS)
+    /// to be placed at this Host.
+    ///
+    /// @param vm          the VM to try allocating resources to
+    /// @param inMigration indicates whether the VM is migrating into the Host
+    /// or it is being just created for the first time.
+    /// @return a [HostSuitability] to indicate if the Vm was placed into the host or not
+    /// (if the Host doesn't have enough resources to place the Vm)
     private HostSuitability allocateResourcesForVm(final Vm vm, final boolean inMigration) {
         final HostSuitability suitability = isSuitableForVm(vm, inMigration, true);
         if (!suitability.fully()) {
@@ -424,20 +401,18 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
         return getSuitabilityFor(vm).fully();
     }
 
-    /**
-     * Checks if the Host is suitable for a Vm
-     * (if it has enough resources to meet the Vm requirements)
-     * and the Host has not failed.
-     *
-     * @param vm             the Vm to check
-     * @param inMigration    indicates whether the Vm is migrating into the Host
-     *                       or it is being just created for the first time
-     *                       (in this last case, just for logging purposes).
-     * @param showFailureLog indicates if an error log must be shown when the Host is not suitable
-     * @return a {@link HostSuitability} object that indicate for which resources the Host
-     * is suitable or not for the given Vm
-     * @see #isLazySuitabilityEvaluation()
-     */
+    /// Checks if the Host is suitable for a Vm
+    /// (if it has enough resources to meet the Vm requirements)
+    /// and the Host has not failed.
+    ///
+    /// @param vm             the Vm to check
+    /// @param inMigration    indicates whether the Vm is migrating into the Host
+    /// or it is being just created for the first time
+    /// (in this last case, just for logging purposes).
+    /// @param showFailureLog indicates if an error log must be shown when the Host is not suitable
+    /// @return a [HostSuitability] object that indicate for which resources the Host
+    /// is suitable or not for the given Vm
+    /// @see #isLazySuitabilityEvaluation()
     private HostSuitability isSuitableForVm(final Vm vm, final boolean inMigration, final boolean showFailureLog) {
         final var suitability = new HostSuitability(this, vm);
 
@@ -520,13 +495,11 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
         setActive(false);
     }
 
-    /**
-     * Process an event for actually powering the {@link Host} <b>on</b> or <b>off</b>
-     * after any defined startup/shutdown delay (if some delay is set).
-     *
-     * @param activate true to start the Host up, false to shut it down
-     * @see #setActive(boolean)
-     */
+    /// Process an event for actually powering the [Host] **on** or **off**
+    /// after any defined startup/shutdown delay (if some delay is set).
+    ///
+    /// @param activate true to start the Host up, false to shut it down
+    /// @see #setActive(boolean)
     public void processActivation(final boolean activate) {
         final boolean wasActive = this.active;
         if (activate) {
@@ -547,24 +520,20 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
         notifyStartupOrShutdown(activate, wasActive);
     }
 
-    /**
-     * Sets if the Host is being powered on and updates the Datacenter accordingly.
-     * @param poweringOn true if the Host started powering on, false if it finished powering on
-     */
+    /// Sets if the Host is being powered on and updates the Datacenter accordingly.
+    /// @param poweringOn true if the Host started powering on, false if it finished powering on
     private void updatePoweringOn(final boolean poweringOn) {
         this.poweringOn = poweringOn;
         ((DatacenterSimple) datacenter).updatePoweringOnHostsNumber(poweringOn);
     }
 
-    /**
-     * Notifies registered listeners about host startup or shutdown,
-     * then prints information when the Host starts up or shuts down.
-     *
-     * @param activate  true if the Host is being activated, false it is being shut down
-     * @param wasActive the previous value of the {@link #active} attribute
-     *                  (before being updated)
-     * @see #setActive(boolean)
-     */
+    /// Notifies registered listeners about host startup or shutdown,
+    /// then prints information when the Host starts up or shuts down.
+    ///
+    /// @param activate  true if the Host is being activated, false it is being shut down
+    /// @param wasActive the previous value of the [#active] attribute
+    /// (before being updated)
+    /// @see #setActive(boolean)
     private void notifyStartupOrShutdown(final boolean activate, final boolean wasActive) {
         if (Simulation.NULL.equals(simulation) || !simulation.isRunning()) {
             return;
@@ -594,12 +563,10 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
         }
     }
 
-    /**
-     * Destroys a Vm running in the Host and removes it from the {@link #getVmList()}.
-     * If the Vm was not created yet, this method has no effect.
-     *
-     * @param vm the VM to be destroyed
-     */
+    /// Destroys a Vm running in the Host and removes it from the [#getVmList()].
+    /// If the Vm was not created yet, this method has no effect.
+    ///
+    /// @param vm the VM to be destroyed
     public void destroyVm(final Vm vm) {
         if (!vm.isCreated()) {
             return;
@@ -608,13 +575,11 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
         destroyVmInternal(vm);
     }
 
-    /**
-     * Destroys a temporary Vm created into the Host to book resources.
-     *
-     * @param vm the Vm to be destroyed
-     * @see #createTemporaryVm(Vm)
-     * TODO https://github.com/cloudsimplus/cloudsimplus/issues/94
-     */
+    /// Destroys a temporary Vm created into the Host to book resources.
+    ///
+    /// @param vm the Vm to be destroyed
+    /// @see #createTemporaryVm(Vm)
+    /// TODO https://github.com/cloudsimplus/cloudsimplus/issues/94
     public void destroyTemporaryVm(final Vm vm) {
         destroyVmInternal(vm);
     }
@@ -626,11 +591,9 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
         vm.setFinishTime(getSimulation().clock());
     }
 
-    /**
-     * Deallocate all resources that a Vm was using.
-     *
-     * @param vm the VM to deallocate resources from
-     */
+    /// Deallocate all resources that a Vm was using.
+    ///
+    /// @param vm the VM to deallocate resources from
     protected void deallocateResourcesOfVm(final Vm vm) {
         final var peProvisioner = getPeList().get(0).getPeProvisioner();
 
@@ -642,9 +605,7 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
         ((VmAbstract)vm).setCreated(false);
     }
 
-    /**
-     * Destroys all Vm's running in the Host and removes them from the {@link #getVmList()}.
-     */
+    /// Destroys all Vm's running in the Host and removes them from the [#getVmList()].
     public void destroyAllVms() {
         for (final Vm vm : vmList) {
             deallocateResourcesOfVm(vm);
@@ -698,24 +659,20 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
         return this;
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * @see #getWorkingPesNumber()
-     * @see #getFreePesNumber()
-     * @see #getFailedPesNumber()
-     */
+    /// {@inheritDoc}
+    ///
+    /// @see #getWorkingPesNumber()
+    /// @see #getFreePesNumber()
+    /// @see #getFailedPesNumber()
     @Override
     public long getPesNumber() {
         return peList.size();
     }
 
-    /**
-     * Gets the MIPS share of each {@link Pe} that is allocated to a given {@link Vm}.
-     *
-     * @param vm the Vm to get the MIPS share
-     * @return an array containing the MIPS amount from each {@link Pe} that is available to the {@link Vm}
-     */
+    /// Gets the MIPS share of each [Pe] that is allocated to a given [Vm].
+    ///
+    /// @param vm the Vm to get the MIPS share
+    /// @return an array containing the MIPS amount from each [Pe] that is available to the [Vm]
     protected MipsShare getAllocatedMipsForVm(final Vm vm) {
         return vmScheduler.getAllocatedMips(vm);
     }
@@ -830,11 +787,9 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
         return TimeUtil.secondsToHours(getTotalUpTime());
     }
 
-    /**
-     * Sets the {@link Pe} list.
-     *
-     * @param peList the new {@link Pe} list
-     */
+    /// Sets the [Pe] list.
+    ///
+    /// @param peList the new [Pe] list
     protected void setPeList(final List<Pe> peList) {
         if (peList.isEmpty()) {
             throw new IllegalArgumentException("The PE list for a Host cannot be empty");
@@ -891,12 +846,10 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
         return true;
     }
 
-    /**
-     * Sets the status of a given (sub)list of {@link Pe}s to a new status.
-     *
-     * @param peList    the (sub)list of {@link Pe}s to change the status
-     * @param newStatus the new status
-     */
+    /// Sets the status of a given (sub)list of [Pe]s to a new status.
+    ///
+    /// @param peList    the (sub)list of [Pe]s to change the status
+    /// @param newStatus the new status
     public final void setPeStatus(final List<Pe> peList, final Pe.Status newStatus) {
         /* For performance reasons, stores the number of free and failed PEs
         instead of iterating over the PE list every time to find out. */
@@ -913,14 +866,12 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
         }
     }
 
-    /**
-     * Update the number of {@link Pe}s for a given status.
-     * You must call the method before the PE status is changed and after it
-     * so that the numbers for the previous and new PE status are updated.
-     *
-     * @param status      the status of the PE to process (either a previous or new status)
-     * @param isIncrement true to increment the number of PEs in the given status to 1, false to decrement
-     */
+    /// Update the number of [Pe]s for a given status.
+    /// You must call the method before the PE status is changed and after it
+    /// so that the numbers for the previous and new PE status are updated.
+    ///
+    /// @param status      the status of the PE to process (either a previous or new status)
+    /// @param isIncrement true to increment the number of PEs in the given status to 1, false to decrement
     private void updatePeStatusCount(final Pe.Status status, final boolean isIncrement) {
         final int inc = isIncrement ? 1 : -1;
         switch (status) {
@@ -930,33 +881,27 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
         }
     }
 
-    /**
-     * Updates the number of failed (and working) {@link Pe}s,
-     * decreasing it if a negative number is given, or increasing otherwise.
-     *
-     * @param inc the value to sum (positive or negative) to the number of busy PEs
-     */
+    /// Updates the number of failed (and working) [Pe]s,
+    /// decreasing it if a negative number is given, or increasing otherwise.
+    ///
+    /// @param inc the value to sum (positive or negative) to the number of busy PEs
     protected void incFailedPesNumber(final int inc) {
         this.failedPesNumber += inc;
         workingPesNumber -= inc;
     }
 
-    /**
-     * Updates the number of free {@link Pe}s, decreasing it if a negative number is given,
-     * or increasing otherwise.
-     *
-     * @param inc the value to sum (positive or negative) to the number of busy PEs
-     */
+    /// Updates the number of free [Pe]s, decreasing it if a negative number is given,
+    /// or increasing otherwise.
+    ///
+    /// @param inc the value to sum (positive or negative) to the number of busy PEs
     protected void incFreePesNumber(final int inc) {
         this.freePesNumber += inc;
     }
 
-    /**
-     * Updates the number of busy {@link Pe}s, decreasing it if a negative number is given,
-     * or increasing otherwise.
-     *
-     * @param inc the value to sum (positive or negative) to the number of busy PEs
-     */
+    /// Updates the number of busy [Pe]s, decreasing it if a negative number is given,
+    /// or increasing otherwise.
+    ///
+    /// @param inc the value to sum (positive or negative) to the number of busy PEs
     protected void incBusyPesNumber(final int inc) {
         this.busyPesNumber += inc;
     }
@@ -1152,13 +1097,11 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
             .collect(toList());
     }
 
-    /**
-     * Adds the Vm resource usage to the History if the Vm is not migrating into the Host.
-     *
-     * @param vm          the Vm to add its usage to the history
-     * @param currentTime the current simulation time
-     * @return the total allocated MIPS for the given Vm
-     */
+    /// Adds the Vm resource usage to the History if the Vm is not migrating into the Host.
+    ///
+    /// @param vm          the Vm to add its usage to the history
+    /// @param currentTime the current simulation time
+    /// @return the total allocated MIPS for the given Vm
     private double addVmResourceUseToHistoryIfNotMigratingIn(final Vm vm, final double currentTime) {
         double totalAllocatedMips = getVmScheduler().getTotalAllocatedMipsForVm(vm);
         if (getVmsMigratingIn().contains(vm)) {
@@ -1204,14 +1147,12 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
         addStateHistoryEntry(currentTime, getCpuMipsUtilization(), hostTotalRequestedMips, active);
     }
 
-    /**
-     * Adds a Host state history entry.
-     *
-     * @param time          the current simulation time
-     * @param allocatedMips the total MIPS allocated from all PEs of the Host
-     * @param requestedMips the total MIPS requested by running VMs to all PEs of the Host
-     * @param isActive      the active status of the Host
-     */
+    /// Adds a Host state history entry.
+    ///
+    /// @param time          the current simulation time
+    /// @param allocatedMips the total MIPS allocated from all PEs of the Host
+    /// @param requestedMips the total MIPS requested by running VMs to all PEs of the Host
+    /// @param isActive      the active status of the Host
     private void addStateHistoryEntry(
         final double time,
         final double allocatedMips,

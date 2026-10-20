@@ -42,71 +42,52 @@ import java.util.List;
 /// @since CloudSim Plus 1.0
 public interface CloudletTaskScheduler {
 
-    /**
-     * An attribute that implements the Null Object Design Pattern for {@link CloudletTaskScheduler} objects.
-     */
+    /// An attribute that implements the Null Object Design Pattern for [CloudletTaskScheduler] objects.
     CloudletTaskScheduler NULL = new CloudletTaskSchedulerNull();
 
-    /**
-     * @return the Vm that the CloudletTaskScheduler will receive packets from or send packets to.
-     */
+    /// @return the Vm that the CloudletTaskScheduler will receive packets from or send packets to.
     Vm getVm();
 
-    /**
-     * Sets the Vm that the CloudletTaskScheduler will receive packets from or send packets to.
-     * It is not required to manually set a Vm for the CloudletTaskScheduler,
-     * since the {@link NetworkHost} does it when it creates a Vm.
-     *
-     * @param vm the Vm to set
-     */
+    /// Sets the Vm that the CloudletTaskScheduler will receive packets from or send packets to.
+    /// It is not required to manually set a Vm for the CloudletTaskScheduler,
+    /// since the [NetworkHost] does it when it creates a Vm.
+    ///
+    /// @param vm the Vm to set
     CloudletTaskScheduler setVm(Vm vm);
 
-    /**
-     * Clears the list of {@link VmPacket}'s to send from the Vm of this scheduler to other VMs.
-     */
+    /// Clears the list of [VmPacket]'s to send from the Vm of this scheduler to other VMs.
     void clearVmPacketsToSend();
 
-    /**
-     * @return <b>read-only</b> list of {@link VmPacket}'s to send from the Vm of this scheduler to other VMs.
-     *
-     */
+    /// @return **read-only** list of [VmPacket]'s to send from the Vm of this scheduler to other VMs.
     List<VmPacket> getVmPacketsToSend();
 
-    /**
-     * Adds a packet to the list of packets sent by a given VM,
-     * targeting the VM of this scheduler.
-     * The source VM is got from the packet.
-     *
-     * @param pkt packet to be added to the list
-     * @return true if the packet was added, false otherwise
-     */
+    /// Adds a packet to the list of packets sent by a given VM,
+    /// targeting the VM of this scheduler.
+    /// The source VM is got from the packet.
+    ///
+    /// @param pkt packet to be added to the list
+    /// @return true if the packet was added, false otherwise
     boolean addPacketToListOfPacketsSentFromVm(VmPacket pkt);
 
-    /**
-     * Process Cloudlet's tasks, such as tasks to send packets from or received by a Cloudlet inside a VM.
-     * @param cloudlet the Cloudlet to process packets
-     * @param partialFinishedMI the partial executed length of this Cloudlet (in MI)
-     */
+    /// Process Cloudlet's tasks, such as tasks to send packets from or received by a Cloudlet inside a VM.
+    /// @param cloudlet the Cloudlet to process packets
+    /// @param partialFinishedMI the partial executed length of this Cloudlet (in MI)
     void processCloudletTasks(Cloudlet cloudlet, long partialFinishedMI);
 
-    /**
-     * Checks if it's time to update the execution of a given Cloudlet.
-     * If the Cloudlet is waiting for packets to be sent or received,
-     * then it isn't time to update its processing.
-     *
-     * @param cloudlet the Cloudlet to check if it is time to update its execution
-     * @return true if it's time to update Cloudlet execution, false otherwise.
-     */
+    /// Checks if it's time to update the execution of a given Cloudlet.
+    /// If the Cloudlet is waiting for packets to be sent or received,
+    /// then it isn't time to update its processing.
+    ///
+    /// @param cloudlet the Cloudlet to check if it is time to update its execution
+    /// @return true if it's time to update Cloudlet execution, false otherwise.
     boolean isTimeToUpdateCloudletProcessing(Cloudlet cloudlet);
 
-    /**
-     * Checks if a given Cloudlet is blocked, waiting for packets to be received.
-     * A blocked Cloudlet doesn't use the CPU, so it must not take a share of the VM's MIPS.
-     * Different from {@link #isTimeToUpdateCloudletProcessing(Cloudlet)},
-     * this method has no side effects.
-     *
-     * @param cloudlet the Cloudlet to check
-     * @return true if the Cloudlet is waiting for packets, false otherwise
-     */
+    /// Checks if a given Cloudlet is blocked, waiting for packets to be received.
+    /// A blocked Cloudlet doesn't use the CPU, so it must not take a share of the VM's MIPS.
+    /// Different from [#isTimeToUpdateCloudletProcessing(Cloudlet)],
+    /// this method has no side effects.
+    ///
+    /// @param cloudlet the Cloudlet to check
+    /// @return true if the Cloudlet is waiting for packets, false otherwise
     boolean isCloudletWaitingForPackets(Cloudlet cloudlet);
 }

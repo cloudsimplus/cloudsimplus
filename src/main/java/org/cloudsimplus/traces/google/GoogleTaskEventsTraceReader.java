@@ -70,29 +70,21 @@ import static java.util.Objects.requireNonNull;
 /// @since CloudSim Plus 4.0.0
 @Getter
 public class GoogleTaskEventsTraceReader extends GoogleTraceReaderAbstract<Cloudlet> {
-    /**
-     * List of messages to send to the {@link DatacenterBroker} that owns each created Cloudlet.
-     * Such events request a Cloudlet's status change or attributes change.
-     * @see #addCloudletStatusChangeEvents(CloudSimEvent, TaskEvent)
-     */
+    /// List of messages to send to the [DatacenterBroker] that owns each created Cloudlet.
+    /// Such events request a Cloudlet's status change or attributes change.
+    /// @see #addCloudletStatusChangeEvents(CloudSimEvent, TaskEvent)
     @Getter(AccessLevel.NONE)
     protected final Map<Cloudlet, List<CloudSimEvent>> cloudletEvents;
 
-    /**
-     * The manager that creates and provide access to {@link DatacenterBroker}s used by
-     * the trace reader.
-     */
+    /// The manager that creates and provide access to [DatacenterBroker]s used by
+    /// the trace reader.
     private final BrokerManager brokerManager;
 
-    /**
-     * The maximum number of Cloudlets to create from the trace file.
-     */
+    /// The maximum number of Cloudlets to create from the trace file.
     private int maxCloudletsToCreate;
 
-    /**
-     * Checks if Cloudlets must be auto-submitted to the broker after created
-     * (default is true).
-     */
+    /// Checks if Cloudlets must be auto-submitted to the broker after created
+    /// (default is true).
     @Setter
     private boolean autoSubmitCloudlets;
 
@@ -198,9 +190,7 @@ public class GoogleTaskEventsTraceReader extends GoogleTraceReaderAbstract<Cloud
         return super.process();
     }
 
-    /**
-     * There aren't pre-process requirements for this implementation.
-     */
+    /// There aren't pre-process requirements for this implementation.
     @Override
     protected void preProcess(){/**/}
 
@@ -239,16 +229,14 @@ public class GoogleTaskEventsTraceReader extends GoogleTraceReaderAbstract<Cloud
                 .isPresent();
     }
 
-    /**
-     * Adds the events to request changing the status and attributes of a Cloudlet to the
-     * list of events to send to the Cloudlet's broker.
-     *
-     * @param statusChangeSimEvt the {@link CloudSimEvent} to be sent requesting the change in a Cloudlet's status,
-     *                           where the data of the event is the Cloudlet to be changed.
-     * @param taskEvent the task event read from the trace file, containing
-     *                  the status and the attributes to change in the Cloudlet
-     * @return the Cloudlet to have its status and attributes changed
-     */
+    /// Adds the events to request changing the status and attributes of a Cloudlet to the
+    /// list of events to send to the Cloudlet's broker.
+    ///
+    /// @param statusChangeSimEvt the [CloudSimEvent] to be sent requesting the change in a Cloudlet's status,
+    /// where the data of the event is the Cloudlet to be changed.
+    /// @param taskEvent the task event read from the trace file, containing
+    /// the status and the attributes to change in the Cloudlet
+    /// @return the Cloudlet to have its status and attributes changed
     private Cloudlet addCloudletStatusChangeEvents(final CloudSimEvent statusChangeSimEvt, final TaskEvent taskEvent){
         // TODO This method is too large and confusing, thus it needs to be refactored
 
@@ -343,11 +331,9 @@ public class GoogleTaskEventsTraceReader extends GoogleTraceReaderAbstract<Cloud
         return cloudlet;
     }
 
-    /**
-     * Adds a Cloudlet event to the map of events to send
-     * @param cloudlet the Cloudlet which an event to be sent
-     * @param evt the event to be sent
-     */
+    /// Adds a Cloudlet event to the map of events to send
+    /// @param cloudlet the Cloudlet which an event to be sent
+    /// @param evt the event to be sent
     private void addEventToSend(final Cloudlet cloudlet, final CloudSimEvent evt) {
         cloudletEvents
             .compute(cloudlet, (key, list) -> list == null ? new LinkedList<>() : list)
@@ -392,10 +378,8 @@ public class GoogleTaskEventsTraceReader extends GoogleTraceReaderAbstract<Cloud
         return this;
     }
 
-    /**
-     * Checks if the maximum number of Cloudlets to create was not reached.
-     * @return true to indicate the Cloudlet is allowed to be created, false otherwise.
-     */
+    /// Checks if the maximum number of Cloudlets to create was not reached.
+    /// @return true to indicate the Cloudlet is allowed to be created, false otherwise.
     protected boolean allowCloudletCreation() {
         return availableObjectsCount() < getMaxCloudletsToCreate();
     }

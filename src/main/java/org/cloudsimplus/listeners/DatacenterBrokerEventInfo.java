@@ -25,27 +25,21 @@ package org.cloudsimplus.listeners;
 
 import org.cloudsimplus.brokers.DatacenterBroker;
 
-/**
- * An interface that represents data to be passed
- * to {@link EventListener} objects that are registered to be notified
- * when some events happen for a given {@link DatacenterBroker}.
- *
- * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 1.0
- */
+/// An interface that represents data to be passed
+/// to [EventListener] objects that are registered to be notified
+/// when some events happen for a given [DatacenterBroker].
+///
+/// @author Manoel Campos da Silva Filho
+/// @since CloudSim Plus 1.0
 public interface DatacenterBrokerEventInfo extends EventInfo {
 
-    /**
-     * @return the {@link DatacenterBroker} for which the event happened.
-     */
+    /// @return the [DatacenterBroker] for which the event happened.
     DatacenterBroker getDatacenterBroker();
 
-    /**
-     * Gets a {@code DatacenterBrokerEventInfo} instance from the given parameters.
-     *
-     * @param listener the listener to be notified about the event
-     * @param broker the {@link DatacenterBroker} where the event happened
-     */
+    /// Gets a `DatacenterBrokerEventInfo` instance from the given parameters.
+    ///
+    /// @param listener the listener to be notified about the event
+    /// @param broker the [DatacenterBroker] where the event happened
     static DatacenterBrokerEventInfo of(final EventListener<? extends EventInfo> listener, final DatacenterBroker broker) {
         final double time = broker.getSimulation().clock();
         return new DatacenterBrokerEventInfo() {

@@ -26,20 +26,16 @@ package org.cloudsimplus.cloudlets;
 import org.cloudsimplus.utilizationmodels.UtilizationModel;
 import org.cloudsimplus.utilizationmodels.UtilizationModelFull;
 
-/**
- * An utility class used by Cloudlet tests.
- *
- * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 4.0.0
- */
+/// An utility class used by Cloudlet tests.
+///
+/// @author Manoel Campos da Silva Filho
+/// @since CloudSim Plus 4.0.0
 public final class CloudletTestUtil {
     /* default */ static final long CLOUDLET_LENGTH = 1000;
     /* default */ static final long CLOUDLET_FILE_SIZE = 1000;
     /* default */ static final int  CLOUDLET_OUTPUT_SIZE = 1000;
 
-    /**
-     * A private constructor to avoid class instantiation.
-     */
+    /// A private constructor to avoid class instantiation.
     private CloudletTestUtil(){/**/}
 
     /* default */ static CloudletSimple createCloudlet() {
@@ -96,13 +92,11 @@ public final class CloudletTestUtil {
         return cloudlet;
     }
 
-    /**
-     * Creates a Cloudlet with id equals to 0.
-     *
-     * @param length the length of the Cloudlet to create
-     * @param pesNumber the number of PEs of the Cloudlet to create
-     * @return the created Cloudlet
-     */
+    /// Creates a Cloudlet with id equals to 0.
+    ///
+    /// @param length the length of the Cloudlet to create
+    /// @param pesNumber the number of PEs of the Cloudlet to create
+    /// @return the created Cloudlet
     public static CloudletSimple createCloudlet0(final long length, final int pesNumber) {
         return createCloudlet(0, length, pesNumber);
     }

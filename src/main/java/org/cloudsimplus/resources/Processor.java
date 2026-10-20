@@ -36,9 +36,7 @@ import org.cloudsimplus.vms.Vm;
 public final class Processor extends ResourceManageableAbstract {
     public static final Processor NULL = new Processor(Vm.NULL, 0);
 
-    /**
-     * The Vm to which the processor belongs to.
-     */
+    /// The Vm to which the processor belongs to.
     private final Vm vm;
 
     /// The individual MIPS of each [Pe].
@@ -70,9 +68,7 @@ public final class Processor extends ResourceManageableAbstract {
         this.mips = MathUtil.nonNegative(newMips, "MIPS");
     }
 
-    /**
-     * @return the number of Pes of the Processor
-     */
+    /// @return the number of Pes of the Processor
     @Override
     public long getCapacity() {
         return super.getCapacity();
@@ -89,17 +85,13 @@ public final class Processor extends ResourceManageableAbstract {
         return super.setCapacity(pesNumber);
     }
 
-    /**
-     * @return the number of available PEs that are free to be used
-     */
+    /// @return the number of available PEs that are free to be used
     @Override
     public long getAvailableResource() {
         return super.getAvailableResource();
     }
 
-    /**
-     * @return the number of PEs allocated
-     */
+    /// @return the number of PEs allocated
     @Override
     public long getAllocatedResource() {
         return super.getAllocatedResource();

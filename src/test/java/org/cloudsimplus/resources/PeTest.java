@@ -15,10 +15,8 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-/**
- * @author	Anton Beloglazov
- * @since	CloudSim Toolkit 2.0
- */
+/// @author	Anton Beloglazov
+/// @since	CloudSim Toolkit 2.0
 public class PeTest {
 
     private static final double MIPS = 1000;

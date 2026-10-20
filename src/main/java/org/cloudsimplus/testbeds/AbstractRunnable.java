@@ -27,17 +27,13 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
-/**
- * An abstract class to provide base features for {@link Experiment} and {@link ExperimentRunner}.
- *
- * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 6.1.0
- */
+/// An abstract class to provide base features for [Experiment] and [ExperimentRunner].
+///
+/// @author Manoel Campos da Silva Filho
+/// @since CloudSim Plus 6.1.0
 @Accessors
 public abstract class AbstractRunnable implements Runnable {
-    /**
-     * Checks if simulation results of the experiment have to be output.
-     */
+    /// Checks if simulation results of the experiment have to be output.
     @Getter @Setter
     protected boolean verbose;
 
@@ -45,25 +41,19 @@ public abstract class AbstractRunnable implements Runnable {
         this.verbose = false;
     }
 
-    /**
-     * Checks if simulation results of the experiment don't have to be output.
-     * @return true if the experiment is not verbose, false otherwise
-     */
+    /// Checks if simulation results of the experiment don't have to be output.
+    /// @return true if the experiment is not verbose, false otherwise
     public boolean isNotVerbose() {
         return !verbose;
     }
 
-    /**
-     * Prints a line break only if {@link #isVerbose()}.
-     */
+    /// Prints a line break only if [#isVerbose()].
     public AbstractRunnable println(){
         return println("");
     }
 
-    /**
-     * Prints a message and a line break only if {@link #isVerbose()}.
-     * @param msg the message to print
-     */
+    /// Prints a message and a line break only if [#isVerbose()].
+    /// @param msg the message to print
     public AbstractRunnable println(final String msg){
         if(verbose){
             System.out.println(msg);
@@ -72,19 +62,15 @@ public abstract class AbstractRunnable implements Runnable {
         return this;
     }
 
-    /**
-     * Prints a formatted message and a line break only if {@link #isVerbose()}.
-     * @param format the message format
-     * @param args the values to print
-     */
+    /// Prints a formatted message and a line break only if [#isVerbose()].
+    /// @param format the message format
+    /// @param args the values to print
     public AbstractRunnable println(final String format, final Object ...args){
         return print(format + "%n", args);
     }
 
-    /**
-     * Prints a message only if {@link #isVerbose()}.
-     * @param msg the message to print
-     */
+    /// Prints a message only if [#isVerbose()].
+    /// @param msg the message to print
     public AbstractRunnable print(final String msg){
         if(verbose){
             System.out.print(msg);
@@ -93,11 +79,9 @@ public abstract class AbstractRunnable implements Runnable {
         return this;
     }
 
-    /**
-     * Prints a formatted message only if {@link #isVerbose()}.
-     * @param format the message format
-     * @param args the values to print
-     */
+    /// Prints a formatted message only if [#isVerbose()].
+    /// @param format the message format
+    /// @param args the values to print
     public AbstractRunnable print(final String format, final Object ...args){
         if(verbose){
             System.out.printf(format, args);
