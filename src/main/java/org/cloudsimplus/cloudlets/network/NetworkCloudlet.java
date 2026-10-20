@@ -33,6 +33,7 @@ import java.util.Optional;
 /// @since CloudSim Toolkit 1.0
 ///
 /// TODO Check how to implement the NULL pattern for this class.
+/// See https://github.com/cloudsimplus/cloudsimplus/issues/589
 @Accessors
 public class NetworkCloudlet extends CloudletSimple {
 

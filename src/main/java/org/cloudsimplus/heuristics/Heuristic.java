@@ -114,6 +114,7 @@ public interface Heuristic<S extends HeuristicSolution<?>> {
 	/// @see #getBestSolutionSoFar()
 	///
 	/// TODO Try to parallelize the solution finding to reduce search time using Parallel Streams.
+	/// See https://github.com/cloudsimplus/cloudsimplus/issues/591
 	S solve();
 
 	/// @return the time taken to finish the solution search (in seconds).

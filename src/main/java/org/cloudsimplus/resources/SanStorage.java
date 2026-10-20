@@ -29,6 +29,7 @@ import java.util.Optional;
 /// @author Manoel Campos da Silva Filho
 /// @since CloudSim Toolkit 1.0
 /// TODO See the warning in class documentation.
+/// See https://github.com/cloudsimplus/cloudsimplus/issues/591
 public class SanStorage extends HarddriveStorage {
     public static final double FILE_NOT_FOUND = -1;
 

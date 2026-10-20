@@ -431,7 +431,8 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
     /// @param endIndex the end index in the interval
     protected final int getIntervalSize(final int startIndex, final int endIndex) {
         /*TODO The interval size should add 1, but this is the original formula.
-               It needs to be checked the impact in tests.*/
+               It needs to be checked the impact in tests.
+               See https://github.com/cloudsimplus/cloudsimplus/issues/591 */
         final int index = endIndex - startIndex;
 
         return index >= 0 ? index : (utilization.length - startIndex) + endIndex;

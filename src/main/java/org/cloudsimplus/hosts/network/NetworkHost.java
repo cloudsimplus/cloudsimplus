@@ -61,6 +61,7 @@ public class NetworkHost extends HostSimple {
 
     /// An Edge Switch the Host is directly connected to.
     /// TODO Setter is to be called only by the [EdgeSwitch#connectHost(NetworkHost)] method.
+    /// See https://github.com/cloudsimplus/cloudsimplus/issues/589
     @Setter @Nullable
     private EdgeSwitch edgeSwitch;
 

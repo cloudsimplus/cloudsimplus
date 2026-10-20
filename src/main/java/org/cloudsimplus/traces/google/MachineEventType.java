@@ -66,6 +66,7 @@ public enum MachineEventType {
         /// @return always false to indicate the method is not implemented yet
         ///
         /// @TODO Update events are NOT being processed yet.
+        /// See https://github.com/cloudsimplus/cloudsimplus/issues/590
         @Override
         protected boolean process(final GoogleMachineEventsTraceReader reader) {
             System.err.printf("%s: Update events are NOT being processed yet.%n", getClass().getSimpleName());

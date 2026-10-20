@@ -367,6 +367,7 @@ public non-sealed abstract class VmAllocationPolicyMigrationAbstract
     /// an empty map if no suitable target Hosts were found
     /// or if there is no overloaded host.
     /// TODO: See issue in [#getVmsToMigrateFromOverloadedHost(Host)]
+    /// See https://github.com/cloudsimplus/cloudsimplus/issues/94
     private Map<Vm, Host> getMigrationMapFromOverloadedHosts(final Set<Host> overloadedHosts) {
         if(overloadedHosts.isEmpty()) {
             return Collections.emptyMap();
@@ -576,7 +577,8 @@ public non-sealed abstract class VmAllocationPolicyMigrationAbstract
                 *  Instead of looping over the vmsMigratingIn list for every VM,
                 *  we could add a Host migratingIn attribute to the Vm.
                 * Then, for every VM on the Host, we check this VM attribute
-                * to see if the VM is migrating into the Host. */
+                * to see if the VM is migrating into the Host.
+                * See https://github.com/cloudsimplus/cloudsimplus/issues/94 */
                 if (!host.getVmsMigratingIn().contains(vm)) {
                     savedAllocation.put(vm, host);
                 }

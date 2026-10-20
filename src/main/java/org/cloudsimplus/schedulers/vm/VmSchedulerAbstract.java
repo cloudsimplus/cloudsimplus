@@ -179,6 +179,7 @@ public abstract non-sealed class VmSchedulerAbstract implements VmScheduler {
     /// @TODO It considers that all PEs have the same capacity, which has been
     /// shown it isn't assured. The peList received by the VmScheduler can have
     /// heterogeneous PEs.
+    /// See https://github.com/cloudsimplus/cloudsimplus/issues/588
     public long getPeCapacity() {
         return getWorkingPeList().isEmpty() ? 0 : getWorkingPeList().get(0).getCapacity();
     }

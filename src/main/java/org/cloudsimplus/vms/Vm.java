@@ -363,6 +363,7 @@ public sealed interface Vm
     /// @return true if the VM can run the Cloudlet, false otherwise
     /// TODO the Method is not being called anywhere to check if a VM has
     /// enough capacity to run a Cloudlet
+    /// See https://github.com/cloudsimplus/cloudsimplus/issues/591
     boolean isSuitableForCloudlet(Cloudlet cloudlet);
 
     /// Checks if the VM is in migration process or not,

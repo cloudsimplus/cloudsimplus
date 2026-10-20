@@ -60,6 +60,7 @@ import org.jspecify.annotations.Nullable;
 /// @since CloudSim Toolkit 1.0
 ///
 /// TODO How is the network delay being computed?
+/// See https://github.com/cloudsimplus/cloudsimplus/issues/589
 @Getter @Setter
 public non-sealed class CloudletReceiveTask extends CloudletTask {
     /// The time (in seconds) a task without a [timeout][#getTimeout()] can wait for packets

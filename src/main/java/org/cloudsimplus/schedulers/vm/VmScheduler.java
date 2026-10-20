@@ -53,6 +53,7 @@ public sealed interface VmScheduler permits VmSchedulerAbstract, VmSchedulerNull
     /// requested one is available. Currently the implementations wrongly check
     /// if the total requested MIPS is available, while only the difference has
     /// to be checked. It has to be added some tests to check this issue.
+    /// See https://github.com/cloudsimplus/cloudsimplus/issues/588
     boolean allocatePesForVm(Vm vm, MipsShare requestedMips);
 
     /// Requests the allocation of PEs for a VM, according

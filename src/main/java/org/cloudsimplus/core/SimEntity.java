@@ -44,6 +44,7 @@ public interface SimEntity extends Nameable, Runnable, Comparable<SimEntity> {
 
     /// @return true if the entity is alive, i.e, it's not finished; false otherwise.
     // TODO: isStarted and isAlive seems to be redundant
+    // See https://github.com/cloudsimplus/cloudsimplus/issues/591
     boolean isAlive();
 
     /// @return true if the entity is finished, false otherwise.

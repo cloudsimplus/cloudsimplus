@@ -116,9 +116,10 @@ import static org.cloudsimplus.util.Conversion.HUNDRED_PERCENT;
 /// @author raysaoliveira
 /// @since CloudSim Plus 1.2.0
 /// @link [SAP Blog: Availability vs Reliability](https://blogs.sap.com/2014/07/21/equipment-availability-vs-reliability/)
-/// 2TODO The class has multiple responsibilities.
+/// TODO The class has multiple responsibilities.
 ///      The fault injection mechanism must be separated from
 ///      the fault recovery. The cloner methods are fault recovery.
+/// See https://github.com/cloudsimplus/cloudsimplus/issues/591
 public class HostFaultInjection extends CloudSimEntity {
     /// Maximum number of seconds for a VM to recovery from a failure,
     /// which is randomly selected based on this value.

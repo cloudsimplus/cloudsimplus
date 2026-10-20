@@ -140,6 +140,7 @@ public abstract non-sealed class CloudletSchedulerAbstract implements CloudletSc
          *       performed by the CloudletSchedulerTimeShared that may affect
          *       other schedulers such as the CloudletSchedulerCompletelyFair,
          *       which in fact performs task preemption.
+         * See https://github.com/cloudsimplus/cloudsimplus/issues/588
         */
         final long totalAllExecCloudletsPes = totalAllExecCloudletsPes();
         if(totalAllExecCloudletsPes > currentMipsShare.pes()) {
@@ -408,6 +409,7 @@ public abstract non-sealed class CloudletSchedulerAbstract implements CloudletSc
     /// TODO The parameter currentStatus only exists
     /// because apparently, the cloudlet status is not being accordingly changed
     /// along the simulation run.
+    /// See https://github.com/cloudsimplus/cloudsimplus/issues/589
     private void changeStatusOfCloudlet(final CloudletExecution cle, final Cloudlet.Status currentStatus, final Cloudlet.Status newStatus) {
         if ((currentStatus == Cloudlet.Status.INEXEC || currentStatus == Cloudlet.Status.READY) && cle.getCloudlet().isFinished())
             cloudletFinish(cle);
@@ -507,6 +509,7 @@ public abstract non-sealed class CloudletSchedulerAbstract implements CloudletSc
         A new method should be introduced that accepts just the usedPes and
         updates the freePesNumber accordingly, since that is a property of the VM and not of the scheduler.
         This will make this call much simples and provides more cohesion.
+        See https://github.com/cloudsimplus/cloudsimplus/issues/588
         */
         ((VmSimple) vm).setFreePesNumber(vm.getPesNumber() - usedPes);
 

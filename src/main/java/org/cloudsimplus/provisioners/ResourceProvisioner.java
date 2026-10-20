@@ -33,6 +33,7 @@ import java.util.function.Function;
 /// while internally it uses ResourceProvisioners (quite confusing).
 /// VmScheduler is using the term "allocation", but since it's accountable for running a VM,
 /// it should perform resource provisioning (request the actual amount of the allocated resource to be used in that moment).
+/// See https://github.com/cloudsimplus/cloudsimplus/issues/588
 public sealed interface ResourceProvisioner
     permits PeProvisioner, ResourceProvisionerAbstract, ResourceProvisionerNull
 {

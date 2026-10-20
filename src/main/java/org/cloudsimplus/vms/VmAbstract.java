@@ -142,6 +142,7 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
 
         // Initializes the number of free PEs as the number of VM PEs
         // TODO: It's not calling setFreePesNumber, which has some logic there.
+        // See https://github.com/cloudsimplus/cloudsimplus/issues/588
         this.freePesNumber = pesNumber;
         this.expectedFreePesNumber = pesNumber;
 
@@ -297,6 +298,7 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
         }
 
         // TODO: If the freePesNumber is changed, a warning should be issued
+        // See https://github.com/cloudsimplus/cloudsimplus/issues/588
         this.freePesNumber = Math.min(freePesNumber, getPesNumber());
         return this;
     }
@@ -388,6 +390,7 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
     @Override
     public MipsShare getCurrentRequestedMips() {
         // TODO This method is confusing, since there is a getRequestedMips() (created with lombok)
+        // See https://github.com/cloudsimplus/cloudsimplus/issues/591
         if (isCreated()) {
             return isStartingUp() ? new MipsShare(processor, bootModel) : host.getVmScheduler().getRequestedMips(this);
         }
@@ -529,6 +532,7 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
     /// @param targetHost the Host the VM is migrating to
     public void updateMigrationStartListeners(final Host targetHost) {
         // TODO: Workaround - Uses indexed for to avoid ConcurrentModificationException
+        // See https://github.com/cloudsimplus/cloudsimplus/issues/586
         for (int i = 0; i < onMigrationStartListeners.size(); i++) {
             final var listener = onMigrationStartListeners.get(i);
             listener.update(VmHostEventInfo.of(listener, this, targetHost));
@@ -540,6 +544,7 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
     /// @param targetHost the Host the VM has just migrated to
     public void updateMigrationFinishListeners(final Host targetHost) {
         // TODO: Workaround - Uses indexed for to avoid ConcurrentModificationException
+        // See https://github.com/cloudsimplus/cloudsimplus/issues/586
         for (int i = 0; i < onMigrationFinishListeners.size(); i++) {
             final var listener = onMigrationFinishListeners.get(i);
             listener.update(VmHostEventInfo.of(listener, this, targetHost));
@@ -584,6 +589,7 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
          *       key can be the history time and the value the history itself. This
          *       way, if one wants to get the history for a given time, he/she doesn't
          *       have to iterate over the entire list to find the desired entry.
+         * See https://github.com/cloudsimplus/cloudsimplus/issues/523
          */
         return Collections.unmodifiableList(stateHistory);
     }
@@ -720,6 +726,7 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
     @Override
     public void notifyOnHostAllocationListeners() {
         // TODO: Workaround - Uses indexed for to avoid ConcurrentModificationException
+        // See https://github.com/cloudsimplus/cloudsimplus/issues/586
         for (int i = 0; i < onHostAllocationListeners.size(); i++) {
             final var listener = onHostAllocationListeners.get(i);
             listener.update(VmHostEventInfo.of(listener, this));
@@ -729,6 +736,7 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
     @Override
     public void notifyOnHostDeallocationListeners(@NonNull final Host deallocatedHost) {
         // TODO: Workaround - Uses indexed for to avoid ConcurrentModificationException
+        // See https://github.com/cloudsimplus/cloudsimplus/issues/586
         for (int i = 0; i < onHostDeallocationListeners.size(); i++) {
             final var listener = onHostDeallocationListeners.get(i);
             listener.update(VmHostEventInfo.of(listener, this, deallocatedHost));
@@ -738,6 +746,7 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
     /// Notifies all registered listeners when the processing of the Vm is updated in its [Host].
     public void notifyOnUpdateProcessingListeners() {
         // TODO: Workaround - Uses indexed for to avoid ConcurrentModificationException
+        // See https://github.com/cloudsimplus/cloudsimplus/issues/586
         for (int i = 0; i < onUpdateProcessingListeners.size(); i++) {
             final var listener = onUpdateProcessingListeners.get(i);
             listener.update(VmHostEventInfo.of(listener, this));
@@ -747,6 +756,7 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
     @Override
     public void notifyOnCreationFailureListeners(@NonNull final Datacenter failedDatacenter) {
         // TODO: Workaround - Uses indexed for to avoid ConcurrentModificationException
+        // See https://github.com/cloudsimplus/cloudsimplus/issues/586
         for (int i = 0; i < onCreationFailureListeners.size(); i++) {
             final var listener = onCreationFailureListeners.get(i);
             listener.update(VmDatacenterEventInfo.of(listener, this, failedDatacenter));

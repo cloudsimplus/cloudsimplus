@@ -157,6 +157,7 @@ public final class HostSuitability {
             return host + " is fully suitable for " + vm;
 
         // TODO It may return a reason even when the host is suitable for the VM (since forPes and so on can be changed)
+        // See https://github.com/cloudsimplus/cloudsimplus/issues/588
         if(reason != null)
             return reason;
 

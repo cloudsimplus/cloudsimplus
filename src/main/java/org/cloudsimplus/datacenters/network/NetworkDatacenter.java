@@ -91,6 +91,7 @@ public class NetworkDatacenter extends DatacenterSimple {
 
     /// @return a **read-only** list of network Datacenter's [Switch]es.
     // TODO This method and attribute must be renamed to switchList
+    // See https://github.com/cloudsimplus/cloudsimplus/issues/589
     public List<Switch> getSwitchMap() {
         return Collections.unmodifiableList(switchMap);
     }

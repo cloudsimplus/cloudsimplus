@@ -167,6 +167,7 @@ public final class TaskEvent extends TaskData {
          *      The task (cloudlet) needs to be mapped to a specific Host (according to the machineID).
          *      The challenge here is because the task requirements are usually not known,
          *      for instance when the task is submitted. It's just know when it starts to execute.
+         * See https://github.com/cloudsimplus/cloudsimplus/issues/590
          */
         builder
             .type(TaskEventField.EVENT_TYPE.getValue(reader))

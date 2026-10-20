@@ -81,6 +81,7 @@ abstract class GoogleTraceReaderAbstract<T extends Identifiable> extends TraceRe
     /// @TODO Such a method should be defined as a Functional attribute.
     /// Since it won't be implemented by every subclass, by it being abstract,
     /// forces to subclasses to implement it (even if just including an empty method).
+    /// See https://github.com/cloudsimplus/cloudsimplus/issues/590
     protected abstract void preProcess();
 
     /// Executes any post-process after the trace file was totally parsed.
@@ -88,6 +89,7 @@ abstract class GoogleTraceReaderAbstract<T extends Identifiable> extends TraceRe
     /// @TODO Such a method should be defined as a Functional attribute.
     /// Since it won't be implemented by every subclass, by it being abstract,
     /// forces to subclasses to implement it (even if just including an empty method).
+    /// See https://github.com/cloudsimplus/cloudsimplus/issues/590
     protected abstract void postProcess();
 
     /// Process the parsed line according to the event type.

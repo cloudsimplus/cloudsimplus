@@ -67,6 +67,7 @@ public class CloudletTaskSchedulerSimple implements CloudletTaskScheduler {
         }
 
         // TODO Needs to use polymorphism to avoid these ifs
+        // See https://github.com/cloudsimplus/cloudsimplus/issues/589
         if (isTimeToUpdateCloudletProcessing(netCloudlet))
             updateExecutionTask(netCloudlet, partialFinishedMI);
         else updateNetworkTasks(netCloudlet);
@@ -77,6 +78,7 @@ public class CloudletTaskSchedulerSimple implements CloudletTaskScheduler {
          * TODO It has to be checked if the task execution
          *      is considering only one cloudlet PE or all PEs.
          *      Each execution task is supposed to use just one PE.
+         * See https://github.com/cloudsimplus/cloudsimplus/issues/589
          */
         final Optional<CloudletExecutionTask> optional = getCloudletCurrentTask(cloudlet);
         optional.ifPresent(task -> {
@@ -87,6 +89,7 @@ public class CloudletTaskSchedulerSimple implements CloudletTaskScheduler {
 
     private void updateNetworkTasks(final NetworkCloudlet cloudlet) {
         // TODO Needs to use polymorphism to avoid these ifs
+        // See https://github.com/cloudsimplus/cloudsimplus/issues/589
         cloudlet.getCurrentTask().ifPresent(task -> {
             if (task instanceof CloudletSendTask sendTask)
                addPacketsToBeSentFromVm(cloudlet, sendTask);

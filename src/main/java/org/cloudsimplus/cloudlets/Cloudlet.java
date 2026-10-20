@@ -373,6 +373,7 @@ public sealed interface Cloudlet
     /// i.e, if the newStatus is different from the current status;
     /// false otherwise
     /// TODO Move to abstract class
+    /// See https://github.com/cloudsimplus/cloudsimplus/issues/589
     boolean setStatus(Status newStatus);
 
     /// Sets the [Type of Service (ToS)](https://en.wikipedia.org/wiki/Type_of_service)
@@ -381,6 +382,7 @@ public sealed interface Cloudlet
     /// @param netServiceLevel the new type of service (ToS) of this cloudlet
     /// @return this Cloudlet
     /// TODO This attribute is not used and should be removed (we need confirm it is not used)
+    /// See https://github.com/cloudsimplus/cloudsimplus/issues/591
     Cloudlet setNetServiceLevel(int netServiceLevel);
 
     /// Sets the number of [Pe]s required to run this Cloudlet. <br>

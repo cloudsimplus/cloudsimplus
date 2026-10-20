@@ -41,6 +41,7 @@ import java.util.stream.IntStream;
 /// TODO The [PoissonDistribution] from Apache Commons Statistics is just used to compute
 /// the [#eventsArrivalProbability()]. It could also be used to generate the random numbers,
 /// as the classes extending [ContinuousDistributionAbstract] do.
+/// See https://github.com/cloudsimplus/cloudsimplus/issues/591
 public class PoissonDistr implements DiscreteDistribution {
     /// @see #isApplyAntitheticVariates()
     private boolean applyAntitheticVariates;
@@ -201,6 +202,7 @@ public class PoissonDistr implements DiscreteDistribution {
     /// at the class level and just calling them.
     public static void main(final String[] args) {
         //@TODO This method should be moved to a meaningful example class that creates Cloudlets instead of customers
+        // See https://github.com/cloudsimplus/cloudsimplus/issues/591
 
         /*
          * Mean number of customers that arrives per minute.

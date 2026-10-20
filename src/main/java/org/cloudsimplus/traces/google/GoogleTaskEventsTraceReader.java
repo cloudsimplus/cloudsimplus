@@ -239,6 +239,7 @@ public class GoogleTaskEventsTraceReader extends GoogleTraceReaderAbstract<Cloud
     /// @return the Cloudlet to have its status and attributes changed
     private Cloudlet addCloudletStatusChangeEvents(final CloudSimEvent statusChangeSimEvt, final TaskEvent taskEvent){
         // TODO This method is too large and confusing, thus it needs to be refactored
+        // See https://github.com/cloudsimplus/cloudsimplus/issues/590
 
         /*The actual Cloudlet that needs to have its status and/or attributes changed
          * by sending a request message to the broker.*/

@@ -28,6 +28,7 @@ import org.cloudsimplus.core.Identifiable;
 /// @since CloudSim Toolkit 1.0
 /// @TODO Classes [CloudletTask], [Cloudlet] and [CloudletExecution]
 /// share a common set of attributes that should be defined by a common interface.
+/// See https://github.com/cloudsimplus/cloudsimplus/issues/589
 @Getter @Setter
 public abstract sealed class CloudletTask implements Identifiable permits CloudletExecutionTask, CloudletSendTask, CloudletReceiveTask{
     /// The id of the task.
