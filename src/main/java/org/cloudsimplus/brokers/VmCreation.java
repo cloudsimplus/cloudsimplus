@@ -126,12 +126,13 @@ public class VmCreation {
     }
 
     /**
-     * Resets the number of VM creation requests to the {@link #DEF_CURRENT_VM_CREATION_RETRIES default number}.
+     * Resets the current number of times failed VMs were tried to be recreated,
+     * so that failed VMs can be retried up to the {@link #getMaxRetries() max number of retries} again.
      *
      * @see #incCurrentRetries()
      */
     public void resetCurrentRetries() {
-        this.retries = DEF_CURRENT_VM_CREATION_RETRIES;
+        this.retries = 0;
     }
 
     /**
