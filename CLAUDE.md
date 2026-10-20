@@ -90,6 +90,17 @@ So changes to cloudlet or VM execution logic usually affect this update chain an
 | `heuristics` | Generic heuristics (e.g. Simulated Annealing) used by `DatacenterBrokerHeuristic` |
 | `util` | `Log` (Logback level control), time/byte/power conversions, `ResourceLoader` |
 
+## Performance
+
+Time and space complexity are crucial. CloudSim Plus is used for large-scale simulations with thousands of hosts and VMs and millions of cloudlets, so a small cost per object or per event quickly adds up.
+
+**Always consider time and space complexity when proposing a change**, and state its impact in the proposal (such as the cost per cloudlet update or the memory per object). In particular:
+
+- The processing update chain (Datacenter → Host → Vm → CloudletScheduler) runs for every cloudlet at each update. Avoid adding loops, lookups or object creation to it.
+- Avoid adding lists, maps or sets to objects that exist in large numbers (such as Cloudlets, VMs, Hosts and their schedulers), mainly when the collection only grows. Prefer a flag or a value computed from existing state.
+- Each scheduled event adds processing time. Avoid scheduling extra events when an existing one can be reused.
+- If a feature has a cost, prefer a design where it's only paid by simulations that use it.
+
 ## Code Style
 
 - **Java 25** with Lombok (`@Getter`, `@Setter`, `@NonNull`, etc.).
