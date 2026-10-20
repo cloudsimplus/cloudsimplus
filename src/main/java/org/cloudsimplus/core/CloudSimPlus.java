@@ -27,9 +27,9 @@ import lombok.NonNull;
 import org.cloudsimplus.core.events.SimEvent;
 import org.cloudsimplus.listeners.EventInfo;
 import org.cloudsimplus.listeners.EventListener;
+import org.cloudsimplus.listeners.Listeners;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 /// Starts and manages cloud computing simulations running in the CloudSim Plus framework.
 /// @author Manoel Campos da Silva Filho
@@ -40,10 +40,10 @@ public class CloudSimPlus extends CloudSim {
 
     private final CircularTimeQueue clockQueue;
 
-    private final Set<EventListener<SimEvent>> onEventProcessingListeners;
-    private final Set<EventListener<EventInfo>> onSimulationPauseListeners;
-    private final Set<EventListener<EventInfo>> onClockTickListeners;
-    private final Set<EventListener<EventInfo>> onSimulationStartListeners;
+    private List<EventListener<SimEvent>> onEventProcessingListeners = List.of();
+    private List<EventListener<EventInfo>> onSimulationPauseListeners = List.of();
+    private List<EventListener<EventInfo>> onClockTickListeners = List.of();
+    private List<EventListener<EventInfo>> onSimulationStartListeners = List.of();
 
     /// Creates a CloudSim Plus simulation.
     /// Internally, it creates a [CloudInformationService].
@@ -63,10 +63,6 @@ public class CloudSimPlus extends CloudSim {
     /// @see CloudInformationService
     public CloudSimPlus(final double minTimeBetweenEvents) {
         super(minTimeBetweenEvents);
-        this.onEventProcessingListeners = new HashSet<>();
-        this.onSimulationPauseListeners = new HashSet<>();
-        this.onClockTickListeners = new HashSet<>();
-        this.onSimulationStartListeners = new HashSet<>();
         this.clockQueue = new CircularTimeQueue(this);
     }
 
@@ -115,8 +111,10 @@ public class CloudSimPlus extends CloudSim {
         return oldTime;
     }
 
-    private void notifyEventListeners(final Set<EventListener<EventInfo>> listeners, final double clock) {
-        listeners.forEach(listener -> listener.update(EventInfo.of(listener, clock)));
+    private void notifyEventListeners(final List<EventListener<EventInfo>> listeners, final double clock) {
+        for (final var listener : listeners) {
+            listener.update(EventInfo.of(listener, clock));
+        }
     }
 
     @Override
@@ -124,46 +122,52 @@ public class CloudSimPlus extends CloudSim {
         if(!onSimulationStartListeners.isEmpty() && clock() > 0) {
             notifyEventListeners(onSimulationStartListeners, clock());
             //Since the simulation starts just once, clear the listeners to avoid them to be notified again
-            onSimulationStartListeners.clear();
+            onSimulationStartListeners = List.of();
         }
     }
 
     @Override
     public Simulation addOnSimulationPauseListener(@NonNull final EventListener<EventInfo> listener) {
-        this.onSimulationPauseListeners.add(listener);
+        onSimulationPauseListeners = Listeners.add(onSimulationPauseListeners, listener);
         return this;
     }
 
     @Override
     public Simulation addOnSimulationStartListener(@NonNull final EventListener<EventInfo> listener) {
-        this.onSimulationStartListeners.add(listener);
+        onSimulationStartListeners = Listeners.add(onSimulationStartListeners, listener);
         return this;
     }
 
     @Override
     public boolean removeOnSimulationPauseListener(@NonNull final EventListener<EventInfo> listener) {
-        return this.onSimulationPauseListeners.remove(listener);
+        final var oldList = onSimulationPauseListeners;
+        onSimulationPauseListeners = Listeners.remove(oldList, listener);
+        return onSimulationPauseListeners.size() != oldList.size();
     }
 
     @Override
     public Simulation addOnEventProcessingListener(@NonNull final EventListener<SimEvent> listener) {
-        this.onEventProcessingListeners.add(listener);
+        onEventProcessingListeners = Listeners.add(onEventProcessingListeners, listener);
         return this;
     }
 
     @Override
     public boolean removeOnEventProcessingListener(@NonNull final EventListener<SimEvent> listener) {
-        return onEventProcessingListeners.remove(listener);
+        final var oldList = onEventProcessingListeners;
+        onEventProcessingListeners = Listeners.remove(oldList, listener);
+        return onEventProcessingListeners.size() != oldList.size();
     }
 
     @Override
     public Simulation addOnClockTickListener(@NonNull final EventListener<EventInfo> listener) {
-        onClockTickListeners.add(listener);
+        onClockTickListeners = Listeners.add(onClockTickListeners, listener);
         return this;
     }
 
     @Override
     public boolean removeOnClockTickListener(@NonNull final EventListener<? extends EventInfo> listener) {
-        return onClockTickListeners.remove(listener);
+        final var oldList = onClockTickListeners;
+        onClockTickListeners = Listeners.remove(oldList, listener);
+        return onClockTickListeners.size() != oldList.size();
     }
 }

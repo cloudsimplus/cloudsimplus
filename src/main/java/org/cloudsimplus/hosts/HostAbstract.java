@@ -34,6 +34,7 @@ import org.cloudsimplus.datacenters.DatacenterSimple;
 import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.listeners.HostEventInfo;
 import org.cloudsimplus.listeners.HostUpdatesVmsProcessingEventInfo;
+import org.cloudsimplus.listeners.Listeners;
 import org.cloudsimplus.power.PowerAware;
 import org.cloudsimplus.power.models.PowerModelHost;
 import org.cloudsimplus.provisioners.ResourceProvisioner;
@@ -89,13 +90,13 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
     protected final Set<Vm> vmsMigratingOut;
 
     /// @see #addOnUpdateProcessingListener(EventListener)
-    protected final Set<EventListener<HostUpdatesVmsProcessingEventInfo>> onUpdateProcessingListeners;
+    private List<EventListener<HostUpdatesVmsProcessingEventInfo>> onUpdateProcessingListeners = List.of();
 
     /// @see #addOnStartupListener(EventListener) (EventListener)
-    protected final List<EventListener<HostEventInfo>> onStartupListeners;
+    private List<EventListener<HostEventInfo>> onStartupListeners = List.of();
 
     /// @see #addOnShutdownListener(EventListener) (EventListener)
-    protected final List<EventListener<HostEventInfo>> onShutdownListeners;
+    private List<EventListener<HostEventInfo>> onShutdownListeners = List.of();
 
     protected final List<Vm> vmCreatedList;
 
@@ -225,9 +226,6 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
         this.stateHistory = new LinkedList<>();
         this.vmsMigratingIn = new HashSet<>();
         this.vmsMigratingOut = new HashSet<>();
-        this.onUpdateProcessingListeners = new HashSet<>();
-        this.onStartupListeners = new ArrayList<>();
-        this.onShutdownListeners = new ArrayList<>();
         this.resources = new ArrayList<>();
         this.provisioners = new ArrayList<>();
         this.vmCreatedList = new ArrayList<>();
@@ -296,7 +294,9 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
     }
 
     private void notifyOnUpdateProcessingListeners(final double nextSimulationTime) {
-        onUpdateProcessingListeners.forEach(l -> l.update(HostUpdatesVmsProcessingEventInfo.of(l, this, nextSimulationTime)));
+        for (final var listener : onUpdateProcessingListeners) {
+            listener.update(HostUpdatesVmsProcessingEventInfo.of(listener, this, nextSimulationTime));
+        }
     }
 
     @Override
@@ -550,15 +550,13 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
     }
 
     private void updateOnShutdownListeners() {
-        for (int i = 0; i < onShutdownListeners.size(); i++) {
-            final var listener = onShutdownListeners.get(i);
+        for (final var listener : onShutdownListeners) {
             listener.update(HostEventInfo.of(listener, this, simulation.clock()));
         }
     }
 
     private void updateOnStartupListeners() {
-        for (int i = 0; i < onStartupListeners.size(); i++) {
-            final var listener = onStartupListeners.get(i);
+        for (final var listener : onStartupListeners) {
             listener.update(HostEventInfo.of(listener, this, simulation.clock()));
         }
     }
@@ -620,13 +618,15 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
             return this;
         }
 
-        onStartupListeners.add(listener);
+        onStartupListeners = Listeners.add(onStartupListeners, listener);
         return this;
     }
 
     @Override
     public boolean removeOnStartupListener(@NonNull final EventListener<HostEventInfo> listener) {
-        return onStartupListeners.remove(listener);
+        final var oldList = onStartupListeners;
+        onStartupListeners = Listeners.remove(oldList, listener);
+        return onStartupListeners.size() != oldList.size();
     }
 
     @Override
@@ -635,18 +635,22 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
             return this;
         }
 
-        onShutdownListeners.add(listener);
+        onShutdownListeners = Listeners.add(onShutdownListeners, listener);
         return this;
     }
 
     @Override
     public boolean removeOnShutdownListener(@NonNull final EventListener<HostEventInfo> listener) {
-        return onShutdownListeners.remove(listener);
+        final var oldList = onShutdownListeners;
+        onShutdownListeners = Listeners.remove(oldList, listener);
+        return onShutdownListeners.size() != oldList.size();
     }
 
     @Override
     public boolean removeOnUpdateProcessingListener(@NonNull final EventListener<HostUpdatesVmsProcessingEventInfo> listener) {
-        return onUpdateProcessingListeners.remove(listener);
+        final var oldList = onUpdateProcessingListeners;
+        onUpdateProcessingListeners = Listeners.remove(oldList, listener);
+        return onUpdateProcessingListeners.size() != oldList.size();
     }
 
     @Override
@@ -655,7 +659,7 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
             return this;
         }
 
-        this.onUpdateProcessingListeners.add(listener);
+        onUpdateProcessingListeners = Listeners.add(onUpdateProcessingListeners, listener);
         return this;
     }
 
