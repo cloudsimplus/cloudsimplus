@@ -497,8 +497,10 @@ public abstract non-sealed class CloudletSchedulerAbstract implements CloudletSc
         for (int i = 0; i < cloudletExecList.size(); i++) {
             final CloudletExecution cle = cloudletExecList.get(i);
             nextProcessing = Math.min(nextProcessing, updateCloudletProcessing(cle, currentTime));
-            usedPes += cle.getCloudlet().getPesNumber();
+            usedPes += cloudletUsedPes(cle.getCloudlet());
         }
+
+        updateAllocatedPes(usedPes);
 
         /*
         TODO: This logic should be encapsuled inside the VmAbstract class.
@@ -509,6 +511,34 @@ public abstract non-sealed class CloudletSchedulerAbstract implements CloudletSc
         ((VmSimple) vm).setFreePesNumber(vm.getPesNumber() - usedPes);
 
         return nextProcessing;
+    }
+
+    /// {@return the number of PEs a Cloudlet in the execution list is using}
+    /// A Cloudlet blocked waiting for packets doesn't use its PEs, so 0 is returned for it.
+    /// @param cloudlet the Cloudlet to get the number of used PEs
+    private long cloudletUsedPes(final Cloudlet cloudlet) {
+        return taskScheduler.isCloudletWaitingForPackets(cloudlet) ? 0 : cloudlet.getPesNumber();
+    }
+
+    /// Sets the number of VM PEs allocated to the Cloudlets in the execution list,
+    /// not counting the ones blocked waiting for packets.
+    /// This way, the PEs of a blocked Cloudlet can be used by Cloudlets in the waiting list,
+    /// such as the one that will send the packets.
+    /// Otherwise, a space-shared scheduler may get stuck (deadlock):
+    /// the receiver holds the PEs while the sender waits for them.
+    ///
+    /// It's just performed when there is a [CloudletTaskScheduler] (in network simulations),
+    /// so that other simulations are not affected.
+    /// When a blocked Cloudlet receives its packets and there are no free PEs,
+    /// the allocation is limited to the number of VM PEs. The running Cloudlets then
+    /// share the VM MIPS until some of them finish.
+    ///
+    /// @param usedPes the number of PEs used by the Cloudlets that are not blocked
+    private void updateAllocatedPes(final long usedPes) {
+        if (isThereTaskScheduler()) {
+            final var processor = vm.getProcessor();
+            processor.setAllocatedResource(Math.min(usedPes, processor.getCapacity()));
+        }
     }
 
     /// Updates the processing of a specific cloudlet from the Vm using this scheduler.

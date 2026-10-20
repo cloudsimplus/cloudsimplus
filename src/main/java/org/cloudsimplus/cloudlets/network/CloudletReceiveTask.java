@@ -43,10 +43,11 @@ import org.jspecify.annotations.Nullable;
 /// If there is no timeout, a warning is logged for the first task in a VM
 /// that waits longer than [#WAIT_WARNING_TIME].
 ///
-/// **WARNING:** A Cloudlet waiting for packets keeps using its PEs.
-/// If you use a [org.cloudsimplus.schedulers.cloudlet.CloudletSchedulerSpaceShared]
-/// and the sender Cloudlet is waiting in the same VM for PEs to be released,
-/// the simulation will get stuck (deadlock).
+/// A Cloudlet waiting for packets doesn't use the CPU and doesn't hold its PEs.
+/// This way, other Cloudlets (such as the sender in the same VM) can run meanwhile,
+/// even with a [org.cloudsimplus.schedulers.cloudlet.CloudletSchedulerSpaceShared].
+/// When the Cloudlet receives its packets and there are no free PEs,
+/// the running Cloudlets share the VM MIPS until some of them finish.
 ///
 /// Please refer to the following publication for more details:
 ///
