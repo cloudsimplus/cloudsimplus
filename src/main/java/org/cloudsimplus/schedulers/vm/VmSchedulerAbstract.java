@@ -69,7 +69,7 @@ public abstract non-sealed class VmSchedulerAbstract implements VmScheduler {
 
     @Override
     public final boolean allocatePesForVm(final Vm vm) {
-        return allocatePesForVm(vm, new MipsShare(vm.getProcessor()));
+        return allocatePesForVm(vm, new MipsShare(vm.getProcessor(), vm.getCpuCap()));
     }
 
     @Override

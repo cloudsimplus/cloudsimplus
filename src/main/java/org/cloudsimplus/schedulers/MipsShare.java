@@ -24,6 +24,7 @@
 package org.cloudsimplus.schedulers;
 
 import lombok.NonNull;
+import org.cloudsimplus.resources.CpuCap;
 import org.cloudsimplus.resources.Pe;
 import org.cloudsimplus.resources.Processor;
 import org.cloudsimplus.util.MathUtil;
@@ -49,10 +50,17 @@ public class MipsShare {
         this(1, mips);
     }
 
-    /// Creates a MIPS share according to a given [Processor] capacity.
+    /// Creates a MIPS share according to a given [Processor] capacity, with no [CpuCap].
     /// @param processor the processor to get its capacity to create the MipsShare
     public MipsShare(@NonNull final Processor processor){
-        this(processor.getCapacity(), processor.getMips());
+        this(processor, CpuCap.NONE);
+    }
+
+    /// Creates a MIPS share according to a given [Processor] capacity, limited by a [CpuCap].
+    /// @param processor the processor to get its capacity to create the MipsShare
+    /// @param cap the CPU cap that limits the MIPS of each processor core
+    public MipsShare(@NonNull final Processor processor, @NonNull final CpuCap cap){
+        this(processor, cap, 1);
     }
 
     /// Creates a MIPS share with a defined number of PEs and MIPS capacity for each PE.
@@ -69,11 +77,29 @@ public class MipsShare {
         this(share.pes, share.mips);
     }
 
-    /// Creates a MipsShare object indicating the MIPS capacity and the number of PEs used during a VM boot process.
+    /// Creates a MipsShare object indicating the MIPS capacity and the number of PEs used during a VM boot process,
+    /// with no [CpuCap].
     /// @param processor the VM processor
     /// @param bootModel the VM boot model that defines how the boot process uses resources
     public MipsShare(@NonNull final Processor processor, @NonNull final BootModel bootModel) {
-        this(processor.getCapacity(), processor.getMips()*bootModel.getCpuPercentUtilization());
+        this(processor, CpuCap.NONE, bootModel);
+    }
+
+    /// Creates a MipsShare object indicating the MIPS capacity and the number of PEs used during a VM boot process,
+    /// limited by a [CpuCap].
+    /// @param processor the VM processor
+    /// @param cap the CPU cap that limits the MIPS of each processor core
+    /// @param bootModel the VM boot model that defines how the boot process uses resources
+    public MipsShare(@NonNull final Processor processor, @NonNull final CpuCap cap, @NonNull final BootModel bootModel) {
+        this(processor, cap, bootModel.getCpuPercentUtilization());
+    }
+
+    /// Creates a MIPS share using a percentage of the [Processor] capacity, limited by a [CpuCap].
+    /// @param processor the processor to get its capacity to create the MipsShare
+    /// @param cap the CPU cap that limits the MIPS of each processor core
+    /// @param cpuPercent the percentage of the MIPS of each core to use (from 0 to 1)
+    private MipsShare(final Processor processor, final CpuCap cap, final double cpuPercent) {
+        this(processor.getCapacity(), cap.limitCoreMips(processor.getCapacity(), processor.getMips()) * cpuPercent);
     }
 
     /// @return the MIPS capacity for each [Pe].

@@ -33,6 +33,7 @@ import org.cloudsimplus.hosts.Host;
 import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.listeners.VmDatacenterEventInfo;
 import org.cloudsimplus.listeners.VmHostEventInfo;
+import org.cloudsimplus.resources.CpuCap;
 import org.cloudsimplus.resources.Processor;
 import org.cloudsimplus.resources.Resource;
 import org.cloudsimplus.resources.ResourceManageable;
@@ -220,6 +221,8 @@ final class VmNull implements Vm {
     @Override public boolean isLifeTimeReached() { return false; }
     @Override public BootModel getBootModel() { return BootModel.NULL; }
     @Override public Vm setBootModel(BootModel model) { return this; }
+    @Override public CpuCap getCpuCap() { return CpuCap.NONE; }
+    @Override public Vm setCpuCap(CpuCap cap) { return this; }
     @Override public double getStartupDelay() { return 0; }
     @Override public boolean isShuttingDown() { return false; }
     @Override  public double getShutdownBeginTime() { return -1; }

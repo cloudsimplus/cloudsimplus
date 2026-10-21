@@ -15,6 +15,7 @@ import org.cloudsimplus.listeners.VmDatacenterEventInfo;
 import org.cloudsimplus.listeners.VmHostEventInfo;
 import org.cloudsimplus.mocks.CloudSimMocker;
 import org.cloudsimplus.mocks.MocksHelper;
+import org.cloudsimplus.resources.CpuCap;
 import org.cloudsimplus.schedulers.MipsShare;
 import org.cloudsimplus.schedulers.cloudlet.CloudletScheduler;
 import org.cloudsimplus.schedulers.cloudlet.CloudletSchedulerAbstract;
@@ -96,6 +97,41 @@ public class VmSimpleTest {
     @Test
     public void testGetMips() {
         assertEquals(VmTestUtil.MIPS, vm.getMips());
+    }
+
+    @Test
+    public void testDefaultCpuCapIsNone() {
+        assertSame(CpuCap.NONE, vm.getCpuCap());
+    }
+
+    @Test
+    public void testNullVmCpuCapIsNone() {
+        assertSame(CpuCap.NONE, Vm.NULL.getCpuCap());
+        assertSame(CpuCap.NONE, Vm.NULL.setCpuCap(CpuCap.NONE).getCpuCap());
+    }
+
+    @Test
+    public void testSetCpuCapNull() {
+        assertThrows(NullPointerException.class, () -> vm.setCpuCap(null));
+    }
+
+    @Test
+    public void testCloneKeepsCpuCap() {
+        assertSame(vm.getCpuCap(), new VmSimple(vm).getCpuCap());
+    }
+
+    @Test
+    public void testRequestedMipsWithNoCpuCapUsesFullProcessorCapacity() {
+        final MipsShare expected = new MipsShare(vm.getProcessor());
+        final MipsShare requested = vm.getCurrentRequestedMips();
+        assertEquals(expected.pes(), requested.pes());
+        assertEquals(expected.mips(), requested.mips());
+    }
+
+    @Test
+    public void testTotalMipsCapacityWithNoCpuCap() {
+        assertEquals(vm.getMips() * vm.getPesNumber(), vm.getTotalMipsCapacity());
+        assertEquals(vm.getProcessor().getTotalMips(), vm.getTotalMipsCapacity());
     }
 
     @Test

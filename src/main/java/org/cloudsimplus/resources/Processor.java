@@ -34,6 +34,11 @@ import org.cloudsimplus.vms.Vm;
 /// The [capacity][#getCapacity()] is the total number of cores (in any status),
 /// the [available resource][#getAvailableResource()] is the number of [free][CoreStatus#FREE] cores
 /// and the [allocated resource][#getAllocatedResource()] is the number of [busy][CoreStatus#BUSY] cores.
+/// The capacity and the number of cores in each status are always whole cores, never a fraction of a core.
+///
+/// The [MIPS][#getMips()] is the speed of each core.
+/// A limit on how much of the cores a machine can use (such as a VM CPU cap or a container CPU quota)
+/// is not part of the processor, but defined by a [CpuCap].
 ///
 /// @author Manoel Campos da Silva Filho
 /// @since CloudSim Plus 1.0

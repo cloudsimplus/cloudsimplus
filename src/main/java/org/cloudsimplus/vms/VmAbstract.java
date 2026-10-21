@@ -82,6 +82,10 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
 
     @Setter @NonNull
     private BootModel bootModel;
+
+    /// @see #getCpuCap()
+    @Setter @NonNull
+    private CpuCap cpuCap;
     protected List<ResourceManageable> resources;
 
     @Setter
@@ -124,6 +128,7 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
     /// @param sourceVm the VM to be cloned
     public VmAbstract(final Vm sourceVm) {
         this(-1, (long)sourceVm.getMips(), sourceVm.getPesNumber());
+        this.cpuCap = sourceVm.getCpuCap();
         this.setBw(sourceVm.getBw().getCapacity())
             .setRam(sourceVm.getRam().getCapacity())
             .setSize(sourceVm.getStorage().getCapacity());
@@ -142,6 +147,7 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
 
         this.resources = new ArrayList<>(4);
         this.bootModel = BootModel.NULL;
+        this.cpuCap = CpuCap.NONE;
 
         this.expectedFreePesNumber = pesNumber;
 
@@ -378,10 +384,10 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
         // TODO This method is confusing, since there is a getRequestedMips() (created with lombok)
         // See https://github.com/cloudsimplus/cloudsimplus/issues/591
         if (isCreated()) {
-            return isStartingUp() ? new MipsShare(processor, bootModel) : host.getVmScheduler().getRequestedMips(this);
+            return isStartingUp() ? new MipsShare(processor, cpuCap, bootModel) : host.getVmScheduler().getRequestedMips(this);
         }
 
-        return new MipsShare(processor);
+        return new MipsShare(processor, cpuCap);
     }
 
     @Override
@@ -395,7 +401,7 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
 
     @Override
     public double getTotalMipsCapacity() {
-        return getMips() * getPesNumber();
+        return cpuCap.limitCoreMips(getPesNumber(), getMips()) * getPesNumber();
     }
 
     @Override

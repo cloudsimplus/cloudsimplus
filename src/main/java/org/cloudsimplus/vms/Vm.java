@@ -588,6 +588,17 @@ public sealed interface Vm
     /// @return this
     Vm setBootModel(BootModel model);
 
+    /// {@return the CPU cap that limits the MIPS the VM can request from its Host}
+    /// By default, it's [CpuCap#NONE], so the VM can use the full MIPS of all its PEs.
+    /// @see #setCpuCap(CpuCap)
+    CpuCap getCpuCap();
+
+    /// Sets the CPU cap that limits the MIPS the VM can request from its Host.
+    /// Since a [CpuCap] is immutable, the same instance can be shared by multiple VMs.
+    /// @param cap the CPU cap to set
+    /// @return this
+    Vm setCpuCap(CpuCap cap);
+
     /// Sets the Vm {@inheritDoc}.
     ///
     /// The Vm will finish execution as soon as possible, after the given lifeTime has passed,
