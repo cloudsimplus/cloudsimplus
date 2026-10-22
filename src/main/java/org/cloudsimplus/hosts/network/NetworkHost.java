@@ -51,13 +51,13 @@ public class NetworkHost extends HostSimple {
     private long totalDataTransferBytes;
 
     /// A buffer of packets to send for VMs inside this Host.
-    private final List<HostPacket> pktsToSendForLocalVms;
+    private final List<HostPacket> pktsToSendForLocalVms = new ArrayList<>();
 
     /// A buffer of packets to send for VMs outside this Host.
-    private final List<HostPacket> pktsToSendForExternalVms;
+    private final List<HostPacket> pktsToSendForExternalVms = new ArrayList<>();
 
     /// List of received packets.
-    private final List<HostPacket> hostPktsReceived;
+    private final List<HostPacket> hostPktsReceived = new ArrayList<>();
 
     /// An Edge Switch the Host is directly connected to.
     /// TODO Setter is to be called only by the [EdgeSwitch#connectHost(NetworkHost)] method.
@@ -74,18 +74,12 @@ public class NetworkHost extends HostSimple {
     /// @param mips the MIPS capacity of each PE
     public NetworkHost(final long ram, final long bw, final long storage, final long pesNumber, final double mips) {
         super(ram, bw, storage, pesNumber, mips);
-        hostPktsReceived = new ArrayList<>();
-        pktsToSendForExternalVms = new ArrayList<>();
-        pktsToSendForLocalVms = new ArrayList<>();
     }
 
     /// @deprecated Use [#NetworkHost(long, long, long, long, double)] instead.
     @Deprecated(forRemoval = true)
     public NetworkHost(final long ram, final long bw, final long storage, final List<Pe> peList) {
         super(ram, bw, storage, peList);
-        hostPktsReceived = new ArrayList<>();
-        pktsToSendForExternalVms = new ArrayList<>();
-        pktsToSendForLocalVms = new ArrayList<>();
     }
 
     /// Creates a NetworkHost with no resources.

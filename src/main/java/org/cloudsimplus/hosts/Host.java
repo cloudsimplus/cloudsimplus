@@ -16,6 +16,7 @@ import org.cloudsimplus.power.PowerAware;
 import org.cloudsimplus.power.models.PowerModelHost;
 import org.cloudsimplus.provisioners.ResourceProvisioner;
 import org.cloudsimplus.resources.Bandwidth;
+import org.cloudsimplus.resources.CoreStatus;
 import org.cloudsimplus.resources.Ram;
 import org.cloudsimplus.resources.ResourceManageable;
 import org.cloudsimplus.schedulers.vm.VmScheduler;
@@ -148,7 +149,7 @@ public sealed interface Host
     /// and allocates them on the Host.
     void reallocateMigratingInVms();
 
-    /// @return total MIPS capacity of PEs which are not [failed][org.cloudsimplus.resources.CoreStatus#FAILED].
+    /// @return total MIPS capacity of PEs which are not [failed][CoreStatus#FAILED].
     @Override
     double getTotalMipsCapacity();
 
@@ -175,7 +176,7 @@ public sealed interface Host
     /// @return the number of PEs that are working (non-failed).
     int getWorkingPesNumber();
 
-    /// @return the number of PEs that are [busy][org.cloudsimplus.resources.CoreStatus#BUSY].
+    /// @return the number of PEs that are [busy][CoreStatus#BUSY].
     int getBusyPesNumber();
 
     /// @return the current percentage (from 0..1) of used (busy) PEs,

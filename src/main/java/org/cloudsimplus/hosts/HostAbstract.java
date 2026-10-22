@@ -51,6 +51,8 @@ import java.util.*;
 
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
+import static org.cloudsimplus.hosts.PeListConverter.mips;
+import static org.cloudsimplus.hosts.PeListConverter.pesNumber;
 
 /// A base class for implementing [Host]s.
 ///
@@ -208,13 +210,13 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
         final long storage,
         final List<Pe> peList)
     {
-        this(ramProvisioner, bwProvisioner, storage, PeListConverter.pesNumber(peList), PeListConverter.mips(peList));
+        this(ramProvisioner, bwProvisioner, storage, pesNumber(peList), mips(peList));
     }
 
     /// @deprecated Use [#HostAbstract(long, long, long, long, double)] instead.
     @Deprecated(forRemoval = true)
     public HostAbstract(final long ram, final long bw, final long storage, final List<Pe> peList) {
-        this(ram, bw, storage, PeListConverter.pesNumber(peList), PeListConverter.mips(peList));
+        this(ram, bw, storage, pesNumber(peList), mips(peList));
     }
 
     /// @deprecated Use [#HostAbstract(long, long, HarddriveStorage, long, double)] instead.
@@ -223,19 +225,19 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
         final long ram, final long bw,
         @NonNull final HarddriveStorage storage, final List<Pe> peList)
     {
-        this(ram, bw, storage, PeListConverter.pesNumber(peList), PeListConverter.mips(peList));
+        this(ram, bw, storage, pesNumber(peList), mips(peList));
     }
 
     /// @deprecated Use [#HostAbstract(long, double)] instead.
     @Deprecated(forRemoval = true)
     public HostAbstract(final List<Pe> peList) {
-        this(PeListConverter.pesNumber(peList), PeListConverter.mips(peList));
+        this(pesNumber(peList), mips(peList));
     }
 
     /// @deprecated Use [#HostAbstract(long, double, boolean)] instead.
     @Deprecated(forRemoval = true)
     public HostAbstract(final List<Pe> peList, final boolean activate) {
-        this(PeListConverter.pesNumber(peList), PeListConverter.mips(peList), activate);
+        this(pesNumber(peList), mips(peList), activate);
     }
 
     /// @deprecated Use [#HostAbstract(long, long, HarddriveStorage, long, double, boolean)] instead.
@@ -244,7 +246,7 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
         final long ram, final long bw, @NonNull final HarddriveStorage storage,
         final List<Pe> peList, final boolean activate)
     {
-        this(ram, bw, storage, PeListConverter.pesNumber(peList), PeListConverter.mips(peList), activate);
+        this(ram, bw, storage, pesNumber(peList), mips(peList), activate);
     }
 
     protected HostAbstract(
