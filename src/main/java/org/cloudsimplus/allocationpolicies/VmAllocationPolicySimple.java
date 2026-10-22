@@ -54,7 +54,7 @@ public class VmAllocationPolicySimple extends VmAllocationPolicyAbstract {
     /// @return an [Optional] containing a suitable Host to place the VM or an empty [Optional] if not found
     @Override
     protected Optional<Host> defaultFindHostForVm(final Vm vm) {
-        final Comparator<Host> comparator = comparing(Host::isActive).thenComparingLong(Host::getFreePesNumber);
+        final Comparator<Host> comparator = comparing(Host::isActive).thenComparingLong(host -> host.getProcessor().getFreeCoresNumber());
 
         final var hostStream = isParallelHostSearchEnabled() ? getHostList().stream().parallel() : getHostList().stream();
         return hostStream.filter(host -> host.isSuitableForVm(vm)).max(comparator);

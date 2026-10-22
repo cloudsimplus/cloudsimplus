@@ -174,7 +174,7 @@ public abstract non-sealed class VmSchedulerAbstract implements VmScheduler {
 
     /// @return the MIPS capacity of each Host PE, or 0 if all PEs have failed.
     public long getPeCapacity() {
-        return host.getWorkingPesNumber() == 0 ? 0 : (long) host.getMips();
+        return host.getProcessor().getWorkingCoresNumber() == 0 ? 0 : (long) host.getMips();
     }
 
     @Override

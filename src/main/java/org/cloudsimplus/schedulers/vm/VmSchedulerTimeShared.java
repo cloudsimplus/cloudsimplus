@@ -100,7 +100,7 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
         final double totalRequestedMips = requestedMips.totalMips();
 
         // This scheduler does not allow over-subscription of PEs' MIPS
-        return getHost().getWorkingPesNumber() >= requestedMips.pes() && getTotalAvailableMips() >= totalRequestedMips;
+        return getHost().getProcessor().getWorkingCoresNumber() >= requestedMips.pes() && getTotalAvailableMips() >= totalRequestedMips;
     }
 
     /// Gets the actual MIPS share that will be allocated to VM's PEs,

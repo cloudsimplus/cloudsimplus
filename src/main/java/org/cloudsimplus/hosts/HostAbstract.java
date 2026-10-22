@@ -699,34 +699,9 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
         return this;
     }
 
-    /// {@inheritDoc}
-    ///
-    /// @see #getWorkingPesNumber()
-    /// @see #getFreePesNumber()
-    /// @see #getFailedPesNumber()
     @Override
     public long getPesNumber() {
         return processor.getCapacity();
-    }
-
-    @Override
-    public int getFreePesNumber() {
-        return Math.toIntExact(processor.getCoresNumber(CoreStatus.FREE));
-    }
-
-    @Override
-    public int getBusyPesNumber() {
-        return Math.toIntExact(processor.getCoresNumber(CoreStatus.BUSY));
-    }
-
-    @Override
-    public int getFailedPesNumber() {
-        return Math.toIntExact(processor.getFailedCoresNumber());
-    }
-
-    @Override
-    public int getWorkingPesNumber() {
-        return Math.toIntExact(processor.getWorkingCoresNumber());
     }
 
     /// Gets the MIPS share of each [Pe] that is allocated to a given [Vm].
@@ -957,7 +932,7 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
 
     @Override
     public double getBusyPesPercent() {
-        return getBusyPesNumber() / (double) getPesNumber();
+        return processor.getBusyCoresNumber() / (double) getPesNumber();
     }
 
     @Override

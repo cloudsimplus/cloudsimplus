@@ -170,15 +170,6 @@ public sealed interface Host
     /// @param vm the Vm to remove
     void removeMigratingInVm(Vm vm);
 
-    /// @return the number of PEs that are free to be used by any VM.
-    int getFreePesNumber();
-
-    /// @return the number of PEs that are working (non-failed).
-    int getWorkingPesNumber();
-
-    /// @return the number of PEs that are [busy][CoreStatus#BUSY].
-    int getBusyPesNumber();
-
     /// @return the current percentage (from 0..1) of used (busy) PEs,
     /// according to the [total number of PEs][#getPesNumber()].
     /// @see #getBusyPesPercent(boolean)
@@ -191,9 +182,6 @@ public sealed interface Host
     /// @return the percentage of busy PEs in the defined scale (according to the hundredScale parameter).
     /// @see #getBusyPesPercent()
     double getBusyPesPercent(boolean hundredScale);
-
-    /// @return the number of PEs that have failed.
-    int getFailedPesNumber();
 
     /// @return the total free storage available at the Host in Megabytes.
     long getAvailableStorage();

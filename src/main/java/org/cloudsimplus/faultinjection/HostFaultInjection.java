@@ -263,7 +263,7 @@ public class HostFaultInjection extends CloudSimEntity {
     /// Generates a fault for all PEs of a Host.
     /// @param host the Host to generate the fault to.
     public void generateHostFault(final Host host){
-        generateHostFault(host, host.getWorkingPesNumber());
+        generateHostFault(host, host.getProcessor().getWorkingCoresNumber());
     }
 
     /// Generates a fault for a given number of random PEs of a Host.
@@ -279,9 +279,9 @@ public class HostFaultInjection extends CloudSimEntity {
         hostFaultsNumber++;
         registerHostFaultTime();
 
-        final long previousWorkingPes = lastFailedHost.getWorkingPesNumber();
+        final long previousWorkingPes = lastFailedHost.getProcessor().getWorkingCoresNumber();
         this.lastFailedPesNumber = generateHostPesFaults(pesFailures);
-        final long hostWorkingPes = lastFailedHost.getWorkingPesNumber();
+        final long hostWorkingPes = lastFailedHost.getProcessor().getWorkingCoresNumber();
         final long vmsRequiredPes = getWorkingVmsPesCount();
 
         final String msg = lastFailedHost.getVmList().isEmpty() ? "" : " | VMs required PEs: " + vmsRequiredPes;
@@ -360,8 +360,8 @@ public class HostFaultInjection extends CloudSimEntity {
                 "{}: {}: Number of failed PEs in Host {} is smaller than working ones required by all VMs, not affecting any VM.{}" +
                 "\t  Total PEs: {} | Total Failed PEs: {} | Working PEs: {} | Current PEs required by VMs: {}.",
                 getSimulation().clockStr(), getClass().getSimpleName(), lastFailedHost.getId(), System.lineSeparator(),
-                lastFailedHost.getPesNumber(), lastFailedHost.getFailedPesNumber(),
-                lastFailedHost.getWorkingPesNumber(), vmsRequiredPes);
+                lastFailedHost.getPesNumber(), lastFailedHost.getProcessor().getFailedCoresNumber(),
+                lastFailedHost.getProcessor().getWorkingCoresNumber(), vmsRequiredPes);
     }
 
     /// De-allocates the physical PEs failed for the
@@ -408,7 +408,7 @@ public class HostFaultInjection extends CloudSimEntity {
 
     /// @return the number of failed PEs to remove from VMs.
     private long failedPesToRemoveFromVms() {
-        final long hostWorkingPes = lastFailedHost.getWorkingPesNumber();
+        final long hostWorkingPes = lastFailedHost.getProcessor().getWorkingCoresNumber();
         final long vmsRequiredPes = getWorkingVmsPesCount();
         return vmsRequiredPes - hostWorkingPes;
     }
@@ -753,7 +753,7 @@ public class HostFaultInjection extends CloudSimEntity {
         /* The random generator return values from [0 to 1]
          and multiplying by the number of PEs we get a number between
          0 and the number of PEs. */
-        return (long) (random.sample() * host.getWorkingPesNumber()) + 1;
+        return (long) (random.sample() * host.getProcessor().getWorkingCoresNumber()) + 1;
     }
 
     /// Sets the datacenter in which failures will be injected.

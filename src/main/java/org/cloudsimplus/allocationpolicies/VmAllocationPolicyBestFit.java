@@ -55,7 +55,7 @@ public class VmAllocationPolicyBestFit extends VmAllocationPolicyAbstract {
         /* Since it's being used the min operation, the active comparator must be reversed so that
          * we get active hosts with minimum number of free PEs. */
         final Comparator<Host> activeComparator = Comparator.comparing(Host::isActive).reversed();
-        final Comparator<Host> comparator = activeComparator.thenComparingLong(Host::getFreePesNumber);
+        final Comparator<Host> comparator = activeComparator.thenComparingLong(host -> host.getProcessor().getFreeCoresNumber());
 
         final Stream<Host> stream = isParallelHostSearchEnabled() ? getHostList().stream().parallel() : getHostList().stream();
         return stream

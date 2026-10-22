@@ -64,6 +64,16 @@ public sealed interface Processor extends ResourceManageable permits ProcessorSi
     /// @return the number of cores in a given status.
     long getCoresNumber(CoreStatus status);
 
+    /// @return the number of [free][CoreStatus#FREE] cores, which can be allocated.
+    default long getFreeCoresNumber() {
+        return getCoresNumber(CoreStatus.FREE);
+    }
+
+    /// @return the number of [busy][CoreStatus#BUSY] cores.
+    default long getBusyCoresNumber() {
+        return getCoresNumber(CoreStatus.BUSY);
+    }
+
     /// @return the number of working (non-failed) cores.
     default long getWorkingCoresNumber() {
         return getCapacity() - getCoresNumber(CoreStatus.FAILED);
