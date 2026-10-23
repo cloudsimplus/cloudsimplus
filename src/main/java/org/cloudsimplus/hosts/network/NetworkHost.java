@@ -34,7 +34,7 @@ import org.jspecify.annotations.Nullable;
 /// A Host that support simulation of networked [Datacenter]s. It executes actions related to the management of packets
 /// (sent and received) besides [Vm] management (e.g., creation and destruction).
 /// A Host has a defined policy for provisioning memory and bw, as
-/// well as an allocation policy for [Pe]'s to virtual machines.
+/// well as an allocation policy for core's to virtual machines.
 ///
 /// Please refer to the following publication for more details:
 ///
@@ -71,7 +71,7 @@ public class NetworkHost extends HostSimple {
     /// @param ram the RAM capacity in Megabytes
     /// @param bw the Bandwidth (BW) capacity in Megabits/s
     /// @param storage the storage capacity in Megabytes
-    /// @param capacity the number of PEs (CPU cores) of the Host and the MIPS capacity of each PE
+    /// @param capacity the number of CPU cores of the Host and the MIPS capacity of each core
     public NetworkHost(final long ram, final long bw, final long storage, final CoreCapacity capacity) {
         super(ram, bw, storage, capacity);
     }

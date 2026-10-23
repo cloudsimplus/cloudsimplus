@@ -149,7 +149,7 @@ public sealed interface Host
     /// and allocates them on the Host.
     void reallocateMigratingInVms();
 
-    /// @return total MIPS capacity of PEs which are not [failed][CoreStatus#FAILED].
+    /// @return total MIPS capacity of cores which are not [failed][CoreStatus#FAILED].
     @Override
     double getTotalMipsCapacity();
 
@@ -159,7 +159,7 @@ public sealed interface Host
     /// @return the total allocated MIPS at the Host.
     double getTotalAllocatedMips();
 
-    /// {@return the total allocated MIPS for a VM across all its PEs}
+    /// {@return the total allocated MIPS for a VM across all its cores}
     /// @param vm the Vm to get its total allocated MIPS
     double getTotalAllocatedMipsForVm(Vm vm);
 
@@ -170,16 +170,16 @@ public sealed interface Host
     /// @param vm the Vm to remove
     void removeMigratingInVm(Vm vm);
 
-    /// @return the current percentage (from 0..1) of used (busy) PEs,
-    /// according to the [total number of PEs][#getPesNumber()].
+    /// @return the current percentage (from 0..1) of used (busy) cores,
+    /// according to the [total number of CPU cores][#getPesNumber()].
     /// @see #getBusyPesPercent(boolean)
     double getBusyPesPercent();
 
-    /// Gets the current percentage of used (busy) PEs,
-    /// according to the [total number of PEs][#getPesNumber()].
+    /// Gets the current percentage of used (busy) cores,
+    /// according to the [total number of CPU cores][#getPesNumber()].
     /// @param hundredScale true for getting the return in the 0..100 scale;
     /// false for the 0..1 scale.
-    /// @return the percentage of busy PEs in the defined scale (according to the hundredScale parameter).
+    /// @return the percentage of busy cores in the defined scale (according to the hundredScale parameter).
     /// @see #getBusyPesPercent()
     double getBusyPesPercent(boolean hundredScale);
 
@@ -217,10 +217,10 @@ public sealed interface Host
     /// @return the read-only created VM historic list
     <T extends Vm> List<T> getVmCreatedList();
 
-    /// @return the policy for allocation of host PEs to VMs to schedule VM execution.
+    /// @return the policy for allocation of host cores to VMs to schedule VM execution.
     VmScheduler getVmScheduler();
 
-    /// Sets the policy for allocation of host PEs to VMs to schedule VM
+    /// Sets the policy for allocation of host cores to VMs to schedule VM
     /// execution. The host also sets itself to the given scheduler.
     /// It also sets the Host itself to the given scheduler.
     ///
@@ -293,7 +293,7 @@ public sealed interface Host
 
     /// Checks if the host has failed or is working properly.
     ///
-    /// @return true, if the host PEs have failed; false otherwise
+    /// @return true, if the host cores have failed; false otherwise
     boolean isFailed();
 
     /// Sets the Host state to "failed" or "working".
@@ -410,7 +410,7 @@ public sealed interface Host
     void enableUtilizationStats();
 
     /// @return the current total utilization of CPU in MIPS,
-    /// considering the usage of all its PEs.
+    /// considering the usage of all its cores.
     double getCpuMipsUtilization();
 
     /// @return the current utilization of bw (in Megabits/s).

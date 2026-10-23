@@ -91,7 +91,7 @@ public non-sealed abstract class CloudletAbstract extends CustomerEntityAbstract
     ///
     /// @param length the length (in MI) of this cloudlet to be executed in a VM
     /// (check out [#setLength(long)])
-    /// @param pesNumber number of [Pe]s the Cloudlet will require
+    /// @param pesNumber number of CPU cores the Cloudlet will require
     /// @param utilizationModel a [UtilizationModel] to define how the Cloudlet uses CPU, RAM and BW.
     /// To define an independent utilization model for each resource,
     /// call the respective setters.
@@ -114,7 +114,7 @@ public non-sealed abstract class CloudletAbstract extends CustomerEntityAbstract
     ///
     /// @param length the length (in MI) of this cloudlet to be executed in a VM
     /// (check out [#setLength(long)])
-    /// @param pesNumber number of [Pe]s the Cloudlet will require
+    /// @param pesNumber number of CPU cores the Cloudlet will require
     public CloudletAbstract(final long length, final int pesNumber) {
         this(-1, length, pesNumber);
     }
@@ -128,7 +128,7 @@ public non-sealed abstract class CloudletAbstract extends CustomerEntityAbstract
     ///
     /// @param length the length (in MI) of this cloudlet to be executed in a VM
     /// (check out [#setLength(long)])
-    /// @param pesNumber number of [Pe]s the Cloudlet will require
+    /// @param pesNumber number of CPU cores the Cloudlet will require
     public CloudletAbstract(final long length, final long pesNumber) {
         this(-1, length, pesNumber);
     }
@@ -142,7 +142,7 @@ public non-sealed abstract class CloudletAbstract extends CustomerEntityAbstract
     /// @param id     id of the Cloudlet
     /// @param length the length (in MI) of this cloudlet to be executed in a VM
     /// (check out [#setLength(long)])
-    /// @param pesNumber number of [Pe]s the Cloudlet will require
+    /// @param pesNumber number of CPU cores the Cloudlet will require
     public CloudletAbstract(final long id, final long length, final long pesNumber) {
         super();
 
@@ -261,7 +261,7 @@ public non-sealed abstract class CloudletAbstract extends CustomerEntityAbstract
     @Override
     public final Cloudlet setPesNumber(final long pesNumber) {
         if (pesNumber <= 0) {
-            throw new IllegalArgumentException("Cloudlet number of PEs has to be greater than zero.");
+            throw new IllegalArgumentException("Cloudlet number of CPU cores has to be greater than zero.");
         }
 
         this.pesNumber = pesNumber;

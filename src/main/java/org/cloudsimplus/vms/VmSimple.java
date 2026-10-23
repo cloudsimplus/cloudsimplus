@@ -29,7 +29,7 @@ import org.cloudsimplus.schedulers.cloudlet.CloudletSchedulerTimeShared;
 /// @since CloudSim Toolkit 1.0
 public class VmSimple extends VmAbstract {
     /// A copy constructor that creates a VM based on the configuration of another one.
-    /// The created VM will have the same MIPS capacity, number of PEs,
+    /// The created VM will have the same MIPS capacity, number of CPU cores,
     /// BW, RAM and size of the given VM, but a default [CloudletScheduler] and no [DatacenterBroker].
     /// @param sourceVm the VM to be cloned
     /// @see #VmSimple(CoreCapacity)

@@ -51,7 +51,7 @@ public abstract non-sealed class TraceReaderAbstract extends FileReader implemen
     /// Create a TraceReader object.
     ///
     /// @param filePath the workload trace file path in one of the following formats: *ASCII text, zip, gz.*
-    /// @throws IllegalArgumentException when the workload trace file name is null or empty; or the resource PE mips is less or equal to 0
+    /// @throws IllegalArgumentException when the workload trace file name is null or empty; or the resource core mips is less or equal to 0
     /// @throws IllegalArgumentException when the workload trace file name is null or empty
     public TraceReaderAbstract(@NonNull final String filePath) {
         super(filePath);

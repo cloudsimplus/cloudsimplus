@@ -132,10 +132,10 @@ public sealed interface CloudletScheduler
     /// @return true if the scheduler has no cloudlets to execute or waiting to be executed; false otherwise
     boolean isEmpty();
 
-    /// Releases a given number of PEs from a VM.
+    /// Releases a given number of CPU cores from a VM.
     ///
-    /// @param pesToRemove number of PEs to deallocate
-    void deallocatePesFromVm(long pesToRemove);
+    /// @param coresToRemove number of CPU cores to deallocate
+    void deallocatePesFromVm(long coresToRemove);
 
      /// Gets the current utilization percentage of Bandwidth that the running Cloudlets are requesting (in scale from 0 to 1).
      /// @return the BW utilization percentage from 0 to 1 (where 1 is 100%)
@@ -213,10 +213,10 @@ public sealed interface CloudletScheduler
     /// @throws NullPointerException when the vm parameter is null
     void setVm(Vm vm) ;
 
-    /// @return the number of currently used [Pe]'s.
+    /// @return the number of currently used core's.
     long getUsedPes();
 
-    /// @return the number of [Pe]'s currently not being used.
+    /// @return the number of core's currently not being used.
     long getFreePes();
 
     /// Adds a Cloudlet to the list of finished Cloudlets that have been returned to its

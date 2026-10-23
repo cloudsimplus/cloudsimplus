@@ -68,7 +68,7 @@ public class CloudletBuilder implements Builder {
     private final DatacenterBrokerSimple broker;
 
     /// A [BiFunction] used to create Cloudlets.
-    /// It must receive the length of the Cloudlet (in MI) and the number of PEs it will require.
+    /// It must receive the length of the Cloudlet (in MI) and the number of CPU cores it will require.
     @Setter private BiFunction<Long,Integer, Cloudlet> cloudletCreationFunction;
 
     @Setter private EventListener<CloudletVmEventInfo> onCloudletFinishListener = EventListener.NULL;

@@ -51,7 +51,7 @@ import java.util.function.Predicate;
 ///
 /// This is a basic implementation that covers the following features:
 ///
-///   - Defines a general **run-queue** (the waiting list which indicates which Cloudlets to run next) for all CPU cores ([Pe]s)
+///   - Defines a general **run-queue** (the waiting list which indicates which Cloudlets to run next) for all CPU cores (cores)
 ///     instead of one queue for each core. More details in the listing below.
 ///   - Computes the process's ([Cloudlet]) **niceness** based on its priority: `niceness = -priority`.
 ///     The nice value (niceness) defines how nice a process is to the other ones.
@@ -78,9 +78,9 @@ import java.util.function.Predicate;
 ///     and number of cores each application can use. That MIPS capacity
 ///     is multiplied by the number of cores the application requires.
 ///     Such an approach enables the application to execute that number of instructions
-///     per second. Once the [Pe]s do not in fact run the application,
+///     per second. Once the cores do not in fact run the application,
 ///     (application execution is simulated just computing the number of instructions
-///     that can be run), it doesn't matter which PEs are "running" the app.
+///     that can be run), it doesn't matter which cores are "running" the app.
 ///	  - It doesn't use a **Red-Black tree** (such as the [TreeSet]), as in real implementations of CFS,
 ///     to sort waiting Cloudlets (**run-queue** list) increasingly, based on their virtual runtime (`vruntime` or `VRT`)
 ///     (placing the Cloudlets that have run the least at the top of the tree).
@@ -130,10 +130,10 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
 
     /// The latency: the amount of time (in seconds)
     /// the scheduler will allow the execution of running Cloudlets
-    /// in the available PEs, before checking which are the next
+    /// in the available cores, before checking which are the next
     /// Cloudlets to execute. The latency time is divided by
     /// the number of Cloudlets that can be executed at the current time.
-    /// If there are 4 Cloudlets by just 2 PEs, the latency is divided
+    /// If there are 4 Cloudlets by just 2 cores, the latency is divided
     /// by 2, because only 2 Cloudlets can be concurrently executed
     /// at the moment. However, the minimum amount of time allocated to each
     /// Cloudlet is defined by the [#getMinimumGranularity()].
@@ -182,7 +182,7 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
     }
 
 	/// Computes the time-slice for a Cloudlet, which is the amount
-	/// of time (in seconds) that it will have to use the PEs,
+	/// of time (in seconds) that it will have to use the cores,
 	/// considering all Cloudlets in the [executing list][#getCloudletExecList()].
 	///
 	/// The timeslice is computed considering the [Cloudlet weight][#getCloudletWeight(CloudletExecution)]
@@ -203,7 +203,7 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
     /// This list is called [run queue](https://en.wikipedia.org/wiki/Run_queue).
     ///
     /// **NOTE:** Different from real implementations, this scheduler uses just one run queue
-    /// for all processor cores (PEs). Since CPU context switch is not concerned,
+    /// for all processor cores (cores). Since CPU context switch is not concerned,
     /// there is no point in using different run queues.
     @Override
     public List<CloudletExecution> getCloudletWaitingList() {
@@ -224,7 +224,7 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
 
 	/// {@return the weight of the Cloudlet to use the CPU}
 	/// This is defined based on the Cloudlet (application) niceness.
-	/// As higher is the weight, more time the Cloudlet will have to use the PEs.
+	/// As higher is the weight, more time the Cloudlet will have to use the cores.
 	///
 	/// As the [timelice][#computeCloudletTimeSlice(CloudletExecution)] assigned to a Cloudlet to use the CPU is defined
 	/// exponentially instead of linearly according to its niceness,
@@ -232,7 +232,7 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
 	///
 	/// **NOTICE**: The formula used is based on the book referenced at the class documentation.
 	///
-	/// @param cloudlet Cloudlet to get the weight to use PEs
+	/// @param cloudlet Cloudlet to get the weight to use cores
 	/// @see #getCloudletNiceness(CloudletExecution)
     private double getCloudletWeight(final CloudletExecution cloudlet){
 		return 1024.0/(Math.pow(1.25, getCloudletNiceness(cloudlet)));
@@ -364,7 +364,7 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
     /// Checks if a Cloudlet can be submitted to the execution list.
     ///
     /// This scheduler, different from its time-shared parent, only adds
-    /// submitted Cloudlets to the execution list if there aren't enough free PEs.
+    /// submitted Cloudlets to the execution list if there aren't enough free cores.
     /// Otherwise, such Cloudlets are added to the waiting list,
     /// really enabling time-sharing between running Cloudlets.
     /// By this way, some Cloudlets have to be preempted to allow other ones
@@ -384,14 +384,14 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
     /// it can use the CPU), it is removed from this list and added
     /// back to the [#getCloudletWaitingList()].
     ///
-    /// The sum of the PEs of Cloudlets into this list cannot exceed
-    /// the number of PEs available for the scheduler. If the sum of PEs of such Cloudlets
-    /// is less than the number of existing PEs, there are
-    /// idle PEs. Since the CPU context switch overhead is not regarded
+    /// The sum of the cores of Cloudlets into this list cannot exceed
+    /// the number of CPU cores available for the scheduler. If the sum of cores of such Cloudlets
+    /// is less than the number of existing cores, there are
+    /// idle cores. Since the CPU context switch overhead is not regarded
     /// in this implementation and as a result, it doesn't matter which
-    /// PEs are running every Cloudlet, there is no such information anywhere.
-    /// As an example, if the first Cloudlet requires 2 PEs,
-    /// then one can say that it is using the first 2 PEs.
+    /// cores are running every Cloudlet, there is no such information anywhere.
+    /// As an example, if the first Cloudlet requires 2 cores,
+    /// then one can say that it is using the first 2 cores.
     /// But if at the next simulation time, the same Cloudlet is at the 3º position in this Collection,
     /// that indicates it's now using the 3º and 4º Pe, which doesn't change anything. In real schedulers,
     /// usually a process is pinned to a specific set of cores until it

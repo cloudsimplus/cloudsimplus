@@ -56,7 +56,7 @@ public class AwsEc2Template implements Comparable<AwsEc2Template> {
     /// The name of the template.
     private String name;
 
-    /// The number of CPUs {PEs} for the VM instance
+    /// The number of CPUs {cores} for the VM instance
     private int cpus;
 
     /// The VM RAM capacity (in MB)

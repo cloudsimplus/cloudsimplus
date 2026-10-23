@@ -49,18 +49,18 @@ public final class VmTestUtil {
     /// A private constructor to avoid class instantiation.
     private VmTestUtil(){/**/}
 
-    /// Creates a VM with the given pesNumber and default configuration for
+    /// Creates a VM with the given cores and default configuration for
     /// HOST_MIPS, HOST_RAM, HOST_BW and Storage.
     ///
     /// @param vmId
-    /// @param pesNumber
+    /// @param cores
     /// @return
-    public static VmSimple createVm(final int vmId, final int pesNumber) {
-        return createVm(vmId, MIPS, pesNumber);
+    public static VmSimple createVm(final int vmId, final int cores) {
+        return createVm(vmId, MIPS, cores);
     }
 
-    public static VmSimple createVm(final int vmId, final int pesNumber, final DatacenterBroker broker) {
-        final VmSimple vm = createVm(vmId, pesNumber);
+    public static VmSimple createVm(final int vmId, final int cores, final DatacenterBroker broker) {
+        final VmSimple vm = createVm(vmId, cores);
         vm.setBroker(broker);
         return vm;
     }
@@ -78,26 +78,26 @@ public final class VmTestUtil {
         return createVm(ID, MIPS, PES_NUMBER, RAM, BANDWIDTH, SIZE, cloudletScheduler);
     }
 
-    /// Creates a VM with the given mips and pesNumber and default
+    /// Creates a VM with the given mips and cores and default
     /// configuration for HOST_RAM, HOST_BW and Storage.
     ///
     /// @param vmId
     /// @param mips
-    /// @param pesNumber
+    /// @param cores
     /// @param brokerMockerConsumer a consumer to configure internally created broker mock
     /// @return
     public static VmSimple createVm(
-        final int vmId, final double mips, final int pesNumber,
+        final int vmId, final double mips, final int cores,
         final Consumer<DatacenterBroker> brokerMockerConsumer)
     {
-        return createVm(vmId, mips, pesNumber, RAM, BANDWIDTH, SIZE, CloudletScheduler.NULL, brokerMockerConsumer);
+        return createVm(vmId, mips, cores, RAM, BANDWIDTH, SIZE, CloudletScheduler.NULL, brokerMockerConsumer);
     }
 
-    public static VmSimple createVm(final int vmId, final double mips, final int pesNumber) {
-        return createVm(vmId, mips, pesNumber, RAM, BANDWIDTH, SIZE, CloudletScheduler.NULL);
+    public static VmSimple createVm(final int vmId, final double mips, final int cores) {
+        return createVm(vmId, mips, cores, RAM, BANDWIDTH, SIZE, CloudletScheduler.NULL);
     }
 
-    /// Creates a VM with 1 PE.
+    /// Creates a VM with 1 core.
     ///
     /// @param vmId id of the VM
     /// @param capacity a capacity that will be set to all resources, such as CPU, HOST_RAM, HOST_BW, etc.
@@ -108,11 +108,11 @@ public final class VmTestUtil {
 
     public static VmSimple createVm(
         final int vmId,
-        final double mips, final int pesNumber,
+        final double mips, final int cores,
         final long ram, final long bw, final long storage, CloudSimPlus cloudsim)
     {
         final DatacenterBroker broker = new DatacenterBrokerSimple(cloudsim);
-        final VmSimple vm = new VmSimple(vmId, new CoreCapacity(pesNumber, mips));
+        final VmSimple vm = new VmSimple(vmId, new CoreCapacity(cores, mips));
         vm.setRam(ram).setBw(bw)
                 .setSize(storage)
                 .setCloudletScheduler(CloudletScheduler.NULL)
@@ -122,16 +122,16 @@ public final class VmTestUtil {
 
     public static VmSimple createVm(
         final int vmId,
-        final double mips, final int pesNumber,
+        final double mips, final int cores,
         final long ram, final long bw, final long storage,
         final CloudletScheduler scheduler)
     {
-        return createVm(vmId, mips, pesNumber, ram, bw, storage, scheduler, broker -> {});
+        return createVm(vmId, mips, cores, ram, bw, storage, scheduler, broker -> {});
     }
 
     /// @param vmId
     /// @param mips
-    /// @param pesNumber
+    /// @param cores
     /// @param ram
     /// @param bw
     /// @param storage
@@ -140,7 +140,7 @@ public final class VmTestUtil {
     /// @return
     public static VmSimple createVm(
         final int vmId,
-        final double mips, final int pesNumber,
+        final double mips, final int cores,
         final long ram, final long bw, final long storage,
         final CloudletScheduler scheduler,
         final Consumer<DatacenterBroker> brokerMockerConsumer)
@@ -151,7 +151,7 @@ public final class VmTestUtil {
         });
 
         final DatacenterBroker broker = MocksHelper.createMockBroker(cloudsim, brokerMockerConsumer);
-        final VmSimple vm = new VmSimple(vmId, new CoreCapacity(pesNumber, mips));
+        final VmSimple vm = new VmSimple(vmId, new CoreCapacity(cores, mips));
         vm.setRam(ram).setBw(bw)
            .setSize(storage)
            .setCloudletScheduler(scheduler)

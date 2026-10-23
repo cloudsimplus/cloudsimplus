@@ -28,7 +28,7 @@ import org.cloudsimplus.hosts.Host;
 import org.cloudsimplus.vms.Vm;
 
 /// A Central Processing Unit (CPU) of a [Machine] ([Host], [Vm] or a future container),
-/// having one or more cores (PEs) with the same MIPS capacity.
+/// having one or more cores (cores) with the same MIPS capacity.
 /// Instead of keeping one object per core, it keeps just the number of cores in each [CoreStatus].
 ///
 /// The [capacity][#getCapacity()] is the total number of cores (in any status),

@@ -96,7 +96,7 @@ public sealed interface VerticalVmScaling extends VmScaling
     VerticalVmScaling NULL = new VerticalVmScalingNull();
 
     /// {@return the class of Vm resource that up or down scaling will be requested}
-    /// Such a class can be [Ram], [Bandwidth] or [Pe].
+    /// Such a class can be [Ram], [Bandwidth] or [Processor].
     /// @see #getResource()
     Class<? extends ResourceManageable> getResourceClass();
 
@@ -104,7 +104,7 @@ public sealed interface VerticalVmScaling extends VmScaling
     /// whether such a resource is over or underloaded, according to the
     /// defined predicates}
     ///
-    /// If the resource to scale is a [Pe], this is the absolute number of PEs
+    /// If the resource to scale is a core, this is the absolute number of CPU cores
     /// to request adding or removing when the VM is over or underloaded, respectively.
     /// For any other kind of resource, this is a percentage value in scale from 0 to 1.
     /// Every time the VM needs to be scaled up or down, this factor will be applied
@@ -117,14 +117,14 @@ public sealed interface VerticalVmScaling extends VmScaling
     /// whether such a resource is over or underloaded, according to the
     /// defined predicates.
     ///
-    /// If the resource to scale is a [Pe], this is the absolute number of PEs
+    /// If the resource to scale is a core, this is the absolute number of CPU cores
     /// to request adding or removing when the VM is over or underloaded, respectively.
     /// For any other kind of resource, this is a percentage value in scale from 0 to 1.
     /// Every time the VM needs to be scaled up or down, this factor will be applied
     /// to increase or decrease a specific VM allocated resource.
     ///
     /// @param scalingFactor the scaling factor to set which may be an absolute value
-    /// (for [Pe] scaling) or percentage (for scaling other resources)
+    /// (for core scaling) or percentage (for scaling other resources)
     /// @see #getUpperThresholdFunction()
     /// @return this VerticalVmScaling object
     VerticalVmScaling setScalingFactor(double scalingFactor);

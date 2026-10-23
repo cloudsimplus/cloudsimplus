@@ -296,7 +296,7 @@ public class GoogleTaskEventsTraceReader extends GoogleTraceReaderAbstract<Cloud
             }
 
             if(clone.getPesNumber() != cloudlet.getPesNumber()){
-                builder.append("PEs: ")
+                builder.append("CPU cores: ")
                        .append(cloudlet.getPesNumber()).append(VAL_SEPARATOR)
                        .append(clone.getPesNumber()).append(COL_SEPARATOR);
                 cloudlet.setPesNumber(clone.getPesNumber());

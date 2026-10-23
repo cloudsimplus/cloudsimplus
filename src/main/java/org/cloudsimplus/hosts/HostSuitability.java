@@ -34,7 +34,7 @@ import org.cloudsimplus.vms.VmGroup;
 /// Stores data about the suitability of
 /// a [Host] for placing a [Vm].
 /// It provides fine-grained data to indicate if the Host is suitable in
-/// storage, ram, bandwidth and number of [Pe]s required by the given [Vm].
+/// storage, ram, bandwidth and number of CPU cores required by the given [Vm].
 ///
 /// @author Manoel Campos da Silva Filho
 /// @since CloudSim Plus 6.0.2
@@ -54,7 +54,7 @@ public final class HostSuitability {
     @Setter
     private boolean forBw;
 
-    /// Indicates if the Host has enough [Pe]s for running a VM.
+    /// Indicates if the Host has enough cores for running a VM.
     @Setter
     private boolean forPes;
 
@@ -133,7 +133,7 @@ public final class HostSuitability {
         return forBw;
     }
 
-    /// Checks if the Host has enough [Pe]s for running a VM.
+    /// Checks if the Host has enough cores for running a VM.
     /// @return true if it's suitable;
     /// false if it's unsuitable, or this specific requirement
     /// was not even evaluated since another one was already not met.
@@ -143,7 +143,7 @@ public final class HostSuitability {
     }
 
     /// Checks if the Host is totally suitable for the given Vm
-    /// in terms of required storage, ram, bandwidth and number of [Pe]s.
+    /// in terms of required storage, ram, bandwidth and number of CPU cores.
     /// If any requirement is not met, it means the host is not suitable at all.
     /// @return true if all resource requirements are met, false otherwise.
     public boolean fully(){
@@ -163,7 +163,7 @@ public final class HostSuitability {
 
         final var builder = new StringBuilder("lack of");
         if(!forPes)
-            builder.append(" PEs,");
+            builder.append(" CPU cores,");
         if(!forRam)
             builder.append(" RAM,");
         if(!forStorage)

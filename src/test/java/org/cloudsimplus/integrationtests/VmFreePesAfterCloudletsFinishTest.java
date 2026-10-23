@@ -40,7 +40,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /// Verifies that after all Cloudlets finish execution on a VM,
 /// both `freePesNumber` and `expectedFreePesNumber`
-/// are correctly updated to the total number of VM PEs.
+/// are correctly updated to the total number of VM cores.
 ///
 /// @author Theodoros Aslanidis
 /// @see <a href="https://github.com/cloudsimplus/cloudsimplus/issues/544">Issue #544</a>
@@ -81,13 +81,13 @@ public final class VmFreePesAfterCloudletsFinishTest {
     }
 
     /// After all Cloudlets finish, both freePesNumber and expectedFreePesNumber
-    /// must be equal to the total VM PEs.
+    /// must be equal to the total VM cores.
     @Test
     public void freePesEqualsVmPesAfterAllCloudletsFinish() {
         simulation.start();
         assertEquals(VM_PES, vm.getFreePesNumber(),
-            "freePesNumber should equal total VM PEs after all Cloudlets finish");
+            "freePesNumber should equal total VM CPU cores after all Cloudlets finish");
         assertEquals(VM_PES, vm.getExpectedFreePesNumber(),
-            "expectedFreePesNumber should equal total VM PEs after all Cloudlets finish");
+            "expectedFreePesNumber should equal total VM CPU cores after all Cloudlets finish");
     }
 }

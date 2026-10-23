@@ -14,11 +14,11 @@ import org.cloudsimplus.vms.VmSimple;
 
 
 /// A Virtual Machine Monitor (VMM), also called Hypervisor, that allocates one or more
-/// [Pe]s from a [Host] to a [Vm], **and doesn't allow sharing of PEs between VMs**.
-/// The allocated PEs will be used until the VM finishes running.
-/// If there aren't enough free PEs as required by a VM, or the available PEs
+/// cores from a [Host] to a [Vm], **and doesn't allow sharing of cores between VMs**.
+/// The allocated cores will be used until the VM finishes running.
+/// If there aren't enough free cores as required by a VM, or the available cores
 /// don't have enough capacity, the allocation fails. In the case of fail, no
-/// PE is allocated to the requesting VM.
+/// core is allocated to the requesting VM.
 ///
 /// This scheduler is conventionally used when there is an SLA to be met by the cloud provider.
 /// More affordable services usually don't allocate CPUs exclusively and may use time-shared schedulers.
@@ -47,9 +47,9 @@ public class VmSchedulerSpaceShared extends VmSchedulerAbstract {
         return getHost().getProcessor().getFreeCores() >= requestedMips.cores() && isPeCapacityEnough(requestedMips);
     }
 
-    /// Checks if each Host PE has enough MIPS capacity for each PE requested by a VM.
+    /// Checks if each Host core has enough MIPS capacity for each core requested by a VM.
     /// @param requestedMips a MIPS share requested by a VM
-    /// @return true if the PE capacity is enough or no PE is requested, false otherwise
+    /// @return true if the core capacity is enough or no core is requested, false otherwise
     private boolean isPeCapacityEnough(final CoreCapacity requestedMips) {
         return requestedMips.cores() == 0 || requestedMips.mips() <= getPeCapacity();
     }
@@ -65,8 +65,8 @@ public class VmSchedulerSpaceShared extends VmSchedulerAbstract {
     }
 
     @Override
-    protected long deallocatePesFromVmInternal(final Vm vm, final int pesToRemove) {
+    protected long deallocatePesFromVmInternal(final Vm vm, final int coresToRemove) {
         final var vmSimple = (VmSimple) vm;
-        return removePesFromVm(vm, vmSimple.getAllocatedMips(), vmSimple::setAllocatedMips, pesToRemove);
+        return removePesFromVm(vm, vmSimple.getAllocatedMips(), vmSimple::setAllocatedMips, coresToRemove);
     }
 }

@@ -55,7 +55,7 @@ import static java.util.stream.Collectors.toMap;
 import static org.cloudsimplus.core.CloudSimTag.HOST_FAILURE;
 import static org.cloudsimplus.util.Conversion.HUNDRED_PERCENT;
 
-/// Generates random failures for the PEs of [Host]s inside a given [Datacenter].
+/// Generates random failures for the cores of [Host]s inside a given [Datacenter].
 /// A Fault Injection object usually has to be created after the VMs are created,
 /// making it easier to define a function to be used to clone failed VMs.
 ///
@@ -64,44 +64,44 @@ import static org.cloudsimplus.util.Conversion.HUNDRED_PERCENT;
 /// 1. a time to inject a Host failure is generated using a given [Random Number Generator][org.cloudsimplus.distributions.StatisticalDistribution];
 /// 2. a Host is randomly selected to fail at that time using an internal
 ///  [Uniform Random Number Generator][UniformDistr] with the same seed of the given generator;
-/// 3. the number of Host PEs to fail is randomly generated using the internal generator.
-///  The PEs that fail are randomly chosen among the working ones (free or busy), like a real hardware failure:
-///  each failed PE is drawn from the working PEs that haven't failed yet,
-///  so the number of busy PEs among the failed ones follows a hypergeometric distribution;
-/// 4. failed physical PEs are removed from affected VMs, VMs with no remaining
-///  PEs and destroying and clones of them are submitted to the [DatacenterBroker] of the failed VMs;
+/// 3. the number of Host cores to fail is randomly generated using the internal generator.
+///  The cores that fail are randomly chosen among the working ones (free or busy), like a real hardware failure:
+///  each failed core is drawn from the working cores that haven't failed yet,
+///  so the number of busy cores among the failed ones follows a hypergeometric distribution;
+/// 4. failed physical cores are removed from affected VMs, VMs with no remaining
+///  cores and destroying and clones of them are submitted to the [DatacenterBroker] of the failed VMs;
 /// 5. another failure is scheduled for a future time using the given generator;
 /// 6. the process repeats until the end of the simulation.
 ///
 ///
-/// When Host's PEs fail, if there are more available PEs
+/// When Host's cores fail, if there are more available cores
 /// than required by its running VMs, no VM will be affected.
 ///
-/// Considering that `X` is the number of failed PEs, and it is lower than the total available PEs.
-/// In this case, the `X` PEs will be removed cyclically, 1 by 1, from running VMs.
-/// This way, some VMs may continue running with fewer PEs than they requested initially.
-/// On the other hand, if after the failure, the number of Host's working PEs
+/// Considering that `X` is the number of failed cores, and it is lower than the total available cores.
+/// In this case, the `X` cores will be removed cyclically, 1 by 1, from running VMs.
+/// This way, some VMs may continue running with fewer cores than they requested initially.
+/// On the other hand, if after the failure, the number of Host's working cores
 /// is lower than the required to run all VMs, some VMs will be destroyed.
 ///
-/// If all PEs are removed from a VM, it is automatically destroyed,
+/// If all cores are removed from a VM, it is automatically destroyed,
 /// and a snapshot (clone) from it is taken and submitted
 /// to the [DatacenterBroker], so that the VM clone can start executing into another host.
 /// In this case, all Cloudlets that still were running inside the VM
 /// will be cloned too and restart executing from the beginning.
 ///
-/// If a cloudlet running inside a VM which was affected by a PE failure
-/// requires `Y` PEs but the VM doesn't have all the PEs anymore,
+/// If a cloudlet running inside a VM which was affected by a core failure
+/// requires `Y` cores but the VM doesn't have all the cores anymore,
 /// the Cloudlet will continue executing, but it will spend
 /// more time to finish.
-/// For instance, if a Cloudlet requires 2 PEs but after the failure,
-/// the VM was left with just 1 PE, the Cloudlet will spend the double
+/// For instance, if a Cloudlet requires 2 cores but after the failure,
+/// the VM was left with just 1 core, the Cloudlet will spend the double
 /// of the time to finish.
 ///
 /// **NOTES:**
 ///
-/// - Host PEs failures may happen after all its VMs have finished executing.
+/// - Host cores failures may happen after all its VMs have finished executing.
 ///   This way, the presented simulation results may show that the
-///   number of PEs into a Host is lower than required by its VMs.
+///   number of CPU cores into a Host is lower than required by its VMs.
 ///   In this case, the VMs shown in the results finished executing before
 ///   some failures have happened. Analyzing the logs is easy to confirm that.
 /// - Inter-arrivals failures are defined in minutes, since seconds is a too
@@ -136,15 +136,15 @@ public class HostFaultInjection extends CloudSimEntity {
     @Getter
     private Host lastFailedHost;
 
-    /// Number of PEs failed into the [#lastFailedHost].
-    private long lastFailedPesNumber;
+    /// Number of CPU cores failed into the [#lastFailedHost].
+    private long lastFailedCores;
 
     /// The datacenter in which failures will be injected.
     @Getter
     private Datacenter datacenter;
 
     /// A Pseudo Random Number Generator used to select a [Host]
-    /// and the number of PEs to set as fail.
+    /// and the number of CPU cores to set as fail.
     private final ContinuousDistribution random;
 
     /// A map that stores [VmCloner] objects to be used to clone
@@ -226,7 +226,7 @@ public class HostFaultInjection extends CloudSimEntity {
         scheduleFaultInjection();
     }
 
-    /// Schedules a message to be processed internally to try injecting a failure into Host PEs.
+    /// Schedules a message to be processed internally to try injecting a failure into Host cores.
     private void scheduleFaultInjection() {
         final var sim = getSimulation();
         final Predicate<SimEvent> otherEventsPredicate = evt -> evt.getTag() != HOST_FAILURE;
@@ -260,16 +260,16 @@ public class HostFaultInjection extends CloudSimEntity {
         }
     }
 
-    /// Generates a fault for all PEs of a Host.
+    /// Generates a fault for all cores of a Host.
     /// @param host the Host to generate the fault to.
     public void generateHostFault(final Host host){
         generateHostFault(host, host.getProcessor().getWorkingCores());
     }
 
-    /// Generates a fault for a given number of random PEs of a Host.
+    /// Generates a fault for a given number of random cores of a Host.
     /// @param host the Host to generate the fault to.
-    /// @param pesFailures number of PEs that must fail
-    public void generateHostFault(final Host host, final long pesFailures){
+    /// @param coreFailures number of CPU cores that must fail
+    public void generateHostFault(final Host host, final long coreFailures){
         if(Host.NULL == host){
             return;
         }
@@ -279,24 +279,24 @@ public class HostFaultInjection extends CloudSimEntity {
         hostFaultsNumber++;
         registerHostFaultTime();
 
-        final long previousWorkingPes = lastFailedHost.getProcessor().getWorkingCores();
-        this.lastFailedPesNumber = generateHostPesFaults(pesFailures);
-        final long hostWorkingPes = lastFailedHost.getProcessor().getWorkingCores();
-        final long vmsRequiredPes = getWorkingVmsPesCount();
+        final long previousWorkingCores = lastFailedHost.getProcessor().getWorkingCores();
+        this.lastFailedCores = generateHostPesFaults(coreFailures);
+        final long hostWorkingCores = lastFailedHost.getProcessor().getWorkingCores();
+        final long vmsRequiredCores = getWorkingVmsPesCount();
 
-        final String msg = lastFailedHost.getVmList().isEmpty() ? "" : " | VMs required PEs: " + vmsRequiredPes;
-        if(hostWorkingPes > 0) {
+        final String msg = lastFailedHost.getVmList().isEmpty() ? "" : " | CPU cores required by VMs: " + vmsRequiredCores;
+        if(hostWorkingCores > 0) {
             LOGGER.error(
-                "{}: {}: Generated {} PEs failures in {} at {}.{}" +
-                "\t  Previous working PEs: {} | Current Working PEs: {} | Current VMs: {}{}",
-                getSimulation().clockStr(), getClass().getSimpleName(), lastFailedPesNumber,
-                lastFailedHost, getTime(), System.lineSeparator(), previousWorkingPes,
-                hostWorkingPes, lastFailedHost.getVmList().size(), msg);
+                "{}: {}: Generated {} CPU core failures in {} at {}.{}" +
+                "\t  Previous working CPU cores: {} | Current Working CPU cores: {} | Current VMs: {}{}",
+                getSimulation().clockStr(), getClass().getSimpleName(), lastFailedCores,
+                lastFailedHost, getTime(), System.lineSeparator(), previousWorkingCores,
+                hostWorkingCores, lastFailedHost.getVmList().size(), msg);
         }
 
-        if (hostWorkingPes == 0)
+        if (hostWorkingCores == 0)
             setAllVmsToFailed();
-        else if (hostWorkingPes >= vmsRequiredPes)
+        else if (hostWorkingCores >= vmsRequiredCores)
             logNoVmFault();
         else deallocateFailedHostPesFromVms();
     }
@@ -305,7 +305,7 @@ public class HostFaultInjection extends CloudSimEntity {
         return TimeUtil.secondsToStr(getSimulation().clock());
     }
 
-    /// Generates a failure for a specific number of PEs from a
+    /// Generates a failure for a specific number of CPU cores from a
     /// randomly selected Host and schedules the next time to try generating a fault.
     private void generateHostFaultAndScheduleNext() {
         try {
@@ -322,10 +322,10 @@ public class HostFaultInjection extends CloudSimEntity {
         hostFaultsTimeSecsMap.computeIfAbsent(lastFailedHost, host -> new ArrayList<>()).add(getSimulation().clock());
     }
 
-    /// Randomly gets a Host that will have some PEs set as failed.
+    /// Randomly gets a Host that will have some cores set as failed.
     ///
     /// @return the randomly selected Host; or [Host#NULL] if the Datacenter
-    /// doesn't have Hosts or the selected one doesn't have more PEs.
+    /// doesn't have Hosts or the selected one doesn't have more cores.
     private Host getRandomHost() {
         if (datacenter.getHostList().isEmpty()) {
             return Host.NULL;
@@ -336,84 +336,84 @@ public class HostFaultInjection extends CloudSimEntity {
     }
 
     /// Sets all VMs inside the [last failed Host][#getLastFailedHost()] to
-    /// failed, when all Host PEs have failed.
+    /// failed, when all Host cores have failed.
     private void setAllVmsToFailed() {
         final int vms = lastFailedHost.getVmList().size();
         final String msg = vms > 0 ? "affecting all its %d VMs".formatted(vms) : "but there was no running VM";
         LOGGER.error(
-                "{}: {}: All {} PEs from {} failed at {}, {}.",
+                "{}: {}: All {} CPU cores from {} failed at {}, {}.",
                 getSimulation().clockStr(), getClass().getSimpleName(),
                 lastFailedHost.getPesNumber(), lastFailedHost, getTime(), msg);
         setVmListToFailed(lastFailedHost.getVmList());
     }
 
-    /// Shows that the failure of Host PEs hasn't affected any VM, because there
-    /// are more working PEs than required by all VMs.
+    /// Shows that the failure of Host cores hasn't affected any VM, because there
+    /// are more working cores than required by all VMs.
     private void logNoVmFault() {
         if(lastFailedHost.getVmList().isEmpty()){
             LOGGER.info("There aren't VMs running on the failed Host {}.", lastFailedHost.getId());
             return;
         }
 
-        final int vmsRequiredPes = (int) getWorkingVmsPesCount();
+        final int vmsRequiredCores = (int) getWorkingVmsPesCount();
         LOGGER.info(
-                "{}: {}: Number of failed PEs in Host {} is smaller than working ones required by all VMs, not affecting any VM.{}" +
-                "\t  Total PEs: {} | Total Failed PEs: {} | Working PEs: {} | Current PEs required by VMs: {}.",
+                "{}: {}: Number of failed CPU cores in Host {} is smaller than working ones required by all VMs, not affecting any VM.{}" +
+                "\t  Total CPU cores: {} | Total Failed CPU cores: {} | Working CPU cores: {} | Current CPU cores required by VMs: {}.",
                 getSimulation().clockStr(), getClass().getSimpleName(), lastFailedHost.getId(), System.lineSeparator(),
                 lastFailedHost.getPesNumber(), lastFailedHost.getProcessor().getFailedCores(),
-                lastFailedHost.getProcessor().getWorkingCores(), vmsRequiredPes);
+                lastFailedHost.getProcessor().getWorkingCores(), vmsRequiredCores);
     }
 
-    /// De-allocates the physical PEs failed for the
+    /// De-allocates the physical cores failed for the
     /// [last failed Host][#getLastFailedHost()] from affected VMs.
     private void deallocateFailedHostPesFromVms() {
         cyclicallyRemoveFailedHostPesFromVms();
 
-        final List<Vm> vmsWithoutPes =
+        final List<Vm> vmsWithoutCores =
             lastFailedHost.getVmList()
                 .stream()
                 .filter(vm -> vm.getPesNumber() == 0)
                 .collect(toList());
-        setVmListToFailed(vmsWithoutPes);
+        setVmListToFailed(vmsWithoutCores);
     }
 
-    /// Removes one physical failed PE from one affected VM at a time.
+    /// Removes one physical failed core from one affected VM at a time.
     /// Affected VMs are handled as a circular list, visiting
-    /// one VM at a time to remove 1 PE from it,
-    /// until all the failed PEs are removed.
+    /// one VM at a time to remove 1 core from it,
+    /// until all the failed cores are removed.
     private void cyclicallyRemoveFailedHostPesFromVms() {
         long failedPesToRemoveFromVms = failedPesToRemoveFromVms();
-        List<Vm> vmsWithPes = getVmsWithPEsFromFailedHost();
-        final long affectedVms = Math.min(vmsWithPes.size(), failedPesToRemoveFromVms);
+        List<Vm> vmsWithCores = getVmsWithPEsFromFailedHost();
+        final long affectedVms = Math.min(vmsWithCores.size(), failedPesToRemoveFromVms);
 
-        LOGGER.warn("{} VMs affected from a total of {}. {} PEs are going to be removed from them.",
+        LOGGER.warn("{} VMs affected from a total of {}. {} CPU cores are going to be removed from them.",
                 affectedVms, lastFailedHost.getVmList().size(), failedPesToRemoveFromVms);
         int idx = 0;
-        while (!vmsWithPes.isEmpty() && failedPesToRemoveFromVms > 0) {
+        while (!vmsWithCores.isEmpty() && failedPesToRemoveFromVms > 0) {
             failedPesToRemoveFromVms--;
-            idx = idx % vmsWithPes.size();
-            final Vm vm = vmsWithPes.get(idx);
+            idx = idx % vmsWithCores.size();
+            final Vm vm = vmsWithCores.get(idx);
             lastFailedHost.getVmScheduler().deallocatePesFromVm(vm, 1);
             vm.getCloudletScheduler().deallocatePesFromVm(1);
-            //remove 1 failed PE from the VM
+            //remove 1 failed core from the VM
             vm.getProcessor().deallocateAndRemoveResource(1);
 
             LOGGER.warn(
-                    "Removing 1 PE from VM {} due to Host PE failure. New VM PEs Number: {}",
+                    "Removing 1 CPU core from VM {} due to Host CPU core failure. New number of VM CPU cores: {}",
                     vm.getId(), vm.getPesNumber());
             idx++;
-            vmsWithPes = getVmsWithPEsFromFailedHost();
+            vmsWithCores = getVmsWithPEsFromFailedHost();
         }
     }
 
-    /// @return the number of failed PEs to remove from VMs.
+    /// @return the number of failed cores to remove from VMs.
     private long failedPesToRemoveFromVms() {
-        final long hostWorkingPes = lastFailedHost.getProcessor().getWorkingCores();
-        final long vmsRequiredPes = getWorkingVmsPesCount();
-        return vmsRequiredPes - hostWorkingPes;
+        final long hostWorkingCores = lastFailedHost.getProcessor().getWorkingCores();
+        final long vmsRequiredCores = getWorkingVmsPesCount();
+        return vmsRequiredCores - hostWorkingCores;
     }
 
-    /// @return a List of VMs that have any PE from the [#lastFailedHost].
+    /// @return a List of VMs that have any core from the [#lastFailedHost].
     private List<Vm> getVmsWithPEsFromFailedHost() {
         return lastFailedHost
                 .getVmList()
@@ -422,7 +422,7 @@ public class HostFaultInjection extends CloudSimEntity {
                 .collect(toList());
     }
 
-    /// Sets all VMs from a given list as failed, due to Host PEs failures.
+    /// Sets all VMs from a given list as failed, due to Host cores failures.
     private void setVmListToFailed(final List<Vm> vms) {
         final var lastVmFailedByBrokerMap = getLastFailedVmByBroker(vms);
 
@@ -430,9 +430,9 @@ public class HostFaultInjection extends CloudSimEntity {
         lastVmFailedByBrokerMap.forEach(this::createVmCloneIfAllVmsDestroyed);
     }
 
-    private Map<DatacenterBroker, Vm> getLastFailedVmByBroker(final List<Vm> vmsWithoutPes) {
+    private Map<DatacenterBroker, Vm> getLastFailedVmByBroker(final List<Vm> vmsWithoutCores) {
         final var vmComparator = Comparator.comparingLong(Vm::getId);
-        return vmsWithoutPes
+        return vmsWithoutCores
                     .stream()
                     .collect(
                         toMap(Vm::getBroker, Function.identity(), BinaryOperator.maxBy(vmComparator))
@@ -690,17 +690,17 @@ public class HostFaultInjection extends CloudSimEntity {
 
     }
 
-    /// Generates failures for a given number of PEs from the
+    /// Generates failures for a given number of CPU cores from the
     /// [last failed Host][#getLastFailedHost()].
-    /// The PEs to fail are randomly chosen among the working ones (free or busy),
+    /// The cores to fail are randomly chosen among the working ones (free or busy),
     /// as described in the [class documentation][HostFaultInjection].
     ///
-    /// @param pesFailures number of PEs to set as failed
-    /// @return the number of PEs just failed for the Host,
-    ///         which is the given number limited to the number of working PEs
-    private long generateHostPesFaults(final long pesFailures) {
+    /// @param coreFailures number of CPU cores to set as failed
+    /// @return the number of CPU cores just failed for the Host,
+    ///         which is the given number limited to the number of working cores
+    private long generateHostPesFaults(final long coreFailures) {
         final Processor processor = lastFailedHost.getProcessor();
-        final long failures = Math.min(pesFailures, processor.getWorkingCores());
+        final long failures = Math.min(coreFailures, processor.getWorkingCores());
         final long busyFailures = randomBusyPesToFail(processor, failures);
 
         processor.moveCores(CoreStatus.BUSY, CoreStatus.FAILED, busyFailures);
@@ -708,26 +708,26 @@ public class HostFaultInjection extends CloudSimEntity {
         return failures;
     }
 
-    /// Randomly defines how many busy PEs are among a given number of working PEs to fail.
-    /// Each PE to fail is drawn (without replacement) from the working PEs,
+    /// Randomly defines how many busy cores are among a given number of working cores to fail.
+    /// Each core to fail is drawn (without replacement) from the working cores,
     /// so the result follows a hypergeometric distribution.
-    /// It doesn't need one object per PE, only the number of busy and working PEs.
+    /// It doesn't need one object per core, only the number of busy and working cores.
     ///
-    /// @param processor the processor of the Host whose PEs will fail
-    /// @param failures the number of working PEs to fail
-    /// @return the number of busy PEs to fail (the remaining ones are free PEs)
+    /// @param processor the processor of the Host whose cores will fail
+    /// @param failures the number of working cores to fail
+    /// @return the number of busy cores to fail (the remaining ones are free cores)
     private long randomBusyPesToFail(final Processor processor, final long failures) {
-        long busyPes = processor.getCores(CoreStatus.BUSY);
-        long workingPes = processor.getWorkingCores();
-        // If all working PEs have the same status, there is nothing to draw
-        if (busyPes == 0 || busyPes == workingPes) {
-            return Math.min(busyPes, failures);
+        long busyCores = processor.getCores(CoreStatus.BUSY);
+        long workingCores = processor.getWorkingCores();
+        // If all working cores have the same status, there is nothing to draw
+        if (busyCores == 0 || busyCores == workingCores) {
+            return Math.min(busyCores, failures);
         }
 
         long busyFailures = 0;
-        for (long i = 0; i < failures; i++, workingPes--) {
-            if (random.sample() * workingPes < busyPes) {
-                busyPes--;
+        for (long i = 0; i < failures; i++, workingCores--) {
+            if (random.sample() * workingCores < busyCores) {
+                busyCores--;
                 busyFailures++;
             }
         }
@@ -735,7 +735,7 @@ public class HostFaultInjection extends CloudSimEntity {
         return busyFailures;
     }
 
-    /// @return the total number of PEs from all working VMs.
+    /// @return the total number of CPU cores from all working VMs.
     private long getWorkingVmsPesCount() {
         return lastFailedHost.getVmList().stream()
                 .filter(Vm::isWorking)
@@ -743,12 +743,12 @@ public class HostFaultInjection extends CloudSimEntity {
                 .sum();
     }
 
-    /// Randomly generates a number of PEs which will fail for the datacenter.
-    /// The minimum number of PEs to fail is 1.
+    /// Randomly generates a number of CPU cores which will fail for the datacenter.
+    /// The minimum number of CPU cores to fail is 1.
     ///
-    /// @param host the Host to generate a number of PEs to fail
-    /// @return the generated number of failed PEs for the datacenter,
-    /// between \[1 and Number of PEs\].
+    /// @param host the Host to generate a number of CPU cores to fail
+    /// @return the generated number of failed cores for the datacenter,
+    /// between \[1 and Number of CPU cores\].
     private long randomFailedPesNumber(final Host host) {
         /* The random generator return values from [0 to 1]
          and multiplying by the number of PEs we get a number between

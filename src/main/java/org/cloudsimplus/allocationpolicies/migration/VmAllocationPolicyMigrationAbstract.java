@@ -624,7 +624,7 @@ public non-sealed abstract class VmAllocationPolicyMigrationAbstract
 
     /// Gets the max power consumption of a host after placement of a candidate
     /// VM. The VM is not in fact placed at the host. We assume that load is
-    /// balanced between PEs. The only restriction is: VM's max MIPS less than PE's MIPS
+    /// balanced between cores. The only restriction is: VM's max MIPS less than core's MIPS
     ///
     /// @param host the host
     /// @param vm the vm

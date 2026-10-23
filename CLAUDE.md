@@ -64,8 +64,8 @@ So changes to cloudlet or VM execution logic usually affect this update chain an
 |---------|-----------|---------|
 | VM → Host placement / migration | `VmAllocationPolicy` (+ `allocationpolicies.migration`) | Datacenter |
 | Which VM to migrate | `VmSelectionPolicy` | migration allocation policies |
-| Host PEs → VMs | `VmScheduler` (time/space shared) | Host |
-| VM PEs → Cloudlets | `CloudletScheduler` (time/space shared, completely fair) | Vm |
+| Host CPU cores → VMs | `VmScheduler` (time/space shared) | Host |
+| VM CPU cores → Cloudlets | `CloudletScheduler` (time/space shared, completely fair) | Vm |
 | RAM/BW provisioning | `ResourceProvisioner` | Host |
 | Resource usage over time | `UtilizationModel` | Cloudlet |
 | Power consumption | `PowerModel` | Host / Datacenter |
@@ -83,7 +83,7 @@ So changes to cloudlet or VM execution logic usually affect this update chain an
 
 | Package | Purpose |
 |---------|---------|
-| `faultinjection` | `HostFaultInjection` entity that fails host PEs at random times; `VmCloner` to recover VMs |
+| `faultinjection` | `HostFaultInjection` entity that fails Host CPU cores at random times; `VmCloner` to recover VMs |
 | `slametrics` | SLA contracts loaded from JSON |
 | `vmtemplates` | AWS EC2 instance templates loaded from JSON |
 | `traces` | Readers for Google Cluster Data, SWF and other workload traces |

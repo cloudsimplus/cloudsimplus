@@ -35,10 +35,10 @@ public class VmSchedulerTimeSharedTest {
     private VmSimple vm0;
     private VmSimple vm1;
 
-    private VmScheduler createVmScheduler(final double mips, final int pesNumber) {
+    private VmScheduler createVmScheduler(final double mips, final int cores) {
         final VmSchedulerTimeShared scheduler = new VmSchedulerTimeShared();
-        final List<Pe> peList = new ArrayList<>(pesNumber);
-        LongStream.range(0, pesNumber).forEach(i -> peList.add(new PeSimple(mips, new PeProvisionerSimple())));
+        final List<Pe> peList = new ArrayList<>(cores);
+        LongStream.range(0, cores).forEach(i -> peList.add(new PeSimple(mips, new PeProvisionerSimple())));
         final Host host = new HostSimple(2048, 20000, 20000, peList);
         host
             .setRamProvisioner(new ResourceProvisionerSimple())
@@ -204,10 +204,10 @@ public class VmSchedulerTimeSharedTest {
 
         vmScheduler.allocatePesForVm(vm0, mipsShare);
         vmScheduler.allocatePesForVm(vm1, mipsShare);
-        //Try to remove more PEs than it's allocated (only the allocated PEs have to be deallocated)
+        //Try to remove more cores than it's allocated (only the allocated cores have to be deallocated)
         vmScheduler.deallocatePesFromVm(vm0, HOST_PES);
-        //Since only the PEs for vm0 were deallocated, the PEs from vm1 have to be busy yet
+        //Since only the cores for vm0 were deallocated, the cores from vm1 have to be busy yet
         final long expectedBusyPes = vm1.getPesNumber();
-        assertEquals(expectedBusyPes, host.getProcessor().getBusyCores(), "Number of busy Host PEs:");
+        assertEquals(expectedBusyPes, host.getProcessor().getBusyCores(), "Number of busy Host CPU cores:");
     }
 }

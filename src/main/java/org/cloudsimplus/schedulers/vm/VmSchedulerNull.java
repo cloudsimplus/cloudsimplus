@@ -59,5 +59,5 @@ final class VmSchedulerNull implements VmScheduler {
         return this;
     }
     @Override public void deallocatePesFromVm(Vm vm) {/**/}
-    @Override public void deallocatePesFromVm(Vm vm, int pesToRemove) {/**/}
+    @Override public void deallocatePesFromVm(Vm vm, int coresToRemove) {/**/}
 }

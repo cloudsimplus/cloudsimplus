@@ -51,18 +51,18 @@ public sealed interface Machine<T extends Resource>
     /// @return the storage device of the machine with capacity in Megabytes.
     T getStorage();
 
-    /// @return the processor of the machine, that manages its cores (PEs).
+    /// @return the processor of the machine, that manages its cores (cores).
     Processor getProcessor();
 
-    /// @return the overall number of PEs the machine has,
-    /// that include PEs of all statuses, including failed PEs.
+    /// @return the overall number of CPU cores the machine has,
+    /// that include cores of all statuses, including failed cores.
     long getPesNumber();
 
-    /// @return the individual MIPS capacity of any machine's PE,
-    /// considering that all PEs have the same capacity.
+    /// @return the individual MIPS capacity of any machine's core,
+    /// considering that all cores have the same capacity.
     double getMips();
 
-    /// @return total MIPS capacity across all PEs of the machine.
+    /// @return total MIPS capacity across all cores of the machine.
     double getTotalMipsCapacity();
 
     /// @return the [CloudSimPlus] instance that represents the simulation the Entity belongs to.

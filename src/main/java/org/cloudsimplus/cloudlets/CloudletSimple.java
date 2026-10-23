@@ -28,7 +28,7 @@ public class CloudletSimple extends CloudletAbstract {
     ///
     /// @param length the length (in MI) of this cloudlet to be executed in a VM
     /// (check out [#setLength(long)])
-    /// @param pesNumber the number of [Pe]s the Cloudlet will require
+    /// @param cores the number of CPU cores the Cloudlet will require
     /// @param utilizationModel a [UtilizationModel] to define how the Cloudlet uses CPU, RAM and BW.
     /// To define an independent utilization model for each resource,
     /// call the respective setters.
@@ -36,8 +36,8 @@ public class CloudletSimple extends CloudletAbstract {
     /// @see #setUtilizationModelCpu(UtilizationModel)
     /// @see #setUtilizationModelRam(UtilizationModel)
     /// @see #setUtilizationModelBw(UtilizationModel)
-    public CloudletSimple(final long length, final int pesNumber, final UtilizationModel utilizationModel) {
-        super(length, pesNumber, utilizationModel);
+    public CloudletSimple(final long length, final int cores, final UtilizationModel utilizationModel) {
+        super(length, cores, utilizationModel);
     }
 
     /// Creates a Cloudlet with no priority or id.
@@ -50,11 +50,11 @@ public class CloudletSimple extends CloudletAbstract {
     ///
     /// @param length the length (in MI) of this cloudlet to be executed in a VM
     /// (check out [#setLength(long)])
-    /// @param pesNumber the number of [Pe]s the Cloudlet will require
+    /// @param cores the number of CPU cores the Cloudlet will require
     /// @see #setUtilizationModelRam(UtilizationModel)
     /// @see #setUtilizationModelBw(UtilizationModel)
-    public CloudletSimple(final long length, final int pesNumber) {
-        super(length, pesNumber);
+    public CloudletSimple(final long length, final int cores) {
+        super(length, cores);
     }
 
     /// Creates a Cloudlet with no priority or id.
@@ -67,11 +67,11 @@ public class CloudletSimple extends CloudletAbstract {
     ///
     /// @param length the length (in MI) of this cloudlet to be executed in a VM
     /// (check out [#setLength(long)])
-    /// @param pesNumber the number of [Pe]s the Cloudlet will require
+    /// @param cores the number of CPU cores the Cloudlet will require
     /// @see #setUtilizationModelRam(UtilizationModel)
     /// @see #setUtilizationModelBw(UtilizationModel)
-    public CloudletSimple(final long length, final long pesNumber) {
-        super(length, pesNumber);
+    public CloudletSimple(final long length, final long cores) {
+        super(length, cores);
     }
 
     /// Creates a Cloudlet with no priority, file size and output size equal to 1.
@@ -83,11 +83,11 @@ public class CloudletSimple extends CloudletAbstract {
     /// @param id  the unique ID of this cloudlet
     /// @param length the length (in MI) of this cloudlet to be executed in a VM
     /// (check out [#setLength(long)])
-    /// @param pesNumber the number of [Pe]s the Cloudlet will require
+    /// @param cores the number of CPU cores the Cloudlet will require
     /// @see #setUtilizationModelRam(UtilizationModel)
     /// @see #setUtilizationModelBw(UtilizationModel)
-    public CloudletSimple(final long id, final long length, final long pesNumber) {
-        super(id, length, pesNumber);
+    public CloudletSimple(final long id, final long length, final long cores) {
+        super(id, length, cores);
     }
 
     @Override

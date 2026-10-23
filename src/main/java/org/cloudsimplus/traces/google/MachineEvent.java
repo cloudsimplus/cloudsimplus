@@ -64,7 +64,7 @@ public final class MachineEvent extends MachineDataBase {
     /// @see MachineEventField#RAM_CAPACITY
     private long ram;
 
-    /// The actual number of [Pe]s (CPU cores) to be assigned to a Host,
+    /// The actual number of CPU cores to be assigned to a Host,
     /// according the [GoogleMachineEventsTraceReader#getMaxCpuCores()].
     ///
     /// @see MachineEventField#CPU_CAPACITY

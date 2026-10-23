@@ -112,7 +112,7 @@ final class VmCreationRetryIntegrationTest {
         return new HostSimple(peList);
     }
 
-    /// Creates VMs that require all Host PEs, so that only the first one can be placed.
+    /// Creates VMs that require all Host cores, so that only the first one can be placed.
     private static List<Vm> createVms() {
         final var vmList = new ArrayList<Vm>(VMS);
         for (int i = 0; i < VMS; i++) {

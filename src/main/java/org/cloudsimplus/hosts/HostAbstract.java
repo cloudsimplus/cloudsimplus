@@ -701,10 +701,10 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
         return processor.getCapacity();
     }
 
-    /// Gets the MIPS share of each [Pe] that is allocated to a given [Vm].
+    /// Gets the MIPS share of each core that is allocated to a given [Vm].
     ///
     /// @param vm the Vm to get the MIPS share
-    /// @return an array containing the MIPS amount from each [Pe] that is available to the [Vm]
+    /// @return an array containing the MIPS amount from each core that is available to the [Vm]
     protected CoreCapacity getAllocatedMipsForVm(final Vm vm) {
         return vmScheduler.getAllocatedMips(vm);
     }
@@ -851,13 +851,13 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
         return true;
     }
 
-    /// Sets all working PEs as failed.
+    /// Sets all working cores as failed.
     private void failAllPes() {
         processor.moveCores(CoreStatus.BUSY, CoreStatus.FAILED, processor.getCores(CoreStatus.BUSY));
         processor.moveCores(CoreStatus.FREE, CoreStatus.FAILED, processor.getCores(CoreStatus.FREE));
     }
 
-    /// Sets all PEs as free, including failed and busy ones.
+    /// Sets all cores as free, including failed and busy ones.
     private void recoverAllPes() {
         processor.moveCores(CoreStatus.FAILED, CoreStatus.FREE, processor.getCores(CoreStatus.FAILED));
         processor.moveCores(CoreStatus.BUSY, CoreStatus.FREE, processor.getCores(CoreStatus.BUSY));
@@ -1050,10 +1050,10 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
         final double totalRequestedMips = vm.getTotalCpuMipsRequested();
         if (totalAllocatedMips + 0.1 < totalRequestedMips) {
             final String reason = getVmsMigratingOut().contains(vm) ? "migration overhead" : "capacity unavailability";
-            final long notAllocatedMipsByPe = (long) ((totalRequestedMips - totalAllocatedMips) / vm.getPesNumber());
+            final long notAllocatedMipsByCore = (long) ((totalRequestedMips - totalAllocatedMips) / vm.getPesNumber());
             LOGGER.warn(
-                "{}: {}: {} MIPS not allocated for each one of the {} PEs from {} due to {}.",
-                getSimulation().clockStr(), this, notAllocatedMipsByPe, vm.getPesNumber(), vm, reason);
+                "{}: {}: {} MIPS not allocated for each one of the {} CPU cores from {} due to {}.",
+                getSimulation().clockStr(), this, notAllocatedMipsByCore, vm.getPesNumber(), vm, reason);
         }
 
         final var entry = new VmStateHistoryEntry(
@@ -1088,8 +1088,8 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
     /// Adds a Host state history entry.
     ///
     /// @param time          the current simulation time
-    /// @param allocatedMips the total MIPS allocated from all PEs of the Host
-    /// @param requestedMips the total MIPS requested by running VMs to all PEs of the Host
+    /// @param allocatedMips the total MIPS allocated from all cores of the Host
+    /// @param requestedMips the total MIPS requested by running VMs to all cores of the Host
     /// @param isActive      the active status of the Host
     private void addStateHistoryEntry(
         final double time,

@@ -159,8 +159,8 @@ class CloudletTaskSchedulerSimpleTest {
     }
 
     /// While C is waiting for A's packet, it must not take a share of VM 1's CPU.
-    /// This way, the other 2 cloudlets in VM 1 (which has 2 PEs) must get
-    /// a full PE each (issue #556).
+    /// This way, the other 2 cloudlets in VM 1 (which has 2 cores) must get
+    /// a full core each (issue #556).
     @Test
     void cloudletWaitingForPacketsDoesNotTakeCpuShare() {
         final var dag = new Dag(LENGTH * 3, LENGTH, true);
@@ -178,10 +178,10 @@ class CloudletTaskSchedulerSimpleTest {
         assertEquals(expectedFinishTime, cloudlet2.getFinishTime(), FINISH_TIME_TOLERANCE);
     }
 
-    /// VM 1 uses a space-shared scheduler and has 2 PEs.
-    /// Receivers R1 and R2 are submitted first, take both PEs and wait for packets from sender S,
-    /// which is in the same VM. S stays in the waiting list since there are no free PEs.
-    /// Since cloudlets waiting for packets don't hold their PEs, S must run
+    /// VM 1 uses a space-shared scheduler and has 2 cores.
+    /// Receivers R1 and R2 are submitted first, take both cores and wait for packets from sender S,
+    /// which is in the same VM. S stays in the waiting list since there are no free cores.
+    /// Since cloudlets waiting for packets don't hold their cores, S must run
     /// and send the packets, so that all cloudlets finish without a deadlock (issue #581).
     @Test
     void spaceSharedCloudletsWaitingForPacketsReleasePesToTheSender() {

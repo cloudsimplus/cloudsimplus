@@ -168,10 +168,10 @@ public class CloudletSchedulerTimeSharedTest {
     @Test
     public void testGetTotalUtilizationOfCpuWhenMoreCloudletsThanPes() {
         final long mips = 1000;
-        final int pesNumber = 2;
+        final int cores = 2;
         final int cloudletsNumber = 4;
 
-        final var instance = newSchedulerWithSingleCoreRunningCloudlets(mips, pesNumber, cloudletsNumber);
+        final var instance = newSchedulerWithSingleCoreRunningCloudlets(mips, cores, cloudletsNumber);
 
         final double expected = 1.0;
         assertEquals(expected, instance.getRequestedCpuPercent(0));
@@ -180,10 +180,10 @@ public class CloudletSchedulerTimeSharedTest {
     @Test
     public void testGetTotalUtilizationOfCpuWhenOnePeForEachCloudlet() {
         final long mips = 1000;
-        final int pesNumber = 2;
-        final int cloudletsNumber = pesNumber;
+        final int cores = 2;
+        final int cloudletsNumber = cores;
 
-        final var instance = newSchedulerWithSingleCoreRunningCloudlets(mips, pesNumber, cloudletsNumber);
+        final var instance = newSchedulerWithSingleCoreRunningCloudlets(mips, cores, cloudletsNumber);
 
         final double expected = 1;
         assertEquals(expected, instance.getRequestedCpuPercent(0));
@@ -192,10 +192,10 @@ public class CloudletSchedulerTimeSharedTest {
     @Test
     public void testGetTotalUtilizationOfCpuWhenLessCloudletsThanPesHalfUsage() {
         final long mips = 1000;
-        final int pesNumber = 4;
+        final int cores = 4;
         final int cloudletsNumber = 2;
 
-        final var instance = newSchedulerWithSingleCoreRunningCloudlets(mips, pesNumber, cloudletsNumber);
+        final var instance = newSchedulerWithSingleCoreRunningCloudlets(mips, cores, cloudletsNumber);
 
         final double expected = 0.5;
         assertEquals(expected, instance.getRequestedCpuPercent(0));
@@ -204,10 +204,10 @@ public class CloudletSchedulerTimeSharedTest {
     @Test
     public void testGetTotalUtilizationOfCpuWhenLessCloudletsThanPesThreeThirdUsage() {
         final long mips = 1000;
-        final int pesNumber = 4;
+        final int cores = 4;
         final int cloudletsNumber = 3;
 
-        final var instance = newSchedulerWithSingleCoreRunningCloudlets(mips, pesNumber, cloudletsNumber);
+        final var instance = newSchedulerWithSingleCoreRunningCloudlets(mips, cores, cloudletsNumber);
 
         final double expected = 0.75;
         assertEquals(expected, instance.getRequestedCpuPercent(0));
@@ -216,10 +216,10 @@ public class CloudletSchedulerTimeSharedTest {
     @Test
     public void testGetTotalUtilizationOfCpuWhenLessCloudletsThanPesNotFullUsage() {
         final long mips = 1000;
-        final int pesNumber = 5;
+        final int cores = 5;
         final int cloudletsNumber = 4;
 
-        final var instance = newSchedulerWithSingleCoreRunningCloudlets(mips, pesNumber, cloudletsNumber);
+        final var instance = newSchedulerWithSingleCoreRunningCloudlets(mips, cores, cloudletsNumber);
 
         final double expected = 0.8;
         assertEquals(expected, instance.getRequestedCpuPercent(0));
@@ -238,10 +238,10 @@ public class CloudletSchedulerTimeSharedTest {
         assertEquals(expected, instance.getRequestedCpuPercent(0));
     }
 
-    /// Runs 2 cloudlets requiring just 1 PE each one.
-    /// These cloudlets are run in a CloudletScheduler having 2 PEs,
+    /// Runs 2 cloudlets requiring just 1 core each one.
+    /// These cloudlets are run in a CloudletScheduler having 2 cores,
     /// one for each cloudlet. The cloudlet length is equals to the capacity of
-    /// each PE, meaning that each cloudlet will finish in just one second.
+    /// each core, meaning that each cloudlet will finish in just one second.
     @Test
     public void testGetCloudletExecListWhenEmptyAfterFinishedCloudletsForTwoSchedulerPes() {
         final long mips = 1000;
@@ -255,12 +255,12 @@ public class CloudletSchedulerTimeSharedTest {
         assertEquals(0, instance.getCloudletExecList().size());
     }
 
-    /// Runs 2 cloudlets requiring just 1 PE each one.
-    /// These cloudlets are run in a CloudletScheduler having just 1 PE
+    /// Runs 2 cloudlets requiring just 1 core each one.
+    /// These cloudlets are run in a CloudletScheduler having just 1 core
     /// that is shared between the cloudlets.
     /// The cloudlet length is equals to the capacity of
-    /// each PE, meaning that each cloudlet will finish in 2 seconds
-    /// because there is just 1 PE.
+    /// each core, meaning that each cloudlet will finish in 2 seconds
+    /// because there is just 1 core.
     @Test
     public void testGetCloudletExecListWhenEmptyAfterFinishedCloudletsForOneSchedulerPe() {
         final long mips = 1000;

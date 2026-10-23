@@ -26,7 +26,7 @@ package org.cloudsimplus.resources;
 import lombok.Getter;
 import lombok.experimental.Accessors;
 
-/// The status of the cores (PEs) of a [Processor].
+/// The status of the cores (cores) of a [Processor].
 /// Each status declares its behaviour in the constructor,
 /// so that a new status doesn't compile until it says how it behaves.
 ///

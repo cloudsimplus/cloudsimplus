@@ -34,19 +34,19 @@ import java.util.List;
 /// However, usually just the Host operating system scheduler (a [VmScheduler] assigned to a Host)
 /// has direct knowledge of HT to accordingly schedule up to 2 processes to the same physical CPU core.
 /// Further, this scheduler implementation
-/// oversimplifies a possible HT for the virtual PEs, allowing more than 2 processes to run at the same core.
+/// oversimplifies a possible HT for the virtual cores, allowing more than 2 processes to run at the same core.
 ///
 /// Since this CloudletScheduler implementation does not account for the
 /// [context switch](https://en.wikipedia.org/wiki/Context_switch)
 /// overhead, this oversimplification impacts tasks completion by penalizing
 /// equally all the Cloudlets that are running on the same CPU core.
 /// Other impact is that, if there are
-/// Cloudlets of the same length running in the same PEs, they will finish
+/// Cloudlets of the same length running in the same cores, they will finish
 /// exactly at the same time. On the other hand, on a real time-shared scheduler
 /// these Cloudlets will finish almost at the same time.
 ///
 ///
-/// As an example, consider a scheduler that has 1 PE that is able to execute
+/// As an example, consider a scheduler that has 1 core that is able to execute
 /// 1000 MI/S (MIPS) and is running Cloudlet 0 and Cloudlet 1, each one having
 /// 5000 MI in length. These 2 Cloudlets will spend 5 seconds to finish. Now
 /// consider that the time slice allocated to each Cloudlet to execute is 1
@@ -74,9 +74,9 @@ public class CloudletSchedulerTimeShared extends CloudletSchedulerAbstract {
 
     /// {@inheritDoc}
     ///
-    /// **For this scheduler, this list is always empty, once the VM PEs
+    /// **For this scheduler, this list is always empty, once the VM cores
     /// are shared across all Cloudlets running inside a VM. Each Cloudlet has
-    /// the opportunity to use the PEs for a given time-slice.**
+    /// the opportunity to use the cores for a given time-slice.**
     ///
     /// @return {@inheritDoc}
     @Override

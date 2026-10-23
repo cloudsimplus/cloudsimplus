@@ -29,7 +29,7 @@ import org.cloudsimplus.vms.Vm;
 
 /// A [DatacenterBroker] that uses a [First Fit](https://en.wikipedia.org/wiki/First-fit_bin_packing)
 /// mapping between submitted cloudlets and VMs, trying to place a Cloudlet
-/// at the first suitable Vm which can be found (according to the required Cloudlet's PEs).
+/// at the first suitable Vm which can be found (according to the required Cloudlet's cores).
 /// The Broker then places the submitted VMs at the first Datacenter found.
 /// If there isn't capacity in that one, it will try other available ones.
 ///
@@ -46,7 +46,7 @@ public class DatacenterBrokerFirstFit extends DatacenterBrokerSimple {
         super(simulation);
     }
 
-    /// Selects the first VM with the lowest number of PEs that is able to run a given Cloudlet.
+    /// Selects the first VM with the lowest number of CPU cores that is able to run a given Cloudlet.
     /// In case the algorithm can't find such a VM, it uses the
     /// default DatacenterBroker VM mapper as a fallback.
     ///
@@ -64,7 +64,7 @@ public class DatacenterBrokerFirstFit extends DatacenterBrokerSimple {
         for (int i = 0; i < maxTries; i++) {
             final Vm vm = getVmCreatedList().get(lastVmIndex);
             if (vm.getExpectedFreePesNumber() >= cloudlet.getPesNumber()) {
-                LOGGER.trace("{}: {}: {} (PEs: {}) mapped to {} (available PEs: {}, tot PEs: {})",
+                LOGGER.trace("{}: {}: {} (CPU cores: {}) mapped to {} (available CPU cores: {}, tot CPU cores: {})",
                     getSimulation().clockStr(), getName(), cloudlet, cloudlet.getPesNumber(), vm,
                     vm.getExpectedFreePesNumber(), vm.getFreePesNumber());
                 return vm;
@@ -77,7 +77,7 @@ public class DatacenterBrokerFirstFit extends DatacenterBrokerSimple {
             lastVmIndex = ++lastVmIndex % getVmCreatedList().size();
         }
 
-        LOGGER.warn("{}: {}: {} (PEs: {}) couldn't be mapped to any suitable VM.",
+        LOGGER.warn("{}: {}: {} (CPU cores: {}) couldn't be mapped to any suitable VM.",
                 getSimulation().clockStr(), getName(), cloudlet, cloudlet.getPesNumber());
 
         return Vm.NULL;

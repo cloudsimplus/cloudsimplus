@@ -104,21 +104,21 @@ public non-sealed abstract class VmAllocationPolicyAbstract implements VmAllocat
         return isRequestingCpuScaling(scaling) ? scaleVmPesUpOrDown(scaling) : downScaleVmNonCpuResource(scaling);
     }
 
-    /// Performs the up or down scaling of Vm [Pe]s,
+    /// Performs the up or down scaling of Vm cores,
     /// depending on if the VM is under or overloaded.
     ///
     /// @param scaling the Vm scaling object
     /// @return true if the scaling was performed, false otherwise
     /// @see #upScaleVmVertically(VerticalVmScaling)
     private boolean scaleVmPesUpOrDown(final VerticalVmScaling scaling) {
-        final double pesNumberForScaling = scaling.getResourceAmountToScale();
-        if (pesNumberForScaling == 0) {
+        final double coresForScaling = scaling.getResourceAmountToScale();
+        if (coresForScaling == 0) {
             return false;
         }
 
         final boolean isVmUnderloaded = scaling.isVmUnderloaded();
-        // Avoids trying to downscale the number of vPEs to zero
-        if(isVmUnderloaded && scaling.getVm().getPesNumber() == pesNumberForScaling) {
+        // Avoids trying to downscale the number of vCPUs to zero
+        if(isVmUnderloaded && scaling.getVm().getPesNumber() == coresForScaling) {
             scaling.logDownscaleToZeroNotAllowed();
             return false;
         }
@@ -132,7 +132,7 @@ public non-sealed abstract class VmAllocationPolicyAbstract implements VmAllocat
         vm.getHost().getVmScheduler().deallocatePesFromVm(vm);
         final int signal = isVmUnderloaded ? -1 : 1;
         // Removes or adds some capacity from/to the resource, respectively if the VM is under or overloaded
-        vm.getProcessor().sumCapacity((long) pesNumberForScaling * signal);
+        vm.getProcessor().sumCapacity((long) coresForScaling * signal);
 
         vm.getHost().getVmScheduler().allocatePesForVm(vm);
         return true;
@@ -140,8 +140,8 @@ public non-sealed abstract class VmAllocationPolicyAbstract implements VmAllocat
 
     private boolean isNotHostPesSuitableToUpScaleVm(final VerticalVmScaling scaling) {
         final Vm vm = scaling.getVm();
-        final long pesCountForScaling = (long)scaling.getResourceAmountToScale();
-        final CoreCapacity additionalVmMips = new CoreCapacity(pesCountForScaling, vm.getMips());
+        final long coresCountForScaling = (long)scaling.getResourceAmountToScale();
+        final CoreCapacity additionalVmMips = new CoreCapacity(coresCountForScaling, vm.getMips());
         return !vm.getHost().getVmScheduler().isSuitableForVm(vm, additionalVmMips);
     }
 
@@ -215,7 +215,7 @@ public non-sealed abstract class VmAllocationPolicyAbstract implements VmAllocat
         return vmList.stream().map(this::allocateHostForVm).collect(toSet());
     }
 
-    /// Allocates the host with less PEs in use for a given VM.
+    /// Allocates the host with less cores in use for a given VM.
     /// {@inheritDoc}
     @Override
     public HostSuitability allocateHostForVm(final Vm vm) {

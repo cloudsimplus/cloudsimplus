@@ -87,7 +87,7 @@ public non-sealed abstract class VerticalVmScalingAbstract extends VmScalingAbst
     }
 
     /// Validates the class of Vm resource that this scaling object will request up or down scaling.
-    /// Such a class can be [Ram].class, [Bandwidth].class or [Pe].class.
+    /// Such a class can be [Ram].class, [Bandwidth].class or core.class.
     /// @param resourceClass the resource class to set
     /// @return the validated resource class
     private Class<? extends ResourceManageable> validateResourceClass(@NonNull final Class<? extends ResourceManageable> resourceClass) {

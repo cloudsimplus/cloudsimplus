@@ -23,7 +23,7 @@ import java.util.List;
 /// (PM) inside a [Datacenter]. It executes actions related to the management
 /// of virtual machines (e.g., creation and destruction). A Host has a defined
 /// policy for provisioning memory and bw, as well as an allocation policy for
-/// PEs to [Virtual Machines][Vm]. A Host is associated with a Datacenter and
+/// cores to [Virtual Machines][Vm]. A Host is associated with a Datacenter and
 /// can run virtual machines.
 ///
 /// @author Rodrigo N. Calheiros
@@ -39,7 +39,7 @@ public class HostSimple extends HostAbstract {
     /// The ID is automatically assigned when a List of Hosts is attached
     /// to a [Datacenter].
     ///
-    /// @param capacity the number of PEs (CPU cores) of the Host and the MIPS capacity of each PE
+    /// @param capacity the number of CPU cores of the Host and the MIPS capacity of each core
     ///
     /// @see ChangeableId#setId(long)
     /// @see #setRamProvisioner(ResourceProvisioner)
@@ -62,7 +62,7 @@ public class HostSimple extends HostAbstract {
     /// The ID is automatically assigned when a List of Hosts is attached
     /// to a [Datacenter].
     ///
-    /// @param capacity the number of PEs (CPU cores) of the Host and the MIPS capacity of each PE
+    /// @param capacity the number of CPU cores of the Host and the MIPS capacity of each core
     /// @param activate true to power the Host on, false to power off (see [#setStartupDelay(double)])
     ///
     /// @see ChangeableId#setId(long)
@@ -82,7 +82,7 @@ public class HostSimple extends HostAbstract {
     /// @param ramProvisioner the ram provisioner with capacity in Megabytes
     /// @param bwProvisioner the bw provisioner with capacity in Megabits/s
     /// @param storage the storage capacity in Megabytes
-    /// @param capacity the number of PEs (CPU cores) of the Host and the MIPS capacity of each PE
+    /// @param capacity the number of CPU cores of the Host and the MIPS capacity of each core
     ///
     /// @see #setVmScheduler(VmScheduler)
     /// @see #setStartupDelay(double)
@@ -104,7 +104,7 @@ public class HostSimple extends HostAbstract {
     /// @param ram the RAM capacity in Megabytes
     /// @param bw the Bandwidth (BW) capacity in Megabits/s
     /// @param storage the storage capacity in Megabytes
-    /// @param capacity the number of PEs (CPU cores) of the Host and the MIPS capacity of each PE
+    /// @param capacity the number of CPU cores of the Host and the MIPS capacity of each core
     ///
     /// @see HostSimple#HostSimple(long, long, HarddriveStorage, CoreCapacity)
     /// @see ChangeableId#setId(long)
@@ -125,7 +125,7 @@ public class HostSimple extends HostAbstract {
     /// @param ram the RAM capacity in Megabytes
     /// @param bw the Bandwidth (BW) capacity in Megabits/s
     /// @param storage the storage device for the Host
-    /// @param capacity the number of PEs (CPU cores) of the Host and the MIPS capacity of each PE
+    /// @param capacity the number of CPU cores of the Host and the MIPS capacity of each core
     ///
     /// @see HostSimple#HostSimple(long, long, long, CoreCapacity)
     /// @see ChangeableId#setId(long)
@@ -148,7 +148,7 @@ public class HostSimple extends HostAbstract {
     /// @param ram the RAM capacity in Megabytes
     /// @param bw the Bandwidth (BW) capacity in Megabits/s
     /// @param storage the storage capacity in Megabytes
-    /// @param capacity the number of PEs (CPU cores) of the Host and the MIPS capacity of each PE
+    /// @param capacity the number of CPU cores of the Host and the MIPS capacity of each core
     /// @param activate true to power the Host on, false to power off (see [#setStartupDelay(double)])
     ///
     /// @see ChangeableId#setId(long)

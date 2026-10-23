@@ -56,18 +56,18 @@ public abstract class ResourceManageableAbstract extends ResourceAbstract implem
 
     @Override
     public boolean addCapacity(final long capacityToAdd) {
-        MathUtil.nonNegative(capacityToAdd, "Number of PEs to add");
+        MathUtil.nonNegative(capacityToAdd, "Number of CPU cores to add");
         return setCapacity(getCapacity()+capacityToAdd);
     }
 
     @Override
     public boolean removeCapacity(final long capacityToRemove) {
-        MathUtil.nonNegative(capacityToRemove, "Number of PEs to remove");
+        MathUtil.nonNegative(capacityToRemove, "Number of CPU cores to remove");
 
         if(capacityToRemove > this.getCapacity()){
             throw new IllegalStateException(
-                "The number of PEs to remove cannot be higher than the number of existing PEs. "+
-                "Requested to remove: " + capacityToRemove + " PEs. Existing: " + this.getCapacity() + " PEs.");
+                "The number of CPU cores to remove cannot be higher than the number of existing CPU cores. "+
+                "Requested to remove: " + capacityToRemove + " CPU cores. Existing: " + this.getCapacity() + " CPU cores.");
         }
         return setCapacity(getCapacity()-capacityToRemove);
     }

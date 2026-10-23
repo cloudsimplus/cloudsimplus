@@ -53,7 +53,7 @@ public abstract non-sealed class VmSchedulerAbstract implements VmScheduler {
     public final boolean isSuitableForVm(@NonNull final Vm vm, @NonNull final CoreCapacity requestedMips) {
         if(requestedMips.isEmpty()){
             LOGGER.warn(
-                "{}: {}: It was requested an empty list of PEs for {} in {}",
+                "{}: {}: It was requested an empty list of CPU cores for {} in {}",
                 host.getSimulation().clockStr(), getClass().getSimpleName(), vm, host);
             return false;
         }
@@ -88,10 +88,10 @@ public abstract non-sealed class VmSchedulerAbstract implements VmScheduler {
         return false;
     }
 
-    /// Sets the status of physical PEs from a Host used by a given VM to BUSY.
-    /// The number of Host PEs changed is equal to the number of PEs required by the VM,
-    /// limited to the number of free PEs.
-    /// @param vm the VM to set the status of its used physical PEs
+    /// Sets the status of physical cores from a Host used by a given VM to BUSY.
+    /// The number of Host cores changed is equal to the number of CPU cores required by the VM,
+    /// limited to the number of free cores.
+    /// @param vm the VM to set the status of its used physical cores
     private void updateHostPesStatusToBusy(final Vm vm) {
         moveHostCores(CoreStatus.FREE, CoreStatus.BUSY, vm.getPesNumber());
     }
@@ -114,38 +114,38 @@ public abstract non-sealed class VmSchedulerAbstract implements VmScheduler {
     }
 
     @Override
-    public void deallocatePesFromVm(final Vm vm, final int pesToRemove) {
-        if(pesToRemove <= 0 || vm.getPesNumber() == 0){
+    public void deallocatePesFromVm(final Vm vm, final int coresToRemove) {
+        if(coresToRemove <= 0 || vm.getPesNumber() == 0){
             return;
         }
 
-        final long removedPes = deallocatePesFromVmInternal(vm, pesToRemove);
-        updateHostUsedPesToFree(removedPes);
+        final long removedCores = deallocatePesFromVmInternal(vm, coresToRemove);
+        updateHostUsedPesToFree(removedCores);
     }
 
-    /// Sets the status of physical PEs used by a destroyed VM to FREE.
+    /// Sets the status of physical cores used by a destroyed VM to FREE.
     /// That works for any kind of scheduler, such as time- and space-shared one.
-    /// @param removedPes number of PEs actually removed from the destroyed VM
-    private void updateHostUsedPesToFree(final long removedPes) {
-        moveHostCores(CoreStatus.BUSY, CoreStatus.FREE, removedPes);
+    /// @param removedCores number of CPU cores actually removed from the destroyed VM
+    private void updateHostUsedPesToFree(final long removedCores) {
+        moveHostCores(CoreStatus.BUSY, CoreStatus.FREE, removedCores);
     }
 
-    /// Tries to remove a given number of PEs allocated to a VM
-    /// @param vm the VM to remove PEs
-    /// @param mipsShare the VM MIPS share where to remove PEs from
-    /// @param mipsShareSetter a function that stores the new MIPS share (without the removed PEs) into the VM
-    /// @param pesToRemove the number of PEs to remove
-    /// @return the number of actual removed PEs
+    /// Tries to remove a given number of CPU cores allocated to a VM
+    /// @param vm the VM to remove cores
+    /// @param mipsShare the VM MIPS share where to remove cores from
+    /// @param mipsShareSetter a function that stores the new MIPS share (without the removed cores) into the VM
+    /// @param coresToRemove the number of CPU cores to remove
+    /// @return the number of actual removed cores
     protected final long removePesFromVm(
         final Vm vm, final CoreCapacity mipsShare,
-        final Consumer<CoreCapacity> mipsShareSetter, final long pesToRemove)
+        final Consumer<CoreCapacity> mipsShareSetter, final long coresToRemove)
     {
-        final CoreCapacity newMipsShare = mipsShare.withoutCores(Math.min(vm.getPesNumber(), pesToRemove));
+        final CoreCapacity newMipsShare = mipsShare.withoutCores(Math.min(vm.getPesNumber(), coresToRemove));
         mipsShareSetter.accept(newMipsShare);
         return mipsShare.cores() - newMipsShare.cores();
     }
 
-    protected abstract long deallocatePesFromVmInternal(Vm vm, int pesToRemove);
+    protected abstract long deallocatePesFromVmInternal(Vm vm, int coresToRemove);
 
     @Override
     public CoreCapacity getAllocatedMips(@NonNull final Vm vm) {
@@ -162,16 +162,16 @@ public abstract non-sealed class VmSchedulerAbstract implements VmScheduler {
     }
 
     /// Gets an adjusted MIPS share requested by a VM, reducing every MIPS which is higher
-    /// than the [capacity of each physical PE][#getPeCapacity()] to that value.
+    /// than the [capacity of each physical core][#getPeCapacity()] to that value.
     ///
     /// @param vm the VM to get the MIPS requested
     /// @param mipsShareRequested the VM requested MIPS share
     /// @return a new VM requested MIPS share with adjusted MIPS capacity
     protected CoreCapacity getMipsShareRequestedReduced(final Vm vm, final CoreCapacity mipsShareRequested){
-        final double peMips = getPeCapacity();
-        final long requestedPes = mipsShareRequested.cores();
+        final double coreMips = getPeCapacity();
+        final long requestedCores = mipsShareRequested.cores();
         final double requestedMips = mipsShareRequested.mips();
-        return new CoreCapacity(requestedPes, Math.min(requestedMips, peMips)* mipsPercentToRequest(vm));
+        return new CoreCapacity(requestedCores, Math.min(requestedMips, coreMips)* mipsPercentToRequest(vm));
     }
 
     @Override
@@ -179,7 +179,7 @@ public abstract non-sealed class VmSchedulerAbstract implements VmScheduler {
         return getAllocatedMips(vm).totalMips();
     }
 
-    /// @return the MIPS capacity of each Host PE, or 0 if all PEs have failed.
+    /// @return the MIPS capacity of each Host core, or 0 if all cores have failed.
     public long getPeCapacity() {
         return host.getProcessor().getWorkingCores() == 0 ? 0 : (long) host.getMips();
     }
@@ -201,7 +201,7 @@ public abstract non-sealed class VmSchedulerAbstract implements VmScheduler {
         return host.getTotalMipsCapacity() - allocatedMips;
     }
 
-    /// Gets the sum of MIPS requested by each VM PE, including
+    /// Gets the sum of MIPS requested by each VM core, including
     /// the CPU overhead if the VM is migration into this Host.
     ///
     /// For instance, consider the migration overhead is 10% and
@@ -211,7 +211,7 @@ public abstract non-sealed class VmSchedulerAbstract implements VmScheduler {
     /// used by the Host (900 by the VM and 100 by the migration overhead).
     ///
     /// @param vm the VM to get the requested MIPS sum
-    /// @return the actual requested MIPS sum across all VM PEs,
+    /// @return the actual requested MIPS sum across all VM cores,
     /// including the CPU overhead of the VM is in migration to this Host
     private double actualVmTotalRequestedMips(final VmSimple vm) {
         final double totalVmRequestedMips = vm.getAllocatedMips().totalMips();

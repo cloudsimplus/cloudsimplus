@@ -49,7 +49,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 /// after all previously submitted VMs were created, is retried when it can't be placed,
 /// instead of being moved to the failed list right away.
 ///
-/// The first VM uses all Host PEs, so the second one can only be placed after the
+/// The first VM uses all Host cores, so the second one can only be placed after the
 /// first one finishes and is destroyed.
 ///
 /// @see <a href="https://github.com/cloudsimplus/cloudsimplus/issues/579">Issue #579</a>

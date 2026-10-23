@@ -76,7 +76,7 @@ public sealed interface Vm
     /// @return the cloudlet scheduler
     CloudletScheduler getCloudletScheduler();
 
-    /// Gets the current number of free PEs.
+    /// Gets the current number of free cores.
     ///
     /// @return the current free pes number
     long getFreePesNumber();
@@ -93,7 +93,7 @@ public sealed interface Vm
     /// @return the current requested bw
     long getCurrentRequestedBw();
 
-    /// Gets a  **copy** list of current requested MIPS of each virtual [Pe],
+    /// Gets a  **copy** list of current requested MIPS of each virtual core,
     /// avoiding the original list to be changed.
     ///
     /// @return the current requested MIPS of each Pe
@@ -104,7 +104,7 @@ public sealed interface Vm
     long getCurrentRequestedRam();
 
     /// Gets the current requested total MIPS. It is the sum of MIPS capacity
-    /// requested for every virtual [Pe].
+    /// requested for every virtual core.
     ///
     /// @return the current requested total MIPS
     /// @see #getCurrentRequestedMips()
@@ -332,13 +332,13 @@ public sealed interface Vm
     /// @return the relative VM CPU usage percent (from 0 to 1)
     double getExpectedHostCpuUtilization(double vmCpuUtilizationPercent);
 
-    /// Gets the current total CPU MIPS utilization of all PEs from all cloudlets running on this VM.
+    /// Gets the current total CPU MIPS utilization of all cores from all cloudlets running on this VM.
     ///
     /// @return total CPU utilization in MIPS
     /// @see #getCpuPercentUtilization(double)
     double getTotalCpuMipsUtilization();
 
-    /// Gets the total CPU MIPS utilization of all PEs from all cloudlets running on this VM at the
+    /// Gets the total CPU MIPS utilization of all cores from all cloudlets running on this VM at the
     /// given time.
     ///
     /// @param time the time to get the utilization
@@ -490,12 +490,12 @@ public sealed interface Vm
     /// Each VM must have its own VerticalVmScaling objects or none at all.
     Vm setBwVerticalScaling(VerticalVmScaling bwVerticalScaling) throws IllegalArgumentException;
 
-    /// Sets a [VerticalVmScaling] that will check if the Vm's [Pe] is under or overloaded,
+    /// Sets a [VerticalVmScaling] that will check if the Vm's core is under or overloaded,
     /// based on some conditions defined by [Predicate]s given to the VerticalVmScaling,
     /// and then request the Pe up or down scaling.
     ///
-    /// The Pe scaling is performed by adding or removing PEs to/from the VM.
-    /// Added PEs will have the same MIPS than the already existing ones.
+    /// The Pe scaling is performed by adding or removing cores to/from the VM.
+    /// Added cores will have the same MIPS than the already existing ones.
     ///
     /// @param peVerticalScaling the VerticalVmScaling to set
     /// @return
@@ -515,14 +515,14 @@ public sealed interface Vm
     /// @return
     VerticalVmScaling getBwVerticalScaling();
 
-    /// Gets a [VerticalVmScaling] that will check if the Vm's [Pe] is overloaded,
+    /// Gets a [VerticalVmScaling] that will check if the Vm's core is overloaded,
     /// based on some conditions defined by a [Predicate] given
     /// to the VerticalVmScaling, and then request the RAM up scaling.
     /// @return
     VerticalVmScaling getPeVerticalScaling();
 
     /// Gets the [Processor] of this VM. It is its Virtual CPU
-    /// which may be compounded of multiple [Pe]s.
+    /// which may be compounded of multiple cores.
     /// @return
     Processor getProcessor();
 
@@ -589,7 +589,7 @@ public sealed interface Vm
     Vm setBootModel(BootModel model);
 
     /// {@return the CPU cap that limits the MIPS the VM can request from its Host}
-    /// By default, it's [CpuCap#NONE], so the VM can use the full MIPS of all its PEs.
+    /// By default, it's [CpuCap#NONE], so the VM can use the full MIPS of all its cores.
     /// @see #setCpuCap(CpuCap)
     CpuCap getCpuCap();
 

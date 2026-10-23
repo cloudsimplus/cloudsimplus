@@ -65,7 +65,7 @@ public class ResourceProvisionerSimple extends ResourceProvisionerAbstract {
 
     /// Pe resources are not stored in the VM resource List.
     /// Only the provisioner keeps track of Pe allocation for a VM.
-    /// @return true if this provisioner manages a [Pe], false otherwise
+    /// @return true if this provisioner manages a core, false otherwise
     private boolean isPeProvisioner() {
         return getPmResource().isSubClassOf(Pe.class);
     }

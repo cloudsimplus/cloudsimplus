@@ -46,10 +46,10 @@ final class CloudletSchedulerSpaceSharedTestUtil {
         return instance;
     }
 
-    /// Creates a scheduler with a list of running cloudlets, where each Cloudlet has just one PE.
+    /// Creates a scheduler with a list of running cloudlets, where each Cloudlet has just one core.
     ///
-    /// @param mips the MIPS capacity of each PE from the VM's scheduler
-    /// @param numberOfVmPes number of PEs of the VM's scheduler
+    /// @param mips the MIPS capacity of each core from the VM's scheduler
+    /// @param numberOfVmPes number of CPU cores of the VM's scheduler
     /// @param numberOfCloudlets number of Cloudlets to create
     /// @return the new scheduler
     /* default */ static CloudletSchedulerSpaceShared newSchedulerWithSingleCoreRunningCloudlets(long mips, int numberOfVmPes, int numberOfCloudlets) {
@@ -57,10 +57,10 @@ final class CloudletSchedulerSpaceSharedTestUtil {
     }
 
     /// Creates a scheduler with a list of running cloudlets.
-    /// @param mips the MIPS capacity of each PE from the VM's scheduler
-    /// @param numberOfVmPes number of PEs of the VM's scheduler
+    /// @param mips the MIPS capacity of each core from the VM's scheduler
+    /// @param numberOfVmPes number of CPU cores of the VM's scheduler
     /// @param numberOfCloudlets number of Cloudlets to create
-    /// @param numberOfCloudletPes the number of PEs for each Cloudlet
+    /// @param numberOfCloudletPes the number of CPU cores for each Cloudlet
     /// @return the new scheduler
     /* default */ static CloudletSchedulerSpaceShared newSchedulerWithRunningCloudlets(long mips, int numberOfVmPes, int numberOfCloudlets, int numberOfCloudletPes) {
         final CloudletSchedulerSpaceShared instance = createCloudletSchedulerWithMipsList(numberOfVmPes, mips);

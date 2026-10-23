@@ -91,8 +91,8 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
     @Setter
     protected String description;
 
-    /// The expected number of free PEs, estimated by the broker when it maps Cloudlets to the VM.
-    /// It's different from the [number of free PEs][#getFreePesNumber()], which
+    /// The expected number of free cores, estimated by the broker when it maps Cloudlets to the VM.
+    /// It's different from the [number of free cores][#getFreePesNumber()], which
     /// considers only Cloudlets already running.
     /// @see #getExpectedFreePesNumber()
     protected long expectedFreePesNumber;
@@ -123,7 +123,7 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
     private VmResourceStats cpuUtilizationStats;
 
     /// A copy constructor that creates a VM based on the configuration of another one.
-    /// The created VM will have the same MIPS capacity, number of PEs,
+    /// The created VM will have the same MIPS capacity, number of CPU cores,
     /// BW, RAM and size of the given VM, but a default [CloudletScheduler] and no [DatacenterBroker].
     /// @param sourceVm the VM to be cloned
     public VmAbstract(final Vm sourceVm) {
@@ -288,39 +288,39 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
         return nextSimulationDelay - decimals < 0 ? nextSimulationDelay : nextSimulationDelay - decimals;
     }
 
-    /// {@return the number of PEs not used by running Cloudlets}
+    /// {@return the number of CPU cores not used by running Cloudlets}
     /// It's the number of free cores of the VM [Processor].
     @Override
     public long getFreePesNumber() {
         return processor.getAvailableResource();
     }
 
-    /// Frees all PEs of this VM.
+    /// Frees all cores of this VM.
     public void freeAllPes() {
         processor.deallocateAllResources();
     }
 
-    /// Adds a given number of expected free PEs to the total number of expected free PEs.
+    /// Adds a given number of expected free cores to the total number of expected free cores.
     /// This value is updated as cloudlets are assigned to VMs but not submitted to the broker for running yet.
     ///
-    /// @param pesToAdd the number of expected free PEs to add
-    public Vm addExpectedFreePesNumber(final long pesToAdd) {
-        return setExpectedFreePesNumber(expectedFreePesNumber + pesToAdd);
+    /// @param coresToAdd the number of expected free cores to add
+    public Vm addExpectedFreePesNumber(final long coresToAdd) {
+        return setExpectedFreePesNumber(expectedFreePesNumber + coresToAdd);
     }
 
-    /// Adds a given number of expected free PEs to the total number of expected free PEs.
+    /// Adds a given number of expected free cores to the total number of expected free cores.
     /// This value is updated as cloudlets are assigned to VMs but not submitted to the broker for running yet.
     ///
-    /// @param pesToRemove the number of expected free PEs to remove
-    public Vm removeExpectedFreePesNumber(final long pesToRemove) {
-        return setExpectedFreePesNumber(expectedFreePesNumber - pesToRemove);
+    /// @param coresToRemove the number of expected free cores to remove
+    public Vm removeExpectedFreePesNumber(final long coresToRemove) {
+        return setExpectedFreePesNumber(expectedFreePesNumber - coresToRemove);
     }
 
-    /// Sets the expected free PEs number before the VM starts executing.
+    /// Sets the expected number of free cores before the VM starts executing.
     ///
-    /// @param expectedFreePes the expected free PEs number to set
-    private Vm setExpectedFreePesNumber(final long expectedFreePes) {
-        this.expectedFreePesNumber = Math.clamp(expectedFreePes, 0, getPesNumber());
+    /// @param expectedFreeCores the expected number of free cores to set
+    private Vm setExpectedFreePesNumber(final long expectedFreeCores) {
+        this.expectedFreePesNumber = Math.clamp(expectedFreeCores, 0, getPesNumber());
         return this;
     }
 
@@ -433,10 +433,10 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
         return processor.getMips();
     }
 
-    /// Sets the individual MIPS capacity of any VM's PE, considering that all
-    /// PEs have the same capacity.
+    /// Sets the individual MIPS capacity of any VM's core, considering that all
+    /// cores have the same capacity.
     ///
-    /// @param mips the new mips for every VM's PE
+    /// @param mips the new mips for every VM's core
     protected final void setMips(final double mips) {
         processor.setMips(mips);
     }
@@ -446,8 +446,8 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
         return processor.getCapacity();
     }
 
-    protected void setPesNumber(final long pesNumber) {
-        processor.setCapacity(pesNumber);
+    protected void setPesNumber(final long cores) {
+        processor.setCapacity(cores);
     }
 
     /// Sets a new [Ram] resource for the Vm.
