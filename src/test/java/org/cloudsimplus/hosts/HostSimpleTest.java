@@ -112,7 +112,7 @@ public class HostSimpleTest {
             () -> assertEquals(PES, host.getPesNumber()),
             () -> assertEquals(MIPS, host.getMips()),
             () -> assertEquals(PES * MIPS, host.getTotalMipsCapacity()),
-            () -> assertEquals(PES, host.getProcessor().getFreeCoresNumber())
+            () -> assertEquals(PES, host.getProcessor().getFreeCores())
         );
     }
 
@@ -150,17 +150,17 @@ public class HostSimpleTest {
 
         host.setFailed(true);
         assertAll(
-            () -> assertEquals(pesNumber, host.getProcessor().getFailedCoresNumber()),
-            () -> assertEquals(0, host.getProcessor().getWorkingCoresNumber()),
-            () -> assertEquals(0, host.getProcessor().getBusyCoresNumber()),
+            () -> assertEquals(pesNumber, host.getProcessor().getFailedCores()),
+            () -> assertEquals(0, host.getProcessor().getWorkingCores()),
+            () -> assertEquals(0, host.getProcessor().getBusyCores()),
             () -> assertEquals(0, host.getTotalMipsCapacity())
         );
 
         host.setFailed(false);
         assertAll(
-            () -> assertEquals(0, host.getProcessor().getFailedCoresNumber()),
-            () -> assertEquals(pesNumber, host.getProcessor().getFreeCoresNumber()),
-            () -> assertEquals(pesNumber, host.getProcessor().getWorkingCoresNumber())
+            () -> assertEquals(0, host.getProcessor().getFailedCores()),
+            () -> assertEquals(pesNumber, host.getProcessor().getFreeCores()),
+            () -> assertEquals(pesNumber, host.getProcessor().getWorkingCores())
         );
     }
 
@@ -485,7 +485,7 @@ public class HostSimpleTest {
     public void testGetNumberOfFreePes() {
         final int pesNumber = 2;
         final Host host = createHostSimple(0, pesNumber);
-        assertEquals(pesNumber, host.getProcessor().getFreeCoresNumber());
+        assertEquals(pesNumber, host.getProcessor().getFreeCores());
     }
 
     @Test
@@ -494,8 +494,8 @@ public class HostSimpleTest {
         final HostSimple host = createHostSimple(0, pesNumber);
         host.getProcessor().moveCores(CoreStatus.FREE, CoreStatus.BUSY, 1);
         assertAll(
-            () -> assertEquals(1, host.getProcessor().getFreeCoresNumber()),
-            () -> assertEquals(1, host.getProcessor().getBusyCoresNumber())
+            () -> assertEquals(1, host.getProcessor().getFreeCores()),
+            () -> assertEquals(1, host.getProcessor().getBusyCores())
         );
     }
 
@@ -553,9 +553,9 @@ public class HostSimpleTest {
         final HostSimple host = createHostSimple(0, pesNumber);
         host.getProcessor().moveCores(CoreStatus.FREE, CoreStatus.FAILED, 1);
         assertAll(
-            () -> assertEquals(1, host.getProcessor().getFreeCoresNumber()),
-            () -> assertEquals(1, host.getProcessor().getWorkingCoresNumber()),
-            () -> assertEquals(1, host.getProcessor().getFailedCoresNumber())
+            () -> assertEquals(1, host.getProcessor().getFreeCores()),
+            () -> assertEquals(1, host.getProcessor().getWorkingCores()),
+            () -> assertEquals(1, host.getProcessor().getFailedCores())
         );
     }
 
@@ -565,7 +565,7 @@ public class HostSimpleTest {
         final HostSimple host = createHostSimple(0, pesNumber);
 
         host.getProcessor().moveCores(CoreStatus.FREE, CoreStatus.BUSY, pesNumber);
-        assertEquals(0, host.getProcessor().getFreeCoresNumber());
+        assertEquals(0, host.getProcessor().getFreeCores());
     }
 
     @Test

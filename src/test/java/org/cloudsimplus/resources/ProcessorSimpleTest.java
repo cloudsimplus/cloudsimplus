@@ -73,9 +73,9 @@ public class ProcessorSimpleTest {
         final Processor instance = createDefaultProcessor();
         assertAll(
             () -> assertEquals(NUMBER_OF_PES, instance.getCapacity()),
-            () -> assertEquals(NUMBER_OF_PES, instance.getCoresNumber(CoreStatus.FREE)),
-            () -> assertEquals(0, instance.getCoresNumber(CoreStatus.BUSY)),
-            () -> assertEquals(0, instance.getCoresNumber(CoreStatus.FAILED))
+            () -> assertEquals(NUMBER_OF_PES, instance.getCores(CoreStatus.FREE)),
+            () -> assertEquals(0, instance.getCores(CoreStatus.BUSY)),
+            () -> assertEquals(0, instance.getCores(CoreStatus.FAILED))
         );
     }
 
@@ -95,7 +95,7 @@ public class ProcessorSimpleTest {
         assertAll(
             () -> assertFalse(instance.setCapacity(2)),
             () -> assertTrue(instance.setCapacity(3)),
-            () -> assertEquals(0, instance.getCoresNumber(CoreStatus.FREE))
+            () -> assertEquals(0, instance.getCores(CoreStatus.FREE))
         );
     }
 
@@ -119,12 +119,12 @@ public class ProcessorSimpleTest {
         assertTrue(instance.allocateResource(3));
         assertAll(
             () -> assertEquals(3, instance.getAllocatedResource()),
-            () -> assertEquals(3, instance.getCoresNumber(CoreStatus.BUSY)),
+            () -> assertEquals(3, instance.getCores(CoreStatus.BUSY)),
             () -> assertEquals(1, instance.getAvailableResource())
         );
 
         assertTrue(instance.deallocateResource(2));
-        assertEquals(1, instance.getCoresNumber(CoreStatus.BUSY));
+        assertEquals(1, instance.getCores(CoreStatus.BUSY));
     }
 
     @Test
@@ -135,7 +135,7 @@ public class ProcessorSimpleTest {
             () -> assertFalse(instance.allocateResource(2)),
             () -> assertTrue(instance.allocateResource(1)),
             () -> assertEquals(1, instance.getAllocatedResource()),
-            () -> assertEquals(1, instance.getWorkingCoresNumber())
+            () -> assertEquals(1, instance.getWorkingCores())
         );
     }
 
@@ -147,9 +147,9 @@ public class ProcessorSimpleTest {
 
         assertEquals(2, instance.deallocateAllResources());
         assertAll(
-            () -> assertEquals(0, instance.getCoresNumber(CoreStatus.BUSY)),
-            () -> assertEquals(3, instance.getCoresNumber(CoreStatus.FREE)),
-            () -> assertEquals(1, instance.getCoresNumber(CoreStatus.FAILED))
+            () -> assertEquals(0, instance.getCores(CoreStatus.BUSY)),
+            () -> assertEquals(3, instance.getCores(CoreStatus.FREE)),
+            () -> assertEquals(1, instance.getCores(CoreStatus.FAILED))
         );
     }
 
@@ -162,7 +162,7 @@ public class ProcessorSimpleTest {
             () -> assertFalse(instance.moveCores(CoreStatus.FREE, CoreStatus.FREE, 1)),
             () -> assertFalse(instance.moveCores(CoreStatus.BUSY, CoreStatus.FREE, 1)),
             () -> assertFalse(instance.moveCores(CoreStatus.FREE, CoreStatus.BUSY, NUMBER_OF_PES + 1)),
-            () -> assertEquals(NUMBER_OF_PES, instance.getCoresNumber(CoreStatus.FREE))
+            () -> assertEquals(NUMBER_OF_PES, instance.getCores(CoreStatus.FREE))
         );
     }
 
@@ -190,17 +190,17 @@ public class ProcessorSimpleTest {
             moveAndCheck(instance, CoreStatus.FREE, other);
         }
 
-        final long cores = instance.getCoresNumber(status);
+        final long cores = instance.getCores(status);
         moveAndCheck(instance, other, status);
-        assertEquals(cores + 1, instance.getCoresNumber(status));
+        assertEquals(cores + 1, instance.getCores(status));
 
         moveAndCheck(instance, status, other);
-        assertEquals(cores, instance.getCoresNumber(status));
+        assertEquals(cores, instance.getCores(status));
     }
 
     private static void moveAndCheck(final Processor instance, final CoreStatus from, final CoreStatus to) {
         assertTrue(instance.moveCores(from, to, 1), "Unable to move a core from %s to %s".formatted(from, to));
-        final long total = Arrays.stream(CoreStatus.values()).mapToLong(instance::getCoresNumber).sum();
+        final long total = Arrays.stream(CoreStatus.values()).mapToLong(instance::getCores).sum();
         assertEquals(instance.getCapacity(), total);
     }
 

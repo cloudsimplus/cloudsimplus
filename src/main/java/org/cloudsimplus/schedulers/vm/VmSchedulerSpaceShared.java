@@ -44,7 +44,7 @@ public class VmSchedulerSpaceShared extends VmSchedulerAbstract {
 
     @Override
     protected boolean isSuitableForVmInternal(final Vm vm, final MipsShare requestedMips) {
-        return getHost().getProcessor().getFreeCoresNumber() >= requestedMips.pes() && isPeCapacityEnough(requestedMips);
+        return getHost().getProcessor().getFreeCores() >= requestedMips.pes() && isPeCapacityEnough(requestedMips);
     }
 
     /// Checks if each Host PE has enough MIPS capacity for each PE requested by a VM.

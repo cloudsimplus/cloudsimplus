@@ -35,7 +35,7 @@ final class ProcessorNull implements Processor {
     @Override public double getMips() { return 0; }
     @Override public void setMips(double newMips) {/**/}
     @Override public double getTotalMips() { return 0; }
-    @Override public long getCoresNumber(CoreStatus status) { return 0; }
+    @Override public long getCores(CoreStatus status) { return 0; }
     @Override public boolean moveCores(CoreStatus from, CoreStatus to, long cores) { return false; }
     @Override public boolean setCapacity(long newCapacity) { return false; }
     @Override public boolean sumCapacity(long amountToSum) { return false; }

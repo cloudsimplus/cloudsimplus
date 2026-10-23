@@ -82,9 +82,9 @@ class HostFaultInjectionTest {
             processor.moveCores(CoreStatus.FREE, CoreStatus.BUSY, HOST_PES / 2);
 
             createFaultInjection(host, seed).generateHostFault(host, failures);
-            assertEquals(failures, processor.getFailedCoresNumber());
+            assertEquals(failures, processor.getFailedCores());
             assertEquals(HOST_PES, sumCores(processor));
-            return HOST_PES / 2 - processor.getCoresNumber(CoreStatus.BUSY);
+            return HOST_PES / 2 - processor.getCores(CoreStatus.BUSY);
         }).toList();
 
         final long distinctResults = busyFailures.stream().distinct().count();
@@ -93,16 +93,16 @@ class HostFaultInjectionTest {
 
     private static void assertCoreCounts(final Processor processor, final long free, final long busy, final long failed) {
         assertAll(
-            () -> assertEquals(free, processor.getCoresNumber(CoreStatus.FREE), "free"),
-            () -> assertEquals(busy, processor.getCoresNumber(CoreStatus.BUSY), "busy"),
-            () -> assertEquals(failed, processor.getCoresNumber(CoreStatus.FAILED), "failed")
+            () -> assertEquals(free, processor.getCores(CoreStatus.FREE), "free"),
+            () -> assertEquals(busy, processor.getCores(CoreStatus.BUSY), "busy"),
+            () -> assertEquals(failed, processor.getCores(CoreStatus.FAILED), "failed")
         );
     }
 
     private static long sumCores(final Processor processor) {
         long sum = 0;
         for (final CoreStatus status : CoreStatus.values()) {
-            sum += processor.getCoresNumber(status);
+            sum += processor.getCores(status);
         }
 
         return sum;

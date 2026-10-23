@@ -44,23 +44,23 @@ public final class ProcessorSimple extends ResourceManageableAbstract implements
     @Getter
     private double mips;
 
-    /// @see #getFailedCoresNumber()
+    /// @see #getFailedCores()
     private long failedCores;
 
     /// Instantiates a Processor for a given Machine.
     ///
     /// @param machine the [Machine] to which the processor will belong to
-    /// @param coresNumber number of cores (the processor [capacity][#getCapacity()])
+    /// @param cores number of cores (the processor [capacity][#getCapacity()])
     /// @param coreMips MIPS of each core
-    public ProcessorSimple(@NonNull final Machine<?> machine, final long coresNumber, final double coreMips) {
-        super(coresNumber, "Unit");
+    public ProcessorSimple(@NonNull final Machine<?> machine, final long cores, final double coreMips) {
+        super(cores, "Unit");
         this.machine = machine;
         setMips(coreMips);
     }
 
     @Override
     public double getTotalMips() {
-        return getMips() * getWorkingCoresNumber();
+        return getMips() * getWorkingCores();
     }
 
     @Override
@@ -69,7 +69,7 @@ public final class ProcessorSimple extends ResourceManageableAbstract implements
     }
 
     @Override
-    public long getFailedCoresNumber() {
+    public long getFailedCores() {
         return failedCores;
     }
 
@@ -80,31 +80,31 @@ public final class ProcessorSimple extends ResourceManageableAbstract implements
     }
 
     /// Sets the number of cores of the Processor.
-    /// @param coresNumber the number of cores to set
+    /// @param cores the number of cores to set
     /// @return true if the capacity was set;
     ///         false if it's lower than the number of busy and failed cores
     @Override
-    public boolean setCapacity(final long coresNumber) {
-        if(coresNumber <= 0){
+    public boolean setCapacity(final long cores) {
+        if(cores <= 0){
             throw new IllegalArgumentException("The Processor's number of cores must be greater than 0.");
         }
 
-        if(coresNumber < getAllocatedResource() + failedCores) {
+        if(cores < getAllocatedResource() + failedCores) {
             return false;
         }
 
-        return super.setCapacity(coresNumber);
+        return super.setCapacity(cores);
     }
 
     @Override
     public long deallocateAllResources() {
         final long previousAllocated = getAllocatedResource();
-        setAvailableResource(getWorkingCoresNumber());
+        setAvailableResource(getWorkingCores());
         return previousAllocated;
     }
 
     @Override
-    public long getCoresNumber(@NonNull final CoreStatus status) {
+    public long getCores(@NonNull final CoreStatus status) {
         return switch (status) {
             case FREE -> getAvailableResource();
             case BUSY -> getAllocatedResource();
@@ -114,7 +114,7 @@ public final class ProcessorSimple extends ResourceManageableAbstract implements
 
     @Override
     public boolean moveCores(@NonNull final CoreStatus from, @NonNull final CoreStatus to, final long cores) {
-        if(cores <= 0 || from == to || getCoresNumber(from) < cores) {
+        if(cores <= 0 || from == to || getCores(from) < cores) {
             return false;
         }
 

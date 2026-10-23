@@ -156,7 +156,7 @@ public class VmSchedulerTimeSharedTest {
         vmScheduler.allocatePesForVm(vm, new MipsShare(VM_PES, MIPS));
         vmScheduler.deallocatePesFromVm(vm, 2);
         final int expectedBusyPes = 2;
-        assertEquals(expectedBusyPes, host.getProcessor().getBusyCoresNumber());
+        assertEquals(expectedBusyPes, host.getProcessor().getBusyCores());
     }
 
     @Test
@@ -170,7 +170,7 @@ public class VmSchedulerTimeSharedTest {
         vmScheduler.allocatePesForVm(vm0, new MipsShare(VM_PES, MIPS));
         vmScheduler.deallocatePesFromVm(vm0);
         final int expectedBusyPes = 0;
-        assertEquals(expectedBusyPes, vmScheduler.getHost().getProcessor().getBusyCoresNumber());
+        assertEquals(expectedBusyPes, vmScheduler.getHost().getProcessor().getBusyCores());
     }
 
     @Test
@@ -184,7 +184,7 @@ public class VmSchedulerTimeSharedTest {
         vmScheduler.allocatePesForVm(vm0, new MipsShare(VM_PES, MIPS));
         vmScheduler.deallocatePesFromVm(vm0, VM_PES);
         final int expectedBusyPes = 0;
-        assertEquals(expectedBusyPes, vmScheduler.getHost().getProcessor().getBusyCoresNumber());
+        assertEquals(expectedBusyPes, vmScheduler.getHost().getProcessor().getBusyCores());
     }
 
     @Test
@@ -208,6 +208,6 @@ public class VmSchedulerTimeSharedTest {
         vmScheduler.deallocatePesFromVm(vm0, HOST_PES);
         //Since only the PEs for vm0 were deallocated, the PEs from vm1 have to be busy yet
         final long expectedBusyPes = vm1.getPesNumber();
-        assertEquals(expectedBusyPes, host.getProcessor().getBusyCoresNumber(), "Number of busy Host PEs:");
+        assertEquals(expectedBusyPes, host.getProcessor().getBusyCores(), "Number of busy Host PEs:");
     }
 }

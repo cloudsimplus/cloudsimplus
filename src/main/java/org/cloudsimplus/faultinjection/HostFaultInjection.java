@@ -263,7 +263,7 @@ public class HostFaultInjection extends CloudSimEntity {
     /// Generates a fault for all PEs of a Host.
     /// @param host the Host to generate the fault to.
     public void generateHostFault(final Host host){
-        generateHostFault(host, host.getProcessor().getWorkingCoresNumber());
+        generateHostFault(host, host.getProcessor().getWorkingCores());
     }
 
     /// Generates a fault for a given number of random PEs of a Host.
@@ -279,9 +279,9 @@ public class HostFaultInjection extends CloudSimEntity {
         hostFaultsNumber++;
         registerHostFaultTime();
 
-        final long previousWorkingPes = lastFailedHost.getProcessor().getWorkingCoresNumber();
+        final long previousWorkingPes = lastFailedHost.getProcessor().getWorkingCores();
         this.lastFailedPesNumber = generateHostPesFaults(pesFailures);
-        final long hostWorkingPes = lastFailedHost.getProcessor().getWorkingCoresNumber();
+        final long hostWorkingPes = lastFailedHost.getProcessor().getWorkingCores();
         final long vmsRequiredPes = getWorkingVmsPesCount();
 
         final String msg = lastFailedHost.getVmList().isEmpty() ? "" : " | VMs required PEs: " + vmsRequiredPes;
@@ -360,8 +360,8 @@ public class HostFaultInjection extends CloudSimEntity {
                 "{}: {}: Number of failed PEs in Host {} is smaller than working ones required by all VMs, not affecting any VM.{}" +
                 "\t  Total PEs: {} | Total Failed PEs: {} | Working PEs: {} | Current PEs required by VMs: {}.",
                 getSimulation().clockStr(), getClass().getSimpleName(), lastFailedHost.getId(), System.lineSeparator(),
-                lastFailedHost.getPesNumber(), lastFailedHost.getProcessor().getFailedCoresNumber(),
-                lastFailedHost.getProcessor().getWorkingCoresNumber(), vmsRequiredPes);
+                lastFailedHost.getPesNumber(), lastFailedHost.getProcessor().getFailedCores(),
+                lastFailedHost.getProcessor().getWorkingCores(), vmsRequiredPes);
     }
 
     /// De-allocates the physical PEs failed for the
@@ -408,7 +408,7 @@ public class HostFaultInjection extends CloudSimEntity {
 
     /// @return the number of failed PEs to remove from VMs.
     private long failedPesToRemoveFromVms() {
-        final long hostWorkingPes = lastFailedHost.getProcessor().getWorkingCoresNumber();
+        final long hostWorkingPes = lastFailedHost.getProcessor().getWorkingCores();
         final long vmsRequiredPes = getWorkingVmsPesCount();
         return vmsRequiredPes - hostWorkingPes;
     }
@@ -700,7 +700,7 @@ public class HostFaultInjection extends CloudSimEntity {
     ///         which is the given number limited to the number of working PEs
     private long generateHostPesFaults(final long pesFailures) {
         final Processor processor = lastFailedHost.getProcessor();
-        final long failures = Math.min(pesFailures, processor.getWorkingCoresNumber());
+        final long failures = Math.min(pesFailures, processor.getWorkingCores());
         final long busyFailures = randomBusyPesToFail(processor, failures);
 
         processor.moveCores(CoreStatus.BUSY, CoreStatus.FAILED, busyFailures);
@@ -717,8 +717,8 @@ public class HostFaultInjection extends CloudSimEntity {
     /// @param failures the number of working PEs to fail
     /// @return the number of busy PEs to fail (the remaining ones are free PEs)
     private long randomBusyPesToFail(final Processor processor, final long failures) {
-        long busyPes = processor.getCoresNumber(CoreStatus.BUSY);
-        long workingPes = processor.getWorkingCoresNumber();
+        long busyPes = processor.getCores(CoreStatus.BUSY);
+        long workingPes = processor.getWorkingCores();
         // If all working PEs have the same status, there is nothing to draw
         if (busyPes == 0 || busyPes == workingPes) {
             return Math.min(busyPes, failures);
@@ -753,7 +753,7 @@ public class HostFaultInjection extends CloudSimEntity {
         /* The random generator return values from [0 to 1]
          and multiplying by the number of PEs we get a number between
          0 and the number of PEs. */
-        return (long) (random.sample() * host.getProcessor().getWorkingCoresNumber()) + 1;
+        return (long) (random.sample() * host.getProcessor().getWorkingCores()) + 1;
     }
 
     /// Sets the datacenter in which failures will be injected.

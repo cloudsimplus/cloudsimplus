@@ -62,26 +62,26 @@ public sealed interface Processor extends ResourceManageable permits ProcessorSi
 
     /// @param status the status to get the number of cores
     /// @return the number of cores in a given status.
-    long getCoresNumber(CoreStatus status);
+    long getCores(CoreStatus status);
 
     /// @return the number of [free][CoreStatus#FREE] cores, which can be allocated.
-    default long getFreeCoresNumber() {
-        return getCoresNumber(CoreStatus.FREE);
+    default long getFreeCores() {
+        return getCores(CoreStatus.FREE);
     }
 
     /// @return the number of [busy][CoreStatus#BUSY] cores.
-    default long getBusyCoresNumber() {
-        return getCoresNumber(CoreStatus.BUSY);
+    default long getBusyCores() {
+        return getCores(CoreStatus.BUSY);
     }
 
     /// @return the number of working (non-failed) cores.
-    default long getWorkingCoresNumber() {
-        return getCapacity() - getCoresNumber(CoreStatus.FAILED);
+    default long getWorkingCores() {
+        return getCapacity() - getCores(CoreStatus.FAILED);
     }
 
     /// @return the number of failed cores.
-    default long getFailedCoresNumber() {
-        return getCoresNumber(CoreStatus.FAILED);
+    default long getFailedCores() {
+        return getCores(CoreStatus.FAILED);
     }
 
     /// Moves a given number of cores from one status to another.

@@ -102,7 +102,7 @@ public abstract non-sealed class VmSchedulerAbstract implements VmScheduler {
     /// @param cores the number of cores to move
     private void moveHostCores(final CoreStatus from, final CoreStatus to, final long cores) {
         final var processor = host.getProcessor();
-        processor.moveCores(from, to, Math.min(cores, processor.getCoresNumber(from)));
+        processor.moveCores(from, to, Math.min(cores, processor.getCores(from)));
     }
 
     protected abstract boolean allocatePesForVmInternal(Vm vm, MipsShare mipsShareRequested);
@@ -174,7 +174,7 @@ public abstract non-sealed class VmSchedulerAbstract implements VmScheduler {
 
     /// @return the MIPS capacity of each Host PE, or 0 if all PEs have failed.
     public long getPeCapacity() {
-        return host.getProcessor().getWorkingCoresNumber() == 0 ? 0 : (long) host.getMips();
+        return host.getProcessor().getWorkingCores() == 0 ? 0 : (long) host.getMips();
     }
 
     @Override

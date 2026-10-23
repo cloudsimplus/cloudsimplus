@@ -856,14 +856,14 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
 
     /// Sets all working PEs as failed.
     private void failAllPes() {
-        processor.moveCores(CoreStatus.BUSY, CoreStatus.FAILED, processor.getCoresNumber(CoreStatus.BUSY));
-        processor.moveCores(CoreStatus.FREE, CoreStatus.FAILED, processor.getCoresNumber(CoreStatus.FREE));
+        processor.moveCores(CoreStatus.BUSY, CoreStatus.FAILED, processor.getCores(CoreStatus.BUSY));
+        processor.moveCores(CoreStatus.FREE, CoreStatus.FAILED, processor.getCores(CoreStatus.FREE));
     }
 
     /// Sets all PEs as free, including failed and busy ones.
     private void recoverAllPes() {
-        processor.moveCores(CoreStatus.FAILED, CoreStatus.FREE, processor.getCoresNumber(CoreStatus.FAILED));
-        processor.moveCores(CoreStatus.BUSY, CoreStatus.FREE, processor.getCoresNumber(CoreStatus.BUSY));
+        processor.moveCores(CoreStatus.FAILED, CoreStatus.FREE, processor.getCores(CoreStatus.FAILED));
+        processor.moveCores(CoreStatus.BUSY, CoreStatus.FREE, processor.getCores(CoreStatus.BUSY));
     }
 
     @Override
@@ -932,7 +932,7 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
 
     @Override
     public double getBusyPesPercent() {
-        return processor.getBusyCoresNumber() / (double) getPesNumber();
+        return processor.getBusyCores() / (double) getPesNumber();
     }
 
     @Override

@@ -44,7 +44,7 @@ public class HostTest {
             () -> assertEquals(0, instance.getAvailableStorage()),
             () -> assertEquals(0, instance.getBw().getCapacity()),
             () -> assertEquals(ResourceProvisioner.NULL, instance.getBwProvisioner()),
-            () -> assertEquals(0, instance.getProcessor().getFreeCoresNumber()),
+            () -> assertEquals(0, instance.getProcessor().getFreeCores()),
             () -> assertEquals(0, instance.getPesNumber()),
             () -> assertEquals(0, instance.getRam().getCapacity()),
             () -> assertEquals(ResourceProvisioner.NULL, instance.getRamProvisioner()),
