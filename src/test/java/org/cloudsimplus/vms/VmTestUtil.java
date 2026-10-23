@@ -23,6 +23,7 @@
  */
 package org.cloudsimplus.vms;
 
+import org.cloudsimplus.resources.CoreCapacity;
 import org.cloudsimplus.brokers.DatacenterBroker;
 import org.cloudsimplus.brokers.DatacenterBrokerSimple;
 import org.cloudsimplus.core.CloudSimPlus;
@@ -111,7 +112,7 @@ public final class VmTestUtil {
         final long ram, final long bw, final long storage, CloudSimPlus cloudsim)
     {
         final DatacenterBroker broker = new DatacenterBrokerSimple(cloudsim);
-        final VmSimple vm = new VmSimple(vmId, mips, pesNumber);
+        final VmSimple vm = new VmSimple(vmId, new CoreCapacity(pesNumber, mips));
         vm.setRam(ram).setBw(bw)
                 .setSize(storage)
                 .setCloudletScheduler(CloudletScheduler.NULL)
@@ -150,7 +151,7 @@ public final class VmTestUtil {
         });
 
         final DatacenterBroker broker = MocksHelper.createMockBroker(cloudsim, brokerMockerConsumer);
-        final VmSimple vm = new VmSimple(vmId, mips, pesNumber);
+        final VmSimple vm = new VmSimple(vmId, new CoreCapacity(pesNumber, mips));
         vm.setRam(ram).setBw(bw)
            .setSize(storage)
            .setCloudletScheduler(scheduler)

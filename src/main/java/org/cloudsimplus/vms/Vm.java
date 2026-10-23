@@ -19,7 +19,7 @@ import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.listeners.VmDatacenterEventInfo;
 import org.cloudsimplus.listeners.VmHostEventInfo;
 import org.cloudsimplus.resources.*;
-import org.cloudsimplus.schedulers.MipsShare;
+import org.cloudsimplus.resources.CoreCapacity;
 import org.cloudsimplus.schedulers.cloudlet.CloudletScheduler;
 import org.cloudsimplus.utilizationmodels.BootModel;
 import org.slf4j.Logger;
@@ -97,7 +97,7 @@ public sealed interface Vm
     /// avoiding the original list to be changed.
     ///
     /// @return the current requested MIPS of each Pe
-    MipsShare getCurrentRequestedMips();
+    CoreCapacity getCurrentRequestedMips();
 
     /// Gets the current requested ram (in Megabytes).
     /// @return
@@ -159,7 +159,7 @@ public sealed interface Vm
     ///
     /// @param listener the listener to add
     /// @return
-    /// @see #updateProcessing(double, MipsShare)
+    /// @see #updateProcessing(double, CoreCapacity)
     Vm addOnCreationFailureListener(EventListener<VmDatacenterEventInfo> listener);
 
     /// Adds a listener object that will be notified every time when
@@ -167,7 +167,7 @@ public sealed interface Vm
     ///
     /// @param listener the listener to add
     /// @return
-    /// @see #updateProcessing(double, MipsShare)
+    /// @see #updateProcessing(double, CoreCapacity)
     Vm addOnUpdateProcessingListener(EventListener<VmHostEventInfo> listener);
 
     /// Notifies all registered listeners when a [Host] is allocated to the [Vm].
@@ -403,7 +403,7 @@ public sealed interface Vm
     /// @return the predicted completion time of the earliest finishing cloudlet
     /// (which is a relative delay from the current simulation time),
     /// or [Double#MAX_VALUE] if there is no next Cloudlet to execute
-    double updateProcessing(double currentTime, MipsShare mipsShare);
+    double updateProcessing(double currentTime, CoreCapacity mipsShare);
 
     /// Updates the processing of cloudlets running on this VM at the current simulation time.
     ///
@@ -411,7 +411,7 @@ public sealed interface Vm
     /// @return the predicted completion time of the earliest finishing cloudlet
     /// (which is a relative delay from the current simulation time),
     /// or [Double#MAX_VALUE] if there is no next Cloudlet to execute
-    double updateProcessing(MipsShare mipsShare);
+    double updateProcessing(CoreCapacity mipsShare);
 
     /// Sets the Cloudlet scheduler the Vm uses to schedule cloudlets execution.
     /// It also sets the Vm itself to the given scheduler.

@@ -7,7 +7,7 @@
 package org.cloudsimplus.schedulers.vm;
 
 import org.cloudsimplus.hosts.Host;
-import org.cloudsimplus.schedulers.MipsShare;
+import org.cloudsimplus.resources.CoreCapacity;
 import org.cloudsimplus.vms.Vm;
 import org.cloudsimplus.vms.VmSimple;
 
@@ -62,7 +62,7 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
     }
 
     @Override
-    public boolean allocatePesForVmInternal(final Vm vm, final MipsShare requestedMips) {
+    public boolean allocatePesForVmInternal(final Vm vm, final CoreCapacity requestedMips) {
         return allocateMipsShareForVmInternal(vm, requestedMips);
     }
 
@@ -72,7 +72,7 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
     /// @param vm the VM to allocate MIPS to
     /// @param requestedMips the MIPS share requested by the VM
     /// @return true if successful, false otherwise
-    private boolean allocateMipsShareForVmInternal(final Vm vm, final MipsShare requestedMips) {
+    private boolean allocateMipsShareForVmInternal(final Vm vm, final CoreCapacity requestedMips) {
         if (!isSuitableForVm(vm, requestedMips)) {
             return false;
         }
@@ -87,20 +87,20 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
     ///
     /// @param vm the VM to allocate MIPS to
     /// @param requestedMipsReduced the MIPS share to allocate to the VM,
-    /// after it being adjusted by the [VmSchedulerAbstract#getMipsShareRequestedReduced(Vm,MipsShare)] method.
-    /// @see VmSchedulerAbstract#getMipsShareRequestedReduced(Vm, MipsShare)
-    protected void allocateMipsShareForVm(final Vm vm, final MipsShare requestedMipsReduced) {
+    /// after it being adjusted by the [VmSchedulerAbstract#getMipsShareRequestedReduced(Vm,CoreCapacity)] method.
+    /// @see VmSchedulerAbstract#getMipsShareRequestedReduced(Vm, CoreCapacity)
+    protected void allocateMipsShareForVm(final Vm vm, final CoreCapacity requestedMipsReduced) {
         final var mipsShare = getMipsShareToAllocate(vm, requestedMipsReduced);
         ((VmSimple)vm).setAllocatedMips(mipsShare);
     }
 
-    /// The non-emptiness of the list is ensured by the [VmScheduler#isSuitableForVm(Vm,MipsShare)] method.
+    /// The non-emptiness of the list is ensured by the [VmScheduler#isSuitableForVm(Vm,CoreCapacity)] method.
     @Override
-    protected boolean isSuitableForVmInternal(final Vm vm, final MipsShare requestedMips) {
+    protected boolean isSuitableForVmInternal(final Vm vm, final CoreCapacity requestedMips) {
         final double totalRequestedMips = requestedMips.totalMips();
 
         // This scheduler does not allow over-subscription of PEs' MIPS
-        return getHost().getProcessor().getWorkingCores() >= requestedMips.pes() && getTotalAvailableMips() >= totalRequestedMips;
+        return getHost().getProcessor().getWorkingCores() >= requestedMips.cores() && getTotalAvailableMips() >= totalRequestedMips;
     }
 
     /// Gets the actual MIPS share that will be allocated to VM's PEs,
@@ -111,7 +111,7 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
     /// @param vm the VM requesting allocation of MIPS
     /// @param requestedMips the MIPS share requested for each vPE
     /// @return the allocated MIPS share to the VM
-    protected MipsShare getMipsShareToAllocate(final Vm vm, final MipsShare requestedMips) {
+    protected CoreCapacity getMipsShareToAllocate(final Vm vm, final CoreCapacity requestedMips) {
         return getMipsShareToAllocate(requestedMips, mipsPercentToRequest(vm));
     }
 
@@ -124,18 +124,19 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
     /// @param scalingFactor the factor that will be used to reduce the amount of MIPS
     /// allocated to each vPE (which is a percentage value between \[0..1\]) in case the VM is in migration
     /// @return the MIPS share allocated to the VM
-    protected MipsShare getMipsShareToAllocate(final MipsShare requestedMips, final double scalingFactor) {
+    protected CoreCapacity getMipsShareToAllocate(final CoreCapacity requestedMips, final double scalingFactor) {
         if(scalingFactor == 1){
             return requestedMips;
         }
 
-        return new MipsShare(requestedMips.pes(), requestedMips.mips()*scalingFactor);
+        return new CoreCapacity(requestedMips.cores(), requestedMips.mips()*scalingFactor);
     }
 
     @Override
     protected long deallocatePesFromVmInternal(final Vm vm, final int pesToRemove) {
+        final var vmSimple = (VmSimple) vm;
         return Math.max(
-            removePesFromVm(vm, ((VmSimple)vm).getRequestedMips(), pesToRemove),
-            removePesFromVm(vm, ((VmSimple)vm).getAllocatedMips(), pesToRemove));
+            removePesFromVm(vm, vmSimple.getRequestedMips(), vmSimple::setRequestedMips, pesToRemove),
+            removePesFromVm(vm, vmSimple.getAllocatedMips(), vmSimple::setAllocatedMips, pesToRemove));
     }
 }

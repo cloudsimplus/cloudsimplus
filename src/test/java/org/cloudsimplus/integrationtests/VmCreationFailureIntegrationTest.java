@@ -23,6 +23,7 @@
  */
 package org.cloudsimplus.integrationtests;
 
+import org.cloudsimplus.resources.CoreCapacity;
 import ch.qos.logback.classic.Level;
 import org.cloudsimplus.brokers.DatacenterBroker;
 import org.cloudsimplus.builders.BrokerBuilderDecorator;
@@ -204,8 +205,8 @@ public final class VmCreationFailureIntegrationTest {
                 .createAndSubmit(2);
     }
 
-    private Vm createVm(final double mips, final long pes) {
-        return new VmSimple(mips, pes)
+    private Vm createVm(final CoreCapacity capacity) {
+        return new VmSimple(capacity)
                         .setRam(HostSimple.getDefaultRamCapacity())
                         .setBw(HostSimple.getDefaultBwCapacity())
                         .setSize(HostSimple.getDefaultStorageCapacity());

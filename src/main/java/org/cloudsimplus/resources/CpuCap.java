@@ -43,9 +43,8 @@ public sealed interface CpuCap permits CpuCapNone {
     /// A cap that doesn't limit the CPU: the machine can use the full MIPS of all its cores.
     CpuCap NONE = new CpuCapNone();
 
-    /// Gets the MIPS each core of a machine can use, according to this cap.
-    /// @param cores the number of cores of the machine
-    /// @param coreMips the MIPS capacity of each core
-    /// @return the MIPS each core can use (from 0 to `coreMips`)
-    double limitCoreMips(long cores, double coreMips);
+    /// Gets the MIPS each core of a processor can use, according to this cap.
+    /// @param processor the processor to get its number of cores and MIPS of each core
+    /// @return the MIPS each core can use (from 0 to the processor [MIPS][Processor#getMips()])
+    double limitCoreMips(Processor processor);
 }

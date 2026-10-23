@@ -25,7 +25,7 @@ package org.cloudsimplus.schedulers.cloudlet;
 
 import org.cloudsimplus.cloudlets.Cloudlet;
 import org.cloudsimplus.cloudlets.CloudletTestUtil;
-import org.cloudsimplus.schedulers.MipsShare;
+import org.cloudsimplus.resources.CoreCapacity;
 import org.cloudsimplus.vms.Vm;
 import org.cloudsimplus.vms.VmSimple;
 
@@ -42,7 +42,7 @@ final class CloudletSchedulerSpaceSharedTestUtil {
 
     private static CloudletSchedulerSpaceShared createCloudletSchedulerWithMipsList(int pes, long mips) {
         final CloudletSchedulerSpaceShared instance = createScheduler(mips, pes);
-        instance.setCurrentMipsShare(new MipsShare(pes, mips));
+        instance.setCurrentMipsShare(new CoreCapacity(pes, mips));
         return instance;
     }
 
@@ -83,13 +83,13 @@ final class CloudletSchedulerSpaceSharedTestUtil {
     }
 
     private static CloudletSchedulerSpaceShared createScheduler(final long mips, final int pes) {
-        return createScheduler(new VmSimple(mips, pes));
+        return createScheduler(new VmSimple(new CoreCapacity(pes, mips)));
     }
 
     /* default */ static CloudletSchedulerSpaceShared createScheduler(final Vm vm) {
         final CloudletSchedulerSpaceShared scheduler = new CloudletSchedulerSpaceShared();
         scheduler.setVm(vm);
-        scheduler.setCurrentMipsShare(new MipsShare(vm.getProcessor()));
+        scheduler.setCurrentMipsShare(CoreCapacity.of(vm.getProcessor()));
         return scheduler;
     }
 }

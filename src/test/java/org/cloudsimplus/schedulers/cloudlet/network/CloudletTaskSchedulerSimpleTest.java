@@ -23,6 +23,7 @@
  */
 package org.cloudsimplus.schedulers.cloudlet.network;
 
+import org.cloudsimplus.resources.CoreCapacity;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;
@@ -387,7 +388,7 @@ class CloudletTaskSchedulerSimpleTest {
     }
 
     private NetworkVm createVm(final int id) {
-        final var vm = new NetworkVm(id, MIPS, HOST_PES);
+        final var vm = new NetworkVm(id, new CoreCapacity(HOST_PES, MIPS));
         vm.setRam(RAM / 2).setBw(BW / 2).setSize(STORAGE / 2)
           .setCloudletScheduler(new CloudletSchedulerTimeShared());
         return vm;

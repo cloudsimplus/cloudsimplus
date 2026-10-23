@@ -33,10 +33,11 @@ import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.listeners.HostUpdatesVmsProcessingEventInfo;
 import org.cloudsimplus.provisioners.ResourceProvisionerSimple;
 import org.cloudsimplus.schedulers.vm.VmScheduler;
+import org.cloudsimplus.resources.CoreCapacity;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import org.jspecify.annotations.Nullable;
 
@@ -57,9 +58,9 @@ public class HostBuilder implements Builder {
     /// The list of all created Hosts
     @Getter private final List<Host> hosts;
 
-    /// A [BiFunction] used to create Hosts.
-    /// It receives the number of PEs and the MIPS capacity of each PE for the Host it will create.
-    @Setter @NonNull private BiFunction<Long, Double, Host> hostCreationFunction;
+    /// A [Function] used to create Hosts.
+    /// It receives the number of cores and the MIPS capacity of each core for the Host it will create.
+    @Setter @NonNull private Function<CoreCapacity, Host> hostCreationFunction;
     @Setter @NonNull private EventListener<HostUpdatesVmsProcessingEventInfo> onUpdateVmsProcessingListener = EventListener.NULL;
     @Setter @Nullable private Supplier<VmScheduler> vmSchedulerSupplier;
 
@@ -83,7 +84,7 @@ public class HostBuilder implements Builder {
         validateAmount(amount);
 
         for (int i = 0; i < amount; i++) {
-            final var host = hostCreationFunction.apply((long) pes, mips);
+            final var host = hostCreationFunction.apply(new CoreCapacity(pes, mips));
             if(vmSchedulerSupplier != null) {
                 host.setVmScheduler(vmSchedulerSupplier.get());
             }
@@ -94,8 +95,8 @@ public class HostBuilder implements Builder {
         return this;
     }
 
-    private Host defaultHostCreationFunction(final long pesNumber, final double peMips) {
-        return new HostSimple(pesNumber, peMips)
+    private Host defaultHostCreationFunction(final CoreCapacity capacity) {
+        return new HostSimple(capacity)
             .setRamProvisioner(new ResourceProvisionerSimple())
             .setBwProvisioner(new ResourceProvisionerSimple())
             .addOnUpdateProcessingListener(onUpdateVmsProcessingListener);

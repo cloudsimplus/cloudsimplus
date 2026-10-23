@@ -20,7 +20,7 @@ import org.cloudsimplus.mocks.MocksHelper;
 import org.cloudsimplus.provisioners.PeProvisionerSimple;
 import org.cloudsimplus.provisioners.ResourceProvisionerSimple;
 import org.cloudsimplus.resources.*;
-import org.cloudsimplus.schedulers.MipsShare;
+import org.cloudsimplus.resources.CoreCapacity;
 import org.cloudsimplus.schedulers.cloudlet.CloudletScheduler;
 import org.cloudsimplus.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudsimplus.schedulers.vm.VmScheduler;
@@ -80,7 +80,7 @@ public class HostSimpleTest {
         final double mips, final long ram,
         final long bw, final long storage, final boolean activate)
     {
-        final HostSimple host = new HostSimple(ram, bw, storage, pesNumber, mips, activate);
+        final HostSimple host = new HostSimple(ram, bw, storage, new CoreCapacity(pesNumber, mips), activate);
         host.setRamProvisioner(new ResourceProvisionerSimple())
             .setBwProvisioner(new ResourceProvisionerSimple())
             .setVmScheduler(new VmSchedulerTimeShared())
@@ -89,7 +89,7 @@ public class HostSimpleTest {
     }
 
     private static HostSimple createHostSimple(final int pesNumber, VmScheduler vmScheduler) {
-        final HostSimple host = new HostSimple(RAM, BW, STORAGE, pesNumber, MIPS);
+        final HostSimple host = new HostSimple(RAM, BW, STORAGE, new CoreCapacity(pesNumber, MIPS));
         host.setRamProvisioner(new ResourceProvisionerSimple())
             .setBwProvisioner(new ResourceProvisionerSimple())
             .setVmScheduler(vmScheduler);
@@ -132,7 +132,7 @@ public class HostSimpleTest {
 
     @Test
     public void testConstructorWithZeroPes() {
-        assertThrows(IllegalArgumentException.class, () -> new HostSimple(RAM, BW, STORAGE, 0, MIPS));
+        assertThrows(IllegalArgumentException.class, () -> new HostSimple(RAM, BW, STORAGE, new CoreCapacity(0, MIPS)));
     }
 
     @Test
@@ -199,7 +199,7 @@ public class HostSimpleTest {
     }
 
     private Vm createVm(final int pes, final double mips, final long storage) {
-        final Vm vm = new VmSimple(mips, pes);
+        final Vm vm = new VmSimple(new CoreCapacity(pes, mips));
         vm.setRam(RAM);
         vm.setBw(BW);
         vm.setSize(storage);
@@ -370,7 +370,7 @@ public class HostSimpleTest {
     public void testUpdateVmProcessing() {
         final int numberOfVms = 4;
 
-        final MipsShare mipsShare = new MipsShare(MIPS / numberOfVms);
+        final CoreCapacity mipsShare = new CoreCapacity(MIPS / numberOfVms);
         final double time = 0;
 
         final List<Vm> vmList = createListOfMockVms(numberOfVms, mipsShare, time);
@@ -391,7 +391,7 @@ public class HostSimpleTest {
     }
 
     private List<Vm> createListOfMockVms(
-        final int vmsNumber, final MipsShare mipsShare,
+        final int vmsNumber, final CoreCapacity mipsShare,
         final double simulationClock)
     {
         final List<Vm> vmList = new ArrayList<>(vmsNumber);

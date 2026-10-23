@@ -16,7 +16,7 @@ import org.cloudsimplus.listeners.VmHostEventInfo;
 import org.cloudsimplus.mocks.CloudSimMocker;
 import org.cloudsimplus.mocks.MocksHelper;
 import org.cloudsimplus.resources.CpuCap;
-import org.cloudsimplus.schedulers.MipsShare;
+import org.cloudsimplus.resources.CoreCapacity;
 import org.cloudsimplus.schedulers.cloudlet.CloudletScheduler;
 import org.cloudsimplus.schedulers.cloudlet.CloudletSchedulerAbstract;
 import org.cloudsimplus.schedulers.cloudlet.CloudletSchedulerSpaceShared;
@@ -122,9 +122,9 @@ public class VmSimpleTest {
 
     @Test
     public void testRequestedMipsWithNoCpuCapUsesFullProcessorCapacity() {
-        final MipsShare expected = new MipsShare(vm.getProcessor());
-        final MipsShare requested = vm.getCurrentRequestedMips();
-        assertEquals(expected.pes(), requested.pes());
+        final CoreCapacity expected = CoreCapacity.of(vm.getProcessor());
+        final CoreCapacity requested = vm.getCurrentRequestedMips();
+        assertEquals(expected.cores(), requested.cores());
         assertEquals(expected.mips(), requested.mips());
     }
 
@@ -366,8 +366,8 @@ public class VmSimpleTest {
 
     @Test
     public void testUpdateVmProcessing() {
-        final MipsShare mipsShare1 = new MipsShare(1.0);
-        final MipsShare mipsShare2 = new MipsShare(1.0);
+        final CoreCapacity mipsShare1 = new CoreCapacity(1.0);
+        final CoreCapacity mipsShare2 = new CoreCapacity(1.0);
         final double expectedNextCompletionTime = cloudletScheduler.updateProcessing(0, mipsShare1);
         final double actualNextCompletionTime = vm.updateProcessing(0, mipsShare2);
         assertEquals(expectedNextCompletionTime, actualNextCompletionTime);
@@ -442,7 +442,7 @@ public class VmSimpleTest {
     @Test
     public void cloudletSchedulerPassedInConstructorIsPreserved() {
         final var scheduler = new CloudletSchedulerSpaceShared();
-        final var vm = new VmSimple(1000, 2, scheduler);
+        final var vm = new VmSimple(new CoreCapacity(2, 1000), scheduler);
         assertInstanceOf(CloudletSchedulerSpaceShared.class, vm.getCloudletScheduler());
     }
 }

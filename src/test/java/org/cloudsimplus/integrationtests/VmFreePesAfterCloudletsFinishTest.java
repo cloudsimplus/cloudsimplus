@@ -23,6 +23,7 @@
  */
 package org.cloudsimplus.integrationtests;
 
+import org.cloudsimplus.resources.CoreCapacity;
 import org.cloudsimplus.brokers.DatacenterBrokerSimple;
 import org.cloudsimplus.cloudlets.CloudletSimple;
 import org.cloudsimplus.core.CloudSimPlus;
@@ -68,7 +69,7 @@ public final class VmFreePesAfterCloudletsFinishTest {
         new DatacenterSimple(simulation, List.of(host));
 
         final var broker = new DatacenterBrokerSimple(simulation);
-        vm = new VmSimple(HOST_MIPS, VM_PES);
+        vm = new VmSimple(new CoreCapacity(VM_PES, HOST_MIPS));
         vm.setRam(vmRAM).setBw(vmBW).setSize(hBW);
         broker.submitVmList(List.of(vm));
         final var cloudlet = new CloudletSimple(cloudletLength, CLOUDLET_PES);

@@ -43,7 +43,7 @@ import org.cloudsimplus.listeners.Listeners;
 import org.cloudsimplus.listeners.VmDatacenterEventInfo;
 import org.cloudsimplus.listeners.VmHostEventInfo;
 import org.cloudsimplus.resources.*;
-import org.cloudsimplus.schedulers.MipsShare;
+import org.cloudsimplus.resources.CoreCapacity;
 import org.cloudsimplus.schedulers.cloudlet.CloudletScheduler;
 import org.cloudsimplus.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudsimplus.util.MathUtil;
@@ -97,9 +97,9 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
     /// @see #getExpectedFreePesNumber()
     protected long expectedFreePesNumber;
     @Setter  @NonNull
-    protected MipsShare allocatedMips;
+    protected CoreCapacity allocatedMips;
     @Setter  @NonNull
-    protected MipsShare requestedMips;
+    protected CoreCapacity requestedMips;
     @Setter
     private String vmm;
     private Host host;
@@ -127,32 +127,32 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
     /// BW, RAM and size of the given VM, but a default [CloudletScheduler] and no [DatacenterBroker].
     /// @param sourceVm the VM to be cloned
     public VmAbstract(final Vm sourceVm) {
-        this(-1, (long)sourceVm.getMips(), sourceVm.getPesNumber());
+        this(-1, new CoreCapacity(sourceVm.getPesNumber(), sourceVm.getMips()));
         this.cpuCap = sourceVm.getCpuCap();
         this.setBw(sourceVm.getBw().getCapacity())
             .setRam(sourceVm.getRam().getCapacity())
             .setSize(sourceVm.getStorage().getCapacity());
     }
 
-    protected VmAbstract(final long id, final long mipsCapacity, final long pesNumber) {
-        this(id, mipsCapacity, pesNumber, new CloudletSchedulerTimeShared());
+    protected VmAbstract(final long id, final CoreCapacity capacity) {
+        this(id, capacity, new CloudletSchedulerTimeShared());
     }
 
     @SuppressWarnings("NullAway.Init") // fields are initialized by mutableAttributesInit()
-    protected VmAbstract(final long id, final long mipsCapacity, final long pesNumber, final CloudletScheduler cloudletScheduler) {
+    protected VmAbstract(final long id, @NonNull final CoreCapacity capacity, final CloudletScheduler cloudletScheduler) {
         super();
         setId(id);
-        this.processor = new ProcessorSimple(this, pesNumber, mipsCapacity);
+        this.processor = new ProcessorSimple(this, capacity);
         setCloudletScheduler(cloudletScheduler);
 
         this.resources = new ArrayList<>(4);
         this.bootModel = BootModel.NULL;
         this.cpuCap = CpuCap.NONE;
 
-        this.expectedFreePesNumber = pesNumber;
+        this.expectedFreePesNumber = capacity.cores();
 
-        this.allocatedMips = new MipsShare();
-        this.requestedMips = new MipsShare();
+        this.allocatedMips = CoreCapacity.NULL;
+        this.requestedMips = CoreCapacity.NULL;
         this.stateHistory = new LinkedList<>();
         mutableAttributesInit();
     }
@@ -233,12 +233,12 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
     }
 
     @Override
-    public double updateProcessing(final MipsShare mipsShare) {
+    public double updateProcessing(final CoreCapacity mipsShare) {
         return updateProcessing(getSimulation().clock(), mipsShare);
     }
 
     @Override
-    public double updateProcessing(final double currentTime, @NonNull final MipsShare mipsShare) {
+    public double updateProcessing(final double currentTime, @NonNull final CoreCapacity mipsShare) {
         if (!cloudletScheduler.isEmpty() || isStartingUp()) {
             setLastBusyTime(getSimulation().clock());
         }
@@ -249,7 +249,7 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
         return isShuttingDown() ? Double.MAX_VALUE : processing(currentTime, mipsShare);
     }
 
-    private double processing(final double currentTime, final MipsShare mipsShare) {
+    private double processing(final double currentTime, final CoreCapacity mipsShare) {
         notifyOnUpdateProcessingListeners();
         return isStartingUp() ? bootProcessing() : cloudletsProcessing(currentTime, mipsShare);
     }
@@ -264,7 +264,7 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
         return nextProcessingTime;
     }
 
-    private double cloudletsProcessing(final double currentTime, final MipsShare mipsShare) {
+    private double cloudletsProcessing(final double currentTime, final CoreCapacity mipsShare) {
         final double nextSimulationDelay = cloudletScheduler.updateProcessing(currentTime, mipsShare);
 
         cpuUtilizationStats.add(currentTime);
@@ -380,14 +380,14 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
     }
 
     @Override
-    public MipsShare getCurrentRequestedMips() {
+    public CoreCapacity getCurrentRequestedMips() {
         // TODO This method is confusing, since there is a getRequestedMips() (created with lombok)
         // See https://github.com/cloudsimplus/cloudsimplus/issues/591
         if (isCreated()) {
-            return isStartingUp() ? new MipsShare(processor, cpuCap, bootModel) : host.getVmScheduler().getRequestedMips(this);
+            return isStartingUp() ? CoreCapacity.of(processor, cpuCap, bootModel) : host.getVmScheduler().getRequestedMips(this);
         }
 
-        return new MipsShare(processor, cpuCap);
+        return CoreCapacity.of(processor, cpuCap);
     }
 
     @Override
@@ -401,7 +401,7 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
 
     @Override
     public double getTotalMipsCapacity() {
-        return cpuCap.limitCoreMips(getPesNumber(), getMips()) * getPesNumber();
+        return cpuCap.limitCoreMips(processor) * getPesNumber();
     }
 
     @Override
@@ -838,12 +838,12 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
         return this;
     }
 
-    public Vm setAllocatedMips(final MipsShare allocatedMips) {
+    public Vm setAllocatedMips(final CoreCapacity allocatedMips) {
         this.allocatedMips = allocatedMips;
         return this;
     }
 
-    public Vm setRequestedMips(final MipsShare requestedMips) {
+    public Vm setRequestedMips(final CoreCapacity requestedMips) {
         this.requestedMips = requestedMips;
         return this;
     }

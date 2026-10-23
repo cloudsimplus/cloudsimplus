@@ -23,6 +23,7 @@
  */
 package org.cloudsimplus.faultinjection;
 
+import org.cloudsimplus.resources.CoreCapacity;
 import org.cloudsimplus.core.CloudSimPlus;
 import org.cloudsimplus.datacenters.DatacenterSimple;
 import org.cloudsimplus.distributions.UniformDistr;
@@ -109,7 +110,7 @@ class HostFaultInjectionTest {
     }
 
     private static Host createHost() {
-        return new HostSimple(HOST_PES, MIPS);
+        return new HostSimple(new CoreCapacity(HOST_PES, MIPS));
     }
 
     private static HostFaultInjection createFaultInjection(final Host host, final long seed) {

@@ -11,11 +11,12 @@ import lombok.NonNull;
 import org.cloudsimplus.hosts.Host;
 import org.cloudsimplus.resources.CoreStatus;
 import org.cloudsimplus.resources.Processor;
-import org.cloudsimplus.schedulers.MipsShare;
+import org.cloudsimplus.resources.CoreCapacity;
 import org.cloudsimplus.vms.Vm;
 import org.cloudsimplus.vms.VmSimple;
 
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
@@ -49,7 +50,7 @@ public abstract non-sealed class VmSchedulerAbstract implements VmScheduler {
     }
 
     @Override
-    public final boolean isSuitableForVm(@NonNull final Vm vm, @NonNull final MipsShare requestedMips) {
+    public final boolean isSuitableForVm(@NonNull final Vm vm, @NonNull final CoreCapacity requestedMips) {
         if(requestedMips.isEmpty()){
             LOGGER.warn(
                 "{}: {}: It was requested an empty list of PEs for {} in {}",
@@ -65,20 +66,20 @@ public abstract non-sealed class VmSchedulerAbstract implements VmScheduler {
         return isSuitableForVmInternal(vm, requestedMips);
     }
 
-    protected abstract boolean isSuitableForVmInternal(Vm vm, MipsShare requestedMips);
+    protected abstract boolean isSuitableForVmInternal(Vm vm, CoreCapacity requestedMips);
 
     @Override
     public final boolean allocatePesForVm(final Vm vm) {
-        return allocatePesForVm(vm, new MipsShare(vm.getProcessor(), vm.getCpuCap()));
+        return allocatePesForVm(vm, CoreCapacity.of(vm.getProcessor(), vm.getCpuCap()));
     }
 
     @Override
-    public final boolean allocatePesForVm(@NonNull final Vm vm, @NonNull final MipsShare requestedMips) {
+    public final boolean allocatePesForVm(@NonNull final Vm vm, @NonNull final CoreCapacity requestedMips) {
         if (!vm.isInMigration() && host.getVmsMigratingOut().contains(vm)) {
             host.removeVmMigratingOut(vm);
         }
 
-        ((VmSimple)vm).setRequestedMips(new MipsShare(requestedMips));
+        ((VmSimple)vm).setRequestedMips(requestedMips);
         if(allocatePesForVmInternal(vm, requestedMips)) {
             updateHostPesStatusToBusy(vm);
             return true;
@@ -105,7 +106,7 @@ public abstract non-sealed class VmSchedulerAbstract implements VmScheduler {
         processor.moveCores(from, to, Math.min(cores, processor.getCores(from)));
     }
 
-    protected abstract boolean allocatePesForVmInternal(Vm vm, MipsShare mipsShareRequested);
+    protected abstract boolean allocatePesForVmInternal(Vm vm, CoreCapacity mipsShareRequested);
 
     @Override
     public void deallocatePesFromVm(final Vm vm) {
@@ -132,17 +133,23 @@ public abstract non-sealed class VmSchedulerAbstract implements VmScheduler {
     /// Tries to remove a given number of PEs allocated to a VM
     /// @param vm the VM to remove PEs
     /// @param mipsShare the VM MIPS share where to remove PEs from
+    /// @param mipsShareSetter a function that stores the new MIPS share (without the removed PEs) into the VM
     /// @param pesToRemove the number of PEs to remove
     /// @return the number of actual removed PEs
-    protected final long removePesFromVm(final Vm vm, final MipsShare mipsShare, final long pesToRemove) {
-        return mipsShare.remove(Math.min(vm.getPesNumber(), pesToRemove));
+    protected final long removePesFromVm(
+        final Vm vm, final CoreCapacity mipsShare,
+        final Consumer<CoreCapacity> mipsShareSetter, final long pesToRemove)
+    {
+        final CoreCapacity newMipsShare = mipsShare.withoutCores(Math.min(vm.getPesNumber(), pesToRemove));
+        mipsShareSetter.accept(newMipsShare);
+        return mipsShare.cores() - newMipsShare.cores();
     }
 
     protected abstract long deallocatePesFromVmInternal(Vm vm, int pesToRemove);
 
     @Override
-    public MipsShare getAllocatedMips(@NonNull final Vm vm) {
-        final MipsShare mipsShare = ((VmSimple)vm).getAllocatedMips();
+    public CoreCapacity getAllocatedMips(@NonNull final Vm vm) {
+        final CoreCapacity mipsShare = ((VmSimple)vm).getAllocatedMips();
 
         /*
         When a VM is migrating out the source Host, its allocated MIPS
@@ -160,11 +167,11 @@ public abstract non-sealed class VmSchedulerAbstract implements VmScheduler {
     /// @param vm the VM to get the MIPS requested
     /// @param mipsShareRequested the VM requested MIPS share
     /// @return a new VM requested MIPS share with adjusted MIPS capacity
-    protected MipsShare getMipsShareRequestedReduced(final Vm vm, final MipsShare mipsShareRequested){
+    protected CoreCapacity getMipsShareRequestedReduced(final Vm vm, final CoreCapacity mipsShareRequested){
         final double peMips = getPeCapacity();
-        final long requestedPes = mipsShareRequested.pes();
+        final long requestedPes = mipsShareRequested.cores();
         final double requestedMips = mipsShareRequested.mips();
-        return new MipsShare(requestedPes, Math.min(requestedMips, peMips)* mipsPercentToRequest(vm));
+        return new CoreCapacity(requestedPes, Math.min(requestedMips, peMips)* mipsPercentToRequest(vm));
     }
 
     @Override
@@ -178,7 +185,7 @@ public abstract non-sealed class VmSchedulerAbstract implements VmScheduler {
     }
 
     @Override
-    public MipsShare getRequestedMips(final Vm vm) {
+    public CoreCapacity getRequestedMips(final Vm vm) {
         return ((VmSimple)vm).getRequestedMips();
     }
 

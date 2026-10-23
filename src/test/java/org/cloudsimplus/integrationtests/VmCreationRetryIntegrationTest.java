@@ -23,6 +23,7 @@
  */
 package org.cloudsimplus.integrationtests;
 
+import org.cloudsimplus.resources.CoreCapacity;
 import org.cloudsimplus.brokers.DatacenterBroker;
 import org.cloudsimplus.brokers.DatacenterBrokerSimple;
 import org.cloudsimplus.cloudlets.Cloudlet;
@@ -115,7 +116,7 @@ final class VmCreationRetryIntegrationTest {
     private static List<Vm> createVms() {
         final var vmList = new ArrayList<Vm>(VMS);
         for (int i = 0; i < VMS; i++) {
-            vmList.add(new VmSimple(MIPS, VM_PES));
+            vmList.add(new VmSimple(new CoreCapacity(VM_PES, MIPS)));
         }
 
         return vmList;

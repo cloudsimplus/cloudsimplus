@@ -11,6 +11,7 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import org.cloudsimplus.resources.CoreCapacity;
 import org.cloudsimplus.brokers.DatacenterBroker;
 import org.cloudsimplus.cloudlets.network.NetworkCloudlet;
 import org.cloudsimplus.hosts.Host;
@@ -42,7 +43,7 @@ public class NetworkVm extends VmSimple {
 
     /// List of [NetworkCloudlet] of the VM.
     @NonNull
-    private List<NetworkCloudlet> cloudletList;
+    private List<NetworkCloudlet> cloudletList = new ArrayList<>();
 
     /// List of packets received by the VM.
     @NonNull
@@ -58,16 +59,14 @@ public class NetworkVm extends VmSimple {
     /// While the Vm [is not created inside a Host][#isCreated()], such values can be changed freely.
     ///
     /// @param id unique ID of the VM
-    /// @param mipsCapacity the mips capacity of each Vm [Pe]
-    /// @param pesNumber amount of [Pe] (CPU cores)
-    public NetworkVm(final int id, final long mipsCapacity, final int pesNumber) {
-        super(id, mipsCapacity, pesNumber);
-        cloudletList = new ArrayList<>();
+    /// @param capacity the number of CPU cores of the VM and the MIPS capacity of each core
+    public NetworkVm(final long id, final CoreCapacity capacity) {
+        super(id, capacity);
     }
 
     /// Creates a VM with no resources.
     private NetworkVm(){
-        this(-1, 0, 1);
+        this(-1, new CoreCapacity(1, 0));
     }
 
     /// Creates a NetworkVm with 1024 MEGA of RAM, 1000 Megabits/s of Bandwidth and 1024 MEGA of Storage Size.
@@ -77,11 +76,9 @@ public class NetworkVm extends VmSimple {
     /// It is not defined an `id` for the Vm. The `id` is defined when the Vm is submitted to
     /// a [DatacenterBroker].
     ///
-    /// @param mipsCapacity the mips capacity of each Vm [Pe]
-    /// @param pesNumber amount of [Pe] (CPU cores)
-    public NetworkVm(final long mipsCapacity, final int pesNumber) {
-        super(mipsCapacity, pesNumber);
-        cloudletList = new ArrayList<>();
+    /// @param capacity the number of CPU cores of the VM and the MIPS capacity of each core
+    public NetworkVm(final CoreCapacity capacity) {
+        super(capacity);
     }
 
     @Override

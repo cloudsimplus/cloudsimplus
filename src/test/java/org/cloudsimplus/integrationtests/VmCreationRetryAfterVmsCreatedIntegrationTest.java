@@ -23,6 +23,7 @@
  */
 package org.cloudsimplus.integrationtests;
 
+import org.cloudsimplus.resources.CoreCapacity;
 import org.cloudsimplus.brokers.DatacenterBroker;
 import org.cloudsimplus.brokers.DatacenterBrokerSimple;
 import org.cloudsimplus.cloudlets.Cloudlet;
@@ -63,8 +64,8 @@ final class VmCreationRetryAfterVmsCreatedIntegrationTest {
 
     private final CloudSimPlus simulation = new CloudSimPlus();
     private final DatacenterBroker broker = new DatacenterBrokerSimple(simulation);
-    private final Vm firstVm = new VmSimple(MIPS, VM_PES);
-    private final Vm lateVm = new VmSimple(MIPS, VM_PES);
+    private final Vm firstVm = new VmSimple(new CoreCapacity(VM_PES, MIPS));
+    private final Vm lateVm = new VmSimple(new CoreCapacity(VM_PES, MIPS));
     private boolean lateVmSubmitted;
 
     @Test

@@ -17,6 +17,7 @@ import org.cloudsimplus.hosts.HostSimple;
 import org.cloudsimplus.hosts.HostSuitability;
 import org.cloudsimplus.network.HostPacket;
 import org.cloudsimplus.network.VmPacket;
+import org.cloudsimplus.resources.CoreCapacity;
 import org.cloudsimplus.network.switches.EdgeSwitch;
 import org.cloudsimplus.resources.Pe;
 import org.cloudsimplus.schedulers.cloudlet.network.CloudletTaskScheduler;
@@ -70,13 +71,12 @@ public class NetworkHost extends HostSimple {
     /// @param ram the RAM capacity in Megabytes
     /// @param bw the Bandwidth (BW) capacity in Megabits/s
     /// @param storage the storage capacity in Megabytes
-    /// @param pesNumber the number of PEs (CPU cores) of the Host
-    /// @param mips the MIPS capacity of each PE
-    public NetworkHost(final long ram, final long bw, final long storage, final long pesNumber, final double mips) {
-        super(ram, bw, storage, pesNumber, mips);
+    /// @param capacity the number of PEs (CPU cores) of the Host and the MIPS capacity of each PE
+    public NetworkHost(final long ram, final long bw, final long storage, final CoreCapacity capacity) {
+        super(ram, bw, storage, capacity);
     }
 
-    /// @deprecated Use [#NetworkHost(long, long, long, long, double)] instead.
+    /// @deprecated Use [#NetworkHost(long, long, long, CoreCapacity)] instead.
     @Deprecated(forRemoval = true)
     public NetworkHost(final long ram, final long bw, final long storage, final List<Pe> peList) {
         super(ram, bw, storage, peList);
@@ -84,7 +84,7 @@ public class NetworkHost extends HostSimple {
 
     /// Creates a NetworkHost with no resources.
     private NetworkHost() {
-        this(0, 0, 0, 1, 0);
+        this(0, 0, 0, new CoreCapacity(1, 0));
         setId(-1);
     }
 

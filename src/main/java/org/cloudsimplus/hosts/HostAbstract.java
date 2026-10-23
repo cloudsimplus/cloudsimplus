@@ -40,7 +40,6 @@ import org.cloudsimplus.power.models.PowerModelHost;
 import org.cloudsimplus.provisioners.ResourceProvisioner;
 import org.cloudsimplus.provisioners.ResourceProvisionerSimple;
 import org.cloudsimplus.resources.*;
-import org.cloudsimplus.schedulers.MipsShare;
 import org.cloudsimplus.schedulers.vm.VmScheduler;
 import org.cloudsimplus.schedulers.vm.VmSchedulerSpaceShared;
 import org.cloudsimplus.util.BytesConversion;
@@ -51,8 +50,7 @@ import java.util.*;
 
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
-import static org.cloudsimplus.hosts.PeListConverter.mips;
-import static org.cloudsimplus.hosts.PeListConverter.pesNumber;
+import static org.cloudsimplus.hosts.PeListConverter.toCoreCapacity;
 
 /// A base class for implementing [Host]s.
 ///
@@ -175,34 +173,33 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
         final ResourceProvisioner ramProvisioner,
         final ResourceProvisioner bwProvisioner,
         final long storage,
-        final long pesNumber,
-        final double mips)
+        final CoreCapacity capacity)
     {
-        this(ramProvisioner.getCapacity(), bwProvisioner.getCapacity(), new HarddriveStorage(storage), pesNumber, mips, true);
+        this(ramProvisioner.getCapacity(), bwProvisioner.getCapacity(), new HarddriveStorage(storage), capacity, true);
         setRamProvisioner(ramProvisioner);
         setBwProvisioner(bwProvisioner);
     }
 
-    public HostAbstract(final long ram, final long bw, final long storage, final long pesNumber, final double mips) {
-        this(ram, bw, new HarddriveStorage(storage), pesNumber, mips, true);
+    public HostAbstract(final long ram, final long bw, final long storage, final CoreCapacity capacity) {
+        this(ram, bw, new HarddriveStorage(storage), capacity, true);
     }
 
     protected HostAbstract(
         final long ram, final long bw,
-        @NonNull final HarddriveStorage storage, final long pesNumber, final double mips)
+        @NonNull final HarddriveStorage storage, final CoreCapacity capacity)
     {
-        this(ram, bw, storage, pesNumber, mips, true);
+        this(ram, bw, storage, capacity, true);
     }
 
-    public HostAbstract(final long pesNumber, final double mips) {
-        this(pesNumber, mips, true);
+    public HostAbstract(final CoreCapacity capacity) {
+        this(capacity, true);
     }
 
-    public HostAbstract(final long pesNumber, final double mips, final boolean activate) {
-        this(defaultRamCapacity, defaultBwCapacity, new HarddriveStorage(defaultStorageCapacity), pesNumber, mips, activate);
+    public HostAbstract(final CoreCapacity capacity, final boolean activate) {
+        this(defaultRamCapacity, defaultBwCapacity, new HarddriveStorage(defaultStorageCapacity), capacity, activate);
     }
 
-    /// @deprecated Use [#HostAbstract(ResourceProvisioner, ResourceProvisioner, long, long, double)] instead.
+    /// @deprecated Use [#HostAbstract(ResourceProvisioner, ResourceProvisioner, long, CoreCapacity)] instead.
     @Deprecated(forRemoval = true)
     public HostAbstract(
         final ResourceProvisioner ramProvisioner,
@@ -210,48 +207,48 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
         final long storage,
         final List<Pe> peList)
     {
-        this(ramProvisioner, bwProvisioner, storage, pesNumber(peList), mips(peList));
+        this(ramProvisioner, bwProvisioner, storage, toCoreCapacity(peList));
     }
 
-    /// @deprecated Use [#HostAbstract(long, long, long, long, double)] instead.
+    /// @deprecated Use [#HostAbstract(long, long, long, CoreCapacity)] instead.
     @Deprecated(forRemoval = true)
     public HostAbstract(final long ram, final long bw, final long storage, final List<Pe> peList) {
-        this(ram, bw, storage, pesNumber(peList), mips(peList));
+        this(ram, bw, storage, toCoreCapacity(peList));
     }
 
-    /// @deprecated Use [#HostAbstract(long, long, HarddriveStorage, long, double)] instead.
+    /// @deprecated Use [#HostAbstract(long, long, HarddriveStorage, CoreCapacity)] instead.
     @Deprecated(forRemoval = true)
     protected HostAbstract(
         final long ram, final long bw,
         @NonNull final HarddriveStorage storage, final List<Pe> peList)
     {
-        this(ram, bw, storage, pesNumber(peList), mips(peList));
+        this(ram, bw, storage, toCoreCapacity(peList));
     }
 
-    /// @deprecated Use [#HostAbstract(long, double)] instead.
+    /// @deprecated Use [#HostAbstract(CoreCapacity)] instead.
     @Deprecated(forRemoval = true)
     public HostAbstract(final List<Pe> peList) {
-        this(pesNumber(peList), mips(peList));
+        this(toCoreCapacity(peList));
     }
 
-    /// @deprecated Use [#HostAbstract(long, double, boolean)] instead.
+    /// @deprecated Use [#HostAbstract(CoreCapacity, boolean)] instead.
     @Deprecated(forRemoval = true)
     public HostAbstract(final List<Pe> peList, final boolean activate) {
-        this(pesNumber(peList), mips(peList), activate);
+        this(toCoreCapacity(peList), activate);
     }
 
-    /// @deprecated Use [#HostAbstract(long, long, HarddriveStorage, long, double, boolean)] instead.
+    /// @deprecated Use [#HostAbstract(long, long, HarddriveStorage, CoreCapacity, boolean)] instead.
     @Deprecated(forRemoval = true)
     protected HostAbstract(
         final long ram, final long bw, @NonNull final HarddriveStorage storage,
         final List<Pe> peList, final boolean activate)
     {
-        this(ram, bw, storage, pesNumber(peList), mips(peList), activate);
+        this(ram, bw, storage, toCoreCapacity(peList), activate);
     }
 
     protected HostAbstract(
         final long ram, final long bw, @NonNull final HarddriveStorage storage,
-        final long pesNumber, final double mips, final boolean activate)
+        @NonNull final CoreCapacity capacity, final boolean activate)
     {
         this.setId(-1);
         this.powerModel = PowerModelHost.NULL;
@@ -269,8 +266,8 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
         this.lazySuitabilityEvaluation = true;
         this.setSimulation(Simulation.NULL);
 
-        Machine.validateCapacity(pesNumber);
-        this.processor = new ProcessorSimple(this, pesNumber, mips);
+        Machine.validateCapacity(capacity.cores());
+        this.processor = new ProcessorSimple(this, capacity);
         this.setFailed(false);
 
         this.setDatacenter(Datacenter.NULL);
@@ -708,7 +705,7 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
     ///
     /// @param vm the Vm to get the MIPS share
     /// @return an array containing the MIPS amount from each [Pe] that is available to the [Vm]
-    protected MipsShare getAllocatedMipsForVm(final Vm vm) {
+    protected CoreCapacity getAllocatedMipsForVm(final Vm vm) {
         return vmScheduler.getAllocatedMips(vm);
     }
 

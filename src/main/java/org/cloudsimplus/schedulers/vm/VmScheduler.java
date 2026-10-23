@@ -10,7 +10,7 @@ package org.cloudsimplus.schedulers.vm;
 import org.cloudsimplus.hosts.Host;
 import org.cloudsimplus.resources.Pe;
 import org.cloudsimplus.resources.Resource;
-import org.cloudsimplus.schedulers.MipsShare;
+import org.cloudsimplus.resources.CoreCapacity;
 import org.cloudsimplus.vms.Vm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,7 +54,7 @@ public sealed interface VmScheduler permits VmSchedulerAbstract, VmSchedulerNull
     /// if the total requested MIPS is available, while only the difference has
     /// to be checked. It has to be added some tests to check this issue.
     /// See https://github.com/cloudsimplus/cloudsimplus/issues/588
-    boolean allocatePesForVm(Vm vm, MipsShare requestedMips);
+    boolean allocatePesForVm(Vm vm, CoreCapacity requestedMips);
 
     /// Requests the allocation of PEs for a VM, according
     /// to the number of PEs and MIPS defined by VM attributes.
@@ -80,7 +80,7 @@ public sealed interface VmScheduler permits VmSchedulerAbstract, VmSchedulerNull
     ///
     /// @param vm the vm to get the MIPS share
     /// @return the VM allocated MIPS share
-    MipsShare getAllocatedMips(Vm vm);
+    CoreCapacity getAllocatedMips(Vm vm);
 
     /// {@return the total amount of MIPS that is currently free}
     /// If there are VMs migrating into the Host,
@@ -91,7 +91,7 @@ public sealed interface VmScheduler permits VmSchedulerAbstract, VmSchedulerNull
     /// Gets the MIPS share requested by a VM
     /// @param vm the VM to get the List of requested MIPS
     /// @return VM requested MIPS share
-    MipsShare getRequestedMips(Vm vm);
+    CoreCapacity getRequestedMips(Vm vm);
 
     /// Checks if the PM using this scheduler has enough MIPS capacity
     /// to host a given VM.
@@ -117,7 +117,7 @@ public sealed interface VmScheduler permits VmSchedulerAbstract, VmSchedulerNull
     /// @param vm the [Vm] to check if there are enough MIPS to allocate to
     /// @param requestedMips the MIPS share requested by a VM
     /// @return true if the requested MIPS share is allowed to be allocated to the VM, false otherwise
-    boolean isSuitableForVm(Vm vm, MipsShare requestedMips);
+    boolean isSuitableForVm(Vm vm, CoreCapacity requestedMips);
 
     /// {@return the actual total allocated MIPS for a VM along all its allocated PEs}
     /// If the VM is migrating into the Host, then just a fraction

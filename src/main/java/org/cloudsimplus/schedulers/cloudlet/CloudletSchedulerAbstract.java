@@ -19,7 +19,7 @@ import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.resources.Bandwidth;
 import org.cloudsimplus.resources.Ram;
 import org.cloudsimplus.resources.ResourceManageable;
-import org.cloudsimplus.schedulers.MipsShare;
+import org.cloudsimplus.resources.CoreCapacity;
 import org.cloudsimplus.schedulers.cloudlet.network.CloudletTaskScheduler;
 import org.cloudsimplus.utilizationmodels.UtilizationModel;
 import org.cloudsimplus.vms.Vm;
@@ -57,7 +57,7 @@ public abstract non-sealed class CloudletSchedulerAbstract implements CloudletSc
     /// The current MIPS capacity from the VM that will be
     /// made available to the scheduler. This MIPS share will be allocated
     /// to Cloudlets as requested.
-    private MipsShare currentMipsShare;
+    private CoreCapacity currentMipsShare;
 
     private double previousTime;
 
@@ -98,7 +98,7 @@ public abstract non-sealed class CloudletSchedulerAbstract implements CloudletSc
         cloudletFailedList = new ArrayList<>();
         cloudletWaitingList = new ArrayList<>();
         cloudletReturnedList = new HashSet<>();
-        currentMipsShare = new MipsShare();
+        currentMipsShare = CoreCapacity.NULL;
         taskScheduler = CloudletTaskScheduler.NULL;
         resourceAllocationFailListeners = new ArrayList<>();
     }
@@ -112,10 +112,10 @@ public abstract non-sealed class CloudletSchedulerAbstract implements CloudletSc
     ///
     /// @param currentMipsShare the new current MIPS share
     /// @see #getCurrentMipsShare()
-    protected void setCurrentMipsShare(@NonNull final MipsShare currentMipsShare) {
-        if(currentMipsShare.pes() > vm.getPesNumber()){
-            LOGGER.warn("Requested {} PEs but {} has just {}", currentMipsShare.pes(), vm, vm.getPesNumber());
-            this.currentMipsShare = new MipsShare(vm.getPesNumber(), currentMipsShare.mips());
+    protected void setCurrentMipsShare(@NonNull final CoreCapacity currentMipsShare) {
+        if(currentMipsShare.cores() > vm.getPesNumber()){
+            LOGGER.warn("Requested {} PEs but {} has just {}", currentMipsShare.cores(), vm, vm.getPesNumber());
+            this.currentMipsShare = new CoreCapacity(vm.getPesNumber(), currentMipsShare.mips());
         }
         else this.currentMipsShare = currentMipsShare;
     }
@@ -143,7 +143,7 @@ public abstract non-sealed class CloudletSchedulerAbstract implements CloudletSc
          * See https://github.com/cloudsimplus/cloudsimplus/issues/592
         */
         final long totalAllExecCloudletsPes = totalAllExecCloudletsPes();
-        if(totalAllExecCloudletsPes > currentMipsShare.pes()) {
+        if(totalAllExecCloudletsPes > currentMipsShare.cores()) {
             return getTotalMipsShare() / totalAllExecCloudletsPes;
         }
 
@@ -446,7 +446,7 @@ public abstract non-sealed class CloudletSchedulerAbstract implements CloudletSc
     }
 
     @Override
-    public double updateProcessing(final double currentTime, final MipsShare mipsShare) {
+    public double updateProcessing(final double currentTime, final CoreCapacity mipsShare) {
         setCurrentMipsShare(mipsShare);
 
         deallocateVmResources();
@@ -883,7 +883,7 @@ public abstract non-sealed class CloudletSchedulerAbstract implements CloudletSc
     ///
     ///
     /// This method is called internally by the
-    /// [#updateProcessing(double,MipsShare)].
+    /// [#updateProcessing(double,CoreCapacity)].
     /// @param currentTime current simulation time
     /// @return the next time to update the cloudlet processing
     /// (which is a relative delay from the current simulation time)
@@ -964,7 +964,7 @@ public abstract non-sealed class CloudletSchedulerAbstract implements CloudletSc
     /// @return the number of PEs currently not being used.
     @Override
     public long getFreePes() {
-        return currentMipsShare.pes() - getUsedPes();
+        return currentMipsShare.cores() - getUsedPes();
     }
 
     /// Adds a given number of PEs to the number of currently used PEs.
@@ -1141,8 +1141,9 @@ public abstract non-sealed class CloudletSchedulerAbstract implements CloudletSc
 
     @Override
     public void deallocatePesFromVm(final long pesToRemove) {
-        final long removedPes = currentMipsShare.remove(pesToRemove);
-        removeUsedPes(removedPes);
+        final CoreCapacity previousMipsShare = currentMipsShare;
+        currentMipsShare = previousMipsShare.withoutCores(pesToRemove);
+        removeUsedPes(previousMipsShare.cores() - currentMipsShare.cores());
     }
 
     @Override

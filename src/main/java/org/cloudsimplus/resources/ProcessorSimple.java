@@ -50,12 +50,12 @@ public final class ProcessorSimple extends ResourceManageableAbstract implements
     /// Instantiates a Processor for a given Machine.
     ///
     /// @param machine the [Machine] to which the processor will belong to
-    /// @param cores number of cores (the processor [capacity][#getCapacity()])
-    /// @param coreMips MIPS of each core
-    public ProcessorSimple(@NonNull final Machine<?> machine, final long cores, final double coreMips) {
-        super(cores, "Unit");
+    /// @param capacity the number of cores (the processor [capacity][#getCapacity()]) and the MIPS of each core.
+    ///                 Its values are copied, so the object is not kept.
+    public ProcessorSimple(@NonNull final Machine<?> machine, @NonNull final CoreCapacity capacity) {
+        super(capacity.cores(), "Unit");
         this.machine = machine;
-        setMips(coreMips);
+        setMips(capacity.mips());
     }
 
     @Override

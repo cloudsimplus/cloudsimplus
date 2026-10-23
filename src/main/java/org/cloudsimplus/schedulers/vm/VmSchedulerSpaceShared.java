@@ -8,7 +8,7 @@
 package org.cloudsimplus.schedulers.vm;
 
 import org.cloudsimplus.hosts.Host;
-import org.cloudsimplus.schedulers.MipsShare;
+import org.cloudsimplus.resources.CoreCapacity;
 import org.cloudsimplus.vms.Vm;
 import org.cloudsimplus.vms.VmSimple;
 
@@ -43,19 +43,19 @@ public class VmSchedulerSpaceShared extends VmSchedulerAbstract {
     }
 
     @Override
-    protected boolean isSuitableForVmInternal(final Vm vm, final MipsShare requestedMips) {
-        return getHost().getProcessor().getFreeCores() >= requestedMips.pes() && isPeCapacityEnough(requestedMips);
+    protected boolean isSuitableForVmInternal(final Vm vm, final CoreCapacity requestedMips) {
+        return getHost().getProcessor().getFreeCores() >= requestedMips.cores() && isPeCapacityEnough(requestedMips);
     }
 
     /// Checks if each Host PE has enough MIPS capacity for each PE requested by a VM.
     /// @param requestedMips a MIPS share requested by a VM
     /// @return true if the PE capacity is enough or no PE is requested, false otherwise
-    private boolean isPeCapacityEnough(final MipsShare requestedMips) {
-        return requestedMips.pes() == 0 || requestedMips.mips() <= getPeCapacity();
+    private boolean isPeCapacityEnough(final CoreCapacity requestedMips) {
+        return requestedMips.cores() == 0 || requestedMips.mips() <= getPeCapacity();
     }
 
     @Override
-    public boolean allocatePesForVmInternal(final Vm vm, final MipsShare requestedMips) {
+    public boolean allocatePesForVmInternal(final Vm vm, final CoreCapacity requestedMips) {
         if(!isSuitableForVmInternal(vm, requestedMips)){
             return false;
         }
@@ -66,6 +66,7 @@ public class VmSchedulerSpaceShared extends VmSchedulerAbstract {
 
     @Override
     protected long deallocatePesFromVmInternal(final Vm vm, final int pesToRemove) {
-        return removePesFromVm(vm, ((VmSimple)vm).getAllocatedMips(), pesToRemove);
+        final var vmSimple = (VmSimple) vm;
+        return removePesFromVm(vm, vmSimple.getAllocatedMips(), vmSimple::setAllocatedMips, pesToRemove);
     }
 }

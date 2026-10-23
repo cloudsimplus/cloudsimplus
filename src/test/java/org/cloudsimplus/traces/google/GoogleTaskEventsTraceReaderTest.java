@@ -23,6 +23,7 @@
  */
 package org.cloudsimplus.traces.google;
 
+import org.cloudsimplus.resources.CoreCapacity;
 import org.cloudsimplus.cloudlets.Cloudlet;
 import org.cloudsimplus.cloudlets.CloudletSimple;
 import org.cloudsimplus.core.CloudSimPlus;
@@ -74,7 +75,7 @@ public class GoogleTaskEventsTraceReaderTest {
         final var traceFile = Files.writeString(tempDir.resolve("task-events.csv"), TRACE_STARTING_AT_TIME_ZERO);
         final var reader = new GoogleTaskEventsTraceReader(simulation, traceFile.toString(), GoogleTaskEventsTraceReaderTest::createCloudlet);
         final var cloudlet = reader.process().iterator().next();
-        reader.getBrokerManager().getBrokers().forEach(broker -> broker.submitVm(new VmSimple(MIPS, PES)));
+        reader.getBrokerManager().getBrokers().forEach(broker -> broker.submitVm(new VmSimple(new CoreCapacity(PES, MIPS))));
         simulation.start();
 
         assertAll(

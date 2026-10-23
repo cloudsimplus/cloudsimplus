@@ -27,7 +27,7 @@ import org.cloudsimplus.cloudlets.Cloudlet;
 import org.cloudsimplus.cloudlets.CloudletExecution;
 import org.cloudsimplus.cloudlets.CloudletSimple;
 import org.cloudsimplus.cloudlets.CloudletTestUtil;
-import org.cloudsimplus.schedulers.MipsShare;
+import org.cloudsimplus.resources.CoreCapacity;
 import org.cloudsimplus.utilizationmodels.UtilizationModel;
 import org.cloudsimplus.utilizationmodels.UtilizationModelDynamic;
 import org.cloudsimplus.vms.VmSimple;
@@ -52,8 +52,8 @@ final class CloudletSchedulerTimeSharedTestUtil {
 
     /* default */ static CloudletSchedulerTimeShared createCloudletSchedulerWithMipsList(final int pesNumber, final long mips) {
         final CloudletSchedulerTimeShared scheduler = new CloudletSchedulerTimeShared();
-        scheduler.setVm(new VmSimple(0, mips, pesNumber));
-        scheduler.setCurrentMipsShare(new MipsShare(pesNumber, mips));
+        scheduler.setVm(new VmSimple(0, new CoreCapacity(pesNumber, mips)));
+        scheduler.setCurrentMipsShare(new CoreCapacity(pesNumber, mips));
         return scheduler;
     }
 

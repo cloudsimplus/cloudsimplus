@@ -18,7 +18,7 @@ import org.cloudsimplus.hosts.HostAbstract;
 import org.cloudsimplus.hosts.HostSuitability;
 import org.cloudsimplus.resources.Pe;
 import org.cloudsimplus.resources.Processor;
-import org.cloudsimplus.schedulers.MipsShare;
+import org.cloudsimplus.resources.CoreCapacity;
 import org.cloudsimplus.util.Conversion;
 import org.cloudsimplus.vms.Vm;
 import org.cloudsimplus.vms.VmGroup;
@@ -141,7 +141,7 @@ public non-sealed abstract class VmAllocationPolicyAbstract implements VmAllocat
     private boolean isNotHostPesSuitableToUpScaleVm(final VerticalVmScaling scaling) {
         final Vm vm = scaling.getVm();
         final long pesCountForScaling = (long)scaling.getResourceAmountToScale();
-        final MipsShare additionalVmMips = new MipsShare(pesCountForScaling, vm.getMips());
+        final CoreCapacity additionalVmMips = new CoreCapacity(pesCountForScaling, vm.getMips());
         return !vm.getHost().getVmScheduler().isSuitableForVm(vm, additionalVmMips);
     }
 

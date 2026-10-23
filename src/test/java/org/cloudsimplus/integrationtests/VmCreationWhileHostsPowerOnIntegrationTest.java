@@ -23,6 +23,7 @@
  */
 package org.cloudsimplus.integrationtests;
 
+import org.cloudsimplus.resources.CoreCapacity;
 import org.cloudsimplus.brokers.DatacenterBroker;
 import org.cloudsimplus.brokers.DatacenterBrokerSimple;
 import org.cloudsimplus.core.CloudSimPlus;
@@ -153,7 +154,7 @@ final class VmCreationWhileHostsPowerOnIntegrationTest {
     private List<Vm> createVms() {
         final var list = new ArrayList<Vm>(VMS);
         for (int i = 0; i < VMS; i++) {
-            final var vm = new VmSimple(MIPS, VM_PES);
+            final var vm = new VmSimple(new CoreCapacity(VM_PES, MIPS));
             vm.addOnCreationFailureListener(evt -> creationFailures.incrementAndGet());
             list.add(vm);
         }

@@ -23,6 +23,7 @@
  */
 package org.cloudsimplus.integrationtests;
 
+import org.cloudsimplus.resources.CoreCapacity;
 import ch.qos.logback.classic.Level;
 import org.cloudsimplus.brokers.DatacenterBroker;
 import org.cloudsimplus.brokers.DatacenterBrokerSimple;
@@ -123,7 +124,7 @@ public class CloudletLifeTimeTest {
     }
 
     private static List<Vm> createVmList() {
-        return List.of(new VmSimple(HOST_MIPS, HOST_PES));
+        return List.of(new VmSimple(new CoreCapacity(HOST_PES, HOST_MIPS)));
     }
 
     private List<Cloudlet> createCloudlets() {

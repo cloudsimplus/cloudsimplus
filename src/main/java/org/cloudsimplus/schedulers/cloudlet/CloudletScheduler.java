@@ -14,7 +14,7 @@ import org.cloudsimplus.listeners.CloudletResourceAllocationFailEventInfo;
 import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.network.VmPacket;
 import org.cloudsimplus.resources.Pe;
-import org.cloudsimplus.schedulers.MipsShare;
+import org.cloudsimplus.resources.CoreCapacity;
 import org.cloudsimplus.schedulers.cloudlet.network.CloudletTaskScheduler;
 import org.cloudsimplus.utilizationmodels.UtilizationModel;
 import org.cloudsimplus.vms.Vm;
@@ -197,7 +197,7 @@ public sealed interface CloudletScheduler
     /// @return the next time to update cloudlets processing
     /// (which is a relative delay from the current simulation time),
     /// or [Double#MAX_VALUE] if there is no next Cloudlet to execute
-    double updateProcessing(double currentTime, MipsShare mipsShare);
+    double updateProcessing(double currentTime, CoreCapacity mipsShare);
 
     /// @return the Vm that uses this scheduler.
     Vm getVm();

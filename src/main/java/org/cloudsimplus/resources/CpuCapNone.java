@@ -30,8 +30,8 @@ package org.cloudsimplus.resources;
 /// @since CloudSim Plus 9.0.0
 final class CpuCapNone implements CpuCap {
     @Override
-    public double limitCoreMips(final long cores, final double coreMips) {
-        return coreMips;
+    public double limitCoreMips(final Processor processor) {
+        return processor.getMips();
     }
 
     @Override

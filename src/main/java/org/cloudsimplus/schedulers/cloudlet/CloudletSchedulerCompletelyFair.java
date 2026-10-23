@@ -28,7 +28,7 @@ import org.cloudsimplus.cloudlets.Cloudlet;
 import org.cloudsimplus.cloudlets.CloudletExecution;
 import org.cloudsimplus.datacenters.Datacenter;
 import org.cloudsimplus.resources.Pe;
-import org.cloudsimplus.schedulers.MipsShare;
+import org.cloudsimplus.resources.CoreCapacity;
 import org.cloudsimplus.util.MathUtil;
 
 import java.io.Serial;
@@ -306,7 +306,7 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
     /// the time of the next expiring Cloudlet, enabling the preemption process),
     /// or [Double#MAX_VALUE] if there aren't next events
     @Override
-    public double updateProcessing(final double currentTime, final MipsShare mipsShare) {
+    public double updateProcessing(final double currentTime, final CoreCapacity mipsShare) {
         super.updateProcessing(currentTime, mipsShare);
         return getCloudletExecList().stream()
                 .mapToDouble(CloudletExecution::getTimeSlice)

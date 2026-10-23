@@ -27,7 +27,7 @@ import org.cloudsimplus.cloudlets.Cloudlet;
 import org.cloudsimplus.cloudlets.CloudletExecution;
 import org.cloudsimplus.listeners.CloudletResourceAllocationFailEventInfo;
 import org.cloudsimplus.listeners.EventListener;
-import org.cloudsimplus.schedulers.MipsShare;
+import org.cloudsimplus.resources.CoreCapacity;
 import org.cloudsimplus.schedulers.cloudlet.network.CloudletTaskScheduler;
 import org.cloudsimplus.vms.Vm;
 
@@ -82,7 +82,7 @@ final class CloudletSchedulerNull implements CloudletScheduler {
     @Override public boolean isThereTaskScheduler() {
         return false;
     }
-    @Override public double updateProcessing(double currentTime, MipsShare mipsShare) {
+    @Override public double updateProcessing(double currentTime, CoreCapacity mipsShare) {
         return 0.0;
     }
     @Override public Vm getVm() { return Vm.NULL; }

@@ -40,7 +40,7 @@ public class ProcessorSimpleTest {
     /// Creates a processor using the default values.
     /// @return the created processor
     private static Processor createDefaultProcessor() {
-        return new ProcessorSimple(Vm.NULL, NUMBER_OF_PES, PE_MIPS);
+        return new ProcessorSimple(Vm.NULL, new CoreCapacity(NUMBER_OF_PES, PE_MIPS));
     }
 
     @Test

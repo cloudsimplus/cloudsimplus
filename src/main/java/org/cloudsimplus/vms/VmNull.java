@@ -37,7 +37,7 @@ import org.cloudsimplus.resources.CpuCap;
 import org.cloudsimplus.resources.Processor;
 import org.cloudsimplus.resources.Resource;
 import org.cloudsimplus.resources.ResourceManageable;
-import org.cloudsimplus.schedulers.MipsShare;
+import org.cloudsimplus.resources.CoreCapacity;
 import org.cloudsimplus.schedulers.cloudlet.CloudletScheduler;
 import org.cloudsimplus.utilizationmodels.BootModel;
 
@@ -69,8 +69,8 @@ final class VmNull implements Vm {
     @Override public long getCurrentRequestedBw() {
         return 0;
     }
-    @Override public MipsShare getCurrentRequestedMips() {
-        return MipsShare.NULL;
+    @Override public CoreCapacity getCurrentRequestedMips() {
+        return CoreCapacity.NULL;
     }
     @Override public long getCurrentRequestedRam() {
         return 0;
@@ -178,8 +178,8 @@ final class VmNull implements Vm {
     @Override public Vm setSize(long size) {
         return this;
     }
-    @Override public double updateProcessing(double currentTime, MipsShare mipsShare) { return 0.0; }
-    @Override public double updateProcessing(MipsShare mipsShare) { return 0; }
+    @Override public double updateProcessing(double currentTime, CoreCapacity mipsShare) { return 0.0; }
+    @Override public double updateProcessing(CoreCapacity mipsShare) { return 0; }
     @Override public Vm setCloudletScheduler(CloudletScheduler cloudletScheduler) {
         return this;
     }

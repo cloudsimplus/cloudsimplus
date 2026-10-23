@@ -24,12 +24,13 @@
 package org.cloudsimplus.hosts;
 
 import lombok.NonNull;
+import org.cloudsimplus.resources.CoreCapacity;
 import org.cloudsimplus.resources.Pe;
 import org.cloudsimplus.resources.Processor;
 
 import java.util.List;
 
-/// Converts a deprecated [Pe] list into the number of PEs and MIPS used to create
+/// Converts a deprecated [Pe] list into the [CoreCapacity] used to create
 /// the [Processor] of a [Host].
 ///
 /// @author Manoel Campos da Silva Filho
@@ -39,20 +40,12 @@ import java.util.List;
 final class PeListConverter {
     private PeListConverter() {/**/}
 
-    /// @param peList the PE list to get the number of PEs
-    /// @return the number of PEs in the list
+    /// @param peList the PE list to convert
+    /// @return the capacity with the number of PEs in the list and the MIPS of each PE
     /// @throws IllegalArgumentException if the list is empty or the PEs have different MIPS capacities
-    static long pesNumber(@NonNull final List<Pe> peList) {
+    static CoreCapacity toCoreCapacity(@NonNull final List<Pe> peList) {
         validate(peList);
-        return peList.size();
-    }
-
-    /// @param peList the PE list to get the MIPS from
-    /// @return the MIPS capacity of each PE
-    /// @throws IllegalArgumentException if the list is empty or the PEs have different MIPS capacities
-    static double mips(@NonNull final List<Pe> peList) {
-        validate(peList);
-        return peList.getFirst().getCapacity();
+        return new CoreCapacity(peList.size(), peList.getFirst().getCapacity());
     }
 
     private static void validate(final List<Pe> peList) {

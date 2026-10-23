@@ -9,6 +9,7 @@ package org.cloudsimplus.hosts;
 import org.cloudsimplus.core.ChangeableId;
 import org.cloudsimplus.datacenters.Datacenter;
 import org.cloudsimplus.provisioners.ResourceProvisioner;
+import org.cloudsimplus.resources.CoreCapacity;
 import org.cloudsimplus.provisioners.ResourceProvisionerSimple;
 import org.cloudsimplus.resources.HarddriveStorage;
 import org.cloudsimplus.resources.Pe;
@@ -38,8 +39,7 @@ public class HostSimple extends HostAbstract {
     /// The ID is automatically assigned when a List of Hosts is attached
     /// to a [Datacenter].
     ///
-    /// @param pesNumber the number of PEs (CPU cores) of the Host
-    /// @param mips the MIPS capacity of each PE
+    /// @param capacity the number of PEs (CPU cores) of the Host and the MIPS capacity of each PE
     ///
     /// @see ChangeableId#setId(long)
     /// @see #setRamProvisioner(ResourceProvisioner)
@@ -49,8 +49,8 @@ public class HostSimple extends HostAbstract {
     /// @see #setDefaultBwCapacity(long)
     /// @see #setDefaultStorageCapacity(long)
     /// @see #setStartupDelay(double)
-    public HostSimple(final long pesNumber, final double mips) {
-        super(pesNumber, mips);
+    public HostSimple(final CoreCapacity capacity) {
+        super(capacity);
     }
 
     /// Creates a Host without a pre-defined ID,
@@ -62,8 +62,7 @@ public class HostSimple extends HostAbstract {
     /// The ID is automatically assigned when a List of Hosts is attached
     /// to a [Datacenter].
     ///
-    /// @param pesNumber the number of PEs (CPU cores) of the Host
-    /// @param mips the MIPS capacity of each PE
+    /// @param capacity the number of PEs (CPU cores) of the Host and the MIPS capacity of each PE
     /// @param activate true to power the Host on, false to power off (see [#setStartupDelay(double)])
     ///
     /// @see ChangeableId#setId(long)
@@ -73,8 +72,8 @@ public class HostSimple extends HostAbstract {
     /// @see #setDefaultRamCapacity(long)
     /// @see #setDefaultBwCapacity(long)
     /// @see #setDefaultStorageCapacity(long)
-    public HostSimple(final long pesNumber, final double mips, final boolean activate) {
-        super(pesNumber, mips, activate);
+    public HostSimple(final CoreCapacity capacity, final boolean activate) {
+        super(capacity, activate);
     }
 
     /// Creates and instantaneously powers on a Host with the given parameters and a
@@ -83,8 +82,7 @@ public class HostSimple extends HostAbstract {
     /// @param ramProvisioner the ram provisioner with capacity in Megabytes
     /// @param bwProvisioner the bw provisioner with capacity in Megabits/s
     /// @param storage the storage capacity in Megabytes
-    /// @param pesNumber the number of PEs (CPU cores) of the Host
-    /// @param mips the MIPS capacity of each PE
+    /// @param capacity the number of PEs (CPU cores) of the Host and the MIPS capacity of each PE
     ///
     /// @see #setVmScheduler(VmScheduler)
     /// @see #setStartupDelay(double)
@@ -92,9 +90,9 @@ public class HostSimple extends HostAbstract {
         final ResourceProvisioner ramProvisioner,
         final ResourceProvisioner bwProvisioner,
         final long storage,
-        final long pesNumber, final double mips)
+        final CoreCapacity capacity)
     {
-        super(ramProvisioner, bwProvisioner, storage, pesNumber, mips);
+        super(ramProvisioner, bwProvisioner, storage, capacity);
     }
 
     /// Creates and instantaneously powers on a Host without a pre-defined ID.
@@ -106,17 +104,16 @@ public class HostSimple extends HostAbstract {
     /// @param ram the RAM capacity in Megabytes
     /// @param bw the Bandwidth (BW) capacity in Megabits/s
     /// @param storage the storage capacity in Megabytes
-    /// @param pesNumber the number of PEs (CPU cores) of the Host
-    /// @param mips the MIPS capacity of each PE
+    /// @param capacity the number of PEs (CPU cores) of the Host and the MIPS capacity of each PE
     ///
-    /// @see HostSimple#HostSimple(long, long, HarddriveStorage, long, double)
+    /// @see HostSimple#HostSimple(long, long, HarddriveStorage, CoreCapacity)
     /// @see ChangeableId#setId(long)
     /// @see #setRamProvisioner(ResourceProvisioner)
     /// @see #setBwProvisioner(ResourceProvisioner)
     /// @see #setVmScheduler(VmScheduler)
     /// @see #setStartupDelay(double)
-    public HostSimple(final long ram, final long bw, final long storage, final long pesNumber, final double mips) {
-        super(ram, bw, storage, pesNumber, mips);
+    public HostSimple(final long ram, final long bw, final long storage, final CoreCapacity capacity) {
+        super(ram, bw, storage, capacity);
     }
 
     /// Creates and instantaneously powers on a Host without a pre-defined ID.
@@ -128,10 +125,9 @@ public class HostSimple extends HostAbstract {
     /// @param ram the RAM capacity in Megabytes
     /// @param bw the Bandwidth (BW) capacity in Megabits/s
     /// @param storage the storage device for the Host
-    /// @param pesNumber the number of PEs (CPU cores) of the Host
-    /// @param mips the MIPS capacity of each PE
+    /// @param capacity the number of PEs (CPU cores) of the Host and the MIPS capacity of each PE
     ///
-    /// @see HostSimple#HostSimple(long, long, long, long, double)
+    /// @see HostSimple#HostSimple(long, long, long, CoreCapacity)
     /// @see ChangeableId#setId(long)
     /// @see #setRamProvisioner(ResourceProvisioner)
     /// @see #setBwProvisioner(ResourceProvisioner)
@@ -139,9 +135,9 @@ public class HostSimple extends HostAbstract {
     /// @see #setStartupDelay(double)
     public HostSimple(
         final long ram, final long bw,
-        final HarddriveStorage storage, final long pesNumber, final double mips)
+        final HarddriveStorage storage, final CoreCapacity capacity)
     {
-        super(ram, bw, storage, pesNumber, mips);
+        super(ram, bw, storage, capacity);
     }
 
     /// Creates a Host without a pre-defined ID. It uses a [ResourceProvisionerSimple]
@@ -152,8 +148,7 @@ public class HostSimple extends HostAbstract {
     /// @param ram the RAM capacity in Megabytes
     /// @param bw the Bandwidth (BW) capacity in Megabits/s
     /// @param storage the storage capacity in Megabytes
-    /// @param pesNumber the number of PEs (CPU cores) of the Host
-    /// @param mips the MIPS capacity of each PE
+    /// @param capacity the number of PEs (CPU cores) of the Host and the MIPS capacity of each PE
     /// @param activate true to power the Host on, false to power off (see [#setStartupDelay(double)])
     ///
     /// @see ChangeableId#setId(long)
@@ -162,24 +157,24 @@ public class HostSimple extends HostAbstract {
     /// @see #setVmScheduler(VmScheduler)
     public HostSimple(
         final long ram, final long bw, final long storage,
-        final long pesNumber, final double mips, final boolean activate)
+        final CoreCapacity capacity, final boolean activate)
     {
-        super(ram, bw, new HarddriveStorage(storage), pesNumber, mips, activate);
+        super(ram, bw, new HarddriveStorage(storage), capacity, activate);
     }
 
-    /// @deprecated Use [#HostSimple(long, double)] instead.
+    /// @deprecated Use [#HostSimple(CoreCapacity)] instead.
     @Deprecated(forRemoval = true)
     public HostSimple(final List<Pe> peList) {
         super(peList);
     }
 
-    /// @deprecated Use [#HostSimple(long, double, boolean)] instead.
+    /// @deprecated Use [#HostSimple(CoreCapacity, boolean)] instead.
     @Deprecated(forRemoval = true)
     public HostSimple(final List<Pe> peList, final boolean activate) {
         super(peList, activate);
     }
 
-    /// @deprecated Use [#HostSimple(ResourceProvisioner, ResourceProvisioner, long, long, double)] instead.
+    /// @deprecated Use [#HostSimple(ResourceProvisioner, ResourceProvisioner, long, CoreCapacity)] instead.
     @Deprecated(forRemoval = true)
     public HostSimple(
         final ResourceProvisioner ramProvisioner,
@@ -190,13 +185,13 @@ public class HostSimple extends HostAbstract {
         super(ramProvisioner, bwProvisioner, storage, peList);
     }
 
-    /// @deprecated Use [#HostSimple(long, long, long, long, double)] instead.
+    /// @deprecated Use [#HostSimple(long, long, long, CoreCapacity)] instead.
     @Deprecated(forRemoval = true)
     public HostSimple(final long ram, final long bw, final long storage, final List<Pe> peList) {
         super(ram, bw, storage, peList);
     }
 
-    /// @deprecated Use [#HostSimple(long, long, HarddriveStorage, long, double)] instead.
+    /// @deprecated Use [#HostSimple(long, long, HarddriveStorage, CoreCapacity)] instead.
     @Deprecated(forRemoval = true)
     public HostSimple(
         final long ram, final long bw,
@@ -205,7 +200,7 @@ public class HostSimple extends HostAbstract {
         super(ram, bw, storage, peList);
     }
 
-    /// @deprecated Use [#HostSimple(long, long, long, long, double, boolean)] instead.
+    /// @deprecated Use [#HostSimple(long, long, long, CoreCapacity, boolean)] instead.
     @Deprecated(forRemoval = true)
     public HostSimple(
         final long ram, final long bw, final long storage,

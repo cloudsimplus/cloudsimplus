@@ -23,6 +23,7 @@
  */
 package org.cloudsimplus.resources;
 
+import org.cloudsimplus.vms.Vm;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -54,14 +55,18 @@ class CpuCapTest {
     @MethodSource("allCaps")
     void limitCoreMipsIsBetweenZeroAndCoreMips(final CpuCap cap) {
         for (long cores = 1; cores <= 8; cores++) {
-            final double limited = cap.limitCoreMips(cores, CORE_MIPS);
+            final double limited = cap.limitCoreMips(processor(cores, CORE_MIPS));
             assertTrue(limited >= 0 && limited <= CORE_MIPS, "%s gave %s MIPS for %d cores".formatted(cap, limited, cores));
         }
     }
 
     @Test
     void noneDoesNotLimitCoreMips() {
-        assertEquals(CORE_MIPS, CpuCap.NONE.limitCoreMips(4, CORE_MIPS));
-        assertEquals(0, CpuCap.NONE.limitCoreMips(4, 0));
+        assertEquals(CORE_MIPS, CpuCap.NONE.limitCoreMips(processor(4, CORE_MIPS)));
+        assertEquals(0, CpuCap.NONE.limitCoreMips(processor(4, 0)));
+    }
+
+    private static Processor processor(final long cores, final double mips) {
+        return new ProcessorSimple(Vm.NULL, new CoreCapacity(cores, mips));
     }
 }

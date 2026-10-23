@@ -30,7 +30,7 @@ import org.cloudsimplus.cloudlets.CloudletSimple;
 import org.cloudsimplus.cloudlets.CloudletTestUtil;
 import org.cloudsimplus.mocks.CloudSimMocker;
 import org.cloudsimplus.mocks.MocksHelper;
-import org.cloudsimplus.schedulers.MipsShare;
+import org.cloudsimplus.resources.CoreCapacity;
 import org.cloudsimplus.vms.Vm;
 import org.cloudsimplus.vms.VmSimple;
 import org.junit.jupiter.api.Test;
@@ -57,10 +57,10 @@ public class CloudletSchedulerSpaceSharedTest {
         final double mips = 1000;
         final long cloudletLen = 10000;
 
-        final Vm vm = new VmSimple(0, mips, 1);
+        final Vm vm = new VmSimple(0, new CoreCapacity(1, mips));
         vm.setBroker(DatacenterBroker.NULL);
         final var instance = CloudletSchedulerSpaceSharedTestUtil.createScheduler(vm);
-        final var mipsShare = new MipsShare(mips);
+        final var mipsShare = new CoreCapacity(mips);
         instance.setCurrentMipsShare(mipsShare);
 
         final var cloudlet = CloudletTestUtil.createCloudlet(0, cloudletLen, 1);
@@ -193,7 +193,7 @@ public class CloudletSchedulerSpaceSharedTest {
     public void testIsThereEnoughFreePesForCloudletEmptyExecList() {
         final var cloudlet = new CloudletExecution(Cloudlet.NULL);
         final var instance = CloudletSchedulerSpaceSharedTestUtil.createScheduler();
-        instance.setCurrentMipsShare(new MipsShare(CloudletSchedulerSpaceSharedTestUtil.SCHEDULER_MIPS));
+        instance.setCurrentMipsShare(new CoreCapacity(CloudletSchedulerSpaceSharedTestUtil.SCHEDULER_MIPS));
         assertTrue(instance.isThereEnoughFreePesForCloudlet(cloudlet));
     }
 
