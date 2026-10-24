@@ -130,7 +130,7 @@ public class VmGroup extends VmSimple {
 
     /// @return the total number of CPU cores from all VMs inside the List.
     private static long getTotalPes(final List<Vm> vmList){
-        return vmList.stream().mapToLong(Vm::getPesNumber).sum();
+        return vmList.stream().mapToLong(vm -> vm.getProcessor().getCores()).sum();
     }
 
     /// Sets the RAM capacity of the VmGroup as the total RAM of all VMs.

@@ -176,7 +176,7 @@ public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudl
     /// @param cloudlets the list of Cloudlets to be hosted by the VM to compute the cost
     /// @return the VM cost to host the Cloudlets
     public double getVmCost(final Vm vm, final List<Cloudlet> cloudlets) {
-        return Math.abs(vm.getPesNumber() - getTotalCloudletsPes(cloudlets));
+        return Math.abs(vm.getProcessor().getCores() - getTotalCloudletsPes(cloudlets));
     }
 
     private List<Cloudlet> convertMapEntryListToCloudletList(final List<Map.Entry<Cloudlet, Vm>> entriesList) {

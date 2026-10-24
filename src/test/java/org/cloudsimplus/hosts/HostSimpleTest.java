@@ -429,7 +429,7 @@ public class HostSimpleTest {
     public void testGetPesNumber() {
         final int cores = 2;
         final Host host = createHostSimple(0, cores);
-        assertEquals(cores, host.getPesNumber());
+        assertEquals(cores, host.getProcessor().getCores());
     }
 
     @Test

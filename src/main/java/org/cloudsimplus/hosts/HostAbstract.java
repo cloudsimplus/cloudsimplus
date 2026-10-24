@@ -648,11 +648,6 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
         return this;
     }
 
-    @Override
-    public long getPesNumber() {
-        return processor.getCapacity();
-    }
-
     /// Gets the MIPS share of each core that is allocated to a given [Vm].
     ///
     /// @param vm the Vm to get the MIPS share
@@ -876,7 +871,7 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
 
     @Override
     public double getBusyPesPercent() {
-        return processor.getBusyCores() / (double) getPesNumber();
+        return processor.getBusyCores() / (double) processor.getCores();
     }
 
     @Override
@@ -997,10 +992,10 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
         final double totalRequestedMips = vm.getTotalCpuMipsRequested();
         if (totalAllocatedMips + 0.1 < totalRequestedMips) {
             final String reason = getVmsMigratingOut().contains(vm) ? "migration overhead" : "capacity unavailability";
-            final long notAllocatedMipsByCore = (long) ((totalRequestedMips - totalAllocatedMips) / vm.getPesNumber());
+            final long notAllocatedMipsByCore = (long) ((totalRequestedMips - totalAllocatedMips) / vm.getProcessor().getCores());
             LOGGER.warn(
                 "{}: {}: {} MIPS not allocated for each one of the {} CPU cores from {} due to {}.",
-                getSimulation().clockStr(), this, notAllocatedMipsByCore, vm.getPesNumber(), vm, reason);
+                getSimulation().clockStr(), this, notAllocatedMipsByCore, vm.getProcessor().getCores(), vm, reason);
         }
 
         final var entry = new VmStateHistoryEntry(

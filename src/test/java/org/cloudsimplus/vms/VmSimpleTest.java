@@ -130,7 +130,7 @@ public class VmSimpleTest {
 
     @Test
     public void testTotalMipsCapacityWithNoCpuCap() {
-        assertEquals(vm.getProcessor().getMips() * vm.getPesNumber(), vm.getTotalMipsCapacity());
+        assertEquals(vm.getProcessor().getMips() * vm.getProcessor().getCores(), vm.getTotalMipsCapacity());
         assertEquals(vm.getProcessor().getTotalMips(), vm.getTotalMipsCapacity());
     }
 
@@ -307,7 +307,7 @@ public class VmSimpleTest {
 
     @Test
     public void testGetPesNumber() {
-        assertEquals(VmTestUtil.PES_NUMBER, vm.getPesNumber());
+        assertEquals(VmTestUtil.PES_NUMBER, vm.getProcessor().getCores());
     }
 
     @Test

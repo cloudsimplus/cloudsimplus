@@ -113,9 +113,9 @@ public abstract non-sealed class CloudletSchedulerAbstract implements CloudletSc
     /// @param currentMipsShare the new current MIPS share
     /// @see #getCurrentMipsShare()
     protected void setCurrentMipsShare(@NonNull final CoreCapacity currentMipsShare) {
-        if(currentMipsShare.cores() > vm.getPesNumber()){
-            LOGGER.warn("Requested {} CPU cores but {} has just {}", currentMipsShare.cores(), vm, vm.getPesNumber());
-            this.currentMipsShare = new CoreCapacity(vm.getPesNumber(), currentMipsShare.mips());
+        if(currentMipsShare.cores() > vm.getProcessor().getCores()){
+            LOGGER.warn("Requested {} CPU cores but {} has just {}", currentMipsShare.cores(), vm, vm.getProcessor().getCores());
+            this.currentMipsShare = new CoreCapacity(vm.getProcessor().getCores(), currentMipsShare.mips());
         }
         else this.currentMipsShare = currentMipsShare;
     }

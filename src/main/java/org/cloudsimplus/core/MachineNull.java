@@ -40,7 +40,6 @@ final class MachineNull implements Machine {
     @Override public Resource getRam() { return Resource.NULL; }
     @Override public Resource getStorage() { return Resource.NULL; }
     @Override public Processor getProcessor() { return Processor.NULL; }
-    @Override public long getPesNumber() { return 0; }
     @Override public Simulation getSimulation() { return Simulation.NULL; }
     @Override public double getTotalExecutionTime() { return 0; }
     @Override public double getStartupDelay() { return 0; }

@@ -17,6 +17,7 @@ import org.cloudsimplus.power.models.PowerModelHost;
 import org.cloudsimplus.provisioners.ResourceProvisioner;
 import org.cloudsimplus.resources.Bandwidth;
 import org.cloudsimplus.resources.CoreStatus;
+import org.cloudsimplus.resources.Processor;
 import org.cloudsimplus.resources.Ram;
 import org.cloudsimplus.resources.ResourceManageable;
 import org.cloudsimplus.schedulers.vm.VmScheduler;
@@ -171,12 +172,12 @@ public sealed interface Host
     void removeMigratingInVm(Vm vm);
 
     /// @return the current percentage (from 0..1) of used (busy) cores,
-    /// according to the [total number of CPU cores][#getPesNumber()].
+    /// according to the [total number of CPU cores][Processor#getCores()].
     /// @see #getBusyPesPercent(boolean)
     double getBusyPesPercent();
 
     /// Gets the current percentage of used (busy) cores,
-    /// according to the [total number of CPU cores][#getPesNumber()].
+    /// according to the [total number of CPU cores][Processor#getCores()].
     /// @param hundredScale true for getting the return in the 0..100 scale;
     /// false for the 0..1 scale.
     /// @return the percentage of busy cores in the defined scale (according to the hundredScale parameter).

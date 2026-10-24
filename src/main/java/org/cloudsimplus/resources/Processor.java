@@ -60,6 +60,12 @@ public sealed interface Processor extends ResourceManageable permits ProcessorSi
     /// How it's computed is defined by each implementation.
     double getTotalMips();
 
+    /// @return the total number of cores, in any status (including failed cores).
+    /// It's the same as the processor [capacity][#getCapacity()].
+    default long getCores() {
+        return getCapacity();
+    }
+
     /// @param status the status to get the number of cores
     /// @return the number of cores in a given status.
     long getCores(CoreStatus status);

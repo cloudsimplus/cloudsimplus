@@ -88,9 +88,9 @@ public final class VmExpectedFreePesOverflowTest {
             "This test is only valid if the Cloudlet requires more CPU cores than the VM has");
 
         simulation.start();
-        assertTrue(vm.getExpectedFreePesNumber() <= vm.getPesNumber(),
+        assertTrue(vm.getExpectedFreePesNumber() <= vm.getProcessor().getCores(),
             "expectedFreePesNumber (%d) should not exceed total VM CPU cores (%d)"
-                .formatted(vm.getExpectedFreePesNumber(), vm.getPesNumber()));
+                .formatted(vm.getExpectedFreePesNumber(), vm.getProcessor().getCores()));
 
         assertEquals(VM_PES, vm.getExpectedFreePesNumber(),
             "expectedFreePesNumber should equal total VM CPU cores after all Cloudlets finish");

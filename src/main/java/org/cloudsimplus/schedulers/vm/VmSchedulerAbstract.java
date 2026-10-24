@@ -93,7 +93,7 @@ public abstract non-sealed class VmSchedulerAbstract implements VmScheduler {
     /// limited to the number of free cores.
     /// @param vm the VM to set the status of its used physical cores
     private void updateHostPesStatusToBusy(final Vm vm) {
-        moveHostCores(CoreStatus.FREE, CoreStatus.BUSY, vm.getPesNumber());
+        moveHostCores(CoreStatus.FREE, CoreStatus.BUSY, vm.getProcessor().getCores());
     }
 
     /// Moves a given number of physical cores from the Host [Processor] between two statuses,
@@ -110,12 +110,12 @@ public abstract non-sealed class VmSchedulerAbstract implements VmScheduler {
 
     @Override
     public void deallocatePesFromVm(final Vm vm) {
-        deallocatePesFromVm(vm, (int)vm.getPesNumber());
+        deallocatePesFromVm(vm, (int)vm.getProcessor().getCores());
     }
 
     @Override
     public void deallocatePesFromVm(final Vm vm, final int coresToRemove) {
-        if(coresToRemove <= 0 || vm.getPesNumber() == 0){
+        if(coresToRemove <= 0 || vm.getProcessor().getCores() == 0){
             return;
         }
 
@@ -140,7 +140,7 @@ public abstract non-sealed class VmSchedulerAbstract implements VmScheduler {
         final Vm vm, final CoreCapacity mipsShare,
         final Consumer<CoreCapacity> mipsShareSetter, final long coresToRemove)
     {
-        final CoreCapacity newMipsShare = mipsShare.withoutCores(Math.min(vm.getPesNumber(), coresToRemove));
+        final CoreCapacity newMipsShare = mipsShare.withoutCores(Math.min(vm.getProcessor().getCores(), coresToRemove));
         mipsShareSetter.accept(newMipsShare);
         return mipsShare.cores() - newMipsShare.cores();
     }

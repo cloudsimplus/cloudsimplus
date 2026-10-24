@@ -192,14 +192,14 @@ public class VmSchedulerTimeSharedTest {
         host.getVmList().add(vm0);
         host.getVmList().add(vm1);
 
-        final var mipsShare = new CoreCapacity(vm0.getPesNumber(), MIPS);
+        final var mipsShare = new CoreCapacity(vm0.getProcessor().getCores(), MIPS);
 
         vmScheduler.allocatePesForVm(vm0, mipsShare);
         vmScheduler.allocatePesForVm(vm1, mipsShare);
         //Try to remove more cores than it's allocated (only the allocated cores have to be deallocated)
         vmScheduler.deallocatePesFromVm(vm0, HOST_PES);
         //Since only the cores for vm0 were deallocated, the cores from vm1 have to be busy yet
-        final long expectedBusyPes = vm1.getPesNumber();
+        final long expectedBusyPes = vm1.getProcessor().getCores();
         assertEquals(expectedBusyPes, host.getProcessor().getBusyCores(), "Number of busy Host CPU cores:");
     }
 }

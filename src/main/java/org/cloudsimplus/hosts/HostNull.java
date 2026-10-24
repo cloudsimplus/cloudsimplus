@@ -82,9 +82,6 @@ final class HostNull implements Host {
     @Override public long getId() {
         return -1;
     }
-    @Override public long getPesNumber() {
-        return 0;
-    }
     @Override public Processor getProcessor() { return Processor.NULL; }
     @Override public Resource getRam() {
         return Resource.NULL;

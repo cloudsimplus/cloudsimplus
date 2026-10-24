@@ -54,10 +54,6 @@ public sealed interface Machine<T extends Resource>
     /// @return the processor of the machine, that manages its cores (cores).
     Processor getProcessor();
 
-    /// @return the overall number of CPU cores the machine has,
-    /// that include cores of all statuses, including failed cores.
-    long getPesNumber();
-
     /// @return total MIPS capacity across all cores of the machine.
     double getTotalMipsCapacity();
 

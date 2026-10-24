@@ -65,7 +65,7 @@ public class VmAllocationPolicySimpleTest {
         for(int i = 1; i <= freePesByHost.length; i++) {
             final Host host = HostSimpleTest.createHostSimple(
                 i-1, freePesByHost[i-1], HOST_MIPS, HOST_RAM, HOST_BW, i*HOST_BASE_STORAGE);
-            hostFreePesMap.put(host, host.getPesNumber());
+            hostFreePesMap.put(host, host.getProcessor().getCores());
             hosts.add(host);
         }
 

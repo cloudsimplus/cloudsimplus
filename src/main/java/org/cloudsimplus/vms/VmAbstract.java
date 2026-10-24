@@ -127,7 +127,7 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
     /// BW, RAM and size of the given VM, but a default [CloudletScheduler] and no [DatacenterBroker].
     /// @param sourceVm the VM to be cloned
     public VmAbstract(final Vm sourceVm) {
-        this(-1, new CoreCapacity(sourceVm.getPesNumber(), sourceVm.getProcessor().getMips()));
+        this(-1, new CoreCapacity(sourceVm.getProcessor().getCores(), sourceVm.getProcessor().getMips()));
         this.cpuCap = sourceVm.getCpuCap();
         this.setBw(sourceVm.getBw().getCapacity())
             .setRam(sourceVm.getRam().getCapacity())
@@ -320,7 +320,7 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
     ///
     /// @param expectedFreeCores the expected number of free cores to set
     private Vm setExpectedFreePesNumber(final long expectedFreeCores) {
-        this.expectedFreePesNumber = Math.clamp(expectedFreeCores, 0, getPesNumber());
+        this.expectedFreePesNumber = Math.clamp(expectedFreeCores, 0, processor.getCores());
         return this;
     }
 
@@ -401,7 +401,7 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
 
     @Override
     public double getTotalMipsCapacity() {
-        return cpuCap.limitCoreMips(processor) * getPesNumber();
+        return cpuCap.limitCoreMips(processor) * processor.getCores();
     }
 
     @Override
@@ -426,15 +426,6 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
     /// @return true if the VM has started some Cloudlet, false otherwise
     public boolean hasStartedSomeCloudlet() {
         return getLastBusyTime() > NOT_ASSIGNED;
-    }
-
-    @Override
-    public long getPesNumber() {
-        return processor.getCapacity();
-    }
-
-    protected void setPesNumber(final long cores) {
-        processor.setCapacity(cores);
     }
 
     /// Sets a new [Ram] resource for the Vm.
@@ -526,7 +517,7 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
 
     @Override
     public boolean isSuitableForCloudlet(final Cloudlet cloudlet) {
-        return getPesNumber() >= cloudlet.getPesNumber() &&
+        return processor.getCores() >= cloudlet.getPesNumber() &&
             storage.getAvailableResource() >= cloudlet.getFileSize();
     }
 

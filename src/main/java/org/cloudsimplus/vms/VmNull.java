@@ -81,9 +81,6 @@ final class VmNull implements Vm {
     @Override public Host getHost() {
         return Host.NULL;
     }
-    @Override public long getPesNumber() {
-        return 0;
-    }
     @Override public Vm addOnHostAllocationListener(EventListener<VmHostEventInfo> listener) {
         return this;
     }

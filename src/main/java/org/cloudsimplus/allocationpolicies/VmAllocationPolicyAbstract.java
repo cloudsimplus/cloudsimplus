@@ -117,7 +117,7 @@ public non-sealed abstract class VmAllocationPolicyAbstract implements VmAllocat
 
         final boolean isVmUnderloaded = scaling.isVmUnderloaded();
         // Avoids trying to downscale the number of vCPUs to zero
-        if(isVmUnderloaded && scaling.getVm().getPesNumber() == coresForScaling) {
+        if(isVmUnderloaded && scaling.getVm().getProcessor().getCores() == coresForScaling) {
             scaling.logDownscaleToZeroNotAllowed();
             return false;
         }

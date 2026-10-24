@@ -89,7 +89,7 @@ public non-sealed class DatacenterCharacteristicsSimple implements DatacenterCha
 
     @Override
     public int getPesNumber() {
-        return (int)datacenter.getHostList().stream().mapToLong(Host::getPesNumber).sum();
+        return (int)datacenter.getHostList().stream().mapToLong(host -> host.getProcessor().getCores()).sum();
     }
 
     @Override

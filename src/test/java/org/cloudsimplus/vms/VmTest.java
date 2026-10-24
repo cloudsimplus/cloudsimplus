@@ -72,7 +72,7 @@ public class VmTest {
         assertAll(
             () -> assertEquals(0, instance.getBw().getAllocatedResource()),
             () -> assertEquals(0, instance.getProcessor().getMips()),
-            () -> assertEquals(0, instance.getPesNumber()),
+            () -> assertEquals(0, instance.getProcessor().getCores()),
             () -> assertEquals(0, instance.getCpuPercentUtilization(0)),
             () -> assertEquals(0, instance.getTotalCpuMipsUtilization(0)),
             () -> assertEquals(0, instance.getBw().getCapacity()),
