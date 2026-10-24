@@ -40,10 +40,10 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-/// An Integration Test (IT) running a simulation scenario with 1 PM of 2 PEs,
-/// 1 VM of 2 PEs and 4 cloudlet in that VM.
+/// An Integration Test (IT) running a simulation scenario with 1 PM of 2 cores,
+/// 1 VM of 2 cores and 4 cloudlet in that VM.
 /// The VM uses a [CloudletSchedulerTimeShared]. As the number of Cloudlets
-/// is the double of VM's PEs, all cloudlets will spend the double of the
+/// is the double of VM's cores, all cloudlets will spend the double of the
 /// time to finish, because they will concur for CPU.
 /// Since all 4 Cloudlets runs in the same VM,
 /// they are configure to use just 25% of the VM RAM each one.
@@ -65,7 +65,7 @@ public final class CloudletSchedulerTimeSharedWithMoreCloudletsThanPEs {
     @BeforeEach
     public void setUp() {
         simulation = new CloudSimPlus();
-        final SimulationScenarioBuilder scenario = new SimulationScenarioBuilder(simulation);
+        final var scenario = new SimulationScenarioBuilder(simulation);
         scenario.getDatacenterBuilder().setSchedulingInterval(2).create(
             new HostBuilder()
                 .setVmSchedulerSupplier(VmSchedulerSpaceShared::new)

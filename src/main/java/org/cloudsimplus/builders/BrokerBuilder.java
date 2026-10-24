@@ -52,7 +52,7 @@ public class BrokerBuilder implements BrokerBuilderInterface {
 
     @Override
     public BrokerBuilderDecorator create(final Consumer<DatacenterBroker> brokerConsumer) {
-        final DatacenterBrokerSimple broker = new DatacenterBrokerSimple(scenario.getSimulation());
+        final var broker = new DatacenterBrokerSimple(scenario.getSimulation());
         brokers.add(broker);
         brokerConsumer.accept(broker);
         return new BrokerBuilderDecorator(this, broker);

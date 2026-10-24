@@ -9,7 +9,6 @@
 package org.cloudsimplus.provisioners;
 
 import org.cloudsimplus.hosts.Host;
-import org.cloudsimplus.resources.Pe;
 import org.cloudsimplus.resources.Resource;
 import org.cloudsimplus.resources.ResourceManageable;
 import org.cloudsimplus.vms.Vm;
@@ -52,7 +51,7 @@ public class ResourceProvisionerSimple extends ResourceProvisionerAbstract {
             return false;
         }
 
-        if (!isPeProvisioner() && !setVmResourceCapacity(vm, newTotalVmResourceCapacity)) {
+        if (!setVmResourceCapacity(vm, newTotalVmResourceCapacity)) {
             return false;
         }
 
@@ -61,13 +60,6 @@ public class ResourceProvisionerSimple extends ResourceProvisionerAbstract {
         getPmResource().allocateResource(newTotalVmResourceCapacity);
         setAllocatedResourceForVm(vm, newTotalVmResourceCapacity);
         return true;
-    }
-
-    /// Pe resources are not stored in the VM resource List.
-    /// Only the provisioner keeps track of Pe allocation for a VM.
-    /// @return true if this provisioner manages a [Pe], false otherwise
-    private boolean isPeProvisioner() {
-        return getPmResource().isSubClassOf(Pe.class);
     }
 
     /// Sets the capacity of the VM resource, keeping its current utilization,

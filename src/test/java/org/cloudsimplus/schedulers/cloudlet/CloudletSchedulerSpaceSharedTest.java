@@ -30,7 +30,7 @@ import org.cloudsimplus.cloudlets.CloudletSimple;
 import org.cloudsimplus.cloudlets.CloudletTestUtil;
 import org.cloudsimplus.mocks.CloudSimMocker;
 import org.cloudsimplus.mocks.MocksHelper;
-import org.cloudsimplus.schedulers.MipsShare;
+import org.cloudsimplus.resources.CoreCapacity;
 import org.cloudsimplus.vms.Vm;
 import org.cloudsimplus.vms.VmSimple;
 import org.junit.jupiter.api.Test;
@@ -57,10 +57,10 @@ public class CloudletSchedulerSpaceSharedTest {
         final double mips = 1000;
         final long cloudletLen = 10000;
 
-        final Vm vm = new VmSimple(0, mips, 1);
+        final Vm vm = new VmSimple(0, new CoreCapacity(1, mips));
         vm.setBroker(DatacenterBroker.NULL);
         final var instance = CloudletSchedulerSpaceSharedTestUtil.createScheduler(vm);
-        final var mipsShare = new MipsShare(mips);
+        final var mipsShare = new CoreCapacity(mips);
         instance.setCurrentMipsShare(mipsShare);
 
         final var cloudlet = CloudletTestUtil.createCloudlet(0, cloudletLen, 1);
@@ -78,7 +78,7 @@ public class CloudletSchedulerSpaceSharedTest {
         final var cloudsim = CloudSimMocker.createMock(mocker -> mocker.clock(clockMethodReturnValue));
         final var cloudlet = CloudletTestUtil.createCloudlet(0, 1000, 1);
         cloudlet.setBroker(MocksHelper.createMockBroker(cloudsim));
-        final CloudletExecution cle = new CloudletExecution(cloudlet);
+        final var cle = new CloudletExecution(cloudlet);
         final CloudletSchedulerSpaceShared instance = CloudletSchedulerSpaceSharedTestUtil.createScheduler();
         instance.cloudletFinish(cle);
         assertTrue(instance.getCloudletFinishedList().contains(cle));
@@ -193,11 +193,11 @@ public class CloudletSchedulerSpaceSharedTest {
     public void testIsThereEnoughFreePesForCloudletEmptyExecList() {
         final var cloudlet = new CloudletExecution(Cloudlet.NULL);
         final var instance = CloudletSchedulerSpaceSharedTestUtil.createScheduler();
-        instance.setCurrentMipsShare(new MipsShare(CloudletSchedulerSpaceSharedTestUtil.SCHEDULER_MIPS));
+        instance.setCurrentMipsShare(new CoreCapacity(CloudletSchedulerSpaceSharedTestUtil.SCHEDULER_MIPS));
         assertTrue(instance.isThereEnoughFreePesForCloudlet(cloudlet));
     }
 
-    /// When There Are One Pe And One Already Running Cloudlet
+    /// When There Are One Core And One Already Running Cloudlet
     @Test
     public void testIsThereEnoughFreePesForCloudlet1() {
         final int cloudletPes = 1;
@@ -210,7 +210,7 @@ public class CloudletSchedulerSpaceSharedTest {
         assertFalse(instance.isThereEnoughFreePesForCloudlet(cloudlet1));
     }
 
-    /// When There Are Two Pes And One Already Running Cloudlet
+    /// When There Are Two cores And One Already Running Cloudlet
     @Test
     public void testIsThereEnoughFreePesForCloudlet2() {
         final int cloudletPes = 1;
@@ -224,7 +224,7 @@ public class CloudletSchedulerSpaceSharedTest {
         assertTrue(instance.isThereEnoughFreePesForCloudlet(cloudlet1));
     }
 
-    /// When There Are Four Pes And One Already Running Cloudlet Requiring Two Pes
+    /// When There Are Four cores And One Already Running Cloudlet Requiring Two cores
     @Test
     public void testIsThereEnoughFreePesForCloudlet3() {
         final int cloudletPes = 2;
@@ -316,16 +316,16 @@ public class CloudletSchedulerSpaceSharedTest {
         assertEquals(expResult, result);
     }
 
-    /// Submits 4 cloudlets that require one PE each one,
-    /// but since there is just 2 VM PEs, just 2 cloudlets
+    /// Submits 4 cloudlets that require one core each one,
+    /// but since there is just 2 VM cores, just 2 cloudlets
     /// will be added to exec list.
     @Test
     public void testGetTotalUtilizationOfCpuWhenMoreCloudletsThanPes() {
         final long mips = 1000;
-        final int pesNumber = 2;
+        final int cores = 2;
         final int numberOfCloudlets = 4;
 
-        final var instance = CloudletSchedulerSpaceSharedTestUtil.newSchedulerWithSingleCoreRunningCloudlets(mips, pesNumber, numberOfCloudlets);
+        final var instance = CloudletSchedulerSpaceSharedTestUtil.newSchedulerWithSingleCoreRunningCloudlets(mips, cores, numberOfCloudlets);
         final double expected = 1;
         assertEquals(expected, instance.getRequestedCpuPercent(0));
     }
@@ -333,10 +333,10 @@ public class CloudletSchedulerSpaceSharedTest {
     @Test
     public void testGetTotalUtilizationOfCpuWhenOnePeForEachCloudlet() {
         final long mips = 1000;
-        final int pesNumber = 2;
-        final int numberOfCloudlets = pesNumber;
+        final int cores = 2;
+        final int numberOfCloudlets = cores;
 
-        final var instance = CloudletSchedulerSpaceSharedTestUtil.newSchedulerWithSingleCoreRunningCloudlets(mips, pesNumber, numberOfCloudlets);
+        final var instance = CloudletSchedulerSpaceSharedTestUtil.newSchedulerWithSingleCoreRunningCloudlets(mips, cores, numberOfCloudlets);
         final double expected = 1;
         assertEquals(expected, instance.getRequestedCpuPercent(0));
     }
@@ -344,10 +344,10 @@ public class CloudletSchedulerSpaceSharedTest {
     @Test
     public void testGetTotalUtilizationOfCpuWhenLessCloudletsThanPesHalfUsage() {
         final long mips = 1000;
-        final int pesNumber = 4;
+        final int cores = 4;
         final int numberOfCloudlets = 2;
 
-        final var instance = CloudletSchedulerSpaceSharedTestUtil.newSchedulerWithSingleCoreRunningCloudlets(mips, pesNumber, numberOfCloudlets);
+        final var instance = CloudletSchedulerSpaceSharedTestUtil.newSchedulerWithSingleCoreRunningCloudlets(mips, cores, numberOfCloudlets);
         final double expected = 0.5;
         assertEquals(expected, instance.getRequestedCpuPercent(0));
     }
@@ -355,10 +355,10 @@ public class CloudletSchedulerSpaceSharedTest {
     @Test
     public void testGetTotalUtilizationOfCpuWhenLessCloudletsThanPesThreeThirdUsage() {
         final long mips = 1000;
-        final int pesNumber = 4;
+        final int cores = 4;
         final int numberOfCloudlets = 3;
 
-        final var instance = CloudletSchedulerSpaceSharedTestUtil.newSchedulerWithSingleCoreRunningCloudlets(mips, pesNumber, numberOfCloudlets);
+        final var instance = CloudletSchedulerSpaceSharedTestUtil.newSchedulerWithSingleCoreRunningCloudlets(mips, cores, numberOfCloudlets);
         final double expected = 0.75;
         assertEquals(expected, instance.getRequestedCpuPercent(0));
     }
@@ -366,10 +366,10 @@ public class CloudletSchedulerSpaceSharedTest {
     @Test
     public void testGetTotalUtilizationOfCpuWhenLessCloudletsThanPesNotFullUsage() {
         final long mips = 1000;
-        final int pesNumber = 5;
+        final int cores = 5;
         final int numberOfCloudlets = 4;
 
-        final var instance = CloudletSchedulerSpaceSharedTestUtil.newSchedulerWithSingleCoreRunningCloudlets(mips, pesNumber, numberOfCloudlets);
+        final var instance = CloudletSchedulerSpaceSharedTestUtil.newSchedulerWithSingleCoreRunningCloudlets(mips, cores, numberOfCloudlets);
         final double expected = 0.8;
         assertEquals(expected, instance.getRequestedCpuPercent(0));
     }
@@ -386,8 +386,8 @@ public class CloudletSchedulerSpaceSharedTest {
         assertEquals(expected, instance.getRequestedCpuPercent(0));
     }
 
-    /// Submits 3 cloudlets that require 2 PEs each one, totalling 6 required PES.
-    /// However, since there is just 4 VM PEs, just 2 cloudlets
+    /// Submits 3 cloudlets that require 2 cores each one, totalling 6 required PES.
+    /// However, since there is just 4 VM cores, just 2 cloudlets
     /// will be added to exec list.
     @Test
     public void testGetTotalUtilizationOfCpuWhenDualPesCloudlets2() {
@@ -401,9 +401,9 @@ public class CloudletSchedulerSpaceSharedTest {
         assertEquals(expected, instance.getRequestedCpuPercent(0));
     }
 
-    /// Submits 3 cloudlets that require 2 PEs each one, totalling 6 required PES.
-    /// However, since there is just 3 VM PEs, just 1 Cloudlet
-    /// will be added to exec list, that will use 2 of the 3 VM PEs.
+    /// Submits 3 cloudlets that require 2 cores each one, totalling 6 required PES.
+    /// However, since there is just 3 VM cores, just 1 Cloudlet
+    /// will be added to exec list, that will use 2 of the 3 VM cores.
     @Test
     public void testGetTotalUtilizationOfCpuWhenDualPesCloudlets() {
         final long mips = 1000;

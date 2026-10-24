@@ -174,7 +174,7 @@ public class CloudSimTag{
     /// can be totally customized according to the researcher needs,
     /// there is no standard way to perform such an operation.
     /// As an example, you may want to reduce by half
-    /// the number of PEs required by a Cloudlet from a list at a given time.
+    /// the number of CPU cores required by a Cloudlet from a list at a given time.
     /// This way, the Runnable function may be defined as a Lambda Expression as follows.
     /// Realize the `cloudletList` is considered to be accessible anywhere in the surrounding scope.
     ///
@@ -228,7 +228,7 @@ public class CloudSimTag{
     public static final int VM_UPDATE_CLOUDLET_PROCESSING = BASE + 41;
 
     /// Denotes a request for vertical scaling VM resources
-    /// (such as Ram, Bandwidth or Pe).
+    /// (such as Ram, Bandwidth or Processor).
     /// When an event of this type is sent, the [SimEvent#getData()]
     /// must be a [VerticalVmScaling] object.
     public static final int VM_VERTICAL_SCALING = BASE + 42;

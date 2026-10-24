@@ -24,7 +24,7 @@
 package org.cloudsimplus.schedulers.vm;
 
 import org.cloudsimplus.hosts.Host;
-import org.cloudsimplus.schedulers.MipsShare;
+import org.cloudsimplus.resources.CoreCapacity;
 import org.cloudsimplus.vms.Vm;
 
 /// A class that implements the Null Object Design Pattern for [VmScheduler] class.
@@ -32,17 +32,17 @@ import org.cloudsimplus.vms.Vm;
 /// @author Manoel Campos da Silva Filho
 /// @see VmScheduler#NULL
 final class VmSchedulerNull implements VmScheduler {
-    @Override public boolean allocatePesForVm(Vm vm, MipsShare requestedMips) {
+    @Override public boolean allocatePesForVm(Vm vm, CoreCapacity requestedMips) {
         return false;
     }
     @Override public boolean allocatePesForVm(Vm vm) { return false; }
-    @Override public MipsShare getAllocatedMips(Vm vm) {
-        return MipsShare.NULL;
+    @Override public CoreCapacity getAllocatedMips(Vm vm) {
+        return CoreCapacity.NULL;
     }
     @Override public double getTotalAvailableMips() {
         return 0.0;
     }
-    @Override public MipsShare getRequestedMips(Vm vm) { return MipsShare.NULL; }
+    @Override public CoreCapacity getRequestedMips(Vm vm) { return CoreCapacity.NULL; }
     @Override public double getTotalAllocatedMipsForVm(Vm vm) {
         return 0.0;
     }
@@ -50,7 +50,7 @@ final class VmSchedulerNull implements VmScheduler {
     @Override public boolean isSuitableForVm(Vm vm) {
         return false;
     }
-    @Override public boolean isSuitableForVm(Vm vm, MipsShare requestedMips) { return false; }
+    @Override public boolean isSuitableForVm(Vm vm, CoreCapacity requestedMips) { return false; }
     @Override public double getVmMigrationCpuOverhead() { return 0.0; }
     @Override public Host getHost() {
         return Host.NULL;
@@ -59,5 +59,5 @@ final class VmSchedulerNull implements VmScheduler {
         return this;
     }
     @Override public void deallocatePesFromVm(Vm vm) {/**/}
-    @Override public void deallocatePesFromVm(Vm vm, int pesToRemove) {/**/}
+    @Override public void deallocatePesFromVm(Vm vm, int coresToRemove) {/**/}
 }

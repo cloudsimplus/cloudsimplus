@@ -34,7 +34,7 @@ import org.cloudsimplus.listeners.HostUpdatesVmsProcessingEventInfo;
 import org.cloudsimplus.power.models.PowerModelHost;
 import org.cloudsimplus.provisioners.ResourceProvisioner;
 import org.cloudsimplus.resources.FileStorage;
-import org.cloudsimplus.resources.Pe;
+import org.cloudsimplus.resources.Processor;
 import org.cloudsimplus.resources.Resource;
 import org.cloudsimplus.resources.ResourceManageable;
 import org.cloudsimplus.schedulers.vm.VmScheduler;
@@ -82,16 +82,7 @@ final class HostNull implements Host {
     @Override public long getId() {
         return -1;
     }
-    @Override public int getFreePesNumber() {
-        return 0;
-    }
-    @Override public long getPesNumber() {
-        return 0;
-    }
-    @Override public double getMips() { return 0; }
-    @Override public List<Pe> getPeList() {
-        return Collections.emptyList();
-    }
+    @Override public Processor getProcessor() { return Processor.NULL; }
     @Override public Resource getRam() {
         return Resource.NULL;
     }
@@ -163,10 +154,6 @@ final class HostNull implements Host {
     @Override public ExecDelayable setShutDownDelay(double delay) { return this; }
     @Override public Host setSimulation(Simulation simulation) { return this; }
     @Override public ResourceProvisioner getProvisioner(Class<? extends ResourceManageable> clazz) { return ResourceProvisioner.NULL; }
-    @Override public int getWorkingPesNumber() {
-        return 0;
-    }
-    @Override public int getBusyPesNumber() { return 0; }
     @Override public double getBusyPesPercent(boolean hundredScale) { return 0; }
     @Override public double getBusyPesPercent() { return 0; }
     @Override public String toString() {
@@ -174,10 +161,6 @@ final class HostNull implements Host {
     }
     @Override public Host setId(long id) { return this; }
     @Override public double getTotalMipsCapacity() { return 0.0; }
-    @Override public int getFailedPesNumber() { return 0; }
-    @Override public List<Pe> getWorkingPeList() { return Collections.emptyList(); }
-    @Override public List<Pe> getBusyPeList() { return Collections.emptyList(); }
-    @Override public List<Pe> getFreePeList() { return Collections.emptyList(); }
     @Override public double getCpuPercentUtilization() { return 0.0; }
     @Override public double getCpuPercentRequested() { return 0; }
     @Override public double getCpuMipsUtilization() { return 0.0; }

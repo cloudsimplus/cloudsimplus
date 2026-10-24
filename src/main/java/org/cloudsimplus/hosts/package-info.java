@@ -4,7 +4,7 @@
 /// (represented by a [org.cloudsimplus.brokers.DatacenterBroker]).
 ///
 /// As each Host can run several VMs, the scheduling of such VMs on the Host's CPU
-/// cores ([org.cloudsimplus.resources.Pe]s) is defined by
+/// cores ([org.cloudsimplus.resources.Processor]) is defined by
 /// a [org.cloudsimplus.schedulers.vm.VmScheduler].
 ///
 /// The most basic Host is the [org.cloudsimplus.hosts.HostSimple].

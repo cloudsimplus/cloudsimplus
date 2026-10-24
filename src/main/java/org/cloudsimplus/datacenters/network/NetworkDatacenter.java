@@ -17,7 +17,6 @@ import org.cloudsimplus.hosts.Host;
 import org.cloudsimplus.hosts.network.NetworkHost;
 import org.cloudsimplus.network.switches.EdgeSwitch;
 import org.cloudsimplus.network.switches.Switch;
-import org.cloudsimplus.resources.Pe;
 import org.cloudsimplus.vms.Vm;
 import org.cloudsimplus.vms.network.NetworkVm;
 
@@ -51,7 +50,7 @@ public class NetworkDatacenter extends DatacenterSimple {
     /// @param hostList list of [Host]s that will compound the Datacenter
     /// @param vmAllocationPolicy the policy to be used to allocate [Vm]s into hosts
     ///
-    /// @throws IllegalArgumentException when this Host has zero [Pe]s
+    /// @throws IllegalArgumentException when this Host has zero cores
     public NetworkDatacenter(
         final Simulation simulation,
         final List<? extends NetworkHost> hostList,
@@ -66,7 +65,7 @@ public class NetworkDatacenter extends DatacenterSimple {
     /// @param simulation The [CloudSimPlus] instance that represents the simulation the Entity belongs to
     /// @param hostList list of [Host]s that will compound the Datacenter
     ///
-    /// @throws IllegalArgumentException when this Host has zero [Pe]s
+    /// @throws IllegalArgumentException when this Host has zero cores
     public NetworkDatacenter(
         final Simulation simulation,
         final List<? extends NetworkHost> hostList)

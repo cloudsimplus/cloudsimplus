@@ -23,6 +23,7 @@
  */
 package org.cloudsimplus.integrationtests;
 
+import org.cloudsimplus.resources.CoreCapacity;
 import ch.qos.logback.classic.Level;
 import org.cloudsimplus.brokers.DatacenterBroker;
 import org.cloudsimplus.brokers.DatacenterBrokerSimple;
@@ -34,8 +35,6 @@ import org.cloudsimplus.datacenters.Datacenter;
 import org.cloudsimplus.datacenters.DatacenterSimple;
 import org.cloudsimplus.hosts.Host;
 import org.cloudsimplus.hosts.HostSimple;
-import org.cloudsimplus.resources.Pe;
-import org.cloudsimplus.resources.PeSimple;
 import org.cloudsimplus.util.Log;
 import org.cloudsimplus.utilizationmodels.UtilizationModelFull;
 import org.cloudsimplus.vms.Vm;
@@ -45,7 +44,6 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static java.util.stream.IntStream.range;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /// An integration test to check if cloudlet lifetime is as expected using a datacenter scheduling interval or not.
@@ -116,14 +114,13 @@ public class CloudletLifeTimeTest {
     }
 
     private Host createHost() {
-        final List<Pe> peList = range(0, HOST_PES).mapToObj(__ -> (Pe)new PeSimple(HOST_MIPS)).toList();
         final long bw = 10_000; //in Megabits/s
         final long storage = 1_000_000; //in Megabytes
-        return new HostSimple(HOST_RAM, bw, storage, peList);
+        return new HostSimple(HOST_RAM, bw, storage, new CoreCapacity(HOST_PES, HOST_MIPS));
     }
 
     private static List<Vm> createVmList() {
-        return List.of(new VmSimple(HOST_MIPS, HOST_PES));
+        return List.of(new VmSimple(new CoreCapacity(HOST_PES, HOST_MIPS)));
     }
 
     private List<Cloudlet> createCloudlets() {

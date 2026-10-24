@@ -33,10 +33,11 @@ import org.cloudsimplus.hosts.Host;
 import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.listeners.VmDatacenterEventInfo;
 import org.cloudsimplus.listeners.VmHostEventInfo;
+import org.cloudsimplus.resources.CpuCap;
 import org.cloudsimplus.resources.Processor;
 import org.cloudsimplus.resources.Resource;
 import org.cloudsimplus.resources.ResourceManageable;
-import org.cloudsimplus.schedulers.MipsShare;
+import org.cloudsimplus.resources.CoreCapacity;
 import org.cloudsimplus.schedulers.cloudlet.CloudletScheduler;
 import org.cloudsimplus.utilizationmodels.BootModel;
 
@@ -68,8 +69,8 @@ final class VmNull implements Vm {
     @Override public long getCurrentRequestedBw() {
         return 0;
     }
-    @Override public MipsShare getCurrentRequestedMips() {
-        return MipsShare.NULL;
+    @Override public CoreCapacity getCurrentRequestedMips() {
+        return CoreCapacity.NULL;
     }
     @Override public long getCurrentRequestedRam() {
         return 0;
@@ -79,12 +80,6 @@ final class VmNull implements Vm {
     }
     @Override public Host getHost() {
         return Host.NULL;
-    }
-    @Override public double getMips() {
-        return 0;
-    }
-    @Override public long getPesNumber() {
-        return 0;
     }
     @Override public Vm addOnHostAllocationListener(EventListener<VmHostEventInfo> listener) {
         return this;
@@ -177,8 +172,8 @@ final class VmNull implements Vm {
     @Override public Vm setSize(long size) {
         return this;
     }
-    @Override public double updateProcessing(double currentTime, MipsShare mipsShare) { return 0.0; }
-    @Override public double updateProcessing(MipsShare mipsShare) { return 0; }
+    @Override public double updateProcessing(double currentTime, CoreCapacity mipsShare) { return 0.0; }
+    @Override public double updateProcessing(CoreCapacity mipsShare) { return 0; }
     @Override public Vm setCloudletScheduler(CloudletScheduler cloudletScheduler) {
         return this;
     }
@@ -220,6 +215,8 @@ final class VmNull implements Vm {
     @Override public boolean isLifeTimeReached() { return false; }
     @Override public BootModel getBootModel() { return BootModel.NULL; }
     @Override public Vm setBootModel(BootModel model) { return this; }
+    @Override public CpuCap getCpuCap() { return CpuCap.NONE; }
+    @Override public Vm setCpuCap(CpuCap cap) { return this; }
     @Override public double getStartupDelay() { return 0; }
     @Override public boolean isShuttingDown() { return false; }
     @Override  public double getShutdownBeginTime() { return -1; }

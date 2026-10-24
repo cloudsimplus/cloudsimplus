@@ -55,9 +55,9 @@ public class VmAllocationPolicySimpleTest {
 
     /// Creates a VmAllocationPolicy.
     ///
-    /// @param freePesByHost an array containing the number of free PEs for each host of the
+    /// @param freePesByHost an array containing the number of free cores for each host of the
     /// allocation policy, that will be assigned to the freePesList.
-    /// This array will define the number of Hosts and its PEs.
+    /// This array will define the number of Hosts and its cores.
     /// @return
     private VmAllocationPolicySimple createVmAllocationPolicy(int... freePesByHost) {
         final Map<Host, Long> hostFreePesMap = new HashMap<>(freePesByHost.length);
@@ -65,11 +65,11 @@ public class VmAllocationPolicySimpleTest {
         for(int i = 1; i <= freePesByHost.length; i++) {
             final Host host = HostSimpleTest.createHostSimple(
                 i-1, freePesByHost[i-1], HOST_MIPS, HOST_RAM, HOST_BW, i*HOST_BASE_STORAGE);
-            hostFreePesMap.put(host, host.getPesNumber());
+            hostFreePesMap.put(host, host.getProcessor().getCores());
             hosts.add(host);
         }
 
-        final VmAllocationPolicySimple policy = new VmAllocationPolicySimple();
+        final var policy = new VmAllocationPolicySimple();
         policy.setDatacenter(new DatacenterSimple(Simulation.NULL, hosts));
         return policy;
     }

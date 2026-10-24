@@ -98,7 +98,7 @@ public class CloudletExecution {
     private double virtualRuntime;
 
     /// The time-slice assigned by a scheduler for a Cloudlet, which is
-    /// the amount of time (in seconds) that such a Cloudlet will have to use the PEs of a Vm.
+    /// the amount of time (in seconds) that such a Cloudlet will have to use the cores of a Vm.
     ///
     /// Each [CloudletScheduler] implementation can make use of this attribute or not.
     /// Schedulers that use it are in charge to compute the time-slice to

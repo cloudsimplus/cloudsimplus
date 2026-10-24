@@ -40,7 +40,6 @@ import org.cloudsimplus.power.models.PowerModelHost;
 import org.cloudsimplus.provisioners.ResourceProvisioner;
 import org.cloudsimplus.provisioners.ResourceProvisionerSimple;
 import org.cloudsimplus.resources.*;
-import org.cloudsimplus.schedulers.MipsShare;
 import org.cloudsimplus.schedulers.vm.VmScheduler;
 import org.cloudsimplus.schedulers.vm.VmSchedulerSpaceShared;
 import org.cloudsimplus.util.BytesConversion;
@@ -48,7 +47,6 @@ import org.cloudsimplus.util.TimeUtil;
 import org.cloudsimplus.vms.*;
 
 import java.util.*;
-import java.util.function.Predicate;
 
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
@@ -163,58 +161,46 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
     @Getter @NonNull
     private VmScheduler vmScheduler;
 
-    @Getter @NonNull
-    private List<Pe> peList = List.of();
+    /// @see #getProcessor()
+    @Getter
+    private final Processor processor;
 
     @Getter @Setter
     private boolean stateHistoryEnabled;
-
-    @Getter
-    private int freePesNumber;
-
-    @Getter
-    private int busyPesNumber;
-
-    @Getter
-    private int workingPesNumber;
-
-    @Getter
-    private int failedPesNumber;
 
     public HostAbstract(
         final ResourceProvisioner ramProvisioner,
         final ResourceProvisioner bwProvisioner,
         final long storage,
-        final List<Pe> peList)
+        final CoreCapacity capacity)
     {
-        this(ramProvisioner.getCapacity(), bwProvisioner.getCapacity(), new HarddriveStorage(storage), peList, true);
+        this(ramProvisioner.getCapacity(), bwProvisioner.getCapacity(), new HarddriveStorage(storage), capacity, true);
         setRamProvisioner(ramProvisioner);
         setBwProvisioner(bwProvisioner);
-
     }
 
-    public HostAbstract(final long ram, final long bw, final long storage, final List<Pe> peList) {
-        this(ram, bw, new HarddriveStorage(storage), peList, true);
+    public HostAbstract(final long ram, final long bw, final long storage, final CoreCapacity capacity) {
+        this(ram, bw, new HarddriveStorage(storage), capacity, true);
     }
 
     protected HostAbstract(
         final long ram, final long bw,
-        @NonNull final HarddriveStorage storage, final List<Pe> peList)
+        @NonNull final HarddriveStorage storage, final CoreCapacity capacity)
     {
-        this(ram, bw, storage, peList, true);
+        this(ram, bw, storage, capacity, true);
     }
 
-    public HostAbstract(final List<Pe> peList) {
-        this(peList, true);
+    public HostAbstract(final CoreCapacity capacity) {
+        this(capacity, true);
     }
 
-    public HostAbstract(final List<Pe> peList, final boolean activate) {
-        this(defaultRamCapacity, defaultBwCapacity, new HarddriveStorage(defaultStorageCapacity), peList, activate);
+    public HostAbstract(final CoreCapacity capacity, final boolean activate) {
+        this(defaultRamCapacity, defaultBwCapacity, new HarddriveStorage(defaultStorageCapacity), capacity, activate);
     }
 
     protected HostAbstract(
         final long ram, final long bw, @NonNull final HarddriveStorage storage,
-        final List<Pe> peList, final boolean activate)
+        @NonNull final CoreCapacity capacity, final boolean activate)
     {
         this.setId(-1);
         this.powerModel = PowerModelHost.NULL;
@@ -232,7 +218,8 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
         this.lazySuitabilityEvaluation = true;
         this.setSimulation(Simulation.NULL);
 
-        setPeList(peList);
+        Machine.validateCapacity(capacity.cores());
+        this.processor = new ProcessorSimple(this, capacity);
         this.setFailed(false);
 
         this.setDatacenter(Datacenter.NULL);
@@ -593,12 +580,10 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
     ///
     /// @param vm the VM to deallocate resources from
     protected void deallocateResourcesOfVm(final Vm vm) {
-        final var peProvisioner = getPeList().get(0).getPeProvisioner();
-
         ramProvisioner.deallocateResourceForVm(vm);
         bwProvisioner.deallocateResourceForVm(vm);
         vmScheduler.deallocatePesFromVm(vm);
-        peProvisioner.deallocateResourceForVm(vm);
+        vm.getProcessor().deallocateAllResources();
         disk.getStorage().deallocateResource(vm.getStorage());
         ((VmAbstract)vm).setCreated(false);
     }
@@ -663,35 +648,17 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
         return this;
     }
 
-    /// {@inheritDoc}
-    ///
-    /// @see #getWorkingPesNumber()
-    /// @see #getFreePesNumber()
-    /// @see #getFailedPesNumber()
-    @Override
-    public long getPesNumber() {
-        return peList.size();
-    }
-
-    /// Gets the MIPS share of each [Pe] that is allocated to a given [Vm].
+    /// Gets the MIPS share of each core that is allocated to a given [Vm].
     ///
     /// @param vm the Vm to get the MIPS share
-    /// @return an array containing the MIPS amount from each [Pe] that is available to the [Vm]
-    protected MipsShare getAllocatedMipsForVm(final Vm vm) {
+    /// @return an array containing the MIPS amount from each core that is available to the [Vm]
+    protected CoreCapacity getAllocatedMipsForVm(final Vm vm) {
         return vmScheduler.getAllocatedMips(vm);
     }
 
     @Override
-    public double getMips() {
-        return peList.stream().mapToDouble(Pe::getCapacity).findFirst().orElse(0);
-    }
-
-    @Override
     public double getTotalMipsCapacity() {
-        return peList.stream()
-            .filter(Pe::isWorking)
-            .mapToDouble(Pe::getCapacity)
-            .sum();
+        return processor.getTotalMips();
     }
 
     @Override
@@ -791,31 +758,6 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
         return TimeUtil.secondsToHours(getTotalUpTime());
     }
 
-    /// Sets the [Pe] list.
-    ///
-    /// @param peList the new [Pe] list
-    protected void setPeList(final List<Pe> peList) {
-        if (peList.isEmpty()) {
-            throw new IllegalArgumentException("The PE list for a Host cannot be empty");
-        }
-
-        checkSimulationIsRunningAndAttemptedToChangeHost("List of PE");
-        this.peList = peList;
-
-        long peId = Math.max(peList.get(peList.size() - 1).getId(), -1);
-        for (final Pe pe : peList) {
-            if (pe.getId() < 0) {
-                pe.setId(++peId);
-            }
-            pe.setStatus(Pe.Status.FREE);
-        }
-
-        failedPesNumber = 0;
-        busyPesNumber = 0;
-        freePesNumber = peList.size();
-        workingPesNumber = freePesNumber;
-    }
-
     @Override
     public <T extends Vm> List<T> getVmList() {
         return (List<T>) vmList;
@@ -837,8 +779,9 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
     @Override
     public final boolean setFailed(final boolean failed) {
         this.failed = failed;
-        final var newStatus = failed ? Pe.Status.FAILED : Pe.Status.FREE;
-        setPeStatus(peList, newStatus);
+        if (failed) {
+            failAllPes();
+        } else recoverAllPes();
 
         /* Just changes the active state when the Host is set to active.
          * In other situations, the active status must remain as it was.
@@ -850,64 +793,16 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
         return true;
     }
 
-    /// Sets the status of a given (sub)list of [Pe]s to a new status.
-    ///
-    /// @param peList    the (sub)list of [Pe]s to change the status
-    /// @param newStatus the new status
-    public final void setPeStatus(final List<Pe> peList, final Pe.Status newStatus) {
-        /* For performance reasons, stores the number of free and failed PEs
-        instead of iterating over the PE list every time to find out. */
-        for (final Pe pe : peList) {
-            updatePeStatus(pe, newStatus);
-        }
+    /// Sets all working cores as failed.
+    private void failAllPes() {
+        processor.moveCores(CoreStatus.BUSY, CoreStatus.FAILED, processor.getCores(CoreStatus.BUSY));
+        processor.moveCores(CoreStatus.FREE, CoreStatus.FAILED, processor.getCores(CoreStatus.FREE));
     }
 
-    private void updatePeStatus(final Pe pe, final Pe.Status newStatus) {
-        if (pe.getStatus() != newStatus) {
-            updatePeStatusCount(pe.getStatus(), false);
-            updatePeStatusCount(newStatus, true);
-            pe.setStatus(newStatus);
-        }
-    }
-
-    /// Update the number of [Pe]s for a given status.
-    /// You must call the method before the PE status is changed and after it
-    /// so that the numbers for the previous and new PE status are updated.
-    ///
-    /// @param status      the status of the PE to process (either a previous or new status)
-    /// @param isIncrement true to increment the number of PEs in the given status to 1, false to decrement
-    private void updatePeStatusCount(final Pe.Status status, final boolean isIncrement) {
-        final int inc = isIncrement ? 1 : -1;
-        switch (status) {
-            case FAILED -> incFailedPesNumber(inc);
-            case FREE -> incFreePesNumber(inc);
-            case BUSY -> incBusyPesNumber(inc);
-        }
-    }
-
-    /// Updates the number of failed (and working) [Pe]s,
-    /// decreasing it if a negative number is given, or increasing otherwise.
-    ///
-    /// @param inc the value to sum (positive or negative) to the number of busy PEs
-    protected void incFailedPesNumber(final int inc) {
-        this.failedPesNumber += inc;
-        workingPesNumber -= inc;
-    }
-
-    /// Updates the number of free [Pe]s, decreasing it if a negative number is given,
-    /// or increasing otherwise.
-    ///
-    /// @param inc the value to sum (positive or negative) to the number of busy PEs
-    protected void incFreePesNumber(final int inc) {
-        this.freePesNumber += inc;
-    }
-
-    /// Updates the number of busy [Pe]s, decreasing it if a negative number is given,
-    /// or increasing otherwise.
-    ///
-    /// @param inc the value to sum (positive or negative) to the number of busy PEs
-    protected void incBusyPesNumber(final int inc) {
-        this.busyPesNumber += inc;
+    /// Sets all cores as free, including failed and busy ones.
+    private void recoverAllPes() {
+        processor.moveCores(CoreStatus.FAILED, CoreStatus.FREE, processor.getCores(CoreStatus.FAILED));
+        processor.moveCores(CoreStatus.BUSY, CoreStatus.FREE, processor.getCores(CoreStatus.BUSY));
     }
 
     @Override
@@ -976,7 +871,7 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
 
     @Override
     public double getBusyPesPercent() {
-        return getBusyPesNumber() / (double) getPesNumber();
+        return processor.getBusyCores() / (double) processor.getCores();
     }
 
     @Override
@@ -1005,25 +900,6 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
             .filter(provisioner -> provisioner.getPmResource().isSubClassOf(resourceClass))
             .findFirst()
             .orElse(ResourceProvisioner.NULL);
-    }
-
-    @Override
-    public List<Pe> getWorkingPeList() {
-        return getFilteredPeList(Pe::isWorking);
-    }
-
-    @Override
-    public List<Pe> getBusyPeList() {
-        return getFilteredPeList(Pe::isBusy);
-    }
-
-    @Override
-    public List<Pe> getFreePeList() {
-        return getFilteredPeList(Pe::isFree);
-    }
-
-    private List<Pe> getFilteredPeList(final Predicate<Pe> status) {
-        return peList.stream().filter(status).collect(toList());
     }
 
     @Override
@@ -1116,10 +992,10 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
         final double totalRequestedMips = vm.getTotalCpuMipsRequested();
         if (totalAllocatedMips + 0.1 < totalRequestedMips) {
             final String reason = getVmsMigratingOut().contains(vm) ? "migration overhead" : "capacity unavailability";
-            final long notAllocatedMipsByPe = (long) ((totalRequestedMips - totalAllocatedMips) / vm.getPesNumber());
+            final long notAllocatedMipsByCore = (long) ((totalRequestedMips - totalAllocatedMips) / vm.getProcessor().getCores());
             LOGGER.warn(
-                "{}: {}: {} MIPS not allocated for each one of the {} PEs from {} due to {}.",
-                getSimulation().clockStr(), this, notAllocatedMipsByPe, vm.getPesNumber(), vm, reason);
+                "{}: {}: {} MIPS not allocated for each one of the {} CPU cores from {} due to {}.",
+                getSimulation().clockStr(), this, notAllocatedMipsByCore, vm.getProcessor().getCores(), vm, reason);
         }
 
         final var entry = new VmStateHistoryEntry(
@@ -1154,8 +1030,8 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
     /// Adds a Host state history entry.
     ///
     /// @param time          the current simulation time
-    /// @param allocatedMips the total MIPS allocated from all PEs of the Host
-    /// @param requestedMips the total MIPS requested by running VMs to all PEs of the Host
+    /// @param allocatedMips the total MIPS allocated from all cores of the Host
+    /// @param requestedMips the total MIPS requested by running VMs to all cores of the Host
     /// @param isActive      the active status of the Host
     private void addStateHistoryEntry(
         final double time,

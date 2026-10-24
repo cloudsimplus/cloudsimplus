@@ -283,7 +283,7 @@ public class GoogleTaskEventsTraceReader extends GoogleTraceReaderAbstract<Cloud
          */
         final Runnable attributesUpdateRunnable = () -> {
             final DatacenterBroker broker = cloudlet.getBroker();
-            final StringBuilder builder = new StringBuilder();
+            final var builder = new StringBuilder();
 
             /* The output size doesn't always have a relation with file size.
              * This way, if the file size is changed, we don't change
@@ -296,7 +296,7 @@ public class GoogleTaskEventsTraceReader extends GoogleTraceReaderAbstract<Cloud
             }
 
             if(clone.getPesNumber() != cloudlet.getPesNumber()){
-                builder.append("PEs: ")
+                builder.append("CPU cores: ")
                        .append(cloudlet.getPesNumber()).append(VAL_SEPARATOR)
                        .append(clone.getPesNumber()).append(COL_SEPARATOR);
                 cloudlet.setPesNumber(clone.getPesNumber());

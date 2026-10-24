@@ -32,8 +32,8 @@ import org.cloudsimplus.hosts.HostSimple;
 import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.listeners.HostUpdatesVmsProcessingEventInfo;
 import org.cloudsimplus.provisioners.ResourceProvisionerSimple;
-import org.cloudsimplus.resources.Pe;
 import org.cloudsimplus.schedulers.vm.VmScheduler;
+import org.cloudsimplus.resources.CoreCapacity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,8 +59,8 @@ public class HostBuilder implements Builder {
     @Getter private final List<Host> hosts;
 
     /// A [Function] used to create Hosts.
-    /// It must receive a list of [Pe] for the Host it will create.
-    @Setter @NonNull private Function<List<Pe>, Host> hostCreationFunction;
+    /// It receives the number of cores and the MIPS capacity of each core for the Host it will create.
+    @Setter @NonNull private Function<CoreCapacity, Host> hostCreationFunction;
     @Setter @NonNull private EventListener<HostUpdatesVmsProcessingEventInfo> onUpdateVmsProcessingListener = EventListener.NULL;
     @Setter @Nullable private Supplier<VmScheduler> vmSchedulerSupplier;
 
@@ -84,8 +84,7 @@ public class HostBuilder implements Builder {
         validateAmount(amount);
 
         for (int i = 0; i < amount; i++) {
-            final var peList = new PeBuilder().create(pes, mips);
-            final var host = hostCreationFunction.apply(peList);
+            final var host = hostCreationFunction.apply(new CoreCapacity(pes, mips));
             if(vmSchedulerSupplier != null) {
                 host.setVmScheduler(vmSchedulerSupplier.get());
             }
@@ -96,8 +95,8 @@ public class HostBuilder implements Builder {
         return this;
     }
 
-    private Host defaultHostCreationFunction(final List<Pe> peList) {
-        return new HostSimple(peList)
+    private Host defaultHostCreationFunction(final CoreCapacity capacity) {
+        return new HostSimple(capacity)
             .setRamProvisioner(new ResourceProvisionerSimple())
             .setBwProvisioner(new ResourceProvisionerSimple())
             .addOnUpdateProcessingListener(onUpdateVmsProcessingListener);

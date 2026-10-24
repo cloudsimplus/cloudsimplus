@@ -21,41 +21,21 @@
  *     You should have received a copy of the GNU General Public License
  *     along with CloudSim Plus. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.cloudsimplus.builders;
+package org.cloudsimplus.resources;
 
-import lombok.NonNull;
-import lombok.Setter;
-import lombok.experimental.Accessors;
-import org.cloudsimplus.provisioners.PeProvisionerSimple;
-import org.cloudsimplus.resources.Pe;
-import org.cloudsimplus.resources.PeSimple;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Function;
-
-/// A Builder class to create [Pe] objects.
+/// A [CpuCap] that doesn't limit the CPU.
 ///
 /// @author Manoel Campos da Silva Filho
-/// @since CloudSim Plus 1.0
-@Accessors(chain = true)
-public class PeBuilder implements Builder {
-    /// A [Function] that is accountable to create [Pe]
-    /// by this builder. The Function receives the MIPS and return the created [Pe] .
-    @NonNull @Setter
-    private Function<Double, Pe> peSupplier;
-
-    public PeBuilder(){
-        peSupplier = mips -> new PeSimple(mips, new PeProvisionerSimple());
+/// @see CpuCap#NONE
+/// @since CloudSim Plus 9.0.0
+final class CpuCapNone implements CpuCap {
+    @Override
+    public double limitCoreMips(final Processor processor) {
+        return processor.getMips();
     }
 
-    public List<Pe> create(final int amount, final double peMips) {
-        validateAmount(amount);
-        final List<Pe> peList = new ArrayList<>(amount);
-        for (int i = 0; i < amount; i++) {
-            peList.add(peSupplier.apply(peMips));
-        }
-
-        return peList;
+    @Override
+    public String toString() {
+        return "CpuCap.NONE";
     }
 }

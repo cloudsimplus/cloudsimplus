@@ -8,9 +8,8 @@
 package org.cloudsimplus.schedulers.vm;
 
 import org.cloudsimplus.hosts.Host;
-import org.cloudsimplus.resources.Pe;
 import org.cloudsimplus.resources.Resource;
-import org.cloudsimplus.schedulers.MipsShare;
+import org.cloudsimplus.resources.CoreCapacity;
 import org.cloudsimplus.vms.Vm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +17,7 @@ import org.slf4j.LoggerFactory;
 /// An interface that represents the policy used by a
 /// Virtual Machine Monitor (VMM) to share the processing power of a [Host] between [Vm]s.
 /// Each Host has to use its own instance of a
-/// VmScheduler that will so schedule the allocation of host's [Pe]s for
+/// VmScheduler that will so schedule the allocation of host's cores for
 /// VMs running on it.
 ///
 /// @author Rodrigo N. Calheiros
@@ -36,11 +35,11 @@ public sealed interface VmScheduler permits VmSchedulerAbstract, VmSchedulerNull
     /// An attribute that implements the Null Object Design Pattern for [VmScheduler] objects.
     VmScheduler NULL = new VmSchedulerNull();
 
-    /// Requests the allocation of PEs for a VM.
+    /// Requests the allocation of cores for a VM.
     ///
-    /// @param vm the VM to allocate PEs to
+    /// @param vm the VM to allocate cores to
     /// @param requestedMips the MIPS share to be allocated to a VM
-    /// @return true if the PEs were allocated to the VM, false otherwise
+    /// @return true if the cores were allocated to the VM, false otherwise
     ///
     /// @TODO All implementing classes don't consider the
     /// situation when a Vm already has allocated MIPS and the method is
@@ -54,33 +53,33 @@ public sealed interface VmScheduler permits VmSchedulerAbstract, VmSchedulerNull
     /// if the total requested MIPS is available, while only the difference has
     /// to be checked. It has to be added some tests to check this issue.
     /// See https://github.com/cloudsimplus/cloudsimplus/issues/588
-    boolean allocatePesForVm(Vm vm, MipsShare requestedMips);
+    boolean allocatePesForVm(Vm vm, CoreCapacity requestedMips);
 
-    /// Requests the allocation of PEs for a VM, according
-    /// to the number of PEs and MIPS defined by VM attributes.
+    /// Requests the allocation of cores for a VM, according
+    /// to the number of CPU cores and MIPS defined by VM attributes.
     ///
-    /// @param vm the VM to allocate PEs to
-    /// @return true if the PEs were allocated to the VM, false otherwise
+    /// @param vm the VM to allocate cores to
+    /// @return true if the cores were allocated to the VM, false otherwise
     boolean allocatePesForVm(Vm vm);
 
-    /// Releases all PEs allocated to a VM. After that, the PEs may be used on demand
+    /// Releases all cores allocated to a VM. After that, the cores may be used on demand
     /// by other VMs.
     ///
-    /// @param vm the VM to deallocate PEs from
+    /// @param vm the VM to deallocate cores from
     void deallocatePesFromVm(Vm vm);
 
-    /// Releases a given number of PEs from a VM. After that, the PEs may be used on demand
+    /// Releases a given number of CPU cores from a VM. After that, the cores may be used on demand
     /// by other VMs.
     ///
-    /// @param vm the VM to deallocate PEs from
-    /// @param pesToRemove number of PEs to deallocate
-    void deallocatePesFromVm(Vm vm, int pesToRemove);
+    /// @param vm the VM to deallocate cores from
+    /// @param coresToRemove number of CPU cores to deallocate
+    void deallocatePesFromVm(Vm vm, int coresToRemove);
 
-    /// Gets the MIPS share of each Host's Pe that is allocated to a given VM.
+    /// Gets the MIPS share of each Host's core that is allocated to a given VM.
     ///
     /// @param vm the vm to get the MIPS share
     /// @return the VM allocated MIPS share
-    MipsShare getAllocatedMips(Vm vm);
+    CoreCapacity getAllocatedMips(Vm vm);
 
     /// {@return the total amount of MIPS that is currently free}
     /// If there are VMs migrating into the Host,
@@ -91,7 +90,7 @@ public sealed interface VmScheduler permits VmSchedulerAbstract, VmSchedulerNull
     /// Gets the MIPS share requested by a VM
     /// @param vm the VM to get the List of requested MIPS
     /// @return VM requested MIPS share
-    MipsShare getRequestedMips(Vm vm);
+    CoreCapacity getRequestedMips(Vm vm);
 
     /// Checks if the PM using this scheduler has enough MIPS capacity
     /// to host a given VM.
@@ -117,9 +116,9 @@ public sealed interface VmScheduler permits VmSchedulerAbstract, VmSchedulerNull
     /// @param vm the [Vm] to check if there are enough MIPS to allocate to
     /// @param requestedMips the MIPS share requested by a VM
     /// @return true if the requested MIPS share is allowed to be allocated to the VM, false otherwise
-    boolean isSuitableForVm(Vm vm, MipsShare requestedMips);
+    boolean isSuitableForVm(Vm vm, CoreCapacity requestedMips);
 
-    /// {@return the actual total allocated MIPS for a VM along all its allocated PEs}
+    /// {@return the actual total allocated MIPS for a VM along all its allocated cores}
     /// If the VM is migrating into the Host, then just a fraction
     /// of the requested MIPS is actually allocated, representing
     /// the overhead of the migration process.
@@ -145,10 +144,10 @@ public sealed interface VmScheduler permits VmSchedulerAbstract, VmSchedulerNull
     /// @return the Host's CPU migration overhead percentage, in scale from 0 to 1 (where 1 is 100%)
     double getVmMigrationCpuOverhead();
 
-    /// @return the Host that the VmScheduler get the list of PEs to allocate to VMs.
+    /// @return the Host that the VmScheduler get the list of cores to allocate to VMs.
     Host getHost();
 
-    /// Sets the Host that the VmScheduler get the list of PEs to allocate to VMs.
+    /// Sets the Host that the VmScheduler get the list of cores to allocate to VMs.
     /// A Host for the VmScheduler is defined when the VmScheduler is set to a given Host.
     /// Thus, the Host is in charge to set itself to a VmScheduler.
     /// @param host the Host to be set

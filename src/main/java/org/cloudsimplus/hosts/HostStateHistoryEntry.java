@@ -12,8 +12,8 @@ package org.cloudsimplus.hosts;
 /// @author Anton Beloglazov
 /// @since CloudSim Toolkit 2.1.2
 /// @param time          the time the data in this history entry is related to (in seconds)
-/// @param allocatedMips the total MIPS allocated from all PEs of the Host, to running VMs, at the recorded time
-/// @param requestedMips the total MIPS requested by running VMs to all PEs of the Host at the recorded time
+/// @param allocatedMips the total MIPS allocated from all cores of the Host, to running VMs, at the recorded time
+/// @param requestedMips the total MIPS requested by running VMs to all cores of the Host at the recorded time
 /// @param active        if the Host is active at the given time
 public record HostStateHistoryEntry(double time, double allocatedMips, double requestedMips, boolean active) {
 
@@ -22,12 +22,12 @@ public record HostStateHistoryEntry(double time, double allocatedMips, double re
         return time;
     }
 
-    /// @return the total MIPS allocated from all PEs of the Host, to running VMs, at the recorded time.
+    /// @return the total MIPS allocated from all cores of the Host, to running VMs, at the recorded time.
     public double allocatedMips() {
         return allocatedMips;
     }
 
-    /// @return the total MIPS requested by running VMs to all PEs of the Host at the recorded time.
+    /// @return the total MIPS requested by running VMs to all cores of the Host at the recorded time.
     public double requestedMips() {
         return requestedMips;
     }

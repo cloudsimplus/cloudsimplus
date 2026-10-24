@@ -327,7 +327,7 @@ public final class GoogleTaskUsageTraceReader extends GoogleTraceReaderAbstract<
     private boolean requestCloudletUsageChange(final Cloudlet cloudlet, final TaskUsage taskUsage)
     {
         final Runnable resourceUsageUpdateRunnable = () -> {
-            final StringBuilder builder = new StringBuilder();
+            final var builder = new StringBuilder();
             if (cloudlet.getUtilizationOfCpu() != taskUsage.getMeanCpuUsageRate()) {
                 builder.append("CPU Utilization: ")
                     .append(formatPercentValue(cloudlet.getUtilizationOfCpu())).append(VAL_SEPARATOR)

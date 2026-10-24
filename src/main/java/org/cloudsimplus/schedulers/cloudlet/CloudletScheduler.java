@@ -13,8 +13,7 @@ import org.cloudsimplus.cloudlets.CloudletExecution;
 import org.cloudsimplus.listeners.CloudletResourceAllocationFailEventInfo;
 import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.network.VmPacket;
-import org.cloudsimplus.resources.Pe;
-import org.cloudsimplus.schedulers.MipsShare;
+import org.cloudsimplus.resources.CoreCapacity;
 import org.cloudsimplus.schedulers.cloudlet.network.CloudletTaskScheduler;
 import org.cloudsimplus.utilizationmodels.UtilizationModel;
 import org.cloudsimplus.vms.Vm;
@@ -132,10 +131,10 @@ public sealed interface CloudletScheduler
     /// @return true if the scheduler has no cloudlets to execute or waiting to be executed; false otherwise
     boolean isEmpty();
 
-    /// Releases a given number of PEs from a VM.
+    /// Releases a given number of CPU cores from a VM.
     ///
-    /// @param pesToRemove number of PEs to deallocate
-    void deallocatePesFromVm(long pesToRemove);
+    /// @param coresToRemove number of CPU cores to deallocate
+    void deallocatePesFromVm(long coresToRemove);
 
      /// Gets the current utilization percentage of Bandwidth that the running Cloudlets are requesting (in scale from 0 to 1).
      /// @return the BW utilization percentage from 0 to 1 (where 1 is 100%)
@@ -193,11 +192,11 @@ public sealed interface CloudletScheduler
     /// Updates the processing of cloudlets inside the Vm running under management of this scheduler.
     ///
     /// @param currentTime current simulation time
-    /// @param mipsShare MIPS share of each Pe available to the scheduler
+    /// @param mipsShare MIPS share of each core available to the scheduler
     /// @return the next time to update cloudlets processing
     /// (which is a relative delay from the current simulation time),
     /// or [Double#MAX_VALUE] if there is no next Cloudlet to execute
-    double updateProcessing(double currentTime, MipsShare mipsShare);
+    double updateProcessing(double currentTime, CoreCapacity mipsShare);
 
     /// @return the Vm that uses this scheduler.
     Vm getVm();
@@ -213,10 +212,10 @@ public sealed interface CloudletScheduler
     /// @throws NullPointerException when the vm parameter is null
     void setVm(Vm vm) ;
 
-    /// @return the number of currently used [Pe]'s.
+    /// @return the number of currently used core's.
     long getUsedPes();
 
-    /// @return the number of [Pe]'s currently not being used.
+    /// @return the number of core's currently not being used.
     long getFreePes();
 
     /// Adds a Cloudlet to the list of finished Cloudlets that have been returned to its

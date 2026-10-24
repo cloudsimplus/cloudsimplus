@@ -67,7 +67,7 @@ public sealed interface DatacenterCharacteristics
     /// @return the current number of failed PMs the Datacenter has.
     long getNumberOfFailedHosts();
 
-    /// @return the total number of PEs for all PMs.
+    /// @return the total number of CPU cores for all PMs.
     int getPesNumber();
 
     /// @return true if all PMs of the Datacenter are working properly, false otherwise

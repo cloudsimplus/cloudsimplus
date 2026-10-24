@@ -23,12 +23,12 @@
  */
 package org.cloudsimplus.integrationtests;
 
+import org.cloudsimplus.resources.CoreCapacity;
 import org.cloudsimplus.brokers.DatacenterBrokerSimple;
 import org.cloudsimplus.cloudlets.CloudletSimple;
 import org.cloudsimplus.core.CloudSimPlus;
 import org.cloudsimplus.datacenters.DatacenterSimple;
 import org.cloudsimplus.hosts.HostSimple;
-import org.cloudsimplus.resources.PeSimple;
 import org.cloudsimplus.vms.VmSimple;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -39,7 +39,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /// Verifies that after all Cloudlets finish execution on a VM,
 /// both `freePesNumber` and `expectedFreePesNumber`
-/// are correctly updated to the total number of VM PEs.
+/// are correctly updated to the total number of VM cores.
 ///
 /// @author Theodoros Aslanidis
 /// @see <a href="https://github.com/cloudsimplus/cloudsimplus/issues/544">Issue #544</a>
@@ -64,29 +64,25 @@ public final class VmFreePesAfterCloudletsFinishTest {
         final int cloudletLength = 10_000;
 
         simulation = new CloudSimPlus();
-        final var host = new HostSimple(hRAM, hBW, hStorage, List.of(newPe(), newPe()));
+        final var host = new HostSimple(hRAM, hBW, hStorage, new CoreCapacity(2, HOST_MIPS));
         new DatacenterSimple(simulation, List.of(host));
 
         final var broker = new DatacenterBrokerSimple(simulation);
-        vm = new VmSimple(HOST_MIPS, VM_PES);
+        vm = new VmSimple(new CoreCapacity(VM_PES, HOST_MIPS));
         vm.setRam(vmRAM).setBw(vmBW).setSize(hBW);
         broker.submitVmList(List.of(vm));
         final var cloudlet = new CloudletSimple(cloudletLength, CLOUDLET_PES);
         broker.submitCloudletList(List.of(cloudlet));
     }
 
-    private static PeSimple newPe() {
-        return new PeSimple(HOST_MIPS);
-    }
-
     /// After all Cloudlets finish, both freePesNumber and expectedFreePesNumber
-    /// must be equal to the total VM PEs.
+    /// must be equal to the total VM cores.
     @Test
     public void freePesEqualsVmPesAfterAllCloudletsFinish() {
         simulation.start();
         assertEquals(VM_PES, vm.getFreePesNumber(),
-            "freePesNumber should equal total VM PEs after all Cloudlets finish");
+            "freePesNumber should equal total VM CPU cores after all Cloudlets finish");
         assertEquals(VM_PES, vm.getExpectedFreePesNumber(),
-            "expectedFreePesNumber should equal total VM PEs after all Cloudlets finish");
+            "expectedFreePesNumber should equal total VM CPU cores after all Cloudlets finish");
     }
 }

@@ -28,7 +28,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.cloudsimplus.cloudlets.Cloudlet;
-import org.cloudsimplus.resources.Pe;
 import org.cloudsimplus.utilizationmodels.UtilizationModel;
 import org.cloudsimplus.utilizationmodels.UtilizationModelDynamic;
 
@@ -74,8 +73,8 @@ public final class TaskEvent extends TaskData {
 
     /// The maximum number of CPU cores
     /// the task is permitted to use (in percentage from 0 to 1).
-    /// This percentage value can be used to compute the number of [Pe]s
-    /// the Cloudlet will require, based on the number of PEs of the Vm where the Cloudlet will be executed.
+    /// This percentage value can be used to compute the number of CPU cores
+    /// the Cloudlet will require, based on the number of CPU cores of the Vm where the Cloudlet will be executed.
     ///
     /// The actual value to be assigned to a Cloudlet created from this trace field
     /// must be defined by the researcher, inside the
@@ -140,7 +139,7 @@ public final class TaskEvent extends TaskData {
     /// @see TaskEventField#TIMESTAMP
     private double timestamp;
 
-    /// Computes the actual number of CPU cores (PEs) to be assigned to
+    /// Computes the actual number of CPU cores (cores) to be assigned to
     /// a Cloudlet, according to the [percentage of CPUs to be used][#getResourceRequestForCpuCores()]
     /// and a given maximum number of existing CPUs.
     /// @param maxCpuCores the maximum number of existing CPUs the Cloudlet can use (that can be defined as the number of VM's CPUs)

@@ -156,7 +156,7 @@ public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudl
     }
 
     /// Computes the cost of all Cloudlets hosted by a given Vm.
-    /// The cost is based on the number of PEs from the VM that
+    /// The cost is based on the number of CPU cores from the VM that
     /// will be idle or overloaded.
     ///
     /// @param entry a Map Entry where the key is a VM hosting some Cloudlets
@@ -169,14 +169,14 @@ public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudl
     }
 
     /// Computes the cost of all Cloudlets hosted by a given Vm.
-    /// The cost is based on the number of PEs from the VM that
+    /// The cost is based on the number of CPU cores from the VM that
     /// will be idle or overloaded.
     ///
     /// @param vm the VM to compute the cost to host some Cloudlets
     /// @param cloudlets the list of Cloudlets to be hosted by the VM to compute the cost
     /// @return the VM cost to host the Cloudlets
     public double getVmCost(final Vm vm, final List<Cloudlet> cloudlets) {
-        return Math.abs(vm.getPesNumber() - getTotalCloudletsPes(cloudlets));
+        return Math.abs(vm.getProcessor().getCores() - getTotalCloudletsPes(cloudlets));
     }
 
     private List<Cloudlet> convertMapEntryListToCloudletList(final List<Map.Entry<Cloudlet, Vm>> entriesList) {
@@ -186,9 +186,9 @@ public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudl
             .toList();
     }
 
-    /// Gets the total number of PEs from a list of Cloudlets
-    /// @param cloudletListForVm the list of Cloudlets to get the total number of PEs
-    /// @return the total number of PEs from all given Cloudlets
+    /// Gets the total number of CPU cores from a list of Cloudlets
+    /// @param cloudletListForVm the list of Cloudlets to get the total number of CPU cores
+    /// @return the total number of CPU cores from all given Cloudlets
     private long getTotalCloudletsPes(final List<Cloudlet> cloudletListForVm) {
         return cloudletListForVm
                 .stream()

@@ -64,9 +64,9 @@ So changes to cloudlet or VM execution logic usually affect this update chain an
 |---------|-----------|---------|
 | VM → Host placement / migration | `VmAllocationPolicy` (+ `allocationpolicies.migration`) | Datacenter |
 | Which VM to migrate | `VmSelectionPolicy` | migration allocation policies |
-| Host PEs → VMs | `VmScheduler` (time/space shared) | Host |
-| VM PEs → Cloudlets | `CloudletScheduler` (time/space shared, completely fair) | Vm |
-| RAM/BW/PE provisioning | `ResourceProvisioner` | Host |
+| Host CPU cores → VMs | `VmScheduler` (time/space shared) | Host |
+| VM CPU cores → Cloudlets | `CloudletScheduler` (time/space shared, completely fair) | Vm |
+| RAM/BW provisioning | `ResourceProvisioner` | Host |
 | Resource usage over time | `UtilizationModel` | Cloudlet |
 | Power consumption | `PowerModel` | Host / Datacenter |
 | Scaling | `HorizontalVmScaling`, `VerticalVmScaling` (`autoscaling`) | Broker / Vm |
@@ -75,6 +75,7 @@ So changes to cloudlet or VM execution logic usually affect this update chain an
 
 - **Sealed interfaces**: `Simulation`, `Machine`, `Vm`, `Host`, `Cloudlet`, `DatacenterBroker`, `SimEvent`, `UtilizationModel`, `PowerModelHost` and others are sealed, usually permitting only an `*Abstract` base and a `*Null` class. Adding a new direct implementation means updating the `permits` clause; normally you extend the `*Abstract`/`*Simple` class instead.
 - **Null Object pattern**: most interfaces have a `NULL` constant (`Vm.NULL`, `Host.NULL`, `SimEntity.NULL`...) backed by a `*Null` class. Return and compare against these instead of `null`. When adding a method to an interface, also implement it in its `*Null` class.
+- **Focused interfaces (ISP)**: some interfaces, such as `Host` and `Vm`, grew too large by exposing methods that belong to the objects they hold. Keep interfaces small and cohesive: put a method in the interface of the object that owns the data, and let callers reach it through that object (e.g. `host.getProcessor().getFreeCores()` instead of `host.getFreePesNumber()`). Don't add delegating methods to `Host`/`Vm` just as shortcuts, and don't add methods to an interface that only some implementations need (e.g. CPU caps live in `CpuCap`, not in `Processor`, since a Host never has a cap).
 - **Listeners**: entities expose `addOn...Listener` methods (e.g. `Vm.addOnHostAllocationListener`, `Cloudlet.addOnFinishListener`, `CloudSimPlus.addOnClockTickListener`) that receive typed `*EventInfo` objects from the `listeners` package.
 - **Builders**: `builders` has fluent scenario builders and `builders.tables` has result table printers (`CloudletsTableBuilder`, text/CSV/Markdown/HTML/LaTeX tables).
 
@@ -82,7 +83,7 @@ So changes to cloudlet or VM execution logic usually affect this update chain an
 
 | Package | Purpose |
 |---------|---------|
-| `faultinjection` | `HostFaultInjection` entity that fails host PEs at random times; `VmCloner` to recover VMs |
+| `faultinjection` | `HostFaultInjection` entity that fails Host CPU cores at random times; `VmCloner` to recover VMs |
 | `slametrics` | SLA contracts loaded from JSON |
 | `vmtemplates` | AWS EC2 instance templates loaded from JSON |
 | `traces` | Readers for Google Cluster Data, SWF and other workload traces |
@@ -105,9 +106,15 @@ Time and space complexity are crucial. CloudSim Plus is used for large-scale sim
 
 - **Java 25** with Lombok (`@Getter`, `@Setter`, `@NonNull`, etc.).
 - `lombok.config`: builder class is named `Builder`, setters are chained (return `this`), and generated accessors are `final`.
+- Use `var` for local variables when the type is already explicit on the right side, e.g. `final var capacity = new CoreCapacity(cores, mips)` instead of `final CoreCapacity capacity = new CoreCapacity(cores, mips)`. Keep the type when it isn't obvious from the expression (such as a method call) or when it differs from the created object (e.g. `final List<Vm> list = new ArrayList<>()`).
 - 4-space indentation, LF line endings (see `.editorconfig`).
 - `checkstyle.xml` (IDE only) sets limits such as max 30 executable statements per method, boolean expression complexity of 3, nesting depth, method count.
 - GPLv3 license header required on source files under `org/cloudsimplus` (`mvn license:format` adds it). Some files derived from the original CloudSim keep their original copyright and are tagged `@since CloudSim Plus x.y`.
+
+## Pull Requests
+
+- List breaking changes in their own `## Breaking changes` section of the PR description, separate from non-breaking compatibility notes and behaviour changes. Use a table with what was removed/changed and what to use instead, so users can migrate their code.
+- A change is breaking when existing user code stops compiling or linking: removed or renamed public classes/methods, changed public signatures (including types used in `VmScheduler`/`CloudletScheduler` methods that users override) and classes turned into interfaces. Methods added to sealed interfaces are not breaking.
 
 ## Testing
 

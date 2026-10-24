@@ -28,7 +28,7 @@ import lombok.NonNull;
 import org.cloudsimplus.brokers.DatacenterBroker;
 import org.cloudsimplus.hosts.Host;
 import org.cloudsimplus.resources.Resource;
-import org.cloudsimplus.schedulers.MipsShare;
+import org.cloudsimplus.resources.CoreCapacity;
 import org.cloudsimplus.schedulers.cloudlet.CloudletScheduler;
 
 import java.util.List;
@@ -54,7 +54,7 @@ public class VmGroup extends VmSimple {
     /// Creates a VmGroup for a List of VMs.
     /// @param vmList the List of VMs to create the group
     public VmGroup(@NonNull final List<Vm> vmList) {
-        super(getMaxMips(vmList), getTotalPes(vmList));
+        super(new CoreCapacity(getTotalPes(vmList), getMaxMips(vmList)));
 
         this.vmList = vmList;
         this.vmList.forEach(vm -> ((VmSimple)vm).setGroup(this));
@@ -125,12 +125,12 @@ public class VmGroup extends VmSimple {
     /// {@return the max MIPS capacity a VM inside the List is requiring}
     /// @param vmList the List of VMs to create the group
     private static double getMaxMips(final List<Vm> vmList){
-        return requireNonNull(vmList).stream().mapToDouble(Vm::getMips).max().orElse(0.0);
+        return requireNonNull(vmList).stream().mapToDouble(vm -> vm.getProcessor().getMips()).max().orElse(0.0);
     }
 
-    /// @return the total number of PEs from all VMs inside the List.
+    /// @return the total number of CPU cores from all VMs inside the List.
     private static long getTotalPes(final List<Vm> vmList){
-        return vmList.stream().mapToLong(Vm::getPesNumber).sum();
+        return vmList.stream().mapToLong(vm -> vm.getProcessor().getCores()).sum();
     }
 
     /// Sets the RAM capacity of the VmGroup as the total RAM of all VMs.
@@ -157,7 +157,7 @@ public class VmGroup extends VmSimple {
     }
 
     @Override
-    public double updateProcessing(final double currentTime, final MipsShare mipsShare) {
+    public double updateProcessing(final double currentTime, final CoreCapacity mipsShare) {
         // The given mipsShare is ignored because we need to get the mipsShare for each VM inside the group
         double minNextEventDelay = Double.MAX_VALUE;
         for (final Vm vm : vmList) {

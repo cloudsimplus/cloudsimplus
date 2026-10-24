@@ -530,7 +530,7 @@ public non-sealed abstract class DatacenterBrokerAbstract extends CloudSimEntity
 
         /* If after updating the host processing, the cloudlet executed length is still zero,
          * it means the Cloudlet has never started. This happens, for instance, due
-         * to lack of PEs to run the Cloudlet (usually when you're using a CloudletSchedulerSpaceShared).
+         * to lack of cores to run the Cloudlet (usually when you're using a CloudletSchedulerSpaceShared).
          * This way, sets the Cloudlet as failed. */
         if(cloudlet.getFinishedLengthSoFar() == 0) {
             cloudlet.getVm().getCloudletScheduler().cloudletFail(cloudlet);

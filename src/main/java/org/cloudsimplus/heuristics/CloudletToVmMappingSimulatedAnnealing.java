@@ -29,14 +29,13 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.cloudsimplus.cloudlets.Cloudlet;
 import org.cloudsimplus.distributions.ContinuousDistribution;
-import org.cloudsimplus.resources.Pe;
 import org.cloudsimplus.vms.Vm;
 
 import java.util.List;
 
 /// A heuristic that uses [Simulated Annealing](http://en.wikipedia.org/wiki/Simulated_annealing)
 /// to find a suboptimal mapping between a set of Cloudlets and VMs to reduce
-/// the number of idle or overloaded Vm [Pe]s.
+/// the number of idle or overloaded Vm cores.
 ///
 /// @author Manoel Campos da Silva Filho
 /// @since CloudSim Plus 1.0

@@ -47,7 +47,6 @@ module cloudsimplus {
     exports org.cloudsimplus.power.models;
     exports org.cloudsimplus.provisioners;
     exports org.cloudsimplus.resources;
-    exports org.cloudsimplus.schedulers;
     exports org.cloudsimplus.schedulers.cloudlet;
     exports org.cloudsimplus.schedulers.cloudlet.network;
     exports org.cloudsimplus.schedulers.vm;

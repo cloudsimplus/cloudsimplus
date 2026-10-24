@@ -23,6 +23,7 @@
  */
 package org.cloudsimplus.schedulers.cloudlet.network;
 
+import org.cloudsimplus.resources.CoreCapacity;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;
@@ -37,8 +38,6 @@ import org.cloudsimplus.core.CloudSimPlus;
 import org.cloudsimplus.datacenters.network.NetworkDatacenter;
 import org.cloudsimplus.hosts.network.NetworkHost;
 import org.cloudsimplus.network.switches.EdgeSwitch;
-import org.cloudsimplus.resources.Pe;
-import org.cloudsimplus.resources.PeSimple;
 import org.cloudsimplus.schedulers.cloudlet.CloudletSchedulerSpaceShared;
 import org.cloudsimplus.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudsimplus.schedulers.vm.VmSchedulerTimeShared;
@@ -158,8 +157,8 @@ class CloudletTaskSchedulerSimpleTest {
     }
 
     /// While C is waiting for A's packet, it must not take a share of VM 1's CPU.
-    /// This way, the other 2 cloudlets in VM 1 (which has 2 PEs) must get
-    /// a full PE each (issue #556).
+    /// This way, the other 2 cloudlets in VM 1 (which has 2 cores) must get
+    /// a full core each (issue #556).
     @Test
     void cloudletWaitingForPacketsDoesNotTakeCpuShare() {
         final var dag = new Dag(LENGTH * 3, LENGTH, true);
@@ -177,10 +176,10 @@ class CloudletTaskSchedulerSimpleTest {
         assertEquals(expectedFinishTime, cloudlet2.getFinishTime(), FINISH_TIME_TOLERANCE);
     }
 
-    /// VM 1 uses a space-shared scheduler and has 2 PEs.
-    /// Receivers R1 and R2 are submitted first, take both PEs and wait for packets from sender S,
-    /// which is in the same VM. S stays in the waiting list since there are no free PEs.
-    /// Since cloudlets waiting for packets don't hold their PEs, S must run
+    /// VM 1 uses a space-shared scheduler and has 2 cores.
+    /// Receivers R1 and R2 are submitted first, take both cores and wait for packets from sender S,
+    /// which is in the same VM. S stays in the waiting list since there are no free cores.
+    /// Since cloudlets waiting for packets don't hold their cores, S must run
     /// and send the packets, so that all cloudlets finish without a deadlock (issue #581).
     @Test
     void spaceSharedCloudletsWaitingForPacketsReleasePesToTheSender() {
@@ -379,15 +378,13 @@ class CloudletTaskSchedulerSimpleTest {
     }
 
     private NetworkHost createHost() {
-        final var peList = new ArrayList<Pe>();
-        IntStream.range(0, HOST_PES).forEach(_ -> peList.add(new PeSimple(MIPS)));
-        final var host = new NetworkHost(RAM, BW, STORAGE, peList);
+        final var host = new NetworkHost(RAM, BW, STORAGE, new CoreCapacity(HOST_PES, MIPS));
         host.setVmScheduler(new VmSchedulerTimeShared());
         return host;
     }
 
     private NetworkVm createVm(final int id) {
-        final var vm = new NetworkVm(id, MIPS, HOST_PES);
+        final var vm = new NetworkVm(id, new CoreCapacity(HOST_PES, MIPS));
         vm.setRam(RAM / 2).setBw(BW / 2).setSize(STORAGE / 2)
           .setCloudletScheduler(new CloudletSchedulerTimeShared());
         return vm;

@@ -93,7 +93,7 @@ public class UtilizationModelPlanetLabTest {
         final int totalLines = 4;
         final int linesToRead = 3;
         final String path = createTempTraceFile(totalLines, false);
-        final UtilizationModelPlanetLab planetlab = new UtilizationModelPlanetLab(path, SCHEDULING_INTERVAL, linesToRead);
+        final var planetlab = new UtilizationModelPlanetLab(path, SCHEDULING_INTERVAL, linesToRead);
         assertEquals(linesToRead, planetlab.getDataSamples());
         checkUtilizationValuesFromTempTrace(planetlab, linesToRead);
     }
@@ -103,7 +103,7 @@ public class UtilizationModelPlanetLabTest {
         final int totalLines = 4;
         final int linesToRead = 3;
         final String path = createTempTraceFile(totalLines, true);
-        final UtilizationModelPlanetLab planetlab = new UtilizationModelPlanetLab(path, SCHEDULING_INTERVAL, linesToRead);
+        final var planetlab = new UtilizationModelPlanetLab(path, SCHEDULING_INTERVAL, linesToRead);
         assertEquals(linesToRead, planetlab.getDataSamples());
         checkUtilizationValuesFromTempTrace(planetlab, linesToRead);
     }
@@ -113,7 +113,7 @@ public class UtilizationModelPlanetLabTest {
         final double expectedValues[] = {0.0, 0.2, 0.4, 0.6};
         final int totalLines = expectedValues.length;
         final String path = createTempTraceFile(totalLines, true);
-        final UtilizationModelPlanetLab planetlab = new UtilizationModelPlanetLab(path, cpuUtilization -> cpuUtilization*20);
+        final var planetlab = new UtilizationModelPlanetLab(path, cpuUtilization -> cpuUtilization*20);
         for (int i = 0; i < totalLines; i++) {
             final int time = i * SCHEDULING_INTERVAL;
             assertEquals(expectedValues[i], planetlab.getUtilization(time));
@@ -124,7 +124,7 @@ public class UtilizationModelPlanetLabTest {
     public void testReadAllLinesFromFileWithHeader() {
         final int totalLines = 4;
         final String path = createTempTraceFile(totalLines, true);
-        final UtilizationModelPlanetLab planetlab = new UtilizationModelPlanetLab(path, SCHEDULING_INTERVAL);
+        final var planetlab = new UtilizationModelPlanetLab(path, SCHEDULING_INTERVAL);
         assertEquals(totalLines, planetlab.getDataSamples());
         checkUtilizationValuesFromTempTrace(planetlab, totalLines);
     }
@@ -133,7 +133,7 @@ public class UtilizationModelPlanetLabTest {
     public void testReadAllLinesFromFileWith4LinesAndHeader() {
         final int totalLines = 4;
         final String path = createTempTraceFile(totalLines, true);
-        final UtilizationModelPlanetLab planetlab = new UtilizationModelPlanetLab(path, SCHEDULING_INTERVAL, totalLines);
+        final var planetlab = new UtilizationModelPlanetLab(path, SCHEDULING_INTERVAL, totalLines);
         assertEquals(totalLines, planetlab.getDataSamples());
         checkUtilizationValuesFromTempTrace(planetlab, totalLines);
     }
@@ -142,7 +142,7 @@ public class UtilizationModelPlanetLabTest {
     public void testReadAllLinesFromFileWith4LinesAndNoHeader() {
         final int totalLines = 4;
         final String path = createTempTraceFile(totalLines, false);
-        final UtilizationModelPlanetLab planetlab = new UtilizationModelPlanetLab(path, SCHEDULING_INTERVAL, totalLines);
+        final var planetlab = new UtilizationModelPlanetLab(path, SCHEDULING_INTERVAL, totalLines);
         assertEquals(totalLines, planetlab.getDataSamples());
         checkUtilizationValuesFromTempTrace(planetlab, totalLines);
     }
@@ -152,7 +152,7 @@ public class UtilizationModelPlanetLabTest {
         final int linesToRead = UtilizationModelPlanetLab.DEF_DATA_SAMPLES;
         final int totalLines = linesToRead+10;
         final String path = createTempTraceFile(totalLines, false);
-        final UtilizationModelPlanetLab planetlab = new UtilizationModelPlanetLab(path, SCHEDULING_INTERVAL, linesToRead);
+        final var planetlab = new UtilizationModelPlanetLab(path, SCHEDULING_INTERVAL, linesToRead);
         assertEquals(linesToRead, planetlab.getDataSamples());
         checkUtilizationValuesFromTempTrace(planetlab, linesToRead);
     }
@@ -162,7 +162,7 @@ public class UtilizationModelPlanetLabTest {
         final int linesToRead = UtilizationModelPlanetLab.DEF_DATA_SAMPLES;
         final int totalLines = linesToRead+10;
         final String path = createTempTraceFile(totalLines, false);
-        final UtilizationModelPlanetLab planetlab = new UtilizationModelPlanetLab(path, SCHEDULING_INTERVAL, -1);
+        final var planetlab = new UtilizationModelPlanetLab(path, SCHEDULING_INTERVAL, -1);
         assertEquals(linesToRead, planetlab.getDataSamples());
         checkUtilizationValuesFromTempTrace(planetlab, linesToRead);
     }

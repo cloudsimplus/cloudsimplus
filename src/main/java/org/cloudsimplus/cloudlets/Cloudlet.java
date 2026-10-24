@@ -10,7 +10,6 @@ import org.cloudsimplus.brokers.DatacenterBroker;
 import org.cloudsimplus.core.*;
 import org.cloudsimplus.listeners.CloudletVmEventInfo;
 import org.cloudsimplus.listeners.EventListener;
-import org.cloudsimplus.resources.Pe;
 import org.cloudsimplus.resources.ResourceManageable;
 import org.cloudsimplus.schedulers.cloudlet.CloudletScheduler;
 import org.cloudsimplus.schedulers.cloudlet.CloudletSchedulerCompletelyFair;
@@ -49,7 +48,7 @@ public sealed interface Cloudlet
         QUEUED,
 
         /// The Cloudlet is in the waiting queue, but it won't be automatically moved
-        /// to the execution list (even if there are available PEs) until
+        /// to the execution list (even if there are available cores) until
         /// its status is changed to [#QUEUED].
         /// This status is used specifically for Cloudlets created from a
         /// trace file, such as a [Google Cluster trace][GoogleTaskEventsTraceReader],
@@ -234,10 +233,10 @@ public sealed interface Cloudlet
     /// @return the network service level
     int getNetServiceLevel();
 
-    /// Gets the number of Processing Elements ([Pe])s from the VM, that is
+    /// Gets the number of CPU cores from the VM, that is
     /// required to execute this cloudlet.
     ///
-    /// @return number of PEs
+    /// @return number of CPU cores
     /// @see #getTotalLength()
     long getPesNumber();
 
@@ -387,15 +386,15 @@ public sealed interface Cloudlet
     /// See https://github.com/cloudsimplus/cloudsimplus/issues/591
     Cloudlet setNetServiceLevel(int netServiceLevel);
 
-    /// Sets the number of [Pe]s required to run this Cloudlet. <br>
-    /// NOTE: The Cloudlet length is computed only for 1 PE for simplicity. <br>
+    /// Sets the number of CPU cores required to run this Cloudlet. <br>
+    /// NOTE: The Cloudlet length is computed only for 1 core for simplicity. <br>
     /// For example, consider a Cloudlet that has a length of 500 MI and requires
-    /// 2 PEs. This means each PE will execute 500 MI of this Cloudlet.
+    /// 2 cores. This means each core will execute 500 MI of this Cloudlet.
     ///
-    /// @param pesNumber number of PEs
+    /// @param cores number of CPU cores
     /// @return this Cloudlet
-    /// @throws IllegalArgumentException when the number of PEs is lower or equal to zero
-    Cloudlet setPesNumber(long pesNumber);
+    /// @throws IllegalArgumentException when the number of CPU cores is lower or equal to zero
+    Cloudlet setPesNumber(long cores);
 
     /// Sets the **same [UtilizationModel]** for defining the usage of Bandwidth, CPU and RAM.
     /// To set different utilization models for each one of these resources, use the
@@ -429,7 +428,7 @@ public sealed interface Cloudlet
     Cloudlet setVm(Vm vm);
 
     /// Gets the execution length of this Cloudlet (in Million Instructions (MI))
-    /// that will be executed in each defined [Pe].
+    /// that will be executed in each defined core.
     ///
     /// In case the length is a negative value, it means
     /// the Cloudlet doesn't have a defined length, this way,
@@ -449,7 +448,7 @@ public sealed interface Cloudlet
     long getLength();
 
     /// Sets the execution length of this Cloudlet (in Million Instructions (MI))
-    /// that will be executed in each defined PE.
+    /// that will be executed in each defined core.
     ///
     /// A negative length means the Cloudlet in fact doesn't have a defined length.
     /// This way, it keeps running until a [CloudSimTag#CLOUDLET_FINISH]
@@ -471,12 +470,12 @@ public sealed interface Cloudlet
     /// @see #getTotalLength()
     Cloudlet setLength(long length);
 
-    /// Gets the total length (across all PEs) of this Cloudlet (in MI). It considers the
-    /// [#getLength()] of the cloudlet will be executed in each Pe defined by
+    /// Gets the total length (across all cores) of this Cloudlet (in MI). It considers the
+    /// [#getLength()] of the cloudlet will be executed in each core defined by
     /// [#getPesNumber()].
     ///
     /// For example, setting the cloudletLength as 10000 MI and
-    /// [#getPesNumber()] to 4, each Pe will execute 10000 MI.
+    /// [#getPesNumber()] to 4, each core will execute 10000 MI.
     /// Thus, the entire Cloudlet has a total length of 40000 MI.
     ///
     /// @return the total length of this Cloudlet (in MI)

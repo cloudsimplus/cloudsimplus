@@ -9,20 +9,19 @@ package org.cloudsimplus.hosts;
 import org.cloudsimplus.core.ChangeableId;
 import org.cloudsimplus.datacenters.Datacenter;
 import org.cloudsimplus.provisioners.ResourceProvisioner;
+import org.cloudsimplus.resources.CoreCapacity;
 import org.cloudsimplus.provisioners.ResourceProvisionerSimple;
 import org.cloudsimplus.resources.HarddriveStorage;
-import org.cloudsimplus.resources.Pe;
 import org.cloudsimplus.schedulers.vm.VmScheduler;
 import org.cloudsimplus.schedulers.vm.VmSchedulerSpaceShared;
 import org.cloudsimplus.vms.Vm;
 
-import java.util.List;
 
 /// A Host class that implements the most basic features of a Physical Machine
 /// (PM) inside a [Datacenter]. It executes actions related to the management
 /// of virtual machines (e.g., creation and destruction). A Host has a defined
 /// policy for provisioning memory and bw, as well as an allocation policy for
-/// [Pe]s to [Virtual Machines][Vm]. A Host is associated with a Datacenter and
+/// cores to [Virtual Machines][Vm]. A Host is associated with a Datacenter and
 /// can run virtual machines.
 ///
 /// @author Rodrigo N. Calheiros
@@ -38,7 +37,7 @@ public class HostSimple extends HostAbstract {
     /// The ID is automatically assigned when a List of Hosts is attached
     /// to a [Datacenter].
     ///
-    /// @param peList the host's [Pe] list
+    /// @param capacity the number of CPU cores of the Host and the MIPS capacity of each core
     ///
     /// @see ChangeableId#setId(long)
     /// @see #setRamProvisioner(ResourceProvisioner)
@@ -48,8 +47,8 @@ public class HostSimple extends HostAbstract {
     /// @see #setDefaultBwCapacity(long)
     /// @see #setDefaultStorageCapacity(long)
     /// @see #setStartupDelay(double)
-    public HostSimple(final List<Pe> peList) {
-        super(peList);
+    public HostSimple(final CoreCapacity capacity) {
+        super(capacity);
     }
 
     /// Creates a Host without a pre-defined ID,
@@ -61,7 +60,7 @@ public class HostSimple extends HostAbstract {
     /// The ID is automatically assigned when a List of Hosts is attached
     /// to a [Datacenter].
     ///
-    /// @param peList the host's [Pe] list
+    /// @param capacity the number of CPU cores of the Host and the MIPS capacity of each core
     /// @param activate true to power the Host on, false to power off (see [#setStartupDelay(double)])
     ///
     /// @see ChangeableId#setId(long)
@@ -71,8 +70,8 @@ public class HostSimple extends HostAbstract {
     /// @see #setDefaultRamCapacity(long)
     /// @see #setDefaultBwCapacity(long)
     /// @see #setDefaultStorageCapacity(long)
-    public HostSimple(final List<Pe> peList, final boolean activate) {
-        super(peList, activate);
+    public HostSimple(final CoreCapacity capacity, final boolean activate) {
+        super(capacity, activate);
     }
 
     /// Creates and instantaneously powers on a Host with the given parameters and a
@@ -81,7 +80,7 @@ public class HostSimple extends HostAbstract {
     /// @param ramProvisioner the ram provisioner with capacity in Megabytes
     /// @param bwProvisioner the bw provisioner with capacity in Megabits/s
     /// @param storage the storage capacity in Megabytes
-    /// @param peList the host's [Pe] list
+    /// @param capacity the number of CPU cores of the Host and the MIPS capacity of each core
     ///
     /// @see #setVmScheduler(VmScheduler)
     /// @see #setStartupDelay(double)
@@ -89,9 +88,9 @@ public class HostSimple extends HostAbstract {
         final ResourceProvisioner ramProvisioner,
         final ResourceProvisioner bwProvisioner,
         final long storage,
-        final List<Pe> peList)
+        final CoreCapacity capacity)
     {
-        super(ramProvisioner, bwProvisioner, storage, peList);
+        super(ramProvisioner, bwProvisioner, storage, capacity);
     }
 
     /// Creates and instantaneously powers on a Host without a pre-defined ID.
@@ -103,16 +102,16 @@ public class HostSimple extends HostAbstract {
     /// @param ram the RAM capacity in Megabytes
     /// @param bw the Bandwidth (BW) capacity in Megabits/s
     /// @param storage the storage capacity in Megabytes
-    /// @param peList the host's [Pe] list
+    /// @param capacity the number of CPU cores of the Host and the MIPS capacity of each core
     ///
-    /// @see HostSimple#HostSimple(long, long, HarddriveStorage, List)
+    /// @see HostSimple#HostSimple(long, long, HarddriveStorage, CoreCapacity)
     /// @see ChangeableId#setId(long)
     /// @see #setRamProvisioner(ResourceProvisioner)
     /// @see #setBwProvisioner(ResourceProvisioner)
     /// @see #setVmScheduler(VmScheduler)
     /// @see #setStartupDelay(double)
-    public HostSimple(final long ram, final long bw, final long storage, final List<Pe> peList) {
-        super(ram, bw, storage, peList);
+    public HostSimple(final long ram, final long bw, final long storage, final CoreCapacity capacity) {
+        super(ram, bw, storage, capacity);
     }
 
     /// Creates and instantaneously powers on a Host without a pre-defined ID.
@@ -124,9 +123,9 @@ public class HostSimple extends HostAbstract {
     /// @param ram the RAM capacity in Megabytes
     /// @param bw the Bandwidth (BW) capacity in Megabits/s
     /// @param storage the storage device for the Host
-    /// @param peList the host's [Pe] list
+    /// @param capacity the number of CPU cores of the Host and the MIPS capacity of each core
     ///
-    /// @see HostSimple#HostSimple(long, long, long, List)
+    /// @see HostSimple#HostSimple(long, long, long, CoreCapacity)
     /// @see ChangeableId#setId(long)
     /// @see #setRamProvisioner(ResourceProvisioner)
     /// @see #setBwProvisioner(ResourceProvisioner)
@@ -134,9 +133,9 @@ public class HostSimple extends HostAbstract {
     /// @see #setStartupDelay(double)
     public HostSimple(
         final long ram, final long bw,
-        final HarddriveStorage storage, final List<Pe> peList)
+        final HarddriveStorage storage, final CoreCapacity capacity)
     {
-        super(ram, bw, storage, peList);
+        super(ram, bw, storage, capacity);
     }
 
     /// Creates a Host without a pre-defined ID. It uses a [ResourceProvisionerSimple]
@@ -147,7 +146,7 @@ public class HostSimple extends HostAbstract {
     /// @param ram the RAM capacity in Megabytes
     /// @param bw the Bandwidth (BW) capacity in Megabits/s
     /// @param storage the storage capacity in Megabytes
-    /// @param peList the host's [Pe] list
+    /// @param capacity the number of CPU cores of the Host and the MIPS capacity of each core
     /// @param activate true to power the Host on, false to power off (see [#setStartupDelay(double)])
     ///
     /// @see ChangeableId#setId(long)
@@ -156,9 +155,9 @@ public class HostSimple extends HostAbstract {
     /// @see #setVmScheduler(VmScheduler)
     public HostSimple(
         final long ram, final long bw, final long storage,
-        final List<Pe> peList, final boolean activate)
+        final CoreCapacity capacity, final boolean activate)
     {
-        super(ram, bw, new HarddriveStorage(storage), peList, activate);
+        super(ram, bw, new HarddriveStorage(storage), capacity, activate);
     }
 
     @Override

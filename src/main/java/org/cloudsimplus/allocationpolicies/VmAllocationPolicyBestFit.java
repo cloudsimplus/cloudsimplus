@@ -31,8 +31,8 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 /// A [Best Fit](https://en.wikipedia.org/wiki/Best-fit_bin_packing) VmAllocationPolicy implementation that chooses,
-/// as the host for a VM, the one with the highest number of PEs in use,
-/// which has enough free PEs for a VM.
+/// as the host for a VM, the one with the highest number of CPU cores in use,
+/// which has enough free cores for a VM.
 ///
 /// This is a really computationally complex policy since the worst-case complexity
 /// to allocate a Host for a VM is O(N), where N is the number of Hosts.
@@ -47,15 +47,15 @@ import java.util.stream.Stream;
 /// @see VmAllocationPolicySimple
 public class VmAllocationPolicyBestFit extends VmAllocationPolicyAbstract {
     /// Gets the first suitable host from the [#getHostList()]
-    /// that has the highest number of PEs in use (i.e. the least number of free PEs).
+    /// that has the highest number of CPU cores in use (i.e. the least number of free cores).
     /// @return an [Optional] containing a suitable Host to place the VM;
     /// or an empty [Optional] if not found
     @Override
     protected Optional<Host> defaultFindHostForVm(final Vm vm) {
         /* Since it's being used the min operation, the active comparator must be reversed so that
-         * we get active hosts with minimum number of free PEs. */
+         * we get active hosts with minimum number of free cores. */
         final Comparator<Host> activeComparator = Comparator.comparing(Host::isActive).reversed();
-        final Comparator<Host> comparator = activeComparator.thenComparingLong(Host::getFreePesNumber);
+        final Comparator<Host> comparator = activeComparator.thenComparingLong(host -> host.getProcessor().getFreeCores());
 
         final Stream<Host> stream = isParallelHostSearchEnabled() ? getHostList().stream().parallel() : getHostList().stream();
         return stream

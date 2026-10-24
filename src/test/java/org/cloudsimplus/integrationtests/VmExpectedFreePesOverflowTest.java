@@ -23,13 +23,12 @@
  */
 package org.cloudsimplus.integrationtests;
 
+import org.cloudsimplus.resources.CoreCapacity;
 import org.cloudsimplus.brokers.DatacenterBrokerSimple;
 import org.cloudsimplus.cloudlets.CloudletSimple;
 import org.cloudsimplus.core.CloudSimPlus;
 import org.cloudsimplus.datacenters.DatacenterSimple;
 import org.cloudsimplus.hosts.HostSimple;
-import org.cloudsimplus.resources.Pe;
-import org.cloudsimplus.resources.PeSimple;
 import org.cloudsimplus.vms.VmSimple;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -41,7 +40,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 /// Verifies that `expectedFreePesNumber` does not overflow
-/// beyond the total VM PEs when a Cloudlet requires more PEs
+/// beyond the total VM cores when a Cloudlet requires more cores
 /// than the VM has available.
 ///
 /// @author Theodoros Aslanidis
@@ -68,12 +67,11 @@ public final class VmExpectedFreePesOverflowTest {
         final int vmStorage = 10_000;
 
         simulation = new CloudSimPlus();
-        final List<Pe> peList = List.of(newPe(), newPe(), newPe(), newPe());
-        final var host = new HostSimple(hRAM, hBW, hStorage, peList);
+        final var host = new HostSimple(hRAM, hBW, hStorage, new CoreCapacity(4, HOST_MIPS));
         new DatacenterSimple(simulation, List.of(host));
 
         final var broker = new DatacenterBrokerSimple(simulation);
-        vm = new VmSimple(HOST_MIPS, VM_PES);
+        vm = new VmSimple(new CoreCapacity(VM_PES, HOST_MIPS));
         vm.setRam(vmRAM).setBw(vmBW).setSize(vmStorage);
         broker.submitVmList(List.of(vm));
 
@@ -81,27 +79,23 @@ public final class VmExpectedFreePesOverflowTest {
         broker.submitCloudletList(List.of(cloudlet));
     }
 
-    private static PeSimple newPe() {
-        return new PeSimple(HOST_MIPS);
-    }
-
-    /// When a Cloudlet requires more PEs than the VM has,
-    /// `expectedFreePesNumber` must never exceed the total VM PEs
+    /// When a Cloudlet requires more cores than the VM has,
+    /// `expectedFreePesNumber` must never exceed the total VM cores
     /// after the Cloudlet finishes.
     @Test
     public void expectedFreePesDoesNotExceedVmPesAfterCloudletFinish() {
         assumeTrue(CLOUDLET_PES_HIGHER_THAN_VM_CAPACITY > VM_PES,
-            "This test is only valid if the Cloudlet requires more PEs than the VM has");
+            "This test is only valid if the Cloudlet requires more CPU cores than the VM has");
 
         simulation.start();
-        assertTrue(vm.getExpectedFreePesNumber() <= vm.getPesNumber(),
-            "expectedFreePesNumber (%d) should not exceed total VM PEs (%d)"
-                .formatted(vm.getExpectedFreePesNumber(), vm.getPesNumber()));
+        assertTrue(vm.getExpectedFreePesNumber() <= vm.getProcessor().getCores(),
+            "expectedFreePesNumber (%d) should not exceed total VM CPU cores (%d)"
+                .formatted(vm.getExpectedFreePesNumber(), vm.getProcessor().getCores()));
 
         assertEquals(VM_PES, vm.getExpectedFreePesNumber(),
-            "expectedFreePesNumber should equal total VM PEs after all Cloudlets finish");
+            "expectedFreePesNumber should equal total VM CPU cores after all Cloudlets finish");
 
         assertEquals(VM_PES, vm.getFreePesNumber(),
-            "freePesNumber should equal total VM PEs after all Cloudlets finish");
+            "freePesNumber should equal total VM CPU cores after all Cloudlets finish");
     }
 }
