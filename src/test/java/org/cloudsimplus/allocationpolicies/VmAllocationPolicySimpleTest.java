@@ -69,7 +69,7 @@ public class VmAllocationPolicySimpleTest {
             hosts.add(host);
         }
 
-        final VmAllocationPolicySimple policy = new VmAllocationPolicySimple();
+        final var policy = new VmAllocationPolicySimple();
         policy.setDatacenter(new DatacenterSimple(Simulation.NULL, hosts));
         return policy;
     }

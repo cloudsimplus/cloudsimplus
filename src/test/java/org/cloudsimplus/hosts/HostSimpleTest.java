@@ -79,7 +79,7 @@ public class HostSimpleTest {
         final double mips, final long ram,
         final long bw, final long storage, final boolean activate)
     {
-        final HostSimple host = new HostSimple(ram, bw, storage, new CoreCapacity(cores, mips), activate);
+        final var host = new HostSimple(ram, bw, storage, new CoreCapacity(cores, mips), activate);
         host.setRamProvisioner(new ResourceProvisionerSimple())
             .setBwProvisioner(new ResourceProvisionerSimple())
             .setVmScheduler(new VmSchedulerTimeShared())
@@ -88,7 +88,7 @@ public class HostSimpleTest {
     }
 
     private static HostSimple createHostSimple(final int cores, VmScheduler vmScheduler) {
-        final HostSimple host = new HostSimple(RAM, BW, STORAGE, new CoreCapacity(cores, MIPS));
+        final var host = new HostSimple(RAM, BW, STORAGE, new CoreCapacity(cores, MIPS));
         host.setRamProvisioner(new ResourceProvisionerSimple())
             .setBwProvisioner(new ResourceProvisionerSimple())
             .setVmScheduler(vmScheduler);
@@ -336,7 +336,7 @@ public class HostSimpleTest {
     public void testUpdateVmProcessing() {
         final int numberOfVms = 4;
 
-        final CoreCapacity mipsShare = new CoreCapacity(MIPS / numberOfVms);
+        final var mipsShare = new CoreCapacity(MIPS / numberOfVms);
         final double time = 0;
 
         final List<Vm> vmList = createListOfMockVms(numberOfVms, mipsShare, time);
@@ -599,7 +599,7 @@ public class HostSimpleTest {
 
     @Test
     public void testDestroyVmAndRemoveFromBrokerCreatedList() {
-        final CloudSimPlus cloudsim = new CloudSimPlus();
+        final var cloudsim = new CloudSimPlus();
 
         final DatacenterBroker broker = new DatacenterBrokerSimple(cloudsim);
         final var vm = VmTestUtil.createVm(0, 2);

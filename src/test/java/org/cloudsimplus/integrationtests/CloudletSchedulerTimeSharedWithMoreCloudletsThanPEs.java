@@ -65,7 +65,7 @@ public final class CloudletSchedulerTimeSharedWithMoreCloudletsThanPEs {
     @BeforeEach
     public void setUp() {
         simulation = new CloudSimPlus();
-        final SimulationScenarioBuilder scenario = new SimulationScenarioBuilder(simulation);
+        final var scenario = new SimulationScenarioBuilder(simulation);
         scenario.getDatacenterBuilder().setSchedulingInterval(2).create(
             new HostBuilder()
                 .setVmSchedulerSupplier(VmSchedulerSpaceShared::new)

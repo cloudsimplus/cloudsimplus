@@ -44,7 +44,7 @@ public final class DatacenterMocker {
     }
 
     public static Datacenter createMock(final Consumer<DatacenterMocker> consumer) {
-        final DatacenterMocker mocker = new DatacenterMocker();
+        final var mocker = new DatacenterMocker();
         consumer.accept(mocker);
         return mocker.datacenter;
     }

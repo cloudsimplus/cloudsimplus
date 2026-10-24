@@ -81,7 +81,7 @@ public final class CloudletTestUtil {
         final UtilizationModel utilizationModelBW,
         final long length, final int cores)
     {
-        final CloudletSimple cloudlet = new CloudletSimple(id, length, cores);
+        final var cloudlet = new CloudletSimple(id, length, cores);
 
         cloudlet
             .setFileSize(CLOUDLET_FILE_SIZE)

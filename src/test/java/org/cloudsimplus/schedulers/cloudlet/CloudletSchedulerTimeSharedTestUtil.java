@@ -51,7 +51,7 @@ final class CloudletSchedulerTimeSharedTestUtil {
     }
 
     /* default */ static CloudletSchedulerTimeShared createCloudletSchedulerWithMipsList(final int cores, final long mips) {
-        final CloudletSchedulerTimeShared scheduler = new CloudletSchedulerTimeShared();
+        final var scheduler = new CloudletSchedulerTimeShared();
         scheduler.setVm(new VmSimple(0, new CoreCapacity(cores, mips)));
         scheduler.setCurrentMipsShare(new CoreCapacity(cores, mips));
         return scheduler;

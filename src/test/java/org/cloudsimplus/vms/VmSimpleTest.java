@@ -186,14 +186,14 @@ public class VmSimpleTest {
 
     @Test
     public void testAddStateHistoryEntryCheckAddedEntryValues(){
-        final VmStateHistoryEntry entry = new VmStateHistoryEntry(0, 1000, 100, false);
+        final var entry = new VmStateHistoryEntry(0, 1000, 100, false);
         vm.addStateHistoryEntry(entry);
         assertEquals(entry, vm.getStateHistory().get(vm.getStateHistory().size()-1));
     }
 
     @Test
     public void testAddStateHistoryEntryWhenAddEntryWithSameTime(){
-        final VmStateHistoryEntry entry = new VmStateHistoryEntry(0, 1000, 100, false);
+        final var entry = new VmStateHistoryEntry(0, 1000, 100, false);
         vm.addStateHistoryEntry(entry);
         vm.addStateHistoryEntry(entry);
         assertEquals(1, vm.getStateHistory().size());
@@ -201,7 +201,7 @@ public class VmSimpleTest {
 
     @Test
     public void testAddStateHistoryEntryWhenChangeAddedEntry(){
-        final VmStateHistoryEntry entry = new VmStateHistoryEntry(0, 1000, 100, false);
+        final var entry = new VmStateHistoryEntry(0, 1000, 100, false);
         vm.addStateHistoryEntry(entry);
         entry.setInMigration(true);
         vm.addStateHistoryEntry(entry);
@@ -366,8 +366,8 @@ public class VmSimpleTest {
 
     @Test
     public void testUpdateVmProcessing() {
-        final CoreCapacity mipsShare1 = new CoreCapacity(1.0);
-        final CoreCapacity mipsShare2 = new CoreCapacity(1.0);
+        final var mipsShare1 = new CoreCapacity(1.0);
+        final var mipsShare2 = new CoreCapacity(1.0);
         final double expectedNextCompletionTime = cloudletScheduler.updateProcessing(0, mipsShare1);
         final double actualNextCompletionTime = vm.updateProcessing(0, mipsShare2);
         assertEquals(expectedNextCompletionTime, actualNextCompletionTime);

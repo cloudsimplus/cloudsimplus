@@ -106,6 +106,7 @@ Time and space complexity are crucial. CloudSim Plus is used for large-scale sim
 
 - **Java 25** with Lombok (`@Getter`, `@Setter`, `@NonNull`, etc.).
 - `lombok.config`: builder class is named `Builder`, setters are chained (return `this`), and generated accessors are `final`.
+- Use `var` for local variables when the type is already explicit on the right side, e.g. `final var capacity = new CoreCapacity(cores, mips)` instead of `final CoreCapacity capacity = new CoreCapacity(cores, mips)`. Keep the type when it isn't obvious from the expression (such as a method call) or when it differs from the created object (e.g. `final List<Vm> list = new ArrayList<>()`).
 - 4-space indentation, LF line endings (see `.editorconfig`).
 - `checkstyle.xml` (IDE only) sets limits such as max 30 executable statements per method, boolean expression complexity of 3, nesting depth, method count.
 - GPLv3 license header required on source files under `org/cloudsimplus` (`mvn license:format` adds it). Some files derived from the original CloudSim keep their original copyright and are tagged `@since CloudSim Plus x.y`.

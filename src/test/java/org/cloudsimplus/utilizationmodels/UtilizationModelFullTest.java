@@ -35,7 +35,7 @@ public class UtilizationModelFullTest {
 
     @Test
     public void testGetUtilizationForDifferentTimes() {
-        final UtilizationModelFull instance = new UtilizationModelFull();
+        final var instance = new UtilizationModelFull();
         final String msg =
                 "For any time (even a randomly defined one), the utilization has to be equals to %d"
                 .formatted(EXPECTED_UTILIZATION);

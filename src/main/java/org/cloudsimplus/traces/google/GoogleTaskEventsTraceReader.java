@@ -283,7 +283,7 @@ public class GoogleTaskEventsTraceReader extends GoogleTraceReaderAbstract<Cloud
          */
         final Runnable attributesUpdateRunnable = () -> {
             final DatacenterBroker broker = cloudlet.getBroker();
-            final StringBuilder builder = new StringBuilder();
+            final var builder = new StringBuilder();
 
             /* The output size doesn't always have a relation with file size.
              * This way, if the file size is changed, we don't change

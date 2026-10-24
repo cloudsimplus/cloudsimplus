@@ -139,7 +139,7 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
         }
 
         final int SIZE = 1000;   // number of chars
-        final StringBuilder sb = new StringBuilder(SIZE);
+        final var sb = new StringBuilder(SIZE);
         sb.append("Ping information for ").append(name)
           .append("%nEntity Name\tEntry Time\tExit Time\t Bandwidth%n".formatted())
           .append("----------------------------------------------------------")

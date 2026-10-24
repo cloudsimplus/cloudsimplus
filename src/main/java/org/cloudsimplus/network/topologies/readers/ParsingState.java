@@ -59,8 +59,8 @@ enum ParsingState {
                 return;
             }
 
-            final Point2D coordinates = new Point2D(parsedFields[1], parsedFields[2]);
-            final TopologicalNode topoNode = new TopologicalNode(parsedFields[0], coordinates);
+            final var coordinates = new Point2D(parsedFields[1], parsedFields[2]);
+            final var topoNode = new TopologicalNode(parsedFields[0], coordinates);
             reader.getGraph().addNode(topoNode);
         }
     },

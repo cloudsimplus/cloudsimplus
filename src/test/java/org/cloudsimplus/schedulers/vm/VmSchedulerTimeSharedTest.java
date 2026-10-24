@@ -30,7 +30,7 @@ public class VmSchedulerTimeSharedTest {
     private VmSimple vm1;
 
     private VmScheduler createVmScheduler(final double mips, final int cores) {
-        final VmSchedulerTimeShared scheduler = new VmSchedulerTimeShared();
+        final var scheduler = new VmSchedulerTimeShared();
         final Host host = new HostSimple(2048, 20000, 20000, new CoreCapacity(cores, mips));
         host
             .setRamProvisioner(new ResourceProvisionerSimple())
@@ -192,7 +192,7 @@ public class VmSchedulerTimeSharedTest {
         host.getVmList().add(vm0);
         host.getVmList().add(vm1);
 
-        final CoreCapacity mipsShare = new CoreCapacity(vm0.getPesNumber(), MIPS);
+        final var mipsShare = new CoreCapacity(vm0.getPesNumber(), MIPS);
 
         vmScheduler.allocatePesForVm(vm0, mipsShare);
         vmScheduler.allocatePesForVm(vm1, mipsShare);

@@ -78,7 +78,7 @@ public class CloudletSchedulerSpaceSharedTest {
         final var cloudsim = CloudSimMocker.createMock(mocker -> mocker.clock(clockMethodReturnValue));
         final var cloudlet = CloudletTestUtil.createCloudlet(0, 1000, 1);
         cloudlet.setBroker(MocksHelper.createMockBroker(cloudsim));
-        final CloudletExecution cle = new CloudletExecution(cloudlet);
+        final var cle = new CloudletExecution(cloudlet);
         final CloudletSchedulerSpaceShared instance = CloudletSchedulerSpaceSharedTestUtil.createScheduler();
         instance.cloudletFinish(cle);
         assertTrue(instance.getCloudletFinishedList().contains(cle));

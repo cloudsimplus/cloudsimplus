@@ -112,7 +112,7 @@ public final class VmTestUtil {
         final long ram, final long bw, final long storage, CloudSimPlus cloudsim)
     {
         final DatacenterBroker broker = new DatacenterBrokerSimple(cloudsim);
-        final VmSimple vm = new VmSimple(vmId, new CoreCapacity(cores, mips));
+        final var vm = new VmSimple(vmId, new CoreCapacity(cores, mips));
         vm.setRam(ram).setBw(bw)
                 .setSize(storage)
                 .setCloudletScheduler(CloudletScheduler.NULL)
@@ -151,7 +151,7 @@ public final class VmTestUtil {
         });
 
         final DatacenterBroker broker = MocksHelper.createMockBroker(cloudsim, brokerMockerConsumer);
-        final VmSimple vm = new VmSimple(vmId, new CoreCapacity(cores, mips));
+        final var vm = new VmSimple(vmId, new CoreCapacity(cores, mips));
         vm.setRam(ram).setBw(bw)
            .setSize(storage)
            .setCloudletScheduler(scheduler)

@@ -556,7 +556,7 @@ public class SanStorageTest {
         san.addFile(file2);
         assertFalse(san.renameFile(file1, file2.getName()));
 
-        final File notAddedFile = new File("file3.txt", 100);
+        final var notAddedFile = new File("file3.txt", 100);
         assertFalse(san.renameFile(notAddedFile, "new-name.txt"));
     }
 
