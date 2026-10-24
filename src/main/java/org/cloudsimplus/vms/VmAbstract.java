@@ -428,14 +428,6 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
         return getLastBusyTime() > NOT_ASSIGNED;
     }
 
-    /// Sets the individual MIPS capacity of any VM's core, considering that all
-    /// cores have the same capacity.
-    ///
-    /// @param mips the new mips for every VM's core
-    protected final void setMips(final double mips) {
-        processor.setMips(mips);
-    }
-
     @Override
     public long getPesNumber() {
         return processor.getCapacity();

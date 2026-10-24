@@ -140,12 +140,6 @@ public class VmSimpleTest {
     }
 
     @Test
-    public void testSetMips() {
-        vm.setMips(VmTestUtil.MIPS / 2);
-        assertEquals(VmTestUtil.MIPS / 2, vm.getProcessor().getMips());
-    }
-
-    @Test
     public void testSetStartTimeValid0() {
         final int expected = 0;
         vm.setStartTime(expected);
