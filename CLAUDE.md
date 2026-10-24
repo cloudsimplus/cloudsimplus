@@ -110,6 +110,11 @@ Time and space complexity are crucial. CloudSim Plus is used for large-scale sim
 - `checkstyle.xml` (IDE only) sets limits such as max 30 executable statements per method, boolean expression complexity of 3, nesting depth, method count.
 - GPLv3 license header required on source files under `org/cloudsimplus` (`mvn license:format` adds it). Some files derived from the original CloudSim keep their original copyright and are tagged `@since CloudSim Plus x.y`.
 
+## Pull Requests
+
+- List breaking changes in their own `## Breaking changes` section of the PR description, separate from non-breaking compatibility notes and behaviour changes. Use a table with what was removed/changed and what to use instead, so users can migrate their code.
+- A change is breaking when existing user code stops compiling or linking: removed or renamed public classes/methods, changed public signatures (including types used in `VmScheduler`/`CloudletScheduler` methods that users override) and classes turned into interfaces. Methods added to sealed interfaces are not breaking.
+
 ## Testing
 
 - **JUnit 5** (Jupiter) + **Mockito**.
