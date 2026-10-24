@@ -74,7 +74,7 @@ final class CloudletNull implements Cloudlet {
     @Override public double getLastBusyTime() { return 0; }
     @Override public Startable setLastBusyTime(double time) { return this; }
     @Override public int getNetServiceLevel() { return 0; }
-    @Override public long getPesNumber() { return 0; }
+    @Override public long getRequiredCores() { return 0; }
     @Override public List<String> getRequiredFiles() { return Collections.emptyList(); }
     @Override public Status getStatus() { return Status.FAILED; }
     @Override public boolean isReturnedToBroker() { return false; }
@@ -101,7 +101,7 @@ final class CloudletNull implements Cloudlet {
     @Override public Cloudlet setSizes(long size) { return this; }
     @Override public boolean setStatus(Status newStatus) { return false; }
     @Override public Cloudlet setNetServiceLevel(int netServiceLevel) { return this; }
-    @Override public Cloudlet setPesNumber(long pesNumber) { return this; }
+    @Override public Cloudlet setRequiredCores(long cores) { return this; }
     @Override public Cloudlet setBroker(DatacenterBroker broker) { return this; }
     @Override public DatacenterBroker getBroker() { return DatacenterBroker.NULL; }
     @Override public Cloudlet setUtilizationModel(UtilizationModel utilizationModel) { return this; }

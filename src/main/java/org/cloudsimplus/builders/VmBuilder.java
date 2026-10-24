@@ -31,7 +31,7 @@ import org.cloudsimplus.brokers.DatacenterBrokerSimple;
 import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.listeners.VmDatacenterEventInfo;
 import org.cloudsimplus.listeners.VmHostEventInfo;
-import org.cloudsimplus.resources.Pe;
+import org.cloudsimplus.resources.CoreCapacity;
 import org.cloudsimplus.schedulers.cloudlet.CloudletScheduler;
 import org.cloudsimplus.vms.Vm;
 import org.cloudsimplus.vms.VmSimple;
@@ -39,7 +39,7 @@ import org.cloudsimplus.vms.VmSimple;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import org.jspecify.annotations.Nullable;
 
@@ -54,13 +54,13 @@ import org.jspecify.annotations.Nullable;
 /// @see VmSimple#setDefaultStorageCapacity(long)
 @Accessors(chain = true)
 public class VmBuilder implements Builder {
-    /// A [BiFunction] used to create VMs.
-    /// It must receive the MIPS capacity of each [Pe] and the number of PEs for the VM it will create.
-    @Setter @NonNull private BiFunction<Double, Long, Vm> vmCreationFunction;
+    /// A [Function] used to create VMs.
+    /// It receives the number of cores and the MIPS capacity of each core for the VM it will create.
+    @Setter @NonNull private Function<CoreCapacity, Vm> vmCreationFunction;
     @Getter @Setter private double mips = 1000;
 
-    /// Default number of [Pe]s to create.
-    @Getter @Setter private long pes = 1;
+    /// Default number of CPU cores of each VM to create.
+    @Getter @Setter private long cores = 1;
     private int numberOfCreatedVms;
     private final DatacenterBrokerSimple broker;
     @Setter @Nullable private Supplier<CloudletScheduler> cloudletSchedulerSupplier;
@@ -86,7 +86,7 @@ public class VmBuilder implements Builder {
     public VmBuilder createAndSubmit(final int amount) {
         final List<Vm> vms = new ArrayList<>(amount);
         for (int i = 0; i < amount; i++) {
-            final Vm vm = vmCreationFunction.apply(mips, pes);
+            final Vm vm = vmCreationFunction.apply(new CoreCapacity(cores, mips));
             if(cloudletSchedulerSupplier != null) {
                 vm.setCloudletScheduler(cloudletSchedulerSupplier.get());
             }
@@ -106,8 +106,8 @@ public class VmBuilder implements Builder {
         return broker.getVmWaitingList();
     }
 
-    private Vm defaultVmCreationFunction(final double mips, final long pes) {
-        return new VmSimple(numberOfCreatedVms++, mips, pes);
+    private Vm defaultVmCreationFunction(final CoreCapacity capacity) {
+        return new VmSimple(numberOfCreatedVms++, capacity);
     }
 
     public Vm getVmById(final int id) {

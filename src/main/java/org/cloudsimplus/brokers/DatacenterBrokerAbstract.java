@@ -32,7 +32,6 @@ import org.cloudsimplus.utilizationmodels.UtilizationModel;
 import org.cloudsimplus.vms.Vm;
 import org.cloudsimplus.vms.VmAbstract;
 import org.cloudsimplus.vms.VmGroup;
-import org.cloudsimplus.vms.VmSimple;
 import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -530,7 +529,7 @@ public non-sealed abstract class DatacenterBrokerAbstract extends CloudSimEntity
 
         /* If after updating the host processing, the cloudlet executed length is still zero,
          * it means the Cloudlet has never started. This happens, for instance, due
-         * to lack of PEs to run the Cloudlet (usually when you're using a CloudletSchedulerSpaceShared).
+         * to lack of cores to run the Cloudlet (usually when you're using a CloudletSchedulerSpaceShared).
          * This way, sets the Cloudlet as failed. */
         if(cloudlet.getFinishedLengthSoFar() == 0) {
             cloudlet.getVm().getCloudletScheduler().cloudletFail(cloudlet);
@@ -902,14 +901,13 @@ public non-sealed abstract class DatacenterBrokerAbstract extends CloudSimEntity
     private boolean processCloudletReturn(final SimEvent evt) {
         final var cloudlet = (Cloudlet) evt.getData();
         cloudletFinishedList.add(cloudlet);
-        ((VmSimple) cloudlet.getVm()).addExpectedFreePesNumber(cloudlet.getPesNumber());
+        ((VmAbstract) cloudlet.getVm()).addExpectedFreeCores(cloudlet.getRequiredCores());
         final String lifeTime = cloudlet.getLifeTime() == Double.MAX_VALUE ? "" : " (after defined lifetime expired)";
         LOGGER.info(
             "{}: {}: {} finished{} in {} and returned to broker.",
             getSimulation().clockStr(), getName(), cloudlet, lifeTime, cloudlet.getVm());
 
         if (cloudlet.getVm().getCloudletScheduler().isEmpty()) {
-            ((VmAbstract) cloudlet.getVm()).freeAllPes();
             requestIdleVmDestruction(cloudlet.getVm());
             return true;
         }
@@ -948,7 +946,7 @@ public non-sealed abstract class DatacenterBrokerAbstract extends CloudSimEntity
                 vm.shutdown();
             }
 
-            if(isVmIdlenessVerificationRequired((VmSimple)vm)) {
+            if(isVmIdlenessVerificationRequired((VmAbstract)vm)) {
                 getSimulation().send(
                     new CloudSimEvent(vmDestructionDelayFunction.apply(vm),
                         vm.getHost().getDatacenter(),
@@ -989,7 +987,7 @@ public non-sealed abstract class DatacenterBrokerAbstract extends CloudSimEntity
     ///
     /// @param vm the Vm to check
     /// @return true if a message to check VM idleness has to be sent, false otherwise
-    private boolean isVmIdlenessVerificationRequired(final VmSimple vm) {
+    private boolean isVmIdlenessVerificationRequired(final VmAbstract vm) {
         if(vm.hasStartedSomeCloudlet() && vm.getCloudletScheduler().isEmpty()){
             final int schedulingInterval = (int)vm.getHost().getDatacenter().getSchedulingInterval();
             final int delay = vmDestructionDelayFunction.apply(vm).intValue();
@@ -1044,7 +1042,7 @@ public non-sealed abstract class DatacenterBrokerAbstract extends CloudSimEntity
                 continue;
             }
 
-            ((VmSimple) lastSelectedVm).removeExpectedFreePesNumber(cloudlet.getPesNumber());
+            ((VmAbstract) lastSelectedVm).removeExpectedFreeCores(cloudlet.getRequiredCores());
 
             cloudlet.setVm(lastSelectedVm);
             logCloudletCreationRequest(cloudlet);

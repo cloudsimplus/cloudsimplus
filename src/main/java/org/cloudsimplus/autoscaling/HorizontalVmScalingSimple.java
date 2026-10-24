@@ -26,7 +26,6 @@ package org.cloudsimplus.autoscaling;
 import lombok.experimental.Accessors;
 import org.cloudsimplus.brokers.DatacenterBroker;
 import org.cloudsimplus.resources.Bandwidth;
-import org.cloudsimplus.resources.Pe;
 import org.cloudsimplus.resources.Ram;
 
 import java.util.function.Predicate;
@@ -34,7 +33,7 @@ import java.util.function.Predicate;
 ///
 /// A HorizontalVmScaling implementation that allows defining the condition
 /// to identify an overloaded VM, based on any desired criteria, such as
-/// current [Ram], [CPU][Pe] or [Bandwidth] utilization.
+/// current [Ram], [CPU]core or [Bandwidth] utilization.
 /// A [DatacenterBroker] monitors the VMs that have
 /// an HorizontalVmScaling object to create or destroy VMs on demand.
 ///

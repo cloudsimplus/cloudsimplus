@@ -9,7 +9,6 @@ package org.cloudsimplus.schedulers.cloudlet;
 
 import org.cloudsimplus.cloudlets.Cloudlet;
 import org.cloudsimplus.cloudlets.CloudletExecution;
-import org.cloudsimplus.resources.Pe;
 import org.cloudsimplus.vms.Vm;
 
 import java.io.Serial;
@@ -50,11 +49,11 @@ public class CloudletSchedulerSpaceShared extends CloudletSchedulerAbstract {
         getCloudletPausedList().remove(cle);
 
         // it can go to the exec list
-        if (isThereEnoughFreePesForCloudlet(cle)) {
+        if (isThereEnoughFreeCoresForCloudlet(cle)) {
             return movePausedCloudletToExecList(cle);
         }
 
-        // No enough free PEs: go to the waiting queue
+        // No enough free cores: go to the waiting queue
         /*
          * A resumed cloudlet is not immediately added to the execution list.
          * It is queued so that the next time the scheduler process VM execution,
@@ -76,15 +75,15 @@ public class CloudletSchedulerSpaceShared extends CloudletSchedulerAbstract {
     }
 
     /// The space-shared scheduler **does not** share the CPU time between
-    /// executing cloudlets. Each CPU ([Pe]) is used by another Cloudlet
+    /// executing cloudlets. Each CPU (core) is used by another Cloudlet
     /// just when the previous Cloudlet using it has finished executing
-    /// completely. By this way, if there are more Cloudlets than PEs, some
+    /// completely. By this way, if there are more Cloudlets than cores, some
     /// Cloudlet will not be allowed to start executing immediately.
     ///
     /// @param cle {@inheritDoc}
     /// @return {@inheritDoc}
     @Override
     protected boolean canExecuteCloudletInternal(final CloudletExecution cle) {
-        return isThereEnoughFreePesForCloudlet(cle);
+        return isThereEnoughFreeCoresForCloudlet(cle);
     }
 }

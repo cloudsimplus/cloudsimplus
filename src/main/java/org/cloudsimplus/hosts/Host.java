@@ -16,8 +16,8 @@ import org.cloudsimplus.power.PowerAware;
 import org.cloudsimplus.power.models.PowerModelHost;
 import org.cloudsimplus.provisioners.ResourceProvisioner;
 import org.cloudsimplus.resources.Bandwidth;
-import org.cloudsimplus.resources.Pe;
-import org.cloudsimplus.resources.Pe.Status;
+import org.cloudsimplus.resources.CoreStatus;
+import org.cloudsimplus.resources.Processor;
 import org.cloudsimplus.resources.Ram;
 import org.cloudsimplus.resources.ResourceManageable;
 import org.cloudsimplus.schedulers.vm.VmScheduler;
@@ -150,19 +150,9 @@ public sealed interface Host
     /// and allocates them on the Host.
     void reallocateMigratingInVms();
 
-    /// @return total MIPS capacity of [Pe]s which are not [Status#FAILED].
+    /// @return total MIPS capacity of cores which are not [failed][CoreStatus#FAILED].
     @Override
     double getTotalMipsCapacity();
-
-    /// @return the current total amount of available MIPS at the Host.
-    double getTotalAvailableMips();
-
-    /// @return the total allocated MIPS at the Host.
-    double getTotalAllocatedMips();
-
-    /// {@return the total allocated MIPS for a VM across all its PEs}
-    /// @param vm the Vm to get its total allocated MIPS
-    double getTotalAllocatedMipsForVm(Vm vm);
 
     /// Removes a VM migrating into this Host from the migrating-in list,
     /// so that the VM can be actually placed into the Host
@@ -170,44 +160,6 @@ public sealed interface Host
     ///
     /// @param vm the Vm to remove
     void removeMigratingInVm(Vm vm);
-
-    /// @return the list of all [Pe]s of the host, including failed PEs.
-    /// @see #getWorkingPeList()
-    List<Pe> getPeList();
-
-    /// @return the list of working (non-failed) [Pe]s of the Host.
-    List<Pe> getWorkingPeList();
-
-    /// @return the list of [Pe]s of the Host that are [Status#BUSY].
-    List<Pe> getBusyPeList();
-
-    /// @return the list of free (non-failed) [Pe]s of the Host.
-    List<Pe> getFreePeList();
-
-    /// @return the number of [Pe]s that are free to be used by any VM.
-    int getFreePesNumber();
-
-    /// @return the number of [Pe]s that are working (non-failed).
-    int getWorkingPesNumber();
-
-    /// @return the number of [Pe]s that are [Pe.Status#BUSY].
-    int getBusyPesNumber();
-
-    /// @return the current percentage (from 0..1) of used (busy) [Pe]s,
-    /// according to the [total number of PEs][#getPesNumber()].
-    /// @see #getBusyPesPercent(boolean)
-    double getBusyPesPercent();
-
-    /// Gets the current percentage of used (busy) [Pe]s,
-    /// according to the [total number of PEs][#getPesNumber()].
-    /// @param hundredScale true for getting the return in the 0..100 scale;
-    /// false for the 0..1 scale.
-    /// @return the percentage of busy PEs in the defined scale (according to the hundredScale parameter).
-    /// @see #getBusyPesPercent()
-    double getBusyPesPercent(boolean hundredScale);
-
-    /// @return the number of [Pe]s that have failed.
-    int getFailedPesNumber();
 
     /// @return the total free storage available at the Host in Megabytes.
     long getAvailableStorage();
@@ -243,10 +195,10 @@ public sealed interface Host
     /// @return the read-only created VM historic list
     <T extends Vm> List<T> getVmCreatedList();
 
-    /// @return the policy for allocation of host [Pe]s to VMs to schedule VM execution.
+    /// @return the policy for allocation of host cores to VMs to schedule VM execution.
     VmScheduler getVmScheduler();
 
-    /// Sets the policy for allocation of host [Pe]s to VMs to schedule VM
+    /// Sets the policy for allocation of host cores to VMs to schedule VM
     /// execution. The host also sets itself to the given scheduler.
     /// It also sets the Host itself to the given scheduler.
     ///
@@ -319,7 +271,7 @@ public sealed interface Host
 
     /// Checks if the host has failed or is working properly.
     ///
-    /// @return true, if the host PEs have failed; false otherwise
+    /// @return true, if the host cores have failed; false otherwise
     boolean isFailed();
 
     /// Sets the Host state to "failed" or "working".
@@ -404,7 +356,7 @@ public sealed interface Host
     Host setSimulation(Simulation simulation);
 
     /// Gets the [ResourceProvisioner]s that manages a Host's resource
-    /// such as [Ram], [Bandwidth] and [Pe].
+    /// such as [Ram], [Bandwidth] and [Processor].
     /// @param resourceClass the class of the resource to get its provisioner
     /// @return the [ResourceProvisioner] for the given resource class
     ResourceProvisioner getProvisioner(Class<? extends ResourceManageable> resourceClass);
@@ -436,7 +388,7 @@ public sealed interface Host
     void enableUtilizationStats();
 
     /// @return the current total utilization of CPU in MIPS,
-    /// considering the usage of all its PEs.
+    /// considering the usage of all its cores.
     double getCpuMipsUtilization();
 
     /// @return the current utilization of bw (in Megabits/s).

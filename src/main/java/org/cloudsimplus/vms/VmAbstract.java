@@ -43,7 +43,7 @@ import org.cloudsimplus.listeners.Listeners;
 import org.cloudsimplus.listeners.VmDatacenterEventInfo;
 import org.cloudsimplus.listeners.VmHostEventInfo;
 import org.cloudsimplus.resources.*;
-import org.cloudsimplus.schedulers.MipsShare;
+import org.cloudsimplus.resources.CoreCapacity;
 import org.cloudsimplus.schedulers.cloudlet.CloudletScheduler;
 import org.cloudsimplus.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudsimplus.util.MathUtil;
@@ -51,6 +51,7 @@ import org.cloudsimplus.utilizationmodels.BootModel;
 
 import java.util.*;
 import org.jspecify.annotations.Nullable;
+
 
 /// A base class for implementing [Vm]s.
 ///
@@ -82,16 +83,24 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
 
     @Setter @NonNull
     private BootModel bootModel;
+
+    /// @see #getCpuCap()
+    @Setter @NonNull
+    private CpuCap cpuCap;
     protected List<ResourceManageable> resources;
 
     @Setter
     protected String description;
-    protected long freePesNumber;
-    protected long expectedFreePesNumber;
-    @Setter  @NonNull
-    protected MipsShare allocatedMips;
-    @Setter  @NonNull
-    protected MipsShare requestedMips;
+
+    /// The expected number of free cores, estimated by the broker when it maps Cloudlets to the VM.
+    /// It's different from the [number of free cores][Processor#getFreeCores()], which
+    /// considers only Cloudlets already running.
+    /// @see #getExpectedFreeCores()
+    protected long expectedFreeCores;
+    /// @see #setMipsShares(CoreCapacity, CoreCapacity)
+    protected CoreCapacity allocatedMips;
+    /// @see #setMipsShares(CoreCapacity, CoreCapacity)
+    protected CoreCapacity requestedMips;
     @Setter
     private String vmm;
     private Host host;
@@ -111,44 +120,40 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
     private HorizontalVmScaling horizontalScaling;
     private VerticalVmScaling ramVerticalScaling;
     private VerticalVmScaling bwVerticalScaling;
-    private VerticalVmScaling peVerticalScaling;
+    private VerticalVmScaling cpuVerticalScaling;
     private VmResourceStats cpuUtilizationStats;
 
     /// A copy constructor that creates a VM based on the configuration of another one.
-    /// The created VM will have the same MIPS capacity, number of PEs,
+    /// The created VM will have the same MIPS capacity, number of CPU cores,
     /// BW, RAM and size of the given VM, but a default [CloudletScheduler] and no [DatacenterBroker].
     /// @param sourceVm the VM to be cloned
     public VmAbstract(final Vm sourceVm) {
-        this(-1, (long)sourceVm.getMips(), sourceVm.getPesNumber());
+        this(-1, sourceVm.getProcessor().toCoreCapacity());
+        this.cpuCap = sourceVm.getCpuCap();
         this.setBw(sourceVm.getBw().getCapacity())
             .setRam(sourceVm.getRam().getCapacity())
             .setSize(sourceVm.getStorage().getCapacity());
     }
 
-    protected VmAbstract(final long id, final long mipsCapacity, final long pesNumber) {
-        this(id, mipsCapacity, pesNumber, new CloudletSchedulerTimeShared());
+    protected VmAbstract(final long id, final CoreCapacity capacity) {
+        this(id, capacity, new CloudletSchedulerTimeShared());
     }
 
     @SuppressWarnings("NullAway.Init") // fields are initialized by mutableAttributesInit()
-    protected VmAbstract(final long id, final long mipsCapacity, final long pesNumber, final CloudletScheduler cloudletScheduler) {
+    protected VmAbstract(final long id, @NonNull final CoreCapacity capacity, final CloudletScheduler cloudletScheduler) {
         super();
         setId(id);
-        this.processor = new Processor(this, pesNumber, mipsCapacity);
-        setMips(mipsCapacity);
-        setPesNumber(pesNumber);
+        this.processor = new ProcessorSimple(this, capacity);
         setCloudletScheduler(cloudletScheduler);
 
         this.resources = new ArrayList<>(4);
         this.bootModel = BootModel.NULL;
+        this.cpuCap = CpuCap.NONE;
 
-        // Initializes the number of free PEs as the number of VM PEs
-        // TODO: It's not calling setFreePesNumber, which has some logic there.
-        // See https://github.com/cloudsimplus/cloudsimplus/issues/592
-        this.freePesNumber = pesNumber;
-        this.expectedFreePesNumber = pesNumber;
+        this.expectedFreeCores = capacity.cores();
 
-        this.allocatedMips = new MipsShare();
-        this.requestedMips = new MipsShare();
+        this.allocatedMips = CoreCapacity.NULL;
+        this.requestedMips = CoreCapacity.NULL;
         this.stateHistory = new LinkedList<>();
         mutableAttributesInit();
     }
@@ -219,7 +224,7 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
         this.setHorizontalScaling(HorizontalVmScaling.NULL);
         this.setRamVerticalScaling(VerticalVmScaling.NULL);
         this.setBwVerticalScaling(VerticalVmScaling.NULL);
-        this.setPeVerticalScaling(VerticalVmScaling.NULL);
+        this.setCpuVerticalScaling(VerticalVmScaling.NULL);
 
         cpuUtilizationStats = VmResourceStats.NULL;
 
@@ -229,12 +234,12 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
     }
 
     @Override
-    public double updateProcessing(final MipsShare mipsShare) {
+    public double updateProcessing(final CoreCapacity mipsShare) {
         return updateProcessing(getSimulation().clock(), mipsShare);
     }
 
     @Override
-    public double updateProcessing(final double currentTime, @NonNull final MipsShare mipsShare) {
+    public double updateProcessing(final double currentTime, @NonNull final CoreCapacity mipsShare) {
         if (!cloudletScheduler.isEmpty() || isStartingUp()) {
             setLastBusyTime(getSimulation().clock());
         }
@@ -245,7 +250,7 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
         return isShuttingDown() ? Double.MAX_VALUE : processing(currentTime, mipsShare);
     }
 
-    private double processing(final double currentTime, final MipsShare mipsShare) {
+    private double processing(final double currentTime, final CoreCapacity mipsShare) {
         notifyOnUpdateProcessingListeners();
         return isStartingUp() ? bootProcessing() : cloudletsProcessing(currentTime, mipsShare);
     }
@@ -260,7 +265,7 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
         return nextProcessingTime;
     }
 
-    private double cloudletsProcessing(final double currentTime, final MipsShare mipsShare) {
+    private double cloudletsProcessing(final double currentTime, final CoreCapacity mipsShare) {
         final double nextSimulationDelay = cloudletScheduler.updateProcessing(currentTime, mipsShare);
 
         cpuUtilizationStats.add(currentTime);
@@ -284,46 +289,27 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
         return nextSimulationDelay - decimals < 0 ? nextSimulationDelay : nextSimulationDelay - decimals;
     }
 
-    /// Sets the current number of free PEs.
-    ///
-    /// @return the new free pes number
-    public Vm setFreePesNumber(long freePesNumber) {
-        if (freePesNumber < 0) {
-            freePesNumber = 0;
-        }
-
-        // TODO: If the freePesNumber is changed, a warning should be issued
-        // See https://github.com/cloudsimplus/cloudsimplus/issues/592
-        this.freePesNumber = Math.min(freePesNumber, getPesNumber());
-        return this;
-    }
-
-    /// Frees all PEs of this VM, setting the [#freePesNumber] to the total number of PEs.
-    public void freeAllPes() {
-        setFreePesNumber(getPesNumber());
-    }
-
-    /// Adds a given number of expected free PEs to the total number of expected free PEs.
+    /// Adds a given number of expected free cores to the total number of expected free cores.
     /// This value is updated as cloudlets are assigned to VMs but not submitted to the broker for running yet.
     ///
-    /// @param pesToAdd the number of expected free PEs to add
-    public Vm addExpectedFreePesNumber(final long pesToAdd) {
-        return setExpectedFreePesNumber(expectedFreePesNumber + pesToAdd);
+    /// @param coresToAdd the number of expected free cores to add
+    public Vm addExpectedFreeCores(final long coresToAdd) {
+        return setExpectedFreeCores(expectedFreeCores + coresToAdd);
     }
 
-    /// Adds a given number of expected free PEs to the total number of expected free PEs.
+    /// Removes a given number of expected free cores from the total number of expected free cores.
     /// This value is updated as cloudlets are assigned to VMs but not submitted to the broker for running yet.
     ///
-    /// @param pesToRemove the number of expected free PEs to remove
-    public Vm removeExpectedFreePesNumber(final long pesToRemove) {
-        return setExpectedFreePesNumber(expectedFreePesNumber - pesToRemove);
+    /// @param coresToRemove the number of expected free cores to remove
+    public Vm removeExpectedFreeCores(final long coresToRemove) {
+        return setExpectedFreeCores(expectedFreeCores - coresToRemove);
     }
 
-    /// Sets the expected free PEs number before the VM starts executing.
+    /// Sets the expected number of free cores before the VM starts executing.
     ///
-    /// @param expectedFreePes the expected free PEs number to set
-    private Vm setExpectedFreePesNumber(final long expectedFreePes) {
-        this.expectedFreePesNumber = Math.clamp(expectedFreePes, 0, getPesNumber());
+    /// @param expectedFreeCores the expected number of free cores to set
+    private Vm setExpectedFreeCores(final long expectedFreeCores) {
+        this.expectedFreeCores = Math.clamp(expectedFreeCores, 0, processor.getCores());
         return this;
     }
 
@@ -383,14 +369,35 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
     }
 
     @Override
-    public MipsShare getCurrentRequestedMips() {
+    public CoreCapacity getCurrentRequestedMips() {
         // TODO This method is confusing, since there is a getRequestedMips() (created with lombok)
         // See https://github.com/cloudsimplus/cloudsimplus/issues/591
-        if (isCreated()) {
-            return isStartingUp() ? new MipsShare(processor, bootModel) : host.getVmScheduler().getRequestedMips(this);
+        if (isCreated() && !isStartingUp()) {
+            return host.getVmScheduler().getRequestedMips(this);
         }
 
-        return new MipsShare(processor);
+        return getMipsToRequest();
+    }
+
+    /// Gets the MIPS share the VM has to request from its Host, according to its processor,
+    /// [CPU cap][#getCpuCap()] and [boot state][#isStartingUp()].
+    /// While the VM is booting, it requests just the CPU percentage defined by its [BootModel].
+    /// @return the MIPS share to request from the Host
+    public CoreCapacity getMipsToRequest() {
+        return isStartingUp() ? cpuCap.limit(processor, bootModel.getCpuPercentUtilization()) : cpuCap.limit(processor);
+    }
+
+    /// Sets the MIPS shares a [VmScheduler][org.cloudsimplus.schedulers.vm.VmScheduler] requested for and allocated to this VM.
+    /// Both shares always change together. This method is meant to be called just by VmSchedulers,
+    /// since the Host cores depend on these shares.
+    ///
+    /// @param requestedMips the MIPS share requested by the VM
+    /// @param allocatedMips the MIPS share allocated to the VM
+    /// @return this VM
+    public VmAbstract setMipsShares(@NonNull final CoreCapacity requestedMips, @NonNull final CoreCapacity allocatedMips) {
+        this.requestedMips = requestedMips;
+        this.allocatedMips = allocatedMips;
+        return this;
     }
 
     @Override
@@ -404,7 +411,7 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
 
     @Override
     public double getTotalMipsCapacity() {
-        return getMips() * getPesNumber();
+        return cpuCap.limitTotalMips(processor);
     }
 
     @Override
@@ -429,28 +436,6 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
     /// @return true if the VM has started some Cloudlet, false otherwise
     public boolean hasStartedSomeCloudlet() {
         return getLastBusyTime() > NOT_ASSIGNED;
-    }
-
-    @Override
-    public double getMips() {
-        return processor.getMips();
-    }
-
-    /// Sets the individual MIPS capacity of any VM's PE, considering that all
-    /// PEs have the same capacity.
-    ///
-    /// @param mips the new mips for every VM's PE
-    protected final void setMips(final double mips) {
-        processor.setMips(mips);
-    }
-
-    @Override
-    public long getPesNumber() {
-        return processor.getCapacity();
-    }
-
-    protected void setPesNumber(final long pesNumber) {
-        processor.setCapacity(pesNumber);
     }
 
     /// Sets a new [Ram] resource for the Vm.
@@ -542,7 +527,7 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
 
     @Override
     public boolean isSuitableForCloudlet(final Cloudlet cloudlet) {
-        return getPesNumber() >= cloudlet.getPesNumber() &&
+        return processor.getCores() >= cloudlet.getRequiredCores() &&
             storage.getAvailableResource() >= cloudlet.getFileSize();
     }
 
@@ -556,7 +541,7 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
             setStartTime(getSimulation().clock());
             setShutdownBeginTime(NOT_ASSIGNED);
             this.setFailed(false);
-            validateAndConfigureVmScaling(peVerticalScaling);
+            validateAndConfigureVmScaling(cpuVerticalScaling);
             validateAndConfigureVmScaling(ramVerticalScaling);
             validateAndConfigureVmScaling(bwVerticalScaling);
             validateAndConfigureVmScaling(horizontalScaling);
@@ -602,15 +587,6 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
         }
 
         return Collections.unmodifiableList(resources);
-    }
-
-    @Override
-    public ResourceManageable getResource(Class<? extends ResourceManageable> resourceClass) {
-        if (Pe.class.isAssignableFrom(resourceClass) || Processor.class.isAssignableFrom(resourceClass)) {
-            return processor;
-        }
-
-        return Vm.super.getResource(resourceClass);
     }
 
     @Override
@@ -781,8 +757,8 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
     }
 
     @Override
-    public final Vm setPeVerticalScaling(final VerticalVmScaling peVerticalScaling) throws IllegalArgumentException {
-        this.peVerticalScaling = peVerticalScaling;
+    public final Vm setCpuVerticalScaling(final VerticalVmScaling cpuVerticalScaling) throws IllegalArgumentException {
+        this.cpuVerticalScaling = cpuVerticalScaling;
         return this;
     }
 
@@ -833,21 +809,6 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
 
     public Vm setGroup(final VmGroup group) {
         this.group = group;
-        return this;
-    }
-
-    public Vm setInMigration(final boolean inMigration) {
-        this.inMigration = inMigration;
-        return this;
-    }
-
-    public Vm setAllocatedMips(final MipsShare allocatedMips) {
-        this.allocatedMips = allocatedMips;
-        return this;
-    }
-
-    public Vm setRequestedMips(final MipsShare requestedMips) {
-        this.requestedMips = requestedMips;
         return this;
     }
 

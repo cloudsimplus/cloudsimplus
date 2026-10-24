@@ -85,10 +85,10 @@ public class CloudletSchedulerTimeSharedTest {
     @Test
     public void testCloudletResumeWhenCloudletInPausedList() {
         final int cloudletId = 1;
-        final int schedulerPes = 1;
+        final int schedulerCores = 1;
         final long mips = 1000;
         final long cloudletLength = 10000;
-        final var instance = createCloudletSchedulerWithMipsList(schedulerPes, mips);
+        final var instance = createCloudletSchedulerWithMipsList(schedulerCores, mips);
 
         createCloudletAndAddItToPausedList(instance, cloudletId, cloudletLength);
         final double expResult = 10;
@@ -98,24 +98,37 @@ public class CloudletSchedulerTimeSharedTest {
     }
 
     @Test
-    public void testIsThereEnoughFreePesForCloudletWhenEmptyList() {
-        final int cloudletPes = 1;
-        final Cloudlet cloudlet0 = CloudletTestUtil.createCloudlet(0, cloudletPes);
+    public void testIsThereEnoughFreeCoresForCloudletWhenEmptyList() {
+        final int cloudletCores = 1;
+        final Cloudlet cloudlet0 = CloudletTestUtil.createCloudlet(0, cloudletCores);
         //Vm processing was never updated, so the processing capacity is unknow yet
-        assertFalse(instance.isThereEnoughFreePesForCloudlet(new CloudletExecution(cloudlet0)));
+        assertFalse(instance.isThereEnoughFreeCoresForCloudlet(new CloudletExecution(cloudlet0)));
     }
 
     @Test
-    public void testIsThereEnoughFreePesForCloudletWhenThereIsOneRunningCloudlet() {
-        final int cloudletPes = 1;
-        final int schedulerPes = 2;
+    public void testIsThereEnoughFreeCoresForCloudletWhenThereIsOneRunningCloudlet() {
+        final int cloudletCores = 1;
+        final int schedulerCores = 2;
         final long schedulerMips = 1000;
-        final var cloudlet0 = CloudletTestUtil.createCloudlet(0, cloudletPes);
-        final var instance = createCloudletSchedulerWithMipsList(schedulerPes, schedulerMips);
+        final var cloudlet0 = CloudletTestUtil.createCloudlet(0, cloudletCores);
+        final var instance = createCloudletSchedulerWithMipsList(schedulerCores, schedulerMips);
         instance.cloudletSubmit(cloudlet0);
         final double time0 = 0;
         instance.updateProcessing(time0, instance.getCurrentMipsShare());
-        assertTrue(instance.isThereEnoughFreePesForCloudlet(new CloudletExecution(cloudlet0)));
+        assertTrue(instance.isThereEnoughFreeCoresForCloudlet(new CloudletExecution(cloudlet0)));
+    }
+
+    /// When Cloudlets demand more cores than the VM has, removing one of them
+    /// must keep all VM cores busy while the remaining Cloudlets still use them.
+    @Test
+    public void testVmCoresStayBusyWhenCloudletsDemandMoreCoresThanVmHas() {
+        final int vmCores = 2;
+        final var instance = newSchedulerWithSingleCoreRunningCloudlets(1000, vmCores, vmCores + 1);
+        final var vmProcessor = instance.getVm().getProcessor();
+        assertEquals(vmCores, vmProcessor.getBusyCores());
+
+        instance.cloudletCancel(instance.getCloudletExecList().getFirst().getCloudlet());
+        assertEquals(vmCores, vmProcessor.getBusyCores());
     }
 
     @Test
@@ -150,10 +163,10 @@ public class CloudletSchedulerTimeSharedTest {
     @Test
     public void testGetCurrentRequestedUtilizationOfBw() {
         final long mips = 1000;
-        final int vmPes = 1;
-        final int cloudletsNumber = vmPes;
-        final int cloudletPes = 1;
-        final var instance = newSchedulerWithRunningCloudlets(mips, vmPes, cloudletsNumber, cloudletPes);
+        final int vmCores = 1;
+        final int cloudletsNumber = vmCores;
+        final int cloudletCores = 1;
+        final var instance = newSchedulerWithRunningCloudlets(mips, vmCores, cloudletsNumber, cloudletCores);
 
         final double expResult = 1.0;
         final double result = instance.getCurrentRequestedBwPercentUtilization();
@@ -166,108 +179,108 @@ public class CloudletSchedulerTimeSharedTest {
     }
 
     @Test
-    public void testGetTotalUtilizationOfCpuWhenMoreCloudletsThanPes() {
+    public void testGetTotalUtilizationOfCpuWhenMoreCloudletsThanCores() {
         final long mips = 1000;
-        final int pesNumber = 2;
+        final int cores = 2;
         final int cloudletsNumber = 4;
 
-        final var instance = newSchedulerWithSingleCoreRunningCloudlets(mips, pesNumber, cloudletsNumber);
+        final var instance = newSchedulerWithSingleCoreRunningCloudlets(mips, cores, cloudletsNumber);
 
         final double expected = 1.0;
         assertEquals(expected, instance.getRequestedCpuPercent(0));
     }
 
     @Test
-    public void testGetTotalUtilizationOfCpuWhenOnePeForEachCloudlet() {
+    public void testGetTotalUtilizationOfCpuWhenOneCoreForEachCloudlet() {
         final long mips = 1000;
-        final int pesNumber = 2;
-        final int cloudletsNumber = pesNumber;
+        final int cores = 2;
+        final int cloudletsNumber = cores;
 
-        final var instance = newSchedulerWithSingleCoreRunningCloudlets(mips, pesNumber, cloudletsNumber);
+        final var instance = newSchedulerWithSingleCoreRunningCloudlets(mips, cores, cloudletsNumber);
 
         final double expected = 1;
         assertEquals(expected, instance.getRequestedCpuPercent(0));
     }
 
     @Test
-    public void testGetTotalUtilizationOfCpuWhenLessCloudletsThanPesHalfUsage() {
+    public void testGetTotalUtilizationOfCpuWhenLessCloudletsThanCoresHalfUsage() {
         final long mips = 1000;
-        final int pesNumber = 4;
+        final int cores = 4;
         final int cloudletsNumber = 2;
 
-        final var instance = newSchedulerWithSingleCoreRunningCloudlets(mips, pesNumber, cloudletsNumber);
+        final var instance = newSchedulerWithSingleCoreRunningCloudlets(mips, cores, cloudletsNumber);
 
         final double expected = 0.5;
         assertEquals(expected, instance.getRequestedCpuPercent(0));
     }
 
     @Test
-    public void testGetTotalUtilizationOfCpuWhenLessCloudletsThanPesThreeThirdUsage() {
+    public void testGetTotalUtilizationOfCpuWhenLessCloudletsThanCoresThreeThirdUsage() {
         final long mips = 1000;
-        final int pesNumber = 4;
+        final int cores = 4;
         final int cloudletsNumber = 3;
 
-        final var instance = newSchedulerWithSingleCoreRunningCloudlets(mips, pesNumber, cloudletsNumber);
+        final var instance = newSchedulerWithSingleCoreRunningCloudlets(mips, cores, cloudletsNumber);
 
         final double expected = 0.75;
         assertEquals(expected, instance.getRequestedCpuPercent(0));
     }
 
     @Test
-    public void testGetTotalUtilizationOfCpuWhenLessCloudletsThanPesNotFullUsage() {
+    public void testGetTotalUtilizationOfCpuWhenLessCloudletsThanCoresNotFullUsage() {
         final long mips = 1000;
-        final int pesNumber = 5;
+        final int cores = 5;
         final int cloudletsNumber = 4;
 
-        final var instance = newSchedulerWithSingleCoreRunningCloudlets(mips, pesNumber, cloudletsNumber);
+        final var instance = newSchedulerWithSingleCoreRunningCloudlets(mips, cores, cloudletsNumber);
 
         final double expected = 0.8;
         assertEquals(expected, instance.getRequestedCpuPercent(0));
     }
 
     @Test
-    public void testGetTotalUtilizationOfCpuWhenDualPesCloudlets() {
+    public void testGetTotalUtilizationOfCpuWhenDualCoresCloudlets() {
         final long mips = 1000;
-        final int vmPes = 4;
+        final int vmCores = 4;
         final int cloudlets = 2;
-        final int cloudletPes = 2;
+        final int cloudletCores = 2;
 
-        final var instance = newSchedulerWithRunningCloudlets(mips, vmPes, cloudlets, cloudletPes);
+        final var instance = newSchedulerWithRunningCloudlets(mips, vmCores, cloudlets, cloudletCores);
 
         final double expected = 1;
         assertEquals(expected, instance.getRequestedCpuPercent(0));
     }
 
-    /// Runs 2 cloudlets requiring just 1 PE each one.
-    /// These cloudlets are run in a CloudletScheduler having 2 PEs,
+    /// Runs 2 cloudlets requiring just 1 core each one.
+    /// These cloudlets are run in a CloudletScheduler having 2 cores,
     /// one for each cloudlet. The cloudlet length is equals to the capacity of
-    /// each PE, meaning that each cloudlet will finish in just one second.
+    /// each core, meaning that each cloudlet will finish in just one second.
     @Test
-    public void testGetCloudletExecListWhenEmptyAfterFinishedCloudletsForTwoSchedulerPes() {
+    public void testGetCloudletExecListWhenEmptyAfterFinishedCloudletsForTwoSchedulerCores() {
         final long mips = 1000;
         final int cloudlets = 2;
-        final int vmPes = cloudlets;
+        final int vmCores = cloudlets;
 
-        final var instance = newSchedulerWithSingleCoreRunningCloudlets(mips, vmPes, cloudlets);
+        final var instance = newSchedulerWithSingleCoreRunningCloudlets(mips, vmCores, cloudlets);
 
         final double time = 1.0;
         instance.updateProcessing(time, instance.getCurrentMipsShare());
         assertEquals(0, instance.getCloudletExecList().size());
     }
 
-    /// Runs 2 cloudlets requiring just 1 PE each one.
-    /// These cloudlets are run in a CloudletScheduler having just 1 PE
+    /// Runs 2 cloudlets requiring just 1 core each one.
+    /// These cloudlets are run in a CloudletScheduler having just 1 core
     /// that is shared between the cloudlets.
     /// The cloudlet length is equals to the capacity of
-    /// each PE, meaning that each cloudlet will finish in 2 seconds
-    /// because there is just 1 PE.
+    /// each core, meaning that each cloudlet will finish in 2 seconds
+    /// because there is just 1 core.
     @Test
-    public void testGetCloudletExecListWhenEmptyAfterFinishedCloudletsForOneSchedulerPe() {
+    public void testGetCloudletExecListWhenEmptyAfterFinishedCloudletsForOneSchedulerCore() {
         final long mips = 1000;
         final int cloudlets = 2;
-        final int vmPes = 1;
+        final int vmCores = 1;
 
-        final var instance = newSchedulerWithSingleCoreRunningCloudlets(mips, vmPes, cloudlets);
+        final var instance = newSchedulerWithSingleCoreRunningCloudlets(mips, vmCores, cloudlets);
         final var broker = createBroker();
         instance.getCloudletExecList().forEach(ce -> ce.getCloudlet().setBroker(broker));
 
@@ -283,10 +296,10 @@ public class CloudletSchedulerTimeSharedTest {
     public void testVmRamAndBwAreReleasedAfterLastCloudletFinishes() {
         final long mips = 1000;
         final int cloudlets = 1;
-        final int vmPes = 1;
+        final int vmCores = 1;
         final var ramBwModel = new UtilizationModelDynamic(0.5);
 
-        final var instance = newSchedulerWithRunningCloudlets(mips, vmPes, cloudlets, 1, ramBwModel);
+        final var instance = newSchedulerWithRunningCloudlets(mips, vmCores, cloudlets, 1, ramBwModel);
         final var vm = (VmSimple) instance.getVm();
 
         instance.updateProcessing(0.5, instance.getCurrentMipsShare());
@@ -315,8 +328,8 @@ public class CloudletSchedulerTimeSharedTest {
 
     @Test
     public void testRemoveCloudletFromExecListWhenCloudletNoFound() {
-        final var cloudletNotAdded = new CloudletExecution(CloudletTestUtil.createCloudletWithOnePe(0));
-        final var cloudletAdded = new CloudletExecution(CloudletTestUtil.createCloudletWithOnePe(1));
+        final var cloudletNotAdded = new CloudletExecution(CloudletTestUtil.createCloudletWithOneCore(0));
+        final var cloudletAdded = new CloudletExecution(CloudletTestUtil.createCloudletWithOneCore(1));
         final var list = new ArrayList<CloudletExecution>();
         list.add(cloudletAdded);
         instance.addCloudletToExecList(cloudletAdded);

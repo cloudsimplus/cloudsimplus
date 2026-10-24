@@ -45,7 +45,7 @@ public class CloudletSimpleFilesTest {
 
     @BeforeEach
     public void setUp() {
-        cloudlet = new CloudletSimple(0, CloudletTestUtil.CLOUDLET_LENGTH, CloudletSimpleTest.PES_NUMBER);
+        cloudlet = new CloudletSimple(0, CloudletTestUtil.CLOUDLET_LENGTH, CloudletSimpleTest.CORES_NUMBER);
         cloudlet.setFileSize(CloudletTestUtil.CLOUDLET_FILE_SIZE)
             .setOutputSize(CloudletTestUtil.CLOUDLET_OUTPUT_SIZE)
             .setUtilizationModelCpu(new UtilizationModelStochastic());

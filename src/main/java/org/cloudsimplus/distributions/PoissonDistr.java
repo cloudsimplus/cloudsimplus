@@ -261,7 +261,7 @@ public class PoissonDistr implements DiscreteDistribution {
 
         double customersInAllSimulations = 0;
         final long seed = System.currentTimeMillis();
-        PoissonDistr poisson = new PoissonDistr(MEAN_CUSTOMERS_ARRIVAL_MINUTE, seed);
+        var poisson = new PoissonDistr(MEAN_CUSTOMERS_ARRIVAL_MINUTE, seed);
         for (int i = 0; i < NUMBER_OF_SIMULATIONS; i++) {
             poisson = new PoissonDistr(MEAN_CUSTOMERS_ARRIVAL_MINUTE, seed + i);
             System.out.printf("Simulation number %d%n", i);

@@ -39,9 +39,9 @@ import static org.junit.jupiter.api.Assertions.*;
 public class CloudletToVmMappingSolutionTest {
     @Test
     public void testGetFitness() {
-        final int PES = 2;
+        final int CORES = 2;
         final int CLOUDLETS = 3;
-        final var solution = createSolutionWithOneVmForEachCloudlet(CLOUDLETS, PES, PES+1);
+        final var solution = createSolutionWithOneVmForEachCloudlet(CLOUDLETS, CORES, CORES+1);
 
         final double expResult = 1.0/3.0;
         final double result = solution.getFitness();
@@ -50,21 +50,21 @@ public class CloudletToVmMappingSolutionTest {
             "Fitness is not as expected for the cost %.2f".formatted(solution.getCost()));
     }
 
-    private CloudletToVmMappingSolution createSolutionWithOneVmForEachCloudlet(final int cloudlets, final int cloudletAndVmPes) {
-        return createSolutionWithOneVmForEachCloudlet(cloudlets, cloudletAndVmPes, cloudletAndVmPes);
+    private CloudletToVmMappingSolution createSolutionWithOneVmForEachCloudlet(final int cloudlets, final int cloudletAndVmCores) {
+        return createSolutionWithOneVmForEachCloudlet(cloudlets, cloudletAndVmCores, cloudletAndVmCores);
     }
 
     private CloudletToVmMappingSolution createSolutionWithOneVmForEachCloudlet(
-        final int cloudlets, final int cloudletPes, final int vmPes) {
+        final int cloudlets, final int cloudletCores, final int vmCores) {
         final int VM_MIPS = 1000;
         final long CLOUDLET_LEN = 10000;
         final var solution = new CloudletToVmMappingSolution(Heuristic.NULL);
 
         for (int i = 0; i < cloudlets; i++) {
-            final Vm vm = VmTestUtil.createVm(i, VM_MIPS, vmPes);
+            final Vm vm = VmTestUtil.createVm(i, VM_MIPS, vmCores);
 
             final long len = CLOUDLET_LEN * (i + 1);
-            final var cloudlet = CloudletTestUtil.createCloudlet(i, len, cloudletPes);
+            final var cloudlet = CloudletTestUtil.createCloudlet(i, len, cloudletCores);
             solution.bindCloudletToVm(cloudlet, vm);
         }
 
@@ -83,9 +83,9 @@ public class CloudletToVmMappingSolutionTest {
     @Test
     public void testCompareToWhenInstanceIsGreater() {
         final int CLOUDLETS = 3;
-        final int PES = 2;
-        final var oneSolution = createSolutionWithOneVmForEachCloudlet(CLOUDLETS, PES);
-        final var otherSolution = createSolutionWithOneVmForEachCloudlet(CLOUDLETS, PES, PES/2);
+        final int CORES = 2;
+        final var oneSolution = createSolutionWithOneVmForEachCloudlet(CLOUDLETS, CORES);
+        final var otherSolution = createSolutionWithOneVmForEachCloudlet(CLOUDLETS, CORES, CORES/2);
         final int expResult = 1;
         final int result = oneSolution.compareTo(otherSolution);
         final String msg =
@@ -97,9 +97,9 @@ public class CloudletToVmMappingSolutionTest {
     @Test
     public void testCompareToWhenInstanceIsEquals() {
         final int CLOUDLETS = 3;
-        final int PES = 2;
-        final var oneSolution = createSolutionWithOneVmForEachCloudlet(CLOUDLETS, PES, PES+1);
-        final var otherSolution = createSolutionWithOneVmForEachCloudlet(CLOUDLETS, PES, PES+1);
+        final int CORES = 2;
+        final var oneSolution = createSolutionWithOneVmForEachCloudlet(CLOUDLETS, CORES, CORES+1);
+        final var otherSolution = createSolutionWithOneVmForEachCloudlet(CLOUDLETS, CORES, CORES+1);
         final int expResult = 0;
         final int result = oneSolution.compareTo(otherSolution);
         final String msg =
@@ -111,9 +111,9 @@ public class CloudletToVmMappingSolutionTest {
     @Test
     public void testCompareToWhenInstanceIsLower() {
         final int CLOUDLETS = 3;
-        final int PES = 2;
-        final var oneSolution = createSolutionWithOneVmForEachCloudlet(CLOUDLETS, PES, PES/2);
-        final var otherSolution = createSolutionWithOneVmForEachCloudlet(CLOUDLETS, PES);
+        final int CORES = 2;
+        final var oneSolution = createSolutionWithOneVmForEachCloudlet(CLOUDLETS, CORES, CORES/2);
+        final var otherSolution = createSolutionWithOneVmForEachCloudlet(CLOUDLETS, CORES);
         final int expResult = -1;
         final int result = oneSolution.compareTo(otherSolution);
         final String msg =

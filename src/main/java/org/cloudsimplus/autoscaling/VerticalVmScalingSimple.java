@@ -31,7 +31,7 @@ import org.cloudsimplus.vms.Vm;
 
 /// A [VerticalVmScaling] implementation which allows a [DatacenterBroker]
 /// to perform on demand up or down scaling for some [Vm] resource, such as [Ram],
-/// [Pe] or [Bandwidth].
+/// core or [Bandwidth].
 ///
 /// For each resource that is required to be scaled, a distinct [VerticalVmScaling]
 /// instance must be assigned to the VM to be scaled.

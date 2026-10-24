@@ -624,7 +624,7 @@ public non-sealed abstract class VmAllocationPolicyMigrationAbstract
 
     /// Gets the max power consumption of a host after placement of a candidate
     /// VM. The VM is not in fact placed at the host. We assume that load is
-    /// balanced between PEs. The only restriction is: VM's max MIPS less than PE's MIPS
+    /// balanced between cores. The only restriction is: VM's max MIPS less than core's MIPS
     ///
     /// @param host the host
     /// @param vm the vm
@@ -642,7 +642,7 @@ public non-sealed abstract class VmAllocationPolicyMigrationAbstract
         double hostUtilizationMips = 0;
         for (final var vm : host.getVmList()) {
             final double additionalMips = additionalCpuUtilizationDuringMigration(host, vm);
-            hostUtilizationMips += additionalMips + host.getTotalAllocatedMipsForVm(vm);
+            hostUtilizationMips += additionalMips + host.getVmScheduler().getTotalAllocatedMipsForVm(vm);
         }
 
         return hostUtilizationMips;
@@ -659,7 +659,7 @@ public non-sealed abstract class VmAllocationPolicyMigrationAbstract
 
         final double maxCpuUtilization = host.getVmScheduler().getMaxCpuUsagePercentDuringOutMigration();
         final double migrationOverhead = host.getVmScheduler().getVmMigrationCpuOverhead();
-        return host.getTotalAllocatedMipsForVm(vm) * maxCpuUtilization / migrationOverhead;
+        return host.getVmScheduler().getTotalAllocatedMipsForVm(vm) * maxCpuUtilization / migrationOverhead;
     }
 
     @Override

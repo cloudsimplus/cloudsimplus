@@ -23,6 +23,7 @@
  */
 package org.cloudsimplus.integrationtests;
 
+import org.cloudsimplus.resources.CoreCapacity;
 import org.cloudsimplus.brokers.DatacenterBroker;
 import org.cloudsimplus.brokers.DatacenterBrokerSimple;
 import org.cloudsimplus.cloudlets.Cloudlet;
@@ -32,14 +33,11 @@ import org.cloudsimplus.datacenters.DatacenterSimple;
 import org.cloudsimplus.hosts.Host;
 import org.cloudsimplus.hosts.HostSimple;
 import org.cloudsimplus.listeners.EventInfo;
-import org.cloudsimplus.resources.Pe;
-import org.cloudsimplus.resources.PeSimple;
 import org.cloudsimplus.vms.Vm;
 import org.cloudsimplus.vms.VmSimple;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -48,14 +46,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 /// after all previously submitted VMs were created, is retried when it can't be placed,
 /// instead of being moved to the failed list right away.
 ///
-/// The first VM uses all Host PEs, so the second one can only be placed after the
+/// The first VM uses all Host cores, so the second one can only be placed after the
 /// first one finishes and is destroyed.
 ///
 /// @see <a href="https://github.com/cloudsimplus/cloudsimplus/issues/579">Issue #579</a>
 final class VmCreationRetryAfterVmsCreatedIntegrationTest {
     private static final int TIMEOUT_SECS = 10;
-    private static final int HOST_PES = 4;
-    private static final int VM_PES = HOST_PES;
+    private static final int HOST_CORES = 4;
+    private static final int VM_CORES = HOST_CORES;
     private static final int MIPS = 1000;
     private static final int CLOUDLET_LENGTH = 10_000;
     private static final double RETRY_DELAY = 5;
@@ -63,8 +61,8 @@ final class VmCreationRetryAfterVmsCreatedIntegrationTest {
 
     private final CloudSimPlus simulation = new CloudSimPlus();
     private final DatacenterBroker broker = new DatacenterBrokerSimple(simulation);
-    private final Vm firstVm = new VmSimple(MIPS, VM_PES);
-    private final Vm lateVm = new VmSimple(MIPS, VM_PES);
+    private final Vm firstVm = new VmSimple(new CoreCapacity(VM_CORES, MIPS));
+    private final Vm lateVm = new VmSimple(new CoreCapacity(VM_CORES, MIPS));
     private boolean lateVmSubmitted;
 
     @Test
@@ -98,15 +96,10 @@ final class VmCreationRetryAfterVmsCreatedIntegrationTest {
     }
 
     private static Host createHost() {
-        final var peList = new ArrayList<Pe>(HOST_PES);
-        for (int i = 0; i < HOST_PES; i++) {
-            peList.add(new PeSimple(MIPS));
-        }
-
-        return new HostSimple(peList);
+        return new HostSimple(new CoreCapacity(HOST_CORES, MIPS));
     }
 
     private static Cloudlet createCloudlet(final Vm vm) {
-        return new CloudletSimple(CLOUDLET_LENGTH, VM_PES).setVm(vm);
+        return new CloudletSimple(CLOUDLET_LENGTH, VM_CORES).setVm(vm);
     }
 }

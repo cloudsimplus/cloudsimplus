@@ -43,10 +43,10 @@ import org.jspecify.annotations.Nullable;
 /// If there is no timeout, a warning is logged for the first task in a VM
 /// that waits longer than [#WAIT_WARNING_TIME].
 ///
-/// A Cloudlet waiting for packets doesn't use the CPU and doesn't hold its PEs.
+/// A Cloudlet waiting for packets doesn't use the CPU and doesn't hold its cores.
 /// This way, other Cloudlets (such as the sender in the same VM) can run meanwhile,
 /// even with a [org.cloudsimplus.schedulers.cloudlet.CloudletSchedulerSpaceShared].
-/// When the Cloudlet receives its packets and there are no free PEs,
+/// When the Cloudlet receives its packets and there are no free cores,
 /// the running Cloudlets share the VM MIPS until some of them finish.
 ///
 /// Please refer to the following publication for more details:

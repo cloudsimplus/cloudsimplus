@@ -19,7 +19,7 @@ import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.listeners.VmDatacenterEventInfo;
 import org.cloudsimplus.listeners.VmHostEventInfo;
 import org.cloudsimplus.resources.*;
-import org.cloudsimplus.schedulers.MipsShare;
+import org.cloudsimplus.resources.CoreCapacity;
 import org.cloudsimplus.schedulers.cloudlet.CloudletScheduler;
 import org.cloudsimplus.utilizationmodels.BootModel;
 import org.slf4j.Logger;
@@ -76,35 +76,31 @@ public sealed interface Vm
     /// @return the cloudlet scheduler
     CloudletScheduler getCloudletScheduler();
 
-    /// Gets the current number of free PEs.
-    ///
-    /// @return the current free pes number
-    long getFreePesNumber();
-
-    /// Gets the expected free pes number before the VM starts executing.
+    /// Gets the expected number of free cores before the VM starts executing.
     /// This value is updated as cloudlets are assigned to VMs but not submitted to the
     /// broker yet for running.
+    /// The current number of free cores comes from the [Processor#getFreeCores()].
     ///
-    /// @return the expected free pes number
-    long getExpectedFreePesNumber();
+    /// @return the expected number of free cores
+    long getExpectedFreeCores();
 
     /// Gets the current requested bw.
     ///
     /// @return the current requested bw
     long getCurrentRequestedBw();
 
-    /// Gets a  **copy** list of current requested MIPS of each virtual [Pe],
+    /// Gets a  **copy** list of current requested MIPS of each virtual core,
     /// avoiding the original list to be changed.
     ///
-    /// @return the current requested MIPS of each Pe
-    MipsShare getCurrentRequestedMips();
+    /// @return the current requested MIPS of each core
+    CoreCapacity getCurrentRequestedMips();
 
     /// Gets the current requested ram (in Megabytes).
     /// @return
     long getCurrentRequestedRam();
 
     /// Gets the current requested total MIPS. It is the sum of MIPS capacity
-    /// requested for every virtual [Pe].
+    /// requested for every virtual core.
     ///
     /// @return the current requested total MIPS
     /// @see #getCurrentRequestedMips()
@@ -159,7 +155,7 @@ public sealed interface Vm
     ///
     /// @param listener the listener to add
     /// @return
-    /// @see #updateProcessing(double, MipsShare)
+    /// @see #updateProcessing(double, CoreCapacity)
     Vm addOnCreationFailureListener(EventListener<VmDatacenterEventInfo> listener);
 
     /// Adds a listener object that will be notified every time when
@@ -167,7 +163,7 @@ public sealed interface Vm
     ///
     /// @param listener the listener to add
     /// @return
-    /// @see #updateProcessing(double, MipsShare)
+    /// @see #updateProcessing(double, CoreCapacity)
     Vm addOnUpdateProcessingListener(EventListener<VmHostEventInfo> listener);
 
     /// Notifies all registered listeners when a [Host] is allocated to the [Vm].
@@ -332,13 +328,13 @@ public sealed interface Vm
     /// @return the relative VM CPU usage percent (from 0 to 1)
     double getExpectedHostCpuUtilization(double vmCpuUtilizationPercent);
 
-    /// Gets the current total CPU MIPS utilization of all PEs from all cloudlets running on this VM.
+    /// Gets the current total CPU MIPS utilization of all cores from all cloudlets running on this VM.
     ///
     /// @return total CPU utilization in MIPS
     /// @see #getCpuPercentUtilization(double)
     double getTotalCpuMipsUtilization();
 
-    /// Gets the total CPU MIPS utilization of all PEs from all cloudlets running on this VM at the
+    /// Gets the total CPU MIPS utilization of all cores from all cloudlets running on this VM at the
     /// given time.
     ///
     /// @param time the time to get the utilization
@@ -398,20 +394,20 @@ public sealed interface Vm
     /// Updates the processing of cloudlets running on this VM.
     ///
     /// @param currentTime current simulation time
-    /// @param mipsShare list with MIPS share of each Pe available to the
+    /// @param mipsShare list with MIPS share of each core available to the
     /// scheduler
     /// @return the predicted completion time of the earliest finishing cloudlet
     /// (which is a relative delay from the current simulation time),
     /// or [Double#MAX_VALUE] if there is no next Cloudlet to execute
-    double updateProcessing(double currentTime, MipsShare mipsShare);
+    double updateProcessing(double currentTime, CoreCapacity mipsShare);
 
     /// Updates the processing of cloudlets running on this VM at the current simulation time.
     ///
-    /// @param mipsShare list with MIPS share of each Pe available to the scheduler
+    /// @param mipsShare list with MIPS share of each core available to the scheduler
     /// @return the predicted completion time of the earliest finishing cloudlet
     /// (which is a relative delay from the current simulation time),
     /// or [Double#MAX_VALUE] if there is no next Cloudlet to execute
-    double updateProcessing(MipsShare mipsShare);
+    double updateProcessing(CoreCapacity mipsShare);
 
     /// Sets the Cloudlet scheduler the Vm uses to schedule cloudlets execution.
     /// It also sets the Vm itself to the given scheduler.
@@ -490,18 +486,18 @@ public sealed interface Vm
     /// Each VM must have its own VerticalVmScaling objects or none at all.
     Vm setBwVerticalScaling(VerticalVmScaling bwVerticalScaling) throws IllegalArgumentException;
 
-    /// Sets a [VerticalVmScaling] that will check if the Vm's [Pe] is under or overloaded,
+    /// Sets a [VerticalVmScaling] that will check if the Vm's core is under or overloaded,
     /// based on some conditions defined by [Predicate]s given to the VerticalVmScaling,
-    /// and then request the Pe up or down scaling.
+    /// and then request the core up or down scaling.
     ///
-    /// The Pe scaling is performed by adding or removing PEs to/from the VM.
-    /// Added PEs will have the same MIPS than the already existing ones.
+    /// The core scaling is performed by adding or removing cores to/from the VM.
+    /// Added cores will have the same MIPS than the already existing ones.
     ///
-    /// @param peVerticalScaling the VerticalVmScaling to set
+    /// @param cpuVerticalScaling the VerticalVmScaling to set
     /// @return
     /// @throws IllegalArgumentException if the given VmScaling is already linked to a Vm.
     /// Each VM must have its own VerticalVmScaling objects or none at all.
-    Vm setPeVerticalScaling(VerticalVmScaling peVerticalScaling) throws IllegalArgumentException;
+    Vm setCpuVerticalScaling(VerticalVmScaling cpuVerticalScaling) throws IllegalArgumentException;
 
     /// Gets a [VerticalVmScaling] that will check if the Vm's RAM is overloaded,
     /// based on some conditions defined by a [Predicate] given
@@ -515,14 +511,14 @@ public sealed interface Vm
     /// @return
     VerticalVmScaling getBwVerticalScaling();
 
-    /// Gets a [VerticalVmScaling] that will check if the Vm's [Pe] is overloaded,
+    /// Gets a [VerticalVmScaling] that will check if the Vm's core is overloaded,
     /// based on some conditions defined by a [Predicate] given
-    /// to the VerticalVmScaling, and then request the RAM up scaling.
+    /// to the VerticalVmScaling, and then request the core up or down scaling.
     /// @return
-    VerticalVmScaling getPeVerticalScaling();
+    VerticalVmScaling getCpuVerticalScaling();
 
     /// Gets the [Processor] of this VM. It is its Virtual CPU
-    /// which may be compounded of multiple [Pe]s.
+    /// which may be compounded of multiple cores.
     /// @return
     Processor getProcessor();
 
@@ -587,6 +583,17 @@ public sealed interface Vm
     /// @param model the boot model to set
     /// @return this
     Vm setBootModel(BootModel model);
+
+    /// {@return the CPU cap that limits the MIPS the VM can request from its Host}
+    /// By default, it's [CpuCap#NONE], so the VM can use the full MIPS of all its cores.
+    /// @see #setCpuCap(CpuCap)
+    CpuCap getCpuCap();
+
+    /// Sets the CPU cap that limits the MIPS the VM can request from its Host.
+    /// Since a [CpuCap] is immutable, the same instance can be shared by multiple VMs.
+    /// @param cap the CPU cap to set
+    /// @return this
+    Vm setCpuCap(CpuCap cap);
 
     /// Sets the Vm {@inheritDoc}.
     ///

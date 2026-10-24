@@ -8,6 +8,7 @@
 package org.cloudsimplus.allocationpolicies;
 
 import org.cloudsimplus.hosts.Host;
+import org.cloudsimplus.resources.Processor;
 import org.cloudsimplus.vms.Vm;
 
 import java.util.Comparator;
@@ -19,8 +20,8 @@ import static java.util.Comparator.comparing;
 import org.jspecify.annotations.Nullable;
 
 /// A VmAllocationPolicy implementation that chooses, as
-/// the host for a VM, that one with the fewest PEs in use.
-/// **It is therefore a Worst-Fit policy**, allocating each VM into the host with the highest number of available PEs.
+/// the host for a VM, that one with the fewest cores in use.
+/// **It is therefore a Worst-Fit policy**, allocating each VM into the host with the highest number of available cores.
 ///
 /// This is a really computationally complex policy since the worst-case complexity
 /// to allocate a Host for a VM is O(N), where N is the number of Hosts.
@@ -50,11 +51,11 @@ public class VmAllocationPolicySimple extends VmAllocationPolicyAbstract {
         super(findHostForVmFunction);
     }
 
-    /// Gets the first suitable host from the [#getHostList()] that has the fewest number of used PEs (i.e, higher free PEs).
+    /// Gets the first suitable host from the [#getHostList()] that has the fewest number of used cores (i.e, higher free cores).
     /// @return an [Optional] containing a suitable Host to place the VM or an empty [Optional] if not found
     @Override
     protected Optional<Host> defaultFindHostForVm(final Vm vm) {
-        final Comparator<Host> comparator = comparing(Host::isActive).thenComparingLong(Host::getFreePesNumber);
+        final Comparator<Host> comparator = comparing(Host::isActive).thenComparingLong(Processor::freeCores);
 
         final var hostStream = isParallelHostSearchEnabled() ? getHostList().stream().parallel() : getHostList().stream();
         return hostStream.filter(host -> host.isSuitableForVm(vm)).max(comparator);

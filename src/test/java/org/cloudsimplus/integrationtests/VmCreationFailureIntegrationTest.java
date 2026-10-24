@@ -23,6 +23,7 @@
  */
 package org.cloudsimplus.integrationtests;
 
+import org.cloudsimplus.resources.CoreCapacity;
 import ch.qos.logback.classic.Level;
 import org.cloudsimplus.brokers.DatacenterBroker;
 import org.cloudsimplus.builders.BrokerBuilderDecorator;
@@ -150,7 +151,7 @@ public final class VmCreationFailureIntegrationTest {
         //LOGGER.info("* onEventProcessing at time {}: {}", evt.getTime(), evt);
         final int time = (int) evt.getTime();
         if (time == 10 || time == 20) {
-            assertEquals(200, scenario.getFirstHostFromFirstDatacenter().getTotalAvailableMips(), 0.1);
+            assertEquals(200, scenario.getFirstHostFromFirstDatacenter().getVmScheduler().getTotalAvailableMips(), 0.1);
         }
     }
 
@@ -163,7 +164,7 @@ public final class VmCreationFailureIntegrationTest {
     /// @param evt
     /// @see Vm#addOnUpdateProcessingListener(EventListener)}
     private void onUpdateVmProcessing(final VmHostEventInfo evt) {
-        assertEquals(200, evt.getHost().getTotalAvailableMips());
+        assertEquals(200, evt.getHost().getVmScheduler().getTotalAvailableMips());
     }
 
     @BeforeEach
@@ -175,7 +176,7 @@ public final class VmCreationFailureIntegrationTest {
         scenario.getDatacenterBuilder().create(
                 new HostBuilder()
                     .setVmSchedulerSupplier(VmSchedulerSpaceShared::new)
-                    .setPes(1).setMips(1200)
+                    .setCores(1).setMips(1200)
                     .create()
                     .getHosts()
         );
@@ -185,7 +186,7 @@ public final class VmCreationFailureIntegrationTest {
                     .create(b -> b.getVmCreation().setRetryDelay(-1));
 
         brokerBuilder.getVmBuilder()
-                .setPes(1)
+                .setCores(1)
                 .setMips(1000)
                 .setVmCreationFunction(this::createVm)
                 .setCloudletSchedulerSupplier(CloudletSchedulerSpaceShared::new)
@@ -200,12 +201,12 @@ public final class VmCreationFailureIntegrationTest {
         brokerBuilder.getCloudletBuilder()
                 .setLength(10000)
                 .setUtilizationModelCpuRamAndBw(new UtilizationModelFull())
-                .setPes(1)
+                .setRequiredCores(1)
                 .createAndSubmit(2);
     }
 
-    private Vm createVm(final double mips, final long pes) {
-        return new VmSimple(mips, pes)
+    private Vm createVm(final CoreCapacity capacity) {
+        return new VmSimple(capacity)
                         .setRam(HostSimple.getDefaultRamCapacity())
                         .setBw(HostSimple.getDefaultBwCapacity())
                         .setSize(HostSimple.getDefaultStorageCapacity());

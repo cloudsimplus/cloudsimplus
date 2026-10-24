@@ -31,7 +31,6 @@ import org.cloudsimplus.core.CloudInformationService;
 import org.cloudsimplus.core.CloudSimTag;
 import org.cloudsimplus.datacenters.Datacenter;
 import org.cloudsimplus.hosts.Host;
-import org.cloudsimplus.resources.Pe;
 import org.cloudsimplus.traces.TraceReaderAbstract;
 import org.cloudsimplus.util.BytesConversion;
 import org.cloudsimplus.util.ResourceLoader;
@@ -78,7 +77,7 @@ public final class GoogleMachineEventsTraceReader extends GoogleTraceReaderAbstr
     /// The maximum RAM capacity (in MB) for created Hosts.
     private long maxRamCapacity;
 
-    /// The maximum number of [Pe]s (CPU cores) for created Hosts.
+    /// The maximum number of CPU cores for created Hosts.
     private int maxCpuCores;
 
     /// The Datacenter where the Hosts with timestamp greater than 0 will be created.
@@ -87,7 +86,7 @@ public final class GoogleMachineEventsTraceReader extends GoogleTraceReaderAbstr
 
     /// A [BiFunction] that will be called for every [Host] to be created
     /// from a line inside the trace file.
-    /// The [BiFunction] will receive the number of [Pe]s (CPU cores)
+    /// The [BiFunction] will receive the number of CPU cores
     /// and RAM capacity for the Host to be created, returning the created Host.
     /// The provided function must instantiate the Host and define Host's CPU cores and RAM
     /// capacity, according to the received parameters.
@@ -105,7 +104,7 @@ public final class GoogleMachineEventsTraceReader extends GoogleTraceReaderAbstr
 
     /// Gets a [GoogleMachineEventsTraceReader] instance to read a "machine events" trace file
     /// inside the **application's resource directory**.
-    /// Created Hosts will have 16GB of maximum RAM and the maximum of 8 [Pe]s.
+    /// Created Hosts will have 16GB of maximum RAM and the maximum of 8 cores.
     /// Use the available constructors if you want to load a file outside the resource directory.
     ///
     /// @param filePath           the workload trace **relative file name** in one of the following formats: _ASCII text, zip, gz._
@@ -128,7 +127,7 @@ public final class GoogleMachineEventsTraceReader extends GoogleTraceReaderAbstr
     }
 
     /// Instantiates a GoogleMachineEventsTraceReader to read a "machine events" trace file.
-    /// Created Hosts will have 16GB of maximum RAM and the maximum of 8 [Pe]s.
+    /// Created Hosts will have 16GB of maximum RAM and the maximum of 8 cores.
     ///
     /// @param filePath           the path to the trace file
     /// @param hostCreationFunction A [Function] that will be called for every [Host] to be created
@@ -149,7 +148,7 @@ public final class GoogleMachineEventsTraceReader extends GoogleTraceReaderAbstr
     }
 
     /// Instantiates a GoogleMachineEventsTraceReader to read a "machine events" from a given InputStream.
-    /// Created Hosts will have 16GB of maximum RAM and the maximum of 8 [Pe]s.
+    /// Created Hosts will have 16GB of maximum RAM and the maximum of 8 cores.
     ///
     /// @param filePath           the path to the trace file
     /// @param reader             a [InputStream] object to read the file
@@ -304,9 +303,9 @@ public final class GoogleMachineEventsTraceReader extends GoogleTraceReaderAbstr
         this.maxRamCapacity = maxRamCapacity;
     }
 
-    /// Sets the maximum number of [Pe]s (CPU cores) for created Hosts.
+    /// Sets the maximum number of CPU cores for created Hosts.
     ///
-    /// @param maxCpuCores the maximum number of [Pe]s (CPU cores) to set
+    /// @param maxCpuCores the maximum number of CPU cores to set
     public void setMaxCpuCores(final int maxCpuCores) {
         if (maxCpuCores <= 0) {
             throw new IllegalArgumentException("Number of CPU cores must be greater than 0.");

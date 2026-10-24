@@ -23,6 +23,7 @@
  */
 package org.cloudsimplus.integrationtests;
 
+import org.cloudsimplus.resources.CoreCapacity;
 import org.cloudsimplus.brokers.DatacenterBroker;
 import org.cloudsimplus.brokers.DatacenterBrokerSimple;
 import org.cloudsimplus.cloudlets.Cloudlet;
@@ -31,8 +32,6 @@ import org.cloudsimplus.core.CloudSimPlus;
 import org.cloudsimplus.datacenters.DatacenterSimple;
 import org.cloudsimplus.hosts.Host;
 import org.cloudsimplus.hosts.HostSimple;
-import org.cloudsimplus.resources.Pe;
-import org.cloudsimplus.resources.PeSimple;
 import org.cloudsimplus.vms.Vm;
 import org.cloudsimplus.vms.VmSimple;
 import org.junit.jupiter.api.BeforeEach;
@@ -54,8 +53,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 /// @see <a href="https://github.com/cloudsimplus/cloudsimplus-examples/issues/31">Issue #31 in the examples repository</a>
 final class VmCreationRetryIntegrationTest {
     private static final int TIMEOUT_SECS = 10;
-    private static final int HOST_PES = 4;
-    private static final int VM_PES = HOST_PES;
+    private static final int HOST_CORES = 4;
+    private static final int VM_CORES = HOST_CORES;
     private static final int MIPS = 1000;
     private static final int VMS = 2;
     private static final int CLOUDLET_LENGTH = 10_000;
@@ -103,19 +102,14 @@ final class VmCreationRetryIntegrationTest {
     }
 
     private static Host createHost() {
-        final var peList = new ArrayList<Pe>(HOST_PES);
-        for (int i = 0; i < HOST_PES; i++) {
-            peList.add(new PeSimple(MIPS));
-        }
-
-        return new HostSimple(peList);
+        return new HostSimple(new CoreCapacity(HOST_CORES, MIPS));
     }
 
-    /// Creates VMs that require all Host PEs, so that only the first one can be placed.
+    /// Creates VMs that require all Host cores, so that only the first one can be placed.
     private static List<Vm> createVms() {
         final var vmList = new ArrayList<Vm>(VMS);
         for (int i = 0; i < VMS; i++) {
-            vmList.add(new VmSimple(MIPS, VM_PES));
+            vmList.add(new VmSimple(new CoreCapacity(VM_CORES, MIPS)));
         }
 
         return vmList;

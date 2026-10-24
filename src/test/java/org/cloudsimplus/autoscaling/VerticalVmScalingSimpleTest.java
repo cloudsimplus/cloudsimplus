@@ -23,6 +23,7 @@
  */
 package org.cloudsimplus.autoscaling;
 
+import org.cloudsimplus.resources.CoreCapacity;
 import org.cloudsimplus.brokers.DatacenterBrokerSimple;
 import org.cloudsimplus.core.CloudSimPlus;
 import org.cloudsimplus.mocks.CloudSimMocker;
@@ -39,7 +40,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 class VerticalVmScalingSimpleTest {
     private final CloudSimPlus sim = CloudSimMocker.createMock(CloudSimMocker::isRunning);
     private final DatacenterBrokerSimple broker = new DatacenterBrokerSimple(sim);
-    private final VmAbstract vm = new VmSimple(1, 1000, 2);
+    private final VmAbstract vm = new VmSimple(1, new CoreCapacity(2, 1000));
 
     @Test
     void vmCreateConfiguresVerticalScaling() {

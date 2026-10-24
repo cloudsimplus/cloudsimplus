@@ -23,14 +23,13 @@
  */
 package org.cloudsimplus.integrationtests;
 
+import org.cloudsimplus.resources.CoreCapacity;
 import org.cloudsimplus.brokers.DatacenterBroker;
 import org.cloudsimplus.brokers.DatacenterBrokerSimple;
 import org.cloudsimplus.core.CloudSimPlus;
 import org.cloudsimplus.datacenters.DatacenterSimple;
 import org.cloudsimplus.hosts.Host;
 import org.cloudsimplus.hosts.HostSimple;
-import org.cloudsimplus.resources.Pe;
-import org.cloudsimplus.resources.PeSimple;
 import org.cloudsimplus.vms.Vm;
 import org.cloudsimplus.vms.VmSimple;
 import org.junit.jupiter.api.BeforeEach;
@@ -52,8 +51,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 /// @see <a href="https://github.com/cloudsimplus/cloudsimplus-examples/issues/30">Issue #30 in the examples repository</a>
 final class VmCreationWhileHostsPowerOnIntegrationTest {
     private static final int TIMEOUT_SECS = 10;
-    private static final int HOST_PES = 4;
-    private static final int VM_PES = 2;
+    private static final int HOST_CORES = 4;
+    private static final int VM_CORES = 2;
     private static final int MIPS = 1000;
     private static final int VMS = 2;
     private static final double HOST_STARTUP_DELAY = 5;
@@ -140,12 +139,7 @@ final class VmCreationWhileHostsPowerOnIntegrationTest {
     }
 
     private static Host createHost(final double startupDelay) {
-        final var peList = new ArrayList<Pe>(HOST_PES);
-        for (int i = 0; i < HOST_PES; i++) {
-            peList.add(new PeSimple(MIPS));
-        }
-
-        final var host = new HostSimple(peList);
+        final var host = new HostSimple(new CoreCapacity(HOST_CORES, MIPS));
         host.setStartupDelay(startupDelay);
         return host;
     }
@@ -153,7 +147,7 @@ final class VmCreationWhileHostsPowerOnIntegrationTest {
     private List<Vm> createVms() {
         final var list = new ArrayList<Vm>(VMS);
         for (int i = 0; i < VMS; i++) {
-            final var vm = new VmSimple(MIPS, VM_PES);
+            final var vm = new VmSimple(new CoreCapacity(VM_CORES, MIPS));
             vm.addOnCreationFailureListener(evt -> creationFailures.incrementAndGet());
             list.add(vm);
         }

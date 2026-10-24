@@ -17,10 +17,9 @@ import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.listeners.HostUpdatesVmsProcessingEventInfo;
 import org.cloudsimplus.mocks.CloudSimMocker;
 import org.cloudsimplus.mocks.MocksHelper;
-import org.cloudsimplus.provisioners.PeProvisionerSimple;
 import org.cloudsimplus.provisioners.ResourceProvisionerSimple;
 import org.cloudsimplus.resources.*;
-import org.cloudsimplus.schedulers.MipsShare;
+import org.cloudsimplus.resources.CoreCapacity;
 import org.cloudsimplus.schedulers.cloudlet.CloudletScheduler;
 import org.cloudsimplus.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudsimplus.schedulers.vm.VmScheduler;
@@ -54,35 +53,33 @@ public class HostSimpleTest {
     private static final long RAM = 1024;
     private static final long BW = 10000;
 
-    private static final int PES = 2;
+    private static final int CORES = 2;
     private static final double MIPS = 2000;
 
     private HostSimple host;
 
-    public static HostSimple createHostSimple(final int hostId, final int pesNumber) {
-        return createHostSimple(hostId, pesNumber, true);
+    public static HostSimple createHostSimple(final int hostId, final int cores) {
+        return createHostSimple(hostId, cores, true);
     }
 
-    public static HostSimple createHostSimple(final int hostId, final int pesNumber, final boolean activate) {
-        return createHostSimple(hostId, pesNumber, MIPS, RAM, BW, STORAGE, activate);
+    public static HostSimple createHostSimple(final int hostId, final int cores, final boolean activate) {
+        return createHostSimple(hostId, cores, MIPS, RAM, BW, STORAGE, activate);
     }
 
     public static HostSimple createHostSimple(
-        final int hostId, final int pesNumber,
+        final int hostId, final int cores,
         final double mips, final long ram,
         final long bw, final long storage)
     {
-        return createHostSimple(hostId, pesNumber, mips, ram, bw, storage, true);
+        return createHostSimple(hostId, cores, mips, ram, bw, storage, true);
     }
 
     public static HostSimple createHostSimple(
-        final int hostId, final int pesNumber,
+        final int hostId, final int cores,
         final double mips, final long ram,
         final long bw, final long storage, final boolean activate)
     {
-        final List<Pe> peList = createPes(pesNumber, mips);
-
-        final HostSimple host = new HostSimple(ram, bw, storage, peList, activate);
+        final var host = new HostSimple(ram, bw, storage, new CoreCapacity(cores, mips), activate);
         host.setRamProvisioner(new ResourceProvisionerSimple())
             .setBwProvisioner(new ResourceProvisionerSimple())
             .setVmScheduler(new VmSchedulerTimeShared())
@@ -90,10 +87,8 @@ public class HostSimpleTest {
         return host;
     }
 
-    private static HostSimple createHostSimple(final int pesNumber, VmScheduler vmScheduler) {
-        final List<Pe> peList = createPes(pesNumber, MIPS);
-
-        final HostSimple host = new HostSimple(RAM, BW, STORAGE, peList);
+    private static HostSimple createHostSimple(final int cores, VmScheduler vmScheduler) {
+        final var host = new HostSimple(RAM, BW, STORAGE, new CoreCapacity(cores, MIPS));
         host.setRamProvisioner(new ResourceProvisionerSimple())
             .setBwProvisioner(new ResourceProvisionerSimple())
             .setVmScheduler(vmScheduler);
@@ -101,48 +96,76 @@ public class HostSimpleTest {
 
     }
 
-    private static List<Pe> createPes(final int pesNumber, final double mips) {
-        return IntStream.range(0, pesNumber)
-                        .mapToObj(id -> new PeSimple(mips, new PeProvisionerSimple()))
-                        .collect(Collectors.toCollection(() -> new ArrayList<>(pesNumber)));
+    @Test
+    public void testConstructorWithZeroCores() {
+        assertThrows(IllegalArgumentException.class, () -> new HostSimple(RAM, BW, STORAGE, new CoreCapacity(0, MIPS)));
+    }
+
+    @Test
+    public void testTotalMipsCapacityExcludesFailedCores() {
+        final HostSimple host = createHostSimple(0, 4);
+        host.getProcessor().moveCores(CoreStatus.FREE, CoreStatus.FAILED, 1);
+        assertEquals(3 * MIPS, host.getTotalMipsCapacity());
+    }
+
+    @Test
+    public void testSetFailedFailsAllCoresAndRecoverFreesThem() {
+        final int cores = 4;
+        final HostSimple host = createHostSimple(0, cores);
+        host.getProcessor().moveCores(CoreStatus.FREE, CoreStatus.BUSY, 1);
+
+        host.setFailed(true);
+        assertAll(
+            () -> assertEquals(cores, host.getProcessor().getFailedCores()),
+            () -> assertEquals(0, host.getProcessor().getWorkingCores()),
+            () -> assertEquals(0, host.getProcessor().getBusyCores()),
+            () -> assertEquals(0, host.getTotalMipsCapacity())
+        );
+
+        host.setFailed(false);
+        assertAll(
+            () -> assertEquals(0, host.getProcessor().getFailedCores()),
+            () -> assertEquals(cores, host.getProcessor().getFreeCores()),
+            () -> assertEquals(cores, host.getProcessor().getWorkingCores())
+        );
     }
 
     @BeforeEach
     public void setUp() {
-        host = createHostSimple(ID, PES);
+        host = createHostSimple(ID, CORES);
     }
 
     @Test
     public void isSuitableForVmWhenThereIsAvailableStorage(){
-        final Vm vm = createVm(PES, MIPS, STORAGE);
+        final Vm vm = createVm(CORES, MIPS, STORAGE);
         assertTrue(host.isSuitableForVm(vm));
     }
 
     @Test
     public void isSuitableForVmWhenThereIsNotAvailableStorage(){
-        final Vm vm = createVm(PES, MIPS, STORAGE * 2);
+        final Vm vm = createVm(CORES, MIPS, STORAGE * 2);
         assertFalse(host.isSuitableForVm(vm));
     }
 
     @Test
-    public void isSuitableForVmWhenThereIsEnoughPes(){
+    public void isSuitableForVmWhenThereIsEnoughCores(){
         host.setVmScheduler(new VmSchedulerSpaceShared());
-        final Vm vm = createVm(PES, MIPS, STORAGE);
+        final Vm vm = createVm(CORES, MIPS, STORAGE);
         assertTrue(host.isSuitableForVm(vm));
     }
 
     /// If the total HOST_MIPS a VM is requesting is lower or equal to the total available HOST_MIPS
-    /// from the physical PEs but the number of available PEs is lower then the
-    /// PEs requested, the test must fail at least for a [VmSchedulerSpaceShared].
+    /// from the physical cores but the number of available cores is lower then the
+    /// cores requested, the test must fail at least for a [VmSchedulerSpaceShared].
     @Test
-    public void isSuitableForVmWhenThereIsNotEnoughPes(){
+    public void isSuitableForVmWhenThereIsNotEnoughCores(){
         host.setVmScheduler(new VmSchedulerSpaceShared());
         final Vm vm = createVm(4, 500, STORAGE);
         assertFalse(host.isSuitableForVm(vm));
     }
 
-    private Vm createVm(final int pes, final double mips, final long storage) {
-        final Vm vm = new VmSimple(mips, pes);
+    private Vm createVm(final int cores, final double mips, final long storage) {
+        final Vm vm = new VmSimple(new CoreCapacity(cores, mips));
         vm.setRam(RAM);
         vm.setBw(BW);
         vm.setSize(storage);
@@ -209,10 +232,10 @@ public class HostSimpleTest {
 
     @Test
     public void testAddMigratingInVmAndCheckVmWasChangedToInMigration() {
-        final int pesNumber = 2;
-        final Host host = createHostSimple(0, pesNumber);
+        final int cores = 2;
+        final Host host = createHostSimple(0, cores);
         final VmSimple vm = VmTestUtil.createVm(
-                0, MIPS, pesNumber, RAM, BW, STORAGE,
+                0, MIPS, cores, RAM, BW, STORAGE,
                 new CloudletSchedulerTimeShared());
         vm.setHost(Host.NULL);
         host.addMigratingInVm(vm);
@@ -224,18 +247,18 @@ public class HostSimpleTest {
 
     @Test
     public void testAddMigratingInVmAndCheckAvailableMipsAndStorage() {
-        final int pesNumber = 1;
+        final int cores = 1;
         final double VM_MIPS = 500;
         final VmSimple vm = VmTestUtil.createVm(
-            0, VM_MIPS, pesNumber, RAM, BW, STORAGE,
+            0, VM_MIPS, cores, RAM, BW, STORAGE,
             new CloudletSchedulerTimeShared(),
             b -> Mockito.when(b.requestIdleVmDestruction(Mockito.any())).thenReturn(b));
-        final Host targetHost = createHostSimple(0, pesNumber);
+        final Host targetHost = createHostSimple(0, cores);
 
-        assertEquals(MIPS, targetHost.getTotalAvailableMips());
+        assertEquals(MIPS, targetHost.getVmScheduler().getTotalAvailableMips());
         assertTrue(targetHost.addMigratingInVm(vm));
         final double availableMips = MIPS - VM_MIPS;
-        assertEquals(availableMips, targetHost.getTotalAvailableMips());
+        assertEquals(availableMips, targetHost.getVmScheduler().getTotalAvailableMips());
         assertEquals(0, targetHost.getAvailableStorage());
     }
 
@@ -243,56 +266,56 @@ public class HostSimpleTest {
     /// @see VmScheduler#DEF_VM_MIGRATION_CPU_OVERHEAD
     @Test
     public void testAddMigratingInVmAndCheckAllocatedMips() {
-        final int pesNumber = 1;
-        final Host targetHost = createHostSimple(0, pesNumber);
+        final int cores = 1;
+        final Host targetHost = createHostSimple(0, cores);
         final double VM_MIPS = 500;
         final VmSimple vm = VmTestUtil.createVm(
-            0, VM_MIPS, pesNumber, RAM, BW, STORAGE,
+            0, VM_MIPS, cores, RAM, BW, STORAGE,
             new CloudletSchedulerTimeShared());
         targetHost.addMigratingInVm(vm);
         final double allocatedMips = 50;
-        assertEquals(allocatedMips, targetHost.getTotalAllocatedMipsForVm(vm));
+        assertEquals(allocatedMips, targetHost.getVmScheduler().getTotalAllocatedMipsForVm(vm));
     }
 
     @Test
     public void testAddMigratingInVmWhenLackRam() {
-        final int pesNumber = 2;
-        final Host host = createHostSimple(0, pesNumber);
+        final int cores = 2;
+        final Host host = createHostSimple(0, cores);
         final Vm vm = VmTestUtil.createVm(
-            0, MIPS, pesNumber, RAM * 2,
+            0, MIPS, cores, RAM * 2,
             BW, STORAGE, new CloudletSchedulerTimeShared());
         assertFalse(host.addMigratingInVm(vm));
     }
 
     @Test
     public void testAddMigratingInVmWhenLackStorage() {
-        final int pesNumber = 2;
-        final Host host = createHostSimple(0, pesNumber);
-        final Vm vm = VmTestUtil.createVm(0, MIPS, pesNumber, RAM, BW, STORAGE * 2, new CloudletSchedulerTimeShared());
+        final int cores = 2;
+        final Host host = createHostSimple(0, cores);
+        final Vm vm = VmTestUtil.createVm(0, MIPS, cores, RAM, BW, STORAGE * 2, new CloudletSchedulerTimeShared());
         assertFalse(host.addMigratingInVm(vm));
     }
 
     @Test
     public void testAddMigratingInVmWhenLackBw() {
-        final int pesNumber = 2;
-        final Host host = createHostSimple(0, pesNumber);
-        final Vm vm = VmTestUtil.createVm(0, MIPS, pesNumber, RAM, BW * 2, STORAGE, new CloudletSchedulerTimeShared());
+        final int cores = 2;
+        final Host host = createHostSimple(0, cores);
+        final Vm vm = VmTestUtil.createVm(0, MIPS, cores, RAM, BW * 2, STORAGE, new CloudletSchedulerTimeShared());
         assertFalse(host.addMigratingInVm(vm));
     }
 
     @Test
     public void testAddMigratingInVmWhenLackMips() {
-        final int pesNumber = 2;
-        final Host host = createHostSimple(0, pesNumber);
-        final Vm vm = VmTestUtil.createVm(0, MIPS * 2, pesNumber, RAM, BW, STORAGE, new CloudletSchedulerTimeShared());
+        final int cores = 2;
+        final Host host = createHostSimple(0, cores);
+        final Vm vm = VmTestUtil.createVm(0, MIPS * 2, cores, RAM, BW, STORAGE, new CloudletSchedulerTimeShared());
         assertFalse(host.addMigratingInVm(vm));
     }
 
     @Test
     public void testRemoveMigratingInVm() {
-        final int pesNumber = 2;
-        final Host host = createHostSimple(0, pesNumber);
-        final VmSimple vm = VmTestUtil.createVm(0, MIPS, pesNumber, RAM, BW, STORAGE, new CloudletSchedulerTimeShared());
+        final int cores = 2;
+        final Host host = createHostSimple(0, cores);
+        final VmSimple vm = VmTestUtil.createVm(0, MIPS, cores, RAM, BW, STORAGE, new CloudletSchedulerTimeShared());
         vm.setHost(Host.NULL);
         host.addMigratingInVm(vm);
         host.removeMigratingInVm(vm);
@@ -313,7 +336,7 @@ public class HostSimpleTest {
     public void testUpdateVmProcessing() {
         final int numberOfVms = 4;
 
-        final MipsShare mipsShare = new MipsShare(MIPS / numberOfVms);
+        final var mipsShare = new CoreCapacity(MIPS / numberOfVms);
         final double time = 0;
 
         final List<Vm> vmList = createListOfMockVms(numberOfVms, mipsShare, time);
@@ -334,7 +357,7 @@ public class HostSimpleTest {
     }
 
     private List<Vm> createListOfMockVms(
-        final int vmsNumber, final MipsShare mipsShare,
+        final int vmsNumber, final CoreCapacity mipsShare,
         final double simulationClock)
     {
         final List<Vm> vmList = new ArrayList<>(vmsNumber);
@@ -403,10 +426,10 @@ public class HostSimpleTest {
     }
 
     @Test
-    public void testGetPesNumber() {
-        final int pesNumber = 2;
-        final Host host = createHostSimple(0, pesNumber);
-        assertEquals(pesNumber, host.getPesNumber());
+    public void testGetCoresNumber() {
+        final int cores = 2;
+        final Host host = createHostSimple(0, cores);
+        assertEquals(cores, host.getProcessor().getCores());
     }
 
     @Test
@@ -425,20 +448,20 @@ public class HostSimpleTest {
     }
 
     @Test
-    public void testGetNumberOfFreePes() {
-        final int pesNumber = 2;
-        final Host host = createHostSimple(0, pesNumber);
-        assertEquals(pesNumber, host.getFreePesNumber());
+    public void testGetNumberOfFreeCores() {
+        final int cores = 2;
+        final Host host = createHostSimple(0, cores);
+        assertEquals(cores, host.getProcessor().getFreeCores());
     }
 
     @Test
-    public void testGetNumberOfFreePesWhenOneBusyPes() {
-        final int pesNumber = 2;
-        final HostSimple host = createHostSimple(0, pesNumber);
-        host.setPeStatus(host.getPeList().subList(0,1), Pe.Status.BUSY);
+    public void testGetNumberOfFreeCoresWhenOneBusyCore() {
+        final int cores = 2;
+        final HostSimple host = createHostSimple(0, cores);
+        host.getProcessor().moveCores(CoreStatus.FREE, CoreStatus.BUSY, 1);
         assertAll(
-            () -> assertEquals(1, host.getFreePesNumber()),
-            () -> assertEquals(1, host.getBusyPesNumber())
+            () -> assertEquals(1, host.getProcessor().getFreeCores()),
+            () -> assertEquals(1, host.getProcessor().getBusyCores())
         );
     }
 
@@ -491,24 +514,24 @@ public class HostSimpleTest {
     }
 
     @Test
-    public void testGetNumberOfWorkingPesWhenOneIsFailed() {
-        final int pesNumber = 2;
-        final HostSimple host = createHostSimple(0, pesNumber);
-        host.setPeStatus(host.getPeList().subList(0,1), Pe.Status.FAILED);
+    public void testGetNumberOfWorkingCoresWhenOneIsFailed() {
+        final int cores = 2;
+        final HostSimple host = createHostSimple(0, cores);
+        host.getProcessor().moveCores(CoreStatus.FREE, CoreStatus.FAILED, 1);
         assertAll(
-            () -> assertEquals(1, host.getFreePesNumber()),
-            () -> assertEquals(1, host.getWorkingPesNumber()),
-            () -> assertEquals(1, host.getFailedPesNumber())
+            () -> assertEquals(1, host.getProcessor().getFreeCores()),
+            () -> assertEquals(1, host.getProcessor().getWorkingCores()),
+            () -> assertEquals(1, host.getProcessor().getFailedCores())
         );
     }
 
     @Test
-    public void testGetNumberOfFreePesWhenNoFreePes() {
-        final int pesNumber = 4;
-        final HostSimple host = createHostSimple(0, pesNumber);
+    public void testGetNumberOfFreeCoresWhenNoFreeCores() {
+        final int cores = 4;
+        final HostSimple host = createHostSimple(0, cores);
 
-        host.setPeStatus(host.getPeList(), Pe.Status.BUSY);
-        assertEquals(0, host.getFreePesNumber());
+        host.getProcessor().moveCores(CoreStatus.FREE, CoreStatus.BUSY, cores);
+        assertEquals(0, host.getProcessor().getFreeCores());
     }
 
     @Test
@@ -576,7 +599,7 @@ public class HostSimpleTest {
 
     @Test
     public void testDestroyVmAndRemoveFromBrokerCreatedList() {
-        final CloudSimPlus cloudsim = new CloudSimPlus();
+        final var cloudsim = new CloudSimPlus();
 
         final DatacenterBroker broker = new DatacenterBrokerSimple(cloudsim);
         final var vm = VmTestUtil.createVm(0, 2);

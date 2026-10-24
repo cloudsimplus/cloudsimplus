@@ -39,10 +39,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 /// @since CloudSim Plus 7.2.1
 public final class CheckCloudletLifetimeTest {
     private static final int HOST_MIPS = 1000;
-    private static final int HOST_PES = 1;
+    private static final int HOST_CORES = 1;
     private static final int VM_MIPS = HOST_MIPS;
-    private static final int VM_PES = 1;
-    private static final int CLOUDLET_PES = 1;
+    private static final int VM_CORES = 1;
+    private static final int CLOUDLET_CORES = 1;
     private static final int CLOUDLET_LENGTH = 100_000;
     private static final int SCHEDULING_INTERVAL = 10; //seconds
     private static final int CLOUDLET_LIFE_TIME = 50; //seconds
@@ -59,7 +59,7 @@ public final class CheckCloudletLifetimeTest {
                 .create(
                     new HostBuilder()
                         .setVmSchedulerSupplier(VmSchedulerSpaceShared::new)
-                        .setPes(HOST_PES).setMips(HOST_MIPS)
+                        .setCores(HOST_CORES).setMips(HOST_MIPS)
                         .create()
                         .getHosts()
                 );
@@ -68,13 +68,13 @@ public final class CheckCloudletLifetimeTest {
         final var brokerBuilder = scenario.getBrokerBuilder().create();
         this.broker = brokerBuilder.getBroker();
         brokerBuilder.getVmBuilder()
-                     .setPes(VM_PES).setMips(VM_MIPS)
+                     .setCores(VM_CORES).setMips(VM_MIPS)
                      .setCloudletSchedulerSupplier(CloudletSchedulerTimeShared::new)
                      .createAndSubmit();
 
         brokerBuilder.getCloudletBuilder()
                      .setLength(CLOUDLET_LENGTH)
-                     .setPes(CLOUDLET_PES)
+                     .setRequiredCores(CLOUDLET_CORES)
                      .setLifeTime(CLOUDLET_LIFE_TIME)
                      .createAndSubmit(1);
     }

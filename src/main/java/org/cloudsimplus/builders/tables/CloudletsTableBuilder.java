@@ -30,6 +30,8 @@ import org.cloudsimplus.core.Identifiable;
 import java.util.List;
 
 import static java.util.Objects.requireNonNullElse;
+import static org.cloudsimplus.resources.Processor.cores;
+import static org.cloudsimplus.resources.Processor.workingCores;
 
 /// Builds a table for printing simulation results from a list of Cloudlets.
 /// It defines a set of default columns but new ones can be added
@@ -59,8 +61,8 @@ public class CloudletsTableBuilder extends TableBuilderAbstract<Cloudlet> {
     /// The format for cloudlet length columns.
     private String lengthFormat = DEF_FORMAT;
 
-    /// The format for columns indicating number of PEs.
-    private String peFormat = DEF_FORMAT;
+    /// The format for columns indicating number of CPU cores.
+    private String coreFormat = DEF_FORMAT;
 
     /// Instantiates a builder to print the list of Cloudlets using the
     /// default [MarkdownTable].
@@ -90,15 +92,15 @@ public class CloudletsTableBuilder extends TableBuilderAbstract<Cloudlet> {
         addColumn(getTable().newColumn("DC", ID, idFormat), cloudlet -> cloudlet.getVm().getHost().getDatacenter().getId());
 
         addColumn(getTable().newColumn("Host", ID, idFormat), cloudlet -> cloudlet.getVm().getHost().getId());
-        addColumn(getTable().newColumn("Host PEs ", CPU_CORES, peFormat), cloudlet -> cloudlet.getVm().getHost().getWorkingPesNumber());
+        addColumn(getTable().newColumn("Host Cores", CPU_CORES, coreFormat), cloudlet -> workingCores(cloudlet.getVm().getHost()));
 
         addColumn(getTable().newColumn("VM", ID, idFormat), cloudlet -> cloudlet.getVm().getId());
 
         // 3 extra spaces to ensure proper formatting
-        addColumn(getTable().newColumn("   VM PEs", CPU_CORES, peFormat), cloudlet -> cloudlet.getVm().getPesNumber());
+        addColumn(getTable().newColumn(" VM Cores", CPU_CORES, coreFormat), cloudlet -> cores(cloudlet.getVm()));
         addColumn(getTable().newColumn("CloudletLen", MI, lengthFormat), Cloudlet::getLength);
         addColumn(getTable().newColumn("FinishedLen", MI, lengthFormat), Cloudlet::getFinishedLengthSoFar);
-        addColumn(getTable().newColumn("CloudletPEs", CPU_CORES, peFormat), Cloudlet::getPesNumber);
+        addColumn(getTable().newColumn("CloudletCores", CPU_CORES, coreFormat), Cloudlet::getRequiredCores);
         addColumn(getTable().newColumn("StartTime", SECONDS, timeFormat), Cloudlet::getStartTime);
         addColumn(getTable().newColumn("FinishTime", SECONDS, timeFormat), Cloudlet::getFinishTime);
         addColumn(getTable().newColumn("ExecTime", SECONDS, timeFormat), Cloudlet::getTotalExecutionTime);
@@ -124,10 +126,10 @@ public class CloudletsTableBuilder extends TableBuilderAbstract<Cloudlet> {
         return this;
     }
 
-    /// Sets the format for columns indicating number of PEs.
+    /// Sets the format for columns indicating number of CPU cores.
     /// @return this table builder
-    public CloudletsTableBuilder setPeFormat(final String peFormat) {
-        this.peFormat = requireNonNullElse(peFormat, "");
+    public CloudletsTableBuilder setCoreFormat(final String coreFormat) {
+        this.coreFormat = requireNonNullElse(coreFormat, "");
         return this;
     }
 }

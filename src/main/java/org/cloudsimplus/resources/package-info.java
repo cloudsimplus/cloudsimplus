@@ -12,7 +12,7 @@
 /// The most basic resources are [org.cloudsimplus.resources.HarddriveStorage],
 /// [org.cloudsimplus.resources.Ram],
 /// [org.cloudsimplus.resources.Bandwidth],
-/// [org.cloudsimplus.resources.Pe]
+/// [org.cloudsimplus.resources.Processor]
 /// and [org.cloudsimplus.resources.File].
 ///
 /// @author Manoel Campos da Silva Filho

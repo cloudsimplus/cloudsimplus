@@ -40,24 +40,24 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-/// An Integration Test (IT) running a simulation scenario with 1 PM of 2 PEs,
-/// 1 VM of 2 PEs and 4 cloudlet in that VM.
+/// An Integration Test (IT) running a simulation scenario with 1 PM of 2 cores,
+/// 1 VM of 2 cores and 4 cloudlet in that VM.
 /// The VM uses a [CloudletSchedulerTimeShared]. As the number of Cloudlets
-/// is the double of VM's PEs, all cloudlets will spend the double of the
+/// is the double of VM's cores, all cloudlets will spend the double of the
 /// time to finish, because they will concur for CPU.
 /// Since all 4 Cloudlets runs in the same VM,
 /// they are configure to use just 25% of the VM RAM each one.
 ///
 /// @author Manoel Campos da Silva Filho
-public final class CloudletSchedulerTimeSharedWithMoreCloudletsThanPEs {
+public final class CloudletSchedulerTimeSharedWithMoreCloudletsThanCores {
     private static final int HOST_MIPS = 1000;
-    private static final int HOST_PES = 2;
+    private static final int HOST_CORES = 2;
     private static final int NUMBER_OF_VMS = 1;
     private static final int VM_MIPS = HOST_MIPS;
-    private static final int VM_PES = HOST_PES;
-    private static final int CLOUDLET_PES = 1;
+    private static final int VM_CORES = HOST_CORES;
+    private static final int CLOUDLET_CORES = 1;
     private static final int CLOUDLET_LENGTH = VM_MIPS*10;
-    private static final int NUMBER_OF_CLOUDLETS = VM_PES*2;
+    private static final int NUMBER_OF_CLOUDLETS = VM_CORES*2;
 
     private DatacenterBroker broker;
     private CloudSimPlus simulation;
@@ -65,11 +65,11 @@ public final class CloudletSchedulerTimeSharedWithMoreCloudletsThanPEs {
     @BeforeEach
     public void setUp() {
         simulation = new CloudSimPlus();
-        final SimulationScenarioBuilder scenario = new SimulationScenarioBuilder(simulation);
+        final var scenario = new SimulationScenarioBuilder(simulation);
         scenario.getDatacenterBuilder().setSchedulingInterval(2).create(
             new HostBuilder()
                 .setVmSchedulerSupplier(VmSchedulerSpaceShared::new)
-                .setPes(HOST_PES).setMips(HOST_MIPS)
+                .setCores(HOST_CORES).setMips(HOST_MIPS)
                 .create()
                 .getHosts()
         );
@@ -77,7 +77,7 @@ public final class CloudletSchedulerTimeSharedWithMoreCloudletsThanPEs {
         final BrokerBuilderDecorator brokerBuilder = scenario.getBrokerBuilder().create();
         broker = brokerBuilder.getBroker();
         brokerBuilder.getVmBuilder()
-            .setPes(VM_PES).setMips(VM_MIPS)
+            .setCores(VM_CORES).setMips(VM_MIPS)
             .setCloudletSchedulerSupplier(CloudletSchedulerTimeShared::new)
             .createAndSubmit(NUMBER_OF_VMS);
 
@@ -87,7 +87,7 @@ public final class CloudletSchedulerTimeSharedWithMoreCloudletsThanPEs {
             .setUtilizationModelCpu(utilizationModel)
             .setUtilizationModelRam(new UtilizationModelDynamic(0.25))
             .setUtilizationModelBw(new UtilizationModelDynamic(0.25))
-            .setPes(CLOUDLET_PES)
+            .setRequiredCores(CLOUDLET_CORES)
             .createAndSubmit(NUMBER_OF_CLOUDLETS);
     }
 

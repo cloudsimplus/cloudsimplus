@@ -9,7 +9,7 @@ package org.cloudsimplus.resources;
 
 import org.cloudsimplus.util.MathUtil;
 
-/// A class that represents simple resources such as RAM, CPU, Bandwidth or Pe.
+/// A class that represents simple resources such as RAM, CPU and Bandwidth.
 /// It stores, for instance, the resource capacity and amount of free available resource.
 ///
 /// The class is abstract just to ensure there will be a specific subclass
@@ -56,18 +56,18 @@ public abstract class ResourceManageableAbstract extends ResourceAbstract implem
 
     @Override
     public boolean addCapacity(final long capacityToAdd) {
-        MathUtil.nonNegative(capacityToAdd, "Number of PEs to add");
+        MathUtil.nonNegative(capacityToAdd, "Capacity to add");
         return setCapacity(getCapacity()+capacityToAdd);
     }
 
     @Override
     public boolean removeCapacity(final long capacityToRemove) {
-        MathUtil.nonNegative(capacityToRemove, "Number of PEs to remove");
+        MathUtil.nonNegative(capacityToRemove, "Capacity to remove");
 
         if(capacityToRemove > this.getCapacity()){
             throw new IllegalStateException(
-                "The number of PEs to remove cannot be higher than the number of existing PEs. "+
-                "Requested to remove: " + capacityToRemove + " PEs. Existing: " + this.getCapacity() + " PEs.");
+                "The %s capacity to remove cannot be higher than the existing capacity. Requested to remove: %d %s. Existing: %d %s."
+                    .formatted(getClass().getSimpleName(), capacityToRemove, getUnit(), getCapacity(), getUnit()));
         }
         return setCapacity(getCapacity()-capacityToRemove);
     }

@@ -12,6 +12,7 @@ import lombok.NonNull;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.cloudsimplus.hosts.Host;
+import org.cloudsimplus.resources.Processor;
 
 /// Represents static properties of a Datacenter such as architecture,
 /// Operating System (OS), cost and [Distribution][Distribution].
@@ -83,13 +84,13 @@ public non-sealed class DatacenterCharacteristicsSimple implements DatacenterCha
     }
 
     @Override
-    public double getMips() {
+    public double getTotalMips() {
         return datacenter.getHostList().stream().mapToDouble(Host::getTotalMipsCapacity).sum();
     }
 
     @Override
-    public int getPesNumber() {
-        return (int)datacenter.getHostList().stream().mapToLong(Host::getPesNumber).sum();
+    public long getTotalCores() {
+        return datacenter.getHostList().stream().mapToLong(Processor::cores).sum();
     }
 
     @Override

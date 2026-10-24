@@ -59,11 +59,11 @@ public final class CheckHostAvailableMipsTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(CheckHostAvailableMipsTest.class.getSimpleName());
 
     private static final double HOST_MIPS = 1000;
-    private static final int    HOST_PES = 5;
+    private static final int    HOST_CORES = 5;
     private static final int    NUMBER_OF_VMS = 2;
     private static final double VM_MIPS = HOST_MIPS;
-    private static final int    VM_PES = HOST_PES/NUMBER_OF_VMS;
-    private static final int    CLOUDLET_PES = VM_PES;
+    private static final int    VM_CORES = HOST_CORES/NUMBER_OF_VMS;
+    private static final int    CLOUDLET_CORES = VM_CORES;
     private static final long   CLOUDLET_LENGTH = (long)HOST_MIPS*10;
     private static final int    NUMBER_OF_CLOUDLETS = NUMBER_OF_VMS;
     private static final int    FIRST_VM_FINISH_TIME = 6;
@@ -79,7 +79,7 @@ public final class CheckHostAvailableMipsTest {
         final var scenario = new SimulationScenarioBuilder(simulation);
         final List<Host> hosts = new HostBuilder()
             .setOnUpdateVmsProcessingListener(this::onUpdateVmsProcessing)
-            .setPes(HOST_PES).setMips(HOST_MIPS)
+            .setCores(HOST_CORES).setMips(HOST_MIPS)
             .create()
             .getHosts();
         scenario.getDatacenterBuilder().setSchedulingInterval(2).create(hosts);
@@ -88,14 +88,14 @@ public final class CheckHostAvailableMipsTest {
         for(int i = 0; i < NUMBER_OF_VMS; i++){
             final BrokerBuilderDecorator brokerBuilder = scenario.getBrokerBuilder().create();
             brokerBuilder.getVmBuilder()
-                .setPes(VM_PES).setMips(VM_MIPS)
+                .setCores(VM_CORES).setMips(VM_MIPS)
                 .createAndSubmit();
 
             final long cloudletLength = i == 0 ? CLOUDLET_LENGTH : CLOUDLET_LENGTH/2;
             brokerBuilder.getCloudletBuilder()
                 .setLength(cloudletLength)
                 .setUtilizationModelCpu(utilizationModel)
-                .setPes(CLOUDLET_PES)
+                .setRequiredCores(CLOUDLET_CORES)
                 .createAndSubmit(1, i);
         }
     }
@@ -112,17 +112,17 @@ public final class CheckHostAvailableMipsTest {
 
         LOGGER.info(
             "- VMs processing at time {}: {} available mips: {} expected availability: {}",
-            time, evt.getHost(), evt.getHost().getTotalAvailableMips(), expectedAvailableHostMips);
+            time, evt.getHost(), evt.getHost().getVmScheduler().getTotalAvailableMips(), expectedAvailableHostMips);
     }
 
     private double getExpectedAvailableHostMips(final double time) {
-        final double usedHostMips = NUMBER_OF_CLOUDLETS * CLOUDLET_PES * VM_MIPS * utilizationModel.getUtilization(time);
-        final double expectedAvailableHostMips = HOST_MIPS * HOST_PES - usedHostMips;
+        final double usedHostMips = NUMBER_OF_CLOUDLETS * CLOUDLET_CORES * VM_MIPS * utilizationModel.getUtilization(time);
+        final double expectedAvailableHostMips = HOST_MIPS * HOST_CORES - usedHostMips;
 
         if(time > FIRST_VM_FINISH_TIME){
             /*After 6 seconds, one VM finishes and
             its used capacity will be free*/
-            return expectedAvailableHostMips + VM_MIPS*VM_PES;
+            return expectedAvailableHostMips + VM_MIPS*VM_CORES;
         }
         else if(time > LAST_VM_FINISH_TIME) {
             /*After 10 seconds all VMs finish and

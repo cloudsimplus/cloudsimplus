@@ -70,7 +70,7 @@ public class CloudletTest {
         assertEquals(0, Cloudlet.NULL.getTotalLength());
 
         assertEquals(0, Cloudlet.NULL.getNetServiceLevel());
-        assertEquals(0, Cloudlet.NULL.getPesNumber());
+        assertEquals(0, Cloudlet.NULL.getRequiredCores());
 
         assertSame(DatacenterBroker.NULL, Cloudlet.NULL.getBroker());
 
