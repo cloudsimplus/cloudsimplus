@@ -1030,7 +1030,7 @@ public abstract non-sealed class CloudletSchedulerAbstract implements CloudletSc
     /// @return the current requested MIPS for the given cloudlet
     protected double getRequestedMipsForCloudlet(final CloudletExecution cle, final double time) {
         final Cloudlet cloudlet = cle.getCloudlet();
-        return getAbsoluteCloudletResourceUtilization(cloudlet, cloudlet.getUtilizationModelCpu(), time, vm.getMips(), "CPU", true);
+        return getAbsoluteCloudletResourceUtilization(cloudlet, cloudlet.getUtilizationModelCpu(), time, vm.getProcessor().getMips(), "CPU", true);
     }
 
     /// Gets the current allocated MIPS for a cloudlet.

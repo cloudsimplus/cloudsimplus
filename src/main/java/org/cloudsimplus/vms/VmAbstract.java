@@ -127,7 +127,7 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
     /// BW, RAM and size of the given VM, but a default [CloudletScheduler] and no [DatacenterBroker].
     /// @param sourceVm the VM to be cloned
     public VmAbstract(final Vm sourceVm) {
-        this(-1, new CoreCapacity(sourceVm.getPesNumber(), sourceVm.getMips()));
+        this(-1, new CoreCapacity(sourceVm.getPesNumber(), sourceVm.getProcessor().getMips()));
         this.cpuCap = sourceVm.getCpuCap();
         this.setBw(sourceVm.getBw().getCapacity())
             .setRam(sourceVm.getRam().getCapacity())
@@ -426,11 +426,6 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
     /// @return true if the VM has started some Cloudlet, false otherwise
     public boolean hasStartedSomeCloudlet() {
         return getLastBusyTime() > NOT_ASSIGNED;
-    }
-
-    @Override
-    public double getMips() {
-        return processor.getMips();
     }
 
     /// Sets the individual MIPS capacity of any VM's core, considering that all

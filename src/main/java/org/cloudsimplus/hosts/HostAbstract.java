@@ -662,11 +662,6 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
     }
 
     @Override
-    public double getMips() {
-        return processor.getMips();
-    }
-
-    @Override
     public double getTotalMipsCapacity() {
         return processor.getTotalMips();
     }

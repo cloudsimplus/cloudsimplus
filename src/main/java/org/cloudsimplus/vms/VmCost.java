@@ -65,7 +65,7 @@ public class VmCost {
     /// @return the processing monetary cost ($) of the cores allocated from the PM hosting the VM,
     /// considering the VM's number of cores and total execution time.
     public double getProcessingCost() {
-        final double hostMips = vm.getHost().getMips();
+        final double hostMips = vm.getHost().getProcessor().getMips();
         final double costPerMI = hostMips == 0 ? 0.0 : getDcCharacteristics().getCostPerSecond() / hostMips;
         return costPerMI * vm.getTotalMipsCapacity() * vm.getTotalExecutionTime();
     }

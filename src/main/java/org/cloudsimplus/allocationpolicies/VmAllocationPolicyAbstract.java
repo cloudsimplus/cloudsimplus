@@ -140,7 +140,7 @@ public non-sealed abstract class VmAllocationPolicyAbstract implements VmAllocat
     private boolean isNotHostPesSuitableToUpScaleVm(final VerticalVmScaling scaling) {
         final Vm vm = scaling.getVm();
         final long coresCountForScaling = (long)scaling.getResourceAmountToScale();
-        final var additionalVmMips = new CoreCapacity(coresCountForScaling, vm.getMips());
+        final var additionalVmMips = new CoreCapacity(coresCountForScaling, vm.getProcessor().getMips());
         return !vm.getHost().getVmScheduler().isSuitableForVm(vm, additionalVmMips);
     }
 

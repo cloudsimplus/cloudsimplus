@@ -58,10 +58,6 @@ public sealed interface Machine<T extends Resource>
     /// that include cores of all statuses, including failed cores.
     long getPesNumber();
 
-    /// @return the individual MIPS capacity of any machine's core,
-    /// considering that all cores have the same capacity.
-    double getMips();
-
     /// @return total MIPS capacity across all cores of the machine.
     double getTotalMipsCapacity();
 

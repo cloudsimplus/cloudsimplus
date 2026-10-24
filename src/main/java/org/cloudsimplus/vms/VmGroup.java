@@ -125,7 +125,7 @@ public class VmGroup extends VmSimple {
     /// {@return the max MIPS capacity a VM inside the List is requiring}
     /// @param vmList the List of VMs to create the group
     private static double getMaxMips(final List<Vm> vmList){
-        return requireNonNull(vmList).stream().mapToDouble(Vm::getMips).max().orElse(0.0);
+        return requireNonNull(vmList).stream().mapToDouble(vm -> vm.getProcessor().getMips()).max().orElse(0.0);
     }
 
     /// @return the total number of CPU cores from all VMs inside the List.
