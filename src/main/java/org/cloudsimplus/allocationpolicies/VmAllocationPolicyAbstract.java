@@ -16,7 +16,6 @@ import org.cloudsimplus.datacenters.Datacenter;
 import org.cloudsimplus.hosts.Host;
 import org.cloudsimplus.hosts.HostAbstract;
 import org.cloudsimplus.hosts.HostSuitability;
-import org.cloudsimplus.resources.Pe;
 import org.cloudsimplus.resources.Processor;
 import org.cloudsimplus.resources.CoreCapacity;
 import org.cloudsimplus.util.Conversion;

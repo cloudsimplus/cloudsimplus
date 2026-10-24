@@ -17,7 +17,6 @@ import org.cloudsimplus.cloudlets.network.NetworkCloudlet;
 import org.cloudsimplus.hosts.Host;
 import org.cloudsimplus.hosts.network.NetworkHost;
 import org.cloudsimplus.network.VmPacket;
-import org.cloudsimplus.resources.Pe;
 import org.cloudsimplus.vms.Vm;
 import org.cloudsimplus.vms.VmSimple;
 

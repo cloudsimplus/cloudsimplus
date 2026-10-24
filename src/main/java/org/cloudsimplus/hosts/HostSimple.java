@@ -12,12 +12,10 @@ import org.cloudsimplus.provisioners.ResourceProvisioner;
 import org.cloudsimplus.resources.CoreCapacity;
 import org.cloudsimplus.provisioners.ResourceProvisionerSimple;
 import org.cloudsimplus.resources.HarddriveStorage;
-import org.cloudsimplus.resources.Pe;
 import org.cloudsimplus.schedulers.vm.VmScheduler;
 import org.cloudsimplus.schedulers.vm.VmSchedulerSpaceShared;
 import org.cloudsimplus.vms.Vm;
 
-import java.util.List;
 
 /// A Host class that implements the most basic features of a Physical Machine
 /// (PM) inside a [Datacenter]. It executes actions related to the management
@@ -160,53 +158,6 @@ public class HostSimple extends HostAbstract {
         final CoreCapacity capacity, final boolean activate)
     {
         super(ram, bw, new HarddriveStorage(storage), capacity, activate);
-    }
-
-    /// @deprecated Use [#HostSimple(CoreCapacity)] instead.
-    @Deprecated(forRemoval = true)
-    public HostSimple(final List<Pe> peList) {
-        super(peList);
-    }
-
-    /// @deprecated Use [#HostSimple(CoreCapacity, boolean)] instead.
-    @Deprecated(forRemoval = true)
-    public HostSimple(final List<Pe> peList, final boolean activate) {
-        super(peList, activate);
-    }
-
-    /// @deprecated Use [#HostSimple(ResourceProvisioner, ResourceProvisioner, long, CoreCapacity)] instead.
-    @Deprecated(forRemoval = true)
-    public HostSimple(
-        final ResourceProvisioner ramProvisioner,
-        final ResourceProvisioner bwProvisioner,
-        final long storage,
-        final List<Pe> peList)
-    {
-        super(ramProvisioner, bwProvisioner, storage, peList);
-    }
-
-    /// @deprecated Use [#HostSimple(long, long, long, CoreCapacity)] instead.
-    @Deprecated(forRemoval = true)
-    public HostSimple(final long ram, final long bw, final long storage, final List<Pe> peList) {
-        super(ram, bw, storage, peList);
-    }
-
-    /// @deprecated Use [#HostSimple(long, long, HarddriveStorage, CoreCapacity)] instead.
-    @Deprecated(forRemoval = true)
-    public HostSimple(
-        final long ram, final long bw,
-        final HarddriveStorage storage, final List<Pe> peList)
-    {
-        super(ram, bw, storage, peList);
-    }
-
-    /// @deprecated Use [#HostSimple(long, long, long, CoreCapacity, boolean)] instead.
-    @Deprecated(forRemoval = true)
-    public HostSimple(
-        final long ram, final long bw, final long storage,
-        final List<Pe> peList, final boolean activate)
-    {
-        super(ram, bw, new HarddriveStorage(storage), peList, activate);
     }
 
     @Override

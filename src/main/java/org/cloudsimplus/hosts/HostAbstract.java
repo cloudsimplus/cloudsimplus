@@ -50,7 +50,6 @@ import java.util.*;
 
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
-import static org.cloudsimplus.hosts.PeListConverter.toCoreCapacity;
 
 /// A base class for implementing [Host]s.
 ///
@@ -197,53 +196,6 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
 
     public HostAbstract(final CoreCapacity capacity, final boolean activate) {
         this(defaultRamCapacity, defaultBwCapacity, new HarddriveStorage(defaultStorageCapacity), capacity, activate);
-    }
-
-    /// @deprecated Use [#HostAbstract(ResourceProvisioner, ResourceProvisioner, long, CoreCapacity)] instead.
-    @Deprecated(forRemoval = true)
-    public HostAbstract(
-        final ResourceProvisioner ramProvisioner,
-        final ResourceProvisioner bwProvisioner,
-        final long storage,
-        final List<Pe> peList)
-    {
-        this(ramProvisioner, bwProvisioner, storage, toCoreCapacity(peList));
-    }
-
-    /// @deprecated Use [#HostAbstract(long, long, long, CoreCapacity)] instead.
-    @Deprecated(forRemoval = true)
-    public HostAbstract(final long ram, final long bw, final long storage, final List<Pe> peList) {
-        this(ram, bw, storage, toCoreCapacity(peList));
-    }
-
-    /// @deprecated Use [#HostAbstract(long, long, HarddriveStorage, CoreCapacity)] instead.
-    @Deprecated(forRemoval = true)
-    protected HostAbstract(
-        final long ram, final long bw,
-        @NonNull final HarddriveStorage storage, final List<Pe> peList)
-    {
-        this(ram, bw, storage, toCoreCapacity(peList));
-    }
-
-    /// @deprecated Use [#HostAbstract(CoreCapacity)] instead.
-    @Deprecated(forRemoval = true)
-    public HostAbstract(final List<Pe> peList) {
-        this(toCoreCapacity(peList));
-    }
-
-    /// @deprecated Use [#HostAbstract(CoreCapacity, boolean)] instead.
-    @Deprecated(forRemoval = true)
-    public HostAbstract(final List<Pe> peList, final boolean activate) {
-        this(toCoreCapacity(peList), activate);
-    }
-
-    /// @deprecated Use [#HostAbstract(long, long, HarddriveStorage, CoreCapacity, boolean)] instead.
-    @Deprecated(forRemoval = true)
-    protected HostAbstract(
-        final long ram, final long bw, @NonNull final HarddriveStorage storage,
-        final List<Pe> peList, final boolean activate)
-    {
-        this(ram, bw, storage, toCoreCapacity(peList), activate);
     }
 
     protected HostAbstract(

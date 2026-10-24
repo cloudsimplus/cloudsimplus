@@ -8,7 +8,6 @@
 package org.cloudsimplus.schedulers.vm;
 
 import org.cloudsimplus.hosts.Host;
-import org.cloudsimplus.resources.Pe;
 import org.cloudsimplus.resources.Resource;
 import org.cloudsimplus.resources.CoreCapacity;
 import org.cloudsimplus.vms.Vm;
@@ -76,7 +75,7 @@ public sealed interface VmScheduler permits VmSchedulerAbstract, VmSchedulerNull
     /// @param coresToRemove number of CPU cores to deallocate
     void deallocatePesFromVm(Vm vm, int coresToRemove);
 
-    /// Gets the MIPS share of each Host's Pe that is allocated to a given VM.
+    /// Gets the MIPS share of each Host's core that is allocated to a given VM.
     ///
     /// @param vm the vm to get the MIPS share
     /// @return the VM allocated MIPS share

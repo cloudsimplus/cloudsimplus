@@ -32,8 +32,6 @@ import org.cloudsimplus.core.CloudSimPlus;
 import org.cloudsimplus.datacenters.DatacenterSimple;
 import org.cloudsimplus.hosts.Host;
 import org.cloudsimplus.hosts.HostSimple;
-import org.cloudsimplus.resources.Pe;
-import org.cloudsimplus.resources.PeSimple;
 import org.cloudsimplus.vms.Vm;
 import org.cloudsimplus.vms.VmSimple;
 import org.junit.jupiter.api.BeforeEach;
@@ -104,12 +102,7 @@ final class VmCreationRetryIntegrationTest {
     }
 
     private static Host createHost() {
-        final var peList = new ArrayList<Pe>(HOST_PES);
-        for (int i = 0; i < HOST_PES; i++) {
-            peList.add(new PeSimple(MIPS));
-        }
-
-        return new HostSimple(peList);
+        return new HostSimple(new CoreCapacity(HOST_PES, MIPS));
     }
 
     /// Creates VMs that require all Host cores, so that only the first one can be placed.

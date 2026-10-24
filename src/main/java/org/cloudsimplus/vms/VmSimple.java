@@ -12,7 +12,6 @@ import org.cloudsimplus.resources.CoreCapacity;
 import org.cloudsimplus.brokers.DatacenterBroker;
 import org.cloudsimplus.cloudlets.Cloudlet;
 import org.cloudsimplus.hosts.Host;
-import org.cloudsimplus.resources.Pe;
 import org.cloudsimplus.resources.SimpleStorage;
 import org.cloudsimplus.schedulers.cloudlet.CloudletScheduler;
 import org.cloudsimplus.schedulers.cloudlet.CloudletSchedulerTimeShared;

@@ -35,7 +35,7 @@ import java.util.function.Function;
 /// it should perform resource provisioning (request the actual amount of the allocated resource to be used in that moment).
 /// See https://github.com/cloudsimplus/cloudsimplus/issues/588
 public sealed interface ResourceProvisioner
-    permits PeProvisioner, ResourceProvisionerAbstract, ResourceProvisionerNull
+    permits ResourceProvisionerAbstract, ResourceProvisionerNull
 {
     /// An attribute that implements the Null Object Design Pattern for ResourceProvisioner objects.
     ResourceProvisioner NULL = new ResourceProvisionerNull();

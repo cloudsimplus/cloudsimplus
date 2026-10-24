@@ -31,7 +31,6 @@ import org.cloudsimplus.core.CloudInformationService;
 import org.cloudsimplus.core.CloudSimTag;
 import org.cloudsimplus.datacenters.Datacenter;
 import org.cloudsimplus.hosts.Host;
-import org.cloudsimplus.resources.Pe;
 import org.cloudsimplus.traces.TraceReaderAbstract;
 import org.cloudsimplus.util.BytesConversion;
 import org.cloudsimplus.util.ResourceLoader;

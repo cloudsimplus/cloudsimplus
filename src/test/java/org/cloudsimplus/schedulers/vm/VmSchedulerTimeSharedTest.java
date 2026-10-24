@@ -9,10 +9,7 @@ package org.cloudsimplus.schedulers.vm;
 
 import org.cloudsimplus.hosts.Host;
 import org.cloudsimplus.hosts.HostSimple;
-import org.cloudsimplus.provisioners.PeProvisionerSimple;
 import org.cloudsimplus.provisioners.ResourceProvisionerSimple;
-import org.cloudsimplus.resources.Pe;
-import org.cloudsimplus.resources.PeSimple;
 import org.cloudsimplus.resources.CoreCapacity;
 import org.cloudsimplus.vms.Vm;
 import org.cloudsimplus.vms.VmSimple;
@@ -20,9 +17,6 @@ import org.cloudsimplus.vms.VmTestUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.LongStream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -37,9 +31,7 @@ public class VmSchedulerTimeSharedTest {
 
     private VmScheduler createVmScheduler(final double mips, final int cores) {
         final VmSchedulerTimeShared scheduler = new VmSchedulerTimeShared();
-        final List<Pe> peList = new ArrayList<>(cores);
-        LongStream.range(0, cores).forEach(i -> peList.add(new PeSimple(mips, new PeProvisionerSimple())));
-        final Host host = new HostSimple(2048, 20000, 20000, peList);
+        final Host host = new HostSimple(2048, 20000, 20000, new CoreCapacity(cores, mips));
         host
             .setRamProvisioner(new ResourceProvisionerSimple())
             .setBwProvisioner(new ResourceProvisionerSimple())

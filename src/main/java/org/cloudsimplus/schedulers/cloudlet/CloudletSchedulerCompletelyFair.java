@@ -27,7 +27,6 @@ import lombok.Getter;
 import org.cloudsimplus.cloudlets.Cloudlet;
 import org.cloudsimplus.cloudlets.CloudletExecution;
 import org.cloudsimplus.datacenters.Datacenter;
-import org.cloudsimplus.resources.Pe;
 import org.cloudsimplus.resources.CoreCapacity;
 import org.cloudsimplus.util.MathUtil;
 
@@ -393,7 +392,7 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
     /// As an example, if the first Cloudlet requires 2 cores,
     /// then one can say that it is using the first 2 cores.
     /// But if at the next simulation time, the same Cloudlet is at the 3º position in this Collection,
-    /// that indicates it's now using the 3º and 4º Pe, which doesn't change anything. In real schedulers,
+    /// that indicates it's now using the 3º and 4º cores, which doesn't change anything. In real schedulers,
     /// usually a process is pinned to a specific set of cores until it
     /// finishes executing, to avoid the overhead of changing processes from
     /// a run queue to another unnecessarily.

@@ -197,7 +197,7 @@ public class CloudletSchedulerSpaceSharedTest {
         assertTrue(instance.isThereEnoughFreePesForCloudlet(cloudlet));
     }
 
-    /// When There Are One Pe And One Already Running Cloudlet
+    /// When There Are One Core And One Already Running Cloudlet
     @Test
     public void testIsThereEnoughFreePesForCloudlet1() {
         final int cloudletPes = 1;

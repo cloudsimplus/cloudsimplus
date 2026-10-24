@@ -17,7 +17,6 @@ import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.listeners.HostUpdatesVmsProcessingEventInfo;
 import org.cloudsimplus.mocks.CloudSimMocker;
 import org.cloudsimplus.mocks.MocksHelper;
-import org.cloudsimplus.provisioners.PeProvisionerSimple;
 import org.cloudsimplus.provisioners.ResourceProvisionerSimple;
 import org.cloudsimplus.resources.*;
 import org.cloudsimplus.resources.CoreCapacity;
@@ -95,39 +94,6 @@ public class HostSimpleTest {
             .setVmScheduler(vmScheduler);
         return host;
 
-    }
-
-    @SuppressWarnings("removal")
-    private static List<Pe> createPes(final int cores, final double mips) {
-        return IntStream.range(0, cores)
-                        .mapToObj(id -> new PeSimple(mips, new PeProvisionerSimple()))
-                        .collect(Collectors.toCollection(() -> new ArrayList<>(cores)));
-    }
-
-    @Test
-    @SuppressWarnings("removal")
-    public void testDeprecatedPeListConstructorConvertsToProcessor() {
-        final var host = new HostSimple(RAM, BW, STORAGE, createPes(PES, MIPS));
-        assertAll(
-            () -> assertEquals(PES, host.getPesNumber()),
-            () -> assertEquals(MIPS, host.getMips()),
-            () -> assertEquals(PES * MIPS, host.getTotalMipsCapacity()),
-            () -> assertEquals(PES, host.getProcessor().getFreeCores())
-        );
-    }
-
-    @Test
-    @SuppressWarnings("removal")
-    public void testDeprecatedPeListConstructorWithDifferentMips() {
-        final List<Pe> peList = List.of(new PeSimple(MIPS), new PeSimple(MIPS * 2));
-        assertThrows(IllegalArgumentException.class, () -> new HostSimple(RAM, BW, STORAGE, peList));
-    }
-
-    @Test
-    @SuppressWarnings("removal")
-    public void testDeprecatedPeListConstructorWithEmptyList() {
-        final List<Pe> peList = List.of();
-        assertThrows(IllegalArgumentException.class, () -> new HostSimple(RAM, BW, STORAGE, peList));
     }
 
     @Test

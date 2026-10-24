@@ -9,7 +9,6 @@ package org.cloudsimplus.cloudlets.network;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.cloudsimplus.resources.Pe;
 
 /// A processing task that can be executed by a [NetworkCloudlet]
 /// in a single core.

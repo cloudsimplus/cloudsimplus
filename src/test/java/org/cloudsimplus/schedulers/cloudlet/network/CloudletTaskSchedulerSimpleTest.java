@@ -38,8 +38,6 @@ import org.cloudsimplus.core.CloudSimPlus;
 import org.cloudsimplus.datacenters.network.NetworkDatacenter;
 import org.cloudsimplus.hosts.network.NetworkHost;
 import org.cloudsimplus.network.switches.EdgeSwitch;
-import org.cloudsimplus.resources.Pe;
-import org.cloudsimplus.resources.PeSimple;
 import org.cloudsimplus.schedulers.cloudlet.CloudletSchedulerSpaceShared;
 import org.cloudsimplus.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudsimplus.schedulers.vm.VmSchedulerTimeShared;
@@ -380,9 +378,7 @@ class CloudletTaskSchedulerSimpleTest {
     }
 
     private NetworkHost createHost() {
-        final var peList = new ArrayList<Pe>();
-        IntStream.range(0, HOST_PES).forEach(_ -> peList.add(new PeSimple(MIPS)));
-        final var host = new NetworkHost(RAM, BW, STORAGE, peList);
+        final var host = new NetworkHost(RAM, BW, STORAGE, new CoreCapacity(HOST_PES, MIPS));
         host.setVmScheduler(new VmSchedulerTimeShared());
         return host;
     }

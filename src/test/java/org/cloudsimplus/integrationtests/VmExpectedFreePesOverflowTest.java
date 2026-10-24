@@ -29,8 +29,6 @@ import org.cloudsimplus.cloudlets.CloudletSimple;
 import org.cloudsimplus.core.CloudSimPlus;
 import org.cloudsimplus.datacenters.DatacenterSimple;
 import org.cloudsimplus.hosts.HostSimple;
-import org.cloudsimplus.resources.Pe;
-import org.cloudsimplus.resources.PeSimple;
 import org.cloudsimplus.vms.VmSimple;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -69,8 +67,7 @@ public final class VmExpectedFreePesOverflowTest {
         final int vmStorage = 10_000;
 
         simulation = new CloudSimPlus();
-        final List<Pe> peList = List.of(newPe(), newPe(), newPe(), newPe());
-        final var host = new HostSimple(hRAM, hBW, hStorage, peList);
+        final var host = new HostSimple(hRAM, hBW, hStorage, new CoreCapacity(4, HOST_MIPS));
         new DatacenterSimple(simulation, List.of(host));
 
         final var broker = new DatacenterBrokerSimple(simulation);
@@ -80,10 +77,6 @@ public final class VmExpectedFreePesOverflowTest {
 
         final var cloudlet = new CloudletSimple(cloudletLen, CLOUDLET_PES_HIGHER_THAN_VM_CAPACITY);
         broker.submitCloudletList(List.of(cloudlet));
-    }
-
-    private static PeSimple newPe() {
-        return new PeSimple(HOST_MIPS);
     }
 
     /// When a Cloudlet requires more cores than the VM has,

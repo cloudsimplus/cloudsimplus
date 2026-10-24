@@ -9,7 +9,6 @@ package org.cloudsimplus.schedulers.cloudlet;
 
 import org.cloudsimplus.cloudlets.Cloudlet;
 import org.cloudsimplus.cloudlets.CloudletExecution;
-import org.cloudsimplus.resources.Pe;
 import org.cloudsimplus.vms.Vm;
 
 import java.io.Serial;

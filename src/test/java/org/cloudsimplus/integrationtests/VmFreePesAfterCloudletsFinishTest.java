@@ -29,7 +29,6 @@ import org.cloudsimplus.cloudlets.CloudletSimple;
 import org.cloudsimplus.core.CloudSimPlus;
 import org.cloudsimplus.datacenters.DatacenterSimple;
 import org.cloudsimplus.hosts.HostSimple;
-import org.cloudsimplus.resources.PeSimple;
 import org.cloudsimplus.vms.VmSimple;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -65,7 +64,7 @@ public final class VmFreePesAfterCloudletsFinishTest {
         final int cloudletLength = 10_000;
 
         simulation = new CloudSimPlus();
-        final var host = new HostSimple(hRAM, hBW, hStorage, List.of(newPe(), newPe()));
+        final var host = new HostSimple(hRAM, hBW, hStorage, new CoreCapacity(2, HOST_MIPS));
         new DatacenterSimple(simulation, List.of(host));
 
         final var broker = new DatacenterBrokerSimple(simulation);
@@ -74,10 +73,6 @@ public final class VmFreePesAfterCloudletsFinishTest {
         broker.submitVmList(List.of(vm));
         final var cloudlet = new CloudletSimple(cloudletLength, CLOUDLET_PES);
         broker.submitCloudletList(List.of(cloudlet));
-    }
-
-    private static PeSimple newPe() {
-        return new PeSimple(HOST_MIPS);
     }
 
     /// After all Cloudlets finish, both freePesNumber and expectedFreePesNumber

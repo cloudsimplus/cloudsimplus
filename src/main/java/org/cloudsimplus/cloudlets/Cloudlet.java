@@ -10,7 +10,6 @@ import org.cloudsimplus.brokers.DatacenterBroker;
 import org.cloudsimplus.core.*;
 import org.cloudsimplus.listeners.CloudletVmEventInfo;
 import org.cloudsimplus.listeners.EventListener;
-import org.cloudsimplus.resources.Pe;
 import org.cloudsimplus.resources.ResourceManageable;
 import org.cloudsimplus.schedulers.cloudlet.CloudletScheduler;
 import org.cloudsimplus.schedulers.cloudlet.CloudletSchedulerCompletelyFair;
@@ -472,11 +471,11 @@ public sealed interface Cloudlet
     Cloudlet setLength(long length);
 
     /// Gets the total length (across all cores) of this Cloudlet (in MI). It considers the
-    /// [#getLength()] of the cloudlet will be executed in each Pe defined by
+    /// [#getLength()] of the cloudlet will be executed in each core defined by
     /// [#getPesNumber()].
     ///
     /// For example, setting the cloudletLength as 10000 MI and
-    /// [#getPesNumber()] to 4, each Pe will execute 10000 MI.
+    /// [#getPesNumber()] to 4, each core will execute 10000 MI.
     /// Thus, the entire Cloudlet has a total length of 40000 MI.
     ///
     /// @return the total length of this Cloudlet (in MI)

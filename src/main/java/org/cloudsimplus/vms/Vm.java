@@ -96,7 +96,7 @@ public sealed interface Vm
     /// Gets a  **copy** list of current requested MIPS of each virtual core,
     /// avoiding the original list to be changed.
     ///
-    /// @return the current requested MIPS of each Pe
+    /// @return the current requested MIPS of each core
     CoreCapacity getCurrentRequestedMips();
 
     /// Gets the current requested ram (in Megabytes).
@@ -398,7 +398,7 @@ public sealed interface Vm
     /// Updates the processing of cloudlets running on this VM.
     ///
     /// @param currentTime current simulation time
-    /// @param mipsShare list with MIPS share of each Pe available to the
+    /// @param mipsShare list with MIPS share of each core available to the
     /// scheduler
     /// @return the predicted completion time of the earliest finishing cloudlet
     /// (which is a relative delay from the current simulation time),
@@ -407,7 +407,7 @@ public sealed interface Vm
 
     /// Updates the processing of cloudlets running on this VM at the current simulation time.
     ///
-    /// @param mipsShare list with MIPS share of each Pe available to the scheduler
+    /// @param mipsShare list with MIPS share of each core available to the scheduler
     /// @return the predicted completion time of the earliest finishing cloudlet
     /// (which is a relative delay from the current simulation time),
     /// or [Double#MAX_VALUE] if there is no next Cloudlet to execute
@@ -492,9 +492,9 @@ public sealed interface Vm
 
     /// Sets a [VerticalVmScaling] that will check if the Vm's core is under or overloaded,
     /// based on some conditions defined by [Predicate]s given to the VerticalVmScaling,
-    /// and then request the Pe up or down scaling.
+    /// and then request the core up or down scaling.
     ///
-    /// The Pe scaling is performed by adding or removing cores to/from the VM.
+    /// The core scaling is performed by adding or removing cores to/from the VM.
     /// Added cores will have the same MIPS than the already existing ones.
     ///
     /// @param peVerticalScaling the VerticalVmScaling to set

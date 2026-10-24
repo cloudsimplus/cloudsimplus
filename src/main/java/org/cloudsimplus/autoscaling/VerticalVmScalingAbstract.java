@@ -75,27 +75,15 @@ public non-sealed abstract class VerticalVmScalingAbstract extends VmScalingAbst
     /// doubling its capacity.
     /// @see VerticalVmScaling#setResourceScaling(ResourceScaling)
     public VerticalVmScalingAbstract(
-        final Class<? extends ResourceManageable> resourceClassToScale,
+        @NonNull final Class<? extends ResourceManageable> resourceClassToScale,
         final ResourceScaling resourceScaling, final double scalingFactor)
     {
         super();
         this.setResourceScaling(resourceScaling);
         this.lowerThresholdFunction = VerticalVmScaling.NULL.getLowerThresholdFunction();
         this.upperThresholdFunction = VerticalVmScaling.NULL.getUpperThresholdFunction();
-        this.resourceClassToScale = validateResourceClass(resourceClassToScale);
+        this.resourceClassToScale = resourceClassToScale;
         this.setScalingFactor(scalingFactor);
-    }
-
-    /// Validates the class of Vm resource that this scaling object will request up or down scaling.
-    /// Such a class can be [Ram].class, [Bandwidth].class or core.class.
-    /// @param resourceClass the resource class to set
-    /// @return the validated resource class
-    private Class<? extends ResourceManageable> validateResourceClass(@NonNull final Class<? extends ResourceManageable> resourceClass) {
-        if(Pe.class.equals(resourceClass)){
-            return Processor.class;
-        }
-
-        return resourceClass;
     }
 
     @Override

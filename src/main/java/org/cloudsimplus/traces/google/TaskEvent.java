@@ -28,7 +28,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.cloudsimplus.cloudlets.Cloudlet;
-import org.cloudsimplus.resources.Pe;
 import org.cloudsimplus.utilizationmodels.UtilizationModel;
 import org.cloudsimplus.utilizationmodels.UtilizationModelDynamic;
 

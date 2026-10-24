@@ -29,8 +29,6 @@ import org.cloudsimplus.cloudlets.CloudletSimple;
 import org.cloudsimplus.core.CloudSimPlus;
 import org.cloudsimplus.datacenters.DatacenterSimple;
 import org.cloudsimplus.hosts.HostSimple;
-import org.cloudsimplus.resources.Pe;
-import org.cloudsimplus.resources.PeSimple;
 import org.cloudsimplus.utilizationmodels.UtilizationModelDynamic;
 import org.cloudsimplus.vms.VmSimple;
 import org.junit.jupiter.api.Test;
@@ -41,7 +39,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -69,8 +66,7 @@ public class GoogleTaskEventsTraceReaderTest {
     @Test @Timeout(TIMEOUT_SECS)
     public void eventsAtTimestampZeroAreProcessed(@TempDir final Path tempDir) throws IOException {
         final var simulation = new CloudSimPlus();
-        final var peList = IntStream.range(0, PES).mapToObj(i -> (Pe) new PeSimple(MIPS)).toList();
-        new DatacenterSimple(simulation, List.of(new HostSimple(peList)));
+        new DatacenterSimple(simulation, List.of(new HostSimple(new CoreCapacity(PES, MIPS))));
 
         final var traceFile = Files.writeString(tempDir.resolve("task-events.csv"), TRACE_STARTING_AT_TIME_ZERO);
         final var reader = new GoogleTaskEventsTraceReader(simulation, traceFile.toString(), GoogleTaskEventsTraceReaderTest::createCloudlet);

@@ -26,7 +26,6 @@ package org.cloudsimplus.autoscaling;
 import lombok.experimental.Accessors;
 import org.cloudsimplus.brokers.DatacenterBroker;
 import org.cloudsimplus.resources.Bandwidth;
-import org.cloudsimplus.resources.Pe;
 import org.cloudsimplus.resources.Ram;
 
 import java.util.function.Predicate;

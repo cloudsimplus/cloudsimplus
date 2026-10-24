@@ -10,7 +10,6 @@ package org.cloudsimplus.cloudlets.network;
 import lombok.NonNull;
 import lombok.experimental.Accessors;
 import org.cloudsimplus.cloudlets.CloudletSimple;
-import org.cloudsimplus.resources.Pe;
 import org.cloudsimplus.vms.Vm;
 import org.cloudsimplus.vms.network.NetworkVm;
 

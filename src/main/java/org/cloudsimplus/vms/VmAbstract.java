@@ -603,7 +603,7 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
 
     @Override
     public ResourceManageable getResource(Class<? extends ResourceManageable> resourceClass) {
-        if (Pe.class.isAssignableFrom(resourceClass) || Processor.class.isAssignableFrom(resourceClass)) {
+        if (Processor.class.isAssignableFrom(resourceClass)) {
             return processor;
         }
 

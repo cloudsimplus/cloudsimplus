@@ -228,7 +228,7 @@ public class CloudSimTag{
     public static final int VM_UPDATE_CLOUDLET_PROCESSING = BASE + 41;
 
     /// Denotes a request for vertical scaling VM resources
-    /// (such as Ram, Bandwidth or Pe).
+    /// (such as Ram, Bandwidth or Processor).
     /// When an event of this type is sent, the [SimEvent#getData()]
     /// must be a [VerticalVmScaling] object.
     public static final int VM_VERTICAL_SCALING = BASE + 42;

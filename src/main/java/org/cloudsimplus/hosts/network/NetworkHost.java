@@ -8,7 +8,6 @@
 package org.cloudsimplus.hosts.network;
 
 import lombok.Getter;
-import lombok.NonNull;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.cloudsimplus.core.CloudSimTag;
@@ -19,7 +18,6 @@ import org.cloudsimplus.network.HostPacket;
 import org.cloudsimplus.network.VmPacket;
 import org.cloudsimplus.resources.CoreCapacity;
 import org.cloudsimplus.network.switches.EdgeSwitch;
-import org.cloudsimplus.resources.Pe;
 import org.cloudsimplus.schedulers.cloudlet.network.CloudletTaskScheduler;
 import org.cloudsimplus.schedulers.cloudlet.network.CloudletTaskSchedulerSimple;
 import org.cloudsimplus.schedulers.vm.VmSchedulerSpaceShared;
@@ -74,12 +72,6 @@ public class NetworkHost extends HostSimple {
     /// @param capacity the number of CPU cores of the Host and the MIPS capacity of each core
     public NetworkHost(final long ram, final long bw, final long storage, final CoreCapacity capacity) {
         super(ram, bw, storage, capacity);
-    }
-
-    /// @deprecated Use [#NetworkHost(long, long, long, CoreCapacity)] instead.
-    @Deprecated(forRemoval = true)
-    public NetworkHost(final long ram, final long bw, final long storage, final List<Pe> peList) {
-        super(ram, bw, storage, peList);
     }
 
     /// Creates a NetworkHost with no resources.

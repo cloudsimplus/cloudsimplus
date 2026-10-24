@@ -449,7 +449,7 @@ public non-sealed abstract class CloudletAbstract extends CustomerEntityAbstract
             return utilizationModelBw;
         }
 
-        if(resourceClass.isAssignableFrom(Processor.class) || resourceClass.isAssignableFrom(Pe.class)){
+        if(resourceClass.isAssignableFrom(Processor.class)){
             return utilizationModelCpu;
         }
 

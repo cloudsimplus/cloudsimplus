@@ -33,14 +33,11 @@ import org.cloudsimplus.datacenters.DatacenterSimple;
 import org.cloudsimplus.hosts.Host;
 import org.cloudsimplus.hosts.HostSimple;
 import org.cloudsimplus.listeners.EventInfo;
-import org.cloudsimplus.resources.Pe;
-import org.cloudsimplus.resources.PeSimple;
 import org.cloudsimplus.vms.Vm;
 import org.cloudsimplus.vms.VmSimple;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -99,12 +96,7 @@ final class VmCreationRetryAfterVmsCreatedIntegrationTest {
     }
 
     private static Host createHost() {
-        final var peList = new ArrayList<Pe>(HOST_PES);
-        for (int i = 0; i < HOST_PES; i++) {
-            peList.add(new PeSimple(MIPS));
-        }
-
-        return new HostSimple(peList);
+        return new HostSimple(new CoreCapacity(HOST_PES, MIPS));
     }
 
     private static Cloudlet createCloudlet(final Vm vm) {

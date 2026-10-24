@@ -26,7 +26,7 @@ package org.cloudsimplus.vms;
 import org.cloudsimplus.brokers.DatacenterBrokerSimple;
 import org.cloudsimplus.core.CloudSimPlus;
 import org.cloudsimplus.hosts.HostSimple;
-import org.cloudsimplus.resources.PeSimple;
+import org.cloudsimplus.resources.CoreCapacity;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -68,7 +68,7 @@ class VmCreationTimeTest {
         private final List<Double> clockTimes = List.of(0.0, 5.0, 10.0, 12.0, 16.0); // list of times for consecutive simulation.clock() calls
         private final CloudSimPlus simulation = createMock(mocker -> mocker.clock(clockTimes));
         private final DatacenterBrokerSimple broker = new DatacenterBrokerSimple(simulation);
-        private final HostSimple host = new HostSimple(1000, 1000, 1000, List.of(new PeSimple(1000)));
+        private final HostSimple host = new HostSimple(1000, 1000, 1000, new CoreCapacity(1, 1000));
 
         @Test
         void creationTimeForFirstAndSecondVmSubmission() {

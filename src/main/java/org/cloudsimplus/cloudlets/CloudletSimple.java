@@ -9,7 +9,6 @@ package org.cloudsimplus.cloudlets;
 
 import lombok.NonNull;
 import org.cloudsimplus.brokers.DatacenterBroker;
-import org.cloudsimplus.resources.Pe;
 import org.cloudsimplus.utilizationmodels.UtilizationModel;
 import org.cloudsimplus.vms.Vm;
 

@@ -9,7 +9,7 @@ package org.cloudsimplus.resources;
 
 import org.cloudsimplus.util.MathUtil;
 
-/// A class that represents simple resources such as RAM, CPU, Bandwidth or Pe.
+/// A class that represents simple resources such as RAM, CPU and Bandwidth.
 /// It stores, for instance, the resource capacity and amount of free available resource.
 ///
 /// The class is abstract just to ensure there will be a specific subclass

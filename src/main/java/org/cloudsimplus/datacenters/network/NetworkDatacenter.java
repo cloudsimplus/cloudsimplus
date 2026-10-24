@@ -17,7 +17,6 @@ import org.cloudsimplus.hosts.Host;
 import org.cloudsimplus.hosts.network.NetworkHost;
 import org.cloudsimplus.network.switches.EdgeSwitch;
 import org.cloudsimplus.network.switches.Switch;
-import org.cloudsimplus.resources.Pe;
 import org.cloudsimplus.vms.Vm;
 import org.cloudsimplus.vms.network.NetworkVm;
 

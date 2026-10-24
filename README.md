@@ -257,11 +257,10 @@ long ram = 10000; //in Megabytes
 long storage = 100000; //in Megabytes
 long bw = 100000; //in Megabits/s
         
-//Creates one host with a specific list of CPU cores (PEs).
-//Uses a PeProvisionerSimple by default to provision PEs for VMs
+//Creates one host with 1 CPU core of 20000 MIPS.
 //Uses ResourceProvisionerSimple by default for RAM and BW provisioning
 //Uses VmSchedulerSpaceShared by default for VM scheduling
-var host0 = new HostSimple(ram, bw, storage, List.of(new PeSimple(20000)));
+var host0 = new HostSimple(ram, bw, storage, new CoreCapacity(1, 20000));
 
 //Creates a Datacenter with a list of Hosts.
 //Uses a VmAllocationPolicySimple by default to allocate VMs
@@ -269,7 +268,7 @@ var dc0 = new DatacenterSimple(simulation, List.of(host0));
 
 //Creates one VM with one CPU core to run applications.
 //Uses a CloudletSchedulerTimeShared by default to schedule Cloudlets
-var vm0 = new VmSimple(1000, 1);
+var vm0 = new VmSimple(new CoreCapacity(1, 1000));
 vm0.setRam(1000).setBw(1000).setSize(1000);
 
 //Creates Cloudlets that represent applications to be run inside a VM.
