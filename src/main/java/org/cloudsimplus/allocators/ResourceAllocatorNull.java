@@ -33,27 +33,16 @@ import java.util.function.Function;
 ///
 /// @author Manoel Campos da Silva Filho
 /// @see ResourceAllocator#NULL
-final class ResourceAllocatorNull implements ResourceAllocator {
-    @Override public boolean allocateResourceForVm(Vm vm, long newTotalVmResourceCapacity) {
-        return false;
-    }
-    @Override public long getAllocatedResourceForVm(Vm vm) {
-        return 0;
-    }
-    @Override public long getTotalAllocatedResource() {
-        return 0;
-    }
-    @Override public long deallocateResourceForVm(Vm vm) {
-        return 0;
-    }
-    @Override public boolean isSuitableForVm(Vm vm, long newVmTotalAllocatedResource) {
-        return false;
-    }
-    @Override public boolean isSuitableForVm(Vm vm, Resource resource) { return false; }
-    @Override public ResourceManageable getPmResource() {
-        return ResourceManageable.NULL;
-    }
+final class ResourceAllocatorNull extends ResourceAllocatorAbstract {
+    @Override public boolean allocateResourceForVm(Vm vm, long newTotalVmResourceCapacity) { return false; }
+    @Override public boolean allocateResourceForVm(Vm vm, double newTotalVmResource) { return false; }
+    @Override public long deallocateResourceForVm(Vm vm) { return 0; }
+    /// Does nothing, so that this shared object never keeps a reference to the resources of a Host.
     @Override public void setResources(ResourceManageable pmResource, Function<Vm, ResourceManageable> vmResourceFunction) {/**/}
+    @Override public long getAllocatedResourceForVm(Vm vm) { return 0; }
+    @Override public long getTotalAllocatedResource() { return 0; }
+    @Override public boolean isSuitableForVm(Vm vm, long newVmTotalAllocatedResource) { return false; }
+    @Override public boolean isSuitableForVm(Vm vm, Resource resource) { return false; }
     @Override public long getCapacity() { return 0; }
     @Override public long getFree() { return 0; }
 }

@@ -30,6 +30,7 @@ import java.util.function.Predicate;
 
 import static java.util.Comparator.comparingDouble;
 import static java.util.stream.Collectors.*;
+import static org.cloudsimplus.resources.Processor.totalMips;
 import org.jspecify.annotations.Nullable;
 
 /// An abstract VM placement policy that dynamically optimizes the
@@ -545,7 +546,7 @@ public non-sealed abstract class VmPlacementPolicyMigrationAbstract
     }
 
     private double getHostCpuPercentRequested(final Host host) {
-        return getHostTotalRequestedMips(host) / host.getTotalMipsCapacity();
+        return getHostTotalRequestedMips(host) / totalMips(host);
     }
 
     /// {@return the total MIPS that is currently being used by all VMs inside the Host}
@@ -633,7 +634,7 @@ public non-sealed abstract class VmPlacementPolicyMigrationAbstract
         final double requestedTotalMips = vm.getTotalCpuMipsRequested();
         final double hostUtilizationMips = getUtilizationOfCpuMips(host);
         final double hostPotentialMipsUse = hostUtilizationMips + requestedTotalMips;
-        return hostPotentialMipsUse / host.getTotalMipsCapacity();
+        return hostPotentialMipsUse / totalMips(host);
     }
 
     /// {@return the utilization of the CPU in MIPS for the current potentially allocated VMs in a given host}

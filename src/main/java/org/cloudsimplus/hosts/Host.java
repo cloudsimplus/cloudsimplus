@@ -16,8 +16,6 @@ import org.cloudsimplus.power.PowerAware;
 import org.cloudsimplus.power.models.PowerModelHost;
 import org.cloudsimplus.allocators.ResourceAllocator;
 import org.cloudsimplus.resources.Bandwidth;
-import org.cloudsimplus.resources.CoreStatus;
-import org.cloudsimplus.resources.Processor;
 import org.cloudsimplus.resources.Ram;
 import org.cloudsimplus.resources.ResourceManageable;
 import org.cloudsimplus.schedulers.vm.VmScheduler;
@@ -150,10 +148,6 @@ public sealed interface Host
     /// and allocates them on the Host.
     void reallocateMigratingInVms();
 
-    /// @return total MIPS capacity of cores which are not [failed][CoreStatus#FAILED].
-    @Override
-    double getTotalMipsCapacity();
-
     /// Removes a VM migrating into this Host from the migrating-in list,
     /// so that the VM can be actually placed into the Host
     /// and the migration process finished.
@@ -161,10 +155,9 @@ public sealed interface Host
     /// @param vm the Vm to remove
     void removeMigratingInVm(Vm vm);
 
-    /// @return the total free storage available at the Host in Megabytes.
-    long getAvailableStorage();
-
-    /// @return the bandwidth (BW) allocator with capacity in Megabits/s.
+    /// @return the bandwidth (BW) allocator with capacity in Megabits/s,
+    /// as a read-only [ResourceAllocator]: only the Host changes allocations,
+    /// when it [provisions][#provisionResourceForVm(Vm, Class, long)] resources to VMs.
     ResourceAllocator getBwAllocator();
 
     /// Sets the bandwidth (BW) allocator with capacity in Megabits/s.
@@ -172,7 +165,9 @@ public sealed interface Host
     /// @param bwAllocator the new bw allocator
     Host setBwAllocator(ResourceAllocator bwAllocator);
 
-    /// @return the ram allocator with capacity in Megabytes.
+    /// @return the ram allocator with capacity in Megabytes,
+    /// as a read-only [ResourceAllocator]: only the Host changes allocations,
+    /// when it [provisions][#provisionResourceForVm(Vm, Class, long)] resources to VMs.
     ResourceAllocator getRamAllocator();
 
     /// Sets the ram allocator with capacity in Megabytes.
@@ -222,38 +217,20 @@ public sealed interface Host
     Startable setFinishTime(double shutdownTime);
 
     /// @return the elapsed time (in seconds) since the last power on.
-    /// @see #getUpTimeHours()
+    /// Use [org.cloudsimplus.util.TimeUtil#secondsToHours(double)] to get it in hours.
     /// @see #getTotalUpTime()
-    /// @see #getTotalUpTimeHours()
     double getUpTime();
-
-    /// @return the elapsed time (in hours) since the last power on.
-    /// @see #getUpTime()
-    /// @see #getTotalUpTime()
-    /// @see #getTotalUpTimeHours()
-    double getUpTimeHours();
 
     /// {@return the total time (in seconds) the Host stayed active (powered on)}
     /// Since the Host can be powered on and off according to the demand,
     /// this method returns the sum of all intervals the Host was active.
     ///
-    /// @see #setActive(boolean)
-    /// @see #setIdleShutdownDeadline(double)
-    /// @see #getTotalUpTimeHours()
-    /// @see #getUpTime()
-    /// @see #getUpTimeHours()
-    double getTotalUpTime();
-
-    /// {@return the total time (in hours) the Host stayed active (powered on)}
-    /// Since the Host can be powered on and off according to the demand,
-    /// this method returns the sum of all intervals the Host was active.
+    /// Use [org.cloudsimplus.util.TimeUtil#secondsToHours(double)] to get it in hours.
     ///
     /// @see #setActive(boolean)
     /// @see #setIdleShutdownDeadline(double)
-    /// @see #getTotalUpTime()
     /// @see #getUpTime()
-    /// @see #getUpTimeHours()
-    double getTotalUpTimeHours();
+    double getTotalUpTime();
 
     /// {@return the deadline to shut down the Host (in seconds) when it becomes idle}
     /// This is the time interval after the Host becomes idle that it will be shut down.
@@ -355,15 +332,8 @@ public sealed interface Host
     /// @param simulation The CloudSimPlus instance that represents the simulation the Host is related
     Host setSimulation(Simulation simulation);
 
-    /// Gets the [ResourceAllocator] that allocates (reserves) part of a Host resource,
-    /// such as [Ram] or [Bandwidth], for its VMs.
-    /// The Host CPU cores are allocated by the [VmScheduler].
-    /// @param resourceClass the class of the resource to get its allocator
-    /// @return the [ResourceAllocator] for the given resource class
-    ResourceAllocator getAllocator(Class<? extends ResourceManageable> resourceClass);
-
     /// Provisions part of a Host resource, such as [Ram] or [Bandwidth], to a VM placed on this Host.
-    /// It asks the [allocator][#getAllocator(Class)] to allocate (reserve) the given amount
+    /// It asks the [RAM][#getRamAllocator()] or [BW][#getBwAllocator()] allocator to allocate (reserve) the given amount
     /// and, only if that succeeds, delivers it to the VM, making it the VM capacity for the resource.
     /// The given amount replaces any amount previously provisioned to the VM (it isn't added to it).
     ///
@@ -377,12 +347,6 @@ public sealed interface Host
     /// @return the current percentage (between \[0 and 1\]) of CPU capacity (MIPS) used by all running VMs.
     /// It represents the actual percentage of MIPS allocated.
     double getCpuPercentUtilization();
-
-    /// @return the percentage (between \[0 and 1\]) of CPU capacity (MIPS) requested by all running VMs at the current time.
-    /// It represents the percentage of MIPS requested,
-    /// which may be higher than the percentage used (allocated)
-    /// due to lack of capacity.
-    double getCpuPercentRequested();
 
     /// {@inheritDoc}
     /// It relies on the utilization statistics from its VMs to provide the overall Host's CPU utilization.
@@ -423,19 +387,16 @@ public sealed interface Host
     /// @param powerModel the [PowerModelHost] to set
     PowerAware<PowerModelHost> setPowerModel(PowerModelHost powerModel);
 
-    /// Enables or disables the storage of Host state history.
+    /// Enables or disables the recording of the Host state history.
+    /// The history object is only created when it's enabled for the first time.
+    /// Disabling it keeps the entries already recorded.
     /// @param enable true to enable, false to disable
     /// @see #getStateHistory()
     Host setStateHistoryEnabled(boolean enable);
 
-    /// @return if Host state history is being collected and stored.
-    boolean isStateHistoryEnabled();
-
-    /// @return a **read-only** Host state history.
-    /// This List is just populated if [#isStateHistoryEnabled()]
-    ///
-    /// @see #setStateHistoryEnabled(boolean)
-    List<HostStateHistoryEntry> getStateHistory();
+    /// @return the Host state history, which is [HostStateHistory#NULL] if it was never
+    /// [enabled][#setStateHistoryEnabled(boolean)].
+    HostStateHistory getStateHistory();
 
     /// @return the List of VMs that have finished executing.
     List<Vm> getFinishedVms();

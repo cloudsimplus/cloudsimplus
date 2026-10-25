@@ -85,7 +85,7 @@ public non-sealed class DatacenterCharacteristicsSimple implements DatacenterCha
 
     @Override
     public double getTotalMips() {
-        return datacenter.getHostList().stream().mapToDouble(Host::getTotalMipsCapacity).sum();
+        return datacenter.getHostList().stream().mapToDouble(Processor::totalMips).sum();
     }
 
     @Override

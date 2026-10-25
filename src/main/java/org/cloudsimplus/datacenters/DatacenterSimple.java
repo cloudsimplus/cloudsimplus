@@ -1091,9 +1091,13 @@ public non-sealed class DatacenterSimple extends CloudSimEntity implements Datac
     }
 
     @Override
-    public Datacenter setCharacteristics(final @NonNull DatacenterCharacteristics c) {
-        ((DatacenterCharacteristicsSimple)c).setDatacenter(this);
-        this.characteristics = c;
+    public Datacenter setCharacteristics(final @NonNull DatacenterCharacteristics characteristics) {
+        // Only real characteristics are linked to a Datacenter: DatacenterCharacteristics.NULL is just stored
+        if (characteristics instanceof DatacenterCharacteristicsSimple simple) {
+            simple.setDatacenter(this);
+        }
+
+        this.characteristics = characteristics;
         return this;
     }
 }

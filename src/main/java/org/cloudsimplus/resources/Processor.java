@@ -87,6 +87,14 @@ public sealed interface Processor extends ResourceManageable permits ProcessorSi
         return machine.getProcessor().getMips();
     }
 
+    /// @param machine the [Machine] to get the total MIPS
+    /// @return the [total MIPS][#getTotalMips()] of the machine's processor (the MIPS of its working cores).
+    /// It doesn't apply a VM CPU cap: for the capped capacity of a VM, use [org.cloudsimplus.vms.Vm#getTotalMipsCapacity()].
+    /// @see #mips(Machine)
+    static double totalMips(final Machine<?> machine) {
+        return machine.getProcessor().getTotalMips();
+    }
+
     /// @return the individual MIPS of each core.
     double getMips();
 

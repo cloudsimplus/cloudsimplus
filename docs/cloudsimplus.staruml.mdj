@@ -49954,25 +49954,6 @@
 										},
 										{
 											"_type": "UMLOperation",
-											"_id": "AAAAAAFW1qU5UO8kADM=",
-											"_parent": {
-												"$ref": "AAAAAAFW1qU5T+7+sWQ="
-											},
-											"name": "getTotalMipsCapacity",
-											"parameters": [
-												{
-													"_type": "UMLParameter",
-													"_id": "AAAAAAFW1qU5UO8lOUQ=",
-													"_parent": {
-														"$ref": "AAAAAAFW1qU5UO8kADM="
-													},
-													"type": "int",
-													"direction": "return"
-												}
-											]
-										},
-										{
-											"_type": "UMLOperation",
 											"_id": "AAAAAAFW1qU5UO8tXwU=",
 											"_parent": {
 												"$ref": "AAAAAAFW1qU5T+7+sWQ="
@@ -50469,25 +50450,6 @@
 														"$ref": "AAAAAAFW1qU5Uu9jpTM="
 													},
 													"type": "void",
-													"direction": "return"
-												}
-											]
-										},
-										{
-											"_type": "UMLOperation",
-											"_id": "AAAAAAFW1qU5Uu9mfH0=",
-											"_parent": {
-												"$ref": "AAAAAAFW1qU5T+7+sWQ="
-											},
-											"name": "getAvailableStorage",
-											"parameters": [
-												{
-													"_type": "UMLParameter",
-													"_id": "AAAAAAFW1qU5Uu9n24U=",
-													"_parent": {
-														"$ref": "AAAAAAFW1qU5Uu9mfH0="
-													},
-													"type": "long",
 													"direction": "return"
 												}
 											]
@@ -61427,25 +61389,6 @@
 												},
 												{
 													"_type": "UMLOperationView",
-													"_id": "AAAAAAFW18GMz4Tuyfo=",
-													"_parent": {
-														"$ref": "AAAAAAFW18GMnoSgUak="
-													},
-													"model": {
-														"$ref": "AAAAAAFW1qU5UO8kADM="
-													},
-													"visible": false,
-													"fillColor": "#ffffd8",
-													"font": "Arial;13;0",
-													"left": 231,
-													"top": 103,
-													"width": 652,
-													"height": 13,
-													"text": "+getTotalMips(): int",
-													"horizontalAlignment": 0
-												},
-												{
-													"_type": "UMLOperationView",
 													"_id": "AAAAAAFW18GMz4T396c=",
 													"_parent": {
 														"$ref": "AAAAAAFW18GMnoSgUak="
@@ -61803,25 +61746,6 @@
 													"width": 652,
 													"height": 13,
 													"text": "+setOnUpdateVmsProcessingListener(onUpdateVmsProcessingListener): void",
-													"horizontalAlignment": 0
-												},
-												{
-													"_type": "UMLOperationView",
-													"_id": "AAAAAAFW18GM2YU8wT8=",
-													"_parent": {
-														"$ref": "AAAAAAFW18GMnoSgUak="
-													},
-													"model": {
-														"$ref": "AAAAAAFW1qU5Uu9mfH0="
-													},
-													"visible": false,
-													"fillColor": "#ffffd8",
-													"font": "Arial;13;0",
-													"left": 231,
-													"top": 493,
-													"width": 652,
-													"height": 13,
-													"text": "+getAvailableStorage(): long",
 													"horizontalAlignment": 0
 												}
 											],

@@ -27,6 +27,8 @@ import lombok.Getter;
 import org.cloudsimplus.power.PowerMeasurement;
 import org.cloudsimplus.power.PowerMeter;
 
+import static org.cloudsimplus.resources.Processor.totalMips;
+
 /// Simple power model for hosts with linear power consumption
 /// according to the CPU utilization percentage.
 /// @since CloudSim Plus 6.0.0
@@ -60,7 +62,7 @@ public class PowerModelHostSimple extends PowerModelHostAbstract {
             return new PowerMeasurement();
         }
 
-        final double usageFraction = host.getCpuMipsUtilization() / host.getTotalMipsCapacity();
+        final double usageFraction = host.getCpuMipsUtilization() / totalMips(host);
         return new PowerMeasurement(staticPower, dynamicPower(usageFraction));
     }
 

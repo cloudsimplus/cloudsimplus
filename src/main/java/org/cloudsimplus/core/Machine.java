@@ -64,9 +64,6 @@ public sealed interface Machine<T extends Resource>
         return Processor.class.isAssignableFrom(resourceClass) ? getProcessor() : Resourceful.super.getResource(resourceClass);
     }
 
-    /// @return total MIPS capacity across all cores of the machine.
-    double getTotalMipsCapacity();
-
     /// @return the [CloudSimPlus] instance that represents the simulation the Entity belongs to.
     Simulation getSimulation();
 

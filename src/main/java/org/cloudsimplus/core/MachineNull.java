@@ -60,6 +60,5 @@ final class MachineNull implements Machine {
     @Override public boolean isIdle() { return true; }
     @Override public Machine setId(long id) { return this; }
     @Override public long getId() { return 0; }
-    @Override public double getTotalMipsCapacity() { return 0.0; }
     @Override public List<ResourceManageable> getResources() { return Collections.emptyList(); }
 }

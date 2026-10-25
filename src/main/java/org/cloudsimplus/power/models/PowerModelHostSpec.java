@@ -14,6 +14,8 @@ import org.cloudsimplus.traces.FileReader;
 
 import java.util.Arrays;
 
+import static org.cloudsimplus.resources.Processor.totalMips;
+
 /// A power model created based on data from
 /// [SPEC power benchmark](http://www.spec.org/power_ssj2008/).
 ///
@@ -65,7 +67,7 @@ public class PowerModelHostSpec extends PowerModelHostAbstract {
 
     @Override
     public PowerMeasurement getPowerMeasurement() {
-        final double utilizationFraction = getHost().getCpuMipsUtilization() / getHost().getTotalMipsCapacity();
+        final double utilizationFraction = getHost().getCpuMipsUtilization() / totalMips(getHost());
         final int utilizationIndex = (int) Math.round(utilizationFraction * powerSpecs.length);
         final double powerUsage = powerSpecs[utilizationIndex];
         final double staticPower = powerSpecs[0];

@@ -49,7 +49,7 @@ public class ResourceAllocatorSimpleTest {
 
     @Test
     public void testGetTotalAllocatedResource() {
-        final ResourceAllocator allocator = createSimpleAllocator();
+        final var allocator = createSimpleAllocator();
         assertEquals(allocator.getCapacity(), allocator.getFree());
         assertEquals(0, allocator.getTotalAllocatedResource());
 

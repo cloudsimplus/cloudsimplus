@@ -45,6 +45,7 @@ public class CloudletSchedulerTest {
             () -> assertEquals(0, instance.getCurrentRequestedRamPercentUtilization()),
             () -> assertEquals(0, instance.getPreviousTime()),
             () -> assertEquals(0, instance.getRequestedCpuPercent(0)),
+            () -> assertEquals(0, instance.getRequestedCpuPercent()),
             () -> assertFalse(instance.hasFinishedCloudlets()),
             () -> assertEquals(0, instance.updateProcessing(0, null))
         );

@@ -12,8 +12,6 @@ import org.cloudsimplus.hosts.Host;
 import org.cloudsimplus.resources.*;
 import org.cloudsimplus.vms.Vm;
 
-import java.util.function.Function;
-
 /// Allocates (reserves) part of a Host [Resource], such as [Ram] or [Bandwidth], for each VM placed on that Host.
 /// No other VM can use that amount, even when the VM is idle.
 /// This is done when a VM is placed on a Host (or migrated to it) and when the VM is vertically scaled.
@@ -36,44 +34,25 @@ import java.util.function.Function;
 /// The cloud computing literature often uses provisioning as a synonym of allocation,
 /// and some authors use provisioning for what CloudSim Plus calls utilization.
 ///
+/// This interface only has the methods to read the allocator state, which is what [Host#getRamAllocator()]
+/// and [Host#getBwAllocator()] expose. The methods that allocate and deallocate resources are in
+/// [ResourceAllocatorAbstract], and only the Host calls them, while provisioning resources to VMs
+/// ([Host#provisionResourceForVm(Vm, Class, long)]). This way, an allocation can't be changed
+/// without also changing the VM capacity, which would put the Host and the VM out of sync.
+///
 /// @author Rodrigo N. Calheiros
 /// @author Anton Beloglazov
 /// @author Manoel Campos da Silva Filho
 /// @since CloudSim Plus 1.0
+///
+/// [ResourceAllocatorAbstract] is the only class allowed to implement this interface
+/// (even [#NULL] extends it). This way, every ResourceAllocator is a ResourceAllocatorAbstract,
+/// so the Host can safely store the allocators it receives as such, to allocate resources.
 public sealed interface ResourceAllocator
-    permits ResourceAllocatorAbstract, ResourceAllocatorNull
+    permits ResourceAllocatorAbstract
 {
     /// An attribute that implements the Null Object Design Pattern for ResourceAllocator objects.
     ResourceAllocator NULL = new ResourceAllocatorNull();
-
-    /// Allocates (reserves) an amount of the physical resource for a VM.
-    /// It doesn't change the VM capacity: that's done when the Host provisions the allocated amount to the VM.
-    ///
-    /// @param vm the virtual machine for which the resource is being allocated
-    /// @param newTotalVmResourceCapacity the new total amount of resource to allocate to the VM,
-    /// changing the allocated resource to this new amount. It doesn't increase
-    /// the current allocated VM resource by the given amount, instead,
-    /// it changes the VM allocated resource to that amount.
-    ///
-    /// @return `true` if the resource could be allocated; `false` otherwise
-    boolean allocateResourceForVm(Vm vm, long newTotalVmResourceCapacity);
-
-    /// Allocates (reserves) an amount of the physical resource for a VM.
-    /// It doesn't change the VM capacity: that's done when the Host provisions the allocated amount to the VM.
-    ///
-    /// This method is just a shorthand to avoid explicitly converting
-    /// a double to long.
-    ///
-    /// @param vm the virtual machine for which the resource is being allocated
-    /// @param newTotalVmResource the new total amount of resource to allocate to the VM,
-    /// changing the allocated resource to this new amount. It doesn't increase
-    /// the current allocated VM resource by the given amount, instead,
-    /// it changes the VM allocated resource to that amount
-    /// @return `true` if the resource could be allocated; `false` otherwise
-    /// @see #allocateResourceForVm(Vm, long)
-    default boolean allocateResourceForVm(final Vm vm, final double newTotalVmResource){
-        return allocateResourceForVm(vm, (long)newTotalVmResource);
-    }
 
     /// Gets the amount of resource allocated to a given VM from the physical resource
     ///
@@ -83,11 +62,6 @@ public sealed interface ResourceAllocator
 
     /// @return the total amount of resource allocated to all VMs from the physical resource.
     long getTotalAllocatedResource();
-
-    /// Deallocate the resource for the given VM.
-    /// @param vm the VM to deallocate the resource
-    /// @return the amount of allocated VM resource or zero if VM is not found
-    long deallocateResourceForVm(Vm vm);
 
     /// Checks if it is possible to change the current allocated resource for a given VM
     /// to a new amount, depending on the available physical resource remaining.
@@ -109,15 +83,10 @@ public sealed interface ResourceAllocator
     /// @return true, if it is possible to allocate the new total VM resource; false otherwise
     boolean isSuitableForVm(Vm vm, Resource resource);
 
-    /// Gets the physical resource being managed by the allocator, such as [Ram], core, [Bandwidth], etc.
+    /// Gets the physical resource being managed by the allocator, such as [Ram] or [Bandwidth].
+    /// It's returned as a read-only [Resource], since its allocated amount must only be changed by the allocator.
     /// @return the resource managed by this allocator
-    ResourceManageable getPmResource();
-
-    /// Sets the physical resource to be managed by the allocator, such as [Ram], core, [Bandwidth], etc.
-    /// @param pmResource the resource managed by this allocator
-    /// @param vmResourceFunction a [Function] that receives a [Vm] and returns
-    /// the virtual resource corresponding to the [PM resource][#getPmResource()]
-    void setResources(ResourceManageable pmResource, Function<Vm, ResourceManageable> vmResourceFunction);
+    Resource getPmResource();
 
     /// Gets the total capacity of the physical resource from the Host that the allocator manages.
     ///

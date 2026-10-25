@@ -350,6 +350,7 @@ public class CloudletSchedulerSpaceSharedTest {
         final var instance = CloudletSchedulerSpaceSharedTestUtil.newSchedulerWithSingleCoreRunningCloudlets(mips, cores, numberOfCloudlets);
         final double expected = 0.5;
         assertEquals(expected, instance.getRequestedCpuPercent(0));
+        assertEquals(expected, instance.getRequestedCpuPercent(), "The overload without time must use the current simulation clock");
     }
 
     @Test

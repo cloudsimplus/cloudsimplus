@@ -29,7 +29,7 @@ public class ResourceAllocatorSimple extends ResourceAllocatorAbstract {
     /// Creates a new ResourceAllocatorSimple which the [ResourceManageable]
     /// it will manage have to be set further.
     ///
-    /// @see ResourceAllocator#setResources(ResourceManageable, Function)
+    /// @see #setResources(ResourceManageable, Function)
     public ResourceAllocatorSimple() {
         super(ResourceManageable.NULL, vm -> ResourceManageable.NULL);
     }
