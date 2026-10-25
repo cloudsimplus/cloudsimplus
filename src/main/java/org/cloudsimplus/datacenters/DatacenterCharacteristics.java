@@ -10,7 +10,7 @@ package org.cloudsimplus.datacenters;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.experimental.Accessors;
-import org.cloudsimplus.allocationpolicies.VmAllocationPolicy;
+import org.cloudsimplus.placementpolicies.VmPlacementPolicy;
 import org.cloudsimplus.core.Identifiable;
 import org.cloudsimplus.hosts.Host;
 
@@ -28,7 +28,7 @@ public sealed interface DatacenterCharacteristics
     permits DatacenterCharacteristicsSimple, DatacenterCharacteristicsNull
 {
     /// Identifies different datacenter distribution models, just for classification purposes.
-    /// For instance, a [VmAllocationPolicy] may prioritize placing VMs into
+    /// For instance, a [VmPlacementPolicy] may prioritize placing VMs into
     /// a private Datacenter first, instead of trying a public one.
     @Getter @Accessors(fluent = true) @AllArgsConstructor
     enum Distribution {

@@ -97,13 +97,13 @@ public class SanStorage extends HarddriveStorage {
         }
 
         final long fileSize = file.getSize();
-        getStorage().deallocateResource(fileSize);
-        reservedStorage.deallocateResource(fileSize);
+        getStorage().free(fileSize);
+        reservedStorage.free(fileSize);
         final double time = addFile(file);
 
         // if the file addition fails, then set the current size back to its old value
         if (time == 0.0) {
-            getStorage().allocateResource(fileSize);
+            getStorage().occupy(fileSize);
             return time;
         }
 
@@ -140,7 +140,7 @@ public class SanStorage extends HarddriveStorage {
         } else if (!contains(file.getName())) { // check if the same file name is already taken
             fileList.add(file);                 // add the file into the HD
             fileNameList.add(file.getName());
-            getStorage().allocateResource(file.getSize()); // increment the current HD space
+            getStorage().occupy(file.getSize()); // increment the current HD space
             time = getTotalFileAddTime(file);
             file.setTransactionTime(time);
         }
@@ -191,8 +191,8 @@ public class SanStorage extends HarddriveStorage {
     /// @param fileSize the size to be reserved (in MByte)
     /// @return true if reservation succeeded, false otherwise
     public boolean reserveSpace(final int fileSize) {
-        if (getStorage().allocateResource(fileSize)) {
-            reservedStorage.allocateResource(fileSize);
+        if (getStorage().occupy(fileSize)) {
+            reservedStorage.occupy(fileSize);
             return true;
         }
 
@@ -340,7 +340,7 @@ public class SanStorage extends HarddriveStorage {
         if (contains(file)) {
             fileList.remove(file);
             fileNameList.remove(file.getName());
-            getStorage().deallocateResource(file.getSize());
+            getStorage().free(file.getSize());
             time = this.getTotalFileAddTime(file);
             file.setTransactionTime(time);
         }

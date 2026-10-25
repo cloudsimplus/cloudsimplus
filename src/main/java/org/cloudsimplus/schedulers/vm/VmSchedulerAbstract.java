@@ -109,7 +109,7 @@ public abstract non-sealed class VmSchedulerAbstract implements VmScheduler {
         }
 
         final var processor = host.getProcessor();
-        processor.setAllocatedResource(Math.min(cores, processor.getWorkingCores()));
+        processor.setOccupied(Math.min(cores, processor.getWorkingCores()));
     }
 
     /// @return the VMs placed into the Host plus the ones migrating into it that
@@ -144,7 +144,7 @@ public abstract non-sealed class VmSchedulerAbstract implements VmScheduler {
     /// @param cores the number of cores to remove
     /// @return true if the cores were removed; false if the VM doesn't have that number of working cores
     private boolean shrinkVmCores(final Vm vm, final long cores) {
-        if(!vm.getProcessor().deallocateAndRemoveResource(cores)) {
+        if(!vm.getProcessor().freeAndRemove(cores)) {
             return false;
         }
 

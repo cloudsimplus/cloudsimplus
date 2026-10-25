@@ -6,10 +6,10 @@
 /// to use different physical resources from Hosts.
 /// These attributes are defined by a [org.cloudsimplus.datacenters.DatacenterCharacteristics] object.
 ///
-/// For each created Datacenter, a [org.cloudsimplus.allocationpolicies.VmAllocationPolicy]
+/// For each created Datacenter, a [org.cloudsimplus.placementpolicies.VmPlacementPolicy]
 /// instance must be defined. This object decides which PM will host each [org.cloudsimplus.vms.Vm].
-/// The most basic VmAllocationPolicy is the
-/// [org.cloudsimplus.allocationpolicies.VmAllocationPolicySimple].
+/// The most basic VmPlacementPolicy is the
+/// [org.cloudsimplus.placementpolicies.VmPlacementPolicySimple].
 ///
 /// **All datacenter implementations are natively power-ware.**
 /// Specific implementations can also be network-aware, enabling the simulation

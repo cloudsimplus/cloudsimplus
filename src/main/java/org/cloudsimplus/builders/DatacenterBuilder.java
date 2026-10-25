@@ -27,7 +27,7 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import org.cloudsimplus.allocationpolicies.VmAllocationPolicySimple;
+import org.cloudsimplus.placementpolicies.VmPlacementPolicySimple;
 import org.cloudsimplus.datacenters.Datacenter;
 import org.cloudsimplus.datacenters.DatacenterSimple;
 import org.cloudsimplus.hosts.Host;
@@ -106,7 +106,7 @@ public class DatacenterBuilder implements Builder {
     }
 
     private Datacenter defaultDatacenterCreationFunction(final List<Host> hosts) {
-        final var dc = new DatacenterSimple(scenario.getSimulation(), hosts, new VmAllocationPolicySimple());
+        final var dc = new DatacenterSimple(scenario.getSimulation(), hosts, new VmPlacementPolicySimple());
         dc.setSchedulingInterval(schedulingInterval);
         return dc;
     }

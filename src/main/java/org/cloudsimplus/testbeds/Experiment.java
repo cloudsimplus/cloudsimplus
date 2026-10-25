@@ -27,8 +27,8 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import org.cloudsimplus.allocationpolicies.VmAllocationPolicy;
-import org.cloudsimplus.allocationpolicies.VmAllocationPolicySimple;
+import org.cloudsimplus.placementpolicies.VmPlacementPolicy;
+import org.cloudsimplus.placementpolicies.VmPlacementPolicySimple;
 import org.cloudsimplus.brokers.DatacenterBroker;
 import org.cloudsimplus.cloudlets.Cloudlet;
 import org.cloudsimplus.core.CloudSimPlus;
@@ -142,7 +142,7 @@ public abstract class Experiment<T extends Experiment<T>> extends AbstractRunnab
     private Function<DatacenterBroker, Integer> vmsByBrokerFunction;
 
     @Setter @Nullable
-    private Supplier<VmAllocationPolicy> vmAllocationPolicySupplier;
+    private Supplier<VmPlacementPolicy> vmPlacementPolicySupplier;
 
     /// Creates a simulation experiment which is not linked to a runner,
     /// to enable it to execute just once.
@@ -276,13 +276,13 @@ public abstract class Experiment<T extends Experiment<T>> extends AbstractRunnab
         }
     }
 
-    /// Creates a datacenter using a [VmAllocationPolicy]
-    /// supplied by the [#vmAllocationPolicySupplier].
+    /// Creates a datacenter using a [VmPlacementPolicy]
+    /// supplied by the [#vmPlacementPolicySupplier].
     /// @param index index of the datacenter being created, from the [#datacentersNumber].
     /// @return the created Datacenter
-    /// @see #setVmAllocationPolicySupplier(Supplier)
+    /// @see #setVmPlacementPolicySupplier(Supplier)
     protected Datacenter createDatacenter(final int index) {
-        return new DatacenterSimple(simulation, createHosts(), newVmAllocationPolicy());
+        return new DatacenterSimple(simulation, createHosts(), newVmPlacementPolicy());
     }
 
     private long validateSeed(long seed) {
@@ -414,8 +414,8 @@ public abstract class Experiment<T extends Experiment<T>> extends AbstractRunnab
         this.hostsNumber = hostsNumber;
     }
 
-    protected final VmAllocationPolicy newVmAllocationPolicy() {
-        return vmAllocationPolicySupplier == null ? new VmAllocationPolicySimple() : vmAllocationPolicySupplier.get();
+    protected final VmPlacementPolicy newVmPlacementPolicy() {
+        return vmPlacementPolicySupplier == null ? new VmPlacementPolicySimple() : vmPlacementPolicySupplier.get();
     }
 
     @Override

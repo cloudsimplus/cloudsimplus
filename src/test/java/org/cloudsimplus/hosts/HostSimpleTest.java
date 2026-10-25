@@ -17,7 +17,7 @@ import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.listeners.HostUpdatesVmsProcessingEventInfo;
 import org.cloudsimplus.mocks.CloudSimMocker;
 import org.cloudsimplus.mocks.MocksHelper;
-import org.cloudsimplus.provisioners.ResourceProvisionerSimple;
+import org.cloudsimplus.allocators.ResourceAllocatorSimple;
 import org.cloudsimplus.resources.*;
 import org.cloudsimplus.resources.CoreCapacity;
 import org.cloudsimplus.schedulers.cloudlet.CloudletScheduler;
@@ -80,8 +80,8 @@ public class HostSimpleTest {
         final long bw, final long storage, final boolean activate)
     {
         final var host = new HostSimple(ram, bw, storage, new CoreCapacity(cores, mips), activate);
-        host.setRamProvisioner(new ResourceProvisionerSimple())
-            .setBwProvisioner(new ResourceProvisionerSimple())
+        host.setRamAllocator(new ResourceAllocatorSimple())
+            .setBwAllocator(new ResourceAllocatorSimple())
             .setVmScheduler(new VmSchedulerTimeShared())
             .setId(hostId);
         return host;
@@ -89,8 +89,8 @@ public class HostSimpleTest {
 
     private static HostSimple createHostSimple(final int cores, VmScheduler vmScheduler) {
         final var host = new HostSimple(RAM, BW, STORAGE, new CoreCapacity(cores, MIPS));
-        host.setRamProvisioner(new ResourceProvisionerSimple())
-            .setBwProvisioner(new ResourceProvisionerSimple())
+        host.setRamAllocator(new ResourceAllocatorSimple())
+            .setBwAllocator(new ResourceAllocatorSimple())
             .setVmScheduler(vmScheduler);
         return host;
 
@@ -405,6 +405,67 @@ public class HostSimpleTest {
         assertTrue(host.createVm(vm3).fully());
     }
 
+    /// Checks that provisioning a resource to a VM (such as in vertical scaling)
+    /// changes the VM capacity and keeps the amount used by the VM, when it fits the new capacity.
+    @Test
+    public void testProvisionResourceForVmKeepsVmUtilizationThatFitsNewCapacity() {
+        final Host host = createHostSimple(ID, CORES);
+        final VmSimple vm = createVmForProvisioning();
+        assertTrue(host.createVm(vm).fully());
+        vm.getRam().occupy(RAM / 4);
+
+        assertTrue(host.provisionResourceForVm(vm, Ram.class, RAM));
+        assertEquals(RAM, vm.getRam().getCapacity());
+        assertEquals(RAM, host.getRamAllocator().getTotalAllocatedResource());
+        assertEquals(RAM / 4, vm.getRam().getOccupied());
+    }
+
+    /// Checks that downscaling a VM resource below the amount used by the VM
+    /// clears such a usage, so that the new capacity can be set.
+    @Test
+    public void testProvisionResourceForVmClearsVmUtilizationHigherThanNewCapacity() {
+        final Host host = createHostSimple(ID, CORES);
+        final VmSimple vm = createVmForProvisioning();
+        assertTrue(host.createVm(vm).fully());
+        vm.getRam().occupy(RAM / 2);
+
+        assertTrue(host.provisionResourceForVm(vm, Ram.class, RAM / 4));
+        assertEquals(RAM / 4, vm.getRam().getCapacity());
+        assertEquals(RAM / 4, host.getRamAllocator().getTotalAllocatedResource());
+        assertEquals(0, vm.getRam().getOccupied());
+    }
+
+    @Test
+    public void testProvisionResourceForVmWhenThereIsNoEnoughResource() {
+        final Host host = createHostSimple(ID, CORES);
+        final VmSimple vm = createVmForProvisioning();
+        assertTrue(host.createVm(vm).fully());
+
+        assertFalse(host.provisionResourceForVm(vm, Ram.class, RAM * 2));
+        assertEquals(RAM / 2, vm.getRam().getCapacity());
+        assertEquals(RAM / 2, host.getRamAllocator().getTotalAllocatedResource());
+    }
+
+    /// Checks that the Host RAM/BW utilization is what the VMs use,
+    /// while the allocated amount is what was reserved for them.
+    @Test
+    public void testGetRamAndBwUtilizationAndAllocated() {
+        final Host host = createHostSimple(ID, CORES);
+        final VmSimple vm = createVmForProvisioning();
+        assertTrue(host.createVm(vm).fully());
+        vm.getRam().occupy(RAM / 4);
+        vm.getBw().occupy(BW / 4);
+
+        assertEquals(RAM / 2, host.getRamAllocator().getTotalAllocatedResource());
+        assertEquals(BW / 2, host.getBwAllocator().getTotalAllocatedResource());
+        assertEquals(RAM / 4, host.getRamUtilization());
+        assertEquals(BW / 4, host.getBwUtilization());
+    }
+
+    private static VmSimple createVmForProvisioning() {
+        return VmTestUtil.createVm(0, MIPS, 1, RAM / 2, BW / 2, A_QUARTER_STORAGE, CloudletScheduler.NULL);
+    }
+
     @Test
     public void testVmCreateWhenUnavailableStorageSpace() {
         final Host host = createHostSimple(0, 1);
@@ -651,7 +712,7 @@ public class HostSimpleTest {
     /// @return
     private Vm createMockVm(final ResourceManageable vmResource, final Function<Vm, Resource> vmResourceFunction, final long usedResource){
         final Vm vm = Mockito.mock(VmAbstract.class);
-        vmResource.allocateResource(usedResource);
+        vmResource.occupy(usedResource);
 
         /* When the given VM resource function is called during tests,
         * it must return the provided resource instance. */

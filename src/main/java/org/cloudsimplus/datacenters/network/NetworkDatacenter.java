@@ -7,8 +7,8 @@
  */
 package org.cloudsimplus.datacenters.network;
 
-import org.cloudsimplus.allocationpolicies.VmAllocationPolicy;
-import org.cloudsimplus.allocationpolicies.VmAllocationPolicySimple;
+import org.cloudsimplus.placementpolicies.VmPlacementPolicy;
+import org.cloudsimplus.placementpolicies.VmPlacementPolicySimple;
 import org.cloudsimplus.core.CloudSimPlus;
 import org.cloudsimplus.core.Simulation;
 import org.cloudsimplus.datacenters.Datacenter;
@@ -48,19 +48,19 @@ public class NetworkDatacenter extends DatacenterSimple {
     ///
     /// @param simulation The [CloudSimPlus] instance that represents the simulation the Entity belongs to
     /// @param hostList list of [Host]s that will compound the Datacenter
-    /// @param vmAllocationPolicy the policy to be used to allocate [Vm]s into hosts
+    /// @param vmPlacementPolicy the policy to be used to allocate [Vm]s into hosts
     ///
     /// @throws IllegalArgumentException when this Host has zero cores
     public NetworkDatacenter(
         final Simulation simulation,
         final List<? extends NetworkHost> hostList,
-        final VmAllocationPolicy vmAllocationPolicy)
+        final VmPlacementPolicy vmPlacementPolicy)
     {
         this(simulation, hostList);
-        setVmAllocationPolicy(vmAllocationPolicy);
+        setVmPlacementPolicy(vmPlacementPolicy);
     }
 
-    /// Creates a NetworkDatacenter that uses a [VmAllocationPolicySimple] as default.
+    /// Creates a NetworkDatacenter that uses a [VmPlacementPolicySimple] as default.
     ///
     /// @param simulation The [CloudSimPlus] instance that represents the simulation the Entity belongs to
     /// @param hostList list of [Host]s that will compound the Datacenter

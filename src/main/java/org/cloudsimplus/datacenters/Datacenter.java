@@ -7,8 +7,8 @@
  */
 package org.cloudsimplus.datacenters;
 
-import org.cloudsimplus.allocationpolicies.VmAllocationPolicy;
-import org.cloudsimplus.allocationpolicies.migration.VmAllocationPolicyMigration;
+import org.cloudsimplus.placementpolicies.VmPlacementPolicy;
+import org.cloudsimplus.placementpolicies.migration.VmPlacementPolicyMigration;
 import org.cloudsimplus.brokers.DatacenterBroker;
 import org.cloudsimplus.cloudlets.Cloudlet;
 import org.cloudsimplus.core.CloudSimTag;
@@ -51,23 +51,23 @@ public sealed interface Datacenter
     /// Sends an event to request the migration of a [Vm] to a given target [Host]
     /// on this Datacenter.
     /// If you want VM migrations to be performed automatically,
-    /// use a [VmAllocationPolicyMigration].
+    /// use a [VmPlacementPolicyMigration].
     ///
     /// @param sourceVm the VM to be migrated
     /// @param targetHost the target Host to migrate the VM to
     /// @see #requestVmMigration(Vm)
-    /// @see #getVmAllocationPolicy()
+    /// @see #getVmPlacementPolicy()
     void requestVmMigration(Vm sourceVm, Host targetHost);
 
     /// Sends an event to request the migration of a [Vm] to some suitable [Host]
     /// on this Datacenter. A suitable Host will try to be found when the Datacenter
     /// processes the migration request message.
     /// If you want VM migrations to be performed automatically,
-    /// use a [VmAllocationPolicyMigration].
+    /// use a [VmPlacementPolicyMigration].
     ///
     /// @param sourceVm the VM to be migrated
     /// @see #requestVmMigration(Vm, Host)
-    /// @see #getVmAllocationPolicy()
+    /// @see #getVmPlacementPolicy()
     void requestVmMigration(Vm sourceVm);
 
     /// {@return an **unmodifiable** host list}
@@ -114,13 +114,13 @@ public sealed interface Datacenter
     /// If a Host is added during simulation execution,
     /// in case VMs are added dynamically too, they
     /// may be allocated to this new Host,
-    /// depending on the [VmAllocationPolicy].
+    /// depending on the [VmPlacementPolicy].
     ///
     /// If an ID is not assigned to a Host, the method assigns one.
     ///
     /// @param hostList the List of new hosts to be added
     /// @return this Datacenter
-    /// @see #getVmAllocationPolicy()
+    /// @see #getVmPlacementPolicy()
     <T extends Host> Datacenter addHostList(List<T> hostList);
 
     /// Physically expands the Datacenter by adding a new [Host] (physical machine) to it.
@@ -128,14 +128,14 @@ public sealed interface Datacenter
     /// If a Host is added during simulation execution,
     /// in case VMs are added dynamically too, they
     /// may be allocated to this new Host,
-    /// depending on the [VmAllocationPolicy].
+    /// depending on the [VmPlacementPolicy].
     ///
     /// If an ID is not assigned to the given Host,
     /// the method assigns one.
     ///
     /// @param host the new host to be added
     /// @return this Datacenter
-    /// @see #getVmAllocationPolicy()
+    /// @see #getVmPlacementPolicy()
     <T extends Host> Datacenter addHost(T host);
 
     /// Removes a Host from its Datacenter.
@@ -145,8 +145,8 @@ public sealed interface Datacenter
     <T extends Host> Datacenter removeHost(T host);
 
     /// @return the policy to be used by the Datacenter to allocate VMs into hosts.
-    /// @see VmAllocationPolicy
-    VmAllocationPolicy getVmAllocationPolicy();
+    /// @see VmPlacementPolicy
+    VmPlacementPolicy getVmPlacementPolicy();
 
     /// Gets the scheduling interval to process each event received by the
     /// Datacenter (in seconds). This value defines the interval in which

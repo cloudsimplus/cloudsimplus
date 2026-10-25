@@ -137,8 +137,8 @@ public class ProcessorSimpleTest {
     @Test
     public void testDeallocateAndRemoveFreesBusyCoresFirst() {
         final Processor instance = createDefaultProcessor();
-        instance.setAllocatedResource(NUMBER_OF_CORES);
-        assertTrue(instance.deallocateAndRemoveResource(1));
+        instance.setOccupied(NUMBER_OF_CORES);
+        assertTrue(instance.freeAndRemove(1));
         assertAll(
             () -> assertEquals(NUMBER_OF_CORES - 1, instance.getCores()),
             () -> assertEquals(NUMBER_OF_CORES - 1, instance.getBusyCores()),
@@ -157,14 +157,14 @@ public class ProcessorSimpleTest {
     @Test
     public void testAllocateAndDeallocateCores() {
         final Processor instance = createDefaultProcessor();
-        assertTrue(instance.allocateResource(3));
+        assertTrue(instance.occupy(3));
         assertAll(
-            () -> assertEquals(3, instance.getAllocatedResource()),
+            () -> assertEquals(3, instance.getOccupied()),
             () -> assertEquals(3, instance.getCores(CoreStatus.BUSY)),
-            () -> assertEquals(1, instance.getAvailableResource())
+            () -> assertEquals(1, instance.getFree())
         );
 
-        assertTrue(instance.deallocateResource(2));
+        assertTrue(instance.free(2));
         assertEquals(1, instance.getCores(CoreStatus.BUSY));
     }
 
@@ -173,9 +173,9 @@ public class ProcessorSimpleTest {
         final Processor instance = createDefaultProcessor();
         instance.moveCores(CoreStatus.FREE, CoreStatus.FAILED, 3);
         assertAll(
-            () -> assertFalse(instance.allocateResource(2)),
-            () -> assertTrue(instance.allocateResource(1)),
-            () -> assertEquals(1, instance.getAllocatedResource()),
+            () -> assertFalse(instance.occupy(2)),
+            () -> assertTrue(instance.occupy(1)),
+            () -> assertEquals(1, instance.getOccupied()),
             () -> assertEquals(1, instance.getWorkingCores())
         );
     }
@@ -186,7 +186,7 @@ public class ProcessorSimpleTest {
         instance.moveCores(CoreStatus.FREE, CoreStatus.BUSY, 2);
         instance.moveCores(CoreStatus.FREE, CoreStatus.FAILED, 1);
 
-        assertEquals(2, instance.deallocateAllResources());
+        assertEquals(2, instance.freeAll());
         assertAll(
             () -> assertEquals(0, instance.getCores(CoreStatus.BUSY)),
             () -> assertEquals(3, instance.getCores(CoreStatus.FREE)),
@@ -255,7 +255,7 @@ public class ProcessorSimpleTest {
     public void testGetPercentUtilization() {
         final Processor instance = createDefaultProcessor();
         instance.moveCores(CoreStatus.FREE, CoreStatus.BUSY, 1);
-        assertEquals(1.0 / NUMBER_OF_CORES, instance.getPercentUtilization());
+        assertEquals(1.0 / NUMBER_OF_CORES, instance.getPercentOccupied());
     }
 
     @Test
@@ -286,7 +286,7 @@ public class ProcessorSimpleTest {
         assertAll(
             () -> assertEquals(0, instance.getCapacity()),
             () -> assertEquals(0, instance.getTotalMips()),
-            () -> assertEquals(0, instance.getPercentUtilization()),
+            () -> assertEquals(0, instance.getPercentOccupied()),
             () -> assertFalse(instance.moveCores(CoreStatus.FREE, CoreStatus.BUSY, 1))
         );
     }

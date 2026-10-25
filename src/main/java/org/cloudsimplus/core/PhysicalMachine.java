@@ -64,7 +64,7 @@ public sealed interface PhysicalMachine extends Machine<FileStorage> permits Hos
     /// @param vm the [Vm] to compute the relative utilization of RAM from this PM
     /// @return the relative VM RAM usage percent (from 0 to 1)
     default double getRelativeRamUtilization(final Vm vm){
-        return vm.getRam().getAllocatedResource() / (double)this.getRam().getCapacity();
+        return vm.getRam().getOccupied() / (double)this.getRam().getCapacity();
     }
 
     /// Computes the relative percentage of the BW a VM is using from a PM's total capacity
@@ -73,6 +73,6 @@ public sealed interface PhysicalMachine extends Machine<FileStorage> permits Hos
     /// @param vm the [Vm] to compute the relative utilization of BW from this PM
     /// @return the relative VM BW usage percent (from 0 to 1)
     default double getRelativeBwUtilization(final Vm vm){
-        return vm.getBw().getAllocatedResource() / (double)this.getBw().getCapacity();
+        return vm.getBw().getOccupied() / (double)this.getBw().getCapacity();
     }
 }

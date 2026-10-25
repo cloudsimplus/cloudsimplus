@@ -56,17 +56,17 @@ So changes to cloudlet or VM execution logic usually affect this update chain an
 
 ### Typical interaction flow
 
-`DatacenterBroker` (the customer agent) → asks CIS for datacenters (`DC_LIST_REQUEST`) → sends VMs to a datacenter. The Datacenter places them on hosts using its `VmAllocationPolicy` and answers with `VM_CREATE_ACK`. Failed VMs are retried in the next datacenter or later (`VM_CREATE_RETRY`). The broker then submits cloudlets (`CLOUDLET_SUBMIT`) to the VMs it picks, and finished cloudlets come back with `CLOUDLET_RETURN`. Broker choices can be customized without subclassing via `setVmMapper`, `setDatacenterMapper`, `setVmComparator` and `setCloudletComparator`.
+`DatacenterBroker` (the customer agent) → asks CIS for datacenters (`DC_LIST_REQUEST`) → sends VMs to a datacenter. The Datacenter places them on hosts using its `VmPlacementPolicy` and answers with `VM_CREATE_ACK`. Failed VMs are retried in the next datacenter or later (`VM_CREATE_RETRY`). The broker then submits cloudlets (`CLOUDLET_SUBMIT`) to the VMs it picks, and finished cloudlets come back with `CLOUDLET_RETURN`. Broker choices can be customized without subclassing via `setVmMapper`, `setDatacenterMapper`, `setVmComparator` and `setCloudletComparator`.
 
 ### Pluggable policies (Strategy pattern)
 
 | Concern | Interface | Used by |
 |---------|-----------|---------|
-| VM → Host placement / migration | `VmAllocationPolicy` (+ `allocationpolicies.migration`) | Datacenter |
-| Which VM to migrate | `VmSelectionPolicy` | migration allocation policies |
+| VM → Host placement / migration | `VmPlacementPolicy` (+ `placementpolicies.migration`) | Datacenter |
+| Which VM to migrate | `VmSelectionPolicy` | migration placement policies |
 | Host CPU cores → VMs | `VmScheduler` (time/space shared) | Host |
 | VM CPU cores → Cloudlets | `CloudletScheduler` (time/space shared, completely fair) | Vm |
-| RAM/BW provisioning | `ResourceProvisioner` | Host |
+| RAM/BW allocation (reservation) | `ResourceAllocator` | Host |
 | Resource usage over time | `UtilizationModel` | Cloudlet |
 | Power consumption | `PowerModel` | Host / Datacenter |
 | Scaling | `HorizontalVmScaling`, `VerticalVmScaling` (`autoscaling`) | Broker / Vm |
@@ -77,7 +77,8 @@ So changes to cloudlet or VM execution logic usually affect this update chain an
 - **Null Object pattern**: most interfaces have a `NULL` constant (`Vm.NULL`, `Host.NULL`, `SimEntity.NULL`...) backed by a `*Null` class. Return and compare against these instead of `null`. When adding a method to an interface, also implement it in its `*Null` class.
 - **Focused interfaces (ISP)**: some interfaces, such as `Host` and `Vm`, grew too large by exposing methods that belong to the objects they hold. Keep interfaces small and cohesive: put a method in the interface of the object that owns the data, and let callers reach it through that object (e.g. `host.getProcessor().getFreeCores()` instead of `host.getFreePesNumber()`). Don't add delegating methods to `Host`/`Vm` just as shortcuts, and don't add methods to an interface that only some implementations need (e.g. CPU caps live in `CpuCap`, not in `Processor`, since a Host never has a cap).
 - **Law of Demeter (loosely)**: chains such as `host.getProcessor().getWorkingCores()` are fine once, but when the same chain repeats inside a client class, don't spread it: use a local variable if it repeats in one method, or create a private helper if it repeats across methods. When the same chain repeats across classes, add a static method to the interface that owns the data, taking the outer object as argument (e.g. `Processor.cores(Machine)`, `workingCores`, `freeCores` and `mips`, used with static imports or method references such as `mapToLong(Processor::cores)`), instead of a delegating method in `Host`/`Vm`. This keeps the client from depending on the inner structure of the objects it uses in many places.
-- **Listeners**: entities expose `addOn...Listener` methods (e.g. `Vm.addOnHostAllocationListener`, `Cloudlet.addOnFinishListener`, `CloudSimPlus.addOnClockTickListener`) that receive typed `*EventInfo` objects from the `listeners` package.
+- **Listeners**: entities expose `addOn...Listener` methods (e.g. `Vm.addOnHostPlacementListener`, `Cloudlet.addOnFinishListener`, `CloudSimPlus.addOnClockTickListener`) that receive typed `*EventInfo` objects from the `listeners` package.
+- **Resource terms**: use them with these meanings, in the order they happen: **placement** (choosing the Host for a VM, `VmPlacementPolicy`), **allocation** (reserving part of the Host resources for the VM, `ResourceAllocator` and `VmScheduler`), **provisioning** (delivering the allocated resources to the VM, done by the Host) and **utilization** (what is actually used at a given time, `CloudletScheduler` and `UtilizationModel`). `Resource`/`ResourceManageable` only record the occupied and free amounts: the meaning of the occupied amount (allocation in a Host resource, utilization in a VM resource) comes from the caller. See the `ResourceAllocator` docs and #588.
 - **Builders**: `builders` has fluent scenario builders and `builders.tables` has result table printers (`CloudletsTableBuilder`, text/CSV/Markdown/HTML/LaTeX tables).
 
 ### Packages not obvious from the names above

@@ -21025,7 +21025,7 @@
 											"_parent": {
 												"$ref": "AAAAAAFW1qU6MPBsClo="
 											},
-											"name": "setOnHostDeallocationListener",
+											"name": "setOnHostRemovalListener",
 											"parameters": [
 												{
 													"_type": "UMLParameter",
@@ -21033,7 +21033,7 @@
 													"_parent": {
 														"$ref": "AAAAAAFW1qU6MPBvevc="
 													},
-													"name": "onHostDeallocationListener",
+													"name": "onHostRemovalListener",
 													"type": ""
 												},
 												{
@@ -21145,7 +21145,7 @@
 											"_parent": {
 												"$ref": "AAAAAAFW1qU6MPBsClo="
 											},
-											"name": "setOnHostAllocationListener",
+											"name": "setOnHostPlacementListener",
 											"parameters": [
 												{
 													"_type": "UMLParameter",
@@ -21153,7 +21153,7 @@
 													"_parent": {
 														"$ref": "AAAAAAFW1qU6MPB7pbM="
 													},
-													"name": "onHostAllocationListener",
+													"name": "onHostPlacementListener",
 													"type": ""
 												},
 												{
@@ -33427,7 +33427,7 @@
 											"_parent": {
 												"$ref": "AAAAAAFW1qU8xPQxtUE="
 											},
-											"name": "getAvailableResource",
+											"name": "getFree",
 											"parameters": [
 												{
 													"_type": "UMLParameter",
@@ -33448,7 +33448,7 @@
 											"_parent": {
 												"$ref": "AAAAAAFW1qU8xPQxtUE="
 											},
-											"name": "getAllocatedResource",
+											"name": "getOccupied",
 											"parameters": [
 												{
 													"_type": "UMLParameter",
@@ -33469,7 +33469,7 @@
 											"_parent": {
 												"$ref": "AAAAAAFW1qU8xPQxtUE="
 											},
-											"name": "allocateResource",
+											"name": "occupy",
 											"parameters": [
 												{
 													"_type": "UMLParameter",
@@ -33499,7 +33499,7 @@
 											"_parent": {
 												"$ref": "AAAAAAFW1qU8xPQxtUE="
 											},
-											"name": "setAllocatedResource",
+											"name": "setOccupied",
 											"parameters": [
 												{
 													"_type": "UMLParameter",
@@ -33529,7 +33529,7 @@
 											"_parent": {
 												"$ref": "AAAAAAFW1qU8xPQxtUE="
 											},
-											"name": "deallocateResource",
+											"name": "free",
 											"parameters": [
 												{
 													"_type": "UMLParameter",
@@ -33559,7 +33559,7 @@
 											"_parent": {
 												"$ref": "AAAAAAFW1qU8xPQxtUE="
 											},
-											"name": "deallocateAllResources",
+											"name": "freeAll",
 											"parameters": [
 												{
 													"_type": "UMLParameter",
@@ -35497,7 +35497,7 @@
 											"_parent": {
 												"$ref": "AAAAAAFW1qU9CvT389E="
 											},
-											"name": "getAvailableResource",
+											"name": "getFree",
 											"parameters": [
 												{
 													"_type": "UMLParameter",
@@ -35516,7 +35516,7 @@
 											"_parent": {
 												"$ref": "AAAAAAFW1qU9CvT389E="
 											},
-											"name": "getAllocatedResource",
+											"name": "getOccupied",
 											"parameters": [
 												{
 													"_type": "UMLParameter",
@@ -42191,7 +42191,7 @@
 							"_parent": {
 								"$ref": "AAAAAAFYL/ePAQlE+FQ="
 							},
-							"name": "provisioners",
+							"name": "allocators",
 							"ownedElements": [
 								{
 									"_type": "UMLClass",
@@ -42199,7 +42199,7 @@
 									"_parent": {
 										"$ref": "AAAAAAFW1qU8jPPmXIk="
 									},
-									"name": "ResourceProvisionerAbstract",
+									"name": "ResourceAllocatorAbstract",
 									"ownedElements": [
 										{
 											"_type": "UMLInterfaceRealization",
@@ -42235,7 +42235,7 @@
 											"_parent": {
 												"$ref": "AAAAAAFW1qU8jPPnKxk="
 											},
-											"name": "ResourceProvisionerAbstract",
+											"name": "ResourceAllocatorAbstract",
 											"documentation": "Creates a new ResourceManageable Provisioner.\n@param resource The resource to be managed by the provisioner\n@post $none",
 											"stereotype": "constructor",
 											"parameters": [
@@ -42330,7 +42330,7 @@
 											"_parent": {
 												"$ref": "AAAAAAFW1qU8jPPnKxk="
 											},
-											"name": "getAvailableResource",
+											"name": "getFree",
 											"parameters": [
 												{
 													"_type": "UMLParameter",
@@ -42354,7 +42354,7 @@
 									"_parent": {
 										"$ref": "AAAAAAFW1qU8jPPmXIk="
 									},
-									"name": "ResourceProvisioner",
+									"name": "ResourceAllocator",
 									"ownedElements": [],
 									"documentation": "Title:        CloudSim Toolkit\nDescription:  CloudSim (Cloud Simulation) Toolkit for Modeling and Simulation of Clouds\nLicence:      GPL - http://www.gnu.org/copyleft/gpl.html\nCopyright (c) 2009-2012, The University of Melbourne, Australia\nAn interface that represents the provisioning policy used by a host\nto allocate a given resource to virtual machines inside it.\nEach host has to have its own instance of a ResourceProvisioner for each\nresource it owns, such as RAM, Bandwidth (BW) and CPU.\n@author Rodrigo N. Calheiros\n@author Anton Beloglazov\n@author Manoel Campos da Silva Filho\n@param <T> The type of the resource capacity of the provisioner\n@since 3.0.4",
 									"templateParameters": [
@@ -42376,7 +42376,7 @@
 									"_parent": {
 										"$ref": "AAAAAAFW1qU8jPPmXIk="
 									},
-									"name": "ResourceProvisionerSimple",
+									"name": "ResourceAllocatorSimple",
 									"ownedElements": [
 										{
 											"_type": "UMLGeneralization",
@@ -42412,7 +42412,7 @@
 											"_parent": {
 												"$ref": "AAAAAAFW1qU8tfQhgrE="
 											},
-											"name": "ResourceProvisionerSimple",
+											"name": "ResourceAllocatorSimple",
 											"documentation": "Creates a new ResourceManageable Provisioner.\n@param resource The resource to be managed by the provisioner\n@post $none",
 											"stereotype": "constructor",
 											"parameters": [
@@ -42547,7 +42547,7 @@
 									"_parent": {
 										"$ref": "AAAAAAFW1qU8jPPmXIk="
 									},
-									"name": "provisioners",
+									"name": "allocators",
 									"ownedViews": [
 										{
 											"_type": "UMLInterfaceView",
@@ -49179,7 +49179,7 @@
 													"_parent": {
 														"$ref": "AAAAAAFW1qU5Lu7XihA="
 													},
-													"name": "ramProvisioner",
+													"name": "ramAllocator",
 													"type": ""
 												},
 												{
@@ -49188,7 +49188,7 @@
 													"_parent": {
 														"$ref": "AAAAAAFW1qU5Lu7XihA="
 													},
-													"name": "bwProvisioner",
+													"name": "bwAllocator",
 													"type": ""
 												},
 												{
@@ -49630,7 +49630,7 @@
 											"_parent": {
 												"$ref": "AAAAAAFW1qU5T+7+sWQ="
 											},
-											"name": "ramProvisioner",
+											"name": "ramAllocator",
 											"end1": {
 												"_type": "UMLAssociationEnd",
 												"_id": "AAAAAAFW19ABob8Byxk=",
@@ -49682,7 +49682,7 @@
 													"_parent": {
 														"$ref": "AAAAAAFW1qU5T+7/DNM="
 													},
-													"name": "ramProvisioner",
+													"name": "ramAllocator",
 													"type": ""
 												},
 												{
@@ -49691,7 +49691,7 @@
 													"_parent": {
 														"$ref": "AAAAAAFW1qU5T+7/DNM="
 													},
-													"name": "bwProvisioner",
+													"name": "bwAllocator",
 													"type": ""
 												},
 												{
@@ -50096,7 +50096,7 @@
 											"_parent": {
 												"$ref": "AAAAAAFW1qU5T+7+sWQ="
 											},
-											"name": "getRamProvisioner",
+											"name": "getRamAllocator",
 											"parameters": [
 												{
 													"_type": "UMLParameter",
@@ -50115,7 +50115,7 @@
 											"_parent": {
 												"$ref": "AAAAAAFW1qU5T+7+sWQ="
 											},
-											"name": "getBwProvisioner",
+											"name": "getBwAllocator",
 											"parameters": [
 												{
 													"_type": "UMLParameter",
@@ -59398,7 +59398,7 @@
 							"_parent": {
 								"$ref": "AAAAAAFYL/ePAQlE+FQ="
 							},
-							"name": "allocationpolicies",
+							"name": "placementpolicies",
 							"ownedElements": [
 								{
 									"_type": "UMLInterface",
@@ -59406,7 +59406,7 @@
 									"_parent": {
 										"$ref": "AAAAAAFW1qU5ou/ENf0="
 									},
-									"name": "VmAllocationPolicy",
+									"name": "VmPlacementPolicy",
 									"documentation": "An interface to be implemented by each class that represents a policy used by\na {@link Datacenter} to choose a {@link Host} to place or migrate a\ngiven {@link Vm}.\n@author Manoel Campos da Silva Filho"
 								},
 								{
@@ -59415,7 +59415,7 @@
 									"_parent": {
 										"$ref": "AAAAAAFW1qU5ou/ENf0="
 									},
-									"name": "VmAllocationPolicyAbstract",
+									"name": "VmPlacementPolicyAbstract",
 									"ownedElements": [
 										{
 											"_type": "UMLInterfaceRealization",
@@ -59439,7 +59439,7 @@
 											"_parent": {
 												"$ref": "AAAAAAFW1qU5su/GCgs="
 											},
-											"name": "VmAllocationPolicyAbstract",
+											"name": "VmPlacementPolicyAbstract",
 											"documentation": "Creates a new VmAllocationPolicy object.\n@param list of Hosts available in a {@link Datacenter}, that will be used\nby the Allocation Policy to place VMs.\n@pre $none\n@post $none",
 											"stereotype": "constructor",
 											"parameters": [
@@ -59518,7 +59518,7 @@
 									"_parent": {
 										"$ref": "AAAAAAFW1qU5ou/ENf0="
 									},
-									"name": "allocation-policies",
+									"name": "placement-policies",
 									"ownedViews": [
 										{
 											"_type": "UMLClassView",
@@ -60300,7 +60300,7 @@
 									"_parent": {
 										"$ref": "AAAAAAFW1qU5ou/ENf0="
 									},
-									"name": "VmAllocationPolicySimple",
+									"name": "VmPlacementPolicySimple",
 									"ownedElements": [
 										{
 											"_type": "UMLGeneralization",
@@ -60344,7 +60344,7 @@
 											"_parent": {
 												"$ref": "AAAAAAFYsNTxVMKD2ZY="
 											},
-											"name": "VmAllocationPolicyMigrationStaticThreshold",
+											"name": "VmPlacementPolicyMigrationStaticThreshold",
 											"documentation": "Title:        CloudSim Toolkit\nDescription:  CloudSim (Cloud Simulation) Toolkit for Modeling and Simulation of Clouds\nLicence:      GPL - http://www.gnu.org/copyleft/gpl.html\nCopyright (c) 2009-2012, The University of Melbourne, Australia\nA VM allocation policy that uses a Static CPU utilization Threshold (THR) to detect host over\nutilization.\n<br/>If you are using any algorithms, policies or workload included in the power package please cite\nthe following paper:<br/>\n<ul>\n<li><a href=\"https://doi.org/10.1002/cpe.1867\">Anton Beloglazov, and Rajkumar Buyya, \"Optimal Online Deterministic Algorithms and Adaptive\nHeuristics for Energy and Performance Efficient Dynamic Consolidation of Virtual Machines in\nCloud Data Centers\", Concurrency and Computation: Practice and Experience (CCPE), Volume 24,\nIssue 13, Pages: 1397-1420, John Wiley & Sons, Ltd, New York, USA, 2012</a>\n</ul>\n@author Anton Beloglazov\n@since CloudSim Toolkit 3.0",
 											"operations": [
 												{
@@ -60353,7 +60353,7 @@
 													"_parent": {
 														"$ref": "AAAAAAFYsNbCssTfxpA="
 													},
-													"name": "PowerVmAllocationPolicyMigrationStaticThreshold",
+													"name": "PowerVmPlacementPolicyMigrationStaticThreshold",
 													"documentation": "Instantiates a new PowerVmAllocationPolicyMigrationStaticThreshold.\n@param hostList the host list\n@param vmSelectionPolicy the vm selection policy\n@param utilizationThreshold the utilization threshold",
 													"stereotype": "constructor",
 													"parameters": [
@@ -60436,7 +60436,7 @@
 											"_parent": {
 												"$ref": "AAAAAAFYsNTxVMKD2ZY="
 											},
-											"name": "VmAllocationPolicyMigration",
+											"name": "VmPlacementPolicyMigration",
 											"documentation": "An interface to be implemented by VM allocation policy for Power-aware VMs.\n@author Manoel Campos da Silva Filho"
 										},
 										{
@@ -60445,7 +60445,7 @@
 											"_parent": {
 												"$ref": "AAAAAAFYsNTxVMKD2ZY="
 											},
-											"name": "VmAllocationPolicyMigrationAbstract"
+											"name": "VmPlacementPolicyMigrationAbstract"
 										}
 									]
 								}

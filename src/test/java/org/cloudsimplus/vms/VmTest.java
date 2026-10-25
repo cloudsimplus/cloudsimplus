@@ -53,11 +53,11 @@ public class VmTest {
     @Test
     public void testVmNullObjectListeners(){
         final Vm instance = Vm.NULL;
-        instance.addOnHostAllocationListener(null);
-        assertFalse(instance.removeOnHostAllocationListener(null));
+        instance.addOnHostPlacementListener(null);
+        assertFalse(instance.removeOnHostPlacementListener(null));
 
-        instance.addOnHostDeallocationListener(null);
-        assertFalse(instance.removeOnHostDeallocationListener(null));
+        instance.addOnHostRemovalListener(null);
+        assertFalse(instance.removeOnHostRemovalListener(null));
 
         instance.addOnCreationFailureListener(null);
         assertFalse(instance.removeOnCreationFailureListener(null));
@@ -70,18 +70,18 @@ public class VmTest {
     public void testVmNullObjectResources(){
         final Vm instance = Vm.NULL;
         assertAll(
-            () -> assertEquals(0, instance.getBw().getAllocatedResource()),
+            () -> assertEquals(0, instance.getBw().getOccupied()),
             () -> assertEquals(0, instance.getProcessor().getMips()),
             () -> assertEquals(0, instance.getProcessor().getCores()),
             () -> assertEquals(0, instance.getCpuPercentUtilization(0)),
             () -> assertEquals(0, instance.getTotalCpuMipsUtilization(0)),
             () -> assertEquals(0, instance.getBw().getCapacity()),
-            () -> assertEquals(0, instance.getBw().getAllocatedResource()),
+            () -> assertEquals(0, instance.getBw().getOccupied()),
             () -> assertEquals(0, instance.getCurrentRequestedBw()),
             () -> assertTrue(instance.getCurrentRequestedMips().isEmpty()),
             () -> assertEquals(0, instance.getCurrentRequestedRam()),
             () -> assertEquals(0, instance.getRam().getCapacity()),
-            () -> assertEquals(0, instance.getRam().getAllocatedResource()),
+            () -> assertEquals(0, instance.getRam().getOccupied()),
             () -> assertEquals(0, instance.getStorage().getCapacity())
         );
     }

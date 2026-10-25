@@ -39,16 +39,16 @@ final class ProcessorNull implements Processor {
     @Override public boolean sumCapacity(long amountToSum) { return false; }
     @Override public boolean addCapacity(long capacityToAdd) { return false; }
     @Override public boolean removeCapacity(long capacityToRemove) { return false; }
-    @Override public boolean allocateResource(long amountToAllocate) { return false; }
-    @Override public boolean setAllocatedResource(long newTotalAllocatedResource) { return false; }
-    @Override public boolean deallocateResource(long amountToDeallocate) { return false; }
-    @Override public boolean deallocateAndRemoveResource(long amountToDeallocate) { return false; }
-    @Override public long deallocateAllResources() { return 0; }
+    @Override public boolean occupy(long amountToAllocate) { return false; }
+    @Override public boolean setOccupied(long newTotalAllocatedResource) { return false; }
+    @Override public boolean free(long amountToDeallocate) { return false; }
+    @Override public boolean freeAndRemove(long amountToDeallocate) { return false; }
+    @Override public long freeAll() { return 0; }
     @Override public boolean isResourceAmountBeingUsed(long amountToCheck) { return false; }
     @Override public boolean isSuitable(long newTotalAllocatedResource) { return false; }
     @Override public long getCapacity() { return 0; }
-    @Override public long getAvailableResource() { return 0; }
-    @Override public long getAllocatedResource() { return 0; }
+    @Override public long getFree() { return 0; }
+    @Override public long getOccupied() { return 0; }
     @Override public boolean isAmountAvailable(long amountToCheck) { return false; }
     @Override public boolean isAmountAvailable(double amountToCheck) { return false; }
     @Override public String getUnit() { return ""; }

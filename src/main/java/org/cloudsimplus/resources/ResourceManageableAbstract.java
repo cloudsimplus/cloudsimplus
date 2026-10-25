@@ -24,7 +24,7 @@ import org.cloudsimplus.util.MathUtil;
 /// @since CloudSim Plus 1.0
 public abstract class ResourceManageableAbstract extends ResourceAbstract implements ResourceManageable {
 
-    /// @see #getAvailableResource()
+    /// @see #getFree()
     private long availableResource;
 
     public ResourceManageableAbstract(final long capacity, final String unit) {
@@ -34,7 +34,7 @@ public abstract class ResourceManageableAbstract extends ResourceAbstract implem
 
     @Override
     public boolean setCapacity(final long newCapacity){
-        if(newCapacity < 0 || getAllocatedResource() > newCapacity) {
+        if(newCapacity < 0 || getOccupied() > newCapacity) {
             return false;
         }
 
@@ -79,7 +79,7 @@ public abstract class ResourceManageableAbstract extends ResourceAbstract implem
     /// otherwise decreases it.
     /// @return true if the total available resource was changed; false otherwise
     protected boolean sumAvailableResource(final long amountToSum){
-        final long newTotalAvailableResource = getAvailableResource() + amountToSum;
+        final long newTotalAvailableResource = getFree() + amountToSum;
         return setAvailableResource(newTotalAvailableResource);
     }
 
@@ -98,34 +98,34 @@ public abstract class ResourceManageableAbstract extends ResourceAbstract implem
     }
 
     @Override
-    public long getAvailableResource() {
+    public long getFree() {
         return availableResource;
     }
 
     @Override
-    public boolean allocateResource(final long amountToAllocate) {
+    public boolean occupy(final long amountToAllocate) {
         if(amountToAllocate <= 0 || !isAmountAvailable(amountToAllocate)) {
             return false;
         }
 
-        final long newAvailableResource = getAvailableResource() - amountToAllocate;
+        final long newAvailableResource = getFree() - amountToAllocate;
 
         return setAvailableResource(newAvailableResource);
     }
 
     @Override
-    public boolean setAllocatedResource(final long newTotalAllocatedResource) {
+    public boolean setOccupied(final long newTotalAllocatedResource) {
         if(newTotalAllocatedResource < 0 || !isSuitable(newTotalAllocatedResource)) {
             return false;
         }
 
-        deallocateAllResources();
-        return allocateResource(newTotalAllocatedResource);
+        freeAll();
+        return occupy(newTotalAllocatedResource);
     }
 
     @Override
-    public boolean deallocateAndRemoveResource(final long amountToDeallocate) {
-        if(!deallocateResource(getActualAmountToDeallocate(amountToDeallocate))){
+    public boolean freeAndRemove(final long amountToDeallocate) {
+        if(!free(getActualAmountToDeallocate(amountToDeallocate))){
             return false;
         }
 
@@ -138,28 +138,28 @@ public abstract class ResourceManageableAbstract extends ResourceAbstract implem
     /// @param amountToDeallocate the amount requested to deallocate
     /// @return the actual amount to deallocate
     private long getActualAmountToDeallocate(final long amountToDeallocate) {
-        return Math.min(amountToDeallocate, this.getAllocatedResource());
+        return Math.min(amountToDeallocate, this.getOccupied());
     }
 
     @Override
-    public boolean deallocateResource(final long amountToDeallocate) {
+    public boolean free(final long amountToDeallocate) {
         if(amountToDeallocate <= 0 || !isResourceAmountBeingUsed(amountToDeallocate)) {
             return false;
         }
 
-        final long newAvailableResource = getAvailableResource() + amountToDeallocate;
+        final long newAvailableResource = getFree() + amountToDeallocate;
         return setAvailableResource(newAvailableResource);
     }
 
     @Override
-    public long deallocateAllResources() {
-        final long previousAllocated = getAllocatedResource();
+    public long freeAll() {
+        final long previousAllocated = getOccupied();
         setAvailableResource(getCapacity());
         return previousAllocated;
     }
 
     @Override
     public String toString() {
-        return "%s: used %d of %d".formatted(getClass().getSimpleName(), getAllocatedResource(), getCapacity());
+        return "%s: used %d of %d".formatted(getClass().getSimpleName(), getOccupied(), getCapacity());
     }
 }

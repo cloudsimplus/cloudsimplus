@@ -306,12 +306,12 @@ public class SanStorageTest {
         int fileNumber = 0;
         File file = createNumberedFile(++fileNumber, fileSize);
         assertTrue(san.addFile(file) > 0.0);
-        assertEquals(available, san.getAvailableResource());
+        assertEquals(available, san.getFree());
 
         assertTrue(san.reserveSpace(fileSize));
         /*there isn't more available space for the new file,
         because the available space was reserved*/
-        assertEquals(0, san.getAvailableResource());
+        assertEquals(0, san.getFree());
         file = createNumberedFile(++fileNumber, fileSize);
         assertFalse(san.addFile(file) > 0.0);
 
@@ -329,12 +329,12 @@ public class SanStorageTest {
         final long capacity = fileSize * 2;
         final long available = fileSize;
         final var san = createSanStorage(capacity);
-        assertEquals(0, san.getAllocatedResource());
+        assertEquals(0, san.getOccupied());
 
         int fileNumber = 0;
         File file = createNumberedFile(++fileNumber, fileSize);
         assertTrue(san.addFile(file) > 0.0);
-        assertEquals(available, san.getAvailableResource());
+        assertEquals(available, san.getFree());
 
         //file larger than the available capacity
         assertEquals(0, san.addFile(new File("too-big-file.txt", FILE_SIZE*10)));
@@ -343,7 +343,7 @@ public class SanStorageTest {
         assertTrue(san.reserveSpace(fileSize));
         file = createNumberedFile(++fileNumber, fileSize);
         assertTrue(san.addReservedFile(file) > 0);
-        assertEquals(0, san.getAvailableResource());
+        assertEquals(0, san.getFree());
     }
 
     @Test()
@@ -363,7 +363,7 @@ public class SanStorageTest {
             /*if the exception was thrown, indicates that the file
             was accordingly not added.
             Now, checks the available space to see if remains unchanged.*/
-            assertEquals(CAPACITY, san.getAvailableResource());
+            assertEquals(CAPACITY, san.getFree());
         }
     }
 
@@ -385,7 +385,7 @@ public class SanStorageTest {
         final long capacity = fileSize * 2L;
         long available = capacity;
         final var san = createSanStorage(capacity);
-        assertEquals(0, san.getAllocatedResource());
+        assertEquals(0, san.getOccupied());
 
         final File file = createNumberedFile(1, fileSize);
         try{
@@ -395,16 +395,16 @@ public class SanStorageTest {
             /*if the exception was thrown, indicates that the file
             was accordingly not added.
             Now, checks the available space to see if remains unchanged.*/
-            assertEquals(available, san.getAvailableResource());
-            assertEquals(0, san.getAllocatedResource());
+            assertEquals(available, san.getFree());
+            assertEquals(0, san.getOccupied());
         }
 
         available = (long)fileSize;
         //accordingly, reserves space previously and then adds the reserved file
         assertTrue(san.reserveSpace(fileSize));
         assertTrue(san.addReservedFile(file) > 0);
-        assertEquals(available, san.getAvailableResource());
-        assertEquals(available, san.getAllocatedResource());
+        assertEquals(available, san.getFree());
+        assertEquals(available, san.getOccupied());
     }
 
     /// Try to add a reserved file which the space was not totally reserved
@@ -417,7 +417,7 @@ public class SanStorageTest {
         final long capacity = fileSize;
         final long available = halfFileSize;
         final var san = createSanStorage(capacity);
-        assertEquals(0, san.getAllocatedResource());
+        assertEquals(0, san.getOccupied());
 
         final File file = createNumberedFile(1, fileSize);
         assertTrue(san.reserveSpace(halfFileSize));
@@ -429,15 +429,15 @@ public class SanStorageTest {
             was accordingly not added because not the entire space was previously
             reserved.
             Now, checks the available space to see if remains unchanged.*/
-            assertEquals(available, san.getAvailableResource());
-            assertEquals(available,  san.getAllocatedResource());
+            assertEquals(available, san.getFree());
+            assertEquals(available,  san.getOccupied());
         }
 
         //accordingly, reserves space previously and then adds the reserved file
         assertTrue(san.reserveSpace(halfFileSize));
         assertTrue(san.addReservedFile(file) > 0);
-        assertEquals(0, san.getAvailableResource());
-        assertEquals(capacity, san.getAllocatedResource());
+        assertEquals(0, san.getFree());
+        assertEquals(capacity, san.getOccupied());
     }
 
     @Test

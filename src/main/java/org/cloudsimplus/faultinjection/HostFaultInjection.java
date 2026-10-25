@@ -492,7 +492,7 @@ public class HostFaultInjection extends CloudSimEntity {
         final Vm clonedVm = entry.getKey();
         final var clonedCloudletList = entry.getValue();
         clonedVm.setSubmissionDelay(recoveryTimeSecs);
-        clonedVm.addOnHostAllocationListener(evt -> vmRecoveryTimeSecsMap.put(evt.getVm(), recoveryTimeSecs));
+        clonedVm.addOnHostPlacementListener(evt -> vmRecoveryTimeSecsMap.put(evt.getVm(), recoveryTimeSecs));
         broker.submitVm(clonedVm);
         broker.submitCloudletList(clonedCloudletList, recoveryTimeSecs);
     }

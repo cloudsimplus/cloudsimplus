@@ -31,7 +31,7 @@ import org.cloudsimplus.hosts.Host;
 import org.cloudsimplus.hosts.HostSimple;
 import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.listeners.HostUpdatesVmsProcessingEventInfo;
-import org.cloudsimplus.provisioners.ResourceProvisionerSimple;
+import org.cloudsimplus.allocators.ResourceAllocatorSimple;
 import org.cloudsimplus.schedulers.vm.VmScheduler;
 import org.cloudsimplus.resources.CoreCapacity;
 
@@ -97,8 +97,8 @@ public class HostBuilder implements Builder {
 
     private Host defaultHostCreationFunction(final CoreCapacity capacity) {
         return new HostSimple(capacity)
-            .setRamProvisioner(new ResourceProvisionerSimple())
-            .setBwProvisioner(new ResourceProvisionerSimple())
+            .setRamAllocator(new ResourceAllocatorSimple())
+            .setBwAllocator(new ResourceAllocatorSimple())
             .addOnUpdateProcessingListener(onUpdateVmsProcessingListener);
     }
 }

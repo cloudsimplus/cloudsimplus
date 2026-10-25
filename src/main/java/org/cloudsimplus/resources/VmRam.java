@@ -42,7 +42,7 @@ public final class VmRam extends Ram {
     }
 
     @Override
-    public double getPercentUtilization() {
-        return vm.isStartingUp() ? vm.getBootModel().getRamPercentUtilization() : super.getPercentUtilization();
+    public double getPercentOccupied() {
+        return vm.isStartingUp() ? vm.getBootModel().getRamPercentUtilization() : super.getPercentOccupied();
     }
 }

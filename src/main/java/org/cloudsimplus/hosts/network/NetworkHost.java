@@ -31,8 +31,8 @@ import org.jspecify.annotations.Nullable;
 
 /// A Host that support simulation of networked [Datacenter]s. It executes actions related to the management of packets
 /// (sent and received) besides [Vm] management (e.g., creation and destruction).
-/// A Host has a defined policy for provisioning memory and bw, as
-/// well as an allocation policy for cores to virtual machines.
+/// A Host has allocators for memory and bw, as well as a scheduler
+/// that allocates cores to virtual machines, and it provisions the allocated resources to them.
 ///
 /// Please refer to the following publication for more details:
 ///

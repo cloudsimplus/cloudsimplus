@@ -19,6 +19,12 @@ import org.slf4j.LoggerFactory;
 /// VmScheduler that will so schedule the allocation of host's cores for
 /// VMs running on it.
 ///
+/// It decides how the Host CPU is shared among VMs and allocates (reserves) the Host cores for them.
+/// The Host then provisions the allocated MIPS to each VM at every processing update
+/// (see [Host#updateProcessing(double)]).
+/// See [org.cloudsimplus.allocators.ResourceAllocator] for the meaning of
+/// placement, allocation, provisioning and utilization.
+///
 /// @author Rodrigo N. Calheiros
 /// @author Anton Beloglazov
 /// @author Manoel Campos da Silva Filho

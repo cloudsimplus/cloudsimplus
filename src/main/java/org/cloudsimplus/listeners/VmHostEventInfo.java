@@ -31,16 +31,16 @@ import org.cloudsimplus.vms.Vm;
 /// when some events happen for a given [Vm] that is related to
 /// some [Host].
 ///
-/// It can be used to notify Listeners when a Host is [allocated][Vm#addOnHostAllocationListener(EventListener)] to or
-/// [deallocated][Vm#addOnHostDeallocationListener(EventListener)] from a given Vm,
+/// It can be used to notify Listeners when a Host is [allocated][Vm#addOnHostPlacementListener(EventListener)] to or
+/// [deallocated][Vm#addOnHostRemovalListener(EventListener)] from a given Vm,
 /// when a Vm has its [processing updated by its Host][Vm#addOnUpdateProcessingListener(EventListener)],
 /// etc.
 ///
 /// @author Manoel Campos da Silva Filho
 /// @since CloudSim Plus 1.0
 ///
-/// @see Vm#addOnHostAllocationListener(EventListener)
-/// @see Vm#addOnHostDeallocationListener(EventListener)
+/// @see Vm#addOnHostPlacementListener(EventListener)
+/// @see Vm#addOnHostRemovalListener(EventListener)
 /// @see Vm#addOnUpdateProcessingListener(EventListener)
 public interface VmHostEventInfo extends VmEventInfo, HostEventInfo {
     /// Gets a `VmHostEventInfo` instance from the given parameters.
@@ -62,8 +62,8 @@ public interface VmHostEventInfo extends VmEventInfo, HostEventInfo {
     /// Such a Host can be that one where the Vm is or was placed,
     /// or where the Vm was tried to be created.
     /// It depends on the fired event, such as the
-    /// [OnHostAllocation][Vm#addOnHostAllocationListener(EventListener)] or
-    /// [OnHostDeallocation][Vm#addOnHostDeallocationListener(EventListener)]
+    /// [OnHostAllocation][Vm#addOnHostPlacementListener(EventListener)] or
+    /// [OnHostDeallocation][Vm#addOnHostRemovalListener(EventListener)]
     static VmHostEventInfo of(final EventListener<VmHostEventInfo> listener, final Vm vm, final Host host) {
         final double time = vm.getSimulation().clock();
         return new VmHostEventInfo() {

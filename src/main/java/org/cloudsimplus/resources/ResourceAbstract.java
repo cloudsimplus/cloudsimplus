@@ -49,13 +49,13 @@ public abstract class ResourceAbstract implements Resource {
     }
 
     @Override
-    public long getAllocatedResource() {
-        return getCapacity() - getAvailableResource();
+    public long getOccupied() {
+        return getCapacity() - getFree();
     }
 
     @Override
     public boolean isAmountAvailable(final long amountToCheck) {
-        return getAvailableResource() >= amountToCheck;
+        return getFree() >= amountToCheck;
     }
 
     @Override
@@ -64,15 +64,15 @@ public abstract class ResourceAbstract implements Resource {
     }
 
     public boolean isResourceAmountBeingUsed(final long amountToCheck) {
-        return getAllocatedResource() >= amountToCheck;
+        return getOccupied() >= amountToCheck;
     }
 
     public boolean isSuitable(final long newTotalAllocatedResource) {
-        if(newTotalAllocatedResource <= getAllocatedResource()) {
+        if(newTotalAllocatedResource <= getOccupied()) {
             return true;
         }
 
-        final long allocationDifference = newTotalAllocatedResource - getAllocatedResource();
+        final long allocationDifference = newTotalAllocatedResource - getOccupied();
         return isAmountAvailable(allocationDifference);
     }
 }

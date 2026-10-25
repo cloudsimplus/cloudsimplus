@@ -7,9 +7,9 @@
 package org.cloudsimplus.datacenters;
 
 import lombok.*;
-import org.cloudsimplus.allocationpolicies.VmAllocationPolicy;
-import org.cloudsimplus.allocationpolicies.VmAllocationPolicySimple;
-import org.cloudsimplus.allocationpolicies.migration.VmAllocationPolicyMigration;
+import org.cloudsimplus.placementpolicies.VmPlacementPolicy;
+import org.cloudsimplus.placementpolicies.VmPlacementPolicySimple;
+import org.cloudsimplus.placementpolicies.migration.VmPlacementPolicyMigration;
 import org.cloudsimplus.brokers.DatacenterBroker;
 import org.cloudsimplus.autoscaling.VerticalVmScaling;
 import org.cloudsimplus.cloudlets.Cloudlet;
@@ -76,7 +76,7 @@ public non-sealed class DatacenterSimple extends CloudSimEntity implements Datac
     private PowerModelDatacenter powerModel = PowerModelDatacenter.NULL;
 
     @Getter
-    private VmAllocationPolicy vmAllocationPolicy;
+    private VmPlacementPolicy vmPlacementPolicy;
 
     @Getter
     private double hostSearchRetryDelay;
@@ -109,73 +109,73 @@ public non-sealed class DatacenterSimple extends CloudSimEntity implements Datac
     private Map<Vm, Host> lastMigrationMap;
 
     /// Creates a Datacenter with an empty [storage][#getDatacenterStorage()]
-    /// and a [VmAllocationPolicySimple] by default.
+    /// and a [VmPlacementPolicySimple] by default.
     ///
     /// **NOTE:** To change such attributes, just call the respective setters.
     ///
     /// @param simulation the [CloudSimPlus] instance that represents the simulation the Entity belongs
     /// @param hostList list of [Host]s that will compound the Datacenter
-    /// @see #DatacenterSimple(Simulation, List, VmAllocationPolicy, DatacenterStorage)
+    /// @see #DatacenterSimple(Simulation, List, VmPlacementPolicy, DatacenterStorage)
     public DatacenterSimple(final Simulation simulation, final List<? extends Host> hostList) {
-        this(simulation, hostList, new VmAllocationPolicySimple(), new DatacenterStorage());
+        this(simulation, hostList, new VmPlacementPolicySimple(), new DatacenterStorage());
     }
 
     /// Creates a Datacenter with an empty [storage][#getDatacenterStorage()].
     ///
     /// @param simulation the [CloudSimPlus] instance that represents the simulation the Entity belongs
     /// @param hostList list of [Host]s that will compound the Datacenter
-    /// @param vmAllocationPolicy the policy to be used to allocate [Vm]s into [Host]s
-    /// @see #DatacenterSimple(Simulation, List, VmAllocationPolicy, DatacenterStorage)
+    /// @param vmPlacementPolicy the policy to be used to allocate [Vm]s into [Host]s
+    /// @see #DatacenterSimple(Simulation, List, VmPlacementPolicy, DatacenterStorage)
     public DatacenterSimple(
         final Simulation simulation,
         final List<? extends Host> hostList,
-        final VmAllocationPolicy vmAllocationPolicy)
+        final VmPlacementPolicy vmPlacementPolicy)
     {
-        this(simulation, hostList, vmAllocationPolicy, new DatacenterStorage());
+        this(simulation, hostList, vmPlacementPolicy, new DatacenterStorage());
     }
 
     /// Creates a Datacenter with an empty [storage][#getDatacenterStorage()]
     /// and no Hosts.
     ///
     /// @param simulation the [CloudSimPlus] instance that represents the simulation the Entity belongs
-    /// @param vmAllocationPolicy the policy to be used to allocate [Vm]s into [Host]s
-    /// @see #DatacenterSimple(Simulation, List, VmAllocationPolicy)
-    /// @see #DatacenterSimple(Simulation, List, VmAllocationPolicy, DatacenterStorage)
+    /// @param vmPlacementPolicy the policy to be used to allocate [Vm]s into [Host]s
+    /// @see #DatacenterSimple(Simulation, List, VmPlacementPolicy)
+    /// @see #DatacenterSimple(Simulation, List, VmPlacementPolicy, DatacenterStorage)
     /// @see #addHost(Host)
     /// @see #addHostList(List)
     public DatacenterSimple(
         final Simulation simulation,
-        final VmAllocationPolicy vmAllocationPolicy)
+        final VmPlacementPolicy vmPlacementPolicy)
     {
-        this(simulation, new ArrayList<>(), vmAllocationPolicy, new DatacenterStorage());
+        this(simulation, new ArrayList<>(), vmPlacementPolicy, new DatacenterStorage());
     }
 
     /// Creates a Datacenter attaching a given storage list to its [storage][#getDatacenterStorage()].
     ///
     /// @param simulation the [CloudSimPlus] instance that represents the simulation the Entity belongs
     /// @param hostList list of [Host]s that will compound the Datacenter
-    /// @param vmAllocationPolicy the policy to be used to allocate [Vm]s into [Host]s
+    /// @param vmPlacementPolicy the policy to be used to allocate [Vm]s into [Host]s
     /// @param storageList the [SanStorage] list to attach to the [datacenter storage][#getDatacenterStorage()]
     public DatacenterSimple(
         final Simulation simulation,
         final List<? extends Host> hostList,
-        final VmAllocationPolicy vmAllocationPolicy,
+        final VmPlacementPolicy vmPlacementPolicy,
         final List<SanStorage> storageList)
     {
-        this(simulation, hostList, vmAllocationPolicy, new DatacenterStorage(storageList));
+        this(simulation, hostList, vmPlacementPolicy, new DatacenterStorage(storageList));
     }
 
     /// Creates a Datacenter with a given [storage][#getDatacenterStorage()].
     ///
     /// @param simulation the [CloudSimPlus] instance that represents the simulation the Entity belongs
     /// @param hostList list of [Host]s that will compound the Datacenter
-    /// @param vmAllocationPolicy the policy to be used to allocate VMs into hosts
+    /// @param vmPlacementPolicy the policy to be used to allocate VMs into hosts
     /// @param storage the [storage][#getDatacenterStorage()] for this Datacenter
     /// @see DatacenterStorage#getStorageList()
     public DatacenterSimple(
         final Simulation simulation,
         final List<? extends Host> hostList,
-        final VmAllocationPolicy vmAllocationPolicy,
+        final VmPlacementPolicy vmPlacementPolicy,
         final DatacenterStorage storage)
     {
         super(simulation);
@@ -195,7 +195,7 @@ public non-sealed class DatacenterSimple extends CloudSimEntity implements Datac
 
         this.lastMigrationMap = Collections.emptyMap();
 
-        setVmAllocationPolicy(vmAllocationPolicy);
+        setVmPlacementPolicy(vmPlacementPolicy);
     }
 
     private void setHostList(@NonNull final List<? extends Host> hostList) {
@@ -333,7 +333,7 @@ public non-sealed class DatacenterSimple extends CloudSimEntity implements Datac
     /// @return true if the Vm was scaled, false otherwise
     private boolean requestVmVerticalScaling(final SimEvent evt) {
         if (evt.getData() instanceof VerticalVmScaling scaling) {
-            return vmAllocationPolicy.scaleVmVertically(scaling);
+            return vmPlacementPolicy.scaleVmVertically(scaling);
         }
 
         throw new InvalidEventDataTypeException(evt, "VM_VERTICAL_SCALING", "VerticalVmScaling");
@@ -521,7 +521,7 @@ public non-sealed class DatacenterSimple extends CloudSimEntity implements Datac
     private boolean processVmCreate(final SimEvent evt) {
         boolean created = false;
         if(evt.getData() instanceof Vm vm){
-            vmAllocationPolicy.allocateHostForVm(vm);
+            vmPlacementPolicy.placeVm(vm);
             created = updateVmProcessing(vm);
         }
         else if(evt.getData() instanceof List<?> list){
@@ -529,7 +529,7 @@ public non-sealed class DatacenterSimple extends CloudSimEntity implements Datac
                 return false;
 
             if((list.get(0) instanceof Vm)) { // ensures safe cast
-                final var suitabilities = vmAllocationPolicy.allocateHostForVm((List<Vm>)list);
+                final var suitabilities = vmPlacementPolicy.placeVm((List<Vm>)list);
                 //Cannot use short-circuit stream operations (such as anyMatch) since all VMs must send an ack
                 created = suitabilities
                         .stream()
@@ -564,7 +564,7 @@ public non-sealed class DatacenterSimple extends CloudSimEntity implements Datac
     /// @return true or false to indicate the event was processed or not
     protected boolean processVmDestroy(final SimEvent evt) {
         if(evt.getData() instanceof Vm vm){
-            vmAllocationPolicy.deallocateHostForVm(vm);
+            vmPlacementPolicy.removeVm(vm);
 
             vm.getBroker().requestShutdownWhenIdle();
             if(getSimulation().isAborted() || getSimulation().isAbortRequested()) {
@@ -623,10 +623,10 @@ public non-sealed class DatacenterSimple extends CloudSimEntity implements Datac
         updateHostsProcessing();
 
         //De-allocates the VM on the source Host (where it is migrating out)
-        vmAllocationPolicy.deallocateHostForVm(vm);
+        vmPlacementPolicy.removeVm(vm);
 
         targetHost.removeMigratingInVm(vm);
-        final HostSuitability suitability = vmAllocationPolicy.allocateHostForVm(vm, targetHost);
+        final HostSuitability suitability = vmPlacementPolicy.placeVm(vm, targetHost);
         if(suitability.fully()) {
             vm.updateMigrationFinishListeners(targetHost);
             /*When the VM is destroyed from the source host, it's removed from the vmExecList.
@@ -751,7 +751,7 @@ public non-sealed class DatacenterSimple extends CloudSimEntity implements Datac
                clock() >= lastProcessTime + getSimulation().getMinTimeBetweenEvents();
     }
 
-    /// Checks if the [#getVmAllocationPolicy()] has defined
+    /// Checks if the [#getVmPlacementPolicy()] has defined
     /// a new VM placement map, then sends the request to migrate VMs.
     ///
     /// **This is an expensive operation for large-scale simulations.**
@@ -760,7 +760,7 @@ public non-sealed class DatacenterSimple extends CloudSimEntity implements Datac
             return;
         }
 
-        lastMigrationMap = vmAllocationPolicy.getOptimizedAllocationMap(getVmList());
+        lastMigrationMap = vmPlacementPolicy.getOptimizedPlacementMap(getVmList());
         for (final var vmHostEntry : lastMigrationMap.entrySet()) {
             requestVmMigration(vmHostEntry.getKey(), vmHostEntry.getValue());
         }
@@ -778,7 +778,7 @@ public non-sealed class DatacenterSimple extends CloudSimEntity implements Datac
     }
 
     private boolean areThereUnderOrOverloadedHostsAndMigrationIsSupported(){
-        if(vmAllocationPolicy instanceof VmAllocationPolicyMigration migrationPolicy){
+        if(vmPlacementPolicy instanceof VmPlacementPolicyMigration migrationPolicy){
             return migrationPolicy.isUnderOrOverloaded();
         }
 
@@ -787,7 +787,7 @@ public non-sealed class DatacenterSimple extends CloudSimEntity implements Datac
 
     @Override
     public void requestVmMigration(final Vm sourceVm) {
-        final var targetHost = vmAllocationPolicy.findHostForVm(sourceVm).orElse(Host.NULL);
+        final var targetHost = vmPlacementPolicy.findHostForVm(sourceVm).orElse(Host.NULL);
         if(Host.NULL.equals(targetHost)) {
             LOGGER.warn("{}: {}: No suitable host found for {} in {}", sourceVm.getSimulation().clockStr(), this, sourceVm, this);
             return;
@@ -847,7 +847,7 @@ public non-sealed class DatacenterSimple extends CloudSimEntity implements Datac
     /// @param targetHost the Host where tto migrate the VM
     /// @return the time (in seconds) that is expected to migrate the VM
     private double timeToMigrateVm(final Vm vm, final Host targetHost) {
-        final double ramUtilizationMB   = vm.getRam().getAllocatedResource();
+        final double ramUtilizationMB   = vm.getRam().getOccupied();
         final double  vmMigrationBwMBps = getBandwidthForMigration(targetHost);
         final var sourceHost = vm.getHost();
 
@@ -898,16 +898,16 @@ public non-sealed class DatacenterSimple extends CloudSimEntity implements Datac
 
     /// Sets the policy to be used by the Datacenter to allocate [Vm]s into [Host]s.
     ///
-    /// @param vmAllocationPolicy the new vm allocation policy
+    /// @param vmPlacementPolicy the new VM placement policy
     /// @return this Datacenter
-    public final Datacenter setVmAllocationPolicy(final VmAllocationPolicy vmAllocationPolicy) {
-        requireNonNull(vmAllocationPolicy);
-        if(vmAllocationPolicy.getDatacenter() != null && vmAllocationPolicy.getDatacenter() != Datacenter.NULL && !this.equals(vmAllocationPolicy.getDatacenter())){
-            throw new IllegalStateException("The given VmAllocationPolicy is already used by another Datacenter.");
+    public final Datacenter setVmPlacementPolicy(final VmPlacementPolicy vmPlacementPolicy) {
+        requireNonNull(vmPlacementPolicy);
+        if(vmPlacementPolicy.getDatacenter() != null && vmPlacementPolicy.getDatacenter() != Datacenter.NULL && !this.equals(vmPlacementPolicy.getDatacenter())){
+            throw new IllegalStateException("The given VmPlacementPolicy is already used by another Datacenter.");
         }
 
-        vmAllocationPolicy.setDatacenter(this);
-        this.vmAllocationPolicy = vmAllocationPolicy;
+        vmPlacementPolicy.setDatacenter(this);
+        this.vmPlacementPolicy = vmPlacementPolicy;
         return this;
     }
 
@@ -993,8 +993,8 @@ public non-sealed class DatacenterSimple extends CloudSimEntity implements Datac
 
     @Override
     public <T extends Host> Datacenter addHost(final T host) {
-        if(vmAllocationPolicy == null || vmAllocationPolicy == VmAllocationPolicy.NULL){
-            throw new IllegalStateException("A VmAllocationPolicy must be set before adding a new Host to the Datacenter.");
+        if(vmPlacementPolicy == null || vmPlacementPolicy == VmPlacementPolicy.NULL){
+            throw new IllegalStateException("A VmPlacementPolicy must be set before adding a new Host to the Datacenter.");
         }
 
         setupHost(host, getLastHostId());
@@ -1044,15 +1044,15 @@ public non-sealed class DatacenterSimple extends CloudSimEntity implements Datac
 
     @Override
     public boolean isMigrationsEnabled() {
-        return migrationsEnabled && vmAllocationPolicy.isVmMigrationSupported();
+        return migrationsEnabled && vmPlacementPolicy.isVmMigrationSupported();
     }
 
     @Override
     public final Datacenter enableMigrations() {
-        if(!vmAllocationPolicy.isVmMigrationSupported()){
+        if(!vmPlacementPolicy.isVmMigrationSupported()){
             LOGGER.warn(
                 "{}: {}: It was requested to enable VM migrations but the {} doesn't support that.",
-                getSimulation().clockStr(), this, vmAllocationPolicy.getClass().getSimpleName());
+                getSimulation().clockStr(), this, vmPlacementPolicy.getClass().getSimpleName());
             return this;
         }
 

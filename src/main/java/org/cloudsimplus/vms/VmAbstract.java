@@ -76,8 +76,8 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
     protected final List<VmStateHistoryEntry> stateHistory;
     private List<EventListener<VmHostEventInfo>> onMigrationStartListeners = List.of();
     private List<EventListener<VmHostEventInfo>> onMigrationFinishListeners = List.of();
-    private List<EventListener<VmHostEventInfo>> onHostAllocationListeners = List.of();
-    private List<EventListener<VmHostEventInfo>> onHostDeallocationListeners = List.of();
+    private List<EventListener<VmHostEventInfo>> onHostPlacementListeners = List.of();
+    private List<EventListener<VmHostEventInfo>> onHostRemovalListeners = List.of();
     private List<EventListener<VmHostEventInfo>> onUpdateProcessingListeners = List.of();
     private List<EventListener<VmDatacenterEventInfo>> onCreationFailureListeners = List.of();
 
@@ -320,7 +320,7 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
 
     @Override
     public double getCpuPercentUtilization(final double time) {
-        return isStartingUp() ? bootModel.getCpuPercentUtilization() : cloudletScheduler.getAllocatedCpuPercent(time);
+        return isStartingUp() ? bootModel.getCpuPercentUtilization() : cloudletScheduler.getCpuPercentUtilization(time);
     }
 
     @Override
@@ -429,7 +429,7 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
 
     @Override
     protected void onFinish(final double time) {
-        notifyOnHostDeallocationListeners(host);
+        notifyOnHostRemovalListeners(host);
     }
 
     /// Checks if the VM has ever started some Cloudlet.
@@ -528,7 +528,7 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
     @Override
     public boolean isSuitableForCloudlet(final Cloudlet cloudlet) {
         return processor.getCores() >= cloudlet.getRequiredCores() &&
-            storage.getAvailableResource() >= cloudlet.getFileSize();
+            storage.getFree() >= cloudlet.getFileSize();
     }
 
     /// Changes the created status of the Vm inside the Host.
@@ -590,8 +590,8 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
     }
 
     @Override
-    public Vm addOnHostAllocationListener(@NonNull final EventListener<VmHostEventInfo> listener) {
-        onHostAllocationListeners = Listeners.add(onHostAllocationListeners, listener);
+    public Vm addOnHostPlacementListener(@NonNull final EventListener<VmHostEventInfo> listener) {
+        onHostPlacementListeners = Listeners.add(onHostPlacementListeners, listener);
         return this;
     }
 
@@ -608,12 +608,12 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
     }
 
     @Override
-    public Vm addOnHostDeallocationListener(@NonNull final EventListener<VmHostEventInfo> listener) {
+    public Vm addOnHostRemovalListener(@NonNull final EventListener<VmHostEventInfo> listener) {
         if (listener.equals(EventListener.NULL)) {
             return this;
         }
 
-        onHostDeallocationListeners = Listeners.add(onHostDeallocationListeners, listener);
+        onHostRemovalListeners = Listeners.add(onHostRemovalListeners, listener);
         return this;
     }
 
@@ -652,17 +652,17 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
     }
 
     @Override
-    public boolean removeOnHostAllocationListener(@NonNull final EventListener<VmHostEventInfo> listener) {
-        final var oldList = onHostAllocationListeners;
-        onHostAllocationListeners = Listeners.remove(oldList, listener);
-        return onHostAllocationListeners.size() != oldList.size();
+    public boolean removeOnHostPlacementListener(@NonNull final EventListener<VmHostEventInfo> listener) {
+        final var oldList = onHostPlacementListeners;
+        onHostPlacementListeners = Listeners.remove(oldList, listener);
+        return onHostPlacementListeners.size() != oldList.size();
     }
 
     @Override
-    public boolean removeOnHostDeallocationListener(@NonNull final EventListener<VmHostEventInfo> listener) {
-        final var oldList = onHostDeallocationListeners;
-        onHostDeallocationListeners = Listeners.remove(oldList, listener);
-        return onHostDeallocationListeners.size() != oldList.size();
+    public boolean removeOnHostRemovalListener(@NonNull final EventListener<VmHostEventInfo> listener) {
+        final var oldList = onHostRemovalListeners;
+        onHostRemovalListeners = Listeners.remove(oldList, listener);
+        return onHostRemovalListeners.size() != oldList.size();
     }
 
     @Override
@@ -697,15 +697,15 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
     }
 
     @Override
-    public void notifyOnHostAllocationListeners() {
-        for (final var listener : onHostAllocationListeners) {
+    public void notifyOnHostPlacementListeners() {
+        for (final var listener : onHostPlacementListeners) {
             listener.update(VmHostEventInfo.of(listener, this));
         }
     }
 
     @Override
-    public void notifyOnHostDeallocationListeners(@NonNull final Host deallocatedHost) {
-        for (final var listener : onHostDeallocationListeners) {
+    public void notifyOnHostRemovalListeners(@NonNull final Host deallocatedHost) {
+        for (final var listener : onHostRemovalListeners) {
             listener.update(VmHostEventInfo.of(listener, this, deallocatedHost));
         }
     }

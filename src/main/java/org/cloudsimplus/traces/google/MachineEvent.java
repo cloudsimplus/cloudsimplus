@@ -26,7 +26,7 @@ package org.cloudsimplus.traces.google;
 import lombok.Getter;
 import lombok.Setter;
 import org.cloudsimplus.hosts.Host;
-import org.cloudsimplus.provisioners.ResourceProvisioner;
+import org.cloudsimplus.allocators.ResourceAllocator;
 import org.cloudsimplus.schedulers.vm.VmScheduler;
 
 import java.util.function.Function;
@@ -41,7 +41,7 @@ import java.util.function.Function;
 ///
 /// The [GoogleMachineEventsTraceReader] cannot create Hosts itself
 /// by hard-coding some simulation-specific parameters such as the [VmScheduler]
-/// or [ResourceProvisioner]. This way, it requests a [Function] implemented
+/// or [ResourceAllocator]. This way, it requests a [Function] implemented
 /// by the developer using the [GoogleMachineEventsTraceReader] class
 /// that has the custom logic to create Hosts.
 /// However, this developer's [Function] needs to receive

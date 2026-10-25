@@ -209,75 +209,75 @@ public class VmSimpleTest {
     }
 
     @Test
-    public void testRemoveOnHostAllocationListener() {
+    public void testRemoveOnHostPlacementListener() {
         final EventListener<VmHostEventInfo> listener = (info) -> {};
-        vm.addOnHostAllocationListener(listener);
-        assertTrue(vm.removeOnHostAllocationListener(listener));
+        vm.addOnHostPlacementListener(listener);
+        assertTrue(vm.removeOnHostPlacementListener(listener));
     }
 
     @Test()
-    public void testRemoveOnHostAllocationListenerWhenNull() {
-        assertThrows(NullPointerException.class, () -> vm.removeOnHostAllocationListener(null));
+    public void testRemoveOnHostPlacementListenerWhenNull() {
+        assertThrows(NullPointerException.class, () -> vm.removeOnHostPlacementListener(null));
     }
 
     @Test()
-    public void testRemoveOnHostDeallocationListenerWhenNull() {
-        assertThrows(NullPointerException.class, () -> vm.removeOnHostDeallocationListener(null));
+    public void testRemoveOnHostRemovalListenerWhenNull() {
+        assertThrows(NullPointerException.class, () -> vm.removeOnHostRemovalListener(null));
     }
 
     @Test
-    public void testRemoveOnHostDeallocationListener() {
+    public void testRemoveOnHostRemovalListener() {
         final EventListener<VmHostEventInfo> listener = (info) -> {};
-        vm.addOnHostDeallocationListener(listener);
-        assertTrue(vm.removeOnHostDeallocationListener(listener));
+        vm.addOnHostRemovalListener(listener);
+        assertTrue(vm.removeOnHostRemovalListener(listener));
     }
 
     @Test
-    public void testRemoveOnHostAllocationListenerNotAdded() {
+    public void testRemoveOnHostPlacementListenerNotAdded() {
         final EventListener<VmHostEventInfo> listener = (info) -> {};
-        assertFalse(vm.removeOnHostAllocationListener(listener));
+        assertFalse(vm.removeOnHostPlacementListener(listener));
     }
 
     @Test
-    public void testAddSameOnHostAllocationListenerTwiceNotifiesOnce() {
+    public void testAddSameOnHostPlacementListenerTwiceNotifiesOnce() {
         final var calls = new ArrayList<String>();
         final EventListener<VmHostEventInfo> listener = info -> calls.add("listener");
-        vm.addOnHostAllocationListener(listener);
-        vm.addOnHostAllocationListener(listener);
+        vm.addOnHostPlacementListener(listener);
+        vm.addOnHostPlacementListener(listener);
 
-        vm.notifyOnHostAllocationListeners();
+        vm.notifyOnHostPlacementListeners();
         assertEquals(List.of("listener"), calls);
     }
 
     @Test
-    public void testOnHostAllocationListenerRemovingItselfDoesNotSkipNextListener() {
+    public void testOnHostPlacementListenerRemovingItselfDoesNotSkipNextListener() {
         final var calls = new ArrayList<String>();
-        vm.addOnHostAllocationListener(info -> {
+        vm.addOnHostPlacementListener(info -> {
             calls.add("first");
-            vm.removeOnHostAllocationListener(info.getListener());
+            vm.removeOnHostPlacementListener(info.getListener());
         });
-        vm.addOnHostAllocationListener(info -> calls.add("second"));
+        vm.addOnHostPlacementListener(info -> calls.add("second"));
 
-        vm.notifyOnHostAllocationListeners();
+        vm.notifyOnHostPlacementListeners();
         assertEquals(List.of("first", "second"), calls);
 
-        vm.notifyOnHostAllocationListeners();
+        vm.notifyOnHostPlacementListeners();
         assertEquals(List.of("first", "second", "second"), calls);
     }
 
     @Test
-    public void testOnHostAllocationListenerAddedDuringNotificationIsCalledOnlyInNextRound() {
+    public void testOnHostPlacementListenerAddedDuringNotificationIsCalledOnlyInNextRound() {
         final var calls = new ArrayList<String>();
         final EventListener<VmHostEventInfo> added = info -> calls.add("added");
-        vm.addOnHostAllocationListener(info -> {
+        vm.addOnHostPlacementListener(info -> {
             calls.add("first");
-            vm.addOnHostAllocationListener(added);
+            vm.addOnHostPlacementListener(added);
         });
 
-        vm.notifyOnHostAllocationListeners();
+        vm.notifyOnHostPlacementListeners();
         assertEquals(List.of("first"), calls);
 
-        vm.notifyOnHostAllocationListeners();
+        vm.notifyOnHostPlacementListeners();
         assertEquals(List.of("first", "first", "added"), calls);
     }
 

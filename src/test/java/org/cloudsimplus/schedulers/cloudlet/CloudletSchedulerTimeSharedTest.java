@@ -303,13 +303,13 @@ public class CloudletSchedulerTimeSharedTest {
         final var vm = (VmSimple) instance.getVm();
 
         instance.updateProcessing(0.5, instance.getCurrentMipsShare());
-        assertTrue(vm.getRam().getAllocatedResource() > 0);
-        assertTrue(vm.getBw().getAllocatedResource() > 0);
+        assertTrue(vm.getRam().getOccupied() > 0);
+        assertTrue(vm.getBw().getOccupied() > 0);
 
         instance.updateProcessing(1.0, instance.getCurrentMipsShare());
         assertTrue(instance.getCloudletExecList().isEmpty());
-        assertEquals(0, vm.getRam().getAllocatedResource());
-        assertEquals(0, vm.getBw().getAllocatedResource());
+        assertEquals(0, vm.getRam().getOccupied());
+        assertEquals(0, vm.getBw().getOccupied());
     }
 
     private static DatacenterBrokerSimple createBroker() {

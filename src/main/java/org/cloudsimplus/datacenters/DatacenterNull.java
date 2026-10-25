@@ -23,7 +23,7 @@
  */
 package org.cloudsimplus.datacenters;
 
-import org.cloudsimplus.allocationpolicies.VmAllocationPolicy;
+import org.cloudsimplus.placementpolicies.VmPlacementPolicy;
 import org.cloudsimplus.brokers.DatacenterBroker;
 import org.cloudsimplus.core.SimEntity;
 import org.cloudsimplus.core.SimEntityNullBase;
@@ -50,8 +50,8 @@ final class DatacenterNull implements Datacenter, SimEntityNullBase {
     @Override public List<Host> getHostList() {
         return Collections.emptyList();
     }
-    @Override public VmAllocationPolicy getVmAllocationPolicy() {
-        return VmAllocationPolicy.NULL;
+    @Override public VmPlacementPolicy getVmPlacementPolicy() {
+        return VmPlacementPolicy.NULL;
     }
     @Override public void requestVmMigration(Vm sourceVm, Host targetHost) {/**/}
     @Override public void requestVmMigration(Vm sourceVm) {/**/}
