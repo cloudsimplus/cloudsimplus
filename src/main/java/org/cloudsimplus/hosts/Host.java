@@ -14,7 +14,7 @@ import org.cloudsimplus.listeners.HostEventInfo;
 import org.cloudsimplus.listeners.HostUpdatesVmsProcessingEventInfo;
 import org.cloudsimplus.power.PowerAware;
 import org.cloudsimplus.power.models.PowerModelHost;
-import org.cloudsimplus.provisioners.ResourceProvisioner;
+import org.cloudsimplus.allocators.ResourceAllocator;
 import org.cloudsimplus.resources.Bandwidth;
 import org.cloudsimplus.resources.CoreStatus;
 import org.cloudsimplus.resources.Processor;
@@ -164,21 +164,21 @@ public sealed interface Host
     /// @return the total free storage available at the Host in Megabytes.
     long getAvailableStorage();
 
-    /// @return the bandwidth (BW) provisioner with capacity in Megabits/s.
-    ResourceProvisioner getBwProvisioner();
+    /// @return the bandwidth (BW) allocator with capacity in Megabits/s.
+    ResourceAllocator getBwAllocator();
 
-    /// Sets the bandwidth (BW) provisioner with capacity in Megabits/s.
+    /// Sets the bandwidth (BW) allocator with capacity in Megabits/s.
     ///
-    /// @param bwProvisioner the new bw provisioner
-    Host setBwProvisioner(ResourceProvisioner bwProvisioner);
+    /// @param bwAllocator the new bw allocator
+    Host setBwAllocator(ResourceAllocator bwAllocator);
 
-    /// @return the ram provisioner with capacity in Megabytes.
-    ResourceProvisioner getRamProvisioner();
+    /// @return the ram allocator with capacity in Megabytes.
+    ResourceAllocator getRamAllocator();
 
-    /// Sets the ram provisioner with capacity in Megabytes.
+    /// Sets the ram allocator with capacity in Megabytes.
     ///
-    /// @param ramProvisioner the new ram provisioner
-    Host setRamProvisioner(ResourceProvisioner ramProvisioner);
+    /// @param ramAllocator the new ram allocator
+    Host setRamAllocator(ResourceAllocator ramAllocator);
 
     /// Gets a list of VMs currently assigned to the Host.
     ///
@@ -355,11 +355,24 @@ public sealed interface Host
     /// @param simulation The CloudSimPlus instance that represents the simulation the Host is related
     Host setSimulation(Simulation simulation);
 
-    /// Gets the [ResourceProvisioner]s that manages a Host's resource
-    /// such as [Ram], [Bandwidth] and [Processor].
-    /// @param resourceClass the class of the resource to get its provisioner
-    /// @return the [ResourceProvisioner] for the given resource class
-    ResourceProvisioner getProvisioner(Class<? extends ResourceManageable> resourceClass);
+    /// Gets the [ResourceAllocator] that allocates (reserves) part of a Host resource,
+    /// such as [Ram] or [Bandwidth], for its VMs.
+    /// The Host CPU cores are allocated by the [VmScheduler].
+    /// @param resourceClass the class of the resource to get its allocator
+    /// @return the [ResourceAllocator] for the given resource class
+    ResourceAllocator getAllocator(Class<? extends ResourceManageable> resourceClass);
+
+    /// Provisions part of a Host resource, such as [Ram] or [Bandwidth], to a VM placed on this Host.
+    /// It asks the [allocator][#getAllocator(Class)] to allocate (reserve) the given amount
+    /// and, only if that succeeds, delivers it to the VM, making it the VM capacity for the resource.
+    /// The given amount replaces any amount previously provisioned to the VM (it isn't added to it).
+    ///
+    /// @param vm the VM to provision the resource to
+    /// @param resourceClass the class of the resource to provision
+    /// @param amount the new total amount of the resource for the VM
+    /// @return true if the resource was allocated and provisioned to the VM, false otherwise
+    /// @see ResourceAllocator
+    boolean provisionResourceForVm(Vm vm, Class<? extends ResourceManageable> resourceClass, long amount);
 
     /// @return the current percentage (between \[0 and 1\]) of CPU capacity (MIPS) used by all running VMs.
     /// It represents the actual percentage of MIPS allocated.
@@ -391,10 +404,12 @@ public sealed interface Host
     /// considering the usage of all its cores.
     double getCpuMipsUtilization();
 
-    /// @return the current utilization of bw (in Megabits/s).
+    /// @return the current utilization of bw (in Megabits/s), which is the bw actually used by all VMs.
+    /// It's always lower than or equal to the bw allocated for the VMs (`getBwAllocator().getTotalAllocatedResource()`).
     long getBwUtilization();
 
-    /// @return the current utilization of memory (in Megabytes).
+    /// @return the current utilization of memory (in Megabytes), which is the memory actually used by all VMs.
+    /// It's always lower than or equal to the memory allocated for the VMs (`getRamAllocator().getTotalAllocatedResource()`).
     long getRamUtilization();
 
     /// @return the [PowerModelHost] used by the host to define how it consumes power.

@@ -35,10 +35,10 @@ public class ResourceTest {
         final ResourceManageable instance = ResourceManageable.NULL;
         assertAll(
             () -> assertFalse(instance.setCapacity(0)),
-            () -> assertFalse(instance.allocateResource(0)),
-            () -> assertFalse(instance.setAllocatedResource(0)),
-            () -> assertFalse(instance.deallocateResource(0)),
-            () -> assertEquals(0, instance.deallocateAllResources()),
+            () -> assertFalse(instance.occupy(0)),
+            () -> assertFalse(instance.setOccupied(0)),
+            () -> assertFalse(instance.free(0)),
+            () -> assertEquals(0, instance.freeAll()),
             () -> assertFalse(instance.isResourceAmountBeingUsed(0)),
             () -> assertFalse(instance.isSuitable(0))
         );

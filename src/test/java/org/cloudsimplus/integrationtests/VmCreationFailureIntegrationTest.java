@@ -74,8 +74,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 /// ***NOTE**:See the profile section in the pom.xml for details on how to
 /// run all tests, including Functional/Integration Tests.*
 ///
-/// @see Vm#addOnHostAllocationListener(EventListener)
-/// @see Vm#addOnHostDeallocationListener(EventListener)
+/// @see Vm#addOnHostPlacementListener(EventListener)
+/// @see Vm#addOnHostRemovalListener(EventListener)
 /// @see Vm#addOnCreationFailureListener(EventListener)
 /// @see CloudSimPlus#addOnEventProcessingListener(EventListener)
 /// @see Cloudlet#addOnFinishListener(EventListener)
@@ -190,8 +190,8 @@ public final class VmCreationFailureIntegrationTest {
                 .setMips(1000)
                 .setVmCreationFunction(this::createVm)
                 .setCloudletSchedulerSupplier(CloudletSchedulerSpaceShared::new)
-                .setOnHostAllocationListener(this::onHostAllocation)
-                .setOnHostDeallocationListener(this::onHostDeallocation)
+                .setOnHostPlacementListener(this::onHostAllocation)
+                .setOnHostRemovalListener(this::onHostDeallocation)
                 .setOnVmCreationFailureListener(this::onVmCreationFailure)
                 .setOnUpdateVmProcessingListener(this::onUpdateVmProcessing)
                 /*Try to create 2 VMs where there is capacity to only one,

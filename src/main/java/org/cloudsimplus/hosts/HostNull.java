@@ -32,7 +32,7 @@ import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.listeners.HostEventInfo;
 import org.cloudsimplus.listeners.HostUpdatesVmsProcessingEventInfo;
 import org.cloudsimplus.power.models.PowerModelHost;
-import org.cloudsimplus.provisioners.ResourceProvisioner;
+import org.cloudsimplus.allocators.ResourceAllocator;
 import org.cloudsimplus.resources.FileStorage;
 import org.cloudsimplus.resources.Processor;
 import org.cloudsimplus.resources.Resource;
@@ -66,10 +66,10 @@ final class HostNull implements Host {
     @Override public Resource getBw() {
         return Resource.NULL;
     }
-    @Override public ResourceProvisioner getBwProvisioner() {
-        return ResourceProvisioner.NULL;
+    @Override public ResourceAllocator getBwAllocator() {
+        return ResourceAllocator.NULL;
     }
-    @Override public Host setBwProvisioner(ResourceProvisioner bwProvisioner) {
+    @Override public Host setBwAllocator(ResourceAllocator bwAllocator) {
         return NULL;
     }
     @Override public Datacenter getDatacenter() {
@@ -82,8 +82,8 @@ final class HostNull implements Host {
     @Override public Resource getRam() {
         return Resource.NULL;
     }
-    @Override public ResourceProvisioner getRamProvisioner() { return ResourceProvisioner.NULL; }
-    @Override public Host setRamProvisioner(ResourceProvisioner ramProvisioner) {
+    @Override public ResourceAllocator getRamAllocator() { return ResourceAllocator.NULL; }
+    @Override public Host setRamAllocator(ResourceAllocator ramAllocator) {
         return NULL;
     }
     @Override public FileStorage getStorage() {
@@ -146,7 +146,7 @@ final class HostNull implements Host {
     @Override public double getShutDownDelay() { return 0; }
     @Override public ExecDelayable setShutDownDelay(double delay) { return this; }
     @Override public Host setSimulation(Simulation simulation) { return this; }
-    @Override public ResourceProvisioner getProvisioner(Class<? extends ResourceManageable> clazz) { return ResourceProvisioner.NULL; }
+    @Override public ResourceAllocator getAllocator(Class<? extends ResourceManageable> clazz) { return ResourceAllocator.NULL; }
     @Override public String toString() {
         return "Host.NULL";
     }
@@ -156,6 +156,7 @@ final class HostNull implements Host {
     @Override public double getCpuPercentRequested() { return 0; }
     @Override public double getCpuMipsUtilization() { return 0.0; }
     @Override public long getBwUtilization() { return 0; }
+    @Override public boolean provisionResourceForVm(Vm vm, Class<? extends ResourceManageable> resourceClass, long amount) { return false; }
     @Override public long getRamUtilization() { return 0; }
     @Override public HostResourceStats getCpuUtilizationStats() { return new HostResourceStats(this, host -> 0.0); }
     @Override public void enableUtilizationStats() {/**/}

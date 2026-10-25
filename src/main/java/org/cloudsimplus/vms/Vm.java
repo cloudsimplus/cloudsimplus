@@ -122,7 +122,7 @@ public sealed interface Vm
     /// @param listener the listener to add
     /// @return
     /// @see #addOnMigrationStartListener(EventListener)
-    Vm addOnHostAllocationListener(EventListener<VmHostEventInfo> listener);
+    Vm addOnHostPlacementListener(EventListener<VmHostEventInfo> listener);
 
     /// Adds a listener object that will be notified when a VM starts migrating to a target [Host].
     /// When the listener is notified, it receives a [VmHostEventInfo] object
@@ -130,7 +130,7 @@ public sealed interface Vm
     ///
     /// @param listener the listener to add
     /// @return
-    /// @see #addOnHostAllocationListener(EventListener)
+    /// @see #addOnHostPlacementListener(EventListener)
     Vm addOnMigrationStartListener(EventListener<VmHostEventInfo> listener);
 
     /// Adds a listener object that will be notified when a VM finishes migrating to a target [Host].
@@ -145,7 +145,7 @@ public sealed interface Vm
     ///
     /// @param listener the listener to add
     /// @return
-    Vm addOnHostDeallocationListener(EventListener<VmHostEventInfo> listener);
+    Vm addOnHostRemovalListener(EventListener<VmHostEventInfo> listener);
 
     /// Adds a listener object that will be notified when the Vm fail in
     /// being placed, due to lack of a [Host] with enough resources in a specific [Datacenter].
@@ -169,14 +169,14 @@ public sealed interface Vm
     /// Notifies all registered listeners when a [Host] is allocated to the [Vm].
     ///
     /// **This method is used just internally and must not be called directly.**
-    void notifyOnHostAllocationListeners();
+    void notifyOnHostPlacementListeners();
 
     /// Notifies all registered listeners when the [Vm] is moved/removed from a [Host].
     ///
     /// **This method is used just internally and must not be called directly.**
     ///
     /// @param deallocatedHost the [Host] the [Vm] was moved/removed from
-    void notifyOnHostDeallocationListeners(Host deallocatedHost);
+    void notifyOnHostRemovalListeners(Host deallocatedHost);
 
     /// Notifies all registered listeners when the Vm fail in
     /// being placed for lack of a [Host] with enough resources in a specific [Datacenter].
@@ -204,17 +204,17 @@ public sealed interface Vm
     /// @return true if the listener was found and removed, false otherwise
     boolean removeOnUpdateProcessingListener(EventListener<VmHostEventInfo> listener);
 
-    /// Removes a listener from the onHostAllocationListener List.
+    /// Removes a listener from the onHostPlacementListener List.
     ///
     /// @param listener the listener to remove
     /// @return true if the listener was found and removed, false otherwise
-    boolean removeOnHostAllocationListener(EventListener<VmHostEventInfo> listener);
+    boolean removeOnHostPlacementListener(EventListener<VmHostEventInfo> listener);
 
-    /// Removes a listener from the onHostDeallocationListener List.
+    /// Removes a listener from the onHostRemovalListener List.
     ///
     /// @param listener the listener to remove
     /// @return true if the listener was found and removed, false otherwise
-    boolean removeOnHostDeallocationListener(EventListener<VmHostEventInfo> listener);
+    boolean removeOnHostRemovalListener(EventListener<VmHostEventInfo> listener);
 
     /// Removes a listener from the onVmCreationFailureListener List.
     ///

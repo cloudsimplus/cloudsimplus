@@ -20,8 +20,8 @@ module cloudsimplus {
     requires static lombok;
     requires static transitive org.jspecify;
 
-    exports org.cloudsimplus.allocationpolicies;
-    exports org.cloudsimplus.allocationpolicies.migration;
+    exports org.cloudsimplus.placementpolicies;
+    exports org.cloudsimplus.placementpolicies.migration;
     exports org.cloudsimplus.autoscaling;
     exports org.cloudsimplus.autoscaling.resources;
     exports org.cloudsimplus.brokers;
@@ -45,7 +45,7 @@ module cloudsimplus {
     exports org.cloudsimplus.network.topologies.readers;
     exports org.cloudsimplus.power;
     exports org.cloudsimplus.power.models;
-    exports org.cloudsimplus.provisioners;
+    exports org.cloudsimplus.allocators;
     exports org.cloudsimplus.resources;
     exports org.cloudsimplus.schedulers.cloudlet;
     exports org.cloudsimplus.schedulers.cloudlet.network;

@@ -9,7 +9,7 @@ package org.cloudsimplus.schedulers.vm;
 
 import org.cloudsimplus.hosts.Host;
 import org.cloudsimplus.hosts.HostSimple;
-import org.cloudsimplus.provisioners.ResourceProvisionerSimple;
+import org.cloudsimplus.allocators.ResourceAllocatorSimple;
 import org.cloudsimplus.resources.CoreCapacity;
 import org.cloudsimplus.vms.Vm;
 import org.cloudsimplus.vms.VmSimple;
@@ -33,8 +33,8 @@ public class VmSchedulerTimeSharedTest {
         final var scheduler = new VmSchedulerTimeShared();
         final Host host = new HostSimple(2048, 20000, 20000, new CoreCapacity(cores, mips));
         host
-            .setRamProvisioner(new ResourceProvisionerSimple())
-            .setBwProvisioner(new ResourceProvisionerSimple())
+            .setRamAllocator(new ResourceAllocatorSimple())
+            .setBwAllocator(new ResourceAllocatorSimple())
             .setVmScheduler(scheduler)
             .setId(0);
         return scheduler;
@@ -90,7 +90,7 @@ public class VmSchedulerTimeSharedTest {
     public void testResizeVmCoresWhenAllVmCoresAreBusy() {
         vmScheduler.getHost().getVmList().add(vm1);
         assertTrue(vmScheduler.allocateCoresForVm(vm1, vm1.getCurrentRequestedMips()));
-        vm1.getProcessor().setAllocatedResource(VM_CORES_NUMBER);
+        vm1.getProcessor().setOccupied(VM_CORES_NUMBER);
 
         assertTrue(vmScheduler.resizeVmCores(vm1, -1));
         assertAll(

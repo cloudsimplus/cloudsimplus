@@ -37,8 +37,8 @@ import org.cloudsimplus.listeners.HostUpdatesVmsProcessingEventInfo;
 import org.cloudsimplus.listeners.Listeners;
 import org.cloudsimplus.power.PowerAware;
 import org.cloudsimplus.power.models.PowerModelHost;
-import org.cloudsimplus.provisioners.ResourceProvisioner;
-import org.cloudsimplus.provisioners.ResourceProvisionerSimple;
+import org.cloudsimplus.allocators.ResourceAllocator;
+import org.cloudsimplus.allocators.ResourceAllocatorSimple;
 import org.cloudsimplus.resources.*;
 import org.cloudsimplus.schedulers.vm.VmScheduler;
 import org.cloudsimplus.schedulers.vm.VmSchedulerSpaceShared;
@@ -121,7 +121,7 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
     /// @see #getResources()
     protected List<ResourceManageable> resources;
 
-    protected List<ResourceProvisioner> provisioners;
+    protected List<ResourceAllocator> allocators;
 
     /// {@inheritDoc}
     ///
@@ -154,10 +154,10 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
     private double totalUpTime;
 
     @Getter @NonNull
-    private ResourceProvisioner ramProvisioner;
+    private ResourceAllocator ramAllocator;
 
     @Getter @NonNull
-    private ResourceProvisioner bwProvisioner;
+    private ResourceAllocator bwAllocator;
 
     @Getter @NonNull
     private VmScheduler vmScheduler;
@@ -170,14 +170,14 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
     private boolean stateHistoryEnabled;
 
     public HostAbstract(
-        final ResourceProvisioner ramProvisioner,
-        final ResourceProvisioner bwProvisioner,
+        final ResourceAllocator ramAllocator,
+        final ResourceAllocator bwAllocator,
         final long storage,
         final CoreCapacity capacity)
     {
-        this(ramProvisioner.getCapacity(), bwProvisioner.getCapacity(), new HarddriveStorage(storage), capacity, true);
-        setRamProvisioner(ramProvisioner);
-        setBwProvisioner(bwProvisioner);
+        this(ramAllocator.getCapacity(), bwAllocator.getCapacity(), new HarddriveStorage(storage), capacity, true);
+        setRamAllocator(ramAllocator);
+        setBwAllocator(bwAllocator);
     }
 
     public HostAbstract(final long ram, final long bw, final long storage, final CoreCapacity capacity) {
@@ -214,7 +214,7 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
         this.vmsMigratingIn = new HashSet<>();
         this.vmsMigratingOut = new HashSet<>();
         this.resources = new ArrayList<>();
-        this.provisioners = new ArrayList<>();
+        this.allocators = new ArrayList<>();
         this.vmCreatedList = new ArrayList<>();
         this.lazySuitabilityEvaluation = true;
         this.setSimulation(Simulation.NULL);
@@ -222,8 +222,8 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
         this.processor = new ProcessorSimple(this, capacity);
 
         this.setDatacenter(Datacenter.NULL);
-        this.setRamProvisioner(new ResourceProvisionerSimple());
-        this.setBwProvisioner(new ResourceProvisionerSimple());
+        this.setRamAllocator(new ResourceAllocatorSimple());
+        this.setBwAllocator(new ResourceAllocatorSimple());
         this.setVmScheduler(new VmSchedulerSpaceShared());
 
         this.idleShutdownDeadline = DEF_IDLE_SHUTDOWN_DEADLINE;
@@ -348,9 +348,9 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
     }
 
     private void allocateResourcesForVm(final Vm vm) {
-        ramProvisioner.allocateResourceForVm(vm, vm.getCurrentRequestedRam());
-        bwProvisioner.allocateResourceForVm(vm, vm.getCurrentRequestedBw());
-        disk.getStorage().allocateResource(vm.getStorage());
+        provisionResourceForVm(vm, Ram.class, vm.getCurrentRequestedRam());
+        provisionResourceForVm(vm, Bandwidth.class, vm.getCurrentRequestedBw());
+        disk.getStorage().occupy(vm.getStorage());
         vmScheduler.allocateCoresForVm(vm, vm.getCurrentRequestedMips());
     }
 
@@ -363,8 +363,8 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
         }
 
         final var migration = inMigration ? "VM Migration" : "VM Creation";
-        final var msg = pmResource.getAvailableResource() > 0 ?
-            "just " + pmResource.getAvailableResource() + " " + resourceUnit :
+        final var msg = pmResource.getFree() > 0 ?
+            "just " + pmResource.getFree() + " " + resourceUnit :
             "no amount";
         LOGGER.error(
             "{}: {}: [{}] Allocation of {} to {} failed due to lack of {}. Required {} but there is {} available.",
@@ -412,14 +412,14 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
                 return suitability;
         }
 
-        suitability.setForRam(ramProvisioner.isSuitableForVm(vm, vm.getRam()));
+        suitability.setForRam(ramAllocator.isSuitableForVm(vm, vm.getRam()));
         if (!suitability.forRam()) {
             logAllocationError(showFailureLog, vm, inMigration, "MB", this.getRam(), vm.getRam());
             if (lazySuitabilityEvaluation)
                 return suitability;
         }
 
-        suitability.setForBw(bwProvisioner.isSuitableForVm(vm, vm.getBw()));
+        suitability.setForBw(bwAllocator.isSuitableForVm(vm, vm.getBw()));
         if (!suitability.forBw()) {
             logAllocationError(showFailureLog, vm, inMigration, "Mbps", this.getBw(), vm.getBw());
             if (lazySuitabilityEvaluation)
@@ -583,10 +583,10 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
     ///
     /// @param vm the VM to deallocate resources from
     protected void deallocateResourcesOfVm(final Vm vm) {
-        ramProvisioner.deallocateResourceForVm(vm);
-        bwProvisioner.deallocateResourceForVm(vm);
+        ramAllocator.deallocateResourceForVm(vm);
+        bwAllocator.deallocateResourceForVm(vm);
         vmScheduler.deallocateCoresFromVm(vm);
-        disk.getStorage().deallocateResource(vm.getStorage());
+        disk.getStorage().free(vm.getStorage());
         ((VmAbstract)vm).setCreated(false);
     }
 
@@ -666,12 +666,12 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
 
     @Override
     public Resource getBw() {
-        return bwProvisioner.getPmResource();
+        return bwAllocator.getPmResource();
     }
 
     @Override
     public Resource getRam() {
-        return ramProvisioner.getPmResource();
+        return ramAllocator.getPmResource();
     }
 
     @Override
@@ -680,18 +680,18 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
     }
 
     @Override
-    public final Host setRamProvisioner(final ResourceProvisioner ramProvisioner) {
+    public final Host setRamAllocator(final ResourceAllocator ramAllocator) {
         checkSimulationIsRunningAndAttemptedToChangeHost("RAM");
-        this.ramProvisioner = ramProvisioner;
-        this.ramProvisioner.setResources(ram, vm -> ((VmSimple) vm).getRam());
+        this.ramAllocator = ramAllocator;
+        this.ramAllocator.setResources(ram, vm -> ((VmSimple) vm).getRam());
         return this;
     }
 
     @Override
-    public final Host setBwProvisioner(final ResourceProvisioner bwProvisioner) {
+    public final Host setBwAllocator(final ResourceAllocator bwAllocator) {
         checkSimulationIsRunningAndAttemptedToChangeHost("BW");
-        this.bwProvisioner = bwProvisioner;
-        this.bwProvisioner.setResources(bw, vm -> ((VmSimple) vm).getBw());
+        this.bwAllocator = bwAllocator;
+        this.bwAllocator.setResources(bw, vm -> ((VmSimple) vm).getBw());
         return this;
     }
 
@@ -846,7 +846,7 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
 
     @Override
     public long getAvailableStorage() {
-        return disk.getAvailableResource();
+        return disk.getFree();
     }
 
     @Override
@@ -859,16 +859,18 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
     }
 
     @Override
-    public ResourceProvisioner getProvisioner(final Class<? extends ResourceManageable> resourceClass) {
-        if (simulation.isRunning() && provisioners.isEmpty()) {
-            provisioners = Arrays.asList(ramProvisioner, bwProvisioner);
+    public ResourceAllocator getAllocator(final Class<? extends ResourceManageable> resourceClass) {
+        final List<ResourceAllocator> currentAllocators = allocators.isEmpty() ? List.of(ramAllocator, bwAllocator) : allocators;
+        // Only caches the list while the simulation is running, since allocators can still be changed before it starts
+        if (simulation.isRunning()) {
+            allocators = currentAllocators;
         }
 
-        return provisioners
+        return currentAllocators
             .stream()
-            .filter(provisioner -> provisioner.getPmResource().isSubClassOf(resourceClass))
+            .filter(allocator -> allocator.getPmResource().isSubClassOf(resourceClass))
             .findFirst()
-            .orElse(ResourceProvisioner.NULL);
+            .orElse(ResourceAllocator.NULL);
     }
 
     @Override
@@ -901,13 +903,38 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
     }
 
     @Override
+    public boolean provisionResourceForVm(final Vm vm, final Class<? extends ResourceManageable> resourceClass, final long amount) {
+        if (amount < 0 || !getAllocator(resourceClass).allocateResourceForVm(vm, amount)) {
+            return false;
+        }
+
+        setVmResourceCapacity(vm.getResource(resourceClass), amount);
+        return true;
+    }
+
+    /// Sets the capacity of a VM resource, keeping its current utilization,
+    /// which is the amount used by the VM's Cloudlets (not the amount allocated to the VM).
+    /// If such utilization is higher than the new capacity (e.g., when the VM is downscaled),
+    /// it is cleared, since the Cloudlet scheduler recomputes it at the next update.
+    ///
+    /// @param vmResource the VM resource to set the capacity
+    /// @param newCapacity the new capacity for the VM resource
+    private static void setVmResourceCapacity(final ResourceManageable vmResource, final long newCapacity) {
+        if (vmResource.getOccupied() > newCapacity) {
+            vmResource.freeAll();
+        }
+
+        vmResource.setCapacity(newCapacity);
+    }
+
+    @Override
     public long getRamUtilization() {
-        return ramProvisioner.getTotalAllocatedResource();
+        return vmList.stream().mapToLong(vm -> vm.getRam().getOccupied()).sum();
     }
 
     @Override
     public long getBwUtilization() {
-        return bwProvisioner.getTotalAllocatedResource();
+        return vmList.stream().mapToLong(vm -> vm.getBw().getOccupied()).sum();
     }
 
     @Override

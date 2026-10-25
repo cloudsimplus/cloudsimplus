@@ -32,15 +32,15 @@ import org.cloudsimplus.vms.Vm;
 /// Instead of keeping one object per core, it keeps just the number of cores in each [CoreStatus].
 ///
 /// The [capacity][#getCapacity()] is the total number of cores (in any status),
-/// the [available resource][#getAvailableResource()] is the number of [free][CoreStatus#FREE] cores
-/// and the [allocated resource][#getAllocatedResource()] is the number of [busy][CoreStatus#BUSY] cores.
+/// the [available resource][#getFree()] is the number of [free][CoreStatus#FREE] cores
+/// and the [allocated resource][#getOccupied()] is the number of [busy][CoreStatus#BUSY] cores.
 /// The capacity and the number of cores in each status are always whole cores, never a fraction of a core.
 /// The processor always keeps `capacity == free + busy + failed`
 /// (so `capacity == available + allocated` only if there are no failed cores).
 /// When all cores are failed, there is no free core, so [#isFull()] returns true.
 ///
 /// All changes in the number of cores in each status go through [#moveCores(CoreStatus, CoreStatus, long)]:
-/// the [ResourceManageable] allocation methods (such as [#allocateResource(long)])
+/// the [ResourceManageable] allocation methods (such as [#occupy(long)])
 /// just move cores between the free and busy statuses.
 ///
 /// The [MIPS][#getMips()] is the speed of each core.

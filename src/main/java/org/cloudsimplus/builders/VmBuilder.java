@@ -64,8 +64,8 @@ public class VmBuilder implements Builder {
     private int numberOfCreatedVms;
     private final DatacenterBrokerSimple broker;
     @Setter @Nullable private Supplier<CloudletScheduler> cloudletSchedulerSupplier;
-    @Setter @NonNull private EventListener<VmHostEventInfo> onHostAllocationListener = EventListener.NULL;
-    @Setter @NonNull private EventListener<VmHostEventInfo> onHostDeallocationListener = EventListener.NULL;
+    @Setter @NonNull private EventListener<VmHostEventInfo> onHostPlacementListener = EventListener.NULL;
+    @Setter @NonNull private EventListener<VmHostEventInfo> onHostRemovalListener = EventListener.NULL;
     @Setter @NonNull private EventListener<VmDatacenterEventInfo> onVmCreationFailureListener = EventListener.NULL;
     @Setter @NonNull private EventListener<VmHostEventInfo> onUpdateVmProcessingListener = EventListener.NULL;
 
@@ -91,8 +91,8 @@ public class VmBuilder implements Builder {
                 vm.setCloudletScheduler(cloudletSchedulerSupplier.get());
             }
 
-            vm.addOnHostAllocationListener(onHostAllocationListener)
-              .addOnHostDeallocationListener(onHostDeallocationListener)
+            vm.addOnHostPlacementListener(onHostPlacementListener)
+              .addOnHostRemovalListener(onHostRemovalListener)
               .addOnCreationFailureListener(onVmCreationFailureListener)
               .addOnUpdateProcessingListener(onUpdateVmProcessingListener)
               .setBroker(broker);

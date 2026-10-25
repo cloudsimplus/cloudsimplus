@@ -23,7 +23,7 @@
  */
 package org.cloudsimplus.network.switches;
 
-import org.cloudsimplus.allocationpolicies.VmAllocationPolicy;
+import org.cloudsimplus.placementpolicies.VmPlacementPolicy;
 import org.cloudsimplus.core.SimEntity;
 import org.cloudsimplus.core.SimEntityNullBase;
 import org.cloudsimplus.core.Simulation;
@@ -39,7 +39,7 @@ import static java.util.Collections.emptyList;
 /// @author Manoel Campos da Silva Filho
 /// @see Switch#NULL
 final class SwitchNull implements Switch, SimEntityNullBase {
-    private static final NetworkDatacenter DATACENTER = new NetworkDatacenter(Simulation.NULL, emptyList(), VmAllocationPolicy.NULL);
+    private static final NetworkDatacenter DATACENTER = new NetworkDatacenter(Simulation.NULL, emptyList(), VmPlacementPolicy.NULL);
 
     @Override public double downlinkTransferDelay(HostPacket packet, int simultaneousPackets) { return 0; }
     @Override public double uplinkTransferDelay(HostPacket packet, int simultaneousPackets) { return 0; }

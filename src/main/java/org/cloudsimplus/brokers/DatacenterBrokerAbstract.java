@@ -12,7 +12,7 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import org.cloudsimplus.allocationpolicies.VmAllocationPolicy;
+import org.cloudsimplus.placementpolicies.VmPlacementPolicy;
 import org.cloudsimplus.autoscaling.VerticalVmScaling;
 import org.cloudsimplus.cloudlets.Cloudlet;
 import org.cloudsimplus.cloudlets.CloudletSimple;
@@ -626,7 +626,7 @@ public non-sealed abstract class DatacenterBrokerAbstract extends CloudSimEntity
             if (vm.isCreated()) {
                 createdVms++;
                 processSuccessVmCreationInDatacenter(vm);
-                vm.notifyOnHostAllocationListeners();
+                vm.notifyOnHostPlacementListeners();
             } else {
                 vm.setFailed(true);
                 if (!vmCreation.isRetryFailedVms()) {
@@ -766,7 +766,7 @@ public non-sealed abstract class DatacenterBrokerAbstract extends CloudSimEntity
     /// That doesn't count as a VM creation retry.
     ///
     /// If no Host is powered on and none is being powered on,
-    /// VM creation is not postponed, since the [VmAllocationPolicy] may power Hosts on as needed.
+    /// VM creation is not postponed, since the [VmPlacementPolicy] may power Hosts on as needed.
     ///
     /// @return true if VM creation was postponed, false otherwise
     /// @see Datacenter#addBrokerWaitingHostPowerOn(DatacenterBroker)
@@ -782,7 +782,7 @@ public non-sealed abstract class DatacenterBrokerAbstract extends CloudSimEntity
         final var dcsPoweringOnHosts = datacenterList.stream().filter(dc -> dc.getPoweringOnHostsNumber() > 0).toList();
         /* If no Host is being powered on, VM creation is requested as usual.
          * That includes Datacenters without Hosts:
-         * the VmAllocationPolicy logs an error and the VM creation fails,
+         * the VmPlacementPolicy logs an error and the VM creation fails,
          * following the regular fallback/retry flow. */
         if (dcsPoweringOnHosts.isEmpty()) {
             return false;

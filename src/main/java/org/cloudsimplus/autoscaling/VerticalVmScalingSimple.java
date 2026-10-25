@@ -58,11 +58,11 @@ public class VerticalVmScalingSimple extends VerticalVmScalingAbstract {
 
     @Override
     public boolean isVmUnderloaded() {
-        return getResource().getPercentUtilization() < getLowerThresholdFunction().apply(getVm());
+        return getResource().getPercentOccupied() < getLowerThresholdFunction().apply(getVm());
     }
 
     @Override
     public boolean isVmOverloaded() {
-        return getResource().getPercentUtilization() > getUpperThresholdFunction().apply(getVm());
+        return getResource().getPercentOccupied() > getUpperThresholdFunction().apply(getVm());
     }
 }

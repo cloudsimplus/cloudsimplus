@@ -35,17 +35,17 @@ final class ResourceManageableNull implements ResourceManageable {
     @Override public boolean sumCapacity(long amountToSum) { return false; }
     @Override public boolean addCapacity(long capacityToAdd) { return false; }
     @Override public boolean removeCapacity(long capacityToRemove) { return false; }
-    @Override public boolean allocateResource(long amountToAllocate) {
+    @Override public boolean occupy(long amountToAllocate) {
         return false;
     }
-    @Override public boolean setAllocatedResource(long newTotalAllocatedResource) {
+    @Override public boolean setOccupied(long newTotalAllocatedResource) {
         return false;
     }
-    @Override public boolean deallocateResource(long amountToDeallocate) {
+    @Override public boolean free(long amountToDeallocate) {
         return false;
     }
-    @Override public boolean deallocateAndRemoveResource(long amountToDeallocate) { return false; }
-    @Override public long deallocateAllResources() {
+    @Override public boolean freeAndRemove(long amountToDeallocate) { return false; }
+    @Override public long freeAll() {
         return 0L;
     }
     @Override public boolean isResourceAmountBeingUsed(long amountToCheck) {
@@ -57,10 +57,10 @@ final class ResourceManageableNull implements ResourceManageable {
     @Override public long getCapacity() {
         return 0L;
     }
-    @Override public long getAvailableResource() {
+    @Override public long getFree() {
         return 0L;
     }
-    @Override public long getAllocatedResource() {
+    @Override public long getOccupied() {
         return 0L;
     }
     @Override public boolean isAmountAvailable(long amountToCheck) {

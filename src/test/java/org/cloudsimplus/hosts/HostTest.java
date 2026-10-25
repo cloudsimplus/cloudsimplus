@@ -24,7 +24,7 @@
 package org.cloudsimplus.hosts;
 
 import org.cloudsimplus.datacenters.Datacenter;
-import org.cloudsimplus.provisioners.ResourceProvisioner;
+import org.cloudsimplus.allocators.ResourceAllocator;
 import org.cloudsimplus.schedulers.vm.VmScheduler;
 import org.cloudsimplus.vms.Vm;
 import org.junit.jupiter.api.Test;
@@ -43,11 +43,11 @@ public class HostTest {
             () -> assertEquals(0, instance.getVmScheduler().getTotalAvailableMips()),
             () -> assertEquals(0, instance.getAvailableStorage()),
             () -> assertEquals(0, instance.getBw().getCapacity()),
-            () -> assertEquals(ResourceProvisioner.NULL, instance.getBwProvisioner()),
+            () -> assertEquals(ResourceAllocator.NULL, instance.getBwAllocator()),
             () -> assertEquals(0, instance.getProcessor().getFreeCores()),
             () -> assertEquals(0, instance.getProcessor().getCores()),
             () -> assertEquals(0, instance.getRam().getCapacity()),
-            () -> assertEquals(ResourceProvisioner.NULL, instance.getRamProvisioner()),
+            () -> assertEquals(ResourceAllocator.NULL, instance.getRamAllocator()),
             () -> assertEquals(0, instance.getStorage().getCapacity()),
             () -> assertEquals(0, instance.getVmScheduler().getTotalAllocatedMipsForVm(vm)),
             () -> assertEquals(0, instance.getTotalMipsCapacity()),

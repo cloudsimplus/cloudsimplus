@@ -25,7 +25,7 @@ package org.cloudsimplus.schedulers.cloudlet;
 
 import org.cloudsimplus.cloudlets.Cloudlet;
 import org.cloudsimplus.cloudlets.CloudletExecution;
-import org.cloudsimplus.listeners.CloudletResourceAllocationFailEventInfo;
+import org.cloudsimplus.listeners.CloudletResourceShortageEventInfo;
 import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.resources.CoreCapacity;
 import org.cloudsimplus.schedulers.cloudlet.network.CloudletTaskScheduler;
@@ -71,7 +71,7 @@ final class CloudletSchedulerNull implements CloudletScheduler {
         return 0.0;
     }
     @Override public double getRequestedCpuPercent(double time) { return 0.0; }
-    @Override public double getAllocatedCpuPercent(double time) { return 0; }
+    @Override public double getCpuPercentUtilization(double time) { return 0; }
     @Override public boolean hasFinishedCloudlets() {
         return false;
     }
@@ -93,6 +93,6 @@ final class CloudletSchedulerNull implements CloudletScheduler {
     @Override public List<CloudletExecution> getCloudletWaitingList() { return Collections.emptyList(); }
     @Override public List<Cloudlet> getCloudletList() { return Collections.emptyList(); }
     @Override public void clear() {/**/}
-    @Override public CloudletScheduler addOnCloudletResourceAllocationFail(EventListener<CloudletResourceAllocationFailEventInfo> listener) { return this; }
-    @Override public boolean removeOnCloudletResourceAllocationFail(EventListener<CloudletResourceAllocationFailEventInfo> listener) { return false; }
+    @Override public CloudletScheduler addOnCloudletResourceShortage(EventListener<CloudletResourceShortageEventInfo> listener) { return this; }
+    @Override public boolean removeOnCloudletResourceShortage(EventListener<CloudletResourceShortageEventInfo> listener) { return false; }
 }

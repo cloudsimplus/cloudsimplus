@@ -14,7 +14,7 @@ import org.cloudsimplus.cloudlets.Cloudlet;
 import org.cloudsimplus.cloudlets.CloudletExecution;
 import org.cloudsimplus.core.CloudSimTag;
 import org.cloudsimplus.datacenters.Datacenter;
-import org.cloudsimplus.listeners.CloudletResourceAllocationFailEventInfo;
+import org.cloudsimplus.listeners.CloudletResourceShortageEventInfo;
 import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.resources.Bandwidth;
 import org.cloudsimplus.resources.Ram;
@@ -37,7 +37,7 @@ import java.util.stream.Stream;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.collectingAndThen;
 import static java.util.stream.Collectors.toList;
-import static org.cloudsimplus.listeners.CloudletResourceAllocationFailEventInfo.of;
+import static org.cloudsimplus.listeners.CloudletResourceShortageEventInfo.of;
 import static org.cloudsimplus.resources.Processor.cores;
 import static org.cloudsimplus.resources.Processor.mips;
 
@@ -92,9 +92,9 @@ public abstract non-sealed class CloudletSchedulerAbstract implements CloudletSc
 
     private boolean cloudletSubmittedListEnabled;
 
-    /// @see #addOnCloudletResourceAllocationFail(EventListener)
+    /// @see #addOnCloudletResourceShortage(EventListener)
     @Getter(AccessLevel.NONE)
-    private final List<EventListener<CloudletResourceAllocationFailEventInfo>> resourceAllocationFailListeners;
+    private final List<EventListener<CloudletResourceShortageEventInfo>> resourceAllocationFailListeners;
 
     /// Creates a CloudletScheduler.
     protected CloudletSchedulerAbstract() {
@@ -476,8 +476,8 @@ public abstract non-sealed class CloudletSchedulerAbstract implements CloudletSc
     /// Deallocates the total used capacity from VM RAM and Bandwidth
     /// so that the allocation can be updated when running Cloudlets are processed.
     private void deallocateVmResources() {
-        vmAbstract().getRam().deallocateAllResources();
-        vmAbstract().getBw().deallocateAllResources();
+        vmAbstract().getRam().freeAll();
+        vmAbstract().getBw().freeAll();
     }
 
     /// Deallocates VM RAM and Bandwidth used by Cloudlets
@@ -543,7 +543,7 @@ public abstract non-sealed class CloudletSchedulerAbstract implements CloudletSc
     /// This way, the VM [free cores][Processor#getFreeCores()] are kept up to date.
     private void updateBusyCores() {
         final var processor = processor();
-        processor.setAllocatedResource(Math.min(demandedCores, processor.getWorkingCores()));
+        processor.setOccupied(Math.min(demandedCores, processor.getWorkingCores()));
     }
 
     /// Updates the processing of a specific cloudlet from the Vm using this scheduler.
@@ -623,7 +623,7 @@ public abstract non-sealed class CloudletSchedulerAbstract implements CloudletSc
             return;
         }
 
-        final long available = vmResource.getAvailableResource();
+        final long available = vmResource.getFree();
         if(requested > available){
             final String msg1 = available > 0 ? "just %d was available".formatted(available): "no amount is available.";
             final String msg2 = vmResource.getClass() == Ram.class ? ". Using Virtual Memory," : ",";
@@ -632,13 +632,13 @@ public abstract non-sealed class CloudletSchedulerAbstract implements CloudletSc
                 vm.getSimulation().clockStr(), getClass().getSimpleName(), cloudlet,
                 requested, vmResource.getUnit(), vmResource.getClass().getSimpleName(), msg1, msg2);
 
-            updateOnResourceAllocationFailListeners(vmResource, cloudlet, requested, available);
+            updateOnResourceShortageListeners(vmResource, cloudlet, requested, available);
         }
 
-        vmResource.allocateResource(Math.min(requested, available));
+        vmResource.occupy(Math.min(requested, available));
     }
 
-    private void updateOnResourceAllocationFailListeners(
+    private void updateOnResourceShortageListeners(
         final ResourceManageable resource, final Cloudlet cloudlet,
         final long requested, final long available)
     {
@@ -650,7 +650,7 @@ public abstract non-sealed class CloudletSchedulerAbstract implements CloudletSc
     }
 
     @Override
-    public CloudletScheduler addOnCloudletResourceAllocationFail(final EventListener<CloudletResourceAllocationFailEventInfo> listener) {
+    public CloudletScheduler addOnCloudletResourceShortage(final EventListener<CloudletResourceShortageEventInfo> listener) {
         if(EventListener.NULL.equals(listener)){
             return this;
         }
@@ -660,7 +660,7 @@ public abstract non-sealed class CloudletSchedulerAbstract implements CloudletSc
     }
 
     @Override
-    public boolean removeOnCloudletResourceAllocationFail(final EventListener<CloudletResourceAllocationFailEventInfo> listener) {
+    public boolean removeOnCloudletResourceShortage(final EventListener<CloudletResourceShortageEventInfo> listener) {
         return resourceAllocationFailListeners.remove(listener);
     }
 
@@ -723,7 +723,7 @@ public abstract non-sealed class CloudletSchedulerAbstract implements CloudletSc
             /* Since using vMem requires some portion of the RAM to be swapped between the disk
              * to open up RAM space, the required RAM cannot be higher than the RAM capacity
              * neither than the available disk space. */
-            (vmRam, requestedRam) -> requestedRam <= vmRam.getCapacity() && requestedRam <= vm.getStorage().getAvailableResource(),
+            (vmRam, requestedRam) -> requestedRam <= vmRam.getCapacity() && requestedRam <= vm.getStorage().getFree(),
 
             /* Amount of RAM that was not allocated to the Cloudlet due to lack of VM capacity.
              * This way, that extra amount will require virtual memory,
@@ -808,7 +808,7 @@ public abstract non-sealed class CloudletSchedulerAbstract implements CloudletSc
         /* Amount of resource that was not allocated to the Cloudlet due to lack of VM capacity.
          * This way, that extra amount will cause delay in cloudlet execution,
          * since the cloudlet will wait for that non-allocated resource until the next processing time. */
-        final double notAllocatedResource = Math.max(requestedResource - vmResource.getAvailableResource(), 0);
+        final double notAllocatedResource = Math.max(requestedResource - vmResource.getFree(), 0);
         if (notAllocatedResource > 0) {
             return delayFunction.apply(notAllocatedResource, requestedResource);
         }
@@ -1005,7 +1005,7 @@ public abstract non-sealed class CloudletSchedulerAbstract implements CloudletSc
     }
 
     @Override
-    public double getAllocatedCpuPercent(final double time) {
+    public double getCpuPercentUtilization(final double time) {
         return getRequestedOrAllocatedCpuPercentUtilization(time, false);
     }
 

@@ -8,9 +8,9 @@ package org.cloudsimplus.hosts;
 
 import org.cloudsimplus.core.ChangeableId;
 import org.cloudsimplus.datacenters.Datacenter;
-import org.cloudsimplus.provisioners.ResourceProvisioner;
+import org.cloudsimplus.allocators.ResourceAllocator;
 import org.cloudsimplus.resources.CoreCapacity;
-import org.cloudsimplus.provisioners.ResourceProvisionerSimple;
+import org.cloudsimplus.allocators.ResourceAllocatorSimple;
 import org.cloudsimplus.resources.HarddriveStorage;
 import org.cloudsimplus.schedulers.vm.VmScheduler;
 import org.cloudsimplus.schedulers.vm.VmSchedulerSpaceShared;
@@ -19,9 +19,10 @@ import org.cloudsimplus.vms.Vm;
 
 /// A Host class that implements the most basic features of a Physical Machine
 /// (PM) inside a [Datacenter]. It executes actions related to the management
-/// of virtual machines (e.g., creation and destruction). A Host has a defined
-/// policy for provisioning memory and bw, as well as an allocation policy for
-/// cores to [Virtual Machines][Vm]. A Host is associated with a Datacenter and
+/// of virtual machines (e.g., creation and destruction). A Host has
+/// [allocators][ResourceAllocator] for memory and bw, as well as a [VmScheduler]
+/// that allocates cores to [Virtual Machines][Vm], and it provisions the allocated
+/// resources to them. A Host is associated with a Datacenter and
 /// can run virtual machines.
 ///
 /// @author Rodrigo N. Calheiros
@@ -32,7 +33,7 @@ public class HostSimple extends HostAbstract {
 
     /// Creates and instantaneously powers on a Host without a pre-defined ID.
     /// It sets 10 GB of RAM, 1000 Mbps of Bandwidth and 500 GB of Storage.
-    /// It uses a [ResourceProvisionerSimple] for RAM and Bandwidth.
+    /// It uses a [ResourceAllocatorSimple] for RAM and Bandwidth.
     /// Finally, it sets a [VmSchedulerSpaceShared] as default.
     /// The ID is automatically assigned when a List of Hosts is attached
     /// to a [Datacenter].
@@ -40,8 +41,8 @@ public class HostSimple extends HostAbstract {
     /// @param capacity the number of CPU cores of the Host and the MIPS capacity of each core
     ///
     /// @see ChangeableId#setId(long)
-    /// @see #setRamProvisioner(ResourceProvisioner)
-    /// @see #setBwProvisioner(ResourceProvisioner)
+    /// @see #setRamAllocator(ResourceAllocator)
+    /// @see #setBwAllocator(ResourceAllocator)
     /// @see #setVmScheduler(VmScheduler)
     /// @see #setDefaultRamCapacity(long)
     /// @see #setDefaultBwCapacity(long)
@@ -55,7 +56,7 @@ public class HostSimple extends HostAbstract {
     /// 10 GB of RAM, 1000 Mbps of Bandwidth and 500 GB of Storage
     /// and enabling the host to be powered on or not.
     ///
-    /// It creates a [ResourceProvisionerSimple]
+    /// It creates a [ResourceAllocatorSimple]
     /// for RAM and Bandwidth. Finally, it sets a [VmSchedulerSpaceShared] as default.
     /// The ID is automatically assigned when a List of Hosts is attached
     /// to a [Datacenter].
@@ -64,8 +65,8 @@ public class HostSimple extends HostAbstract {
     /// @param activate true to power the Host on, false to power off (see [#setStartupDelay(double)])
     ///
     /// @see ChangeableId#setId(long)
-    /// @see #setRamProvisioner(ResourceProvisioner)
-    /// @see #setBwProvisioner(ResourceProvisioner)
+    /// @see #setRamAllocator(ResourceAllocator)
+    /// @see #setBwAllocator(ResourceAllocator)
     /// @see #setVmScheduler(VmScheduler)
     /// @see #setDefaultRamCapacity(long)
     /// @see #setDefaultBwCapacity(long)
@@ -77,24 +78,24 @@ public class HostSimple extends HostAbstract {
     /// Creates and instantaneously powers on a Host with the given parameters and a
     /// [VmSchedulerSpaceShared] as default.
     ///
-    /// @param ramProvisioner the ram provisioner with capacity in Megabytes
-    /// @param bwProvisioner the bw provisioner with capacity in Megabits/s
+    /// @param ramAllocator the ram allocator with capacity in Megabytes
+    /// @param bwAllocator the bw allocator with capacity in Megabits/s
     /// @param storage the storage capacity in Megabytes
     /// @param capacity the number of CPU cores of the Host and the MIPS capacity of each core
     ///
     /// @see #setVmScheduler(VmScheduler)
     /// @see #setStartupDelay(double)
     public HostSimple(
-        final ResourceProvisioner ramProvisioner,
-        final ResourceProvisioner bwProvisioner,
+        final ResourceAllocator ramAllocator,
+        final ResourceAllocator bwAllocator,
         final long storage,
         final CoreCapacity capacity)
     {
-        super(ramProvisioner, bwProvisioner, storage, capacity);
+        super(ramAllocator, bwAllocator, storage, capacity);
     }
 
     /// Creates and instantaneously powers on a Host without a pre-defined ID.
-    /// It uses a [ResourceProvisionerSimple]
+    /// It uses a [ResourceAllocatorSimple]
     /// for RAM and Bandwidth and also sets a [VmSchedulerSpaceShared] as default.
     /// The ID is automatically assigned when a List of Hosts is attached
     /// to a [Datacenter].
@@ -106,8 +107,8 @@ public class HostSimple extends HostAbstract {
     ///
     /// @see HostSimple#HostSimple(long, long, HarddriveStorage, CoreCapacity)
     /// @see ChangeableId#setId(long)
-    /// @see #setRamProvisioner(ResourceProvisioner)
-    /// @see #setBwProvisioner(ResourceProvisioner)
+    /// @see #setRamAllocator(ResourceAllocator)
+    /// @see #setBwAllocator(ResourceAllocator)
     /// @see #setVmScheduler(VmScheduler)
     /// @see #setStartupDelay(double)
     public HostSimple(final long ram, final long bw, final long storage, final CoreCapacity capacity) {
@@ -115,7 +116,7 @@ public class HostSimple extends HostAbstract {
     }
 
     /// Creates and instantaneously powers on a Host without a pre-defined ID.
-    /// It uses a [ResourceProvisionerSimple]
+    /// It uses a [ResourceAllocatorSimple]
     /// for RAM and Bandwidth and also sets a [VmSchedulerSpaceShared] as default.
     /// The ID is automatically assigned when a List of Hosts is attached
     /// to a [Datacenter].
@@ -127,8 +128,8 @@ public class HostSimple extends HostAbstract {
     ///
     /// @see HostSimple#HostSimple(long, long, long, CoreCapacity)
     /// @see ChangeableId#setId(long)
-    /// @see #setRamProvisioner(ResourceProvisioner)
-    /// @see #setBwProvisioner(ResourceProvisioner)
+    /// @see #setRamAllocator(ResourceAllocator)
+    /// @see #setBwAllocator(ResourceAllocator)
     /// @see #setVmScheduler(VmScheduler)
     /// @see #setStartupDelay(double)
     public HostSimple(
@@ -138,7 +139,7 @@ public class HostSimple extends HostAbstract {
         super(ram, bw, storage, capacity);
     }
 
-    /// Creates a Host without a pre-defined ID. It uses a [ResourceProvisionerSimple]
+    /// Creates a Host without a pre-defined ID. It uses a [ResourceAllocatorSimple]
     /// for RAM and Bandwidth and also sets a [VmSchedulerSpaceShared] as default.
     /// The ID is automatically assigned when a List of Hosts is attached
     /// to a [Datacenter].
@@ -150,8 +151,8 @@ public class HostSimple extends HostAbstract {
     /// @param activate true to power the Host on, false to power off (see [#setStartupDelay(double)])
     ///
     /// @see ChangeableId#setId(long)
-    /// @see #setRamProvisioner(ResourceProvisioner)
-    /// @see #setBwProvisioner(ResourceProvisioner)
+    /// @see #setRamAllocator(ResourceAllocator)
+    /// @see #setBwAllocator(ResourceAllocator)
     /// @see #setVmScheduler(VmScheduler)
     public HostSimple(
         final long ram, final long bw, final long storage,

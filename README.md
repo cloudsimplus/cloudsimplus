@@ -258,12 +258,12 @@ long storage = 100000; //in Megabytes
 long bw = 100000; //in Megabits/s
         
 //Creates one host with 1 CPU core of 20000 MIPS.
-//Uses ResourceProvisionerSimple by default for RAM and BW provisioning
+//Uses ResourceAllocatorSimple by default for RAM and BW allocation
 //Uses VmSchedulerSpaceShared by default for VM scheduling
 var host0 = new HostSimple(ram, bw, storage, new CoreCapacity(1, 20000));
 
 //Creates a Datacenter with a list of Hosts.
-//Uses a VmAllocationPolicySimple by default to allocate VMs
+//Uses a VmPlacementPolicySimple by default to place VMs on Hosts
 var dc0 = new DatacenterSimple(simulation, List.of(host0));
 
 //Creates one VM with one CPU core to run applications.

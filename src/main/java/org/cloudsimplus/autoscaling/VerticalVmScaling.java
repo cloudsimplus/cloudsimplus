@@ -23,7 +23,7 @@
  */
 package org.cloudsimplus.autoscaling;
 
-import org.cloudsimplus.allocationpolicies.VmAllocationPolicy;
+import org.cloudsimplus.placementpolicies.VmPlacementPolicy;
 import org.cloudsimplus.autoscaling.resources.ResourceScaling;
 import org.cloudsimplus.brokers.DatacenterBroker;
 import org.cloudsimplus.cloudlets.Cloudlet;
@@ -60,8 +60,8 @@ import java.util.function.Function;
 ///   to send a scaling request to its [DatacenterBroker];
 /// - the DatacenterBroker forwards the request to the [Datacenter]
 ///   where the Vm is hosted;
-/// - the Datacenter delegates the task to its [VmAllocationPolicy];
-/// - the VmAllocationPolicy checks if there is resource availability and then
+/// - the Datacenter delegates the task to its [VmPlacementPolicy];
+/// - the VmPlacementPolicy checks if there is resource availability and then
 ///   finally scale the Vm.
 ///
 /// ## WARNING
@@ -249,9 +249,9 @@ public sealed interface VerticalVmScaling extends VmScaling
 
     /// Gets the current amount allocated to the [resource][#getResource()]
     /// managed by this scaling object.
-    /// It is just a shortcut to `getVmResourceToScale.getAllocatedResource()`.
+    /// It is just a shortcut to `getResource().getOccupied()`.
     /// @return the amount of allocated resource
-    long getAllocatedResource();
+    long getOccupiedResource();
 
     /// Tries to allocate more resources for a VM, if there is availability.
     /// @return true if resources were allocated to the VM, false otherwise

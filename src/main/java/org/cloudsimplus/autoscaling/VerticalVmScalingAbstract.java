@@ -32,7 +32,7 @@ import org.cloudsimplus.autoscaling.resources.ResourceScalingGradual;
 import org.cloudsimplus.autoscaling.resources.ResourceScalingInstantaneous;
 import org.cloudsimplus.core.CloudSimTag;
 import org.cloudsimplus.listeners.VmHostEventInfo;
-import org.cloudsimplus.provisioners.ResourceProvisioner;
+import org.cloudsimplus.allocators.ResourceAllocator;
 import org.cloudsimplus.resources.*;
 import org.cloudsimplus.vms.Vm;
 
@@ -141,8 +141,8 @@ public non-sealed abstract class VerticalVmScalingAbstract extends VmScalingAbst
     }
 
     @Override
-    public long getAllocatedResource() {
-        return getResource().getAllocatedResource();
+    public long getOccupiedResource() {
+        return getResource().getOccupied();
     }
 
     @Override
@@ -192,10 +192,6 @@ public non-sealed abstract class VerticalVmScalingAbstract extends VmScalingAbst
         return this;
     }
 
-    private ResourceProvisioner getResourceProvisioner(){
-        return getVm().getHost().getProvisioner(resourceClassToScale);
-    }
-
     private Resource getHostResource(){
         return getVm().getHost().getResource(resourceClassToScale);
     }
@@ -206,8 +202,8 @@ public non-sealed abstract class VerticalVmScalingAbstract extends VmScalingAbst
             return false;
         }
 
-        final double newTotalVmResource = vmResource.getCapacity() + getResourceAmountToScale();
-        final var isAllocated = getResourceProvisioner().allocateResourceForVm(getVm(), newTotalVmResource);
+        final long newTotalVmResource = (long)(vmResource.getCapacity() + getResourceAmountToScale());
+        final var isAllocated = getVm().getHost().provisionResourceForVm(getVm(), resourceClassToScale, newTotalVmResource);
         if(isAllocated)
             logResourceAllocated();
         else logResourceUnavailable();
@@ -228,7 +224,7 @@ public non-sealed abstract class VerticalVmScalingAbstract extends VmScalingAbst
             getClass().getSimpleName(),
             vm, (long) getResourceAmountToScale(),
             resourceClassToScale.getSimpleName(), vm.getHost(),
-            getHostResource().getAvailableResource(), resourceClassToScale.getSimpleName());
+            getHostResource().getFree(), resourceClassToScale.getSimpleName());
     }
 
     @Override
@@ -249,6 +245,6 @@ public non-sealed abstract class VerticalVmScalingAbstract extends VmScalingAbst
             getClass().getSimpleName(),
             (long) getResourceAmountToScale(), vmResource.getUnit(), resourceClassToScale.getSimpleName(),
             vm, vmResource.getCapacity(),
-            vmResource.getPercentUtilization() * 100);
+            vmResource.getPercentOccupied() * 100);
     }
 }

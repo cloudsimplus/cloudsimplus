@@ -163,13 +163,13 @@ public class HarddriveStorage implements FileStorage {
     }
 
     @Override
-    public long getAvailableResource() {
-        return storage.getAvailableResource();
+    public long getFree() {
+        return storage.getFree();
     }
 
     @Override
-    public long getAllocatedResource() {
-        return storage.getAllocatedResource();
+    public long getOccupied() {
+        return storage.getOccupied();
     }
 
     @Override

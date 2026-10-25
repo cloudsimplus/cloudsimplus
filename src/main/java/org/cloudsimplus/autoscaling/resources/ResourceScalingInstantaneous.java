@@ -62,7 +62,7 @@ public class ResourceScalingInstantaneous implements ResourceScaling {
         * under or overload state.*/
         final Resource res = vmScaling.getResource();
         //The new total capacity to move the VM resource from under/overloaded.
-        final double newTotalCapacity = Math.ceil(res.getAllocatedResource() / thresholdFunc.apply(vmScaling.getVm()));
+        final double newTotalCapacity = Math.ceil(res.getOccupied() / thresholdFunc.apply(vmScaling.getVm()));
         //The difference to add/remove from the current capacity so that the resource capacity will be equal to that just computed.
         final double scaleCapacity = newTotalCapacity - res.getCapacity();
 

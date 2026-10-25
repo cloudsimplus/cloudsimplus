@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory;
 
 /// A [Processor] implementation that can be used by any [Machine],
 /// keeping only counters for the number of cores in each [CoreStatus].
-/// The number of [free][CoreStatus#FREE] cores is the [available resource][#getAvailableResource()],
+/// The number of [free][CoreStatus#FREE] cores is the [available resource][#getFree()],
 /// the number of [failed][CoreStatus#FAILED] cores is stored in a field and the
 /// number of [busy][CoreStatus#BUSY] cores is the remaining ones.
 ///
@@ -97,8 +97,8 @@ public final class ProcessorSimple extends ResourceManageableAbstract implements
 
     /// @return the number of [busy][CoreStatus#BUSY] cores
     @Override
-    public long getAllocatedResource() {
-        return getCapacity() - getAvailableResource() - failedCores;
+    public long getOccupied() {
+        return getCapacity() - getFree() - failedCores;
     }
 
     /// Sets the number of cores of the Processor.
@@ -108,7 +108,7 @@ public final class ProcessorSimple extends ResourceManageableAbstract implements
     ///         false if it's negative or lower than the number of busy and failed cores
     @Override
     public boolean setCapacity(final long cores) {
-        if(cores < getAllocatedResource() + failedCores) {
+        if(cores < getOccupied() + failedCores) {
             return false;
         }
 
@@ -119,7 +119,7 @@ public final class ProcessorSimple extends ResourceManageableAbstract implements
     /// @param cores the number of cores to allocate
     /// @return true if the cores were allocated; false if there aren't enough free cores
     @Override
-    public boolean allocateResource(final long cores) {
+    public boolean occupy(final long cores) {
         return cores > 0 && getFreeCores() >= cores && moveCores(CoreStatus.FREE, CoreStatus.BUSY, cores);
     }
 
@@ -127,7 +127,7 @@ public final class ProcessorSimple extends ResourceManageableAbstract implements
     /// @param cores the number of cores to deallocate
     /// @return true if the cores were deallocated; false if there aren't enough busy cores
     @Override
-    public boolean deallocateResource(final long cores) {
+    public boolean free(final long cores) {
         return cores > 0 && getBusyCores() >= cores && moveCores(CoreStatus.BUSY, CoreStatus.FREE, cores);
     }
 
@@ -136,13 +136,13 @@ public final class ProcessorSimple extends ResourceManageableAbstract implements
     /// @return true if the number of busy cores was set;
     ///         false if it's negative or greater than the number of working cores
     @Override
-    public boolean setAllocatedResource(final long busyCores) {
+    public boolean setOccupied(final long busyCores) {
         if(busyCores < 0 || busyCores > getWorkingCores()) {
             return false;
         }
 
         final long diff = busyCores - getBusyCores();
-        return diff == 0 || (diff > 0 ? allocateResource(diff) : deallocateResource(-diff));
+        return diff == 0 || (diff > 0 ? occupy(diff) : free(-diff));
     }
 
     /// Removes a given number of working cores from the processor,
@@ -150,31 +150,31 @@ public final class ProcessorSimple extends ResourceManageableAbstract implements
     /// @param cores the number of cores to remove
     /// @return true if the cores were removed; false if there aren't enough working cores
     @Override
-    public boolean deallocateAndRemoveResource(final long cores) {
+    public boolean freeAndRemove(final long cores) {
         if(cores <= 0 || cores > getWorkingCores()) {
             return false;
         }
 
         final long busyToFree = cores - getFreeCores();
         if(busyToFree > 0) {
-            deallocateResource(busyToFree);
+            free(busyToFree);
         }
 
         return setCapacity(getCapacity() - cores);
     }
 
     @Override
-    public long deallocateAllResources() {
+    public long freeAll() {
         final long previousAllocated = getBusyCores();
-        deallocateResource(previousAllocated);
+        free(previousAllocated);
         return previousAllocated;
     }
 
     @Override
     public long getCores(@NonNull final CoreStatus status) {
         return switch (status) {
-            case FREE -> getAvailableResource();
-            case BUSY -> getAllocatedResource();
+            case FREE -> getFree();
+            case BUSY -> getOccupied();
             case FAILED -> failedCores;
         };
     }
@@ -236,6 +236,6 @@ public final class ProcessorSimple extends ResourceManageableAbstract implements
     @Override
     public String toString() {
         return "%s: %d cores (free: %d, busy: %d, failed: %d)".formatted(
-            getClass().getSimpleName(), getCapacity(), getAvailableResource(), getAllocatedResource(), failedCores);
+            getClass().getSimpleName(), getCapacity(), getFree(), getOccupied(), failedCores);
     }
 }

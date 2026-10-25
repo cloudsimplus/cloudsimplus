@@ -28,8 +28,8 @@ package org.cloudsimplus.resources;
 /// @author Manoel Campos da Silva Filho
 /// @see Resource#NULL
 final class ResourceNull implements Resource {
-    @Override public long getAvailableResource() { return 0; }
-    @Override public long getAllocatedResource() {
+    @Override public long getFree() { return 0; }
+    @Override public long getOccupied() {
         return 0;
     }
     @Override public boolean isAmountAvailable(long amountToCheck) {

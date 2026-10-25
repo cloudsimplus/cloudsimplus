@@ -118,17 +118,17 @@ Why CloudSim Plus?
 | Well, the design of the tool has a direct impact when you need to
 extend it to include some feature required for your simulations.
 | The simulator has a set of classes that implement interfaces such as
-``VmScheduler``, ``CloudletScheduler``, ``VmAllocationPolicy``,
-``ResourceProvisioner``,
+``VmScheduler``, ``CloudletScheduler``, ``VmPlacementPolicy``,
+``ResourceAllocator``,
 | ``UtilizationModel``, ``PowerModel`` and ``DatacenterBroker`` and
 provide basic algorithms for different goals.
-| For instance, the ``VmAllocationPolicySimple`` class implements a
+| For instance, the ``VmPlacementPolicySimple`` class implements a
 Worst Fit
 | policy that selects the PM having the least number of processor cores
 in use to host a VM.
 
 | Usually you have to write your own implementations of these classes,
-such as a Best Fit ``VmAllocationPolicy``,
+such as a Best Fit ``VmPlacementPolicy``,
 | a resource ``UtilizationModel`` with an upper threshold or a
 ``DatacenterBroker`` that selects the best ``Datacenter`` to submit a
 VM.
@@ -471,7 +471,7 @@ VM migrations are triggered inside the data center, by an internal data
 center event. Therefore, triggering a migration means receiving and
 processing a VM\_MIGRATION event. Such event is sent by a Datacenter to
 itself when it receives a list of VMs to migrate from the
-VmAllocationPolicy.
+VmPlacementPolicy.
 
 The datacenter sends the migration request message using a call such as:
 

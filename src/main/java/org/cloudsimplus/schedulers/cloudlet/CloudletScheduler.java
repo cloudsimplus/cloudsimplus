@@ -10,7 +10,7 @@ package org.cloudsimplus.schedulers.cloudlet;
 import org.cloudsimplus.brokers.DatacenterBroker;
 import org.cloudsimplus.cloudlets.Cloudlet;
 import org.cloudsimplus.cloudlets.CloudletExecution;
-import org.cloudsimplus.listeners.CloudletResourceAllocationFailEventInfo;
+import org.cloudsimplus.listeners.CloudletResourceShortageEventInfo;
 import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.network.VmPacket;
 import org.cloudsimplus.resources.CoreCapacity;
@@ -154,7 +154,7 @@ public sealed interface CloudletScheduler
     ///
     /// @param time the time to get the current CPU utilization
     /// @return the total CPU utilization percentage allocated (in scale from 0 to 1, where 1 is 100%).
-    double getAllocatedCpuPercent(double time);
+    double getCpuPercentUtilization(double time);
 
     /// Informs if there is any cloudlet that finished executing in the VM managed by this scheduler.
     /// @return true if there is at least one finished cloudlet; false otherwise
@@ -221,10 +221,10 @@ public sealed interface CloudletScheduler
     ///
     /// @param listener the Listener to add
     /// @return this scheduler
-    CloudletScheduler addOnCloudletResourceAllocationFail(EventListener<CloudletResourceAllocationFailEventInfo> listener);
+    CloudletScheduler addOnCloudletResourceShortage(EventListener<CloudletResourceShortageEventInfo> listener);
 
     /// Removes a Listener object from the registered List.
     /// @param listener the Listener to remove
     /// @return true if the Listener was removed, false otherwise
-    boolean removeOnCloudletResourceAllocationFail(EventListener<CloudletResourceAllocationFailEventInfo> listener);
+    boolean removeOnCloudletResourceShortage(EventListener<CloudletResourceShortageEventInfo> listener);
 }

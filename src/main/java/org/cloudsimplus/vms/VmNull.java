@@ -80,30 +80,30 @@ final class VmNull implements Vm {
     @Override public Host getHost() {
         return Host.NULL;
     }
-    @Override public Vm addOnHostAllocationListener(EventListener<VmHostEventInfo> listener) {
+    @Override public Vm addOnHostPlacementListener(EventListener<VmHostEventInfo> listener) {
         return this;
     }
     @Override public Vm addOnMigrationStartListener(EventListener<VmHostEventInfo> listener) { return this; }
     @Override public Vm addOnMigrationFinishListener(EventListener<VmHostEventInfo> listener) { return this; }
-    @Override public Vm addOnHostDeallocationListener(EventListener<VmHostEventInfo> listener) { return this; }
+    @Override public Vm addOnHostRemovalListener(EventListener<VmHostEventInfo> listener) { return this; }
     @Override public Vm addOnCreationFailureListener(EventListener<VmDatacenterEventInfo> listener) {
         return this;
     }
     @Override public Vm addOnUpdateProcessingListener(EventListener<VmHostEventInfo> listener) {
         return this;
     }
-    @Override public void notifyOnHostAllocationListeners() {/**/}
-    @Override public void notifyOnHostDeallocationListeners(Host deallocatedHost) {/**/}
+    @Override public void notifyOnHostPlacementListeners() {/**/}
+    @Override public void notifyOnHostRemovalListeners(Host deallocatedHost) {/**/}
     @Override public void notifyOnCreationFailureListeners(Datacenter failedDatacenter) {/**/}
     @Override public boolean removeOnMigrationStartListener(EventListener<VmHostEventInfo> listener) { return false; }
     @Override public boolean removeOnMigrationFinishListener(EventListener<VmHostEventInfo> listener) { return false; }
     @Override public boolean removeOnUpdateProcessingListener(EventListener<VmHostEventInfo> listener) {
         return false;
     }
-    @Override public boolean removeOnHostAllocationListener(EventListener<VmHostEventInfo> listener) {
+    @Override public boolean removeOnHostPlacementListener(EventListener<VmHostEventInfo> listener) {
         return false;
     }
-    @Override public boolean removeOnHostDeallocationListener(EventListener<VmHostEventInfo> listener) {
+    @Override public boolean removeOnHostRemovalListener(EventListener<VmHostEventInfo> listener) {
         return false;
     }
     @Override public boolean removeOnCreationFailureListener(EventListener<VmDatacenterEventInfo> listener) { return false; }
