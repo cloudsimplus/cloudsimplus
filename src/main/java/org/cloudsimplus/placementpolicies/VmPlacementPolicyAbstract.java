@@ -259,7 +259,7 @@ public non-sealed abstract class VmPlacementPolicyAbstract implements VmPlacemen
 
     private HostSuitability createVmsFromGroup(final VmGroup vmGroup, final Host host) {
         int createdVms = 0;
-        final var hostSuitabilityForVmGroup = new HostSuitability(host, vmGroup);
+        final var hostSuitabilityForVmGroup = HostSuitability.forGroup(host, vmGroup);
         for (final Vm vm : vmGroup.getVmList()) {
             final var hostSuitability = createVm(vm, host);
             hostSuitabilityForVmGroup.setSuitability(hostSuitability);

@@ -29,6 +29,7 @@ import org.cloudsimplus.hosts.Host;
 import org.cloudsimplus.hosts.HostSimpleTest;
 import org.cloudsimplus.schedulers.cloudlet.CloudletScheduler;
 import org.cloudsimplus.vms.Vm;
+import org.cloudsimplus.vms.VmGroup;
 import org.cloudsimplus.vms.VmTestUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -100,5 +101,26 @@ public class VmPlacementPolicySimpleTest {
     public void allocateHostForVmWhenOneVmIsGivenAndNoHostHasResourcesToRunIt() {
         final Vm vm = VmTestUtil.createVm(0, 1000, 10);
         assertFalse(policy.placeVm(vm).fully());
+    }
+
+    @Test
+    public void placeVmGroupIsFullySuitableWhenAllVmsAreCreated() {
+        final Host host = policy.getDatacenter().getHostList().get(2);
+        final var vmGroup = new VmGroup(List.of(VmTestUtil.createVm(0, 1000, 2), VmTestUtil.createVm(1, 1000, 2)));
+
+        assertTrue(policy.placeVm(vmGroup, host).fully());
+        assertTrue(vmGroup.isCreated());
+        vmGroup.getVmList().forEach(vm -> assertEquals(host, vm.getHost()));
+    }
+
+    @Test
+    public void placeVmGroupIsNotFullySuitableWhenSomeVmIsNotCreated() {
+        final Host host = policy.getDatacenter().getHostList().get(2);
+        final var vmGroup = new VmGroup(List.of(VmTestUtil.createVm(0, 1000, 4), VmTestUtil.createVm(1, 1000, 4)));
+
+        final var suitability = policy.placeVm(vmGroup, host);
+        assertFalse(suitability.fully());
+        assertFalse(suitability.forCores());
+        assertTrue(vmGroup.isCreated(), "The group is created since one of its VMs was");
     }
 }
