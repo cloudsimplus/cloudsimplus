@@ -69,7 +69,7 @@ final class VmCreationRetryIntegrationTest {
     @BeforeEach
     void setUp() {
         simulation = new CloudSimPlus();
-        new DatacenterSimple(simulation, List.of(createHost()));
+        DatacenterSimple.of(simulation, List.of(createHost()));
         broker = new DatacenterBrokerSimple(simulation);
         creationFailures = new AtomicInteger();
 
@@ -102,20 +102,20 @@ final class VmCreationRetryIntegrationTest {
     }
 
     private static Host createHost() {
-        return new HostSimple(new CoreCapacity(HOST_CORES, MIPS));
+        return HostSimple.of(new CoreCapacity(HOST_CORES, MIPS));
     }
 
     /// Creates VMs that require all Host cores, so that only the first one can be placed.
     private static List<Vm> createVms() {
         final var vmList = new ArrayList<Vm>(VMS);
         for (int i = 0; i < VMS; i++) {
-            vmList.add(new VmSimple(new CoreCapacity(VM_CORES, MIPS)));
+            vmList.add(VmSimple.of(new CoreCapacity(VM_CORES, MIPS)));
         }
 
         return vmList;
     }
 
     private static Cloudlet createCloudlet(final Vm vm) {
-        return new CloudletSimple(CLOUDLET_LENGTH, 1).setVm(vm);
+        return CloudletSimple.of(CLOUDLET_LENGTH, 1).setVm(vm);
     }
 }

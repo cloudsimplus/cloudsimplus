@@ -76,7 +76,6 @@ public class CloudletTest {
 
         assertEquals(Vm.NULL, Cloudlet.NULL.getVm());
         assertFalse(Cloudlet.NULL.hasRequiresFiles());
-        assertEquals(Cloudlet.NOT_ASSIGNED, Cloudlet.NULL.registerArrivalInDatacenter());
         assertFalse(Cloudlet.NULL.removeOnFinishListener(null));
         final EventListener listener = Mockito.mock(EventListener.class);
         Cloudlet.NULL.addOnFinishListener(listener);
@@ -86,7 +85,6 @@ public class CloudletTest {
 
     @Test
     public void testNullObjectStatus(){
-        assertFalse(Cloudlet.NULL.setStatus(Cloudlet.Status.SUCCESS));
         assertEquals(Cloudlet.Status.FAILED, Cloudlet.NULL.getStatus());
         assertTrue(Cloudlet.NULL.getRequiredFiles().isEmpty());
         assertEquals(0, Cloudlet.NULL.getFinishedLengthSoFar());

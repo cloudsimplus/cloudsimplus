@@ -8,6 +8,7 @@
 package org.cloudsimplus.schedulers.vm;
 
 import org.cloudsimplus.hosts.Host;
+import org.cloudsimplus.hosts.HostAbstract;
 import org.cloudsimplus.hosts.HostSimple;
 import org.cloudsimplus.allocators.ResourceAllocatorSimple;
 import org.cloudsimplus.resources.CoreCapacity;
@@ -31,7 +32,7 @@ public class VmSchedulerTimeSharedTest {
 
     private VmScheduler createVmScheduler(final double mips, final int cores) {
         final var scheduler = new VmSchedulerTimeShared();
-        final Host host = new HostSimple(2048, 20000, 20000, new CoreCapacity(cores, mips));
+        final Host host = HostSimple.of(2048, 20000, 20000, new CoreCapacity(cores, mips));
         host
             .setRamAllocator(new ResourceAllocatorSimple())
             .setBwAllocator(new ResourceAllocatorSimple())
@@ -176,10 +177,10 @@ public class VmSchedulerTimeSharedTest {
 
     @Test
     public void testAllocateCoresWhenVmMigrationIn() {
-        final Vm vm = VmTestUtil.createVm(0, MIPS / 4, VM_CORES_NUMBER);
+        final var vm = VmTestUtil.createVm(0, MIPS / 4, VM_CORES_NUMBER);
         vm.setInMigration(true);
 
-        vmScheduler.getHost().addMigratingInVm(vm);
+        ((HostAbstract)vmScheduler.getHost()).addMigratingInVm(vm);
         assertEquals(1500, vmScheduler.getTotalAvailableMips());
         /*While the VM is being migrated, just 10% of its requested MIPS is allocated,
         * representing the CPU migration overhead.*/
@@ -198,7 +199,7 @@ public class VmSchedulerTimeSharedTest {
 
         final double vmMips = MIPS / 4;
         final Vm vm0 = VmTestUtil.createVm(0, vmMips, 2);
-        vmScheduler.getHost().addVmMigratingOut(vm0);
+        ((HostAbstract)vmScheduler.getHost()).addVmMigratingOut(vm0);
 
         vmScheduler.allocateCoresForVm(vm0, new CoreCapacity(vmMips));
         assertTrue(vmScheduler.getHost().getVmsMigratingOut().isEmpty());

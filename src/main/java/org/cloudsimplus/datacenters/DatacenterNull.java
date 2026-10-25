@@ -50,6 +50,7 @@ final class DatacenterNull implements Datacenter, SimEntityNullBase {
     @Override public List<Host> getHostList() {
         return Collections.emptyList();
     }
+    @Override public Datacenter setVmPlacementPolicy(VmPlacementPolicy vmPlacementPolicy) { return this; }
     @Override public VmPlacementPolicy getVmPlacementPolicy() {
         return VmPlacementPolicy.NULL;
     }
@@ -59,7 +60,6 @@ final class DatacenterNull implements Datacenter, SimEntityNullBase {
     @Override public Host getHost(final int index) { return Host.NULL; }
     @Override public long getActiveHostsNumber() { return 0; }
     @Override public long getPoweringOnHostsNumber() { return 0; }
-    @Override public Datacenter addBrokerWaitingHostPowerOn(DatacenterBroker broker) { return this; }
     @Override public long size() { return 0; }
     @Override public Host getHostById(long id) { return Host.NULL; }
     @Override public <T extends Host> Datacenter addHostList(List<T> hostList) { return this; }

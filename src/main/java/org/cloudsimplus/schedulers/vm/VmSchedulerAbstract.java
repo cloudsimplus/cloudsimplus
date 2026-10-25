@@ -9,6 +9,7 @@ package org.cloudsimplus.schedulers.vm;
 import lombok.Getter;
 import lombok.NonNull;
 import org.cloudsimplus.hosts.Host;
+import org.cloudsimplus.hosts.HostAbstract;
 import org.cloudsimplus.resources.CoreCapacity;
 import org.cloudsimplus.resources.Processor;
 import org.cloudsimplus.vms.Vm;
@@ -71,7 +72,7 @@ public abstract non-sealed class VmSchedulerAbstract implements VmScheduler {
     @Override
     public final boolean allocateCoresForVm(@NonNull final Vm vm, @NonNull final CoreCapacity requestedMips) {
         if (!vm.isInMigration() && host.getVmsMigratingOut().contains(vm)) {
-            host.removeVmMigratingOut(vm);
+            ((HostAbstract)host).removeVmMigratingOut(vm);
         }
 
         if(!isSuitableForVm(vm, requestedMips)) {

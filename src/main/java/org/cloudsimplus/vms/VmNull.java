@@ -59,7 +59,6 @@ final class VmNull implements Vm {
     }
     @Override public boolean isSubmissionDelayed() { return false; }
     @Override public void setSubmissionDelay(double submissionDelay) {/**/}
-    @Override public void addStateHistoryEntry(VmStateHistoryEntry entry) {/**/}
     @Override public Resource getBw() {
         return Resource.NULL;
     }
@@ -92,9 +91,6 @@ final class VmNull implements Vm {
     @Override public Vm addOnUpdateProcessingListener(EventListener<VmHostEventInfo> listener) {
         return this;
     }
-    @Override public void notifyOnHostPlacementListeners() {/**/}
-    @Override public void notifyOnHostRemovalListeners(Host deallocatedHost) {/**/}
-    @Override public void notifyOnCreationFailureListeners(Datacenter failedDatacenter) {/**/}
     @Override public boolean removeOnMigrationStartListener(EventListener<VmHostEventInfo> listener) { return false; }
     @Override public boolean removeOnMigrationFinishListener(EventListener<VmHostEventInfo> listener) { return false; }
     @Override public boolean removeOnUpdateProcessingListener(EventListener<VmHostEventInfo> listener) {
@@ -162,15 +158,12 @@ final class VmNull implements Vm {
     @Override public Vm setBw(long bwCapacity) {
         return this;
     }
-    @Override public Vm setInMigration(boolean migrating) {return this;}
     @Override public Vm setRam(long ramCapacity) {
         return this;
     }
     @Override public Vm setSize(long size) {
         return this;
     }
-    @Override public double updateProcessing(double currentTime, CoreCapacity mipsShare) { return 0.0; }
-    @Override public double updateProcessing(CoreCapacity mipsShare) { return 0; }
     @Override public Vm setCloudletScheduler(CloudletScheduler cloudletScheduler) {
         return this;
     }
@@ -186,10 +179,8 @@ final class VmNull implements Vm {
     @Override public Simulation getSimulation() {
         return Simulation.NULL;
     }
-    @Override public Vm setLastTriedDatacenter(Datacenter lastTriedDatacenter) { return this; }
     @Override public Datacenter getLastTriedDatacenter() { return Datacenter.NULL; }
     @Override public double getBrokerArrivalTime() { return 0; }
-    @Override public CustomerEntity setBrokerArrivalTime(double time) { return this; }
     @Override public double getCreationTime() { return 0; }
     @Override public String toString() { return "Vm.NULL"; }
     @Override public HorizontalVmScaling getHorizontalScaling() { return HorizontalVmScaling.NULL; }

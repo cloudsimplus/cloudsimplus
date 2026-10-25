@@ -212,14 +212,11 @@ classes have a suffix *Simple*
 | For instance, to instantiate a ``Cloudlet`` you have to execute a code
 such as:
 
-``java CloudletSimple cloudlet = new CloudletSimple(required, parameters, here);``
+``java Cloudlet cloudlet = CloudletSimple.of(required, parameters, here);``
 
-| However, since these interfaces were introduced in order to also
-enable the creation of different cloudlet classes,
-| the recommendation is to declare your object using the interface, not
-the class:
-
-``java Cloudlet cloudlet = new CloudletSimple(required, parameters, here);``
+| The ``of()`` factory methods return the interface type (such as ``Cloudlet``),
+| since the methods only the framework must call are just in the implementation classes.
+| The constructors of these classes are protected and are only used by subclasses.
 
 | The method ``setBrokerId(int userId)`` from ``Vm`` and ``Cloudlet``
 were refactored to ``setBroker(DatacenterBroker broker)``,
@@ -239,7 +236,7 @@ can be set further using the respective setter methods.
 
 .. code:: java
 
-    Datacenter dc0 = new DatacenterSimple(cloudsim, hostList, new VmAllocationPolicySimple());
+    Datacenter dc0 = DatacenterSimple.of(cloudsim, hostList, new VmAllocationPolicySimple());
 
 | The way you instantiate a host has changed too. The classes
 ``RamProvisionerSimple`` and ``BwProvisionerSimple`` don't exist
@@ -265,7 +262,7 @@ Datacenter, it will generate an ID for those hosts.
     long storage = 1000000; //in MB
     //Uses ResourceProvisionerSimple by default for RAM and BW provisioning
     //Uses VmSchedulerSpaceShared by default for VM scheduling
-    Host host = new HostSimple(ram, bw, storage, pesList);
+    Host host = HostSimple.of(ram, bw, storage, pesList);
     host.setRamProvisioner(new ResourceProvisionerSimple());
 
 | Additionally, the interface ``Storage`` was renamed to ``FileStorage``

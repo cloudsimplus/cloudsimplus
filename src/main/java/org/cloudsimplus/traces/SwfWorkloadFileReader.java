@@ -204,7 +204,7 @@ public final class SwfWorkloadFileReader extends TraceReaderAbstract {
         final int len = runTime * mips;
         final UtilizationModel utilizationModel = new UtilizationModelFull();
 
-        return new CloudletSimple(id, len, numProc)
+        return CloudletSimple.of(id, len, numProc)
             .setFileSize(DataCloudTags.DEFAULT_MTU)
             .setOutputSize(DataCloudTags.DEFAULT_MTU)
             .setUtilizationModel(utilizationModel);

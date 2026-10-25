@@ -371,27 +371,27 @@ class CloudletTaskSchedulerSimpleTest {
 
     private void createDatacenter() {
         final var hostList = IntStream.range(0, HOSTS).mapToObj(_ -> createHost()).toList();
-        final var dc = new NetworkDatacenter(simulation, hostList);
+        final var dc = NetworkDatacenter.of(simulation, hostList);
         final var edgeSwitch = new EdgeSwitch(simulation, dc);
         dc.addSwitch(edgeSwitch);
         hostList.forEach(edgeSwitch::connectHost);
     }
 
     private NetworkHost createHost() {
-        final var host = new NetworkHost(RAM, BW, STORAGE, new CoreCapacity(HOST_CORES, MIPS));
+        final var host = NetworkHost.of(RAM, BW, STORAGE, new CoreCapacity(HOST_CORES, MIPS));
         host.setVmScheduler(new VmSchedulerTimeShared());
         return host;
     }
 
     private NetworkVm createVm(final int id) {
-        final var vm = new NetworkVm(id, new CoreCapacity(HOST_CORES, MIPS));
+        final var vm = NetworkVm.of(id, new CoreCapacity(HOST_CORES, MIPS));
         vm.setRam(RAM / 2).setBw(BW / 2).setSize(STORAGE / 2)
           .setCloudletScheduler(new CloudletSchedulerTimeShared());
         return vm;
     }
 
     private NetworkCloudlet createCloudlet(final NetworkVm vm) {
-        final var cloudlet = new NetworkCloudlet(1);
+        final var cloudlet = NetworkCloudlet.of(1);
         cloudlet.setFileSize(1).setOutputSize(1).setUtilizationModelCpu(new UtilizationModelFull());
         cloudlet.setVm(vm).setBroker(broker);
         return cloudlet;

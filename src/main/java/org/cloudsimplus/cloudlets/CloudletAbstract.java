@@ -230,7 +230,11 @@ public non-sealed abstract class CloudletAbstract extends CustomerEntityAbstract
         return onFinishListeners.size() != oldList.size();
     }
 
-    @Override
+    /// Notifies all registered listeners about the update on Cloudlet processing.
+    ///
+    /// **This method is used just internally and must not be called directly.**
+    ///
+    /// @param time the time the event happened
     public void notifyOnUpdateProcessingListeners(final double time) {
         for (final var listener : onUpdateProcessingListeners) {
             listener.update(CloudletVmEventInfo.of(listener, time, this));
@@ -291,7 +295,13 @@ public non-sealed abstract class CloudletAbstract extends CustomerEntityAbstract
         return super.isLifeTimeReached() || vm.isLifeTimeReached();
     }
 
-    @Override
+    /// Adds the partial length of this Cloudlet that has executed so far (in MI).
+    ///
+    /// @param partialFinishedMI the partial executed length of this Cloudlet (in MI) from the
+    /// last time span (the last time the Cloudlet execution was updated)
+    /// @return true if the length is valid and the cloudlet already has assigned to a Datacenter;
+    /// false otherwise
+    /// @see CloudletExecution
     public boolean addFinishedLengthSoFar(final long partialFinishedMI) {
         if (partialFinishedMI < 0 || dcArrivalTime <= NOT_ASSIGNED) {
             return false;
@@ -371,7 +381,21 @@ public non-sealed abstract class CloudletAbstract extends CustomerEntityAbstract
         this.dcArrivalTime = dcArrivalTime;
     }
 
-    @Override
+    /// Sets the status of this Cloudlet.
+    ///
+    /// **WARNING**: This method is just used internally by classes such as
+    /// [CloudletScheduler] to update Cloudlet status.
+    /// Calling it directly might not get the expected result.
+    /// You have to use the CloudletScheduler that controls the execution
+    /// of the Cloudlet to change the Cloudlets status.
+    /// The method is public due to a design issue.
+    ///
+    /// @param newStatus the status of this Cloudlet
+    /// @return true if the cloudlet status was changed,
+    /// i.e, if the newStatus is different from the current status;
+    /// false otherwise
+    /// TODO Move to abstract class
+    /// See https://github.com/cloudsimplus/cloudsimplus/issues/589
     public boolean setStatus(final Status newStatus) {
         if (this.status == newStatus) {
             return false;
@@ -532,7 +556,11 @@ public non-sealed abstract class CloudletAbstract extends CustomerEntityAbstract
         return this;
     }
 
-    @Override
+    /// Register the arrival time of this Cloudlet into a Datacenter to the
+    /// current simulation time and returns this time.
+    ///
+    /// @return the arrived time set (in seconds);
+    /// or [#NOT_ASSIGNED] if the cloudlet is not assigned to a Datacenter
     public double registerArrivalInDatacenter() {
         setDcArrivalTime(getSimulation().clock());
         return dcArrivalTime;

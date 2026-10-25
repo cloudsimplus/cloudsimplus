@@ -96,7 +96,7 @@ public class HostBuilder implements Builder {
     }
 
     private Host defaultHostCreationFunction(final CoreCapacity capacity) {
-        return new HostSimple(capacity)
+        return HostSimple.of(capacity)
             .setRamAllocator(new ResourceAllocatorSimple())
             .setBwAllocator(new ResourceAllocatorSimple())
             .addOnUpdateProcessingListener(onUpdateVmsProcessingListener);

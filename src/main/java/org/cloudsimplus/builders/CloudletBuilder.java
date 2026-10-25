@@ -131,7 +131,7 @@ public class CloudletBuilder implements Builder {
     }
 
     private Cloudlet defaultCloudletCreationFunction(final long length, final long requiredCores){
-	    return new CloudletSimple(length, requiredCores);
+	    return CloudletSimple.of(length, requiredCores);
     }
 
     /// Submits the list of created cloudlets to the latest created broker.

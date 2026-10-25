@@ -68,15 +68,15 @@ public final class VmExpectedFreeCoresOverflowTest {
         final int vmStorage = 10_000;
 
         simulation = new CloudSimPlus();
-        final var host = new HostSimple(hRAM, hBW, hStorage, new CoreCapacity(4, HOST_MIPS));
-        new DatacenterSimple(simulation, List.of(host));
+        final var host = HostSimple.of(hRAM, hBW, hStorage, new CoreCapacity(4, HOST_MIPS));
+        DatacenterSimple.of(simulation, List.of(host));
 
         final var broker = new DatacenterBrokerSimple(simulation);
-        vm = new VmSimple(new CoreCapacity(VM_CORES, HOST_MIPS));
+        vm = (VmSimple) VmSimple.of(new CoreCapacity(VM_CORES, HOST_MIPS));
         vm.setRam(vmRAM).setBw(vmBW).setSize(vmStorage);
         broker.submitVmList(List.of(vm));
 
-        final var cloudlet = new CloudletSimple(cloudletLen, CLOUDLET_CORES_HIGHER_THAN_VM_CAPACITY);
+        final var cloudlet = CloudletSimple.of(cloudletLen, CLOUDLET_CORES_HIGHER_THAN_VM_CAPACITY);
         broker.submitCloudletList(List.of(cloudlet));
     }
 

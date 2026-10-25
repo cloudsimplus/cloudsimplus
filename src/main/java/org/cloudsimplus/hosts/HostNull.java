@@ -51,17 +51,8 @@ import java.util.Set;
 /// @see Host#NULL
 final class HostNull implements Host {
     @Override public int compareTo(Host host) { return 0; }
-    @Override public boolean addMigratingInVm(Vm vm) {
-        return false;
-    }
     @Override public Set<Vm> getVmsMigratingOut() {
         return Collections.emptySet();
-    }
-    @Override public boolean addVmMigratingOut(Vm vm) {
-        return false;
-    }
-    @Override public boolean removeVmMigratingOut(Vm vm) {
-        return false;
     }
     @Override public Resource getBw() {
         return Resource.NULL;
@@ -114,16 +105,9 @@ final class HostNull implements Host {
         return Collections.emptySet();
     }
     @Override public boolean hasMigratingVms() { return false; }
-    @Override public void reallocateMigratingInVms() {/**/}
-    @Override public void removeMigratingInVm(Vm vm) {/**/}
-    @Override public void setDatacenter(Datacenter datacenter) {/**/}
-    @Override public double updateProcessing(double currentTime) {
-        return 0.0;
-    }
     @Override public HostSuitability createVm(Vm vm) {
         return HostSuitability.NULL;
     }
-    @Override public HostSuitability createTemporaryVm(Vm vm) { return HostSuitability.NULL; }
     @Override public Host addOnStartupListener(EventListener<HostEventInfo> listener) { return this; }
     @Override public boolean removeOnStartupListener(EventListener<HostEventInfo> listener) { return false; }
     @Override public Host addOnShutdownListener(EventListener<HostEventInfo> listener) { return this; }
@@ -144,7 +128,6 @@ final class HostNull implements Host {
     @Override public ExecDelayable setStartupDelay(double delay) { return this; }
     @Override public double getShutDownDelay() { return 0; }
     @Override public ExecDelayable setShutDownDelay(double delay) { return this; }
-    @Override public Host setSimulation(Simulation simulation) { return this; }
     @Override public String toString() {
         return "Host.NULL";
     }

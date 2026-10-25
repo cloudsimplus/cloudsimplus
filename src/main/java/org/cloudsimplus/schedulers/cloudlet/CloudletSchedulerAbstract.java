@@ -11,6 +11,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NonNull;
 import org.cloudsimplus.cloudlets.Cloudlet;
+import org.cloudsimplus.cloudlets.CloudletAbstract;
 import org.cloudsimplus.cloudlets.CloudletExecution;
 import org.cloudsimplus.core.CloudSimTag;
 import org.cloudsimplus.datacenters.Datacenter;
@@ -325,7 +326,7 @@ public abstract non-sealed class CloudletSchedulerAbstract implements CloudletSc
          This way, just changes its status to ready so
          that it can be scheduled naturally to start executing.
          */
-        cloudlet.setStatus(Cloudlet.Status.READY);
+        ((CloudletAbstract)cloudlet).setStatus(Cloudlet.Status.READY);
 
         /*
          Requests a cloudlet processing update to ensure the cloudlet will be moved to the

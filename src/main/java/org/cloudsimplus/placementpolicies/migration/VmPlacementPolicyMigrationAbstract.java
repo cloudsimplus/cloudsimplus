@@ -271,9 +271,9 @@ public non-sealed abstract class VmPlacementPolicyMigrationAbstract
     /// @param vm the candidate vm
     /// @return true, if the host will be over utilized after VM placement; false otherwise
     private boolean isNotHostOverloadedAfterAllocation(final Host host, final Vm vm) {
-        final var tempVm = new VmSimple(vm);
+        final var tempVm = VmSimple.of(vm);
 
-        if (!host.createTemporaryVm(tempVm).fully()) {
+        if (!((HostAbstract)host).createTemporaryVm(tempVm).fully()) {
             return false;
         }
 
@@ -450,7 +450,7 @@ public non-sealed abstract class VmPlacementPolicyMigrationAbstract
         used by the previous VM will be considered when
         assessing the suitability of such a Host for the next VM.
          */
-        targetHost.createTemporaryVm(vm);
+        ((HostAbstract)targetHost).createTemporaryVm(vm);
         migrationMap.put(vm, targetHost);
     }
 
@@ -602,9 +602,8 @@ public non-sealed abstract class VmPlacementPolicyMigrationAbstract
 
         for (final var vm : savedAllocation.keySet()) {
             final var host = savedAllocation.get(vm);
-            if (host.createTemporaryVm(vm).fully())
-                vm.setCreated(true);
-            else LOGGER.error("VmPlacementPolicy: Couldn't restore {} on {}", vm, host);
+            if (!((HostAbstract)host).createTemporaryVm(vm).fully())
+                LOGGER.error("VmPlacementPolicy: Couldn't restore {} on {}", vm, host);
         }
     }
 

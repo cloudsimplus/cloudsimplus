@@ -66,7 +66,7 @@ final class CloudletSchedulerSpaceSharedTestUtil {
         final CloudletSchedulerSpaceShared instance = createCloudletSchedulerWithMipsList(numberOfVmCores, mips);
 
         for(int i = 0; i < numberOfCloudlets; i++) {
-            final Cloudlet cloudlet = CloudletTestUtil.createCloudlet(i, mips, numberOfCloudletCores);
+            final var cloudlet = CloudletTestUtil.createCloudlet(i, mips, numberOfCloudletCores);
             cloudlet.registerArrivalInDatacenter();
             instance.cloudletSubmit(cloudlet);
         }
@@ -83,7 +83,7 @@ final class CloudletSchedulerSpaceSharedTestUtil {
     }
 
     private static CloudletSchedulerSpaceShared createScheduler(final long mips, final int cores) {
-        return createScheduler(new VmSimple(new CoreCapacity(cores, mips)));
+        return createScheduler(VmSimple.of(new CoreCapacity(cores, mips)));
     }
 
     /* default */ static CloudletSchedulerSpaceShared createScheduler(final Vm vm) {

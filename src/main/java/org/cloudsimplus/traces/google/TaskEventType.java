@@ -24,6 +24,7 @@
 package org.cloudsimplus.traces.google;
 
 import org.cloudsimplus.cloudlets.Cloudlet;
+import org.cloudsimplus.cloudlets.CloudletAbstract;
 import org.cloudsimplus.core.CloudSimTag;
 
 /// Defines the type of [TaskEvent] (a line) in the trace file
@@ -52,7 +53,7 @@ public enum TaskEventType {
             /* Set status to FROZEN to avoid the cloudlet to start running after being submitted.
             The execution must start only after a SCHEDULE event happens. */
             if(delay > 0) {
-                cloudlet.setStatus(Cloudlet.Status.FROZEN);
+                ((CloudletAbstract)cloudlet).setStatus(Cloudlet.Status.FROZEN);
             }
 
             final var broker = reader.getBrokerManager().getOrCreateBroker(event.getUserName());

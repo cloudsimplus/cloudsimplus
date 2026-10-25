@@ -43,9 +43,11 @@ public non-sealed abstract class CustomerEntityAbstract extends ExecDelayableAbs
     @EqualsAndHashCode.Include
     private DatacenterBroker broker = DatacenterBroker.NULL;
 
+    /// The last time the entity arrived at the broker, before being submitted to a Datacenter.
     private double brokerArrivalTime;
     private double creationTime;
 
+    /// The last Datacenter where the entity was tried to be created.
     private Datacenter lastTriedDatacenter;
     private double lifeTime;
 

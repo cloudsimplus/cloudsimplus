@@ -32,6 +32,7 @@ import org.cloudsimplus.autoscaling.VerticalVmScaling;
 import org.cloudsimplus.autoscaling.VmScaling;
 import org.cloudsimplus.brokers.DatacenterBroker;
 import org.cloudsimplus.cloudlets.Cloudlet;
+import org.cloudsimplus.cloudlets.CloudletAbstract;
 import org.cloudsimplus.core.CloudSimTag;
 import org.cloudsimplus.core.CustomerEntityAbstract;
 import org.cloudsimplus.core.Machine;
@@ -117,6 +118,7 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
     @NonNull
     private CloudletScheduler cloudletScheduler;
     private boolean created;
+    /// Indicates if the VM is in migration process or not.
     @Setter
     private boolean inMigration;
     private HorizontalVmScaling horizontalScaling;
@@ -235,12 +237,23 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
         setStorage(new SimpleStorage(defaultStorageCapacity));
     }
 
-    @Override
+    /// Updates the processing of cloudlets running on this VM at the current simulation time.
+    ///
+    /// @param mipsShare list with MIPS share of each core available to the scheduler
+    /// @return the predicted completion time of the earliest finishing cloudlet
+    /// (which is a relative delay from the current simulation time),
+    /// or [Double#MAX_VALUE] if there is no next Cloudlet to execute
     public double updateProcessing(final CoreCapacity mipsShare) {
         return updateProcessing(getSimulation().clock(), mipsShare);
     }
 
-    @Override
+    /// Updates the processing of cloudlets running on this VM.
+    ///
+    /// @param currentTime current simulation time
+    /// @param mipsShare list with MIPS share of each core available to the scheduler
+    /// @return the predicted completion time of the earliest finishing cloudlet
+    /// (which is a relative delay from the current simulation time),
+    /// or [Double#MAX_VALUE] if there is no next Cloudlet to execute
     public double updateProcessing(final double currentTime, @NonNull final CoreCapacity mipsShare) {
         if (!cloudletScheduler.isEmpty() || isStartingUp()) {
             setLastBusyTime(getSimulation().clock());
@@ -480,6 +493,7 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
     }
 
     /// Sets the PM that hosts the VM.
+    /// Only the [Host] calls it, when it creates the VM, so that the VM and the Host are always in sync.
     ///
     /// @param host Host to run the VM
     /// @return this Vm
@@ -524,6 +538,7 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
     }
 
     /// Changes the created status of the Vm inside the Host.
+    /// Only the [Host] calls it, when it creates or destroys the VM, so that the VM and the Host are always in sync.
     ///
     /// @param requestCreation true to indicate the VM was created inside the Host; false otherwise
     /// @see #isCreated()
@@ -560,7 +575,9 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
         return Collections.unmodifiableList(stateHistory);
     }
 
-    @Override
+    /// Adds a VM state history entry.
+    ///
+    /// @param entry the data about the state of the VM at given time
     public void addStateHistoryEntry(final VmStateHistoryEntry entry) {
         if (!stateHistory.isEmpty()) {
             final VmStateHistoryEntry previousState = stateHistory.get(stateHistory.size() - 1);
@@ -670,7 +687,7 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
         getBroker().getCloudletWaitingList()
             .stream()
             .filter(cl -> this.equals(cl.getVm()))
-            .forEach(cl -> cl.setStatus(Cloudlet.Status.FAILED_RESOURCE_UNAVAILABLE));
+            .forEach(cl -> ((CloudletAbstract)cl).setStatus(Cloudlet.Status.FAILED_RESOURCE_UNAVAILABLE));
     }
 
     @Override
@@ -688,28 +705,33 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
         return submissionDelay > 0;
     }
 
-    @Override
+    /// Notifies all registered listeners when the [Vm] is placed into a [Host].
     public void notifyOnHostPlacementListeners() {
         for (final var listener : onHostPlacementListeners) {
             listener.update(VmHostEventInfo.of(listener, this));
         }
     }
 
-    @Override
-    public void notifyOnHostRemovalListeners(@NonNull final Host deallocatedHost) {
+    /// Notifies all registered listeners when the [Vm] is moved/removed from a [Host].
+    ///
+    /// @param deallocatedHost the [Host] the [Vm] was moved/removed from
+    private void notifyOnHostRemovalListeners(@NonNull final Host deallocatedHost) {
         for (final var listener : onHostRemovalListeners) {
             listener.update(VmHostEventInfo.of(listener, this, deallocatedHost));
         }
     }
 
     /// Notifies all registered listeners when the processing of the Vm is updated in its [Host].
-    public void notifyOnUpdateProcessingListeners() {
+    private void notifyOnUpdateProcessingListeners() {
         for (final var listener : onUpdateProcessingListeners) {
             listener.update(VmHostEventInfo.of(listener, this));
         }
     }
 
-    @Override
+    /// Notifies all registered listeners when the Vm fail in
+    /// being placed for lack of a [Host] with enough resources in a specific [Datacenter].
+    ///
+    /// @param failedDatacenter the Datacenter where the VM creation failed
     public void notifyOnCreationFailureListeners(@NonNull final Datacenter failedDatacenter) {
         for (final var listener : onCreationFailureListeners) {
             listener.update(VmDatacenterEventInfo.of(listener, this, failedDatacenter));
@@ -799,7 +821,10 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
         return this;
     }
 
-    public Vm setGroup(final VmGroup group) {
+    /// Sets the group this VM belongs to. Only the [VmGroup] calls it, when the VM is added to the group.
+    /// @param group the group of the VM
+    /// @return this VM
+    Vm setGroup(final VmGroup group) {
         this.group = group;
         return this;
     }

@@ -20,7 +20,9 @@ import org.cloudsimplus.core.*;
 import org.cloudsimplus.core.events.CloudSimEvent;
 import org.cloudsimplus.core.events.SimEvent;
 import org.cloudsimplus.datacenters.Datacenter;
+import org.cloudsimplus.datacenters.DatacenterSimple;
 import org.cloudsimplus.datacenters.TimeZoned;
+import org.cloudsimplus.hosts.HostAbstract;
 import org.cloudsimplus.listeners.DatacenterBrokerEventInfo;
 import org.cloudsimplus.listeners.EventInfo;
 import org.cloudsimplus.listeners.EventListener;
@@ -238,10 +240,11 @@ public non-sealed abstract class DatacenterBrokerAbstract extends CloudSimEntity
     private void configureEntities(final List<? extends CustomerEntity> customerEntities) {
         for (final var entity : customerEntities) {
             entity.setBroker(this);
-            entity.setBrokerArrivalTime(getSimulation().clock());
+            final var entityAbstract = (CustomerEntityAbstract)entity;
+            entityAbstract.setBrokerArrivalTime(getSimulation().clock());
             /* If the finished entity is submitted again, clear the last tried datacenter
             * to indicate that, this time, it wasn't tried any datacenter yet. */
-            entity.setLastTriedDatacenter(Datacenter.NULL);
+            entityAbstract.setLastTriedDatacenter(Datacenter.NULL);
             if(entity instanceof VmGroup vmGroup) {
                 configureEntities(vmGroup.getVmList());
             }
@@ -459,7 +462,7 @@ public non-sealed abstract class DatacenterBrokerAbstract extends CloudSimEntity
     /// That happens when multiple Datacenters notify that a Host was powered on.
     ///
     /// @return true if some VM creation request was sent, false otherwise
-    /// @see Datacenter#addBrokerWaitingHostPowerOn(DatacenterBroker)
+    /// @see DatacenterSimple#addBrokerWaitingHostPowerOn(DatacenterBroker)
     private boolean processVmCreationRetry() {
         vmCreationRetrySent = false;
         if (vmCreation.getCreationRequests() > 0) {
@@ -559,7 +562,9 @@ public non-sealed abstract class DatacenterBrokerAbstract extends CloudSimEntity
     /// Updates the processing of the Host where a Cloudlet's VM is running.
     /// @param cloudlet the cloudlet to get the Host from its VM
     private void updateHostProcessing(final Cloudlet cloudlet) {
-        cloudlet.getVm().getHost().updateProcessing(getSimulation().clock());
+        if (cloudlet.getVm().getHost() instanceof HostAbstract host) {
+            host.updateProcessing(getSimulation().clock());
+        }
     }
 
     private void logCloudletStatusChange(final Cloudlet cloudlet, final String status) {
@@ -626,7 +631,7 @@ public non-sealed abstract class DatacenterBrokerAbstract extends CloudSimEntity
             if (vm.isCreated()) {
                 createdVms++;
                 processSuccessVmCreationInDatacenter(vm);
-                vm.notifyOnHostPlacementListeners();
+                ((VmAbstract)vm).notifyOnHostPlacementListeners();
             } else {
                 vm.setFailed(true);
                 if (!vmCreation.isRetryFailedVms()) {
@@ -637,7 +642,7 @@ public non-sealed abstract class DatacenterBrokerAbstract extends CloudSimEntity
                         getSimulation().clockStr(), getName(), vm);
                 }
 
-                vm.notifyOnCreationFailureListeners(lastSelectedDc);
+                ((VmAbstract)vm).notifyOnCreationFailureListeners(lastSelectedDc);
             }
         }
 
@@ -739,7 +744,7 @@ public non-sealed abstract class DatacenterBrokerAbstract extends CloudSimEntity
         int sentRequests = 0;
         for (final var vm : vmWaitingList) {
             if(creationRetry) {
-                vm.setLastTriedDatacenter(Datacenter.NULL);
+                ((VmAbstract)vm).setLastTriedDatacenter(Datacenter.NULL);
             }
 
             if(!batchVmCreation) {
@@ -769,7 +774,7 @@ public non-sealed abstract class DatacenterBrokerAbstract extends CloudSimEntity
     /// VM creation is not postponed, since the [VmPlacementPolicy] may power Hosts on as needed.
     ///
     /// @return true if VM creation was postponed, false otherwise
-    /// @see Datacenter#addBrokerWaitingHostPowerOn(DatacenterBroker)
+    /// @see DatacenterSimple#addBrokerWaitingHostPowerOn(DatacenterBroker)
     private boolean postponeVmCreationUntilHostPowerOn() {
         if (hasActiveHost()) {
             return false;
@@ -792,7 +797,7 @@ public non-sealed abstract class DatacenterBrokerAbstract extends CloudSimEntity
             "{}: {}: No Host is powered on in any available Datacenter. Postponing creation of {} VMs until some Host is powered on.",
             getSimulation().clockStr(), getName(), vmWaitingList.size());
 
-        dcsPoweringOnHosts.forEach(dc -> dc.addBrokerWaitingHostPowerOn(this));
+        dcsPoweringOnHosts.forEach(dc -> ((DatacenterSimple)dc).addBrokerWaitingHostPowerOn(this));
         this.vmCreationRetrySent = true;
         return true;
     }

@@ -19,6 +19,7 @@ import org.cloudsimplus.core.events.SimEvent;
 import org.cloudsimplus.datacenters.DatacenterCharacteristics.Distribution;
 import org.cloudsimplus.faultinjection.HostFaultInjection;
 import org.cloudsimplus.hosts.Host;
+import org.cloudsimplus.hosts.HostAbstract;
 import org.cloudsimplus.hosts.HostSimple;
 import org.cloudsimplus.hosts.HostSuitability;
 import org.cloudsimplus.listeners.DatacenterVmMigrationEventInfo;
@@ -110,23 +111,32 @@ public non-sealed class DatacenterSimple extends CloudSimEntity implements Datac
 
     /// Creates a Datacenter with an empty [storage][#getDatacenterStorage()]
     /// and a [VmPlacementPolicySimple] by default.
+    /// This constructor is only for subclasses: use [#of(Simulation, List)] to create a Datacenter.
     ///
     /// **NOTE:** To change such attributes, just call the respective setters.
     ///
     /// @param simulation the [CloudSimPlus] instance that represents the simulation the Entity belongs
     /// @param hostList list of [Host]s that will compound the Datacenter
     /// @see #DatacenterSimple(Simulation, List, VmPlacementPolicy, DatacenterStorage)
-    public DatacenterSimple(final Simulation simulation, final List<? extends Host> hostList) {
+    protected DatacenterSimple(final Simulation simulation, final List<? extends Host> hostList) {
         this(simulation, hostList, new VmPlacementPolicySimple(), new DatacenterStorage());
     }
 
+    /// Creates a Datacenter with an empty [storage][#getDatacenterStorage()]
+    /// and a [VmPlacementPolicySimple] by default.
+    /// @see #DatacenterSimple(Simulation, List)
+    public static Datacenter of(final Simulation simulation, final List<? extends Host> hostList) {
+        return new DatacenterSimple(simulation, hostList);
+    }
+
     /// Creates a Datacenter with an empty [storage][#getDatacenterStorage()].
+    /// This constructor is only for subclasses: use [#of(Simulation, List, VmPlacementPolicy)] to create a Datacenter.
     ///
     /// @param simulation the [CloudSimPlus] instance that represents the simulation the Entity belongs
     /// @param hostList list of [Host]s that will compound the Datacenter
     /// @param vmPlacementPolicy the policy to be used to allocate [Vm]s into [Host]s
     /// @see #DatacenterSimple(Simulation, List, VmPlacementPolicy, DatacenterStorage)
-    public DatacenterSimple(
+    protected DatacenterSimple(
         final Simulation simulation,
         final List<? extends Host> hostList,
         final VmPlacementPolicy vmPlacementPolicy)
@@ -134,8 +144,15 @@ public non-sealed class DatacenterSimple extends CloudSimEntity implements Datac
         this(simulation, hostList, vmPlacementPolicy, new DatacenterStorage());
     }
 
+    /// Creates a Datacenter with an empty [storage][#getDatacenterStorage()].
+    /// @see #DatacenterSimple(Simulation, List, VmPlacementPolicy)
+    public static Datacenter of(final Simulation simulation, final List<? extends Host> hostList, final VmPlacementPolicy vmPlacementPolicy) {
+        return new DatacenterSimple(simulation, hostList, vmPlacementPolicy);
+    }
+
     /// Creates a Datacenter with an empty [storage][#getDatacenterStorage()]
     /// and no Hosts.
+    /// This constructor is only for subclasses: use [#of(Simulation, VmPlacementPolicy)] to create a Datacenter.
     ///
     /// @param simulation the [CloudSimPlus] instance that represents the simulation the Entity belongs
     /// @param vmPlacementPolicy the policy to be used to allocate [Vm]s into [Host]s
@@ -143,20 +160,28 @@ public non-sealed class DatacenterSimple extends CloudSimEntity implements Datac
     /// @see #DatacenterSimple(Simulation, List, VmPlacementPolicy, DatacenterStorage)
     /// @see #addHost(Host)
     /// @see #addHostList(List)
-    public DatacenterSimple(
+    protected DatacenterSimple(
         final Simulation simulation,
         final VmPlacementPolicy vmPlacementPolicy)
     {
         this(simulation, new ArrayList<>(), vmPlacementPolicy, new DatacenterStorage());
     }
 
+    /// Creates a Datacenter with an empty [storage][#getDatacenterStorage()]
+    /// and no Hosts.
+    /// @see #DatacenterSimple(Simulation, VmPlacementPolicy)
+    public static Datacenter of(final Simulation simulation, final VmPlacementPolicy vmPlacementPolicy) {
+        return new DatacenterSimple(simulation, vmPlacementPolicy);
+    }
+
     /// Creates a Datacenter attaching a given storage list to its [storage][#getDatacenterStorage()].
+    /// This constructor is only for subclasses: use [#of(Simulation, List, VmPlacementPolicy, List)] to create a Datacenter.
     ///
     /// @param simulation the [CloudSimPlus] instance that represents the simulation the Entity belongs
     /// @param hostList list of [Host]s that will compound the Datacenter
     /// @param vmPlacementPolicy the policy to be used to allocate [Vm]s into [Host]s
     /// @param storageList the [SanStorage] list to attach to the [datacenter storage][#getDatacenterStorage()]
-    public DatacenterSimple(
+    protected DatacenterSimple(
         final Simulation simulation,
         final List<? extends Host> hostList,
         final VmPlacementPolicy vmPlacementPolicy,
@@ -165,14 +190,21 @@ public non-sealed class DatacenterSimple extends CloudSimEntity implements Datac
         this(simulation, hostList, vmPlacementPolicy, new DatacenterStorage(storageList));
     }
 
+    /// Creates a Datacenter attaching a given storage list to its [storage][#getDatacenterStorage()].
+    /// @see #DatacenterSimple(Simulation, List, VmPlacementPolicy, List)
+    public static Datacenter of(final Simulation simulation, final List<? extends Host> hostList, final VmPlacementPolicy vmPlacementPolicy, final List<SanStorage> storageList) {
+        return new DatacenterSimple(simulation, hostList, vmPlacementPolicy, storageList);
+    }
+
     /// Creates a Datacenter with a given [storage][#getDatacenterStorage()].
+    /// This constructor is only for subclasses: use [#of(Simulation, List, VmPlacementPolicy, DatacenterStorage)] to create a Datacenter.
     ///
     /// @param simulation the [CloudSimPlus] instance that represents the simulation the Entity belongs
     /// @param hostList list of [Host]s that will compound the Datacenter
     /// @param vmPlacementPolicy the policy to be used to allocate VMs into hosts
     /// @param storage the [storage][#getDatacenterStorage()] for this Datacenter
     /// @see DatacenterStorage#getStorageList()
-    public DatacenterSimple(
+    protected DatacenterSimple(
         final Simulation simulation,
         final List<? extends Host> hostList,
         final VmPlacementPolicy vmPlacementPolicy,
@@ -198,6 +230,12 @@ public non-sealed class DatacenterSimple extends CloudSimEntity implements Datac
         setVmPlacementPolicy(vmPlacementPolicy);
     }
 
+    /// Creates a Datacenter with a given [storage][#getDatacenterStorage()].
+    /// @see #DatacenterSimple(Simulation, List, VmPlacementPolicy, DatacenterStorage)
+    public static Datacenter of(final Simulation simulation, final List<? extends Host> hostList, final VmPlacementPolicy vmPlacementPolicy, final DatacenterStorage storage) {
+        return new DatacenterSimple(simulation, hostList, vmPlacementPolicy, storage);
+    }
+
     private void setHostList(@NonNull final List<? extends Host> hostList) {
         this.hostList = hostList;
         setupHosts();
@@ -220,9 +258,10 @@ public non-sealed class DatacenterSimple extends CloudSimEntity implements Datac
             host.setId(++nextId);
         }
 
-        host.setSimulation(getSimulation());
-        host.setDatacenter(this);
-        host.setActive(((HostSimple)host).isActivateOnDatacenterStartup());
+        final var hostAbstract = (HostAbstract)host;
+        hostAbstract.setSimulation(getSimulation());
+        hostAbstract.setDatacenter(this);
+        host.setActive(hostAbstract.isActivateOnDatacenterStartup());
         return nextId;
     }
 
@@ -552,7 +591,7 @@ public non-sealed class DatacenterSimple extends CloudSimEntity implements Datac
     /// @return true or false to indicate if the VM was created or not
     private boolean updateVmProcessing(final Vm vm) {
         if(vm.isCreated())
-            vm.updateProcessing(vm.getHost().getVmScheduler().getAllocatedMips(vm));
+            ((VmAbstract)vm).updateProcessing(vm.getHost().getVmScheduler().getAllocatedMips(vm));
         return vm.isCreated();
     }
 
@@ -625,7 +664,7 @@ public non-sealed class DatacenterSimple extends CloudSimEntity implements Datac
         //De-allocates the VM on the source Host (where it is migrating out)
         vmPlacementPolicy.removeVm(vm);
 
-        targetHost.removeMigratingInVm(vm);
+        ((HostAbstract)targetHost).removeMigratingInVm(vm);
         final HostSuitability suitability = vmPlacementPolicy.placeVm(vm, targetHost);
         if(suitability.fully()) {
             vm.updateMigrationFinishListeners(targetHost);
@@ -703,7 +742,7 @@ public non-sealed class DatacenterSimple extends CloudSimEntity implements Datac
     protected double updateHostsProcessing() {
         double nextSimulationDelay = Double.MAX_VALUE;
         for (final Host host : getHostList()) {
-            final double delay = host.updateProcessing(clock());
+            final double delay = ((HostAbstract)host).updateProcessing(clock());
             nextSimulationDelay = Math.min(delay, nextSimulationDelay);
         }
 
@@ -815,8 +854,8 @@ public non-sealed class DatacenterSimple extends CloudSimEntity implements Datac
         final String msg2 = fmt.formatted(delay, getBandwidthPercentForMigration()*100, vmResource);
         LOGGER.info("{}: {}: {} of {} is started. {}", currentTime, this, migrationType, msg1, msg2);
 
-        if(targetHost.addMigratingInVm(sourceVm)) {
-            sourceHost.addVmMigratingOut(sourceVm);
+        if(((HostAbstract)targetHost).addMigratingInVm(sourceVm)) {
+            ((HostAbstract)sourceHost).addVmMigratingOut(sourceVm);
             send(this, delay, CloudSimTag.VM_MIGRATE, new TreeMap.SimpleEntry<>(sourceVm, targetHost));
             shutdownVmIfNonLiveMigration(sourceVm, targetHost, delay, nonLiveMigration);
         }
@@ -896,10 +935,7 @@ public non-sealed class DatacenterSimple extends CloudSimEntity implements Datac
         return hostList.stream().filter(Host::isActive);
     }
 
-    /// Sets the policy to be used by the Datacenter to allocate [Vm]s into [Host]s.
-    ///
-    /// @param vmPlacementPolicy the new VM placement policy
-    /// @return this Datacenter
+    @Override
     public final Datacenter setVmPlacementPolicy(final VmPlacementPolicy vmPlacementPolicy) {
         requireNonNull(vmPlacementPolicy);
         if(vmPlacementPolicy.getDatacenter() != null && vmPlacementPolicy.getDatacenter() != Datacenter.NULL && !this.equals(vmPlacementPolicy.getDatacenter())){
@@ -959,7 +995,14 @@ public non-sealed class DatacenterSimple extends CloudSimEntity implements Datac
         poweringOnHostsNumber += poweringOn ? 1 : -1;
     }
 
-    @Override
+    /// Registers a broker that is waiting for a Host to be powered on, so that it can create its waiting VMs.
+    /// When the next Host is powered on, the broker receives a [CloudSimTag#VM_CREATE_RETRY] event
+    /// (after the [org.cloudsimplus.core.Simulation#getMinTimeBetweenEvents()]).
+    /// Then the broker is removed from the waiting list.
+    ///
+    /// @param broker the broker waiting for a Host to be powered on
+    /// @return this Datacenter
+    /// @see #getPoweringOnHostsNumber()
     public Datacenter addBrokerWaitingHostPowerOn(@NonNull final DatacenterBroker broker) {
         brokersWaitingHostPowerOn.add(broker);
         return this;

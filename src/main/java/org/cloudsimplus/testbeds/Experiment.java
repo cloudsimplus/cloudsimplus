@@ -282,7 +282,7 @@ public abstract class Experiment<T extends Experiment<T>> extends AbstractRunnab
     /// @return the created Datacenter
     /// @see #setVmPlacementPolicySupplier(Supplier)
     protected Datacenter createDatacenter(final int index) {
-        return new DatacenterSimple(simulation, createHosts(), newVmPlacementPolicy());
+        return DatacenterSimple.of(simulation, createHosts(), newVmPlacementPolicy());
     }
 
     private long validateSeed(long seed) {

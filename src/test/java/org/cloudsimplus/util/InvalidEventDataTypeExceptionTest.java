@@ -51,7 +51,7 @@ class InvalidEventDataTypeExceptionTest {
 
     @Test
     void messageIncludesDataTypeAndEventSourceAndDestination() {
-        final var evt = createEvent(new CloudletSimple(1000, 1));
+        final var evt = createEvent(CloudletSimple.of(1000, 1));
         final var expected =
             "0.00: CLOUDLET_UPDATE_ATTRIBUTES event data must be a Runnable but it was CloudletSimple. " +
             "Event sent from Sender to Receiver.";

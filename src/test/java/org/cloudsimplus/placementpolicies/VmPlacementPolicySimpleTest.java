@@ -71,7 +71,7 @@ public class VmPlacementPolicySimpleTest {
         }
 
         final var policy = new VmPlacementPolicySimple();
-        policy.setDatacenter(new DatacenterSimple(Simulation.NULL, hosts));
+        policy.setDatacenter(DatacenterSimple.of(Simulation.NULL, hosts));
         return policy;
     }
 
@@ -106,7 +106,7 @@ public class VmPlacementPolicySimpleTest {
     @Test
     public void placeVmGroupIsFullySuitableWhenAllVmsAreCreated() {
         final Host host = policy.getDatacenter().getHostList().get(2);
-        final var vmGroup = new VmGroup(List.of(VmTestUtil.createVm(0, 1000, 2), VmTestUtil.createVm(1, 1000, 2)));
+        final var vmGroup = VmGroup.of(List.of(VmTestUtil.createVm(0, 1000, 2), VmTestUtil.createVm(1, 1000, 2)));
 
         assertTrue(policy.placeVm(vmGroup, host).fully());
         assertTrue(vmGroup.isCreated());
@@ -116,7 +116,7 @@ public class VmPlacementPolicySimpleTest {
     @Test
     public void placeVmGroupIsNotFullySuitableWhenSomeVmIsNotCreated() {
         final Host host = policy.getDatacenter().getHostList().get(2);
-        final var vmGroup = new VmGroup(List.of(VmTestUtil.createVm(0, 1000, 4), VmTestUtil.createVm(1, 1000, 4)));
+        final var vmGroup = VmGroup.of(List.of(VmTestUtil.createVm(0, 1000, 4), VmTestUtil.createVm(1, 1000, 4)));
 
         final var suitability = policy.placeVm(vmGroup, host);
         assertFalse(suitability.fully());

@@ -41,7 +41,7 @@ class ProcessorTest {
 
     @BeforeEach
     void setUp() {
-        vm = new VmSimple(new CoreCapacity(CORES, MIPS));
+        vm = (VmSimple) VmSimple.of(new CoreCapacity(CORES, MIPS));
         final var processor = vm.getProcessor();
         processor.moveCores(CoreStatus.FREE, CoreStatus.BUSY, 1);
         processor.moveCores(CoreStatus.FREE, CoreStatus.FAILED, 1);

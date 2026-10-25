@@ -44,21 +44,35 @@ public class NetworkCloudlet extends CloudletSimple {
 
     /// Creates a NetworkCloudlet with no priority, no file size and output size equal to 1.
     /// The length of the Cloudlet is determined by the sum of its [tasks][#getTasks()] length.
+    /// This constructor is only for subclasses: use [#of(int)] to create a Cloudlet.
     ///
     /// @param cores the number of CPU cores this Cloudlet requires
-    public NetworkCloudlet(final int cores) {
+    protected NetworkCloudlet(final int cores) {
         this(-1, cores);
     }
 
     /// Creates a NetworkCloudlet with no priority, no file size and output size equal to 1.
+    /// @see #NetworkCloudlet(int)
+    public static NetworkCloudlet of(final int cores) {
+        return new NetworkCloudlet(cores);
+    }
+
+    /// Creates a NetworkCloudlet with no priority, no file size and output size equal to 1.
     /// The length of the Cloudlet is determined by the sum of its [tasks][#getTasks()] length.
+    /// This constructor is only for subclasses: use [#of(int, int)] to create a Cloudlet.
     ///
     /// @param id        the unique ID of this cloudlet
     /// @param cores the number of CPU cores this Cloudlet requires
-    public NetworkCloudlet(final int id, final int cores) {
+    protected NetworkCloudlet(final int id, final int cores) {
         super(id, -1, cores);
         this.currentTaskNum = -1;
         this.tasks = new ArrayList<>();
+    }
+
+    /// Creates a NetworkCloudlet with no priority, no file size and output size equal to 1.
+    /// @see #NetworkCloudlet(int, int)
+    public static NetworkCloudlet of(final int id, final int cores) {
+        return new NetworkCloudlet(id, cores);
     }
 
     public double getNumberOfTasks() {

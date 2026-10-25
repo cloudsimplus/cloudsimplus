@@ -99,7 +99,6 @@ final class CloudletNull implements Cloudlet {
     @Override public Cloudlet setFileSize(long fileSize) { return this; }
     @Override public Cloudlet setOutputSize(long outputSize) { return this; }
     @Override public Cloudlet setSizes(long size) { return this; }
-    @Override public boolean setStatus(Status newStatus) { return false; }
     @Override public Cloudlet setNetServiceLevel(int netServiceLevel) { return this; }
     @Override public Cloudlet setRequiredCores(long cores) { return this; }
     @Override public Cloudlet setBroker(DatacenterBroker broker) { return this; }
@@ -111,14 +110,11 @@ final class CloudletNull implements Cloudlet {
     @Override public Cloudlet setVm(Vm vm) { return this; }
     @Override public boolean removeOnFinishListener(EventListener<CloudletVmEventInfo> listener) { return false; }
     @Override public Cloudlet addOnFinishListener(EventListener<CloudletVmEventInfo> listener) { return Cloudlet.NULL; }
-    @Override public void notifyOnUpdateProcessingListeners(double time) {/**/}
     @Override public Simulation getSimulation() {
         return Simulation.NULL;
     }
-    @Override public Cloudlet setLastTriedDatacenter(Datacenter lastTriedDatacenter) { return this; }
     @Override public Datacenter getLastTriedDatacenter() { return Datacenter.NULL; }
     @Override public double getBrokerArrivalTime() { return 0; }
-    @Override public CustomerEntity setBrokerArrivalTime(double time) { return this; }
     @Override public double getCreationTime() { return 0; }
     @Override public double getCreationWaitTime() { return 0; }
     @Override public boolean removeOnUpdateProcessingListener(EventListener<CloudletVmEventInfo> listener) { return false; }
@@ -129,11 +125,9 @@ final class CloudletNull implements Cloudlet {
     @Override public boolean isBoundToVm() { return false; }
     @Override public int compareTo(Cloudlet cloudlet) { return 0; }
     @Override public String toString() { return "Cloudlet.NULL"; }
-    @Override public boolean addFinishedLengthSoFar(long partialFinishedMI) { return false; }
     @Override public Startable setStartTime(double time) { return this; }
     @Override public Cloudlet addOnStartListener(EventListener<CloudletVmEventInfo> listener) { return this; }
     @Override public boolean removeOnStartListener(EventListener<CloudletVmEventInfo> listener) { return false; }
-    @Override public double registerArrivalInDatacenter() { return -1; }
     @Override public Cloudlet reset() { return this; }
     @Override public Cloudlet setLifeTime(final double lifeTime) { return this; }
     @Override public double getLifeTime() { return -1; }

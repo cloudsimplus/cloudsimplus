@@ -112,7 +112,7 @@ public class ProcessorSimpleTest {
 
     @Test
     public void testSetMipsAfterMachineStarted() {
-        final var vm = new VmSimple(new CoreCapacity(NUMBER_OF_CORES, CORE_MIPS));
+        final var vm = (VmSimple) VmSimple.of(new CoreCapacity(NUMBER_OF_CORES, CORE_MIPS));
         vm.setCreated(true);
         assertThrows(IllegalStateException.class, () -> vm.getProcessor().setMips(CORE_MIPS * 2));
     }

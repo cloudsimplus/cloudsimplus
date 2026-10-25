@@ -206,7 +206,7 @@ public final class VmCreationFailureIntegrationTest {
     }
 
     private Vm createVm(final CoreCapacity capacity) {
-        return new VmSimple(capacity)
+        return VmSimple.of(capacity)
                         .setRam(HostSimple.getDefaultRamCapacity())
                         .setBw(HostSimple.getDefaultBwCapacity())
                         .setSize(HostSimple.getDefaultStorageCapacity());

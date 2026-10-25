@@ -22,6 +22,7 @@ import org.cloudsimplus.schedulers.cloudlet.network.CloudletTaskScheduler;
 import org.cloudsimplus.schedulers.cloudlet.network.CloudletTaskSchedulerSimple;
 import org.cloudsimplus.schedulers.vm.VmSchedulerSpaceShared;
 import org.cloudsimplus.vms.Vm;
+import org.cloudsimplus.vms.VmAbstract;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -65,13 +66,20 @@ public class NetworkHost extends HostSimple {
     private EdgeSwitch edgeSwitch;
 
     /// Creates and starts up a NetworkHost using a [VmSchedulerSpaceShared] as default.
+    /// This constructor is only for subclasses: use [#of(long, long, long, CoreCapacity)] to create a Host.
     ///
     /// @param ram the RAM capacity in Megabytes
     /// @param bw the Bandwidth (BW) capacity in Megabits/s
     /// @param storage the storage capacity in Megabytes
     /// @param capacity the number of CPU cores of the Host and the MIPS capacity of each core
-    public NetworkHost(final long ram, final long bw, final long storage, final CoreCapacity capacity) {
+    protected NetworkHost(final long ram, final long bw, final long storage, final CoreCapacity capacity) {
         super(ram, bw, storage, capacity);
+    }
+
+    /// Creates and starts up a NetworkHost using a [VmSchedulerSpaceShared] as default.
+    /// @see #NetworkHost(long, long, long, CoreCapacity)
+    public static NetworkHost of(final long ram, final long bw, final long storage, final CoreCapacity capacity) {
+        return new NetworkHost(ram, bw, storage, capacity);
     }
 
     /// Creates a NetworkHost with no resources.
@@ -144,7 +152,7 @@ public class NetworkHost extends HostSimple {
 
         if (!pktsToSendForLocalVms.isEmpty()) {
             for (final Vm vm : getVmList()) {
-                vm.updateProcessing(getVmScheduler().getAllocatedMips(vm));
+                ((VmAbstract)vm).updateProcessing(getVmScheduler().getAllocatedMips(vm));
             }
         }
 

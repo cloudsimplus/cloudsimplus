@@ -24,6 +24,7 @@ public class CloudletSimple extends CloudletAbstract {
     /// Creates a Cloudlet with no priority or id.
     /// The id is defined when the Cloudlet is submitted to
     /// a [DatacenterBroker]. The file size and output size are defined as 1.
+    /// This constructor is only for subclasses: use [#of(long, int, UtilizationModel)] to create a Cloudlet.
     ///
     /// @param length the length (in MI) of this cloudlet to be executed in a VM
     /// (check out [#setLength(long)])
@@ -35,30 +36,20 @@ public class CloudletSimple extends CloudletAbstract {
     /// @see #setUtilizationModelCpu(UtilizationModel)
     /// @see #setUtilizationModelRam(UtilizationModel)
     /// @see #setUtilizationModelBw(UtilizationModel)
-    public CloudletSimple(final long length, final int cores, final UtilizationModel utilizationModel) {
+    protected CloudletSimple(final long length, final int cores, final UtilizationModel utilizationModel) {
         super(length, cores, utilizationModel);
     }
 
     /// Creates a Cloudlet with no priority or id.
-    /// The id is defined when the Cloudlet is submitted to
-    /// a [DatacenterBroker]. The file size and output size are defined as 1.
-    ///
-    /// **NOTE:** By default, the Cloudlet will use a [UtilizationModel#FULL] to define
-    /// CPU utilization and a [UtilizationModel#NULL] for RAM and BW.
-    /// To change the default values, use the respective setters.
-    ///
-    /// @param length the length (in MI) of this cloudlet to be executed in a VM
-    /// (check out [#setLength(long)])
-    /// @param cores the number of CPU cores the Cloudlet will require
-    /// @see #setUtilizationModelRam(UtilizationModel)
-    /// @see #setUtilizationModelBw(UtilizationModel)
-    public CloudletSimple(final long length, final int cores) {
-        super(length, cores);
+    /// @see #CloudletSimple(long, int, UtilizationModel)
+    public static Cloudlet of(final long length, final int cores, final UtilizationModel utilizationModel) {
+        return new CloudletSimple(length, cores, utilizationModel);
     }
 
     /// Creates a Cloudlet with no priority or id.
     /// The id is defined when the Cloudlet is submitted to
     /// a [DatacenterBroker]. The file size and output size are defined as 1.
+    /// This constructor is only for subclasses: use [#of(long, int)] to create a Cloudlet.
     ///
     /// **NOTE:** By default, the Cloudlet will use a [UtilizationModel#FULL] to define
     /// CPU utilization and a [UtilizationModel#NULL] for RAM and BW.
@@ -69,11 +60,42 @@ public class CloudletSimple extends CloudletAbstract {
     /// @param cores the number of CPU cores the Cloudlet will require
     /// @see #setUtilizationModelRam(UtilizationModel)
     /// @see #setUtilizationModelBw(UtilizationModel)
-    public CloudletSimple(final long length, final long cores) {
+    protected CloudletSimple(final long length, final int cores) {
         super(length, cores);
     }
 
+    /// Creates a Cloudlet with no priority or id.
+    /// @see #CloudletSimple(long, int)
+    public static Cloudlet of(final long length, final int cores) {
+        return new CloudletSimple(length, cores);
+    }
+
+    /// Creates a Cloudlet with no priority or id.
+    /// The id is defined when the Cloudlet is submitted to
+    /// a [DatacenterBroker]. The file size and output size are defined as 1.
+    /// This constructor is only for subclasses: use [#of(long, long)] to create a Cloudlet.
+    ///
+    /// **NOTE:** By default, the Cloudlet will use a [UtilizationModel#FULL] to define
+    /// CPU utilization and a [UtilizationModel#NULL] for RAM and BW.
+    /// To change the default values, use the respective setters.
+    ///
+    /// @param length the length (in MI) of this cloudlet to be executed in a VM
+    /// (check out [#setLength(long)])
+    /// @param cores the number of CPU cores the Cloudlet will require
+    /// @see #setUtilizationModelRam(UtilizationModel)
+    /// @see #setUtilizationModelBw(UtilizationModel)
+    protected CloudletSimple(final long length, final long cores) {
+        super(length, cores);
+    }
+
+    /// Creates a Cloudlet with no priority or id.
+    /// @see #CloudletSimple(long, long)
+    public static Cloudlet of(final long length, final long cores) {
+        return new CloudletSimple(length, cores);
+    }
+
     /// Creates a Cloudlet with no priority, file size and output size equal to 1.
+    /// This constructor is only for subclasses: use [#of(long, long, long)] to create a Cloudlet.
     ///
     /// **NOTE:** By default, the Cloudlet will use a [UtilizationModel#FULL] to define
     /// CPU utilization and a [UtilizationModel#NULL] for RAM and BW.
@@ -85,8 +107,14 @@ public class CloudletSimple extends CloudletAbstract {
     /// @param cores the number of CPU cores the Cloudlet will require
     /// @see #setUtilizationModelRam(UtilizationModel)
     /// @see #setUtilizationModelBw(UtilizationModel)
-    public CloudletSimple(final long id, final long length, final long cores) {
+    protected CloudletSimple(final long id, final long length, final long cores) {
         super(id, length, cores);
+    }
+
+    /// Creates a Cloudlet with no priority, file size and output size equal to 1.
+    /// @see #CloudletSimple(long, long, long)
+    public static Cloudlet of(final long id, final long length, final long cores) {
+        return new CloudletSimple(id, length, cores);
     }
 
     @Override

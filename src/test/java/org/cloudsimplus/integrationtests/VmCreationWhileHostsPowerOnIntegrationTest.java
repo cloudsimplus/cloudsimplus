@@ -75,7 +75,7 @@ final class VmCreationWhileHostsPowerOnIntegrationTest {
     @Test
     @Timeout(value = TIMEOUT_SECS, threadMode = Timeout.ThreadMode.SEPARATE_THREAD)
     void createsVmsRightAfterHostsArePoweredOn() {
-        final var dc = new DatacenterSimple(simulation, List.of(createHost(HOST_STARTUP_DELAY), createHost(HOST_STARTUP_DELAY)));
+        final var dc = DatacenterSimple.of(simulation, List.of(createHost(HOST_STARTUP_DELAY), createHost(HOST_STARTUP_DELAY)));
 
         //Postponing VM creation doesn't rely on creation retries
         broker.getVmCreation().setRetryDelay(-1);
@@ -92,8 +92,8 @@ final class VmCreationWhileHostsPowerOnIntegrationTest {
     @Test
     @Timeout(value = TIMEOUT_SECS, threadMode = Timeout.ThreadMode.SEPARATE_THREAD)
     void createsVmsOnceWhenHostsInMultipleDatacentersArePoweredOn() {
-        new DatacenterSimple(simulation, List.of(createHost(HOST_STARTUP_DELAY)));
-        new DatacenterSimple(simulation, List.of(createHost(SHORT_HOST_STARTUP_DELAY)));
+        DatacenterSimple.of(simulation, List.of(createHost(HOST_STARTUP_DELAY)));
+        DatacenterSimple.of(simulation, List.of(createHost(SHORT_HOST_STARTUP_DELAY)));
 
         broker.submitVmList(vmList);
         simulation.start();
@@ -112,7 +112,7 @@ final class VmCreationWhileHostsPowerOnIntegrationTest {
     void createsVmsSubmittedWhileHostIsPoweringOnRightAfterItIsPoweredOn() {
         final var slowHost = createHost(HOST_STARTUP_DELAY);
         final var fastHost = createHost(SHORT_HOST_STARTUP_DELAY);
-        final var dc = new DatacenterSimple(simulation, List.of(slowHost, fastHost));
+        final var dc = DatacenterSimple.of(simulation, List.of(slowHost, fastHost));
         fastHost.addOnStartupListener(info -> {
             //Just the slow Host is still powering on
             assertEquals(1, dc.getPoweringOnHostsNumber());
@@ -139,7 +139,7 @@ final class VmCreationWhileHostsPowerOnIntegrationTest {
     }
 
     private static Host createHost(final double startupDelay) {
-        final var host = new HostSimple(new CoreCapacity(HOST_CORES, MIPS));
+        final var host = HostSimple.of(new CoreCapacity(HOST_CORES, MIPS));
         host.setStartupDelay(startupDelay);
         return host;
     }
@@ -147,7 +147,7 @@ final class VmCreationWhileHostsPowerOnIntegrationTest {
     private List<Vm> createVms() {
         final var list = new ArrayList<Vm>(VMS);
         for (int i = 0; i < VMS; i++) {
-            final var vm = new VmSimple(new CoreCapacity(VM_CORES, MIPS));
+            final var vm = VmSimple.of(new CoreCapacity(VM_CORES, MIPS));
             vm.addOnCreationFailureListener(evt -> creationFailures.incrementAndGet());
             list.add(vm);
         }

@@ -53,8 +53,9 @@ public class VmGroup extends VmSimple {
     private final List<Vm> vmList;
 
     /// Creates a VmGroup for a List of VMs.
+    /// This constructor is only for subclasses: use [#of(List)] to create a VM group.
     /// @param vmList the List of VMs to create the group
-    public VmGroup(@NonNull final List<Vm> vmList) {
+    protected VmGroup(@NonNull final List<Vm> vmList) {
         super(new CoreCapacity(getTotalCores(vmList), getMaxMips(vmList)));
 
         this.vmList = vmList;
@@ -73,29 +74,51 @@ public class VmGroup extends VmSimple {
         setTimeZone(Double.MIN_VALUE);
     }
 
+    /// Creates a VmGroup for a List of VMs.
+    /// @see #VmGroup(List)
+    public static VmGroup of(@NonNull final List<Vm> vmList) {
+        return new VmGroup(vmList);
+    }
+
     /// Creates a VmGroup for a List of VMs to be placed
     /// at the datacenter closest to a given timezone.
     /// All VMs will be changed to the given time zone.
+    /// This constructor is only for subclasses: use [#of(List, double)] to create a VM group.
     /// @param vmList the List of VMs to create the group
     /// @param timeZone the timezone of the Datacenter where it's expected the VMs to be placed
     /// as close as possible
     /// @see DatacenterBroker#setSelectClosestDatacenter(boolean)
-    public VmGroup(final List<Vm> vmList, final double timeZone) {
+    protected VmGroup(final List<Vm> vmList, final double timeZone) {
         this(vmList);
         setTimeZone(timeZone);
     }
 
     /// Creates a VmGroup for a List of VMs to be placed
     /// at the datacenter closest to a given timezone.
+    /// @see #VmGroup(List, double)
+    public static VmGroup of(final List<Vm> vmList, final double timeZone) {
+        return new VmGroup(vmList, timeZone);
+    }
+
+    /// Creates a VmGroup for a List of VMs to be placed
+    /// at the datacenter closest to a given timezone.
     /// All VMs will be changed to the given time zone.
+    /// This constructor is only for subclasses: use [#of(long, List, double)] to create a VM group.
     /// @param id the VmGroup ID
     /// @param vmList the List of VMs to create the group
     /// @param timeZone the time zone of the Datacenter where it's expected the VMs to be placed
     /// as close as possible
     /// @see DatacenterBroker#setSelectClosestDatacenter(boolean)
-    public VmGroup(final long id, final List<Vm> vmList, final double timeZone) {
+    protected VmGroup(final long id, final List<Vm> vmList, final double timeZone) {
         this(vmList, timeZone);
         setId(id);
+    }
+
+    /// Creates a VmGroup for a List of VMs to be placed
+    /// at the datacenter closest to a given timezone.
+    /// @see #VmGroup(long, List, double)
+    public static VmGroup of(final long id, final List<Vm> vmList, final double timeZone) {
+        return new VmGroup(id, vmList, timeZone);
     }
 
     @Override
@@ -162,7 +185,7 @@ public class VmGroup extends VmSimple {
         // The given mipsShare is ignored because we need to get the mipsShare for each VM inside the group
         double minNextEventDelay = Double.MAX_VALUE;
         for (final Vm vm : vmList) {
-            final double nextEventDelay = vm.updateProcessing(currentTime, vm.getHost().getVmScheduler().getAllocatedMips(vm));
+            final double nextEventDelay = ((VmAbstract)vm).updateProcessing(currentTime, vm.getHost().getVmScheduler().getAllocatedMips(vm));
             minNextEventDelay = Math.min(minNextEventDelay, nextEventDelay);
         }
 
