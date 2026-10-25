@@ -76,8 +76,8 @@ public class CloudletTaskSchedulerSimple implements CloudletTaskScheduler {
     private void updateExecutionTask(final NetworkCloudlet cloudlet, final long partialFinishedMI) {
         /*
          * TODO It has to be checked if the task execution
-         *      is considering only one cloudlet PE or all PEs.
-         *      Each execution task is supposed to use just one PE.
+         *      is considering only one cloudlet core or all cores.
+         *      Each execution task is supposed to use just one core.
          * See https://github.com/cloudsimplus/cloudsimplus/issues/589
          */
         final Optional<CloudletExecutionTask> optional = getCloudletCurrentTask(cloudlet);

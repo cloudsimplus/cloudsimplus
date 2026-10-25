@@ -27,7 +27,7 @@ import org.cloudsimplus.cloudlets.Cloudlet;
 import org.cloudsimplus.cloudlets.CloudletExecution;
 import org.cloudsimplus.cloudlets.CloudletSimple;
 import org.cloudsimplus.cloudlets.CloudletTestUtil;
-import org.cloudsimplus.schedulers.MipsShare;
+import org.cloudsimplus.resources.CoreCapacity;
 import org.cloudsimplus.utilizationmodels.UtilizationModel;
 import org.cloudsimplus.utilizationmodels.UtilizationModelDynamic;
 import org.cloudsimplus.vms.VmSimple;
@@ -50,10 +50,10 @@ final class CloudletSchedulerTimeSharedTestUtil {
         return cloudlet;
     }
 
-    /* default */ static CloudletSchedulerTimeShared createCloudletSchedulerWithMipsList(final int pesNumber, final long mips) {
-        final CloudletSchedulerTimeShared scheduler = new CloudletSchedulerTimeShared();
-        scheduler.setVm(new VmSimple(0, mips, pesNumber));
-        scheduler.setCurrentMipsShare(new MipsShare(pesNumber, mips));
+    /* default */ static CloudletSchedulerTimeShared createCloudletSchedulerWithMipsList(final int cores, final long mips) {
+        final var scheduler = new CloudletSchedulerTimeShared();
+        scheduler.setVm(new VmSimple(0, new CoreCapacity(cores, mips)));
+        scheduler.setCurrentMipsShare(new CoreCapacity(cores, mips));
         return scheduler;
     }
 
@@ -65,38 +65,38 @@ final class CloudletSchedulerTimeSharedTestUtil {
         instance.getCloudletPausedList().add(new CloudletExecution(cloudlet));
     }
 
-    /// Creates a scheduler with a list of running cloudlets, where each Cloudlet has just one PE.
+    /// Creates a scheduler with a list of running cloudlets, where each Cloudlet has just one core.
     ///
-    /// @param mips the MIPS capacity of each PE from the VM's scheduler
-    /// @param vmPes number of PEs of the VM's scheduler
+    /// @param mips the MIPS capacity of each core from the VM's scheduler
+    /// @param vmCores number of CPU cores of the VM's scheduler
     /// @param cloudlets number of Cloudlets to create
     /// @return the new scheduler
     /* default */ static CloudletSchedulerTimeShared newSchedulerWithSingleCoreRunningCloudlets(
-        final long mips, final int vmPes, final int cloudlets)
+        final long mips, final int vmCores, final int cloudlets)
     {
-        return newSchedulerWithRunningCloudlets(mips, vmPes, cloudlets, 1);
+        return newSchedulerWithRunningCloudlets(mips, vmCores, cloudlets, 1);
     }
 
     /// Creates a scheduler with a list of running cloudlets.
-    /// @param mips the MIPS capacity of each PE from the VM's scheduler
-    /// @param vmPes number of PEs of the VM's scheduler
+    /// @param mips the MIPS capacity of each core from the VM's scheduler
+    /// @param vmCores number of CPU cores of the VM's scheduler
     /// @param cloudlets number of Cloudlets to create
-    /// @param cloudletPes the number of PEs for each Cloudlet
+    /// @param cloudletCores the number of CPU cores for each Cloudlet
     /// @return the new scheduler
     /* default */ static CloudletSchedulerTimeShared newSchedulerWithRunningCloudlets(
-        final long mips, final int vmPes, final int cloudlets, final int cloudletPes)
+        final long mips, final int vmCores, final int cloudlets, final int cloudletCores)
     {
         final UtilizationModel ramBwModel = new UtilizationModelDynamic(1.0/cloudlets);
-        return newSchedulerWithRunningCloudlets(mips, vmPes, cloudlets, cloudletPes, ramBwModel);
+        return newSchedulerWithRunningCloudlets(mips, vmCores, cloudlets, cloudletCores, ramBwModel);
     }
 
     /* default */ static CloudletSchedulerTimeShared newSchedulerWithRunningCloudlets(
-        final long mips, final int vmPes, final int cloudlets, final int cloudletPes, final UtilizationModel ramBwModel)
+        final long mips, final int vmCores, final int cloudlets, final int cloudletCores, final UtilizationModel ramBwModel)
     {
-        final CloudletSchedulerTimeShared instance = createCloudletSchedulerWithMipsList(vmPes, mips);
+        final CloudletSchedulerTimeShared instance = createCloudletSchedulerWithMipsList(vmCores, mips);
 
         for(int i = 0; i < cloudlets; i++) {
-            final var cloudlet = CloudletTestUtil.createCloudlet(i, mips, cloudletPes);
+            final var cloudlet = CloudletTestUtil.createCloudlet(i, mips, cloudletCores);
             cloudlet.setUtilizationModelRam(ramBwModel);
             cloudlet.setUtilizationModelBw(ramBwModel);
             cloudlet.registerArrivalInDatacenter();

@@ -62,13 +62,13 @@ public sealed interface DatacenterCharacteristics
     Datacenter getDatacenter();
 
     /// @return the total MIPS rating, which is the sum of the MIPS rating across all [Host]s in the Datacenter.
-    double getMips();
+    double getTotalMips();
 
     /// @return the current number of failed PMs the Datacenter has.
     long getNumberOfFailedHosts();
 
-    /// @return the total number of PEs for all PMs.
-    int getPesNumber();
+    /// @return the total number of CPU cores of all PMs, in any status (including failed cores).
+    long getTotalCores();
 
     /// @return true if all PMs of the Datacenter are working properly, false otherwise
     boolean isWorking();

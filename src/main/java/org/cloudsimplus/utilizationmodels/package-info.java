@@ -1,5 +1,5 @@
 /// Provides classes that model utilization of resources such as
-/// [org.cloudsimplus.resources.Pe] (CPU), [org.cloudsimplus.resources.Ram] and
+/// [org.cloudsimplus.resources.Processor] (CPU), [org.cloudsimplus.resources.Ram] and
 /// [org.cloudsimplus.resources.Bandwidth],
 /// defining how a given resource is used by a [org.cloudsimplus.cloudlets.Cloudlet]
 /// along the simulation time.

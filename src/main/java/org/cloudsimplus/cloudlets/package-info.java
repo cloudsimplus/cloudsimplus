@@ -2,7 +2,7 @@
 /// that represent an application which will run inside a [org.cloudsimplus.vms.Vm].
 /// Each Cloudlet is abstractly defined in terms of its characteristics,
 /// such as the number of Million Instructions (MI) to execute (length),
-/// the number of required [org.cloudsimplus.resources.Pe]s
+/// the number of required CPU cores
 /// and a [org.cloudsimplus.utilizationmodels.UtilizationModel] for CPU, RAM and bandwidth.
 ///
 /// Each utilization model defines how the Cloudlet will use a given resource along the time.

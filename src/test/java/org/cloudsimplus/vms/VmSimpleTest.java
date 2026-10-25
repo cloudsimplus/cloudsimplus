@@ -15,7 +15,8 @@ import org.cloudsimplus.listeners.VmDatacenterEventInfo;
 import org.cloudsimplus.listeners.VmHostEventInfo;
 import org.cloudsimplus.mocks.CloudSimMocker;
 import org.cloudsimplus.mocks.MocksHelper;
-import org.cloudsimplus.schedulers.MipsShare;
+import org.cloudsimplus.resources.CpuCap;
+import org.cloudsimplus.resources.CoreCapacity;
 import org.cloudsimplus.schedulers.cloudlet.CloudletScheduler;
 import org.cloudsimplus.schedulers.cloudlet.CloudletSchedulerAbstract;
 import org.cloudsimplus.schedulers.cloudlet.CloudletSchedulerSpaceShared;
@@ -95,18 +96,47 @@ public class VmSimpleTest {
 
     @Test
     public void testGetMips() {
-        assertEquals(VmTestUtil.MIPS, vm.getMips());
+        assertEquals(VmTestUtil.MIPS, vm.getProcessor().getMips());
+    }
+
+    @Test
+    public void testDefaultCpuCapIsNone() {
+        assertSame(CpuCap.NONE, vm.getCpuCap());
+    }
+
+    @Test
+    public void testNullVmCpuCapIsNone() {
+        assertSame(CpuCap.NONE, Vm.NULL.getCpuCap());
+        assertSame(CpuCap.NONE, Vm.NULL.setCpuCap(CpuCap.NONE).getCpuCap());
+    }
+
+    @Test
+    public void testSetCpuCapNull() {
+        assertThrows(NullPointerException.class, () -> vm.setCpuCap(null));
+    }
+
+    @Test
+    public void testCloneKeepsCpuCap() {
+        assertSame(vm.getCpuCap(), new VmSimple(vm).getCpuCap());
+    }
+
+    @Test
+    public void testRequestedMipsWithNoCpuCapUsesFullProcessorCapacity() {
+        final CoreCapacity expected = vm.getProcessor().toCoreCapacity();
+        final CoreCapacity requested = vm.getCurrentRequestedMips();
+        assertEquals(expected.cores(), requested.cores());
+        assertEquals(expected.mips(), requested.mips());
+    }
+
+    @Test
+    public void testTotalMipsCapacityWithNoCpuCap() {
+        assertEquals(vm.getProcessor().getMips() * vm.getProcessor().getCores(), vm.getTotalMipsCapacity());
+        assertEquals(vm.getProcessor().getTotalMips(), vm.getTotalMipsCapacity());
     }
 
     @Test
     public void testToString() {
         assertEquals("Vm %d".formatted(vm.getId()), vm.toString());
-    }
-
-    @Test
-    public void testSetMips() {
-        vm.setMips(VmTestUtil.MIPS / 2);
-        assertEquals(VmTestUtil.MIPS / 2, vm.getMips());
     }
 
     @Test
@@ -150,14 +180,14 @@ public class VmSimpleTest {
 
     @Test
     public void testAddStateHistoryEntryCheckAddedEntryValues(){
-        final VmStateHistoryEntry entry = new VmStateHistoryEntry(0, 1000, 100, false);
+        final var entry = new VmStateHistoryEntry(0, 1000, 100, false);
         vm.addStateHistoryEntry(entry);
         assertEquals(entry, vm.getStateHistory().get(vm.getStateHistory().size()-1));
     }
 
     @Test
     public void testAddStateHistoryEntryWhenAddEntryWithSameTime(){
-        final VmStateHistoryEntry entry = new VmStateHistoryEntry(0, 1000, 100, false);
+        final var entry = new VmStateHistoryEntry(0, 1000, 100, false);
         vm.addStateHistoryEntry(entry);
         vm.addStateHistoryEntry(entry);
         assertEquals(1, vm.getStateHistory().size());
@@ -165,7 +195,7 @@ public class VmSimpleTest {
 
     @Test
     public void testAddStateHistoryEntryWhenChangeAddedEntry(){
-        final VmStateHistoryEntry entry = new VmStateHistoryEntry(0, 1000, 100, false);
+        final var entry = new VmStateHistoryEntry(0, 1000, 100, false);
         vm.addStateHistoryEntry(entry);
         entry.setInMigration(true);
         vm.addStateHistoryEntry(entry);
@@ -276,8 +306,8 @@ public class VmSimpleTest {
     }
 
     @Test
-    public void testGetPesNumber() {
-        assertEquals(VmTestUtil.PES_NUMBER, vm.getPesNumber());
+    public void testGetCoresNumber() {
+        assertEquals(VmTestUtil.CORES_NUMBER, vm.getProcessor().getCores());
     }
 
     @Test
@@ -330,8 +360,8 @@ public class VmSimpleTest {
 
     @Test
     public void testUpdateVmProcessing() {
-        final MipsShare mipsShare1 = new MipsShare(1.0);
-        final MipsShare mipsShare2 = new MipsShare(1.0);
+        final var mipsShare1 = new CoreCapacity(1.0);
+        final var mipsShare2 = new CoreCapacity(1.0);
         final double expectedNextCompletionTime = cloudletScheduler.updateProcessing(0, mipsShare1);
         final double actualNextCompletionTime = vm.updateProcessing(0, mipsShare2);
         assertEquals(expectedNextCompletionTime, actualNextCompletionTime);
@@ -406,7 +436,7 @@ public class VmSimpleTest {
     @Test
     public void cloudletSchedulerPassedInConstructorIsPreserved() {
         final var scheduler = new CloudletSchedulerSpaceShared();
-        final var vm = new VmSimple(1000, 2, scheduler);
+        final var vm = new VmSimple(new CoreCapacity(2, 1000), scheduler);
         assertInstanceOf(CloudletSchedulerSpaceShared.class, vm.getCloudletScheduler());
     }
 }

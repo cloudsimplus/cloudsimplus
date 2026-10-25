@@ -8,7 +8,6 @@
 package org.cloudsimplus.hosts.network;
 
 import lombok.Getter;
-import lombok.NonNull;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.cloudsimplus.core.CloudSimTag;
@@ -17,8 +16,8 @@ import org.cloudsimplus.hosts.HostSimple;
 import org.cloudsimplus.hosts.HostSuitability;
 import org.cloudsimplus.network.HostPacket;
 import org.cloudsimplus.network.VmPacket;
+import org.cloudsimplus.resources.CoreCapacity;
 import org.cloudsimplus.network.switches.EdgeSwitch;
-import org.cloudsimplus.resources.Pe;
 import org.cloudsimplus.schedulers.cloudlet.network.CloudletTaskScheduler;
 import org.cloudsimplus.schedulers.cloudlet.network.CloudletTaskSchedulerSimple;
 import org.cloudsimplus.schedulers.vm.VmSchedulerSpaceShared;
@@ -33,7 +32,7 @@ import org.jspecify.annotations.Nullable;
 /// A Host that support simulation of networked [Datacenter]s. It executes actions related to the management of packets
 /// (sent and received) besides [Vm] management (e.g., creation and destruction).
 /// A Host has a defined policy for provisioning memory and bw, as
-/// well as an allocation policy for [Pe]'s to virtual machines.
+/// well as an allocation policy for cores to virtual machines.
 ///
 /// Please refer to the following publication for more details:
 ///
@@ -51,13 +50,13 @@ public class NetworkHost extends HostSimple {
     private long totalDataTransferBytes;
 
     /// A buffer of packets to send for VMs inside this Host.
-    private final List<HostPacket> pktsToSendForLocalVms;
+    private final List<HostPacket> pktsToSendForLocalVms = new ArrayList<>();
 
     /// A buffer of packets to send for VMs outside this Host.
-    private final List<HostPacket> pktsToSendForExternalVms;
+    private final List<HostPacket> pktsToSendForExternalVms = new ArrayList<>();
 
     /// List of received packets.
-    private final List<HostPacket> hostPktsReceived;
+    private final List<HostPacket> hostPktsReceived = new ArrayList<>();
 
     /// An Edge Switch the Host is directly connected to.
     /// TODO Setter is to be called only by the [EdgeSwitch#connectHost(NetworkHost)] method.
@@ -70,17 +69,14 @@ public class NetworkHost extends HostSimple {
     /// @param ram the RAM capacity in Megabytes
     /// @param bw the Bandwidth (BW) capacity in Megabits/s
     /// @param storage the storage capacity in Megabytes
-    /// @param peList the host's [Pe] list
-    public NetworkHost(final long ram, final long bw, final long storage, final List<Pe> peList) {
-        super(ram, bw, storage, peList);
-        hostPktsReceived = new ArrayList<>();
-        pktsToSendForExternalVms = new ArrayList<>();
-        pktsToSendForLocalVms = new ArrayList<>();
+    /// @param capacity the number of CPU cores of the Host and the MIPS capacity of each core
+    public NetworkHost(final long ram, final long bw, final long storage, final CoreCapacity capacity) {
+        super(ram, bw, storage, capacity);
     }
 
     /// Creates a NetworkHost with no resources.
     private NetworkHost() {
-        this(0, 0, 0, List.of(Pe.NULL));
+        this(0, 0, 0, CoreCapacity.MINIMUM);
         setId(-1);
     }
 

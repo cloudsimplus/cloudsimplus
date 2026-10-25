@@ -23,57 +23,47 @@
  */
 package org.cloudsimplus.resources;
 
-import org.cloudsimplus.vms.Vm;
+import org.cloudsimplus.vms.VmSimple;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import static org.cloudsimplus.resources.Processor.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+/// Checks that the static [Processor] methods taking a [org.cloudsimplus.core.Machine]
+/// return the same values as the machine's processor.
 /// @author Manoel Campos da Silva Filho
-public class ProcessorTest {
-    private static final double PE_MIPS = 1000;
-    private static final int NUMBER_OF_PES = 2;
+class ProcessorTest {
+    private static final long CORES = 4;
+    private static final double MIPS = 1000;
 
-    @Test
-    public void testGetTotalMipsCapacity() {
-        final Processor instance = createDefaultProcessor();
-        final double expResult = PE_MIPS * NUMBER_OF_PES;
-        assertEquals(expResult, instance.getTotalMips());
-    }
+    private VmSimple vm;
 
-    /// Creates a processing using the default values.
-    /// @return the created processor
-    private static Processor createDefaultProcessor() {
-        return new Processor(Vm.NULL, NUMBER_OF_PES, PE_MIPS);
+    @BeforeEach
+    void setUp() {
+        vm = new VmSimple(new CoreCapacity(CORES, MIPS));
+        final var processor = vm.getProcessor();
+        processor.moveCores(CoreStatus.FREE, CoreStatus.BUSY, 1);
+        processor.moveCores(CoreStatus.FREE, CoreStatus.FAILED, 1);
     }
 
     @Test
-    public void testGetCapacity() {
-        final Processor instance = createDefaultProcessor();
-        final double expResult = PE_MIPS;
-        assertEquals(expResult, instance.getMips());
+    void testCores() {
+        assertEquals(CORES, cores(vm));
     }
 
     @Test
-    public void testGetPesNumberFromDefaultConstructor() {
-        final Processor instance = createDefaultProcessor();
-        final int expResult = NUMBER_OF_PES;
-        assertEquals(expResult, instance.getCapacity());
+    void testWorkingCores() {
+        assertEquals(CORES - 1, workingCores(vm));
     }
 
     @Test
-    public void testSetPesNumber() {
-        final int expResult = NUMBER_OF_PES*2;
-        final Processor instance = createDefaultProcessor();
-        instance.setCapacity(expResult);
-        assertEquals(expResult, instance.getCapacity());
+    void testFreeCores() {
+        assertEquals(CORES - 2, freeCores(vm));
     }
 
     @Test
-    public void testSetCapacity() {
-        final long expResult = (long)PE_MIPS*2;
-        final Processor instance = createDefaultProcessor();
-        instance.setMips(expResult);
-        assertEquals(expResult, instance.getMips());
+    void testMips() {
+        assertEquals(MIPS, mips(vm));
     }
-
 }

@@ -71,7 +71,7 @@ public class CsvTable extends AbstractTable {
     /// @return a horizontal line with the same width of the table
     protected String createHorizontalLine(final boolean includeColSeparator) {
         if(includeColSeparator){
-            final StringBuilder sb = new StringBuilder(rowOpening());
+            final var sb = new StringBuilder(rowOpening());
             final String row =
                 getColumns()
                         .stream()

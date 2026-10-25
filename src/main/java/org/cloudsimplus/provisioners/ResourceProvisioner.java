@@ -17,7 +17,7 @@ import java.util.function.Function;
 /// An interface that represents the provisioning policy used by a [Host]
 /// to provide a given physical resource to its [Vm]s.
 /// Each Host must have its own instance of a ResourceProvisioner for each
-/// [Resource] it owns, such as [Ram], [Bandwidth] (BW) and [Pe] (CPU).
+/// [Resource] it owns, such as [Ram], [Bandwidth] (BW) and CPU cores.
 ///
 /// @author Rodrigo N. Calheiros
 /// @author Anton Beloglazov
@@ -27,7 +27,7 @@ import java.util.function.Function;
 /// This article makes it clear: https://www.researchgate.net/post/what_is_the_difference_between_resource_allocation_and_resource_provisioning.
 /// Allocation is reservation, while Provisioning is actual usage of some part of the allocated resource.
 /// When a VM is created, the Host allocates resources, but the Host.allocateResourcesForVm
-/// uses ResourceProvisioners for that. More confusing yet, it calls vmScheduler.allocatePesForVm at the end.
+/// uses ResourceProvisioners for that. More confusing yet, it calls vmScheduler.allocateCoresForVm at the end.
 /// The terms allocation and provisioning sometimes are used in the same place.
 /// The Host.allocateResourcesForVm method has the word "allocate" in its name,
 /// while internally it uses ResourceProvisioners (quite confusing).
@@ -35,7 +35,7 @@ import java.util.function.Function;
 /// it should perform resource provisioning (request the actual amount of the allocated resource to be used in that moment).
 /// See https://github.com/cloudsimplus/cloudsimplus/issues/588
 public sealed interface ResourceProvisioner
-    permits PeProvisioner, ResourceProvisionerAbstract, ResourceProvisionerNull
+    permits ResourceProvisionerAbstract, ResourceProvisionerNull
 {
     /// An attribute that implements the Null Object Design Pattern for ResourceProvisioner objects.
     ResourceProvisioner NULL = new ResourceProvisionerNull();
@@ -103,11 +103,11 @@ public sealed interface ResourceProvisioner
     /// @return true, if it is possible to allocate the new total VM resource; false otherwise
     boolean isSuitableForVm(Vm vm, Resource resource);
 
-    /// Gets the physical resource being managed by the provisioner, such as [Ram], [Pe], [Bandwidth], etc.
+    /// Gets the physical resource being managed by the provisioner, such as [Ram], core, [Bandwidth], etc.
     /// @return the resource managed by this provisioner
     ResourceManageable getPmResource();
 
-    /// Sets the physical resource to be managed by the provisioner, such as [Ram], [Pe], [Bandwidth], etc.
+    /// Sets the physical resource to be managed by the provisioner, such as [Ram], core, [Bandwidth], etc.
     /// @param pmResource the resource managed by this provisioner
     /// @param vmResourceFunction a [Function] that receives a [Vm] and returns
     /// the virtual resource corresponding to the [PM resource][#getPmResource()]

@@ -31,7 +31,7 @@ import java.util.List;
 
 /// An interface to provide a polymorphic way to access a given resource
 /// like [Ram], [Bandwidth], [SimpleStorage]
-/// or [Pe] from a List containing such different resources.
+/// or core from a List containing such different resources.
 /// It is implemented by [Machine] such as a [Host] or [Vm].
 ///
 /// @author Manoel Campos da Silva Filho

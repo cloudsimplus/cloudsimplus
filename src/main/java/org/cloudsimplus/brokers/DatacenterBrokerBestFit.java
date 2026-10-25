@@ -29,9 +29,11 @@ import org.cloudsimplus.vms.Vm;
 
 import java.util.Comparator;
 
+import static org.cloudsimplus.resources.Processor.freeCores;
+
 /// A [DatacenterBroker] that uses a [Best Fit](https://en.wikipedia.org/wiki/Best-fit_bin_packing)
 /// mapping between submitted cloudlets and VMs, trying to place a Cloudlet
-/// at the best suitable Vm that can be found (according to the required Cloudlet's PEs).
+/// at the best suitable Vm that can be found (according to the required Cloudlet's cores).
 /// The Broker then places the submitted VMs at the first Datacenter found.
 /// If there isn't capacity in that one, it will try other available ones.
 ///
@@ -46,7 +48,7 @@ public class DatacenterBrokerBestFit extends DatacenterBrokerSimple {
         super(simulation);
     }
 
-    /// Selects the VM with the lowest number of PEs that is able to run a given Cloudlet.
+    /// Selects the VM with the lowest number of CPU cores that is able to run a given Cloudlet.
     /// @param cloudlet the Cloudlet to find a VM to run it
     /// @return the VM selected for the Cloudlet or [Vm#NULL] if no suitable VM was found
     @Override
@@ -57,17 +59,17 @@ public class DatacenterBrokerBestFit extends DatacenterBrokerSimple {
 
         final Vm mappedVm = getVmExecList()
             .stream()
-            .filter(vm -> vm.getExpectedFreePesNumber() >= cloudlet.getPesNumber())
-            .min(Comparator.comparingLong(Vm::getExpectedFreePesNumber))
+            .filter(vm -> vm.getExpectedFreeCores() >= cloudlet.getRequiredCores())
+            .min(Comparator.comparingLong(Vm::getExpectedFreeCores))
             .orElse(Vm.NULL);
 
         if (Vm.NULL.equals(mappedVm)) {
-            LOGGER.warn("{}: {}: {} (PEs: {}) couldn't be mapped to any suitable VM.",
-                getSimulation().clockStr(), getName(), cloudlet, cloudlet.getPesNumber());
+            LOGGER.warn("{}: {}: {} (CPU cores: {}) couldn't be mapped to any suitable VM.",
+                getSimulation().clockStr(), getName(), cloudlet, cloudlet.getRequiredCores());
         } else {
-            LOGGER.trace("{}: {}: {} (PEs: {}) mapped to {} (available PEs: {}, tot PEs: {})",
-                getSimulation().clockStr(), getName(), cloudlet, cloudlet.getPesNumber(), mappedVm,
-                mappedVm.getExpectedFreePesNumber(), mappedVm.getFreePesNumber());
+            LOGGER.trace("{}: {}: {} (CPU cores: {}) mapped to {} (expected free CPU cores: {}, free CPU cores: {})",
+                getSimulation().clockStr(), getName(), cloudlet, cloudlet.getRequiredCores(), mappedVm,
+                mappedVm.getExpectedFreeCores(), freeCores(mappedVm));
         }
 
         return mappedVm;

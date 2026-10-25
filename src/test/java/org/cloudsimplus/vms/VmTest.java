@@ -25,7 +25,7 @@ package org.cloudsimplus.vms;
 
 import org.cloudsimplus.brokers.DatacenterBroker;
 import org.cloudsimplus.hosts.Host;
-import org.cloudsimplus.schedulers.MipsShare;
+import org.cloudsimplus.resources.CoreCapacity;
 import org.cloudsimplus.schedulers.cloudlet.CloudletScheduler;
 import org.junit.jupiter.api.Test;
 
@@ -46,7 +46,7 @@ public class VmTest {
             () -> assertEquals(-1, instance.getId()),
             () -> assertSame(DatacenterBroker.NULL, instance.getBroker()),
             () -> assertEquals("", instance.getVmm()),
-            () -> assertEquals(0, instance.updateProcessing(0, MipsShare.NULL))
+            () -> assertEquals(0, instance.updateProcessing(0, CoreCapacity.NULL))
         );
     }
 
@@ -71,8 +71,8 @@ public class VmTest {
         final Vm instance = Vm.NULL;
         assertAll(
             () -> assertEquals(0, instance.getBw().getAllocatedResource()),
-            () -> assertEquals(0, instance.getMips()),
-            () -> assertEquals(0, instance.getPesNumber()),
+            () -> assertEquals(0, instance.getProcessor().getMips()),
+            () -> assertEquals(0, instance.getProcessor().getCores()),
             () -> assertEquals(0, instance.getCpuPercentUtilization(0)),
             () -> assertEquals(0, instance.getTotalCpuMipsUtilization(0)),
             () -> assertEquals(0, instance.getBw().getCapacity()),

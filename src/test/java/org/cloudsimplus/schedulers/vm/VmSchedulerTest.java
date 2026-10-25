@@ -35,7 +35,7 @@ public class VmSchedulerTest {
     public void testNullObject() {
         final VmScheduler instance = VmScheduler.NULL;
         assertAll(
-            () -> assertFalse(instance.allocatePesForVm(null, null)),
+            () -> assertFalse(instance.allocateCoresForVm(null, null)),
             () -> assertTrue(instance.getAllocatedMips(null).isEmpty()),
             () -> assertEquals(0, instance.getTotalAvailableMips()),
             () -> assertFalse(instance.isSuitableForVm(Vm.NULL)),

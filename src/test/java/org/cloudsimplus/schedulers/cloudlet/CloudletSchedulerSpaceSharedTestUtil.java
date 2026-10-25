@@ -25,7 +25,7 @@ package org.cloudsimplus.schedulers.cloudlet;
 
 import org.cloudsimplus.cloudlets.Cloudlet;
 import org.cloudsimplus.cloudlets.CloudletTestUtil;
-import org.cloudsimplus.schedulers.MipsShare;
+import org.cloudsimplus.resources.CoreCapacity;
 import org.cloudsimplus.vms.Vm;
 import org.cloudsimplus.vms.VmSimple;
 
@@ -40,33 +40,33 @@ final class CloudletSchedulerSpaceSharedTestUtil {
     /// A private constructor to avoid class instantiation.
     private CloudletSchedulerSpaceSharedTestUtil(){/**/}
 
-    private static CloudletSchedulerSpaceShared createCloudletSchedulerWithMipsList(int pes, long mips) {
-        final CloudletSchedulerSpaceShared instance = createScheduler(mips, pes);
-        instance.setCurrentMipsShare(new MipsShare(pes, mips));
+    private static CloudletSchedulerSpaceShared createCloudletSchedulerWithMipsList(int cores, long mips) {
+        final CloudletSchedulerSpaceShared instance = createScheduler(mips, cores);
+        instance.setCurrentMipsShare(new CoreCapacity(cores, mips));
         return instance;
     }
 
-    /// Creates a scheduler with a list of running cloudlets, where each Cloudlet has just one PE.
+    /// Creates a scheduler with a list of running cloudlets, where each Cloudlet has just one core.
     ///
-    /// @param mips the MIPS capacity of each PE from the VM's scheduler
-    /// @param numberOfVmPes number of PEs of the VM's scheduler
+    /// @param mips the MIPS capacity of each core from the VM's scheduler
+    /// @param numberOfVmCores number of CPU cores of the VM's scheduler
     /// @param numberOfCloudlets number of Cloudlets to create
     /// @return the new scheduler
-    /* default */ static CloudletSchedulerSpaceShared newSchedulerWithSingleCoreRunningCloudlets(long mips, int numberOfVmPes, int numberOfCloudlets) {
-        return newSchedulerWithRunningCloudlets(mips, numberOfVmPes, numberOfCloudlets, 1);
+    /* default */ static CloudletSchedulerSpaceShared newSchedulerWithSingleCoreRunningCloudlets(long mips, int numberOfVmCores, int numberOfCloudlets) {
+        return newSchedulerWithRunningCloudlets(mips, numberOfVmCores, numberOfCloudlets, 1);
     }
 
     /// Creates a scheduler with a list of running cloudlets.
-    /// @param mips the MIPS capacity of each PE from the VM's scheduler
-    /// @param numberOfVmPes number of PEs of the VM's scheduler
+    /// @param mips the MIPS capacity of each core from the VM's scheduler
+    /// @param numberOfVmCores number of CPU cores of the VM's scheduler
     /// @param numberOfCloudlets number of Cloudlets to create
-    /// @param numberOfCloudletPes the number of PEs for each Cloudlet
+    /// @param numberOfCloudletCores the number of CPU cores for each Cloudlet
     /// @return the new scheduler
-    /* default */ static CloudletSchedulerSpaceShared newSchedulerWithRunningCloudlets(long mips, int numberOfVmPes, int numberOfCloudlets, int numberOfCloudletPes) {
-        final CloudletSchedulerSpaceShared instance = createCloudletSchedulerWithMipsList(numberOfVmPes, mips);
+    /* default */ static CloudletSchedulerSpaceShared newSchedulerWithRunningCloudlets(long mips, int numberOfVmCores, int numberOfCloudlets, int numberOfCloudletCores) {
+        final CloudletSchedulerSpaceShared instance = createCloudletSchedulerWithMipsList(numberOfVmCores, mips);
 
         for(int i = 0; i < numberOfCloudlets; i++) {
-            final Cloudlet cloudlet = CloudletTestUtil.createCloudlet(i, mips, numberOfCloudletPes);
+            final Cloudlet cloudlet = CloudletTestUtil.createCloudlet(i, mips, numberOfCloudletCores);
             cloudlet.registerArrivalInDatacenter();
             instance.cloudletSubmit(cloudlet);
         }
@@ -78,18 +78,18 @@ final class CloudletSchedulerSpaceSharedTestUtil {
         return createScheduler(2);
     }
 
-    /* default */ static CloudletSchedulerSpaceShared createScheduler(final int pes) {
-        return createScheduler(SCHEDULER_MIPS, pes);
+    /* default */ static CloudletSchedulerSpaceShared createScheduler(final int cores) {
+        return createScheduler(SCHEDULER_MIPS, cores);
     }
 
-    private static CloudletSchedulerSpaceShared createScheduler(final long mips, final int pes) {
-        return createScheduler(new VmSimple(mips, pes));
+    private static CloudletSchedulerSpaceShared createScheduler(final long mips, final int cores) {
+        return createScheduler(new VmSimple(new CoreCapacity(cores, mips)));
     }
 
     /* default */ static CloudletSchedulerSpaceShared createScheduler(final Vm vm) {
-        final CloudletSchedulerSpaceShared scheduler = new CloudletSchedulerSpaceShared();
+        final var scheduler = new CloudletSchedulerSpaceShared();
         scheduler.setVm(vm);
-        scheduler.setCurrentMipsShare(new MipsShare(vm.getProcessor()));
+        scheduler.setCurrentMipsShare(vm.getProcessor().toCoreCapacity());
         return scheduler;
     }
 }

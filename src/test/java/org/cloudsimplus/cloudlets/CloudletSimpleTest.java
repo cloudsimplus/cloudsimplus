@@ -25,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.*;
 /// @author	Anton Beloglazov
 /// @since	CloudSim Toolkit 2.0
 public class CloudletSimpleTest {
-    static final int PES_NUMBER = 2;
+    static final int CORES_NUMBER = 2;
 
     private CloudletSimple cloudlet;
     private UtilizationModel utilizationModelCpu;
@@ -37,7 +37,7 @@ public class CloudletSimpleTest {
         utilizationModelCpu = new UtilizationModelStochastic();
         utilizationModelRam = new UtilizationModelStochastic();
         utilizationModelBw = new UtilizationModelStochastic();
-        cloudlet = new CloudletSimple(0, CloudletTestUtil.CLOUDLET_LENGTH, PES_NUMBER);
+        cloudlet = new CloudletSimple(0, CloudletTestUtil.CLOUDLET_LENGTH, CORES_NUMBER);
         cloudlet.setFileSize(CloudletTestUtil.CLOUDLET_FILE_SIZE)
                 .setOutputSize(CloudletTestUtil.CLOUDLET_OUTPUT_SIZE);
         cloudlet.setUtilizationModelCpu(utilizationModelCpu);
@@ -48,10 +48,10 @@ public class CloudletSimpleTest {
     @Test
     public void testCloudlet() {
         assertEquals(CloudletTestUtil.CLOUDLET_LENGTH, cloudlet.getLength());
-        assertEquals(CloudletTestUtil.CLOUDLET_LENGTH * PES_NUMBER, cloudlet.getTotalLength());
+        assertEquals(CloudletTestUtil.CLOUDLET_LENGTH * CORES_NUMBER, cloudlet.getTotalLength());
         assertEquals(CloudletTestUtil.CLOUDLET_FILE_SIZE, cloudlet.getFileSize());
         assertEquals(CloudletTestUtil.CLOUDLET_OUTPUT_SIZE, cloudlet.getOutputSize());
-        assertEquals(PES_NUMBER, cloudlet.getPesNumber());
+        assertEquals(CORES_NUMBER, cloudlet.getRequiredCores());
         assertSame(utilizationModelCpu, cloudlet.getUtilizationModelCpu());
         assertSame(utilizationModelRam, cloudlet.getUtilizationModelRam());
         assertSame(utilizationModelBw, cloudlet.getUtilizationModelBw());
@@ -84,8 +84,8 @@ public class CloudletSimpleTest {
 
     @Test
     public void testNewCloudletUsesSharedFullCpuUtilizationModel() {
-        final var cloudlet1 = new CloudletSimple(CloudletTestUtil.CLOUDLET_LENGTH, PES_NUMBER);
-        final var cloudlet2 = new CloudletSimple(CloudletTestUtil.CLOUDLET_LENGTH, PES_NUMBER);
+        final var cloudlet1 = new CloudletSimple(CloudletTestUtil.CLOUDLET_LENGTH, CORES_NUMBER);
+        final var cloudlet2 = new CloudletSimple(CloudletTestUtil.CLOUDLET_LENGTH, CORES_NUMBER);
         assertSame(UtilizationModel.FULL, cloudlet1.getUtilizationModelCpu());
         assertSame(UtilizationModel.FULL, cloudlet2.getUtilizationModelCpu());
     }
@@ -261,20 +261,20 @@ public class CloudletSimpleTest {
     }
 
     @Test
-    public void testSetValidPesNumber() {
+    public void testSetValidRequiredCores() {
         final int expected = 2;
-        cloudlet.setPesNumber(expected);
-        assertEquals(expected, cloudlet.getPesNumber());
+        cloudlet.setRequiredCores(expected);
+        assertEquals(expected, cloudlet.getRequiredCores());
     }
 
     @Test()
-    public void testSetPesNumberToZero() {
-        assertThrows(IllegalArgumentException.class, () -> cloudlet.setPesNumber(0));
+    public void testSetRequiredCoresToZero() {
+        assertThrows(IllegalArgumentException.class, () -> cloudlet.setRequiredCores(0));
     }
 
     @Test()
-    public void testSetPesNumberToNegative() {
-        assertThrows(IllegalArgumentException.class, () -> cloudlet.setPesNumber(-1));
+    public void testSetRequiredCoresToNegative() {
+        assertThrows(IllegalArgumentException.class, () -> cloudlet.setRequiredCores(-1));
     }
 
     @Test

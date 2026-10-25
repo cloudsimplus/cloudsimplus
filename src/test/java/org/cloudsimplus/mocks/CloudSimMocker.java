@@ -79,7 +79,7 @@ public final class CloudSimMocker {
     /// methods from CloudSimPlus class
     /// @return the created CloudSimPlus mock object
     public static CloudSimPlus createMock(final Consumer<CloudSimMocker> consumer) {
-        final CloudSimMocker mocker = new CloudSimMocker();
+        final var mocker = new CloudSimMocker();
         consumer.accept(mocker);
         Mockito.when(mocker.mock.isRunning()).thenReturn(true);
         return mocker.mock;

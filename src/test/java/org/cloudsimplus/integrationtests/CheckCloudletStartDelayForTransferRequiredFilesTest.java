@@ -58,10 +58,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 /// @author Manoel Campos da Silva Filho
 public final class CheckCloudletStartDelayForTransferRequiredFilesTest {
     private static final int HOST_MIPS = 1000;
-    private static final int HOST_PES = 2;
+    private static final int HOST_CORES = 2;
     private static final int VM_MIPS = HOST_MIPS;
-    private static final int VM_PES = HOST_PES/2;
-    private static final int CLOUDLET_PES = VM_PES;
+    private static final int VM_CORES = HOST_CORES/2;
+    private static final int CLOUDLET_CORES = VM_CORES;
     private static final int CLOUDLET_LENGTH = HOST_MIPS*5;
     private static final int FILE_SIZE_MB = 100;
     private static final int NUMBER_OF_FILES_TO_CREATE = 2;
@@ -84,7 +84,7 @@ public final class CheckCloudletStartDelayForTransferRequiredFilesTest {
             .create(
                 new HostBuilder()
                     .setVmSchedulerSupplier(VmSchedulerSpaceShared::new)
-                    .setPes(HOST_PES).setMips(HOST_MIPS)
+                    .setCores(HOST_CORES).setMips(HOST_MIPS)
                     .create()
                     .getHosts()
             );
@@ -92,14 +92,14 @@ public final class CheckCloudletStartDelayForTransferRequiredFilesTest {
         final var brokerBuilder = scenario.getBrokerBuilder().create();
         this.broker = brokerBuilder.getBroker();
         brokerBuilder.getVmBuilder()
-                .setPes(VM_PES).setMips(VM_MIPS)
+                .setCores(VM_CORES).setMips(VM_MIPS)
                 .setCloudletSchedulerSupplier(CloudletSchedulerTimeShared::new)
                 .createAndSubmit();
 
         brokerBuilder.getCloudletBuilder()
                 .setLength(CLOUDLET_LENGTH)
                 .setUtilizationModelCpu(new UtilizationModelFull())
-                .setPes(CLOUDLET_PES)
+                .setRequiredCores(CLOUDLET_CORES)
                 .setRequiredFiles(getFileNames())
                 .createAndSubmit(1);
     }

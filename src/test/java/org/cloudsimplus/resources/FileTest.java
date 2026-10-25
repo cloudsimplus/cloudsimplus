@@ -53,8 +53,8 @@ public class FileTest {
 
     @Test()
     public void testCreateFileWithFileParameter() {
-        final File originalFile = new File(NAME, 100);
-        final File copyFile = new File(originalFile);
+        final var originalFile = new File(NAME, 100);
+        final var copyFile = new File(originalFile);
         assertFalse(copyFile.isMasterCopy());
     }
 

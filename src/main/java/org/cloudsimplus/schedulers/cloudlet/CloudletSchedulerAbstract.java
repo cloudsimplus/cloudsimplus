@@ -19,11 +19,12 @@ import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.resources.Bandwidth;
 import org.cloudsimplus.resources.Ram;
 import org.cloudsimplus.resources.ResourceManageable;
-import org.cloudsimplus.schedulers.MipsShare;
+import org.cloudsimplus.resources.CoreCapacity;
+import org.cloudsimplus.resources.Processor;
 import org.cloudsimplus.schedulers.cloudlet.network.CloudletTaskScheduler;
 import org.cloudsimplus.utilizationmodels.UtilizationModel;
 import org.cloudsimplus.vms.Vm;
-import org.cloudsimplus.vms.VmSimple;
+import org.cloudsimplus.vms.VmAbstract;
 
 import java.io.Serial;
 import java.util.*;
@@ -37,6 +38,8 @@ import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.collectingAndThen;
 import static java.util.stream.Collectors.toList;
 import static org.cloudsimplus.listeners.CloudletResourceAllocationFailEventInfo.of;
+import static org.cloudsimplus.resources.Processor.cores;
+import static org.cloudsimplus.resources.Processor.mips;
 
 /// An abstract class for implementing [CloudletScheduler]s representing
 /// scheduling policies performed by a [Vm] to run its
@@ -57,7 +60,13 @@ public abstract non-sealed class CloudletSchedulerAbstract implements CloudletSc
     /// The current MIPS capacity from the VM that will be
     /// made available to the scheduler. This MIPS share will be allocated
     /// to Cloudlets as requested.
-    private MipsShare currentMipsShare;
+    private CoreCapacity currentMipsShare;
+
+    /// The number of VM cores required by the Cloudlets in the execution list
+    /// (not counting the ones blocked waiting for packets).
+    /// It may be greater than the number of VM cores (such as in a time-shared scheduler),
+    /// so the VM busy cores are [limited][#updateBusyCores()] to the VM cores.
+    private long demandedCores;
 
     private double previousTime;
 
@@ -98,7 +107,7 @@ public abstract non-sealed class CloudletSchedulerAbstract implements CloudletSc
         cloudletFailedList = new ArrayList<>();
         cloudletWaitingList = new ArrayList<>();
         cloudletReturnedList = new HashSet<>();
-        currentMipsShare = new MipsShare();
+        currentMipsShare = CoreCapacity.NULL;
         taskScheduler = CloudletTaskScheduler.NULL;
         resourceAllocationFailListeners = new ArrayList<>();
     }
@@ -112,27 +121,28 @@ public abstract non-sealed class CloudletSchedulerAbstract implements CloudletSc
     ///
     /// @param currentMipsShare the new current MIPS share
     /// @see #getCurrentMipsShare()
-    protected void setCurrentMipsShare(@NonNull final MipsShare currentMipsShare) {
-        if(currentMipsShare.pes() > vm.getPesNumber()){
-            LOGGER.warn("Requested {} PEs but {} has just {}", currentMipsShare.pes(), vm, vm.getPesNumber());
-            this.currentMipsShare = new MipsShare(vm.getPesNumber(), currentMipsShare.mips());
+    protected void setCurrentMipsShare(@NonNull final CoreCapacity currentMipsShare) {
+        final long vmCores = cores(vm);
+        if(currentMipsShare.cores() > vmCores){
+            LOGGER.warn("Requested {} CPU cores but {} has just {}", currentMipsShare.cores(), vm, vmCores);
         }
-        else this.currentMipsShare = currentMipsShare;
+
+        this.currentMipsShare = currentMipsShare.limitCores(vmCores);
     }
 
-    /// Gets the amount of MIPS available (free) for each Processor PE,
+    /// Gets the amount of MIPS available (free) for each Processor core,
     /// considering the currently executing cloudlets in this processor
-    /// and the number of PEs these cloudlets require.
+    /// and the number of CPU cores these cloudlets require.
     /// This is the amount of MIPS that each Cloudlet is allowed to use,
     /// since the processor is shared among all executing cloudlets.
     ///
     /// In the case of space shared schedulers,
-    /// there is no concurrency for PEs because some cloudlets
-    /// may wait in a queue until there are available PEs to be used
+    /// there is no concurrency for cores because some cloudlets
+    /// may wait in a queue until there are available cores to be used
     /// exclusively by them.
     ///
-    /// @return the amount of available MIPS for each Processor PE.
-    public double getAvailableMipsByPe(){
+    /// @return the amount of available MIPS for each Processor core.
+    public double getAvailableMipsByCore(){
         /*
          * TODO  Splitting the capacity of a CPU core among different applications
          *       inside a VM is not in fact possible (unless containers are used).
@@ -142,25 +152,21 @@ public abstract non-sealed class CloudletSchedulerAbstract implements CloudletSc
          *       which in fact performs task preemption.
          * See https://github.com/cloudsimplus/cloudsimplus/issues/592
         */
-        final long totalAllExecCloudletsPes = totalAllExecCloudletsPes();
-        if(totalAllExecCloudletsPes > currentMipsShare.pes()) {
-            return getTotalMipsShare() / totalAllExecCloudletsPes;
+        final long totalAllExecCloudletsCores = totalAllExecCloudletsCores();
+        if(totalAllExecCloudletsCores > currentMipsShare.cores()) {
+            return getTotalMipsShare() / totalAllExecCloudletsCores;
         }
 
-        return getPeCapacity();
-    }
-
-    private Double getPeCapacity() {
         return currentMipsShare.mips();
     }
 
-    /// @return the total number of PEs from all cloudlets currently executing in this scheduler,
+    /// @return the total number of CPU cores from all cloudlets currently executing in this scheduler,
     /// excluding the ones blocked waiting for packets (which don't use the CPU).
-    private long totalAllExecCloudletsPes() {
+    private long totalAllExecCloudletsCores() {
         return cloudletExecList.stream()
                                .map(CloudletExecution::getCloudlet)
                                .filter(cloudlet -> !taskScheduler.isCloudletWaitingForPackets(cloudlet))
-                               .mapToLong(Cloudlet::getPesNumber).sum();
+                               .mapToLong(Cloudlet::getRequiredCores).sum();
     }
 
     private double getTotalMipsShare(){
@@ -240,7 +246,7 @@ public abstract non-sealed class CloudletSchedulerAbstract implements CloudletSc
             return getEstimatedFinishTime(cle.getCloudlet(), fileTransferTime);
         }
 
-        // No enough free PEs, then add Cloudlet to the waiting queue
+        // No enough free cores, then add Cloudlet to the waiting queue
         addCloudletToWaitingList(cle);
         return 0.0;
     }
@@ -250,7 +256,7 @@ public abstract non-sealed class CloudletSchedulerAbstract implements CloudletSc
     /// @param fileTransferTime time required to move the required files from the SAN to the VM (in seconds)
     private double getEstimatedFinishTime(final Cloudlet cloudlet, final double fileTransferTime) {
         // Estimated total time if no lifetime is set
-        final double estimatedTotalTime = fileTransferTime + Math.abs(cloudlet.getLength() / getPeCapacity());
+        final double estimatedTotalTime = fileTransferTime + Math.abs(cloudlet.getLength() / currentMipsShare.mips());
         return Math.min(cloudlet.getLifeTime(), estimatedTotalTime);
     }
 
@@ -260,7 +266,7 @@ public abstract non-sealed class CloudletSchedulerAbstract implements CloudletSc
         cle.setStatus(Cloudlet.Status.INEXEC);
         cle.setLastProcessingTime(getVm().getSimulation().clock());
         cloudletExecList.add(cle);
-        addUsedPes(cle.getPesNumber());
+        addUsedCores(cle.getRequiredCores());
     }
 
     @Override
@@ -349,7 +355,7 @@ public abstract non-sealed class CloudletSchedulerAbstract implements CloudletSc
 
     private void changeInExecToPaused(final CloudletExecution cle) {
         changeStatusOfCloudlet(cle, Cloudlet.Status.INEXEC, Cloudlet.Status.PAUSED);
-        removeUsedPes(cle.getPesNumber());
+        removeUsedCores(cle.getRequiredCores());
     }
 
     private void changeReadyToPaused(final CloudletExecution cle) {
@@ -446,11 +452,12 @@ public abstract non-sealed class CloudletSchedulerAbstract implements CloudletSc
     }
 
     @Override
-    public double updateProcessing(final double currentTime, final MipsShare mipsShare) {
+    public double updateProcessing(final double currentTime, final CoreCapacity mipsShare) {
         setCurrentMipsShare(mipsShare);
 
         deallocateVmResources();
         if (isEmpty()) {
+            setDemandedCores(0);
             setPreviousTime(currentTime);
             return Double.MAX_VALUE;
         }
@@ -469,8 +476,8 @@ public abstract non-sealed class CloudletSchedulerAbstract implements CloudletSc
     /// Deallocates the total used capacity from VM RAM and Bandwidth
     /// so that the allocation can be updated when running Cloudlets are processed.
     private void deallocateVmResources() {
-        ((VmSimple)vm).getRam().deallocateAllResources();
-        ((VmSimple)vm).getBw().deallocateAllResources();
+        vmAbstract().getRam().deallocateAllResources();
+        vmAbstract().getBw().deallocateAllResources();
     }
 
     /// Deallocates VM RAM and Bandwidth used by Cloudlets
@@ -493,55 +500,50 @@ public abstract non-sealed class CloudletSchedulerAbstract implements CloudletSc
     @SuppressWarnings("ForLoopReplaceableByForEach")
     private double updateCloudletsProcessing(final double currentTime) {
         double nextProcessing = Double.MAX_VALUE;
-        long usedPes = 0;
+        long usedCores = 0;
         /* Uses an indexed loop to avoid ConcurrentModificationException,
          * e.g., in cases when the Cloudlet is canceled during simulation execution. */
         for (int i = 0; i < cloudletExecList.size(); i++) {
             final CloudletExecution cle = cloudletExecList.get(i);
             nextProcessing = Math.min(nextProcessing, updateCloudletProcessing(cle, currentTime));
-            usedPes += cloudletUsedPes(cle.getCloudlet());
+            usedCores += cloudletUsedCores(cle.getCloudlet());
         }
 
-        updateAllocatedPes(usedPes);
-
-        /*
-        TODO: This logic should be encapsuled inside the VmAbstract class.
-        A new method should be introduced that accepts just the usedPes and
-        updates the freePesNumber accordingly, since that is a property of the VM and not of the scheduler.
-        This will make this call much simples and provides more cohesion.
-        See https://github.com/cloudsimplus/cloudsimplus/issues/592
-        */
-        ((VmSimple) vm).setFreePesNumber(vm.getPesNumber() - usedPes);
-
+        setDemandedCores(usedCores);
         return nextProcessing;
     }
 
-    /// {@return the number of PEs a Cloudlet in the execution list is using}
-    /// A Cloudlet blocked waiting for packets doesn't use its PEs, so 0 is returned for it.
-    /// @param cloudlet the Cloudlet to get the number of used PEs
-    private long cloudletUsedPes(final Cloudlet cloudlet) {
-        return taskScheduler.isCloudletWaitingForPackets(cloudlet) ? 0 : cloudlet.getPesNumber();
+    /// {@return the number of CPU cores a Cloudlet in the execution list is using}
+    /// A Cloudlet blocked waiting for packets doesn't use its cores, so 0 is returned for it.
+    /// @param cloudlet the Cloudlet to get the number of used cores
+    private long cloudletUsedCores(final Cloudlet cloudlet) {
+        return taskScheduler.isCloudletWaitingForPackets(cloudlet) ? 0 : cloudlet.getRequiredCores();
     }
 
-    /// Sets the number of VM PEs allocated to the Cloudlets in the execution list,
+    /// Sets the number of VM cores required by the Cloudlets in the execution list,
     /// not counting the ones blocked waiting for packets.
-    /// This way, the PEs of a blocked Cloudlet can be used by Cloudlets in the waiting list,
+    /// This way, the cores of a blocked Cloudlet can be used by Cloudlets in the waiting list,
     /// such as the one that will send the packets.
     /// Otherwise, a space-shared scheduler may get stuck (deadlock):
-    /// the receiver holds the PEs while the sender waits for them.
+    /// the receiver holds the cores while the sender waits for them.
     ///
-    /// It's just performed when there is a [CloudletTaskScheduler] (in network simulations),
-    /// so that other simulations are not affected.
-    /// When a blocked Cloudlet receives its packets and there are no free PEs,
-    /// the allocation is limited to the number of VM PEs. The running Cloudlets then
+    /// @param cores the number of CPU cores required by the Cloudlets that are not blocked
+    private void setDemandedCores(final long cores) {
+        demandedCores = Math.max(cores, 0);
+        updateBusyCores();
+    }
+
+    /// Updates the VM busy cores according to the [cores demanded by Cloudlets][#demandedCores].
+    /// It's the only place where the VM busy cores are changed.
+    ///
+    /// When Cloudlets demand more cores than the VM has (such as in a time-shared scheduler
+    /// or when a blocked Cloudlet receives its packets and there are no free cores),
+    /// the busy cores are limited to the number of working VM cores. The running Cloudlets then
     /// share the VM MIPS until some of them finish.
-    ///
-    /// @param usedPes the number of PEs used by the Cloudlets that are not blocked
-    private void updateAllocatedPes(final long usedPes) {
-        if (isThereTaskScheduler()) {
-            final var processor = vm.getProcessor();
-            processor.setAllocatedResource(Math.min(usedPes, processor.getCapacity()));
-        }
+    /// This way, the VM [free cores][Processor#getFreeCores()] are kept up to date.
+    private void updateBusyCores() {
+        final var processor = processor();
+        processor.setAllocatedResource(Math.min(demandedCores, processor.getWorkingCores()));
     }
 
     /// Updates the processing of a specific cloudlet from the Vm using this scheduler.
@@ -583,8 +585,8 @@ public abstract non-sealed class CloudletSchedulerAbstract implements CloudletSc
 
         if(taskScheduler.isTimeToUpdateCloudletProcessing(cle.getCloudlet())){
             cle.updateProcessing(partialFinishedMI);
-            updateVmResourceAbsoluteUtilization(cle, ((VmSimple)vm).getRam());
-            updateVmResourceAbsoluteUtilization(cle, ((VmSimple)vm).getBw());
+            updateVmResourceAbsoluteUtilization(cle, vmAbstract().getRam());
+            updateVmResourceAbsoluteUtilization(cle, vmAbstract().getBw());
         }
 
         taskScheduler.processCloudletTasks(cle.getCloudlet(), partialFinishedMI);
@@ -716,7 +718,7 @@ public abstract non-sealed class CloudletSchedulerAbstract implements CloudletSc
     /// @see #getResourceOverSubscriptionDelay(CloudletExecution, double, ResourceManageable, BiPredicate, BiFunction)
     private double getVirtualMemoryDelay(final CloudletExecution cle, final double processingTimeSpan) {
         return getResourceOverSubscriptionDelay(
-            cle, processingTimeSpan, ((VmSimple)vm).getRam(),
+            cle, processingTimeSpan, vmAbstract().getRam(),
 
             /* Since using vMem requires some portion of the RAM to be swapped between the disk
              * to open up RAM space, the required RAM cannot be higher than the RAM capacity
@@ -751,7 +753,7 @@ public abstract non-sealed class CloudletSchedulerAbstract implements CloudletSc
     /// @see #getResourceOverSubscriptionDelay(CloudletExecution, double, ResourceManageable, BiPredicate, BiFunction)
     private double getBandwidthOverSubscriptionDelay(final CloudletExecution cle, final double processingTimeSpan) {
         return getResourceOverSubscriptionDelay(
-            cle, processingTimeSpan, ((VmSimple)vm).getBw(),
+            cle, processingTimeSpan, vmAbstract().getBw(),
             (vmBw, requestedBw) -> requestedBw <= vmBw.getCapacity(),
 
             /* When some BW cannot be allocated to the Cloudlet (due to over-subscription),
@@ -842,7 +844,7 @@ public abstract non-sealed class CloudletSchedulerAbstract implements CloudletSc
     /// @param cle the Cloudlet to be removed
     /// @return the removed Cloudlet or [CloudletExecution#NULL] if not found
     protected CloudletExecution removeCloudletFromExecList(final CloudletExecution cle) {
-        removeUsedPes(cle.getPesNumber());
+        removeUsedCores(cle.getRequiredCores());
         return cloudletExecList.remove(cle) ? cle : CloudletExecution.NULL;
     }
 
@@ -856,7 +858,7 @@ public abstract non-sealed class CloudletSchedulerAbstract implements CloudletSc
     }
 
     /// Gets the estimated time when a given cloudlet is supposed to finish executing.
-    /// It considers the amount of Vm PES and the total of PEs required
+    /// It considers the amount of Vm CORES and the total of cores required
     /// by all VMs running inside the VM.
     ///
     /// @param cle         cloudlet to get the estimated finish time
@@ -880,7 +882,7 @@ public abstract non-sealed class CloudletSchedulerAbstract implements CloudletSc
     }
 
     /// Selects the next Cloudlets in the waiting list to move to the execution
-    /// list to start executing them. While there are enough free PEs,
+    /// list to start executing them. While there are enough free cores,
     /// the method tries to find a suitable Cloudlet in the list, until it reaches
     /// the end of such a list.
     ///
@@ -895,7 +897,7 @@ public abstract non-sealed class CloudletSchedulerAbstract implements CloudletSc
     ///
     ///
     /// This method is called internally by the
-    /// [#updateProcessing(double,MipsShare)].
+    /// [#updateProcessing(double,CoreCapacity)].
     /// @param currentTime current simulation time
     /// @return the next time to update the cloudlet processing
     /// (which is a relative delay from the current simulation time)
@@ -918,7 +920,7 @@ public abstract non-sealed class CloudletSchedulerAbstract implements CloudletSc
     }
 
     /// Try to find the first Cloudlet in the waiting list that the number of
-    /// required PEs is not higher than the number of free PEs.
+    /// required cores is not higher than the number of free cores.
     ///
     /// @return an [Optional] containing the found Cloudlet or an empty
     /// Optional otherwise
@@ -930,12 +932,12 @@ public abstract non-sealed class CloudletSchedulerAbstract implements CloudletSc
                 .findFirst();
     }
 
-    /// Checks if the number of PEs required by a given Cloudlet is free to use.
+    /// Checks if the number of CPU cores required by a given Cloudlet is free to use.
     ///
-    /// @param cle the Cloudlet to get the number of required PEs
-    /// @return true if there is the number of free PEs, false otherwise
-    protected boolean isThereEnoughFreePesForCloudlet(final CloudletExecution cle) {
-        return vm.getProcessor().getAvailableResource() >= cle.getPesNumber();
+    /// @param cle the Cloudlet to get the number of required cores
+    /// @return true if there is the number of free cores, false otherwise
+    protected boolean isThereEnoughFreeCoresForCloudlet(final CloudletExecution cle) {
+        return processor().getFreeCores() >= cle.getRequiredCores();
     }
 
     /// Removes a Cloudlet from the waiting list and adds it to the exec list.
@@ -968,29 +970,22 @@ public abstract non-sealed class CloudletSchedulerAbstract implements CloudletSc
         return this.vm != null && this.vm != Vm.NULL && !vm.equals(this.vm);
     }
 
-    @Override
-    public long getUsedPes() {
-        return vm.getProcessor().getAllocatedResource();
-    }
-
-    /// @return the number of PEs currently not being used.
-    @Override
-    public long getFreePes() {
-        return currentMipsShare.pes() - getUsedPes();
-    }
-
-    /// Adds a given number of PEs to the number of currently used PEs.
+    /// Adds a given number of CPU cores to the number of cores demanded by Cloudlets.
     ///
-    /// @param usedPesToAdd number of PEs to add to the number of used PEs
-    private void addUsedPes(final long usedPesToAdd) {
-        vm.getProcessor().allocateResource(usedPesToAdd);
+    /// @param usedCoresToAdd number of CPU cores to add
+    private void addUsedCores(final long usedCoresToAdd) {
+        setDemandedCores(demandedCores + usedCoresToAdd);
     }
 
-    /// Subtracts a given number of PEs from the number of currently used PEs.
+    /// Subtracts a given number of CPU cores from the number of cores demanded by Cloudlets.
     ///
-    /// @param usedPesToRemove number of PEs to subtract from the number of used PEs
-    private void removeUsedPes(final long usedPesToRemove) {
-        vm.getProcessor().deallocateResource(usedPesToRemove);
+    /// @param usedCoresToRemove number of CPU cores to subtract
+    private void removeUsedCores(final long usedCoresToRemove) {
+        setDemandedCores(demandedCores - usedCoresToRemove);
+    }
+
+    private Processor processor() {
+        return vm.getProcessor();
     }
 
     @Override
@@ -1017,22 +1012,22 @@ public abstract non-sealed class CloudletSchedulerAbstract implements CloudletSc
     private double getRequestedOrAllocatedCpuPercentUtilization(final double time, final boolean requestedUtilization) {
         return cloudletExecList.stream()
             .map(CloudletExecution::getCloudlet)
-            .mapToDouble(cloudlet -> getAbsoluteCloudletCpuUtilizationForAllPes(time, cloudlet, requestedUtilization))
+            .mapToDouble(cloudlet -> getAbsoluteCloudletCpuUtilizationForAllCores(time, cloudlet, requestedUtilization))
             .sum() / vm.getTotalMipsCapacity();
     }
 
     /// Gets the total CPU utilization in MIPS for a Cloudlet, considering
-    /// all the PEs in which it is running.
+    /// all the cores in which it is running.
     ///
     /// @param time the simulation time
     /// @param cloudlet the Cloudlet to get the total CPU utilization
-    /// @return the total Cloudlet CPU utilization (in MIPS) across all PEs it is using
-    private double getAbsoluteCloudletCpuUtilizationForAllPes(final double time, final Cloudlet cloudlet, final boolean requestedUtilization) {
-        final double cloudletCpuUsageForOnePe =
+    /// @return the total Cloudlet CPU utilization (in MIPS) across all cores it is using
+    private double getAbsoluteCloudletCpuUtilizationForAllCores(final double time, final Cloudlet cloudlet, final boolean requestedUtilization) {
+        final double cloudletCpuUsageForOneCore =
             getAbsoluteCloudletResourceUtilization(
-                cloudlet, cloudlet.getUtilizationModelCpu(), time, getAvailableMipsByPe(), "CPU", requestedUtilization);
+                cloudlet, cloudlet.getUtilizationModelCpu(), time, getAvailableMipsByCore(), "CPU", requestedUtilization);
 
-        return cloudletCpuUsageForOnePe * cloudlet.getPesNumber();
+        return cloudletCpuUsageForOneCore * cloudlet.getRequiredCores();
     }
 
     /// Gets the current requested MIPS for a given cloudlet.
@@ -1042,7 +1037,7 @@ public abstract non-sealed class CloudletSchedulerAbstract implements CloudletSc
     /// @return the current requested MIPS for the given cloudlet
     protected double getRequestedMipsForCloudlet(final CloudletExecution cle, final double time) {
         final Cloudlet cloudlet = cle.getCloudlet();
-        return getAbsoluteCloudletResourceUtilization(cloudlet, cloudlet.getUtilizationModelCpu(), time, vm.getMips(), "CPU", true);
+        return getAbsoluteCloudletResourceUtilization(cloudlet, cloudlet.getUtilizationModelCpu(), time, mips(vm), "CPU", true);
     }
 
     /// Gets the current allocated MIPS for a cloudlet.
@@ -1063,7 +1058,7 @@ public abstract non-sealed class CloudletSchedulerAbstract implements CloudletSc
     public double getAllocatedMipsForCloudlet(final CloudletExecution cle, final double time, final boolean log) {
         final var cl = cle.getCloudlet();
         final String resourceName = log ? "CPU" : "";
-        return getAbsoluteCloudletResourceUtilization(cl, cl.getUtilizationModelCpu(), time, getAvailableMipsByPe(), resourceName, false);
+        return getAbsoluteCloudletResourceUtilization(cl, cl.getUtilizationModelCpu(), time, getAvailableMipsByCore(), resourceName, false);
     }
 
     @Override
@@ -1152,12 +1147,6 @@ public abstract non-sealed class CloudletSchedulerAbstract implements CloudletSc
     }
 
     @Override
-    public void deallocatePesFromVm(final long pesToRemove) {
-        final long removedPes = currentMipsShare.remove(pesToRemove);
-        removeUsedPes(removedPes);
-    }
-
-    @Override
     public List<Cloudlet> getCloudletList() {
         return Stream.concat(cloudletExecList.stream(), cloudletWaitingList.stream())
                      .map(CloudletExecution::getCloudlet)
@@ -1198,5 +1187,11 @@ public abstract non-sealed class CloudletSchedulerAbstract implements CloudletSc
     public void clear() {
         this.cloudletWaitingList.clear();
         this.cloudletExecList.clear();
+    }
+
+    /// @return the VM as a [VmAbstract], which gives access to its RAM and BW
+    /// as resources whose allocation can be changed.
+    private VmAbstract vmAbstract() {
+        return (VmAbstract) vm;
     }
 }

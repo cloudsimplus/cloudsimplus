@@ -55,45 +55,45 @@ public class VmAllocationPolicySimpleTest {
 
     /// Creates a VmAllocationPolicy.
     ///
-    /// @param freePesByHost an array containing the number of free PEs for each host of the
-    /// allocation policy, that will be assigned to the freePesList.
-    /// This array will define the number of Hosts and its PEs.
+    /// @param freeCoresByHost an array containing the number of free cores for each host of the
+    /// allocation policy, that will be assigned to the freeCoresList.
+    /// This array will define the number of Hosts and its cores.
     /// @return
-    private VmAllocationPolicySimple createVmAllocationPolicy(int... freePesByHost) {
-        final Map<Host, Long> hostFreePesMap = new HashMap<>(freePesByHost.length);
-        final List<Host> hosts = new ArrayList<>(freePesByHost.length);
-        for(int i = 1; i <= freePesByHost.length; i++) {
+    private VmAllocationPolicySimple createVmAllocationPolicy(int... freeCoresByHost) {
+        final Map<Host, Long> hostFreeCoresMap = new HashMap<>(freeCoresByHost.length);
+        final List<Host> hosts = new ArrayList<>(freeCoresByHost.length);
+        for(int i = 1; i <= freeCoresByHost.length; i++) {
             final Host host = HostSimpleTest.createHostSimple(
-                i-1, freePesByHost[i-1], HOST_MIPS, HOST_RAM, HOST_BW, i*HOST_BASE_STORAGE);
-            hostFreePesMap.put(host, host.getPesNumber());
+                i-1, freeCoresByHost[i-1], HOST_MIPS, HOST_RAM, HOST_BW, i*HOST_BASE_STORAGE);
+            hostFreeCoresMap.put(host, host.getProcessor().getCores());
             hosts.add(host);
         }
 
-        final VmAllocationPolicySimple policy = new VmAllocationPolicySimple();
+        final var policy = new VmAllocationPolicySimple();
         policy.setDatacenter(new DatacenterSimple(Simulation.NULL, hosts));
         return policy;
     }
 
     @Test
-    public void allocateHostForVmWhenOneVmIsGivenAllocateHostWithLessUsedPesToIt() {
+    public void allocateHostForVmWhenOneVmIsGivenAllocateHostWithLessUsedCoresToIt() {
         final Vm vm = VmTestUtil.createVm(0, 1000, 2);
         assertTrue(policy.allocateHostForVm(vm).fully());
 
         final Host allocatedHostForVm = vm.getHost();
-        final Host hostWithLessPes = policy.getDatacenter().getHostList().get(2);
-        assertEquals(hostWithLessPes, allocatedHostForVm);
+        final Host hostWithLessCores = policy.getDatacenter().getHostList().get(2);
+        assertEquals(hostWithLessCores, allocatedHostForVm);
     }
 
     @Test
     public void allocateHostForVmWhenOneVmIsGivenAndSelectedHostDoesntHaveStorageAllocateOtherHost() {
-        final Host hostWithMoreFreePes = policy.getDatacenter().getHostList().get(2);
+        final Host hostWithMoreFreeCores = policy.getDatacenter().getHostList().get(2);
         final Vm vm = VmTestUtil.createVm(
             0, 1000, 2, 1, 1,
             HOST_BASE_STORAGE, CloudletScheduler.NULL);
-        assertTrue(policy.allocateHostForVm(vm).fully(), vm + " couldn't be allocated to " + hostWithMoreFreePes);
+        assertTrue(policy.allocateHostForVm(vm).fully(), vm + " couldn't be allocated to " + hostWithMoreFreeCores);
 
         final Host allocatedHostForVm = vm.getHost();
-        assertEquals(hostWithMoreFreePes, allocatedHostForVm);
+        assertEquals(hostWithMoreFreeCores, allocatedHostForVm);
     }
 
     @Test

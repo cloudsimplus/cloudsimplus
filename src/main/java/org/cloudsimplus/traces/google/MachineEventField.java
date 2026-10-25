@@ -23,7 +23,6 @@
  */
 package org.cloudsimplus.traces.google;
 
-import org.cloudsimplus.resources.Pe;
 import org.cloudsimplus.util.TimeUtil;
 
 /// The index of each field in the Google Machine Events trace file.
@@ -71,7 +70,7 @@ public enum MachineEventField implements TraceField<GoogleMachineEventsTraceRead
     /// that represents a percentage (between 0 and 1)
     /// of the [GoogleMachineEventsTraceReader#getMaxCpuCores()].
     CPU_CAPACITY {
-        /// Gets the actual number of [Pe]s (CPU cores) to be assigned to a Host,
+        /// Gets the actual number of CPU cores to be assigned to a Host,
         /// according the [GoogleMachineEventsTraceReader#getMaxCpuCores()].
         @Override
         public Integer getValue(final GoogleMachineEventsTraceReader reader) {

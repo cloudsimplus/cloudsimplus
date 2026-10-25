@@ -70,7 +70,7 @@ public class TopologyReaderBrite implements TopologyReader {
     <T extends Number> boolean parseLine(
         final String nodeLine, final T[] parsedFields, final Function<String, T> castFunction)
     {
-        final StringTokenizer tokenizer = new StringTokenizer(nodeLine);
+        final var tokenizer = new StringTokenizer(nodeLine);
         if (!tokenizer.hasMoreElements()) {
             return false;
         }

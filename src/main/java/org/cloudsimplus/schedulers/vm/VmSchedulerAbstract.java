@@ -9,16 +9,15 @@ package org.cloudsimplus.schedulers.vm;
 import lombok.Getter;
 import lombok.NonNull;
 import org.cloudsimplus.hosts.Host;
-import org.cloudsimplus.hosts.HostSimple;
-import org.cloudsimplus.resources.Pe;
-import org.cloudsimplus.schedulers.MipsShare;
+import org.cloudsimplus.resources.CoreCapacity;
+import org.cloudsimplus.resources.Processor;
 import org.cloudsimplus.vms.Vm;
-import org.cloudsimplus.vms.VmSimple;
+import org.cloudsimplus.vms.VmAbstract;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Stream;
 
-import static java.util.stream.Collectors.toList;
 
 /// An abstract class for implementation of [VmScheduler]s.
 ///
@@ -49,10 +48,10 @@ public abstract non-sealed class VmSchedulerAbstract implements VmScheduler {
     }
 
     @Override
-    public final boolean isSuitableForVm(@NonNull final Vm vm, @NonNull final MipsShare requestedMips) {
+    public final boolean isSuitableForVm(@NonNull final Vm vm, @NonNull final CoreCapacity requestedMips) {
         if(requestedMips.isEmpty()){
             LOGGER.warn(
-                "{}: {}: It was requested an empty list of PEs for {} in {}",
+                "{}: {}: It was requested an empty list of CPU cores for {} in {}",
                 host.getSimulation().clockStr(), getClass().getSimpleName(), vm, host);
             return false;
         }
@@ -65,86 +64,145 @@ public abstract non-sealed class VmSchedulerAbstract implements VmScheduler {
         return isSuitableForVmInternal(vm, requestedMips);
     }
 
-    protected abstract boolean isSuitableForVmInternal(Vm vm, MipsShare requestedMips);
+    protected abstract boolean isSuitableForVmInternal(Vm vm, CoreCapacity requestedMips);
 
     @Override
-    public final boolean allocatePesForVm(final Vm vm) {
-        return allocatePesForVm(vm, new MipsShare(vm.getProcessor()));
-    }
-
-    @Override
-    public final boolean allocatePesForVm(@NonNull final Vm vm, @NonNull final MipsShare requestedMips) {
+    public final boolean allocateCoresForVm(@NonNull final Vm vm, @NonNull final CoreCapacity requestedMips) {
         if (!vm.isInMigration() && host.getVmsMigratingOut().contains(vm)) {
             host.removeVmMigratingOut(vm);
         }
 
-        ((VmSimple)vm).setRequestedMips(new MipsShare(requestedMips));
-        if(allocatePesForVmInternal(vm, requestedMips)) {
-            updateHostPesStatusToBusy(vm);
-            return true;
+        if(!isSuitableForVm(vm, requestedMips)) {
+            return false;
         }
 
+        vmAbstract(vm).setMipsShares(requestedMips, getMipsShareToAllocate(vm, requestedMips));
+        updateHostBusyCores(vm);
+        return true;
+    }
+
+    /// Gets the MIPS share that will in fact be allocated to a VM,
+    /// after the request was checked as [suitable][#isSuitableForVmInternal(Vm, CoreCapacity)].
+    /// @param vm the VM requesting MIPS
+    /// @param requestedMips the MIPS share requested by the VM
+    /// @return the MIPS share to allocate to the VM
+    protected abstract CoreCapacity getMipsShareToAllocate(Vm vm, CoreCapacity requestedMips);
+
+    @Override
+    public final void updateHostBusyCores() {
+        updateHostBusyCores(Vm.NULL);
+    }
+
+    /// Updates the number of busy Host cores according to the number of cores allocated to the
+    /// [VMs on the Host][#hostVms()], plus a given VM that may not be on the Host yet
+    /// (such as a VM just allocated, before the Host adds it to its VM list).
+    ///
+    /// The number of cores is computed from the current state each time,
+    /// so it can't drift. When a scheduler shares cores among VMs (such as the time-shared one),
+    /// VMs may be allocated more cores than the Host has.
+    /// That way, the number of busy Host cores is limited to the number of working Host cores.
+    /// @param changedVm a VM whose allocation has just changed, or [Vm#NULL]
+    private void updateHostBusyCores(final Vm changedVm) {
+        long cores = hostVms().mapToLong(VmSchedulerAbstract::allocatedCores).sum();
+        if(changedVm != Vm.NULL && !isOnHost(changedVm)) {
+            cores += allocatedCores(changedVm);
+        }
+
+        final var processor = host.getProcessor();
+        processor.setAllocatedResource(Math.min(cores, processor.getWorkingCores()));
+    }
+
+    /// @return the VMs placed into the Host plus the ones migrating into it that
+    /// are not in the Host VM list yet (without duplicates).
+    private Stream<Vm> hostVms() {
+        final List<Vm> vmList = host.getVmList();
+        final Set<Vm> vmsMigratingIn = host.getVmsMigratingIn();
+        return Stream.concat(vmList.stream(), vmsMigratingIn.stream().filter(vm -> !vmList.contains(vm)));
+    }
+
+    private boolean isOnHost(final Vm vm) {
+        return host.getVmList().contains(vm) || host.getVmsMigratingIn().contains(vm);
+    }
+
+    private static long allocatedCores(final Vm vm) {
+        return vmAbstract(vm).getAllocatedMips().cores();
+    }
+
+    @Override
+    public final boolean resizeVmCores(@NonNull final Vm vm, final long delta) {
+        if(delta < 0) {
+            return shrinkVmCores(vm, -delta);
+        }
+
+        return delta > 0 && growVmCores(vm, delta);
+    }
+
+    /// Removes a given number of cores from a VM, updating its processor, its MIPS shares and the Host cores.
+    /// The VM [CloudletScheduler][org.cloudsimplus.schedulers.cloudlet.CloudletScheduler]
+    /// gets the reduced MIPS share in its next processing update.
+    /// @param vm the VM to remove cores from
+    /// @param cores the number of cores to remove
+    /// @return true if the cores were removed; false if the VM doesn't have that number of working cores
+    private boolean shrinkVmCores(final Vm vm, final long cores) {
+        if(!vm.getProcessor().deallocateAndRemoveResource(cores)) {
+            return false;
+        }
+
+        deallocateCoresFromVm(vm, cores);
+        return true;
+    }
+
+    /// Adds a given number of cores to a VM, if the Host has room for the VM with all its new cores,
+    /// reallocating the VM MIPS shares.
+    /// @param vm the VM to add cores to
+    /// @param cores the number of cores to add
+    /// @return true if the cores were added;
+    ///         false if the Host doesn't have room for them (the VM is kept as it was)
+    private boolean growVmCores(final Vm vm, final long cores) {
+        final var vmAbstract = vmAbstract(vm);
+        final CoreCapacity currentRequest = vmAbstract.getRequestedMips();
+
+        // Releases the current VM allocation, so that it isn't counted when checking if the new request fits
+        deallocateCoresFromVm(vm);
+        vm.getProcessor().addCapacity(cores);
+        final CoreCapacity newRequest = vmAbstract.getMipsToRequest();
+        if(isSuitableForVm(vm, newRequest)) {
+            return allocateCoresForVm(vm, newRequest);
+        }
+
+        vm.getProcessor().removeCapacity(cores);
+        allocateCoresForVm(vm, currentRequest);
         return false;
     }
 
-    /// Sets the status of physical PEs from a Host used by a given VM to BUSY.
-    /// The number of Host PEs changed is equal to the number of PEs required by the VM.
-    /// @param vm the VM to set the status of its used physical PEs
-    private void updateHostPesStatusToBusy(final Vm vm) {
-        updateHostPesStatus(host.getFreePeList(), vm.getPesNumber(), Pe.Status.BUSY);
+    @Override
+    public final void deallocateCoresFromVm(final Vm vm) {
+        final var vmAbstract = vmAbstract(vm);
+        deallocateCoresFromVm(vm, Math.max(vmAbstract.getRequestedMips().cores(), vmAbstract.getAllocatedMips().cores()));
     }
 
-    /// Sets the status of physical PEs from a Host used by a given VM.
-    /// @param peList the list of physical PEs from which the corresponding virtual PEs will have the status changed
-    /// @param vPesNumber the number of Virtual PEs that correspond to the number of physical PEs to have their status changed
-    /// @param newStatus the new status to set
-    private void updateHostPesStatus(final List<Pe> peList, final long vPesNumber, final Pe.Status newStatus) {
-        if(vPesNumber <= 0) {
+    /// Removes a given number of cores from the VM requested and allocated MIPS shares,
+    /// updating the Host cores.
+    /// It doesn't remove more cores than each share has.
+    /// It's used only to change the VM cores together with its processor
+    /// (see [#resizeVmCores(Vm, long)]) or to release all of them (see [#deallocateCoresFromVm(Vm)]).
+    /// @param vm the VM to remove cores from
+    /// @param coresToRemove the number of cores to remove
+    protected final void deallocateCoresFromVm(final Vm vm, final long coresToRemove) {
+        if(coresToRemove <= 0){
             return;
         }
 
-        final var selectedPesList = peList.stream().limit(vPesNumber).collect(toList());
-        ((HostSimple)host).setPeStatus(selectedPesList, newStatus);
-    }
-
-    protected abstract boolean allocatePesForVmInternal(Vm vm, MipsShare mipsShareRequested);
-
-    @Override
-    public void deallocatePesFromVm(final Vm vm) {
-        deallocatePesFromVm(vm, (int)vm.getPesNumber());
+        final var vmAbstract = vmAbstract(vm);
+        vmAbstract.setMipsShares(
+            vmAbstract.getRequestedMips().withoutCores(coresToRemove),
+            vmAbstract.getAllocatedMips().withoutCores(coresToRemove));
+        updateHostBusyCores(vm);
     }
 
     @Override
-    public void deallocatePesFromVm(final Vm vm, final int pesToRemove) {
-        if(pesToRemove <= 0 || vm.getPesNumber() == 0){
-            return;
-        }
-
-        final long removedPes = deallocatePesFromVmInternal(vm, pesToRemove);
-        updateHostUsedPesToFree(removedPes);
-    }
-
-    /// Sets the status of physical PEs used by a destroyed VM to FREE.
-    /// That works for any kind of scheduler, such as time- and space-shared one.
-    /// @param removedPes number of PEs actually removed from the destroyed VM
-    private void updateHostUsedPesToFree(final long removedPes) {
-        updateHostPesStatus(host.getBusyPeList(), removedPes, Pe.Status.FREE);
-    }
-
-    /// Tries to remove a given number of PEs allocated to a VM
-    /// @param vm the VM to remove PEs
-    /// @param mipsShare the VM MIPS share where to remove PEs from
-    /// @param pesToRemove the number of PEs to remove
-    /// @return the number of actual removed PEs
-    protected final long removePesFromVm(final Vm vm, final MipsShare mipsShare, final long pesToRemove) {
-        return mipsShare.remove(Math.min(vm.getPesNumber(), pesToRemove));
-    }
-
-    protected abstract long deallocatePesFromVmInternal(Vm vm, int pesToRemove);
-
-    @Override
-    public MipsShare getAllocatedMips(@NonNull final Vm vm) {
-        final MipsShare mipsShare = ((VmSimple)vm).getAllocatedMips();
+    public CoreCapacity getAllocatedMips(@NonNull final Vm vm) {
+        final CoreCapacity mipsShare = vmAbstract(vm).getAllocatedMips();
 
         /*
         When a VM is migrating out the source Host, its allocated MIPS
@@ -157,16 +215,19 @@ public abstract non-sealed class VmSchedulerAbstract implements VmScheduler {
     }
 
     /// Gets an adjusted MIPS share requested by a VM, reducing every MIPS which is higher
-    /// than the [capacity of each physical PE][#getPeCapacity()] to that value.
+    /// than the [MIPS of each working Host core][Processor#getWorkingCoreMips()] to that value.
     ///
     /// @param vm the VM to get the MIPS requested
     /// @param mipsShareRequested the VM requested MIPS share
     /// @return a new VM requested MIPS share with adjusted MIPS capacity
-    protected MipsShare getMipsShareRequestedReduced(final Vm vm, final MipsShare mipsShareRequested){
-        final double peMips = getPeCapacity();
-        final long requestedPes = mipsShareRequested.pes();
-        final double requestedMips = mipsShareRequested.mips();
-        return new MipsShare(requestedPes, Math.min(requestedMips, peMips)* mipsPercentToRequest(vm));
+    protected CoreCapacity getMipsShareRequestedReduced(final Vm vm, final CoreCapacity mipsShareRequested){
+        final double coreMips = host.getProcessor().getWorkingCoreMips();
+        return mipsShareRequested.limitMips(coreMips).scaleMips(mipsPercentToRequest(vm));
+    }
+
+    @Override
+    public double getTotalAllocatedMips() {
+        return host.getTotalMipsCapacity() - getTotalAvailableMips();
     }
 
     @Override
@@ -174,39 +235,20 @@ public abstract non-sealed class VmSchedulerAbstract implements VmScheduler {
         return getAllocatedMips(vm).totalMips();
     }
 
-    /// @return PE capacity in MIPS.
-    ///
-    /// @TODO It considers that all PEs have the same capacity, which has been
-    /// shown it isn't assured. The peList received by the VmScheduler can have
-    /// heterogeneous PEs.
-    /// See https://github.com/cloudsimplus/cloudsimplus/issues/592
-    public long getPeCapacity() {
-        return getWorkingPeList().isEmpty() ? 0 : getWorkingPeList().get(0).getCapacity();
-    }
-
-    /// @return the list of working PEs from the Host, **excluding failed PEs**.
-    public final List<Pe> getWorkingPeList() {
-        return host.getWorkingPeList();
-    }
 
     @Override
-    public MipsShare getRequestedMips(final Vm vm) {
-        return ((VmSimple)vm).getRequestedMips();
+    public CoreCapacity getRequestedMips(final Vm vm) {
+        return vmAbstract(vm).getRequestedMips();
     }
 
     @Override
     public double getTotalAvailableMips() {
-        final var vmStream = Stream.concat(host.getVmList().stream(), host.getVmsMigratingIn().stream());
-        final double allocatedMips =
-                vmStream
-                    .map(vm -> (VmSimple)vm)
-                    .mapToDouble(this::actualVmTotalRequestedMips)
-                    .sum();
+        final double allocatedMips = hostVms().mapToDouble(this::actualVmTotalRequestedMips).sum();
 
         return host.getTotalMipsCapacity() - allocatedMips;
     }
 
-    /// Gets the sum of MIPS requested by each VM PE, including
+    /// Gets the sum of MIPS requested by each VM core, including
     /// the CPU overhead if the VM is migration into this Host.
     ///
     /// For instance, consider the migration overhead is 10% and
@@ -216,10 +258,10 @@ public abstract non-sealed class VmSchedulerAbstract implements VmScheduler {
     /// used by the Host (900 by the VM and 100 by the migration overhead).
     ///
     /// @param vm the VM to get the requested MIPS sum
-    /// @return the actual requested MIPS sum across all VM PEs,
+    /// @return the actual requested MIPS sum across all VM cores,
     /// including the CPU overhead of the VM is in migration to this Host
-    private double actualVmTotalRequestedMips(final VmSimple vm) {
-        final double totalVmRequestedMips = vm.getAllocatedMips().totalMips();
+    private double actualVmTotalRequestedMips(final Vm vm) {
+        final double totalVmRequestedMips = vmAbstract(vm).getAllocatedMips().totalMips();
 
         /* If the VM is migrating in or out this Host,
          there is a migration overhead.
@@ -295,5 +337,12 @@ public abstract non-sealed class VmSchedulerAbstract implements VmScheduler {
          * That may happen when the Host is created without an id,
          * which is set only when the Host list is assigned to a Datacenter. */
         return this.host != null && this.host != Host.NULL && host != this.host;
+    }
+
+    /// Gets a VM as a [VmAbstract], which stores the MIPS shares managed by the scheduler.
+    /// @param vm the VM to get
+    /// @return the VM as a VmAbstract
+    protected static VmAbstract vmAbstract(final Vm vm) {
+        return (VmAbstract) vm;
     }
 }

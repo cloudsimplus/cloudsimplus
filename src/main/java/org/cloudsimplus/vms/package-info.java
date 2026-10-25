@@ -5,7 +5,7 @@
 /// (represented by a [org.cloudsimplus.brokers.DatacenterBroker]).
 ///
 /// As each VM can run several Cloudlets, the scheduling of such Cloudlets on the VM's CPU
-/// cores ([org.cloudsimplus.resources.Pe]) is defined by
+/// cores ([org.cloudsimplus.resources.Processor]) is defined by
 /// a [org.cloudsimplus.schedulers.cloudlet.CloudletScheduler].
 ///
 /// The most basic Vm implementation is the [org.cloudsimplus.vms.VmSimple].

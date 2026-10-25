@@ -49,11 +49,11 @@ final class DatacenterCharacteristicsNull implements DatacenterCharacteristics {
     @Override public long getId() {
         return 0;
     }
-    @Override public double getMips() { return 0; }
+    @Override public double getTotalMips() { return 0; }
     @Override public long getNumberOfFailedHosts() {
         return 0;
     }
-    @Override public int getPesNumber() {
+    @Override public long getTotalCores() {
         return 0;
     }
     @Override public boolean isWorking() {

@@ -56,7 +56,7 @@ public class HarddriveStorageTest {
     @Test
     public void testNewHarddriveStorageWhenZeroSize() {
         final int expResult = 0;
-        final HarddriveStorage hd = new HarddriveStorage(expResult);
+        final var hd = new HarddriveStorage(expResult);
         assertEquals(expResult, hd.getCapacity());
     }
 

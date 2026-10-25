@@ -27,14 +27,13 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
-import org.cloudsimplus.resources.Pe;
 import org.cloudsimplus.vms.Vm;
 import org.cloudsimplus.vms.VmGroup;
 
 /// Stores data about the suitability of
 /// a [Host] for placing a [Vm].
 /// It provides fine-grained data to indicate if the Host is suitable in
-/// storage, ram, bandwidth and number of [Pe]s required by the given [Vm].
+/// storage, ram, bandwidth and number of CPU cores required by the given [Vm].
 ///
 /// @author Manoel Campos da Silva Filho
 /// @since CloudSim Plus 6.0.2
@@ -54,9 +53,9 @@ public final class HostSuitability {
     @Setter
     private boolean forBw;
 
-    /// Indicates if the Host has enough [Pe]s for running a VM.
+    /// Indicates if the Host has enough cores for running a VM.
     @Setter
-    private boolean forPes;
+    private boolean forCores;
 
     @Getter @EqualsAndHashCode.Include
     private final Vm vm;
@@ -81,7 +80,7 @@ public final class HostSuitability {
     /// @param vm the Vm being requested to be placed in the given Host
     /// @param reason the reason the Host is not suitable for a VM.
     /// @see #setForBw(boolean)
-    /// @see #setForPes(boolean)
+    /// @see #setForCores(boolean)
     /// @see #setForRam(boolean)
     /// @see #setForStorage(boolean)
     /// @see #setSuitability(HostSuitability)
@@ -100,7 +99,7 @@ public final class HostSuitability {
     /// @see VmGroup
     /// @see #fully()
     public void setSuitability(final HostSuitability other){
-        this.forPes     &= other.forPes;
+        this.forCores     &= other.forCores;
         this.forRam     &= other.forRam;
         this.forBw      &= other.forBw;
         this.forStorage &= other.forStorage;
@@ -133,21 +132,21 @@ public final class HostSuitability {
         return forBw;
     }
 
-    /// Checks if the Host has enough [Pe]s for running a VM.
+    /// Checks if the Host has enough cores for running a VM.
     /// @return true if it's suitable;
     /// false if it's unsuitable, or this specific requirement
     /// was not even evaluated since another one was already not met.
     /// @see Host#setLazySuitabilityEvaluation(boolean)
-    public boolean forPes() {
-        return forPes;
+    public boolean forCores() {
+        return forCores;
     }
 
     /// Checks if the Host is totally suitable for the given Vm
-    /// in terms of required storage, ram, bandwidth and number of [Pe]s.
+    /// in terms of required storage, ram, bandwidth and number of CPU cores.
     /// If any requirement is not met, it means the host is not suitable at all.
     /// @return true if all resource requirements are met, false otherwise.
     public boolean fully(){
-        return forStorage && forRam && forBw && forPes;
+        return forStorage && forRam && forBw && forCores;
     }
 
     /// @return the reason Host is not suitable for a VM, or an empty string if the Host is suitable.
@@ -156,14 +155,14 @@ public final class HostSuitability {
         if(fully())
             return host + " is fully suitable for " + vm;
 
-        // TODO It may return a reason even when the host is suitable for the VM (since forPes and so on can be changed)
+        // TODO It may return a reason even when the host is suitable for the VM (since forCores and so on can be changed)
         // See https://github.com/cloudsimplus/cloudsimplus/issues/588
         if(reason != null)
             return reason;
 
         final var builder = new StringBuilder("lack of");
-        if(!forPes)
-            builder.append(" PEs,");
+        if(!forCores)
+            builder.append(" CPU cores,");
         if(!forRam)
             builder.append(" RAM,");
         if(!forStorage)

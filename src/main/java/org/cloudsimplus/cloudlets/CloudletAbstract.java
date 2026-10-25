@@ -36,7 +36,7 @@ import java.util.List;
 @Accessors(makeFinal = false) @Getter @Setter
 public non-sealed abstract class CloudletAbstract extends CustomerEntityAbstract implements Cloudlet {
     private long jobId;
-    private long pesNumber;
+    private long requiredCores;
 
     @NonNull
     private Status status;
@@ -91,7 +91,7 @@ public non-sealed abstract class CloudletAbstract extends CustomerEntityAbstract
     ///
     /// @param length the length (in MI) of this cloudlet to be executed in a VM
     /// (check out [#setLength(long)])
-    /// @param pesNumber number of [Pe]s the Cloudlet will require
+    /// @param requiredCores number of CPU cores the Cloudlet will require
     /// @param utilizationModel a [UtilizationModel] to define how the Cloudlet uses CPU, RAM and BW.
     /// To define an independent utilization model for each resource,
     /// call the respective setters.
@@ -99,8 +99,8 @@ public non-sealed abstract class CloudletAbstract extends CustomerEntityAbstract
     /// @see #setUtilizationModelCpu(UtilizationModel)
     /// @see #setUtilizationModelRam(UtilizationModel)
     /// @see #setUtilizationModelBw(UtilizationModel)
-    public CloudletAbstract(final long length, final int pesNumber, final UtilizationModel utilizationModel) {
-        this(-1, length, pesNumber);
+    public CloudletAbstract(final long length, final int requiredCores, final UtilizationModel utilizationModel) {
+        this(-1, length, requiredCores);
         setUtilizationModel(utilizationModel);
     }
 
@@ -114,9 +114,9 @@ public non-sealed abstract class CloudletAbstract extends CustomerEntityAbstract
     ///
     /// @param length the length (in MI) of this cloudlet to be executed in a VM
     /// (check out [#setLength(long)])
-    /// @param pesNumber number of [Pe]s the Cloudlet will require
-    public CloudletAbstract(final long length, final int pesNumber) {
-        this(-1, length, pesNumber);
+    /// @param requiredCores number of CPU cores the Cloudlet will require
+    public CloudletAbstract(final long length, final int requiredCores) {
+        this(-1, length, requiredCores);
     }
 
     /// Creates a Cloudlet with no priority or id. The id is defined when the Cloudlet is submitted to
@@ -128,9 +128,9 @@ public non-sealed abstract class CloudletAbstract extends CustomerEntityAbstract
     ///
     /// @param length the length (in MI) of this cloudlet to be executed in a VM
     /// (check out [#setLength(long)])
-    /// @param pesNumber number of [Pe]s the Cloudlet will require
-    public CloudletAbstract(final long length, final long pesNumber) {
-        this(-1, length, pesNumber);
+    /// @param requiredCores number of CPU cores the Cloudlet will require
+    public CloudletAbstract(final long length, final long requiredCores) {
+        this(-1, length, requiredCores);
     }
 
     /// Creates a Cloudlet with no priority, file size and output size equal to 1.
@@ -142,13 +142,13 @@ public non-sealed abstract class CloudletAbstract extends CustomerEntityAbstract
     /// @param id     id of the Cloudlet
     /// @param length the length (in MI) of this cloudlet to be executed in a VM
     /// (check out [#setLength(long)])
-    /// @param pesNumber number of [Pe]s the Cloudlet will require
-    public CloudletAbstract(final long id, final long length, final long pesNumber) {
+    /// @param requiredCores number of CPU cores the Cloudlet will require
+    public CloudletAbstract(final long id, final long length, final long requiredCores) {
         super();
 
         this.setId(id);
         this.setJobId(NOT_ASSIGNED);
-        this.setPesNumber(pesNumber);
+        this.setRequiredCores(requiredCores);
         this.setLength(length);
         this.setFileSize(1);
         this.setOutputSize(1);
@@ -259,12 +259,12 @@ public non-sealed abstract class CloudletAbstract extends CustomerEntityAbstract
     }
 
     @Override
-    public final Cloudlet setPesNumber(final long pesNumber) {
-        if (pesNumber <= 0) {
-            throw new IllegalArgumentException("Cloudlet number of PEs has to be greater than zero.");
+    public final Cloudlet setRequiredCores(final long requiredCores) {
+        if (requiredCores <= 0) {
+            throw new IllegalArgumentException("Cloudlet number of CPU cores has to be greater than zero.");
         }
 
-        this.pesNumber = pesNumber;
+        this.requiredCores = requiredCores;
         return this;
     }
 
@@ -361,7 +361,7 @@ public non-sealed abstract class CloudletAbstract extends CustomerEntityAbstract
 
     @Override
     public long getTotalLength() {
-        return getLength() * pesNumber;
+        return getLength() * requiredCores;
     }
 
     /// Sets the time the Cloudlet arrived at a Datacenter to be executed.
@@ -449,7 +449,7 @@ public non-sealed abstract class CloudletAbstract extends CustomerEntityAbstract
             return utilizationModelBw;
         }
 
-        if(resourceClass.isAssignableFrom(Processor.class) || resourceClass.isAssignableFrom(Pe.class)){
+        if(resourceClass.isAssignableFrom(Processor.class)){
             return utilizationModelCpu;
         }
 

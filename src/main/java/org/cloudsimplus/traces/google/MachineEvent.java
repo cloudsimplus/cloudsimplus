@@ -27,7 +27,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.cloudsimplus.hosts.Host;
 import org.cloudsimplus.provisioners.ResourceProvisioner;
-import org.cloudsimplus.resources.Pe;
 import org.cloudsimplus.schedulers.vm.VmScheduler;
 
 import java.util.function.Function;
@@ -64,7 +63,7 @@ public final class MachineEvent extends MachineDataBase {
     /// @see MachineEventField#RAM_CAPACITY
     private long ram;
 
-    /// The actual number of [Pe]s (CPU cores) to be assigned to a Host,
+    /// The actual number of CPU cores to be assigned to a Host,
     /// according the [GoogleMachineEventsTraceReader#getMaxCpuCores()].
     ///
     /// @see MachineEventField#CPU_CAPACITY

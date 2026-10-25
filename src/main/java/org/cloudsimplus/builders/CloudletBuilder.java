@@ -50,7 +50,7 @@ public class CloudletBuilder implements Builder {
     @Getter @Setter private long length = 10000;
     @Getter @Setter private long outputSize = 300;
     @Getter @Setter private long fileSize = 300;
-    @Getter @Setter private int  pes = 1;
+    @Getter @Setter private long requiredCores = 1;
     @Setter private double lifeTime = Double.MAX_VALUE;
 
     /// The VM to be bind to created cloudlets.
@@ -68,8 +68,8 @@ public class CloudletBuilder implements Builder {
     private final DatacenterBrokerSimple broker;
 
     /// A [BiFunction] used to create Cloudlets.
-    /// It must receive the length of the Cloudlet (in MI) and the number of PEs it will require.
-    @Setter private BiFunction<Long,Integer, Cloudlet> cloudletCreationFunction;
+    /// It must receive the length of the Cloudlet (in MI) and the number of CPU cores it will require.
+    @Setter private BiFunction<Long, Long, Cloudlet> cloudletCreationFunction;
 
     @Setter private EventListener<CloudletVmEventInfo> onCloudletFinishListener = EventListener.NULL;
     @Setter @NonNull private List<String> requiredFiles;
@@ -113,7 +113,7 @@ public class CloudletBuilder implements Builder {
         final List<Cloudlet> localList = new ArrayList<>();
         for (int i = 0; i < amount; i++) {
             final int cloudletId = initialId + createdCloudlets++;
-            final Cloudlet cloudlet = cloudletCreationFunction.apply(length, pes)
+            final Cloudlet cloudlet = cloudletCreationFunction.apply(length, requiredCores)
                     .setFileSize(fileSize)
                     .setOutputSize(outputSize);
             cloudlet.setUtilizationModelCpu(utilizationModelCpu);
@@ -130,8 +130,8 @@ public class CloudletBuilder implements Builder {
         return localList;
     }
 
-    private Cloudlet defaultCloudletCreationFunction(final long length, final int pes){
-	    return new CloudletSimple(length, pes);
+    private Cloudlet defaultCloudletCreationFunction(final long length, final long requiredCores){
+	    return new CloudletSimple(length, requiredCores);
     }
 
     /// Submits the list of created cloudlets to the latest created broker.
