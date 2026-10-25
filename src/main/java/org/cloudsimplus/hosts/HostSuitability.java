@@ -91,6 +91,22 @@ public final class HostSuitability {
         this.reason = reason;
     }
 
+    /// Creates a `HostSuitability` that combines the suitability of a Host for each VM in a [VmGroup].
+    /// It starts as suitable for all resources, so that [#setSuitability(HostSuitability)]
+    /// only makes a resource unsuitable when the Host doesn't have it for some VM in the group.
+    ///
+    /// @param host the Host evaluated for placing the VMs in the group
+    /// @param vmGroup the group of VMs being requested to be placed in the given Host
+    /// @return a new `HostSuitability` for the group
+    public static HostSuitability forGroup(final Host host, final VmGroup vmGroup) {
+        final var suitability = new HostSuitability(host, vmGroup);
+        suitability.forStorage = true;
+        suitability.forRam = true;
+        suitability.forBw = true;
+        suitability.forCores = true;
+        return suitability;
+    }
+
     /// Update the Host suitability based on another instance,
     /// making this object represent a combined [HostSuitability] of different VMs for a single Host.
     /// If at the end the [suitability][#fully()] is false,
