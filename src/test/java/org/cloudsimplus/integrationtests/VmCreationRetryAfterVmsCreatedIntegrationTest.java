@@ -61,14 +61,14 @@ final class VmCreationRetryAfterVmsCreatedIntegrationTest {
 
     private final CloudSimPlus simulation = new CloudSimPlus();
     private final DatacenterBroker broker = new DatacenterBrokerSimple(simulation);
-    private final Vm firstVm = new VmSimple(new CoreCapacity(VM_CORES, MIPS));
-    private final Vm lateVm = new VmSimple(new CoreCapacity(VM_CORES, MIPS));
+    private final Vm firstVm = VmSimple.of(new CoreCapacity(VM_CORES, MIPS));
+    private final Vm lateVm = VmSimple.of(new CoreCapacity(VM_CORES, MIPS));
     private boolean lateVmSubmitted;
 
     @Test
     @Timeout(value = TIMEOUT_SECS, threadMode = Timeout.ThreadMode.SEPARATE_THREAD)
     void retriesVmSubmittedAfterPreviousVmsWereCreated() {
-        new DatacenterSimple(simulation, List.of(createHost()));
+        DatacenterSimple.of(simulation, List.of(createHost()));
         broker.getVmCreation().setRetryDelay(RETRY_DELAY);
         //Destroys idle VMs, so that the first VM releases the Host when its Cloudlet finishes
         broker.setVmDestructionDelay(VM_DESTRUCTION_DELAY);
@@ -96,10 +96,10 @@ final class VmCreationRetryAfterVmsCreatedIntegrationTest {
     }
 
     private static Host createHost() {
-        return new HostSimple(new CoreCapacity(HOST_CORES, MIPS));
+        return HostSimple.of(new CoreCapacity(HOST_CORES, MIPS));
     }
 
     private static Cloudlet createCloudlet(final Vm vm) {
-        return new CloudletSimple(CLOUDLET_LENGTH, VM_CORES).setVm(vm);
+        return CloudletSimple.of(CLOUDLET_LENGTH, VM_CORES).setVm(vm);
     }
 }

@@ -17,7 +17,6 @@ import org.cloudsimplus.hosts.Host;
 import org.cloudsimplus.hosts.HostAbstract;
 import org.cloudsimplus.hosts.HostSuitability;
 import org.cloudsimplus.resources.Processor;
-import org.cloudsimplus.util.Conversion;
 import org.cloudsimplus.vms.Vm;
 import org.cloudsimplus.vms.VmGroup;
 import org.jspecify.annotations.Nullable;
@@ -250,33 +249,24 @@ public non-sealed abstract class VmPlacementPolicyAbstract implements VmPlacemen
 
     @Override
     public HostSuitability placeVm(final Vm vm, final Host host) {
-        if(vm instanceof VmGroup vmGroup){
-            return createVmsFromGroup(vmGroup, host);
-        }
-
-        return createVm(vm, host);
-    }
-
-    private HostSuitability createVmsFromGroup(final VmGroup vmGroup, final Host host) {
-        int createdVms = 0;
-        final var hostSuitabilityForVmGroup = HostSuitability.forGroup(host, vmGroup);
-        for (final Vm vm : vmGroup.getVmList()) {
-            final var hostSuitability = createVm(vm, host);
-            hostSuitabilityForVmGroup.setSuitability(hostSuitability);
-            createdVms += Conversion.boolToInt(hostSuitability.fully());
-        }
-
-        vmGroup.setCreated(createdVms > 0);
-        if(vmGroup.isCreated()) {
-            vmGroup.setHost(host);
-        }
-
-        return hostSuitabilityForVmGroup;
-    }
-
-    private HostSuitability createVm(final Vm vm, final Host host) {
         final var suitability = host.createVm(vm);
-        if (suitability.fully()) {
+        if (vm instanceof VmGroup vmGroup) {
+            vmGroup.getVmList().forEach(groupVm -> logPlacement(groupVm, host, suitability, groupVm.isCreated()));
+        } else {
+            logPlacement(vm, host, suitability, suitability.fully());
+        }
+
+        return suitability;
+    }
+
+    /// Logs the result of placing a VM into a Host.
+    ///
+    /// @param vm the VM that was placed or not
+    /// @param host the Host where the VM was tried to be placed
+    /// @param suitability the suitability of the Host, used to log why the placement failed
+    /// @param placed true if the VM was placed into the Host; false otherwise
+    private void logPlacement(final Vm vm, final Host host, final HostSuitability suitability, final boolean placed) {
+        if (placed) {
             LOGGER.info(
                 "{}: {}: {} has been allocated to {}",
                 vm.getSimulation().clockStr(), getClass().getSimpleName(), vm, host);
@@ -285,8 +275,6 @@ public non-sealed abstract class VmPlacementPolicyAbstract implements VmPlacemen
                 "{}: {} Creation of {} on {} failed due to {}.",
                 vm.getSimulation().clockStr(), getClass().getSimpleName(), vm, host, suitability);
         }
-
-        return suitability;
     }
 
     @Override

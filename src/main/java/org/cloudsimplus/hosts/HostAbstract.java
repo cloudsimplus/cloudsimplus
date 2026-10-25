@@ -51,6 +51,7 @@ import java.util.*;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 import static org.cloudsimplus.resources.Processor.cores;
+import static org.cloudsimplus.util.Conversion.boolToInt;
 
 /// A base class for implementing [Host]s.
 ///
@@ -134,6 +135,8 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
     @Getter
     protected Datacenter datacenter;
 
+    /// The [CloudSimPlus] instance that represents the simulation the Host is related to.
+    /// It has to be set by the [Datacenter] that the host belongs to.
     @Getter @Setter @NonNull @EqualsAndHashCode.Include
     private Simulation simulation;
 
@@ -253,7 +256,14 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
         defaultStorageCapacity = defaultCapacity;
     }
 
-    @Override @SuppressWarnings("ForLoopReplaceableByForEach")
+    /// Updates the processing of VMs running on this Host,
+    /// that makes the processing of Cloudlets inside such VMs to be updated.
+    ///
+    /// @param currentTime the current time
+    /// @return the predicted completion time of the earliest finishing cloudlet
+    /// (which is a relative delay from the current simulation time),
+    /// or [Double#MAX_VALUE] if there is no next Cloudlet to execute
+    @SuppressWarnings("ForLoopReplaceableByForEach")
     public double updateProcessing(final double currentTime) {
         if (vmList.isEmpty() && isIdleEnough(idleShutdownDeadline)) {
             setActive(false);
@@ -278,7 +288,7 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
     }
 
     protected double updateVmProcessing(final Vm vm, final double currentTime, final double nextSimulationDelay) {
-        final double delay = vm.updateProcessing(currentTime, vmScheduler.getAllocatedMips(vm));
+        final double delay = ((VmAbstract)vm).updateProcessing(currentTime, vmScheduler.getAllocatedMips(vm));
         return delay > 0 ? Math.min(delay, nextSimulationDelay) : nextSimulationDelay;
     }
 
@@ -290,6 +300,10 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
 
     @Override
     public HostSuitability createVm(final Vm vm) {
+        if (vm instanceof VmGroup vmGroup) {
+            return createVmsFromGroup(vmGroup);
+        }
+
         final var suitability = createVmInternal(vm);
         if (suitability.fully()) {
             ((VmAbstract)vm).setHost(this);
@@ -307,7 +321,42 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
         return suitability;
     }
 
-    @Override
+    /// Creates each VM of a group into this Host.
+    /// The group is created if at least one of its VMs is.
+    ///
+    /// @param vmGroup the group of VMs to create
+    /// @return the suitability of this Host for all the VMs in the group
+    private HostSuitability createVmsFromGroup(final VmGroup vmGroup) {
+        int createdVms = 0;
+        final var groupSuitability = HostSuitability.forGroup(this, vmGroup);
+        for (final Vm vm : vmGroup.getVmList()) {
+            final var suitability = createVm(vm);
+            groupSuitability.setSuitability(suitability);
+            createdVms += boolToInt(suitability.fully());
+        }
+
+        vmGroup.setCreated(createdVms > 0);
+        if (vmGroup.isCreated()) {
+            vmGroup.setHost(this);
+        }
+
+        return groupSuitability;
+    }
+
+    /// Try to allocate resources to a new temporary VM in the Host.
+    /// The method is used only to book resources for a given VM.
+    /// If Hosts are being chosen to migrate a set of VMs,
+    /// when a Host is selected for a given VM, using this method:
+    /// - the resources are reserved,
+    /// - then, when the next Vm is selected for the same Host,
+    /// the previous reserved resources were already reduced from the available amount.
+    /// This way, if it was possible to place just one Vm into that Host,
+    /// with the booking, no other VM will be selected to it.
+    ///
+    /// @param vm Vm being started
+    /// @return a [HostSuitability] to indicate if the Vm was placed into the Host or not
+    /// (if the Host doesn't have enough resources to allocate the Vm)
+    /// TODO: https://github.com/cloudsimplus/cloudsimplus/issues/94
     public HostSuitability createTemporaryVm(final Vm vm) {
         return createVmInternal(vm);
     }
@@ -344,7 +393,7 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
         if (inMigration) {
             vmsMigratingIn.add(vm);
         }
-        vm.setInMigration(inMigration);
+        ((VmAbstract)vm).setInMigration(inMigration);
         allocateResourcesForVm(vm);
 
         return suitability;
@@ -375,7 +424,8 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
             pmResource.getClass().getSimpleName(), vmRequestedResource.getCapacity(), msg);
     }
 
-    @Override
+    /// Reallocate VMs migrating into this Host. Gets the VMs in the migrating-in queue
+    /// and allocates them on the Host.
     public void reallocateMigratingInVms() {
         for (final Vm vm : vmsMigratingIn) {
             if (!vmList.contains(vm)) {
@@ -574,7 +624,7 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
         destroyVmInternal(vm);
     }
 
-    public void destroyVmInternal(@NonNull final Vm vm) {
+    private void destroyVmInternal(@NonNull final Vm vm) {
         deallocateResourcesOfVm(vm);
         vmList.remove(vm);
         vmScheduler.updateHostBusyCores();
@@ -800,7 +850,15 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
         return !(vmsMigratingIn.isEmpty() && vmsMigratingOut.isEmpty());
     }
 
-    @Override
+    /// Try to add a Vm migrating into the current Host
+    /// if there are enough resources for it.
+    /// In this case, the resources are allocated
+    /// and the Vm is added to the [#getVmsMigratingIn()] List.
+    /// Otherwise, the Vm is not added.
+    ///
+    /// @param vm the Vm to add to the migrating-in list
+    /// @return true if the Vm was migrated in;
+    /// false if the Host doesn't have enough resources to place the Vm
     public boolean addMigratingInVm(final Vm vm) {
         if (vmsMigratingIn.contains(vm)) {
             return false;
@@ -810,7 +868,9 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
             ((VmSimple) vm).updateMigrationStartListeners(this);
 
             updateProcessing(simulation.clock());
-            vm.getHost().updateProcessing(simulation.clock());
+            if (vm.getHost() instanceof HostAbstract sourceHost) {
+                sourceHost.updateProcessing(simulation.clock());
+            }
 
             return true;
         }
@@ -818,11 +878,15 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
         return false;
     }
 
-    @Override
+    /// Removes a VM migrating into this Host from the migrating-in list,
+    /// so that the VM can be actually placed into the Host
+    /// and the migration process finished.
+    ///
+    /// @param vm the Vm to remove
     public void removeMigratingInVm(@NonNull final Vm vm) {
         vmsMigratingIn.remove(vm);
         vmList.remove(vm);
-        vm.setInMigration(false);
+        ((VmAbstract)vm).setInMigration(false);
         vmScheduler.updateHostBusyCores();
     }
 
@@ -831,17 +895,23 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
         return Collections.unmodifiableSet(vmsMigratingOut);
     }
 
-    @Override
+    /// Adds a [Vm] to the list of VMs migrating out this Host.
+    /// @param vm the Vm to be added
+    /// @return true if the Vm was added, false otherwise
     public boolean addVmMigratingOut(@NonNull final Vm vm) {
         return this.vmsMigratingOut.add(vm);
     }
 
-    @Override
+    /// Removes a [Vm] from the list of VMs migrating out this Host.
+    /// @param vm the Vm to be removed
+    /// @return true if the Vm was removed, false otherwise
     public boolean removeVmMigratingOut(@NonNull final Vm vm) {
         return this.vmsMigratingOut.remove(vm);
     }
 
-    @Override
+    /// Sets the [Datacenter] where the host is placed.
+    ///
+    /// @param datacenter the new data center to move the host
     public final void setDatacenter(@NonNull final Datacenter datacenter) {
         if (!Datacenter.NULL.equals(this.datacenter)) {
             checkSimulationIsRunningAndAttemptedToChangeHost("Datacenter");
@@ -988,7 +1058,7 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
         final var entry = new VmStateHistoryEntry(
             currentTime, totalAllocatedMips, totalRequestedMips,
             vm.isInMigration() && !getVmsMigratingIn().contains(vm));
-        vm.addStateHistoryEntry(entry);
+        ((VmAbstract)vm).addStateHistoryEntry(entry);
 
         if (vm.isInMigration()) {
             LOGGER.info("{}: {}: {} is migrating out ", getSimulation().clockStr(), this, vm);

@@ -107,7 +107,7 @@ public class VmBuilder implements Builder {
     }
 
     private Vm defaultVmCreationFunction(final CoreCapacity capacity) {
-        return new VmSimple(numberOfCreatedVms++, capacity);
+        return VmSimple.of(numberOfCreatedVms++, capacity);
     }
 
     public Vm getVmById(final int id) {

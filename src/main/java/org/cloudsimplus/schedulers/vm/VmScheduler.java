@@ -21,7 +21,7 @@ import org.slf4j.LoggerFactory;
 ///
 /// It decides how the Host CPU is shared among VMs and allocates (reserves) the Host cores for them.
 /// The Host then provisions the allocated MIPS to each VM at every processing update
-/// (see [Host#updateProcessing(double)]).
+/// (see [org.cloudsimplus.hosts.HostAbstract#updateProcessing(double)]).
 /// See [org.cloudsimplus.allocators.ResourceAllocator] for the meaning of
 /// placement, allocation, provisioning and utilization.
 ///

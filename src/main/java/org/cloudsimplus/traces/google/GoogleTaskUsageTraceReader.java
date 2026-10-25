@@ -29,6 +29,7 @@ import org.cloudsimplus.cloudlets.Cloudlet;
 import org.cloudsimplus.core.CloudSimTag;
 import org.cloudsimplus.core.Simulation;
 import org.cloudsimplus.core.events.CloudSimEvent;
+import org.cloudsimplus.hosts.HostAbstract;
 import org.cloudsimplus.listeners.EventInfo;
 import org.cloudsimplus.traces.TraceReaderAbstract;
 import org.cloudsimplus.util.ResourceLoader;
@@ -350,7 +351,9 @@ public final class GoogleTaskUsageTraceReader extends GoogleTraceReaderAbstract<
              * An event to execute such Runnable is just sent in such a condition.*/
             final DatacenterBroker broker = cloudlet.getBroker();
             broker.LOGGER.trace("{}: {}: {} resource usage changed: {}", simulation.clockStr(), broker.getName(), cloudlet, builder);
-            cloudlet.getVm().getHost().updateProcessing(simulation.clock());
+            if (cloudlet.getVm().getHost() instanceof HostAbstract host) {
+                host.updateProcessing(simulation.clock());
+            }
         };
 
 

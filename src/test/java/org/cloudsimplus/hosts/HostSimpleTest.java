@@ -166,7 +166,7 @@ public class HostSimpleTest {
     }
 
     private Vm createVm(final int cores, final double mips, final long storage) {
-        final Vm vm = new VmSimple(new CoreCapacity(cores, mips));
+        final Vm vm = VmSimple.of(new CoreCapacity(cores, mips));
         vm.setRam(RAM);
         vm.setBw(BW);
         vm.setSize(storage);
@@ -176,7 +176,7 @@ public class HostSimpleTest {
     @Test
     public void testReallocateMigratingInVmsWhenAllVmsAllocatedToTheHost() {
         final int numberOfVms = 4;
-        final Host host = createHostSimple(0, numberOfVms);
+        final var host = createHostSimple(0, numberOfVms);
 
         final List<Vm> vms = new ArrayList<>();
         IntStream.range(0, 2).forEach(i -> {
@@ -234,7 +234,7 @@ public class HostSimpleTest {
     @Test
     public void testAddMigratingInVmAndCheckVmWasChangedToInMigration() {
         final int cores = 2;
-        final Host host = createHostSimple(0, cores);
+        final var host = createHostSimple(0, cores);
         final VmSimple vm = VmTestUtil.createVm(
                 0, MIPS, cores, RAM, BW, STORAGE,
                 new CloudletSchedulerTimeShared());
@@ -254,7 +254,7 @@ public class HostSimpleTest {
             0, VM_MIPS, cores, RAM, BW, STORAGE,
             new CloudletSchedulerTimeShared(),
             b -> Mockito.when(b.requestIdleVmDestruction(Mockito.any())).thenReturn(b));
-        final Host targetHost = createHostSimple(0, cores);
+        final var targetHost = createHostSimple(0, cores);
 
         assertEquals(MIPS, targetHost.getVmScheduler().getTotalAvailableMips());
         assertTrue(targetHost.addMigratingInVm(vm));
@@ -268,7 +268,7 @@ public class HostSimpleTest {
     @Test
     public void testAddMigratingInVmAndCheckAllocatedMips() {
         final int cores = 1;
-        final Host targetHost = createHostSimple(0, cores);
+        final var targetHost = createHostSimple(0, cores);
         final double VM_MIPS = 500;
         final VmSimple vm = VmTestUtil.createVm(
             0, VM_MIPS, cores, RAM, BW, STORAGE,
@@ -281,7 +281,7 @@ public class HostSimpleTest {
     @Test
     public void testAddMigratingInVmWhenLackRam() {
         final int cores = 2;
-        final Host host = createHostSimple(0, cores);
+        final var host = createHostSimple(0, cores);
         final Vm vm = VmTestUtil.createVm(
             0, MIPS, cores, RAM * 2,
             BW, STORAGE, new CloudletSchedulerTimeShared());
@@ -291,7 +291,7 @@ public class HostSimpleTest {
     @Test
     public void testAddMigratingInVmWhenLackStorage() {
         final int cores = 2;
-        final Host host = createHostSimple(0, cores);
+        final var host = createHostSimple(0, cores);
         final Vm vm = VmTestUtil.createVm(0, MIPS, cores, RAM, BW, STORAGE * 2, new CloudletSchedulerTimeShared());
         assertFalse(host.addMigratingInVm(vm));
     }
@@ -299,7 +299,7 @@ public class HostSimpleTest {
     @Test
     public void testAddMigratingInVmWhenLackBw() {
         final int cores = 2;
-        final Host host = createHostSimple(0, cores);
+        final var host = createHostSimple(0, cores);
         final Vm vm = VmTestUtil.createVm(0, MIPS, cores, RAM, BW * 2, STORAGE, new CloudletSchedulerTimeShared());
         assertFalse(host.addMigratingInVm(vm));
     }
@@ -307,7 +307,7 @@ public class HostSimpleTest {
     @Test
     public void testAddMigratingInVmWhenLackMips() {
         final int cores = 2;
-        final Host host = createHostSimple(0, cores);
+        final var host = createHostSimple(0, cores);
         final Vm vm = VmTestUtil.createVm(0, MIPS * 2, cores, RAM, BW, STORAGE, new CloudletSchedulerTimeShared());
         assertFalse(host.addMigratingInVm(vm));
     }
@@ -315,7 +315,7 @@ public class HostSimpleTest {
     @Test
     public void testRemoveMigratingInVm() {
         final int cores = 2;
-        final Host host = createHostSimple(0, cores);
+        final var host = createHostSimple(0, cores);
         final VmSimple vm = VmTestUtil.createVm(0, MIPS, cores, RAM, BW, STORAGE, new CloudletSchedulerTimeShared());
         vm.setHost(Host.NULL);
         host.addMigratingInVm(vm);
@@ -365,7 +365,7 @@ public class HostSimpleTest {
         for(int i = 0; i < vmsNumber; i++) {
             final double nextCloudletCompletionTime = i+1;
 
-            final Vm vm = Mockito.mock(VmAbstract.class);
+            final VmAbstract vm = Mockito.mock(VmAbstract.class);
             Mockito
                 .when(vm.updateProcessing(simulationClock, mipsShare))
                 .thenReturn(nextCloudletCompletionTime);
@@ -589,14 +589,14 @@ public class HostSimpleTest {
     @Test
     public void testActiveHostNumberInDatacenterWhenHostsAreAutoPoweredOn(){
         final List<Host> hostList = createHostList(true);
-        final Datacenter dc = new DatacenterSimple(Simulation.NULL, hostList);
+        final Datacenter dc = DatacenterSimple.of(Simulation.NULL, hostList);
         assertEquals(hostList.size(), dc.getActiveHostsNumber());
     }
 
     @Test
     public void testActiveHostNumberInDatacenterWhenHostsAreNotAutoPoweredOn(){
         final List<Host> hostList = createHostList(false);
-        final Datacenter dc = new DatacenterSimple(Simulation.NULL, hostList);
+        final Datacenter dc = DatacenterSimple.of(Simulation.NULL, hostList);
         assertEquals(0, dc.getActiveHostsNumber());
     }
 
@@ -605,14 +605,14 @@ public class HostSimpleTest {
         final int hostsToPowerOff = 2;
         final List<Host> hostList = createHostList(true);
         hostList.stream().skip(hostsToPowerOff).forEach(h -> h.setActive(false));
-        final Datacenter dc = new DatacenterSimple(Simulation.NULL, hostList);
+        final Datacenter dc = DatacenterSimple.of(Simulation.NULL, hostList);
         assertEquals(hostsToPowerOff, dc.getActiveHostsNumber());
     }
 
     @Test
     public void testActiveHostNumberInDatacenterWhenAllHostsArePoweredOffAndNewOneIsAdded(){
         final List<Host> hostList = createHostList(false);
-        final Datacenter dc = new DatacenterSimple(Simulation.NULL, hostList);
+        final Datacenter dc = DatacenterSimple.of(Simulation.NULL, hostList);
         dc.addHost(createHostSimple(hostList.size(), 1));
         assertEquals(1, dc.getActiveHostsNumber());
     }
@@ -621,7 +621,7 @@ public class HostSimpleTest {
     public void testActiveHostNumberInDatacenterWhenAllHostsArePoweredOnAndNewOneIsAdded(){
         //List before adding a new Host after creating the datacenter
         final List<Host> originalHostList = createHostList(true);
-        final Datacenter dc = new DatacenterSimple(Simulation.NULL, new ArrayList<>(originalHostList));
+        final Datacenter dc = DatacenterSimple.of(Simulation.NULL, new ArrayList<>(originalHostList));
         dc.addHost(createHostSimple(originalHostList.size(), 1));
         assertEquals(originalHostList.size()+1, dc.getActiveHostsNumber());
         assertEquals(dc.size(), dc.getActiveHostsNumber());

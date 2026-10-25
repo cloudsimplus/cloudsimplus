@@ -108,7 +108,7 @@ public class CloudletLifeTimeTest {
 
     private Datacenter createDatacenter(final int schedulingInterval) {
         final var hostList = List.of(createHost());
-        final var datacenter = new DatacenterSimple(simulation, hostList);
+        final var datacenter = DatacenterSimple.of(simulation, hostList);
         datacenter.setSchedulingInterval(schedulingInterval);
         return datacenter;
     }
@@ -116,15 +116,15 @@ public class CloudletLifeTimeTest {
     private Host createHost() {
         final long bw = 10_000; //in Megabits/s
         final long storage = 1_000_000; //in Megabytes
-        return new HostSimple(HOST_RAM, bw, storage, new CoreCapacity(HOST_CORES, HOST_MIPS));
+        return HostSimple.of(HOST_RAM, bw, storage, new CoreCapacity(HOST_CORES, HOST_MIPS));
     }
 
     private static List<Vm> createVmList() {
-        return List.of(new VmSimple(new CoreCapacity(HOST_CORES, HOST_MIPS)));
+        return List.of(VmSimple.of(new CoreCapacity(HOST_CORES, HOST_MIPS)));
     }
 
     private List<Cloudlet> createCloudlets() {
-        final var cloudlet = new CloudletSimple(CLOUDLET_LENGTH, HOST_CORES);
+        final var cloudlet = CloudletSimple.of(CLOUDLET_LENGTH, HOST_CORES);
         cloudlet
                 .setUtilizationModelCpu(new UtilizationModelFull())
                 .setLifeTime(CLOUDLET_LIFE_TIME);

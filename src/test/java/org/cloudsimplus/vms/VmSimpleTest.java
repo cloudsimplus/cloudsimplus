@@ -57,7 +57,7 @@ public class VmSimpleTest {
         final Simulation simulation = CloudSimMocker.createMock(mock -> mock.clock(clock));
         final DatacenterBroker broker = MocksHelper.createMockBroker(simulation, b -> {});
 
-        final Vm vm = new VmSimple(this.vm);
+        final var vm = new VmSimple(this.vm);
         vm.setBroker(broker);
         vm.setBrokerArrivalTime(arrivedTime);
         assertEquals(clock, vm.getCreationWaitTime());
@@ -70,7 +70,7 @@ public class VmSimpleTest {
         final Simulation simulation = CloudSimMocker.createMock(mock -> mock.clock(clock));
         final DatacenterBroker broker = MocksHelper.createMockBroker(simulation, b -> {});
 
-        final Vm vm = new VmSimple(this.vm);
+        final var vm = new VmSimple(this.vm);
         vm.setBroker(broker);
         vm.setBrokerArrivalTime(arrivedTime);
         assertEquals(8, vm.getCreationWaitTime());

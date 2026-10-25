@@ -53,8 +53,8 @@ class CloudletReceiveTaskTest {
     @BeforeEach
     void setUp() {
         final var broker = new DatacenterBrokerSimple(new CloudSimPlus());
-        sourceVm = new NetworkVm(0, new CoreCapacity(1, 1000));
-        destinationVm = new NetworkVm(1, new CoreCapacity(1, 1000));
+        sourceVm = NetworkVm.of(0, new CoreCapacity(1, 1000));
+        destinationVm = NetworkVm.of(1, new CoreCapacity(1, 1000));
         senderA = createCloudlet(0, sourceVm, broker);
         senderB = createCloudlet(1, sourceVm, broker);
         receiver = createCloudlet(2, destinationVm, broker);

@@ -106,7 +106,7 @@ public class DatacenterBuilder implements Builder {
     }
 
     private Datacenter defaultDatacenterCreationFunction(final List<Host> hosts) {
-        final var dc = new DatacenterSimple(scenario.getSimulation(), hosts, new VmPlacementPolicySimple());
+        final var dc = DatacenterSimple.of(scenario.getSimulation(), hosts, new VmPlacementPolicySimple());
         dc.setSchedulingInterval(schedulingInterval);
         return dc;
     }

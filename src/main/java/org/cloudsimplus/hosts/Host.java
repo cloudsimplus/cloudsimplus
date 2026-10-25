@@ -50,11 +50,6 @@ public sealed interface Host
     /// @return the [Datacenter] where the host is placed.
     Datacenter getDatacenter();
 
-    /// Sets the [Datacenter] where the host is placed.
-    ///
-    /// @param datacenter the new data center to move the host
-    void setDatacenter(Datacenter datacenter);
-
     /// Checks if the Host is suitable for a Vm
     /// (if it has enough resources to meet the Vm requirements)
     /// and the Host has not failed.
@@ -120,40 +115,8 @@ public sealed interface Host
     /// @return true if there is any VM migrating in or out this host; false otherwise.
     boolean hasMigratingVms();
 
-    /// Try to add a Vm migrating into the current Host
-    /// if there are enough resources for it.
-    /// In this case, the resources are allocated
-    /// and the Vm is added to the [#getVmsMigratingIn()] List.
-    /// Otherwise, the Vm is not added.
-    ///
-    /// @param vm the Vm to add to the migrating-in list
-    /// @return true if the Vm was migrated in;
-    /// false if the Host doesn't have enough resources to place the Vm
-    boolean addMigratingInVm(Vm vm);
-
     /// @return a **read-only** list of VMs migrating out from the Host.
     Set<Vm> getVmsMigratingOut();
-
-    /// Adds a [Vm] to the list of VMs migrating out this Host.
-    /// @param vm the Vm to be added
-    /// @return true if the Vm was added, false otherwise
-    boolean addVmMigratingOut(Vm vm);
-
-    /// Removes a [Vm] from the list of VMs migrating out this Host.
-    /// @param vm the Vm to be removed
-    /// @return true if the Vm was removed, false otherwise
-    boolean removeVmMigratingOut(Vm vm);
-
-    /// Reallocate VMs migrating into this Host. Gets the VMs in the migrating-in queue
-    /// and allocates them on the Host.
-    void reallocateMigratingInVms();
-
-    /// Removes a VM migrating into this Host from the migrating-in list,
-    /// so that the VM can be actually placed into the Host
-    /// and the migration process finished.
-    ///
-    /// @param vm the Vm to remove
-    void removeMigratingInVm(Vm vm);
 
     /// @return the bandwidth (BW) allocator with capacity in Megabits/s,
     /// as a read-only [ResourceAllocator]: only the Host changes allocations,
@@ -246,6 +209,14 @@ public sealed interface Host
     /// @see #getIdleShutdownDeadline()
     Host setIdleShutdownDeadline(double deadline);
 
+    /// Sets the Host ID.
+    /// It returns a Host, so that other Host setters can be chained.
+    ///
+    /// @param id the ID to set
+    /// @return this Host
+    @Override
+    Host setId(long id);
+
     /// Checks if the host has failed or is working properly.
     ///
     /// @return true, if the host cores have failed; false otherwise
@@ -257,38 +228,16 @@ public sealed interface Host
     /// @return true if the Host status was changed, false otherwise
     boolean setFailed(boolean failed);
 
-    /// Updates the processing of VMs running on this Host,
-    /// that makes the processing of Cloudlets inside such VMs to be updated.
-    ///
-    /// @param currentTime the current time
-    /// @return the predicted completion time of the earliest finishing cloudlet
-    /// (which is a relative delay from the current simulation time),
-    /// or [Double#MAX_VALUE] if there is no next Cloudlet to execute
-    double updateProcessing(double currentTime);
-
     /// Try to allocate resources to a new VM in the Host.
+    /// If the VM is a [org.cloudsimplus.vms.VmGroup], each VM in the group is created
+    /// (and the group is created if at least one of its VMs is).
+    /// This is the only way a VM is placed into a Host, so the Host and the VM are always in sync.
     ///
     /// @param vm Vm being started
     /// @return a [HostSuitability] to indicate if the Vm was placed into the host or not
     /// (if the Host doesn't have enough resources to allocate the Vm)
     /// @see #isLazySuitabilityEvaluation()
     HostSuitability createVm(Vm vm);
-
-    /// Try to allocate resources to a new temporary VM in the Host.
-    /// The method is used only to book resources for a given VM.
-    /// If Hosts are being chosen to migrate a set of VMs,
-    /// when a Host is selected for a given VM, using this method:
-    /// - the resources are reserved,
-    /// - then, when the next Vm is selected for the same Host,
-    /// the previous reserved resources were already reduced from the available amount.
-    /// This way, if it was possible to place just one Vm into that Host,
-    /// with the booking, no other VM will be selected to it.
-    ///
-    /// @param vm Vm being started
-    /// @return a [HostSuitability] to indicate if the Vm was placed into the Host or not
-    /// (if the Host doesn't have enough resources to allocate the Vm)
-    /// TODO: https://github.com/cloudsimplus/cloudsimplus/issues/94
-    HostSuitability createTemporaryVm(Vm vm);
 
     /// Adds a listener object that will be notified every time the host is **powered on**.
     ///
@@ -317,20 +266,13 @@ public sealed interface Host
     ///
     /// @param listener the OnUpdateProcessingListener to add
     /// @return this Host
-    /// @see #updateProcessing(double)
     Host addOnUpdateProcessingListener(EventListener<HostUpdatesVmsProcessingEventInfo> listener);
 
     /// Removes a Listener object from the OnUpdateProcessing List.
     ///
     /// @param listener the listener to remove
     /// @return true if the listener was found and removed, false otherwise
-    /// @see #updateProcessing(double)
     boolean removeOnUpdateProcessingListener(EventListener<HostUpdatesVmsProcessingEventInfo> listener);
-
-    /// Sets the [CloudSimPlus] instance that represents the simulation the Host is related to.
-    /// Such an attribute has to be set by the [Datacenter] that the host belongs to.
-    /// @param simulation The CloudSimPlus instance that represents the simulation the Host is related
-    Host setSimulation(Simulation simulation);
 
     /// Provisions part of a Host resource, such as [Ram] or [Bandwidth], to a VM placed on this Host.
     /// It asks the [RAM][#getRamAllocator()] or [BW][#getBwAllocator()] allocator to allocate (reserve) the given amount

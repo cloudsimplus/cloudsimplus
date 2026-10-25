@@ -37,6 +37,7 @@ public class HostSimple extends HostAbstract {
     /// Finally, it sets a [VmSchedulerSpaceShared] as default.
     /// The ID is automatically assigned when a List of Hosts is attached
     /// to a [Datacenter].
+    /// This constructor is only for subclasses: use [#of(CoreCapacity)] to create a Host.
     ///
     /// @param capacity the number of CPU cores of the Host and the MIPS capacity of each core
     ///
@@ -48,13 +49,20 @@ public class HostSimple extends HostAbstract {
     /// @see #setDefaultBwCapacity(long)
     /// @see #setDefaultStorageCapacity(long)
     /// @see #setStartupDelay(double)
-    public HostSimple(final CoreCapacity capacity) {
+    protected HostSimple(final CoreCapacity capacity) {
         super(capacity);
+    }
+
+    /// Creates and instantaneously powers on a Host without a pre-defined ID.
+    /// @see #HostSimple(CoreCapacity)
+    public static Host of(final CoreCapacity capacity) {
+        return new HostSimple(capacity);
     }
 
     /// Creates a Host without a pre-defined ID,
     /// 10 GB of RAM, 1000 Mbps of Bandwidth and 500 GB of Storage
     /// and enabling the host to be powered on or not.
+    /// This constructor is only for subclasses: use [#of(CoreCapacity, boolean)] to create a Host.
     ///
     /// It creates a [ResourceAllocatorSimple]
     /// for RAM and Bandwidth. Finally, it sets a [VmSchedulerSpaceShared] as default.
@@ -71,12 +79,21 @@ public class HostSimple extends HostAbstract {
     /// @see #setDefaultRamCapacity(long)
     /// @see #setDefaultBwCapacity(long)
     /// @see #setDefaultStorageCapacity(long)
-    public HostSimple(final CoreCapacity capacity, final boolean activate) {
+    protected HostSimple(final CoreCapacity capacity, final boolean activate) {
         super(capacity, activate);
+    }
+
+    /// Creates a Host without a pre-defined ID,
+    /// 10 GB of RAM, 1000 Mbps of Bandwidth and 500 GB of Storage
+    /// and enabling the host to be powered on or not.
+    /// @see #HostSimple(CoreCapacity, boolean)
+    public static Host of(final CoreCapacity capacity, final boolean activate) {
+        return new HostSimple(capacity, activate);
     }
 
     /// Creates and instantaneously powers on a Host with the given parameters and a
     /// [VmSchedulerSpaceShared] as default.
+    /// This constructor is only for subclasses: use [#of(ResourceAllocator, ResourceAllocator, long, CoreCapacity)] to create a Host.
     ///
     /// @param ramAllocator the ram allocator with capacity in Megabytes
     /// @param bwAllocator the bw allocator with capacity in Megabits/s
@@ -85,7 +102,7 @@ public class HostSimple extends HostAbstract {
     ///
     /// @see #setVmScheduler(VmScheduler)
     /// @see #setStartupDelay(double)
-    public HostSimple(
+    protected HostSimple(
         final ResourceAllocator ramAllocator,
         final ResourceAllocator bwAllocator,
         final long storage,
@@ -94,11 +111,19 @@ public class HostSimple extends HostAbstract {
         super(ramAllocator, bwAllocator, storage, capacity);
     }
 
+    /// Creates and instantaneously powers on a Host with the given parameters and a
+    /// [VmSchedulerSpaceShared] as default.
+    /// @see #HostSimple(ResourceAllocator, ResourceAllocator, long, CoreCapacity)
+    public static Host of(final ResourceAllocator ramAllocator, final ResourceAllocator bwAllocator, final long storage, final CoreCapacity capacity) {
+        return new HostSimple(ramAllocator, bwAllocator, storage, capacity);
+    }
+
     /// Creates and instantaneously powers on a Host without a pre-defined ID.
     /// It uses a [ResourceAllocatorSimple]
     /// for RAM and Bandwidth and also sets a [VmSchedulerSpaceShared] as default.
     /// The ID is automatically assigned when a List of Hosts is attached
     /// to a [Datacenter].
+    /// This constructor is only for subclasses: use [#of(long, long, long, CoreCapacity)] to create a Host.
     ///
     /// @param ram the RAM capacity in Megabytes
     /// @param bw the Bandwidth (BW) capacity in Megabits/s
@@ -111,8 +136,14 @@ public class HostSimple extends HostAbstract {
     /// @see #setBwAllocator(ResourceAllocator)
     /// @see #setVmScheduler(VmScheduler)
     /// @see #setStartupDelay(double)
-    public HostSimple(final long ram, final long bw, final long storage, final CoreCapacity capacity) {
+    protected HostSimple(final long ram, final long bw, final long storage, final CoreCapacity capacity) {
         super(ram, bw, storage, capacity);
+    }
+
+    /// Creates and instantaneously powers on a Host without a pre-defined ID.
+    /// @see #HostSimple(long, long, long, CoreCapacity)
+    public static Host of(final long ram, final long bw, final long storage, final CoreCapacity capacity) {
+        return new HostSimple(ram, bw, storage, capacity);
     }
 
     /// Creates and instantaneously powers on a Host without a pre-defined ID.
@@ -120,6 +151,7 @@ public class HostSimple extends HostAbstract {
     /// for RAM and Bandwidth and also sets a [VmSchedulerSpaceShared] as default.
     /// The ID is automatically assigned when a List of Hosts is attached
     /// to a [Datacenter].
+    /// This constructor is only for subclasses: use [#of(long, long, HarddriveStorage, CoreCapacity)] to create a Host.
     ///
     /// @param ram the RAM capacity in Megabytes
     /// @param bw the Bandwidth (BW) capacity in Megabits/s
@@ -132,17 +164,24 @@ public class HostSimple extends HostAbstract {
     /// @see #setBwAllocator(ResourceAllocator)
     /// @see #setVmScheduler(VmScheduler)
     /// @see #setStartupDelay(double)
-    public HostSimple(
+    protected HostSimple(
         final long ram, final long bw,
         final HarddriveStorage storage, final CoreCapacity capacity)
     {
         super(ram, bw, storage, capacity);
     }
 
+    /// Creates and instantaneously powers on a Host without a pre-defined ID.
+    /// @see #HostSimple(long, long, HarddriveStorage, CoreCapacity)
+    public static Host of(final long ram, final long bw, final HarddriveStorage storage, final CoreCapacity capacity) {
+        return new HostSimple(ram, bw, storage, capacity);
+    }
+
     /// Creates a Host without a pre-defined ID. It uses a [ResourceAllocatorSimple]
     /// for RAM and Bandwidth and also sets a [VmSchedulerSpaceShared] as default.
     /// The ID is automatically assigned when a List of Hosts is attached
     /// to a [Datacenter].
+    /// This constructor is only for subclasses: use [#of(long, long, long, CoreCapacity, boolean)] to create a Host.
     ///
     /// @param ram the RAM capacity in Megabytes
     /// @param bw the Bandwidth (BW) capacity in Megabits/s
@@ -154,11 +193,18 @@ public class HostSimple extends HostAbstract {
     /// @see #setRamAllocator(ResourceAllocator)
     /// @see #setBwAllocator(ResourceAllocator)
     /// @see #setVmScheduler(VmScheduler)
-    public HostSimple(
+    protected HostSimple(
         final long ram, final long bw, final long storage,
         final CoreCapacity capacity, final boolean activate)
     {
         super(ram, bw, new HarddriveStorage(storage), capacity, activate);
+    }
+
+    /// Creates a Host without a pre-defined ID. It uses a [ResourceAllocatorSimple]
+    /// for RAM and Bandwidth and also sets a [VmSchedulerSpaceShared] as default.
+    /// @see #HostSimple(long, long, long, CoreCapacity, boolean)
+    public static Host of(final long ram, final long bw, final long storage, final CoreCapacity capacity, final boolean activate) {
+        return new HostSimple(ram, bw, storage, capacity, activate);
     }
 
     @Override

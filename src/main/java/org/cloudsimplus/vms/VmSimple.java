@@ -30,15 +30,23 @@ public class VmSimple extends VmAbstract {
     /// A copy constructor that creates a VM based on the configuration of another one.
     /// The created VM will have the same MIPS capacity, number of CPU cores,
     /// BW, RAM and size of the given VM, but a default [CloudletScheduler] and no [DatacenterBroker].
+    /// This constructor is only for subclasses: use [#of(Vm)] to create a VM.
     /// @param sourceVm the VM to be cloned
     /// @see #VmSimple(CoreCapacity)
-    public VmSimple(final Vm sourceVm) {
+    protected VmSimple(final Vm sourceVm) {
         super(sourceVm);
+    }
+
+    /// Creates a VM based on the configuration of another one.
+    /// @see #VmSimple(Vm)
+    public static Vm of(final Vm sourceVm) {
+        return new VmSimple(sourceVm);
     }
 
     /// Creates a Vm with 1024 MEGA of RAM, 100 Megabits/s of Bandwidth and 1024 MEGA of Storage Size.
     /// To change these values, use the respective setters.
     /// While the Vm [is being instantiated][#isCreated()], such values can be changed freely.
+    /// This constructor is only for subclasses: use [#of(CoreCapacity)] to create a VM.
     ///
     /// It is not defined an `id` for the Vm. The `id` is defined when the Vm is submitted to
     /// a [DatacenterBroker].
@@ -53,13 +61,20 @@ public class VmSimple extends VmAbstract {
     /// @see #setDefaultRamCapacity(long)
     /// @see #setDefaultBwCapacity(long)
     /// @see #setDefaultStorageCapacity(long)
-    public VmSimple(final CoreCapacity capacity) {
+    protected VmSimple(final CoreCapacity capacity) {
         this(-1, capacity);
+    }
+
+    /// Creates a Vm with 1024 MEGA of RAM, 100 Megabits/s of Bandwidth and 1024 MEGA of Storage Size.
+    /// @see #VmSimple(CoreCapacity)
+    public static Vm of(final CoreCapacity capacity) {
+        return new VmSimple(capacity);
     }
 
     /// Creates a Vm with 1024 MEGA of RAM, 100 Megabits/s of Bandwidth and 1024 MEGA of Storage Size.
     /// To change these values, use the respective setters.
     /// While the Vm [is being instantiated][#isCreated()], such values can be changed freely.
+    /// This constructor is only for subclasses: use [#of(CoreCapacity, CloudletScheduler)] to create a VM.
     ///
     /// It is not defined an `id` for the Vm. The `id` is defined when the Vm is submitted to
     /// a [DatacenterBroker].
@@ -72,13 +87,20 @@ public class VmSimple extends VmAbstract {
     /// @see #setDefaultRamCapacity(long)
     /// @see #setDefaultBwCapacity(long)
     /// @see #setDefaultStorageCapacity(long)
-    public VmSimple(final CoreCapacity capacity, final CloudletScheduler cloudletScheduler) {
+    protected VmSimple(final CoreCapacity capacity, final CloudletScheduler cloudletScheduler) {
         super(-1, capacity, cloudletScheduler);
+    }
+
+    /// Creates a Vm with 1024 MEGA of RAM, 100 Megabits/s of Bandwidth and 1024 MEGA of Storage Size.
+    /// @see #VmSimple(CoreCapacity, CloudletScheduler)
+    public static Vm of(final CoreCapacity capacity, final CloudletScheduler cloudletScheduler) {
+        return new VmSimple(capacity, cloudletScheduler);
     }
 
     /// Creates a Vm with 1024 MEGA of RAM, 100 Megabits/s of Bandwidth and 1024 MEGA of Storage Size.
     /// To change these values, use the respective setters.
     /// While the Vm [is being instantiated][#isCreated()], such values can be changed freely.
+    /// This constructor is only for subclasses: use [#of(long, CoreCapacity)] to create a VM.
     ///
     /// **NOTE:** The Vm will use a [CloudletSchedulerTimeShared] by default.
     /// If you need to change that, just call [#setCloudletScheduler(CloudletScheduler)].
@@ -91,8 +113,14 @@ public class VmSimple extends VmAbstract {
     /// @see #setDefaultRamCapacity(long)
     /// @see #setDefaultBwCapacity(long)
     /// @see #setDefaultStorageCapacity(long)
-    public VmSimple(final long id, final CoreCapacity capacity) {
+    protected VmSimple(final long id, final CoreCapacity capacity) {
         super(id, capacity);
+    }
+
+    /// Creates a Vm with 1024 MEGA of RAM, 100 Megabits/s of Bandwidth and 1024 MEGA of Storage Size.
+    /// @see #VmSimple(long, CoreCapacity)
+    public static Vm of(final long id, final CoreCapacity capacity) {
+        return new VmSimple(id, capacity);
     }
 
     @Override

@@ -49,10 +49,6 @@ public sealed interface CustomerEntity
     /// @param broker the [DatacenterBroker] to set
     CustomerEntity setBroker(DatacenterBroker broker);
 
-    /// Sets the last Datacenter where the entity was tried to be created.
-    /// @param lastTriedDatacenter the datacenter to set
-    CustomerEntity setLastTriedDatacenter(Datacenter lastTriedDatacenter);
-
     /// @return the last Datacenter where the entity was tried to be created.
     Datacenter getLastTriedDatacenter();
 
@@ -60,12 +56,6 @@ public sealed interface CustomerEntity
     /// submitted to a Datacenter; or [#NOT_ASSIGNED] if it has not arrived yet.
     /// @see #getSubmissionDelay()
     double getBrokerArrivalTime();
-
-    /// Sets the last time the entity arrived at the broker, before being
-    /// submitted to a Datacenter.
-    ///
-    /// @param time the absolute time to set
-    CustomerEntity setBrokerArrivalTime(double time);
 
     /// @return the last time (in seconds) the entity was created into a Datacenter,
     /// or [#NOT_ASSIGNED] if it has not been created yet.

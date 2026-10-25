@@ -58,7 +58,7 @@ public class CloudletSchedulerTimeSharedTest {
     public void testCloudletResumeWhenEmptyPausedList() {
         final int cloudletId = 0;
         final double expResult = 0.0;
-        final double result = instance.cloudletResume(new CloudletSimple(cloudletId, 1, 1));
+        final double result = instance.cloudletResume(CloudletSimple.of(cloudletId, 1, 1));
         assertEquals(expResult, result);
     }
 
@@ -68,7 +68,7 @@ public class CloudletSchedulerTimeSharedTest {
         final var instance = createCloudletSchedulerWithMipsList(1, cloudletLength);
         final int cloudletId = 0;
         createCloudletAndAddItToPausedList(instance, cloudletId, cloudletLength);
-        instance.cloudletResume(new CloudletSimple(cloudletId, 1, 1));
+        instance.cloudletResume(CloudletSimple.of(cloudletId, 1, 1));
         assertTrue(instance.getCloudletWaitingList().isEmpty());
     }
 
@@ -78,7 +78,7 @@ public class CloudletSchedulerTimeSharedTest {
         instance.getCloudletPausedList().add(createCloudletExecInfo(cloudletIdInTheList));
         final double expResult = 0.0;
         final int cloudletIdSearched = 2;
-        final double result = instance.cloudletResume(new CloudletSimple(cloudletIdSearched, 1, 1));
+        final double result = instance.cloudletResume(CloudletSimple.of(cloudletIdSearched, 1, 1));
         assertEquals(expResult, result);
     }
 
@@ -92,7 +92,7 @@ public class CloudletSchedulerTimeSharedTest {
 
         createCloudletAndAddItToPausedList(instance, cloudletId, cloudletLength);
         final double expResult = 10;
-        final double result = instance.cloudletResume(new CloudletSimple(cloudletId, 1, 1));
+        final double result = instance.cloudletResume(CloudletSimple.of(cloudletId, 1, 1));
 
         assertEquals(expResult, result);
     }

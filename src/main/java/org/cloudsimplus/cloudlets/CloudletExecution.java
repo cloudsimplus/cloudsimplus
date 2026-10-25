@@ -131,7 +131,8 @@ public class CloudletExecution {
     /// @param cloudlet the Cloudlet to store execution information from
     public CloudletExecution(final Cloudlet cloudlet) {
         this.cloudlet = cloudlet;
-        this.arrivalTime = cloudlet.registerArrivalInDatacenter();
+        // The Cloudlet of the NULL object is Cloudlet.NULL, which isn't a CloudletAbstract
+        this.arrivalTime = cloudlet instanceof CloudletAbstract c ? c.registerArrivalInDatacenter() : Cloudlet.NOT_ASSIGNED;
         this.lastProcessingTime = Cloudlet.NOT_ASSIGNED;
         this.startExecTime = 0.0;
         this.virtualRuntime = 0;
@@ -160,7 +161,9 @@ public class CloudletExecution {
             return false;
         }
 
-        cloudlet.setStatus(newStatus);
+        if (cloudlet instanceof CloudletAbstract c) {
+            c.setStatus(newStatus);
+        }
 
         if (prevStatus == Cloudlet.Status.INEXEC && isNotRunning(newStatus)) {
             return true;
@@ -249,7 +252,9 @@ public class CloudletExecution {
         // Sets the wall clock time and actual CPU time
         this.wallClockTime = cloudlet.getSimulation().clock() - arrivalTime;
 
-        cloudlet.addFinishedLengthSoFar(partialFinishedMI - cloudlet.getFinishedLengthSoFar());
+        if (cloudlet instanceof CloudletAbstract c) {
+            c.addFinishedLengthSoFar(partialFinishedMI - c.getFinishedLengthSoFar());
+        }
     }
 
     /// Updates the length of the Cloudlet that has executed so far.
@@ -265,7 +270,9 @@ public class CloudletExecution {
         }
 
         this.partialFinishedMI += partialFinishedMI;
-        cloudlet.addFinishedLengthSoFar(partialFinishedMI);
+        if (cloudlet instanceof CloudletAbstract c) {
+            c.addFinishedLengthSoFar(partialFinishedMI);
+        }
 
         setLastProcessingTime(simulation.clock());
 
@@ -287,7 +294,9 @@ public class CloudletExecution {
     /// @param lastProcessingTime the last processing time to set
 	public void setLastProcessingTime(final double lastProcessingTime) {
 		this.lastProcessingTime = lastProcessingTime;
-        cloudlet.notifyOnUpdateProcessingListeners(lastProcessingTime);
+        if (cloudlet instanceof CloudletAbstract c) {
+            c.notifyOnUpdateProcessingListeners(lastProcessingTime);
+        }
 	}
 
     /// Computes the actual processing time span between the current simulation time and the last

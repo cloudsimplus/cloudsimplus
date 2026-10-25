@@ -53,14 +53,22 @@ public class NetworkVm extends VmSimple {
 
     /// Creates a NetworkVm with 1024 MEGA of RAM, 1000 Megabits/s of Bandwidth
     /// and 1024 MEGA of Storage Size.
+    /// This constructor is only for subclasses: use [#of(long, CoreCapacity)] to create a VM.
     ///
     /// To change these values, use the respective setters.
     /// While the Vm [is not created inside a Host][#isCreated()], such values can be changed freely.
     ///
     /// @param id unique ID of the VM
     /// @param capacity the number of CPU cores of the VM and the MIPS capacity of each core
-    public NetworkVm(final long id, final CoreCapacity capacity) {
+    protected NetworkVm(final long id, final CoreCapacity capacity) {
         super(id, capacity);
+    }
+
+    /// Creates a NetworkVm with 1024 MEGA of RAM, 1000 Megabits/s of Bandwidth
+    /// and 1024 MEGA of Storage Size.
+    /// @see #NetworkVm(long, CoreCapacity)
+    public static NetworkVm of(final long id, final CoreCapacity capacity) {
+        return new NetworkVm(id, capacity);
     }
 
     /// Creates a VM with no resources.
@@ -71,13 +79,20 @@ public class NetworkVm extends VmSimple {
     /// Creates a NetworkVm with 1024 MEGA of RAM, 1000 Megabits/s of Bandwidth and 1024 MEGA of Storage Size.
     /// To change these values, use the respective setters.
     /// While the Vm [is not created inside a Host][#isCreated()], such values can be changed freely.
+    /// This constructor is only for subclasses: use [#of(CoreCapacity)] to create a VM.
     ///
     /// It is not defined an `id` for the Vm. The `id` is defined when the Vm is submitted to
     /// a [DatacenterBroker].
     ///
     /// @param capacity the number of CPU cores of the VM and the MIPS capacity of each core
-    public NetworkVm(final CoreCapacity capacity) {
+    protected NetworkVm(final CoreCapacity capacity) {
         super(capacity);
+    }
+
+    /// Creates a NetworkVm with 1024 MEGA of RAM, 1000 Megabits/s of Bandwidth and 1024 MEGA of Storage Size.
+    /// @see #NetworkVm(CoreCapacity)
+    public static NetworkVm of(final CoreCapacity capacity) {
+        return new NetworkVm(capacity);
     }
 
     @Override

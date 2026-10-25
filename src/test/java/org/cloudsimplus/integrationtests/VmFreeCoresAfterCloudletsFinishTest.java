@@ -65,14 +65,14 @@ public final class VmFreeCoresAfterCloudletsFinishTest {
         final int cloudletLength = 10_000;
 
         simulation = new CloudSimPlus();
-        final var host = new HostSimple(hRAM, hBW, hStorage, new CoreCapacity(2, HOST_MIPS));
-        new DatacenterSimple(simulation, List.of(host));
+        final var host = HostSimple.of(hRAM, hBW, hStorage, new CoreCapacity(2, HOST_MIPS));
+        DatacenterSimple.of(simulation, List.of(host));
 
         final var broker = new DatacenterBrokerSimple(simulation);
-        vm = new VmSimple(new CoreCapacity(VM_CORES, HOST_MIPS));
+        vm = (VmSimple) VmSimple.of(new CoreCapacity(VM_CORES, HOST_MIPS));
         vm.setRam(vmRAM).setBw(vmBW).setSize(hBW);
         broker.submitVmList(List.of(vm));
-        final var cloudlet = new CloudletSimple(cloudletLength, CLOUDLET_CORES);
+        final var cloudlet = CloudletSimple.of(cloudletLength, CLOUDLET_CORES);
         broker.submitCloudletList(List.of(cloudlet));
     }
 

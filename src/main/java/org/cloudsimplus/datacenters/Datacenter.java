@@ -90,16 +90,6 @@ public sealed interface Datacenter
     /// @see #getActiveHostsNumber()
     long getPoweringOnHostsNumber();
 
-    /// Registers a broker that is waiting for a Host to be powered on, so that it can create its waiting VMs.
-    /// When the next Host is powered on, the broker receives a [CloudSimTag#VM_CREATE_RETRY] event
-    /// (after the [org.cloudsimplus.core.Simulation#getMinTimeBetweenEvents()]).
-    /// Then the broker is removed from the waiting list.
-    ///
-    /// @param broker the broker waiting for a Host to be powered on
-    /// @return this Datacenter
-    /// @see #getPoweringOnHostsNumber()
-    Datacenter addBrokerWaitingHostPowerOn(DatacenterBroker broker);
-
     /// @return the total number of existing Hosts in this Datacenter,
     /// which indicates the Datacenter's size.
     long size();
@@ -147,6 +137,12 @@ public sealed interface Datacenter
     /// @return the policy to be used by the Datacenter to allocate VMs into hosts.
     /// @see VmPlacementPolicy
     VmPlacementPolicy getVmPlacementPolicy();
+
+    /// Sets the policy to be used by the Datacenter to place [Vm]s into [Host]s.
+    ///
+    /// @param vmPlacementPolicy the new VM placement policy
+    /// @return this Datacenter
+    Datacenter setVmPlacementPolicy(VmPlacementPolicy vmPlacementPolicy);
 
     /// Gets the scheduling interval to process each event received by the
     /// Datacenter (in seconds). This value defines the interval in which

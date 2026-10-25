@@ -57,7 +57,7 @@ public class CloudletSchedulerSpaceSharedTest {
         final double mips = 1000;
         final long cloudletLen = 10000;
 
-        final Vm vm = new VmSimple(0, new CoreCapacity(1, mips));
+        final Vm vm = VmSimple.of(0, new CoreCapacity(1, mips));
         vm.setBroker(DatacenterBroker.NULL);
         final var instance = CloudletSchedulerSpaceSharedTestUtil.createScheduler(vm);
         final var mipsShare = new CoreCapacity(mips);
@@ -104,7 +104,7 @@ public class CloudletSchedulerSpaceSharedTest {
         final int cloudletId = 0;
         final var instance = CloudletSchedulerSpaceSharedTestUtil.createScheduler();
         final double expResult = 0.0;
-        final double result = instance.cloudletResume(new CloudletSimple(cloudletId, 1, 1));
+        final double result = instance.cloudletResume(CloudletSimple.of(cloudletId, 1, 1));
         assertEquals(expResult, result);    }
 
     @Test
@@ -124,7 +124,7 @@ public class CloudletSchedulerSpaceSharedTest {
                 CloudletTestUtil.createCloudlet(numberOfCloudlets, cloudletCores)));
 
         final double expResult = 0.0;
-        final double result = instance.cloudletResume(new CloudletSimple(cloudletId, 1, 1));
+        final double result = instance.cloudletResume(CloudletSimple.of(cloudletId, 1, 1));
         assertEquals(expResult, result);
     }
 

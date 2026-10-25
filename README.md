@@ -260,23 +260,23 @@ long bw = 100000; //in Megabits/s
 //Creates one host with 1 CPU core of 20000 MIPS.
 //Uses ResourceAllocatorSimple by default for RAM and BW allocation
 //Uses VmSchedulerSpaceShared by default for VM scheduling
-var host0 = new HostSimple(ram, bw, storage, new CoreCapacity(1, 20000));
+var host0 = HostSimple.of(ram, bw, storage, new CoreCapacity(1, 20000));
 
 //Creates a Datacenter with a list of Hosts.
 //Uses a VmPlacementPolicySimple by default to place VMs on Hosts
-var dc0 = new DatacenterSimple(simulation, List.of(host0));
+var dc0 = DatacenterSimple.of(simulation, List.of(host0));
 
 //Creates one VM with one CPU core to run applications.
 //Uses a CloudletSchedulerTimeShared by default to schedule Cloudlets
-var vm0 = new VmSimple(new CoreCapacity(1, 1000));
+var vm0 = VmSimple.of(new CoreCapacity(1, 1000));
 vm0.setRam(1000).setBw(1000).setSize(1000);
 
 //Creates Cloudlets that represent applications to be run inside a VM.
 //It has a length of 1000 Million Instructions (MI) and requires 1 CPU core 
 //UtilizationModel defining the Cloudlets use only 50% of any resource all the time
 var utilizationModel = new UtilizationModelDynamic(0.5);
-var cloudlet0 = new CloudletSimple(10000, 1, utilizationModel);
-var cloudlet1 = new CloudletSimple(10000, 1, utilizationModel);
+var cloudlet0 = CloudletSimple.of(10000, 1, utilizationModel);
+var cloudlet1 = CloudletSimple.of(10000, 1, utilizationModel);
 var cloudletList = List.of(cloudlet0, cloudlet1);
 
 broker0.submitVmList(List.of(vm0));

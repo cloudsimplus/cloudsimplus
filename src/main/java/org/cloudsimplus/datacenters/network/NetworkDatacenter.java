@@ -45,13 +45,14 @@ public class NetworkDatacenter extends DatacenterSimple {
     private final List<Switch> switchMap;
 
     /// Creates a NetworkDatacenter with the given parameters.
+    /// This constructor is only for subclasses: use [#of(Simulation, List, VmPlacementPolicy)] to create a Datacenter.
     ///
     /// @param simulation The [CloudSimPlus] instance that represents the simulation the Entity belongs to
     /// @param hostList list of [Host]s that will compound the Datacenter
     /// @param vmPlacementPolicy the policy to be used to allocate [Vm]s into hosts
     ///
     /// @throws IllegalArgumentException when this Host has zero cores
-    public NetworkDatacenter(
+    protected NetworkDatacenter(
         final Simulation simulation,
         final List<? extends NetworkHost> hostList,
         final VmPlacementPolicy vmPlacementPolicy)
@@ -60,18 +61,48 @@ public class NetworkDatacenter extends DatacenterSimple {
         setVmPlacementPolicy(vmPlacementPolicy);
     }
 
+    /// Creates a NetworkDatacenter with the given parameters.
+    /// @see #NetworkDatacenter(Simulation, List, VmPlacementPolicy)
+    /// @throws IllegalArgumentException when some Host isn't a [NetworkHost]
+    public static NetworkDatacenter of(final Simulation simulation, final List<? extends Host> hostList, final VmPlacementPolicy vmPlacementPolicy) {
+        return new NetworkDatacenter(simulation, networkHosts(hostList), vmPlacementPolicy);
+    }
+
     /// Creates a NetworkDatacenter that uses a [VmPlacementPolicySimple] as default.
+    /// This constructor is only for subclasses: use [#of(Simulation, List)] to create a Datacenter.
     ///
     /// @param simulation The [CloudSimPlus] instance that represents the simulation the Entity belongs to
     /// @param hostList list of [Host]s that will compound the Datacenter
     ///
     /// @throws IllegalArgumentException when this Host has zero cores
-    public NetworkDatacenter(
+    protected NetworkDatacenter(
         final Simulation simulation,
         final List<? extends NetworkHost> hostList)
     {
         super(simulation, hostList);
         switchMap = new ArrayList<>();
+    }
+
+    /// Creates a NetworkDatacenter that uses a [VmPlacementPolicySimple] as default.
+    /// @see #NetworkDatacenter(Simulation, List)
+    /// @throws IllegalArgumentException when some Host isn't a [NetworkHost]
+    public static NetworkDatacenter of(final Simulation simulation, final List<? extends Host> hostList) {
+        return new NetworkDatacenter(simulation, networkHosts(hostList));
+    }
+
+    /// {@return the given list as a list of [NetworkHost]s}
+    /// The factory methods receive a list of [Host]s, since they hide the ones in [DatacenterSimple],
+    /// which must have the same parameter types.
+    ///
+    /// @param hostList the list of Hosts to check
+    /// @throws IllegalArgumentException when some Host isn't a [NetworkHost]
+    @SuppressWarnings("unchecked")
+    private static List<? extends NetworkHost> networkHosts(final List<? extends Host> hostList) {
+        if (hostList.stream().allMatch(NetworkHost.class::isInstance)) {
+            return (List<? extends NetworkHost>) hostList;
+        }
+
+        throw new IllegalArgumentException("A NetworkDatacenter can only have NetworkHosts");
     }
 
     /// @return a list of all [EdgeSwitch]s in the Datacenter network.

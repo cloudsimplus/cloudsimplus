@@ -45,8 +45,7 @@ public class VmTest {
             () -> assertEquals("", instance.getUid()),
             () -> assertEquals(-1, instance.getId()),
             () -> assertSame(DatacenterBroker.NULL, instance.getBroker()),
-            () -> assertEquals("", instance.getVmm()),
-            () -> assertEquals(0, instance.updateProcessing(0, CoreCapacity.NULL))
+            () -> assertEquals("", instance.getVmm())
         );
     }
 

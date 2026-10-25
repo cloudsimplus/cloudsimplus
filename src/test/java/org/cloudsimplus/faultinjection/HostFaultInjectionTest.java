@@ -102,12 +102,12 @@ class HostFaultInjectionTest {
     }
 
     private static Host createHost() {
-        return new HostSimple(new CoreCapacity(HOST_CORES, MIPS));
+        return HostSimple.of(new CoreCapacity(HOST_CORES, MIPS));
     }
 
     private static HostFaultInjection createFaultInjection(final Host host, final long seed) {
         final var simulation = new CloudSimPlus();
-        final var datacenter = new DatacenterSimple(simulation, List.of(host));
+        final var datacenter = DatacenterSimple.of(simulation, List.of(host));
         return new HostFaultInjection(datacenter, new UniformDistr(seed));
     }
 }

@@ -65,11 +65,6 @@ public sealed interface Vm
     /// @return the [VmGroup] or NULL if the VM doesn't belong to a group
     @Nullable VmGroup getGroup();
 
-    /// Adds a VM state history entry.
-    ///
-    /// @param entry the data about the state of the VM at given time
-    void addStateHistoryEntry(VmStateHistoryEntry entry);
-
     /// Gets the Cloudlet scheduler the VM uses to schedule cloudlets
     /// execution.
     ///
@@ -155,7 +150,6 @@ public sealed interface Vm
     ///
     /// @param listener the listener to add
     /// @return
-    /// @see #updateProcessing(double, CoreCapacity)
     Vm addOnCreationFailureListener(EventListener<VmDatacenterEventInfo> listener);
 
     /// Adds a listener object that will be notified every time when
@@ -163,28 +157,7 @@ public sealed interface Vm
     ///
     /// @param listener the listener to add
     /// @return
-    /// @see #updateProcessing(double, CoreCapacity)
     Vm addOnUpdateProcessingListener(EventListener<VmHostEventInfo> listener);
-
-    /// Notifies all registered listeners when a [Host] is allocated to the [Vm].
-    ///
-    /// **This method is used just internally and must not be called directly.**
-    void notifyOnHostPlacementListeners();
-
-    /// Notifies all registered listeners when the [Vm] is moved/removed from a [Host].
-    ///
-    /// **This method is used just internally and must not be called directly.**
-    ///
-    /// @param deallocatedHost the [Host] the [Vm] was moved/removed from
-    void notifyOnHostRemovalListeners(Host deallocatedHost);
-
-    /// Notifies all registered listeners when the Vm fail in
-    /// being placed for lack of a [Host] with enough resources in a specific [Datacenter].
-    ///
-    /// **This method is used just internally and must not be called directly.**
-    ///
-    /// @param failedDatacenter the Datacenter where the VM creation failed
-    void notifyOnCreationFailureListeners(Datacenter failedDatacenter);
 
     /// Removes a listener from the onMigrationStartListener List.
     ///
@@ -354,11 +327,6 @@ public sealed interface Vm
     /// @return
     boolean isInMigration();
 
-    /// Defines if the VM is in migration process or not.
-    ///
-    /// @param migrating true to indicate the VM is migrating into a Host, false otherwise
-    Vm setInMigration(boolean migrating);
-
     /// Sets the bandwidth capacity (in Megabits/s)
     ///
     /// @param bwCapacity new BW capacity (in Megabits/s)
@@ -376,24 +344,6 @@ public sealed interface Vm
     /// @param size new storage size
     /// @return
     Vm setSize(long size);
-
-    /// Updates the processing of cloudlets running on this VM.
-    ///
-    /// @param currentTime current simulation time
-    /// @param mipsShare list with MIPS share of each core available to the
-    /// scheduler
-    /// @return the predicted completion time of the earliest finishing cloudlet
-    /// (which is a relative delay from the current simulation time),
-    /// or [Double#MAX_VALUE] if there is no next Cloudlet to execute
-    double updateProcessing(double currentTime, CoreCapacity mipsShare);
-
-    /// Updates the processing of cloudlets running on this VM at the current simulation time.
-    ///
-    /// @param mipsShare list with MIPS share of each core available to the scheduler
-    /// @return the predicted completion time of the earliest finishing cloudlet
-    /// (which is a relative delay from the current simulation time),
-    /// or [Double#MAX_VALUE] if there is no next Cloudlet to execute
-    double updateProcessing(CoreCapacity mipsShare);
 
     /// Sets the Cloudlet scheduler the Vm uses to schedule cloudlets execution.
     /// It also sets the Vm itself to the given scheduler.

@@ -68,6 +68,6 @@ public class DatacenterTest {
     }
 
     private static Datacenter newDatacenter() {
-        return new DatacenterSimple(new CloudSimPlus(), List.of(new HostSimple(new CoreCapacity(1, 1000))));
+        return new DatacenterSimple(new CloudSimPlus(), List.of(HostSimple.of(new CoreCapacity(1, 1000))));
     }
 }

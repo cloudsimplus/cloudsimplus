@@ -115,6 +115,6 @@ class VmSchedulerSpaceSharedTest {
     }
 
     private static Host createHost() {
-        return new HostSimple(2048, 20000, 20000, new CoreCapacity(HOST_CORES, MIPS));
+        return HostSimple.of(2048, 20000, 20000, new CoreCapacity(HOST_CORES, MIPS));
     }
 }

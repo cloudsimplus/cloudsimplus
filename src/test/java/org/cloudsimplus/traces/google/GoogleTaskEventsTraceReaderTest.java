@@ -66,12 +66,12 @@ public class GoogleTaskEventsTraceReaderTest {
     @Test @Timeout(TIMEOUT_SECS)
     public void eventsAtTimestampZeroAreProcessed(@TempDir final Path tempDir) throws IOException {
         final var simulation = new CloudSimPlus();
-        new DatacenterSimple(simulation, List.of(new HostSimple(new CoreCapacity(CORES, MIPS))));
+        DatacenterSimple.of(simulation, List.of(HostSimple.of(new CoreCapacity(CORES, MIPS))));
 
         final var traceFile = Files.writeString(tempDir.resolve("task-events.csv"), TRACE_STARTING_AT_TIME_ZERO);
         final var reader = new GoogleTaskEventsTraceReader(simulation, traceFile.toString(), GoogleTaskEventsTraceReaderTest::createCloudlet);
         final var cloudlet = reader.process().iterator().next();
-        reader.getBrokerManager().getBrokers().forEach(broker -> broker.submitVm(new VmSimple(new CoreCapacity(CORES, MIPS))));
+        reader.getBrokerManager().getBrokers().forEach(broker -> broker.submitVm(VmSimple.of(new CoreCapacity(CORES, MIPS))));
         simulation.start();
 
         assertAll(
@@ -81,7 +81,7 @@ public class GoogleTaskEventsTraceReaderTest {
     }
 
     private static Cloudlet createCloudlet(final TaskEvent event) {
-        return new CloudletSimple(CLOUDLET_LENGTH, 1)
+        return CloudletSimple.of(CLOUDLET_LENGTH, 1)
             .setUtilizationModelRam(new UtilizationModelDynamic(0, event.getResourceRequestForRam()));
     }
 

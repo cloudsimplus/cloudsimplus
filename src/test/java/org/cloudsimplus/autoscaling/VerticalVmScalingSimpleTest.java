@@ -40,7 +40,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 class VerticalVmScalingSimpleTest {
     private final CloudSimPlus sim = CloudSimMocker.createMock(CloudSimMocker::isRunning);
     private final DatacenterBrokerSimple broker = new DatacenterBrokerSimple(sim);
-    private final VmAbstract vm = new VmSimple(1, new CoreCapacity(2, 1000));
+    private final VmAbstract vm = (VmAbstract) VmSimple.of(1, new CoreCapacity(2, 1000));
 
     @Test
     void vmCreateConfiguresVerticalScaling() {

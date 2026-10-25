@@ -157,13 +157,6 @@ public sealed interface Cloudlet
     /// @return true if the Cloudlet has finished and returned to the broker, false otherwise
     boolean isReturnedToBroker();
 
-    /// Register the arrival time of this Cloudlet into a Datacenter to the
-    /// current simulation time and returns this time.
-    ///
-    /// @return the arrived time set (in seconds);
-    /// or [#NOT_ASSIGNED] if the cloudlet is not assigned to a Datacenter
-    double registerArrivalInDatacenter();
-
     /// Gets the latest execution start time of this Cloudlet (in seconds).
     /// This attribute only stores the latest
     /// execution time. Previous execution times are ignored.
@@ -360,23 +353,6 @@ public sealed interface Cloudlet
     /// @see #setOutputSize(long)
     Cloudlet setSizes(long size);
 
-    /// Sets the status of this Cloudlet.
-    ///
-    /// **WARNING**: This method is just used internally by classes such as
-    /// [CloudletScheduler] to update Cloudlet status.
-    /// Calling it directly might not get the expected result.
-    /// You have to use the CloudletScheduler that controls the execution
-    /// of the Cloudlet to change the Cloudlets status.
-    /// The method is public due to a design issue.
-    ///
-    /// @param newStatus the status of this Cloudlet
-    /// @return true if the cloudlet status was changed,
-    /// i.e, if the newStatus is different from the current status;
-    /// false otherwise
-    /// TODO Move to abstract class
-    /// See https://github.com/cloudsimplus/cloudsimplus/issues/589
-    boolean setStatus(Status newStatus);
-
     /// Sets the [Type of Service (ToS)](https://en.wikipedia.org/wiki/Type_of_service)
     /// for sending this cloudlet over a network.
     ///
@@ -491,15 +467,6 @@ public sealed interface Cloudlet
     /// or the full Cloudlet length if it is completed (in MI)
     long getFinishedLengthSoFar();
 
-    /// Adds the partial length of this Cloudlet that has executed so far (in MI).
-    ///
-    /// @param partialFinishedMI the partial executed length of this Cloudlet (in MI) from the
-    /// last time span (the last time the Cloudlet execution was updated)
-    /// @return true if the length is valid and the cloudlet already has assigned to a Datacenter;
-    /// false otherwise
-    /// @see CloudletExecution
-    boolean addFinishedLengthSoFar(long partialFinishedMI);
-
     /// Sets the [latest execution start time][#getStartTime()] of this Cloudlet.
     ///
     /// **NOTE:** The execution start time only holds the
@@ -547,13 +514,6 @@ public sealed interface Cloudlet
     /// @return true if the listener was found and removed; false otherwise
     /// @see #addOnFinishListener(EventListener)
     boolean removeOnFinishListener(EventListener<CloudletVmEventInfo> listener);
-
-    /// Notifies all registered listeners about the update on Cloudlet processing.
-    ///
-    /// **This method is used just internally and must not be called directly.**
-    ///
-    /// @param time the time the event happened
-    void notifyOnUpdateProcessingListeners(double time);
 
     /// Gets the [DatacenterBroker] that represents the owner of this Cloudlet.
     ///
