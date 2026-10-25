@@ -27,6 +27,9 @@ import java.util.function.Function;
 /// @author Manoel Campos da Silva Filho
 /// @since 3.0.4
 public abstract non-sealed class ResourceAllocatorAbstract implements ResourceAllocator {
+    /// The physical resource managed by this allocator.
+    /// It's returned as a [ResourceManageable] here (instead of a read-only [org.cloudsimplus.resources.Resource]
+    /// as in [ResourceAllocator#getPmResource()]), so that allocators can change its allocated amount.
     @Getter
     private ResourceManageable pmResource;
 
@@ -41,7 +44,7 @@ public abstract non-sealed class ResourceAllocatorAbstract implements ResourceAl
 
     /// Creates a ResourceManageable Allocator for which the [resource][#getPmResource()]
     /// must be set further.
-    /// @see ResourceAllocator#setResources(ResourceManageable, Function)
+    /// @see #setResources(ResourceManageable, Function)
     protected ResourceAllocatorAbstract() {
         this(ResourceManageable.NULL, vm -> ResourceManageable.NULL);
     }
@@ -52,7 +55,9 @@ public abstract non-sealed class ResourceAllocatorAbstract implements ResourceAl
     /// @param vmResourceFunction a [Function] that receives a [Vm] and returns
     /// the virtual resource corresponding to the [PM resource][#getPmResource()]
     public ResourceAllocatorAbstract(final ResourceManageable pmResource, final Function<Vm, ResourceManageable> vmResourceFunction) {
-        setResources(pmResource, vmResourceFunction);
+        // Assigns the fields directly, since setResources() can be overridden
+        this.pmResource = Objects.requireNonNull(pmResource);
+        this.vmResourceFunction = Objects.requireNonNull(vmResourceFunction);
     }
 
     @Override
@@ -75,8 +80,45 @@ public abstract non-sealed class ResourceAllocatorAbstract implements ResourceAl
         return amount == null ? 0 : amount;
     }
 
-    @Override
-    public final void setResources(final ResourceManageable pmResource, final Function<Vm, ResourceManageable> vmResourceFunction) {
+    /// Allocates (reserves) an amount of the physical resource for a VM.
+    /// It doesn't change the VM capacity: that's done when the Host provisions the allocated amount to the VM.
+    ///
+    /// @param vm the virtual machine for which the resource is being allocated
+    /// @param newTotalVmResourceCapacity the new total amount of resource to allocate to the VM,
+    /// changing the allocated resource to this new amount. It doesn't increase
+    /// the current allocated VM resource by the given amount, instead,
+    /// it changes the VM allocated resource to that amount.
+    ///
+    /// @return `true` if the resource could be allocated; `false` otherwise
+    public abstract boolean allocateResourceForVm(Vm vm, long newTotalVmResourceCapacity);
+
+    /// Allocates (reserves) an amount of the physical resource for a VM.
+    /// It doesn't change the VM capacity: that's done when the Host provisions the allocated amount to the VM.
+    ///
+    /// This method is just a shorthand to avoid explicitly converting
+    /// a double to long.
+    ///
+    /// @param vm the virtual machine for which the resource is being allocated
+    /// @param newTotalVmResource the new total amount of resource to allocate to the VM,
+    /// changing the allocated resource to this new amount. It doesn't increase
+    /// the current allocated VM resource by the given amount, instead,
+    /// it changes the VM allocated resource to that amount
+    /// @return `true` if the resource could be allocated; `false` otherwise
+    /// @see #allocateResourceForVm(Vm, long)
+    public boolean allocateResourceForVm(final Vm vm, final double newTotalVmResource){
+        return allocateResourceForVm(vm, (long)newTotalVmResource);
+    }
+
+    /// Deallocate the resource for the given VM.
+    /// @param vm the VM to deallocate the resource
+    /// @return the amount of allocated VM resource or zero if VM is not found
+    public abstract long deallocateResourceForVm(Vm vm);
+
+    /// Sets the physical resource to be managed by the allocator, such as [Ram], core, [Bandwidth], etc.
+    /// @param pmResource the resource managed by this allocator
+    /// @param vmResourceFunction a [Function] that receives a [Vm] and returns
+    /// the virtual resource corresponding to the [PM resource][#getPmResource()]
+    public void setResources(final ResourceManageable pmResource, final Function<Vm, ResourceManageable> vmResourceFunction) {
         this.pmResource = Objects.requireNonNull(pmResource);
         this.vmResourceFunction = Objects.requireNonNull(vmResourceFunction);
     }

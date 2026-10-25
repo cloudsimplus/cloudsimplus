@@ -38,12 +38,12 @@ import org.cloudsimplus.listeners.Listeners;
 import org.cloudsimplus.power.PowerAware;
 import org.cloudsimplus.power.models.PowerModelHost;
 import org.cloudsimplus.allocators.ResourceAllocator;
+import org.cloudsimplus.allocators.ResourceAllocatorAbstract;
 import org.cloudsimplus.allocators.ResourceAllocatorSimple;
 import org.cloudsimplus.resources.*;
 import org.cloudsimplus.schedulers.vm.VmScheduler;
 import org.cloudsimplus.schedulers.vm.VmSchedulerSpaceShared;
 import org.cloudsimplus.util.BytesConversion;
-import org.cloudsimplus.util.TimeUtil;
 import org.cloudsimplus.vms.*;
 
 import java.util.*;
@@ -79,8 +79,12 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
     /// @see #getStorage()
     protected final HarddriveStorage disk;
 
+    /// The Host state history, which is [HostStateHistory#NULL] until it's enabled,
+    /// so that Hosts that don't record it don't use memory for it.
+    /// It's declared as a [HostStateHistorySimple] (which [HostStateHistory#NULL] extends),
+    /// so that it can be enabled or disabled without casts.
     /// @see #getStateHistory()
-    protected final List<HostStateHistoryEntry> stateHistory;
+    private HostStateHistorySimple stateHistory;
 
     /// @see #getVmsMigratingIn()
     protected final Set<Vm> vmsMigratingIn;
@@ -121,8 +125,6 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
     /// @see #getResources()
     protected List<ResourceManageable> resources;
 
-    protected List<ResourceAllocator> allocators;
-
     /// {@inheritDoc}
     ///
     /// **It's enabled by default.**
@@ -153,11 +155,16 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
     /// @see #getTotalUpTime()
     private double totalUpTime;
 
-    @Getter @NonNull
-    private ResourceAllocator ramAllocator;
+    /// The RAM allocator. It's declared with the type that can allocate resources,
+    /// but [#getRamAllocator()] returns it as a read-only [ResourceAllocator],
+    /// so that only this Host changes allocations (when provisioning resources to VMs).
+    @NonNull
+    private ResourceAllocatorAbstract ramAllocator;
 
-    @Getter @NonNull
-    private ResourceAllocator bwAllocator;
+    /// The BW allocator.
+    /// @see #ramAllocator
+    @NonNull
+    private ResourceAllocatorAbstract bwAllocator;
 
     @Getter @NonNull
     private VmScheduler vmScheduler;
@@ -165,9 +172,6 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
     /// @see #getProcessor()
     @Getter
     private final Processor processor;
-
-    @Getter @Setter
-    private boolean stateHistoryEnabled;
 
     public HostAbstract(
         final ResourceAllocator ramAllocator,
@@ -210,11 +214,10 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
         this.bw = new Bandwidth(bw);
         this.disk = storage;
         this.cpuUtilizationStats = HostResourceStats.NULL;
-        this.stateHistory = new LinkedList<>();
+        this.stateHistory = HostStateHistoryNull.INSTANCE;
         this.vmsMigratingIn = new HashSet<>();
         this.vmsMigratingOut = new HashSet<>();
         this.resources = new ArrayList<>();
-        this.allocators = new ArrayList<>();
         this.vmCreatedList = new ArrayList<>();
         this.lazySuitabilityEvaluation = true;
         this.setSimulation(Simulation.NULL);
@@ -660,11 +663,6 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
     }
 
     @Override
-    public double getTotalMipsCapacity() {
-        return processor.getTotalMips();
-    }
-
-    @Override
     public Resource getBw() {
         return bwAllocator.getPmResource();
     }
@@ -680,19 +678,37 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
     }
 
     @Override
-    public final Host setRamAllocator(final ResourceAllocator ramAllocator) {
+    public ResourceAllocator getRamAllocator() {
+        return ramAllocator;
+    }
+
+    @Override
+    public ResourceAllocator getBwAllocator() {
+        return bwAllocator;
+    }
+
+    @Override
+    public final Host setRamAllocator(@NonNull final ResourceAllocator ramAllocator) {
         checkSimulationIsRunningAndAttemptedToChangeHost("RAM");
-        this.ramAllocator = ramAllocator;
-        this.ramAllocator.setResources(ram, vm -> ((VmSimple) vm).getRam());
+        this.ramAllocator = asAbstract(ramAllocator);
+        this.ramAllocator.setResources(ram, vm -> vm.getResource(Ram.class));
         return this;
     }
 
     @Override
-    public final Host setBwAllocator(final ResourceAllocator bwAllocator) {
+    public final Host setBwAllocator(@NonNull final ResourceAllocator bwAllocator) {
         checkSimulationIsRunningAndAttemptedToChangeHost("BW");
-        this.bwAllocator = bwAllocator;
-        this.bwAllocator.setResources(bw, vm -> ((VmSimple) vm).getBw());
+        this.bwAllocator = asAbstract(bwAllocator);
+        this.bwAllocator.setResources(bw, vm -> vm.getResource(Bandwidth.class));
         return this;
+    }
+
+    /// {@return a given allocator as a [ResourceAllocatorAbstract], which has the methods to allocate resources}
+    /// The cast never fails, since [ResourceAllocator] only permits [ResourceAllocatorAbstract] to implement it.
+    /// It's the only place where allocators are cast, and it's only called when an allocator is set.
+    /// @param allocator the allocator to cast
+    private static ResourceAllocatorAbstract asAbstract(final ResourceAllocator allocator) {
+        return (ResourceAllocatorAbstract) allocator;
     }
 
     private void checkSimulationIsRunningAndAttemptedToChangeHost(final String resourceName) {
@@ -734,16 +750,6 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
     @Override
     public double getTotalUpTime() {
         return totalUpTime + (active ? getUpTime() : 0);
-    }
-
-    @Override
-    public double getUpTimeHours() {
-        return TimeUtil.secondsToHours(getUpTime());
-    }
-
-    @Override
-    public double getTotalUpTimeHours() {
-        return TimeUtil.secondsToHours(getTotalUpTime());
     }
 
     @Override
@@ -845,11 +851,6 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
     }
 
     @Override
-    public long getAvailableStorage() {
-        return disk.getFree();
-    }
-
-    @Override
     public List<ResourceManageable> getResources() {
         if (simulation.isRunning() && resources.isEmpty()) {
             resources = Arrays.asList(ram, bw, processor);
@@ -858,19 +859,17 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
         return Collections.unmodifiableList(resources);
     }
 
-    @Override
-    public ResourceAllocator getAllocator(final Class<? extends ResourceManageable> resourceClass) {
-        final List<ResourceAllocator> currentAllocators = allocators.isEmpty() ? List.of(ramAllocator, bwAllocator) : allocators;
-        // Only caches the list while the simulation is running, since allocators can still be changed before it starts
-        if (simulation.isRunning()) {
-            allocators = currentAllocators;
+    /// Allocates (reserves) an amount of a Host resource (RAM or BW) for a VM, using the allocator of that resource.
+    /// @param vm the VM to allocate the resource for
+    /// @param resourceClass the class of the resource to allocate
+    /// @param amount the new total amount of the resource for the VM
+    /// @return true if the resource was allocated, false if it couldn't be or if there is no allocator for that resource
+    private boolean allocateResourceForVm(final Vm vm, final Class<? extends ResourceManageable> resourceClass, final long amount) {
+        if (ramAllocator.getPmResource().isSubClassOf(resourceClass)) {
+            return ramAllocator.allocateResourceForVm(vm, amount);
         }
 
-        return currentAllocators
-            .stream()
-            .filter(allocator -> allocator.getPmResource().isSubClassOf(resourceClass))
-            .findFirst()
-            .orElse(ResourceAllocator.NULL);
+        return bwAllocator.getPmResource().isSubClassOf(resourceClass) && bwAllocator.allocateResourceForVm(vm, amount);
     }
 
     @Override
@@ -878,13 +877,8 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
         return computeCpuUtilizationPercent(getCpuMipsUtilization());
     }
 
-    @Override
-    public double getCpuPercentRequested() {
-        return computeCpuUtilizationPercent(getCpuMipsRequested());
-    }
-
     private double computeCpuUtilizationPercent(final double mipsUsage) {
-        final double totalMips = getTotalMipsCapacity();
+        final double totalMips = processor.getTotalMips();
         if (totalMips == 0) {
             return 0;
         }
@@ -898,13 +892,9 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
         return vmList.stream().mapToDouble(Vm::getTotalCpuMipsUtilization).sum();
     }
 
-    private double getCpuMipsRequested() {
-        return vmList.stream().mapToDouble(Vm::getTotalCpuMipsRequested).sum();
-    }
-
     @Override
     public boolean provisionResourceForVm(final Vm vm, final Class<? extends ResourceManageable> resourceClass, final long amount) {
-        if (amount < 0 || !getAllocator(resourceClass).allocateResourceForVm(vm, amount)) {
+        if (amount < 0 || !allocateResourceForVm(vm, resourceClass, amount)) {
             return false;
         }
 
@@ -1009,7 +999,7 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
     }
 
     private void addStateHistory(final double currentTime) {
-        if (!stateHistoryEnabled) {
+        if (!stateHistory.isEnabled()) {
             return;
         }
 
@@ -1021,35 +1011,24 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
             hostTotalRequestedMips += totalRequestedMips;
         }
 
-        addStateHistoryEntry(currentTime, getCpuMipsUtilization(), hostTotalRequestedMips, active);
-    }
-
-    /// Adds a Host state history entry.
-    ///
-    /// @param time          the current simulation time
-    /// @param allocatedMips the total MIPS allocated from all cores of the Host
-    /// @param requestedMips the total MIPS requested by running VMs to all cores of the Host
-    /// @param isActive      the active status of the Host
-    private void addStateHistoryEntry(
-        final double time,
-        final double allocatedMips,
-        final double requestedMips,
-        final boolean isActive) {
-        final var newState = new HostStateHistoryEntry(time, allocatedMips, requestedMips, isActive);
-        if (!stateHistory.isEmpty()) {
-            final var previousState = stateHistory.get(stateHistory.size() - 1);
-            if (previousState.time() == time) {
-                stateHistory.set(stateHistory.size() - 1, newState);
-                return;
-            }
-        }
-
-        stateHistory.add(newState);
+        stateHistory.add(new HostStateHistoryEntry(currentTime, getCpuMipsUtilization(), hostTotalRequestedMips, active));
     }
 
     @Override
-    public List<HostStateHistoryEntry> getStateHistory() {
-        return Collections.unmodifiableList(stateHistory);
+    public final Host setStateHistoryEnabled(final boolean enable) {
+        // The history object is only created when it's enabled for the first time
+        if (stateHistory == HostStateHistory.NULL) {
+            stateHistory = enable ? new HostStateHistorySimple() : HostStateHistoryNull.INSTANCE;
+            return this;
+        }
+
+        stateHistory.setEnabled(enable);
+        return this;
+    }
+
+    @Override
+    public HostStateHistory getStateHistory() {
+        return stateHistory;
     }
 
     @Override

@@ -35,7 +35,6 @@ public class ResourceAllocatorTest {
     public void testNullObject() {
         final ResourceAllocator instance = ResourceAllocator.NULL;
         assertAll(
-            () -> assertFalse(instance.allocateResourceForVm(null, 0)),
             () -> assertEquals(0.0, instance.getAllocatedResourceForVm(null)),
             () -> assertEquals(0.0, instance.getTotalAllocatedResource()),
             () -> assertFalse(instance.isSuitableForVm(null, 0)),

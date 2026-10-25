@@ -30,6 +30,7 @@ import org.cloudsimplus.vms.Vm;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.cloudsimplus.resources.Processor.totalMips;
 
 /// @author Manoel Campos da Silva Filho
 public class HostTest {
@@ -41,7 +42,7 @@ public class HostTest {
 
         assertAll(
             () -> assertEquals(0, instance.getVmScheduler().getTotalAvailableMips()),
-            () -> assertEquals(0, instance.getAvailableStorage()),
+            () -> assertEquals(0, instance.getStorage().getFree()),
             () -> assertEquals(0, instance.getBw().getCapacity()),
             () -> assertEquals(ResourceAllocator.NULL, instance.getBwAllocator()),
             () -> assertEquals(0, instance.getProcessor().getFreeCores()),
@@ -50,7 +51,7 @@ public class HostTest {
             () -> assertEquals(ResourceAllocator.NULL, instance.getRamAllocator()),
             () -> assertEquals(0, instance.getStorage().getCapacity()),
             () -> assertEquals(0, instance.getVmScheduler().getTotalAllocatedMipsForVm(vm)),
-            () -> assertEquals(0, instance.getTotalMipsCapacity()),
+            () -> assertEquals(0, totalMips(instance)),
             () -> assertSame(VmScheduler.NULL, instance.getVmScheduler()),
             () -> assertFalse(instance.isFailed()),
             () -> assertFalse(instance.isSuitableForVm(vm)),

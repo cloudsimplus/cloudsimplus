@@ -147,7 +147,18 @@ public sealed interface CloudletScheduler
     ///
     /// @param time the time to get the current CPU utilization
     /// @return the total CPU percentage requested (in scale from 0 to 1, where 1 is 100%)
+    /// @see #getRequestedCpuPercent()
     double getRequestedCpuPercent(double time);
+
+    /// Gets total CPU percentage requested (from MIPS capacity) from all cloudlets
+    /// at the current simulation time, according to CPU [UtilizationModel] of each Cloudlet.
+    /// It may be higher than the percentage used (allocated) due to lack of capacity.
+    ///
+    /// @return the total CPU percentage requested (in scale from 0 to 1, where 1 is 100%)
+    /// @see #getRequestedCpuPercent(double)
+    default double getRequestedCpuPercent() {
+        return getRequestedCpuPercent(getVm().getSimulation().clock());
+    }
 
     /// Gets total CPU utilization percentage allocated (from MIPS capacity) to all cloudlets,
     /// according to CPU [UtilizationModel] of each Cloudlet.

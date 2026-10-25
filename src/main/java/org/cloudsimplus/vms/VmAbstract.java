@@ -52,6 +52,8 @@ import org.cloudsimplus.utilizationmodels.BootModel;
 import java.util.*;
 import org.jspecify.annotations.Nullable;
 
+import static org.cloudsimplus.resources.Processor.totalMips;
+
 
 /// A base class for implementing [Vm]s.
 ///
@@ -324,33 +326,23 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
     }
 
     @Override
-    public double getCpuPercentRequested() {
-        return getCpuPercentRequested(getSimulation().clock());
-    }
-
-    @Override
-    public double getCpuPercentRequested(final double time) {
-        return cloudletScheduler.getRequestedCpuPercent(time);
-    }
-
-    @Override
     public double getHostCpuUtilization(final double time) {
-        return host.getExpectedRelativeCpuUtilization(this, getCpuPercentUtilization(time));
+        return getExpectedHostCpuUtilization(getCpuPercentUtilization(time));
     }
 
     @Override
     public double getExpectedHostCpuUtilization(final double vmCpuUtilizationPercent) {
-        return host.getExpectedRelativeCpuUtilization(this, vmCpuUtilizationPercent);
+        return vmCpuUtilizationPercent * getTotalMipsCapacity() / totalMips(host);
     }
 
     @Override
     public double getHostRamUtilization() {
-        return host.getRelativeRamUtilization(this);
+        return ram.getOccupied() / (double) host.getRam().getCapacity();
     }
 
     @Override
     public double getHostBwUtilization() {
-        return host.getRelativeBwUtilization(this);
+        return bw.getOccupied() / (double) host.getBw().getCapacity();
     }
 
     @Override

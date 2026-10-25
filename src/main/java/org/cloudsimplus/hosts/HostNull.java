@@ -130,7 +130,6 @@ final class HostNull implements Host {
     @Override public boolean removeOnShutdownListener(EventListener<HostEventInfo> listener) { return false; }
     @Override public boolean removeOnUpdateProcessingListener(EventListener<HostUpdatesVmsProcessingEventInfo> listener) { return false; }
     @Override public Host addOnUpdateProcessingListener(EventListener<HostUpdatesVmsProcessingEventInfo> listener) { return NULL; }
-    @Override public long getAvailableStorage() { return 0L; }
     @Override public boolean setFailed(boolean failed) { return false; }
     @Override public Simulation getSimulation() { return Simulation.NULL; }
     @Override public double getTotalExecutionTime() { return 0; }
@@ -146,14 +145,11 @@ final class HostNull implements Host {
     @Override public double getShutDownDelay() { return 0; }
     @Override public ExecDelayable setShutDownDelay(double delay) { return this; }
     @Override public Host setSimulation(Simulation simulation) { return this; }
-    @Override public ResourceAllocator getAllocator(Class<? extends ResourceManageable> clazz) { return ResourceAllocator.NULL; }
     @Override public String toString() {
         return "Host.NULL";
     }
     @Override public Host setId(long id) { return this; }
-    @Override public double getTotalMipsCapacity() { return 0.0; }
     @Override public double getCpuPercentUtilization() { return 0.0; }
-    @Override public double getCpuPercentRequested() { return 0; }
     @Override public double getCpuMipsUtilization() { return 0.0; }
     @Override public long getBwUtilization() { return 0; }
     @Override public boolean provisionResourceForVm(Vm vm, Class<? extends ResourceManageable> resourceClass, long amount) { return false; }
@@ -163,16 +159,13 @@ final class HostNull implements Host {
     @Override public PowerModelHost getPowerModel() { return PowerModelHost.NULL; }
     @Override public Host setPowerModel(PowerModelHost powerModel) { return this; }
     @Override public Host setStateHistoryEnabled(boolean enable) { return this; }
-    @Override public boolean isStateHistoryEnabled() { return false; }
-    @Override public List<HostStateHistoryEntry> getStateHistory() { return Collections.emptyList(); }
+    @Override public HostStateHistory getStateHistory() { return HostStateHistory.NULL; }
     @Override public List<Vm> getFinishedVms() { return Collections.emptyList(); }
     @Override public List<Vm> getMigratableVms() { return Collections.emptyList(); }
     @Override public boolean isLazySuitabilityEvaluation() { return false; }
     @Override public Host setLazySuitabilityEvaluation(boolean lazySuitabilityEvaluation) { return this; }
     @Override public double getTotalUpTime() { return 0; }
-    @Override public double getTotalUpTimeHours() { return 0; }
     @Override public double getUpTime() { return 0; }
-    @Override public double getUpTimeHours() { return 0; }
     @Override public double getIdleShutdownDeadline() { return -1; }
     @Override public Host setIdleShutdownDeadline(double deadline) { return this; }
     @Override public List<ResourceManageable> getResources() {return Collections.emptyList(); }

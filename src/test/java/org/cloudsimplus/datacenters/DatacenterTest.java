@@ -23,9 +23,14 @@
  */
 package org.cloudsimplus.datacenters;
 
+import org.cloudsimplus.core.CloudSimPlus;
 import org.cloudsimplus.placementpolicies.VmPlacementPolicy;
 import org.cloudsimplus.hosts.Host;
+import org.cloudsimplus.hosts.HostSimple;
+import org.cloudsimplus.resources.CoreCapacity;
 import org.junit.jupiter.api.Test;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -41,5 +46,28 @@ public class DatacenterTest {
             () -> assertEquals(Host.NULL, instance.getHost(0)),
             () -> assertEquals(VmPlacementPolicy.NULL, instance.getVmPlacementPolicy())
         );
+    }
+
+    @Test
+    public void testSetCharacteristicsLinksThemToTheDatacenter() {
+        final var datacenter = newDatacenter();
+        final var characteristics = new DatacenterCharacteristicsSimple(0.1, 0.2, 0.3);
+
+        datacenter.setCharacteristics(characteristics);
+        assertSame(characteristics, datacenter.getCharacteristics());
+        assertSame(datacenter, characteristics.getDatacenter());
+    }
+
+    /// Checks that the NULL characteristics can be set (before, the setter cast them to
+    /// DatacenterCharacteristicsSimple and threw a ClassCastException).
+    @Test
+    public void testSetNullCharacteristics() {
+        final var datacenter = newDatacenter();
+        assertDoesNotThrow(() -> datacenter.setCharacteristics(DatacenterCharacteristics.NULL));
+        assertSame(DatacenterCharacteristics.NULL, datacenter.getCharacteristics());
+    }
+
+    private static Datacenter newDatacenter() {
+        return new DatacenterSimple(new CloudSimPlus(), List.of(new HostSimple(new CoreCapacity(1, 1000))));
     }
 }

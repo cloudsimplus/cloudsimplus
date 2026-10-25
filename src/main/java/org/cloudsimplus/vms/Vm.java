@@ -265,67 +265,53 @@ public sealed interface Vm
     /// @return total CPU utilization percentage (between \[0 and 1\]) for the current time
     double getCpuPercentUtilization();
 
-    /// Gets the percentage of CPU capacity (MIPS %) requested by all Cloudlets running on this
-    /// VM at the given time. It represents the percentage of MIPS requested for that time,
-    /// which may be higher than the percentage used (allocated)
-    /// due to lack of capacity.
-    ///
-    /// @param time the time to get the CPU requested percentage
-    /// @return the percentage (between \[0 and 1\]) of CPU capacity requested for the current time
-    /// @see #getCpuPercentRequested()
-    /// @see #getCpuPercentUtilization()
-    double getCpuPercentRequested(double time);
-
-    /// Gets the percentage of CPU capacity (MIPS %) requested by all Cloudlets running on this
-    /// VM at the current time. It represents the percentage of MIPS requested,
-    /// which may be higher than the percentage used (allocated)
-    /// due to lack of capacity.
-    ///
-    /// @return the percentage (between \[0 and 1\]) of CPU capacity requested
-    /// @see #getCpuPercentRequested(double)
-    /// @see #getCpuPercentUtilization(double)
-    double getCpuPercentRequested();
+    /// @return the total MIPS capacity across all working cores of the VM,
+    /// limited by its [CPU cap][#getCpuCap()].
+    /// For the total MIPS of the VM processor without the cap, use [org.cloudsimplus.resources.Processor#totalMips(org.cloudsimplus.core.Machine)].
+    double getTotalMipsCapacity();
 
     /// {@inheritDoc}
     /// If you enable the statistics for the Host where the VM is placed,
     /// that will automatically enable the statistics for every VM on that Host.
     void enableUtilizationStats();
 
-    /// Computes the relative percentage of the RAM the VM is using from the Host's total Capacity
-    /// for the current simulation time.
-    ///
-    /// @return the relative VM RAM usage percent (from 0 to 1)
+    /// {@return the percentage (from 0 to 1) of the Host RAM capacity that this VM is using at the current simulation time}
+    /// It's relative to the Host, not to the VM: if the Host has 16 GB of RAM and the VM is using 4 GB,
+    /// it returns 0.25, whatever the VM RAM capacity is.
+    /// For the percentage of the VM's own RAM capacity in use, call `getRam().getPercentOccupied()`.
     double getHostRamUtilization();
 
-    /// Computes the relative percentage of the Bandwidth the VM is using from the Host's total capacity
-    /// for the current simulation time.
-    ///
-    /// @return the relative VM BW usage percent (from 0 to 1)
+    /// {@return the percentage (from 0 to 1) of the Host Bandwidth (BW) capacity that this VM is using at the current simulation time}
+    /// It's relative to the Host, not to the VM: if the Host has 1000 Mbps of BW and the VM is using 250 Mbps,
+    /// it returns 0.25, whatever the VM BW capacity is.
+    /// For the percentage of the VM's own BW capacity in use, call `getBw().getPercentOccupied()`.
     double getHostBwUtilization();
 
-    /// Computes the current relative percentage of the CPU the VM is using from the Host's total MIPS capacity.
-    /// If the capacity is 1000 MIPS and the VM is using 250 MIPS, it's equivalent to 25%
-    /// of the Host's capacity.
-    ///
-    /// @return the relative VM CPU usage percent (from 0 to 1)
+    /// {@return the percentage (from 0 to 1) of the Host CPU capacity (total MIPS) that this VM is using at the current simulation time}
+    /// It's relative to the Host, not to the VM: if the Host has 1000 MIPS and the VM is using 250 MIPS,
+    /// it returns 0.25, whatever the VM MIPS capacity is.
+    /// For the percentage of the VM's own CPU capacity in use, call [#getCpuPercentUtilization()].
     /// @see #getHostCpuUtilization(double)
     default double getHostCpuUtilization() {
         return getHostCpuUtilization(getSimulation().clock());
     }
 
-    /// Computes the relative percentage of the CPU the VM is using from the Host's total MIPS capacity
-    /// for the current simulation time.
-    /// If the capacity is 1000 MIPS and the VM is using 250 MIPS, it's equivalent to 25%
-    /// of the Host's capacity.
+    /// Computes the percentage of the Host CPU capacity (total MIPS) that this VM is using at a given time.
+    /// It's relative to the Host, not to the VM: if the Host has 1000 MIPS and the VM is using 250 MIPS,
+    /// it returns 0.25, whatever the VM MIPS capacity is.
+    /// For the percentage of the VM's own CPU capacity in use, call [#getCpuPercentUtilization(double)].
     ///
-    /// @param time the time to get the relative VM CPU utilization
-    /// @return the relative VM CPU usage percent (from 0 to 1)
+    /// @param time the time to get the VM CPU utilization
+    /// @return the percentage (from 0 to 1) of the Host CPU capacity used by this VM
     double getHostCpuUtilization(double time);
 
-    /// Computes what would be the relative percentage of the CPU the VM is using from a PM's total MIPS capacity,
-    /// considering that the VM 's CPU load is at a given percentage.
-    /// @param vmCpuUtilizationPercent the VM's CPU utilization percentage for a given time
-    /// @return the relative VM CPU usage percent (from 0 to 1)
+    /// Computes what would be the percentage of the Host CPU capacity (total MIPS) used by this VM,
+    /// if the VM was using a given percentage of its own CPU capacity.
+    /// For instance, if the VM has 500 MIPS on a Host with 1000 MIPS and the given VM utilization is 0.5,
+    /// the VM would be using 250 MIPS, so it returns 0.25.
+    ///
+    /// @param vmCpuUtilizationPercent the percentage (from 0 to 1) of the VM's own CPU capacity in use
+    /// @return the percentage (from 0 to 1) of the Host CPU capacity that would be used by this VM
     double getExpectedHostCpuUtilization(double vmCpuUtilizationPercent);
 
     /// Gets the current total CPU MIPS utilization of all cores from all cloudlets running on this VM.

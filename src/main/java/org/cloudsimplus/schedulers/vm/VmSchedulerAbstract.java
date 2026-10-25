@@ -18,6 +18,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
 
+import static org.cloudsimplus.resources.Processor.totalMips;
+
 
 /// An abstract class for implementation of [VmScheduler]s.
 ///
@@ -227,7 +229,7 @@ public abstract non-sealed class VmSchedulerAbstract implements VmScheduler {
 
     @Override
     public double getTotalAllocatedMips() {
-        return host.getTotalMipsCapacity() - getTotalAvailableMips();
+        return totalMips(host) - getTotalAvailableMips();
     }
 
     @Override
@@ -245,7 +247,7 @@ public abstract non-sealed class VmSchedulerAbstract implements VmScheduler {
     public double getTotalAvailableMips() {
         final double allocatedMips = hostVms().mapToDouble(this::actualVmTotalRequestedMips).sum();
 
-        return host.getTotalMipsCapacity() - allocatedMips;
+        return totalMips(host) - allocatedMips;
     }
 
     /// Gets the sum of MIPS requested by each VM core, including

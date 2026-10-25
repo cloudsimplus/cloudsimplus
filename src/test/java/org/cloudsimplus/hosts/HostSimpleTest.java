@@ -17,6 +17,7 @@ import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.listeners.HostUpdatesVmsProcessingEventInfo;
 import org.cloudsimplus.mocks.CloudSimMocker;
 import org.cloudsimplus.mocks.MocksHelper;
+import org.cloudsimplus.allocators.ResourceAllocator;
 import org.cloudsimplus.allocators.ResourceAllocatorSimple;
 import org.cloudsimplus.resources.*;
 import org.cloudsimplus.resources.CoreCapacity;
@@ -37,11 +38,11 @@ import org.mockito.Mockito;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.cloudsimplus.resources.Processor.totalMips;
 
 /// @author Anton Beloglazov
 /// @since CloudSim Toolkit 2.0
@@ -105,7 +106,7 @@ public class HostSimpleTest {
     public void testTotalMipsCapacityExcludesFailedCores() {
         final HostSimple host = createHostSimple(0, 4);
         host.getProcessor().moveCores(CoreStatus.FREE, CoreStatus.FAILED, 1);
-        assertEquals(3 * MIPS, host.getTotalMipsCapacity());
+        assertEquals(3 * MIPS, totalMips(host));
     }
 
     @Test
@@ -119,7 +120,7 @@ public class HostSimpleTest {
             () -> assertEquals(cores, host.getProcessor().getFailedCores()),
             () -> assertEquals(0, host.getProcessor().getWorkingCores()),
             () -> assertEquals(0, host.getProcessor().getBusyCores()),
-            () -> assertEquals(0, host.getTotalMipsCapacity())
+            () -> assertEquals(0, totalMips(host))
         );
 
         host.setFailed(false);
@@ -259,7 +260,7 @@ public class HostSimpleTest {
         assertTrue(targetHost.addMigratingInVm(vm));
         final double availableMips = MIPS - VM_MIPS;
         assertEquals(availableMips, targetHost.getVmScheduler().getTotalAvailableMips());
-        assertEquals(0, targetHost.getAvailableStorage());
+        assertEquals(0, targetHost.getStorage().getFree());
     }
 
     /// During migration, by default, just 10% of capacity is allocated (it's the migration overhead).
@@ -464,6 +465,65 @@ public class HostSimpleTest {
 
     private static VmSimple createVmForProvisioning() {
         return VmTestUtil.createVm(0, MIPS, 1, RAM / 2, BW / 2, A_QUARTER_STORAGE, CloudletScheduler.NULL);
+    }
+
+    @Test
+    public void testStateHistoryIsNullUntilEnabled() {
+        final Host host = createHostSimple(ID, CORES);
+        assertSame(HostStateHistory.NULL, host.getStateHistory());
+        assertFalse(host.getStateHistory().isEnabled());
+        assertTrue(host.getStateHistory().getEntries().isEmpty());
+
+        host.setStateHistoryEnabled(false);
+        assertSame(HostStateHistory.NULL, host.getStateHistory());
+
+        host.setStateHistoryEnabled(true);
+        assertInstanceOf(HostStateHistorySimple.class, host.getStateHistory());
+        assertTrue(host.getStateHistory().isEnabled());
+        assertTrue(host.getStateHistory().getEntries().isEmpty());
+    }
+
+    /// Checks that disabling the history keeps the recorded entries and the same history object.
+    @Test
+    public void testDisableStateHistoryKeepsEntries() {
+        final Host host = createHostSimple(ID, CORES);
+        host.setStateHistoryEnabled(true);
+        final HostStateHistory history = host.getStateHistory();
+        history.add(new HostStateHistoryEntry(1, MIPS, MIPS, true));
+
+        host.setStateHistoryEnabled(false);
+        assertSame(history, host.getStateHistory());
+        assertFalse(history.isEnabled());
+        assertEquals(1, history.getEntries().size());
+
+        host.setStateHistoryEnabled(true);
+        assertSame(history, host.getStateHistory());
+        assertTrue(history.isEnabled());
+    }
+
+    /// Checks that an entry for the same time as the last one replaces it.
+    @Test
+    public void testStateHistoryReplacesEntryForTheSameTime() {
+        final var history = new HostStateHistorySimple();
+        history.add(new HostStateHistoryEntry(1, MIPS, MIPS, true));
+        final var lastEntry = new HostStateHistoryEntry(1, MIPS / 2, MIPS, true);
+        history.add(lastEntry);
+        history.add(new HostStateHistoryEntry(2, MIPS, MIPS, false));
+
+        assertEquals(2, history.getEntries().size());
+        assertEquals(lastEntry, history.getEntries().getFirst());
+    }
+
+    /// Checks that the NULL allocator can be set and that it doesn't keep a reference to the Host resources,
+    /// since it's a shared object.
+    @Test
+    public void testSetNullAllocators() {
+        final Host host = createHostSimple(ID, CORES);
+        final var hostRam = host.getRam();
+        assertDoesNotThrow(() -> host.setRamAllocator(ResourceAllocator.NULL).setBwAllocator(ResourceAllocator.NULL));
+        assertSame(ResourceAllocator.NULL, host.getRamAllocator());
+        assertNotSame(hostRam, ResourceAllocator.NULL.getPmResource());
+        assertEquals(0, ResourceAllocator.NULL.getCapacity());
     }
 
     @Test
@@ -674,28 +734,28 @@ public class HostSimpleTest {
             vm + " was destroyed into the Host but was not removed from the broker's VM exec List.");
     }
 
+    /// Checks the RAM a VM uses relative to its Host capacity:
+    /// the VM has half of the Host RAM and uses half of it, so it uses a quarter of the Host RAM.
     @Test
-    public void testGetRelativeRamUtilization() {
-        final Host host = createHostSimple(0, 2);
-        //Considers the VM has half of the host RAM as capacity and is using half of that capacity
-        final Vm vm = createMockVm(new Ram(RAM/2), Vm::getRam, RAM/4);
+    public void testVmGetHostRamUtilization() {
+        final Host host = createHostSimple(ID, CORES);
+        final VmSimple vm = createVmForProvisioning();
+        assertTrue(host.createVm(vm).fully());
+        vm.getRam().occupy(RAM / 4);
 
-        //This way, the VM is using a quarter of the Host capacity
-        final double expected = 0.25;
-        final double actual = host.getRelativeRamUtilization(vm);
-        assertEquals(expected, actual);
+        assertEquals(0.25, vm.getHostRamUtilization());
     }
 
+    /// Checks the BW a VM uses relative to its Host capacity:
+    /// the VM has half of the Host BW and uses half of it, so it uses a quarter of the Host BW.
     @Test
-    public void testGetRelativeBwUtilization() {
-        final Host host = createHostSimple(0, 2);
-        //Considers the VM has half of the host BW as capacity and is using half of that capacity
-        final Vm vm = createMockVm(new Bandwidth(BW/2), Vm::getBw, BW/4);
+    public void testVmGetHostBwUtilization() {
+        final Host host = createHostSimple(ID, CORES);
+        final VmSimple vm = createVmForProvisioning();
+        assertTrue(host.createVm(vm).fully());
+        vm.getBw().occupy(BW / 4);
 
-        //This way, the VM is using a quarter of the Host capacity
-        final double expected = 0.25;
-        final double actual = host.getRelativeBwUtilization(vm);
-        assertEquals(expected, actual);
+        assertEquals(0.25, vm.getHostBwUtilization());
     }
 
     /// It is expected a mutable list since that list is sorted during VM migration process.
@@ -704,21 +764,5 @@ public class HostSimpleTest {
         final Host host = createHostSimple(0, 2);
         assertDoesNotThrow(() -> host.getMigratableVms().add(Vm.NULL));
     }
-
-    /// Creates a mock VM to test the utilization of some resource
-    /// @param vmResource a new instance of a resource to be attached to the VM and to be tested
-    /// @param vmResourceFunction the VM function that is able to get the provided resource stored on the VM
-    /// @param usedResource the amount of resource to be allocated from the total capacity
-    /// @return
-    private Vm createMockVm(final ResourceManageable vmResource, final Function<Vm, Resource> vmResourceFunction, final long usedResource){
-        final Vm vm = Mockito.mock(VmAbstract.class);
-        vmResource.occupy(usedResource);
-
-        /* When the given VM resource function is called during tests,
-        * it must return the provided resource instance. */
-        Mockito.when(vmResourceFunction.apply(vm)).thenReturn(vmResource);
-        return vm;
-    }
-
 }
 

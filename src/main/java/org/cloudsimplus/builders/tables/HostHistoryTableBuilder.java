@@ -26,6 +26,8 @@ package org.cloudsimplus.builders.tables;
 import org.cloudsimplus.hosts.Host;
 import org.cloudsimplus.hosts.HostStateHistoryEntry;
 
+import static org.cloudsimplus.resources.Processor.totalMips;
+
 /// Builds a table for printing [HostStateHistoryEntry] entries from the
 /// [Host#getStateHistory()].
 /// It defines a set of default columns but new ones can be added
@@ -46,7 +48,7 @@ public class HostHistoryTableBuilder extends TableBuilderAbstract<HostStateHisto
     ///
     /// @param host the Host to get the history to print
     public HostHistoryTableBuilder(final Host host) {
-        super(host.getStateHistory());
+        super(host.getStateHistory().getEntries());
         this.host = host;
     }
 
@@ -68,9 +70,9 @@ public class HostHistoryTableBuilder extends TableBuilderAbstract<HostStateHisto
         addColumn(getTable().newColumn("Host Active"), HostStateHistoryEntry::active);
 
         final var col5 = getTable().newColumn("Host Total MIPS", "", format);
-        addColumn(col5, history -> host.getTotalMipsCapacity());
+        addColumn(col5, history -> totalMips(host));
 
         final var col6 = getTable().newColumn("Host Total Usage", "", "%5.1f%%");
-        addColumn(col6, history -> history.allocatedMips()/host.getTotalMipsCapacity()*100);
+        addColumn(col6, history -> history.allocatedMips()/totalMips(host)*100);
     }
 }
