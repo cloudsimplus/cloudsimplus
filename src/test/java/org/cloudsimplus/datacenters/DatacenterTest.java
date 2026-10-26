@@ -23,6 +23,10 @@
  */
 package org.cloudsimplus.datacenters;
 
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.read.ListAppender;
 import org.cloudsimplus.core.CloudSimPlus;
 import org.cloudsimplus.placementpolicies.VmPlacementPolicy;
 import org.cloudsimplus.hosts.Host;
@@ -36,6 +40,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 /// @author Manoel Campos da Silva Filho
 public class DatacenterTest {
+    private static final double HOST_STARTUP_DELAY = 5;
+
     @Test
     public void testNullObject() {
         final Datacenter instance = Datacenter.NULL;
@@ -65,6 +71,38 @@ public class DatacenterTest {
         final var datacenter = newDatacenter();
         assertDoesNotThrow(() -> datacenter.setCharacteristics(DatacenterCharacteristics.NULL));
         assertSame(DatacenterCharacteristics.NULL, datacenter.getCharacteristics());
+    }
+
+    /// Checks that a Host with a startup delay, which requests its power-on
+    /// when added to the Datacenter, already sees the Datacenter fully created.
+    /// The power-on request logs the Host, whose `toString()` uses the Datacenter characteristics.
+    /// If the Hosts were set up before the characteristics were created, `toString()` would throw
+    /// a NullPointerException, which SLF4J catches, logging "[FAILED toString()]" instead.
+    @Test
+    public void testHostPowerOnRequestedInDatacenterCreationLogsTheHost() {
+        final var host = HostSimple.of(new CoreCapacity(1, 1000));
+        host.setStartupDelay(HOST_STARTUP_DELAY);
+        final var logAppender = new ListAppender<ILoggingEvent>();
+        final var hostLogger = (Logger) Host.LOGGER;
+        final Level previousLevel = hostLogger.getLevel();
+
+        //The level is set because other tests may change the root logger level (such as to OFF)
+        hostLogger.setLevel(Level.INFO);
+        logAppender.start();
+        hostLogger.addAppender(logAppender);
+        try {
+            new DatacenterSimple(new CloudSimPlus(), List.of(host));
+        } finally {
+            hostLogger.detachAppender(logAppender);
+            hostLogger.setLevel(previousLevel);
+        }
+
+        final var powerOnMsg = logAppender.list.stream()
+                                    .map(ILoggingEvent::getFormattedMessage)
+                                    .filter(msg -> msg.contains("is being powered on"))
+                                    .findFirst()
+                                    .orElseThrow();
+        assertTrue(powerOnMsg.contains(host.toString()), powerOnMsg);
     }
 
     private static Datacenter newDatacenter() {

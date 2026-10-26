@@ -25,7 +25,6 @@ package org.cloudsimplus.traces.google;
 
 import org.cloudsimplus.cloudlets.Cloudlet;
 import org.cloudsimplus.core.Identifiable;
-import org.cloudsimplus.core.events.SimEvent;
 import org.cloudsimplus.hosts.Host;
 import org.cloudsimplus.traces.ParsingException;
 import org.cloudsimplus.traces.TraceReaderAbstract;
@@ -107,20 +106,6 @@ abstract class GoogleTraceReaderAbstract<T extends Identifiable> extends TraceRe
     /// @see #processParsedLine(String[])
     /// @see #getLastParsedLineArray()
     protected abstract boolean processParsedLineInternal();
-
-    /// Schedules an event created while reading the trace file.
-    /// Since such events are created before the simulation starts,
-    /// but they are just sent when it starts (after the first clock tick),
-    /// events whose time is lower than the current clock are scheduled to happen now.
-    /// Otherwise, they would be in the past.
-    ///
-    /// @param evt the event to schedule, which time is the absolute time defined in the trace
-    /// @see <a href="https://github.com/cloudsimplus/cloudsimplus/issues/563">#563</a>
-    protected static void scheduleTraceEvent(final SimEvent evt) {
-        final var source = evt.getSource();
-        final double delay = Math.max(0, evt.getTime() - source.getSimulation().clock());
-        source.schedule(evt.getDestination(), delay, evt.getTag(), evt.getData());
-    }
 
     /* default */ String formatPercentValue(final double percent){
         return "%.1f".formatted(percent*100);

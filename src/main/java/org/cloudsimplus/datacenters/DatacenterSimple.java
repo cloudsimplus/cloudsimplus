@@ -41,7 +41,6 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 import static java.util.Objects.requireNonNull;
-import static java.util.function.Predicate.not;
 import static org.cloudsimplus.datacenters.DatacenterCharacteristics.Distribution.PRIVATE;
 import static org.cloudsimplus.util.BytesConversion.bitsToBytes;
 
@@ -211,7 +210,6 @@ public non-sealed class DatacenterSimple extends CloudSimEntity implements Datac
         final DatacenterStorage storage)
     {
         super(simulation);
-        setHostList(hostList);
         setLastProcessTime(0.0);
         setSchedulingInterval(0);
         setDatacenterStorage(storage);
@@ -228,6 +226,8 @@ public non-sealed class DatacenterSimple extends CloudSimEntity implements Datac
         this.lastMigrationMap = Collections.emptyMap();
 
         setVmPlacementPolicy(vmPlacementPolicy);
+        // The Hosts are set up last, since they may request their power-on, which uses the Datacenter attributes
+        setHostList(hostList);
     }
 
     /// Creates a Datacenter with a given [storage][#getDatacenterStorage()].
@@ -918,10 +918,6 @@ public non-sealed class DatacenterSimple extends CloudSimEntity implements Datac
     @Override
     protected void startInternal() {
         LOGGER.info("{}: {} is starting...", getSimulation().clockStr(), this);
-        hostList.stream()
-                .filter(not(Host::isActive))
-                .map(host -> (HostSimple)host)
-                .forEach(host -> host.setActive(host.isActivateOnDatacenterStartup()));
         sendNow(getSimulation().getCis(), CloudSimTag.DC_REGISTRATION_REQUEST, this);
     }
 

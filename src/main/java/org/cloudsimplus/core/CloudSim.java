@@ -78,6 +78,11 @@ non-sealed abstract class CloudSim implements Simulation {
     /// The deferred event queue.
     private final DeferredQueue deferred;
 
+    /// Events sent before the simulation starts, in the order they must be added to the [#future] queue.
+    /// They are added right after the entities start, so that the entities' own start events come first.
+    /// It's only created when some event is sent before the start.
+    private @Nullable Deque<SimEvent> eventsSentBeforeStart;
+
     /// @see #clock()
     private double clock;
 
@@ -102,11 +107,17 @@ non-sealed abstract class CloudSim implements Simulation {
     @Getter
     private boolean aborted;
 
-    /// Indicates if the simulation already ran once.
+    /// Indicates if the simulation has ever started (even if it has stopped).
     /// If so, it can't run again.
     /// If you paused the simulation and want to resume it,
     /// you must use [#resume()] instead of [#start()].
-    private boolean alreadyRunOnce;
+    ///
+    /// It differs from [#running] only after the simulation stops,
+    /// when [#running] is false, but this attribute is still true.
+    /// This way, events sent before the start are held until the simulation starts,
+    /// while events sent after the stop are rejected.
+    /// @see #trySend(SimEvent)
+    private boolean everStarted;
 
     /// Creates a CloudSim simulation.
     /// Internally, it creates a [CloudInformationService].
@@ -130,7 +141,7 @@ non-sealed abstract class CloudSim implements Simulation {
         this.networkTopology = NetworkTopology.NULL;
         this.clock = 0;
         this.running = false;
-        this.alreadyRunOnce = false;
+        this.everStarted = false;
 
         // NOTE: the order for the lines below is important
         this.calendar = Calendar.getInstance();
@@ -194,15 +205,18 @@ non-sealed abstract class CloudSim implements Simulation {
 
     @Override
     public void startSync() {
-        if(alreadyRunOnce){
+        if(everStarted){
             throw new UnsupportedOperationException(
                 "You can't run a simulation that has already run previously. " +
                 "If you've paused the simulation and want to resume it, call the resume() method.");
         }
 
         LOGGER.info("{}================== Starting {} =================={}", System.lineSeparator(), VERSION,  System.lineSeparator());
+        /* Set before starting the entities, so that the events they send in their startInternal()
+         * go straight to the future queue, ahead of the events sent before the start. */
+        this.everStarted = true;
         startEntitiesIfNotRunning();
-        this.alreadyRunOnce = true;
+        addEventsSentBeforeStartToFutureQueue();
     }
 
     /// Process all events happening up to a given time.
@@ -470,10 +484,32 @@ non-sealed abstract class CloudSim implements Simulation {
 
     @Override
     public void send(@NonNull final SimEvent evt) {
+        trySend(evt);
+    }
+
+    /// Tries to send an event.
+    /// If the simulation hasn't started yet, the event is held and only sent when it starts.
+    /// If the simulation has stopped, the event is rejected.
+    ///
+    /// @param evt the event to send
+    /// @return true if the event was sent or held until the simulation starts;
+    /// false if it was rejected because the simulation has stopped
+    /// @see #isEventRejectedAfterStop(SimEvent)
+    boolean trySend(@NonNull final SimEvent evt) {
+        if (!everStarted) {
+            eventsSentBeforeStart().addLast(evt);
+            return true;
+        }
+
+        if (isEventRejectedAfterStop(evt)) {
+            return false;
+        }
+
         //Events with a negative tag have higher priority
         if(evt.getTag() < 0)
             future.addEventFirst(evt);
         else future.addEvent(evt);
+        return true;
     }
 
     @Override
@@ -483,7 +519,67 @@ non-sealed abstract class CloudSim implements Simulation {
 
     @Override
     public void sendFirst(SimEvent evt) {
+        trySendFirst(evt);
+    }
+
+    /// Tries to send a high-priority event, following the same rules of [#trySend(SimEvent)].
+    /// If the simulation hasn't started yet, the event is held ahead of the other held events.
+    ///
+    /// @param evt the event to send
+    /// @return true if the event was sent or held until the simulation starts;
+    /// false if it was rejected because the simulation has stopped
+    boolean trySendFirst(@NonNull final SimEvent evt) {
+        if (!everStarted) {
+            eventsSentBeforeStart().addFirst(evt);
+            return true;
+        }
+
+        if (isEventRejectedAfterStop(evt)) {
+            return false;
+        }
+
         future.addEventFirst(evt);
+        return true;
+    }
+
+    /// Checks if an event must be rejected because the simulation has stopped
+    /// (it has finished, was terminated or aborted), logging a warning in such a case.
+    /// A [CloudSimTag#SIMULATION_END] event is never rejected,
+    /// since it has to be processed to enable entities to shut down.
+    ///
+    /// @param evt the event to check
+    /// @return true if the event was rejected, false if it can be added to the [#future] queue
+    private boolean isEventRejectedAfterStop(final SimEvent evt) {
+        if (running || evt.getTag() == CloudSimTag.SIMULATION_END) {
+            return false;
+        }
+
+        LOGGER.warn(
+            "{}: Cannot send events after the simulation stops. Event {} from {} to {} rejected.",
+            clockStr(), evt.getTag(), evt.getSource(), evt.getDestination());
+        return true;
+    }
+
+    /// {@return the list of events sent before the simulation starts}
+    /// It's created if it doesn't exist yet.
+    private Deque<SimEvent> eventsSentBeforeStart() {
+        if (eventsSentBeforeStart == null) {
+            eventsSentBeforeStart = new ArrayDeque<>();
+        }
+
+        return eventsSentBeforeStart;
+    }
+
+    /// Adds the events sent before the simulation starts to the [#future] queue,
+    /// in the order they were sent, keeping the time they were scheduled to.
+    /// This way, events at time 0 are processed at time 0, after the entities' own start events.
+    private void addEventsSentBeforeStartToFutureQueue() {
+        if (eventsSentBeforeStart == null) {
+            return;
+        }
+
+        eventsSentBeforeStart.forEach(future::addEvent);
+        eventsSentBeforeStart = null;
     }
 
     @Override

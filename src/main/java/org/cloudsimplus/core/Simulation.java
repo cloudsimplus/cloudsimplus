@@ -241,8 +241,9 @@ public sealed interface Simulation permits CloudSim, SimulationNull {
     /// the method returns true to indicate that the simulation is in fact active already.
     ///
     /// This method should be used by entities to check if they should continue executing.
+    /// It returns false both before the simulation starts and after it stops.
     ///
-    /// @return
+    /// @return true if the simulation is running, false otherwise
     boolean isRunning();
 
     /// Selects the first deferred event that matches a given predicate
