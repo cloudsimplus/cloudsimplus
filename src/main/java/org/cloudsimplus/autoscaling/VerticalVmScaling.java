@@ -28,8 +28,6 @@ import org.cloudsimplus.autoscaling.resources.ResourceScaling;
 import org.cloudsimplus.brokers.DatacenterBroker;
 import org.cloudsimplus.cloudlets.Cloudlet;
 import org.cloudsimplus.datacenters.Datacenter;
-import org.cloudsimplus.listeners.EventListener;
-import org.cloudsimplus.listeners.VmHostEventInfo;
 import org.cloudsimplus.resources.*;
 import org.cloudsimplus.utilizationmodels.UtilizationModel;
 import org.cloudsimplus.vms.Vm;
@@ -52,10 +50,12 @@ import java.util.function.Function;
 ///
 /// The scaling request follows this path:
 ///
-/// - a [Vm], which has a [VerticalVmScaling] object set, monitors its own
-///   resource usage using an [EventListener], to check if an
+/// - a [Vm], which has a [VerticalVmScaling] object set, checks its own
+///   resource usage every time its processing is updated, to see if an
 ///   [under][#getLowerThresholdFunction()] or
-///   [overload][#getUpperThresholdFunction()] condition is met;
+///   [overload][#getUpperThresholdFunction()] condition is met.
+///   That is checked at the time interval defined by the [Datacenter#getSchedulingInterval()],
+///   so make sure to set such a value to enable the periodic verification;
 /// - if any of these conditions is met, the Vm uses the VerticalVmScaling
 ///   to send a scaling request to its [DatacenterBroker];
 /// - the DatacenterBroker forwards the request to the [Datacenter]
@@ -155,20 +155,6 @@ public sealed interface VerticalVmScaling extends VmScaling
     ///
     /// @see #getResourceClass()
     double getResourceAmountToScale();
-
-    /// Performs a vertical scale if the Vm is overloaded, according to the
-    /// [#getUpperThresholdFunction()] predicate,
-    /// increasing the Vm resource to which the scaling object is linked to
-    /// (that may be RAM, CPU, BW, etc.), according to the [scaling factor][#getScalingFactor()].
-    ///
-    /// The time interval in which it will be checked if the Vm is overloaded
-    /// depends on the [Datacenter#getSchedulingInterval()] value.
-    /// Make sure to set such a value to enable the periodic overload verification.
-    ///
-    /// @param evt event information containing the Vm to be scaled
-    /// @see #getScalingFactor()
-    @Override
-    boolean requestUpScalingIfPredicateMatches(VmHostEventInfo evt);
 
     /// {@return a Function that defines the upper utilization threshold for a Vm
     /// which indicates if it is overloaded or not}

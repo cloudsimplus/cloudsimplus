@@ -51,10 +51,26 @@ public non-sealed abstract class VmScalingAbstract implements VmScaling {
         return time > lastProcessingTime && (long) time % getVm().getHost().getDatacenter().getSchedulingInterval() == 0;
     }
 
+    /// Requests the Vm to be scaled up or down if it is over or underloaded, respectively.
+    /// The scaling request will be sent to the [org.cloudsimplus.brokers.DatacenterBroker] only
+    /// if the under or overload condition is met, that depends on the implementation
+    /// of the scaling mechanism.
+    ///
+    /// It's an internal method: the [Vm] calls it every time its processing is updated,
+    /// to check if it's time to perform a down or up scaling.
+    /// That is checked at the time interval defined by the
+    /// [org.cloudsimplus.datacenters.Datacenter#getSchedulingInterval()],
+    /// so make sure to set such a value to enable the periodic verification.
+    ///
+    /// @param time current simulation time
+    /// @return true if the Vm is over or underloaded and up or down scaling request was sent to the broker;
+    /// false otherwise
+    public abstract boolean requestUpScalingIfPredicateMatches(double time);
+
     /// Performs the actual request to scale the Vm up or down,
     /// depending on whether it is over or underloaded, respectively.
     /// This method is automatically called by
-    /// [VmScaling#requestUpScalingIfPredicateMatches(org.cloudsimplus.listeners.VmHostEventInfo)]
+    /// [#requestUpScalingIfPredicateMatches(double)]
     /// when it is verified that the Vm is over or underloaded.
     ///
     /// @param time current simulation time

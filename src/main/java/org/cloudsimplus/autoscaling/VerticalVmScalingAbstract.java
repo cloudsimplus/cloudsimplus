@@ -31,7 +31,6 @@ import org.cloudsimplus.autoscaling.resources.ResourceScaling;
 import org.cloudsimplus.autoscaling.resources.ResourceScalingGradual;
 import org.cloudsimplus.autoscaling.resources.ResourceScalingInstantaneous;
 import org.cloudsimplus.core.CloudSimTag;
-import org.cloudsimplus.listeners.VmHostEventInfo;
 import org.cloudsimplus.allocators.ResourceAllocator;
 import org.cloudsimplus.resources.*;
 import org.cloudsimplus.vms.Vm;
@@ -124,14 +123,23 @@ public non-sealed abstract class VerticalVmScalingAbstract extends VmScalingAbst
         return vmResource;
     }
 
+    /// {@inheritDoc}
+    ///
+    /// It performs a vertical scale if the Vm is under or overloaded, according to the
+    /// [#getLowerThresholdFunction()] or [#getUpperThresholdFunction()],
+    /// changing the Vm resource to which the scaling object is linked to
+    /// (that may be RAM, CPU, BW, etc.), according to the [scaling factor][#getScalingFactor()].
+    ///
+    /// @param time {@inheritDoc}
+    /// @return {@inheritDoc}
     @Override
-    public final boolean requestUpScalingIfPredicateMatches(@NonNull final VmHostEventInfo evt) {
-        if(!isTimeToCheckPredicate(evt.getTime())) {
+    public final boolean requestUpScalingIfPredicateMatches(final double time) {
+        if(!isTimeToCheckPredicate(time)) {
             return false;
         }
 
-        final boolean requestedScaling = (isVmUnderloaded() || isVmOverloaded()) && requestScaling(evt.getTime());
-        setLastProcessingTime(evt.getTime());
+        final boolean requestedScaling = (isVmUnderloaded() || isVmOverloaded()) && requestScaling(time);
+        setLastProcessingTime(time);
         return requestedScaling;
     }
 

@@ -23,7 +23,6 @@
  */
 package org.cloudsimplus.autoscaling;
 
-import org.cloudsimplus.listeners.VmHostEventInfo;
 import org.cloudsimplus.vms.Vm;
 
 import java.util.function.Predicate;
@@ -39,9 +38,6 @@ final class HorizontalVmScalingNull implements HorizontalVmScaling {
         return () -> Vm.NULL;
     }
     @Override public HorizontalVmScaling setVmSupplier(Supplier<Vm> supplier) { return this; }
-    @Override public boolean requestUpScalingIfPredicateMatches(VmHostEventInfo evt) {
-        return false;
-    }
     @Override public Predicate<Vm> getOverloadPredicate() { return vm -> false; }
     @Override public HorizontalVmScaling setOverloadPredicate(Predicate<Vm> predicate) { return this; }
     @Override public Vm getVm() {

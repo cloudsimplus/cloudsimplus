@@ -31,6 +31,7 @@ import lombok.experimental.Accessors;
 import org.cloudsimplus.autoscaling.HorizontalVmScaling;
 import org.cloudsimplus.autoscaling.VerticalVmScaling;
 import org.cloudsimplus.autoscaling.VmScaling;
+import org.cloudsimplus.autoscaling.VmScalingAbstract;
 import org.cloudsimplus.brokers.DatacenterBroker;
 import org.cloudsimplus.cloudlets.Cloudlet;
 import org.cloudsimplus.cloudlets.CloudletAbstract;
@@ -279,7 +280,29 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
 
     private double processing(final double currentTime, final CoreCapacity mipsShare) {
         VmListeners.notifyOnUpdateProcessing(this);
+        requestScalingIfPredicatesMatch();
         return isStartingUp() ? bootProcessing() : cloudletsProcessing(currentTime, mipsShare);
+    }
+
+    /// Asks each scaling object of this VM to check if the VM has to be scaled.
+    /// The scaling objects are called directly (instead of being update processing listeners),
+    /// so that VMs without scaling don't keep listeners nor create event objects at every processing update.
+    private void requestScalingIfPredicatesMatch() {
+        final double time = getSimulation().clock();
+        requestScalingIfPredicateMatches(cpuVerticalScaling, time);
+        requestScalingIfPredicateMatches(ramVerticalScaling, time);
+        requestScalingIfPredicateMatches(bwVerticalScaling, time);
+        requestScalingIfPredicateMatches(horizontalScaling, time);
+    }
+
+    /// Asks a scaling object to check if the VM has to be scaled.
+    /// The `NULL` scaling objects (the default ones) aren't a [VmScalingAbstract], so they are skipped.
+    /// @param scaling the scaling object to call
+    /// @param time the current simulation time
+    private static void requestScalingIfPredicateMatches(final VmScaling scaling, final double time) {
+        if (scaling instanceof VmScalingAbstract scalingAbstract) {
+            scalingAbstract.requestUpScalingIfPredicateMatches(time);
+        }
     }
 
     /// Process the VM boot up.
@@ -542,10 +565,10 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
             setStartTime(getSimulation().clock());
             setShutdownBeginTime(NOT_ASSIGNED);
             this.setFailed(false);
-            validateAndConfigureVmScaling(cpuVerticalScaling);
-            validateAndConfigureVmScaling(ramVerticalScaling);
-            validateAndConfigureVmScaling(bwVerticalScaling);
-            validateAndConfigureVmScaling(horizontalScaling);
+            linkVmScaling(cpuVerticalScaling);
+            linkVmScaling(ramVerticalScaling);
+            linkVmScaling(bwVerticalScaling);
+            linkVmScaling(horizontalScaling);
         }
 
         this.created = requestCreation;
@@ -630,29 +653,47 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
 
     @Override
     public final Vm setHorizontalScaling(final HorizontalVmScaling horizontalScaling) throws IllegalArgumentException {
-        this.horizontalScaling = horizontalScaling;
+        this.horizontalScaling = linkVmScalingIfCreated(horizontalScaling);
         return this;
     }
 
     @Override
     public final Vm setRamVerticalScaling(final VerticalVmScaling ramVerticalScaling) throws IllegalArgumentException {
-        this.ramVerticalScaling = ramVerticalScaling;
+        this.ramVerticalScaling = linkVmScalingIfCreated(ramVerticalScaling);
         return this;
     }
 
     @Override
     public final Vm setBwVerticalScaling(final VerticalVmScaling bwVerticalScaling) throws IllegalArgumentException {
-        this.bwVerticalScaling = bwVerticalScaling;
+        this.bwVerticalScaling = linkVmScalingIfCreated(bwVerticalScaling);
         return this;
     }
 
     @Override
     public final Vm setCpuVerticalScaling(final VerticalVmScaling cpuVerticalScaling) throws IllegalArgumentException {
-        this.cpuVerticalScaling = cpuVerticalScaling;
+        this.cpuVerticalScaling = linkVmScalingIfCreated(cpuVerticalScaling);
         return this;
     }
 
-    private void validateAndConfigureVmScaling(@NonNull final VmScaling vmScaling) {
+    /// Links a scaling object to this VM right away if the VM is already created.
+    /// Otherwise, it's linked when the VM is created (see [#setCreated(boolean)]),
+    /// since the VM resources can still be replaced before that
+    /// (such as by [#setRam(long)]) and a [VerticalVmScaling] keeps the resource it scales.
+    /// @param vmScaling the scaling object to link
+    /// @return the given scaling object
+    private <T extends VmScaling> T linkVmScalingIfCreated(@NonNull final T vmScaling) {
+        if (created) {
+            linkVmScaling(vmScaling);
+        }
+
+        return vmScaling;
+    }
+
+    /// Links a scaling object to this VM, so that it can scale the VM.
+    /// The scaling object is called at every VM processing update (see [#requestScalingIfPredicatesMatch()]).
+    /// @param vmScaling the scaling object to link
+    /// @throws IllegalArgumentException if the scaling object is already linked to another VM
+    private void linkVmScaling(@NonNull final VmScaling vmScaling) {
         if (vmScaling.getVm() != null && vmScaling.getVm() != NULL && vmScaling.getVm() != this) {
             final var name = vmScaling.getClass().getSimpleName();
             final var msg = "The %1$s given is already linked to a Vm. " +
@@ -662,7 +703,6 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
         }
 
         vmScaling.setVm(this);
-        this.listeners().addOnUpdateProcessing(vmScaling::requestUpScalingIfPredicateMatches);
     }
 
     @Override
