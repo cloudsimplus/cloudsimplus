@@ -514,9 +514,9 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
             return this;
         }
 
-        /* If the simulation is not running and there is a startup delay,
-         * when the datacenter is started up, it will request such a Host activation. */
-        if (!simulation.isRunning()) {
+        /* If the Host isn't in a Datacenter yet, there is no one to send the power on/off request.
+         * The Datacenter requests the Host activation when the Host is added to it. */
+        if (datacenter == Datacenter.NULL) {
             return this;
         }
 

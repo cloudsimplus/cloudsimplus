@@ -196,17 +196,12 @@ public class GoogleTaskEventsTraceReader extends GoogleTraceReaderAbstract<Cloud
 
     @Override
     protected void postProcess(){
-        if(simulation.isRunning())
-            sendCloudletEvents();
-        else simulation.addOnSimulationStartListener(info -> sendCloudletEvents());
-    }
-
-    private void sendCloudletEvents() {
         cloudletEvents.values().forEach(this::sendCloudletEvents);
+        cloudletEvents.clear();
     }
 
     protected void sendCloudletEvents(final List<CloudSimEvent> events) {
-        events.forEach(GoogleTraceReaderAbstract::scheduleTraceEvent);
+        events.forEach(evt -> evt.getSource().schedule(evt));
     }
 
     @Override

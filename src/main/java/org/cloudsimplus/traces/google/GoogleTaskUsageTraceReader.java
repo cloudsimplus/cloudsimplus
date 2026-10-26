@@ -30,7 +30,6 @@ import org.cloudsimplus.core.CloudSimTag;
 import org.cloudsimplus.core.Simulation;
 import org.cloudsimplus.core.events.CloudSimEvent;
 import org.cloudsimplus.hosts.HostAbstract;
-import org.cloudsimplus.listeners.EventInfo;
 import org.cloudsimplus.traces.TraceReaderAbstract;
 import org.cloudsimplus.util.ResourceLoader;
 import org.cloudsimplus.util.TimeUtil;
@@ -301,17 +300,11 @@ public final class GoogleTaskUsageTraceReader extends GoogleTraceReaderAbstract<
     @Override
     protected void preProcess(){/**/}
 
+    /// Sends the messages to change Cloudlet resource usage.
     @Override
     protected void postProcess(){
-        simulation.addOnSimulationStartListener(this::onSimulationStart);
-    }
-
-    /// Adds an event listener which is notified when the simulation starts,
-    /// so that the messages to change Cloudlet resource usage are sent.
-    ///
-    /// @param info the simulation start event information
-    private void onSimulationStart(final EventInfo info) {
-        cloudletUsageChangeEvents.forEach(GoogleTraceReaderAbstract::scheduleTraceEvent);
+        cloudletUsageChangeEvents.forEach(evt -> evt.getSource().schedule(evt));
+        cloudletUsageChangeEvents.clear();
     }
 
     @Override

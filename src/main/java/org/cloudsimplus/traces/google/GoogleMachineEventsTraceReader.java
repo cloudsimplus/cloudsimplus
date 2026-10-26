@@ -46,6 +46,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 /// Process "machine events" trace files from
 /// [Google Cluster Data](https://github.com/google/cluster-data/blob/master/ClusterData2011_2.md).
@@ -197,26 +198,26 @@ public final class GoogleMachineEventsTraceReader extends GoogleTraceReaderAbstr
         }
     }
 
-    /// Process all hosts events occurring for a timestamp greater than zero.
+    /// Process the addition and removal of Hosts occurring for a timestamp greater than zero.
     @Override
     protected void postProcess() {
-        if (datacenterForLaterHosts.getSimulation().isRunning())
-            sendLaterHostsAdditionAndRemovalRequests();
-        else {
-            /* Since sending events just works after the simulation has started,
-             * if it hasn't yet, a listener is used to send the Host creation events just after
-             * the simulation starts. */
-            datacenterForLaterHosts.getSimulation().addOnSimulationStartListener(info -> sendLaterHostsAdditionAndRemovalRequests());
-        }
-    }
-
-    /// Process the addition and removal of Hosts occurring for a timestamp greater than zero.
-    private void sendLaterHostsAdditionAndRemovalRequests() {
         final var cis = datacenterForLaterHosts.getSimulation().getCis();
         laterAvailableHosts.forEach(host -> cis.schedule(datacenterForLaterHosts, host.getStartTime(), CloudSimTag.HOST_ADD, host));
 
         //Sends a request to every Datacenter to try to remove the Hosts (since we don't have how to know which Datacenter each Host is)
-        cis.getDatacenterList().forEach(this::sendHostsRemovalRequests);
+        datacenters().forEach(this::sendHostsRemovalRequests);
+    }
+
+    /// {@return the Datacenters in the simulation}
+    /// The simulation entity list is used instead of the [CloudInformationService#getDatacenterList()],
+    /// since Datacenters are only registered in the CIS after the simulation starts.
+    private Stream<Datacenter> datacenters() {
+        return datacenterForLaterHosts
+                .getSimulation()
+                .getEntityList()
+                .stream()
+                .filter(Datacenter.class::isInstance)
+                .map(Datacenter.class::cast);
     }
 
     /// Send requests to remove Hosts from a given Datacenter.

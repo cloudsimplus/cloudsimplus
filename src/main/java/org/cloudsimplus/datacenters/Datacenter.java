@@ -202,9 +202,10 @@ public sealed interface Datacenter
 
 
     /// Adds a [EventListener] object that will be notified every time
-    /// a new Host is available for the Datacenter during simulation runtime.
-    /// If the [#addHost(Host)] or [#addHostList(List)] is called
-    /// before the simulation starts, the listeners will not be notified.
+    /// a new Host is available for the Datacenter, after a [CloudSimTag#HOST_ADD] request
+    /// (even if the request was sent before the simulation starts).
+    /// Hosts added directly by calling [#addHost(Host)] or [#addHostList(List)]
+    /// don't notify the listeners.
     ///
     /// @param listener the event listener to add
     /// @return this Datacenter

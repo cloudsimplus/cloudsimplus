@@ -127,27 +127,15 @@ public abstract class CloudSimEntity implements SimEntity {
         return schedule(this, 0, tag, data);
     }
 
+    /// {@inheritDoc}
+    /// Events sent before the simulation starts are held and only sent when it starts.
+    /// Events sent after the simulation stops are rejected.
+    ///
+    /// @param evt {@inheritDoc}
+    /// @return {@inheritDoc}
     @Override
     public boolean schedule(final SimEvent evt) {
-        if (canSendEvent(evt)) {
-            simulation.send(evt);
-            return true;
-        }
-
-        return false;
-    }
-
-    /// If the simulation has finished and a [CloudSimTag#SIMULATION_END]
-    /// message is sent, it has to be processed to enable entities to shut down.
-    private boolean canSendEvent(final SimEvent evt) {
-        if (simulation.isRunning() || evt.getTag() == CloudSimTag.SIMULATION_END) {
-            return true;
-        }
-
-        LOGGER.warn(
-            "{}: {}: Cannot send events before simulation starts or after it finishes. Trying to send message {} to {}",
-            getSimulation().clockStr(), this, evt.getTag(), evt.getDestination());
-        return false;
+        return simulation instanceof CloudSim sim && sim.trySend(evt);
     }
 
     /// Sends an event to another entity with no delay.
@@ -200,8 +188,8 @@ public abstract class CloudSimEntity implements SimEntity {
     /// @param data  The data to be sent with the event, according to the tag
     public void scheduleFirst(final SimEntity dest, final double delay, final int tag, @Nullable final Object data) {
         final var evt = new CloudSimEvent(delay, this, dest, tag, data);
-        if (canSendEvent(evt)) {
-            simulation.sendFirst(evt);
+        if (simulation instanceof CloudSim sim) {
+            sim.trySendFirst(evt);
         }
     }
 
