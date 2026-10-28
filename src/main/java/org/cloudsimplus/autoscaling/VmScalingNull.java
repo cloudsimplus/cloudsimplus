@@ -23,7 +23,6 @@
  */
 package org.cloudsimplus.autoscaling;
 
-import org.cloudsimplus.listeners.VmHostEventInfo;
 import org.cloudsimplus.vms.Vm;
 
 /// A class that implements the Null Object Design Pattern for [VmScaling] class.
@@ -35,7 +34,4 @@ final class VmScalingNull implements VmScaling {
         return Vm.NULL;
     }
     @Override public VmScaling setVm(Vm vm) { return this; }
-    @Override public boolean requestUpScalingIfPredicateMatches(VmHostEventInfo evt) {
-        return false;
-    }
 }

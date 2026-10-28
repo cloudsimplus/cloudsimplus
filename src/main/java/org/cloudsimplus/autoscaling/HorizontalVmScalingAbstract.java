@@ -26,7 +26,6 @@ package org.cloudsimplus.autoscaling;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
-import org.cloudsimplus.listeners.VmHostEventInfo;
 import org.cloudsimplus.vms.Vm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -81,11 +80,22 @@ public non-sealed class HorizontalVmScalingAbstract extends VmScalingAbstract im
         return getVm().getBroker().getCloudletCreatedList().size() > cloudletCreationRequests;
     }
 
+    /// {@inheritDoc}
+    ///
+    /// It requests a horizontal scale if the Vm is overloaded, according to the
+    /// [#getOverloadPredicate()] predicate.
+    /// The scaling is performed by creating a new Vm using the [#getVmSupplier()] method
+    /// and submitting it to the broker.
+    /// A VM creation request is only sent when the VM is overloaded and
+    /// new Cloudlets were submitted to the broker.
+    ///
+    /// @param time {@inheritDoc}
+    /// @return {@inheritDoc}
     @Override
-    public final boolean requestUpScalingIfPredicateMatches(final VmHostEventInfo evt) {
-        if (isTimeToCheckPredicate(evt.getTime())) {
-            setLastProcessingTime(evt.getTime());
-            return overloadPredicate.test(getVm()) && requestScaling(evt.getTime());
+    public final boolean requestUpScalingIfPredicateMatches(final double time) {
+        if (isTimeToCheckPredicate(time)) {
+            setLastProcessingTime(time);
+            return overloadPredicate.test(getVm()) && requestScaling(time);
         }
 
         return false;

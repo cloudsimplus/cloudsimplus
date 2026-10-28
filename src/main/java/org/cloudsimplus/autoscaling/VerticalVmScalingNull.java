@@ -24,7 +24,6 @@
 package org.cloudsimplus.autoscaling;
 
 import org.cloudsimplus.autoscaling.resources.ResourceScaling;
-import org.cloudsimplus.listeners.VmHostEventInfo;
 import org.cloudsimplus.resources.Resource;
 import org.cloudsimplus.resources.ResourceManageable;
 import org.cloudsimplus.vms.Vm;
@@ -50,9 +49,6 @@ final class VerticalVmScalingNull implements VerticalVmScaling {
     @Override public boolean isVmUnderloaded() { return false; }
     @Override public boolean isVmOverloaded() { return false; }
     @Override public Resource getResource() { return Resource.NULL; }
-    @Override public boolean requestUpScalingIfPredicateMatches(VmHostEventInfo evt) {
-        return false;
-    }
     @Override public Vm getVm() {
         return Vm.NULL;
     }

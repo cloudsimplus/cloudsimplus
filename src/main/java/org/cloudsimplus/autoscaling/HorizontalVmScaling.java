@@ -24,7 +24,6 @@
 package org.cloudsimplus.autoscaling;
 
 import org.cloudsimplus.brokers.DatacenterBroker;
-import org.cloudsimplus.listeners.VmHostEventInfo;
 import org.cloudsimplus.vms.Vm;
 
 import java.util.function.Function;
@@ -69,26 +68,6 @@ public sealed interface HorizontalVmScaling extends VmScaling
     ///
     /// @param supplier the supplier to set
     HorizontalVmScaling setVmSupplier(Supplier<Vm> supplier);
-
-    /// Requests a horizontal scale if a Vm is overloaded, according to the
-    /// [#getOverloadPredicate()] predicate.
-    /// The scaling is performed by creating a new Vm using the [#getVmSupplier()] method
-    /// and submitting it to the broker.
-    ///
-    /// The time interval in which it will be checked if the Vm is overloaded
-    /// depends on the [#getSchedulingInterval()] value.
-    /// Make sure to set such a value to enable the periodic overload verification.
-    ///
-    /// **The method will check the need to create a new
-    /// VM at the time interval defined by the [#getSchedulingInterval()].
-    /// A VM creation request is only sent when the VM is overloaded and
-    /// new Cloudlets were submitted to the broker.
-    /// **
-    ///
-    /// @param evt event information, including the current simulation time and the VM to be scaled
-    /// @return {@inheritDoc}
-    @Override
-    boolean requestUpScalingIfPredicateMatches(VmHostEventInfo evt);
 
     /// @return the [Predicate] that defines when a [Vm][#getVm()] is overloaded or not,
     /// that will make the Vm's [DatacenterBroker] to upscale the VM.

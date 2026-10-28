@@ -23,11 +23,7 @@
  */
 package org.cloudsimplus.autoscaling;
 
-import org.cloudsimplus.brokers.DatacenterBroker;
-import org.cloudsimplus.listeners.EventListener;
-import org.cloudsimplus.listeners.VmHostEventInfo;
 import org.cloudsimplus.vms.Vm;
-import org.cloudsimplus.vms.VmListeners;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,19 +51,4 @@ public sealed interface VmScaling permits HorizontalVmScaling, VerticalVmScaling
     ///
     /// @param vm the Vm to set
     VmScaling setVm(Vm vm);
-
-    /// Requests the Vm to be scaled up or down if it is over or underloaded, respectively.
-    /// The scaling request will be sent to the [DatacenterBroker] only
-    /// if the under or overload condition is met, that depends on the implementation
-    /// of the scaling mechanism.
-    ///
-    /// The Vm to which this VmScaling is related to, creates an
-    /// [UpdateProcessingListener][VmListeners#addOnUpdateProcessing(EventListener)]
-    /// that will call this method to check if it's time to perform a down or up scaling,
-    /// every time the Vm processing is updated.
-    ///
-    /// @param evt event information, including the current simulation time and the VM to be scaled
-    /// @return true if the Vm is over or underloaded and up or down scaling request was sent to the broker;
-    /// false otherwise
-    boolean requestUpScalingIfPredicateMatches(VmHostEventInfo evt);
 }
