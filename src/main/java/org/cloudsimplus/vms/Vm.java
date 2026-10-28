@@ -109,91 +109,10 @@ public sealed interface Vm
     /// @see #isCreated()
     Host getHost();
 
-    /// Adds a listener object that will be notified when a [Host]
-    /// is allocated to the Vm, that is, when the Vm is placed into a
-    /// given Host. That happens when the VM is placed for the first
-    /// time into a Host or when it's migrated to another Host.
+    /// {@return an object to manage and notify the [EventListener]s of this Vm}
     ///
-    /// @param listener the listener to add
-    /// @return
-    /// @see #addOnMigrationStartListener(EventListener)
-    Vm addOnHostPlacementListener(EventListener<VmHostEventInfo> listener);
-
-    /// Adds a listener object that will be notified when a VM starts migrating to a target [Host].
-    /// When the listener is notified, it receives a [VmHostEventInfo] object
-    /// informing the target Host where the VM is being migrated.
-    ///
-    /// @param listener the listener to add
-    /// @return
-    /// @see #addOnHostPlacementListener(EventListener)
-    Vm addOnMigrationStartListener(EventListener<VmHostEventInfo> listener);
-
-    /// Adds a listener object that will be notified when a VM finishes migrating to a target [Host].
-    /// When the listener is notified, it receives a [VmHostEventInfo] object
-    /// informing the target Host where the VM has just migrated.
-    ///
-    /// @param listener the listener to add
-    /// @return
-    Vm addOnMigrationFinishListener(EventListener<VmHostEventInfo> listener);
-
-    /// Adds a listener object that will be notified when the Vm is moved/removed from a [Host].
-    ///
-    /// @param listener the listener to add
-    /// @return
-    Vm addOnHostRemovalListener(EventListener<VmHostEventInfo> listener);
-
-    /// Adds a listener object that will be notified when the Vm fail in
-    /// being placed, due to lack of a [Host] with enough resources in a specific [Datacenter].
-    ///
-    /// The [DatacenterBroker] is accountable for receiving the notification from the
-    /// Datacenter and notifying the Listeners.
-    ///
-    /// @param listener the listener to add
-    /// @return
-    Vm addOnCreationFailureListener(EventListener<VmDatacenterEventInfo> listener);
-
-    /// Adds a listener object that will be notified every time when
-    /// the processing of the Vm is updated in its [Host].
-    ///
-    /// @param listener the listener to add
-    /// @return
-    Vm addOnUpdateProcessingListener(EventListener<VmHostEventInfo> listener);
-
-    /// Removes a listener from the onMigrationStartListener List.
-    ///
-    /// @param listener the listener to remove
-    /// @return true if the listener was found and removed, false otherwise
-    boolean removeOnMigrationStartListener(EventListener<VmHostEventInfo> listener);
-
-    /// Removes a listener from the onMigrationFinishListener List.
-    ///
-    /// @param listener the listener to remove
-    /// @return true if the listener was found and removed, false otherwise
-    boolean removeOnMigrationFinishListener(EventListener<VmHostEventInfo> listener);
-
-    /// Removes a listener from the onUpdateVmProcessingListener List.
-    ///
-    /// @param listener the listener to remove
-    /// @return true if the listener was found and removed, false otherwise
-    boolean removeOnUpdateProcessingListener(EventListener<VmHostEventInfo> listener);
-
-    /// Removes a listener from the onHostPlacementListener List.
-    ///
-    /// @param listener the listener to remove
-    /// @return true if the listener was found and removed, false otherwise
-    boolean removeOnHostPlacementListener(EventListener<VmHostEventInfo> listener);
-
-    /// Removes a listener from the onHostRemovalListener List.
-    ///
-    /// @param listener the listener to remove
-    /// @return true if the listener was found and removed, false otherwise
-    boolean removeOnHostRemovalListener(EventListener<VmHostEventInfo> listener);
-
-    /// Removes a listener from the onVmCreationFailureListener List.
-    ///
-    /// @param listener the listener to remove
-    /// @return true if the listener was found and removed, false otherwise
-    boolean removeOnCreationFailureListener(EventListener<VmDatacenterEventInfo> listener);
+    /// @see VmListeners
+    VmListeners listeners();
 
     /// Gets bandwidth resource (in Megabits/s) assigned to the Vm,
     /// allowing to check its capacity  and usage.

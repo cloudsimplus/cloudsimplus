@@ -201,22 +201,10 @@ public sealed interface Datacenter
     void setBandwidthPercentForMigration(double bandwidthPercentForMigration);
 
 
-    /// Adds a [EventListener] object that will be notified every time
-    /// a new Host is available for the Datacenter, after a [CloudSimTag#HOST_ADD] request
-    /// (even if the request was sent before the simulation starts).
-    /// Hosts added directly by calling [#addHost(Host)] or [#addHostList(List)]
-    /// don't notify the listeners.
+    /// {@return an object to manage and notify the [EventListener]s of this Datacenter}
     ///
-    /// @param listener the event listener to add
-    /// @return this Datacenter
-    Datacenter addOnHostAvailableListener(EventListener<HostEventInfo> listener);
-
-    /// Adds a [EventListener] object that will be notified every time
-    /// a VM migration is finished either successfully or not.
-    ///
-    /// @param listener the event listener to add
-    /// @return this Datacenter
-    Datacenter addOnVmMigrationFinishListener(EventListener<DatacenterVmMigrationEventInfo> listener);
+    /// @see DatacenterListeners
+    DatacenterListeners listeners();
 
     /// @return true, if migrations are enabled; false otherwise
     boolean isMigrationsEnabled();

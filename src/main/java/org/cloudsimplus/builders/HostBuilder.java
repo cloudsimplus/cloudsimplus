@@ -28,9 +28,11 @@ import lombok.NonNull;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.cloudsimplus.hosts.Host;
+import org.cloudsimplus.hosts.HostListeners;
 import org.cloudsimplus.hosts.HostSimple;
 import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.listeners.HostUpdatesVmsProcessingEventInfo;
+import org.cloudsimplus.listeners.Listeners;
 import org.cloudsimplus.allocators.ResourceAllocatorSimple;
 import org.cloudsimplus.schedulers.vm.VmScheduler;
 import org.cloudsimplus.resources.CoreCapacity;
@@ -61,7 +63,9 @@ public class HostBuilder implements Builder {
     /// A [Function] used to create Hosts.
     /// It receives the number of cores and the MIPS capacity of each core for the Host it will create.
     @Setter @NonNull private Function<CoreCapacity, Host> hostCreationFunction;
-    @Setter @NonNull private EventListener<HostUpdatesVmsProcessingEventInfo> onUpdateVmsProcessingListener = EventListener.NULL;
+    /// Created once (in its setter) and shared by all Hosts created by this builder,
+    /// so each Host doesn't create its own list.
+    private List<EventListener<HostUpdatesVmsProcessingEventInfo>> onUpdateVmsProcessingListeners = List.of();
     @Setter @Nullable private Supplier<VmScheduler> vmSchedulerSupplier;
 
     public HostBuilder() {
@@ -96,9 +100,20 @@ public class HostBuilder implements Builder {
     }
 
     private Host defaultHostCreationFunction(final CoreCapacity capacity) {
-        return HostSimple.of(capacity)
+        final var host = HostSimple.of(capacity)
             .setRamAllocator(new ResourceAllocatorSimple())
-            .setBwAllocator(new ResourceAllocatorSimple())
-            .addOnUpdateProcessingListener(onUpdateVmsProcessingListener);
+            .setBwAllocator(new ResourceAllocatorSimple());
+        host.listeners().addOnUpdateProcessing(onUpdateVmsProcessingListeners);
+        return host;
+    }
+
+    /// Sets a listener to be added to each Host created by this builder.
+    /// All Hosts share the same list with this listener, to reduce memory use.
+    /// @param listener the listener to set
+    /// @return this builder
+    /// @see HostListeners#addOnUpdateProcessing(List)
+    public HostBuilder setOnUpdateVmsProcessingListener(final EventListener<HostUpdatesVmsProcessingEventInfo> listener) {
+        this.onUpdateVmsProcessingListeners = Listeners.listOf(listener);
+        return this;
     }
 }

@@ -25,6 +25,7 @@ import org.cloudsimplus.hosts.HostSuitability;
 import org.cloudsimplus.listeners.DatacenterVmMigrationEventInfo;
 import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.listeners.HostEventInfo;
+import org.cloudsimplus.listeners.Listeners;
 import org.cloudsimplus.network.IcmpPacket;
 import org.cloudsimplus.power.models.PowerModelDatacenter;
 import org.cloudsimplus.power.models.PowerModelDatacenterSimple;
@@ -35,6 +36,7 @@ import org.cloudsimplus.util.InvalidEventDataTypeException;
 import org.cloudsimplus.util.MathUtil;
 import org.cloudsimplus.vms.Vm;
 import org.cloudsimplus.vms.VmAbstract;
+import org.cloudsimplus.vms.VmListeners;
 
 import java.util.*;
 import java.util.function.Function;
@@ -103,8 +105,11 @@ public non-sealed class DatacenterSimple extends CloudSimEntity implements Datac
     @Getter
     private double bandwidthPercentForMigration;
 
-    private final List<EventListener<HostEventInfo>> onHostAvailableListeners;
-    private final List<EventListener<DatacenterVmMigrationEventInfo>> onVmMigrationFinishListeners;
+    @Getter(AccessLevel.PACKAGE) @Setter(AccessLevel.PACKAGE)
+    private List<EventListener<HostEventInfo>> onHostAvailableListeners = List.of();
+
+    @Getter(AccessLevel.PACKAGE) @Setter(AccessLevel.PACKAGE)
+    private List<EventListener<DatacenterVmMigrationEventInfo>> onVmMigrationFinishListeners = List.of();
 
     private Map<Vm, Host> lastMigrationMap;
 
@@ -215,8 +220,6 @@ public non-sealed class DatacenterSimple extends CloudSimEntity implements Datac
         setDatacenterStorage(storage);
         setPowerModel(new PowerModelDatacenterSimple(this));
 
-        this.onHostAvailableListeners = new ArrayList<>();
-        this.onVmMigrationFinishListeners = new ArrayList<>();
         this.brokersWaitingHostPowerOn = new LinkedHashSet<>();
         this.characteristics = new DatacenterCharacteristicsSimple(this);
         this.bandwidthPercentForMigration = DEF_BW_PERCENT_FOR_MIGRATION;
@@ -302,7 +305,7 @@ public non-sealed class DatacenterSimple extends CloudSimEntity implements Datac
                 "{}: {}: Host {} added to {} during simulation runtime",
                 getSimulation().clockStr(), this, host.getId(), this);
             //Notification must be sent only for Hosts added during simulation runtime
-            notifyOnHostAvailableListeners(host);
+            DatacenterListeners.notifyOnHostAvailable(this, host);
         });
     }
 
@@ -667,7 +670,7 @@ public non-sealed class DatacenterSimple extends CloudSimEntity implements Datac
         ((HostAbstract)targetHost).removeMigratingInVm(vm);
         final HostSuitability suitability = vmPlacementPolicy.placeVm(vm, targetHost);
         if(suitability.fully()) {
-            vm.updateMigrationFinishListeners(targetHost);
+            VmListeners.notifyOnMigrationFinish(vm, targetHost);
             /*When the VM is destroyed from the source host, it's removed from the vmExecList.
             After migration, we need to add it again.*/
             vm.getBroker().getVmExecList().add(vm);
@@ -689,7 +692,7 @@ public non-sealed class DatacenterSimple extends CloudSimEntity implements Datac
             "{}: {}: Allocation of {} to the destination {} failed due to {}!",
             getSimulation().clockStr(), this, vm, targetHost, suitability);
 
-        onVmMigrationFinishListeners.forEach(listener -> listener.update(DatacenterVmMigrationEventInfo.of(listener, vm, suitability)));
+        DatacenterListeners.notifyOnVmMigrationFinish(this, vm, suitability);
         return true;
     }
 
@@ -1041,10 +1044,6 @@ public non-sealed class DatacenterSimple extends CloudSimEntity implements Datac
         return this;
     }
 
-    private <T extends Host> void notifyOnHostAvailableListeners(final T host) {
-        onHostAvailableListeners.forEach(listener -> listener.update(HostEventInfo.of(listener, host, clock())));
-    }
-
     @Override
     public <T extends Host> Datacenter removeHost(final T host) {
         hostList.remove(host);
@@ -1070,15 +1069,8 @@ public non-sealed class DatacenterSimple extends CloudSimEntity implements Datac
     }
 
     @Override
-    public Datacenter addOnHostAvailableListener(final EventListener<HostEventInfo> listener) {
-        onHostAvailableListeners.add(requireNonNull(listener));
-        return this;
-    }
-
-    @Override
-    public Datacenter addOnVmMigrationFinishListener(final EventListener<DatacenterVmMigrationEventInfo> listener) {
-        onVmMigrationFinishListeners.add(requireNonNull(listener));
-        return this;
+    public DatacenterListeners listeners() {
+        return new DatacenterListeners(this);
     }
 
     @Override

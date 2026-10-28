@@ -25,6 +25,7 @@ package org.cloudsimplus.listeners;
 
 import org.cloudsimplus.datacenters.Datacenter;
 import org.cloudsimplus.vms.Vm;
+import org.cloudsimplus.vms.VmListeners;
 
 /// An interface that represents data to be passed
 /// to [EventListener] objects that are registered to be notified
@@ -34,7 +35,7 @@ import org.cloudsimplus.vms.Vm;
 /// @author Manoel Campos da Silva Filho
 /// @since CloudSim Plus 1.0
 ///
-/// @see Vm#addOnCreationFailureListener(EventListener)
+/// @see VmListeners#addOnCreationFailure(EventListener)
 public interface VmDatacenterEventInfo extends VmEventInfo, DatacenterEventInfo {
     /// Gets a `VmDatacenterEventInfo` instance from the given parameters.
     /// The [Datacenter][#getDatacenter()] attribute is defined as the [Datacenter] where the [Vm]
@@ -55,7 +56,7 @@ public interface VmDatacenterEventInfo extends VmEventInfo, DatacenterEventInfo 
     /// Such a Datacenter can be that one where the Vm is or was placed,
     /// or where the Vm was tried to be created,
     /// depending on the fired event, such as the
-    /// [OnVmCreationFailure][Vm#addOnCreationFailureListener(EventListener)]
+    /// [OnVmCreationFailure][VmListeners#addOnCreationFailure(EventListener)]
     static VmDatacenterEventInfo of(final EventListener<VmDatacenterEventInfo> listener, final Vm vm, final Datacenter datacenter) {
         final double time = vm.getSimulation().clock();
         return new VmDatacenterEventInfo() {

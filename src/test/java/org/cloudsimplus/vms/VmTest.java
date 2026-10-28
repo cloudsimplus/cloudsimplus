@@ -52,17 +52,17 @@ public class VmTest {
     @Test
     public void testVmNullObjectListeners(){
         final Vm instance = Vm.NULL;
-        instance.addOnHostPlacementListener(null);
-        assertFalse(instance.removeOnHostPlacementListener(null));
+        instance.listeners().addOnHostPlacement(info -> {});
+        assertFalse(instance.listeners().removeOnHostPlacement(info -> {}));
 
-        instance.addOnHostRemovalListener(null);
-        assertFalse(instance.removeOnHostRemovalListener(null));
+        instance.listeners().addOnHostRemoval(info -> {});
+        assertFalse(instance.listeners().removeOnHostRemoval(info -> {}));
 
-        instance.addOnCreationFailureListener(null);
-        assertFalse(instance.removeOnCreationFailureListener(null));
+        instance.listeners().addOnCreationFailure(info -> {});
+        assertFalse(instance.listeners().removeOnCreationFailure(info -> {}));
 
-        instance.addOnUpdateProcessingListener(null);
-        assertFalse(instance.removeOnUpdateProcessingListener(null));
+        instance.listeners().addOnUpdateProcessing(info -> {});
+        assertFalse(instance.listeners().removeOnUpdateProcessing(info -> {}));
     }
 
     @Test

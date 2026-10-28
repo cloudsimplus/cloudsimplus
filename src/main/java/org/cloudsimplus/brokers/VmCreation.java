@@ -28,6 +28,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.vms.Vm;
+import org.cloudsimplus.vms.VmListeners;
 
 /// Keeps track of the number of VM creation requests and retries sent by a [DatacenterBroker]
 /// and enables configuring creation retries.
@@ -51,7 +52,7 @@ public class VmCreation {
     ///   are submitted or after the given delay.
     /// - otherwise, indicates that failed VMs will be just added to the
     ///   [DatacenterBroker#getVmFailedList()] and the user simulation have to deal with it.
-    ///   If the VM has an [OnCreationFailureListener][Vm#addOnCreationFailureListener(EventListener)],
+    ///   If the VM has an [OnCreationFailureListener][VmListeners#addOnCreationFailure(EventListener)],
     ///   it will be notified about the failure.
     private double retryDelay;
 

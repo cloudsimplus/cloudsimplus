@@ -294,9 +294,7 @@ public class CloudletExecution {
     /// @param lastProcessingTime the last processing time to set
 	public void setLastProcessingTime(final double lastProcessingTime) {
 		this.lastProcessingTime = lastProcessingTime;
-        if (cloudlet instanceof CloudletAbstract c) {
-            c.notifyOnUpdateProcessingListeners(lastProcessingTime);
-        }
+        CloudletListeners.notifyOnUpdateProcessing(cloudlet, lastProcessingTime);
 	}
 
     /// Computes the actual processing time span between the current simulation time and the last

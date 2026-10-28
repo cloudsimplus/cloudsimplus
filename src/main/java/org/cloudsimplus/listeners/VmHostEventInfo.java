@@ -25,23 +25,24 @@ package org.cloudsimplus.listeners;
 
 import org.cloudsimplus.hosts.Host;
 import org.cloudsimplus.vms.Vm;
+import org.cloudsimplus.vms.VmListeners;
 
 /// An interface that represents data to be passed
 /// to [EventListener] objects that are registered to be notified
 /// when some events happen for a given [Vm] that is related to
 /// some [Host].
 ///
-/// It can be used to notify Listeners when a Host is [allocated][Vm#addOnHostPlacementListener(EventListener)] to or
-/// [deallocated][Vm#addOnHostRemovalListener(EventListener)] from a given Vm,
-/// when a Vm has its [processing updated by its Host][Vm#addOnUpdateProcessingListener(EventListener)],
+/// It can be used to notify Listeners when a Host is [allocated][VmListeners#addOnHostPlacement(EventListener)] to or
+/// [deallocated][VmListeners#addOnHostRemoval(EventListener)] from a given Vm,
+/// when a Vm has its [processing updated by its Host][VmListeners#addOnUpdateProcessing(EventListener)],
 /// etc.
 ///
 /// @author Manoel Campos da Silva Filho
 /// @since CloudSim Plus 1.0
 ///
-/// @see Vm#addOnHostPlacementListener(EventListener)
-/// @see Vm#addOnHostRemovalListener(EventListener)
-/// @see Vm#addOnUpdateProcessingListener(EventListener)
+/// @see VmListeners#addOnHostPlacement(EventListener)
+/// @see VmListeners#addOnHostRemoval(EventListener)
+/// @see VmListeners#addOnUpdateProcessing(EventListener)
 public interface VmHostEventInfo extends VmEventInfo, HostEventInfo {
     /// Gets a `VmHostEventInfo` instance from the given parameters.
     /// The [Host][#getHost()] attribute is defined as the [Host] where the [Vm]
@@ -62,8 +63,8 @@ public interface VmHostEventInfo extends VmEventInfo, HostEventInfo {
     /// Such a Host can be that one where the Vm is or was placed,
     /// or where the Vm was tried to be created.
     /// It depends on the fired event, such as the
-    /// [OnHostAllocation][Vm#addOnHostPlacementListener(EventListener)] or
-    /// [OnHostDeallocation][Vm#addOnHostRemovalListener(EventListener)]
+    /// [OnHostAllocation][VmListeners#addOnHostPlacement(EventListener)] or
+    /// [OnHostDeallocation][VmListeners#addOnHostRemoval(EventListener)]
     static VmHostEventInfo of(final EventListener<VmHostEventInfo> listener, final Vm vm, final Host host) {
         final double time = vm.getSimulation().clock();
         return new VmHostEventInfo() {

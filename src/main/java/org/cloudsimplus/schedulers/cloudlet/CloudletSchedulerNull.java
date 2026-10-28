@@ -93,6 +93,5 @@ final class CloudletSchedulerNull implements CloudletScheduler {
     @Override public List<CloudletExecution> getCloudletWaitingList() { return Collections.emptyList(); }
     @Override public List<Cloudlet> getCloudletList() { return Collections.emptyList(); }
     @Override public void clear() {/**/}
-    @Override public CloudletScheduler addOnCloudletResourceShortage(EventListener<CloudletResourceShortageEventInfo> listener) { return this; }
-    @Override public boolean removeOnCloudletResourceShortage(EventListener<CloudletResourceShortageEventInfo> listener) { return false; }
+    @Override public CloudletSchedulerListeners listeners() { return CloudletSchedulerListeners.NULL; }
 }

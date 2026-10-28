@@ -381,10 +381,10 @@ public class HostSimpleTest {
         final Host host = createHostSimple(0, 1);
 
         final EventListener<HostUpdatesVmsProcessingEventInfo> updateVmsProcessing = e -> {};
-        host.addOnUpdateProcessingListener(updateVmsProcessing);
-        assertTrue(host.removeOnUpdateProcessingListener(updateVmsProcessing));
+        host.listeners().addOnUpdateProcessing(updateVmsProcessing);
+        assertTrue(host.listeners().removeOnUpdateProcessing(updateVmsProcessing));
 
-        host.addOnUpdateProcessingListener(e -> {});
+        host.listeners().addOnUpdateProcessing(e -> {});
     }
 
     @Test

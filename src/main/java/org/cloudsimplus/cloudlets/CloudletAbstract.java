@@ -74,16 +74,16 @@ public non-sealed abstract class CloudletAbstract extends CustomerEntityAbstract
     @Getter(AccessLevel.NONE)
     private List<String> requiredFiles = List.of();
 
-    /// @see #addOnStartListener(EventListener)
-    @Getter(AccessLevel.NONE)
+    /// @see CloudletListeners#addOnStart(EventListener)
+    @Getter(AccessLevel.PACKAGE) @Setter(AccessLevel.PACKAGE)
     private List<EventListener<CloudletVmEventInfo>> onStartListeners = List.of();
 
-    /// @see #addOnFinishListener(EventListener)
-    @Getter(AccessLevel.NONE)
+    /// @see CloudletListeners#addOnFinish(EventListener)
+    @Getter(AccessLevel.PACKAGE) @Setter(AccessLevel.PACKAGE)
     private List<EventListener<CloudletVmEventInfo>> onFinishListeners = List.of();
 
-    /// @see #addOnUpdateProcessingListener(EventListener)
-    @Getter(AccessLevel.NONE)
+    /// @see CloudletListeners#addOnUpdateProcessing(EventListener)
+    @Getter(AccessLevel.PACKAGE) @Setter(AccessLevel.PACKAGE)
     private List<EventListener<CloudletVmEventInfo>> onUpdateProcessingListeners = List.of();
 
     /// Creates a Cloudlet with no priority or id. The id is defined when the Cloudlet is
@@ -188,57 +188,8 @@ public non-sealed abstract class CloudletAbstract extends CustomerEntityAbstract
     }
 
     @Override
-    public Cloudlet addOnUpdateProcessingListener(@NonNull final EventListener<CloudletVmEventInfo> listener) {
-        onUpdateProcessingListeners = Listeners.add(onUpdateProcessingListeners, listener);
-        return this;
-    }
-
-    @Override
-    public boolean removeOnUpdateProcessingListener(@NonNull final EventListener<CloudletVmEventInfo> listener) {
-        final var oldList = onUpdateProcessingListeners;
-        onUpdateProcessingListeners = Listeners.remove(oldList, listener);
-        return onUpdateProcessingListeners.size() != oldList.size();
-    }
-
-    @Override
-    public Cloudlet addOnStartListener(@NonNull final EventListener<CloudletVmEventInfo> listener) {
-        onStartListeners = Listeners.add(onStartListeners, listener);
-        return this;
-    }
-
-    @Override
-    public boolean removeOnStartListener(@NonNull final EventListener<CloudletVmEventInfo> listener) {
-        final var oldList = onStartListeners;
-        onStartListeners = Listeners.remove(oldList, listener);
-        return onStartListeners.size() != oldList.size();
-    }
-
-    @Override
-    public Cloudlet addOnFinishListener(@NonNull final EventListener<CloudletVmEventInfo> listener) {
-        if(listener.equals(EventListener.NULL)){
-            return this;
-        }
-
-        onFinishListeners = Listeners.add(onFinishListeners, listener);
-        return this;
-    }
-
-    @Override
-    public boolean removeOnFinishListener(final EventListener<CloudletVmEventInfo> listener) {
-        final var oldList = onFinishListeners;
-        onFinishListeners = Listeners.remove(oldList, listener);
-        return onFinishListeners.size() != oldList.size();
-    }
-
-    /// Notifies all registered listeners about the update on Cloudlet processing.
-    ///
-    /// **This method is used just internally and must not be called directly.**
-    ///
-    /// @param time the time the event happened
-    public void notifyOnUpdateProcessingListeners(final double time) {
-        for (final var listener : onUpdateProcessingListeners) {
-            listener.update(CloudletVmEventInfo.of(listener, time, this));
-        }
+    public CloudletListeners listeners() {
+        return new CloudletListeners(this);
     }
 
     private void setFinishTime(){
@@ -334,21 +285,12 @@ public non-sealed abstract class CloudletAbstract extends CustomerEntityAbstract
 
     @Override
     protected void onStart(final double time) {
-        if(vm != Vm.NULL){
-            for (final var listener : onStartListeners) {
-                listener.update(CloudletVmEventInfo.of(listener, time, this));
-            }
-        }
+        CloudletListeners.notifyOnStart(this, time);
     }
 
     @Override
     protected void onFinish(final double time) {
-        final var listeners = onFinishListeners;
-        // Cleared before notifying, so that a listener added during notification is kept for a next finish
-        onFinishListeners = List.of();
-        for (final var listener : listeners) {
-            listener.update(CloudletVmEventInfo.of(listener, this));
-        }
+        CloudletListeners.notifyOnFinish(this);
     }
 
     @Override

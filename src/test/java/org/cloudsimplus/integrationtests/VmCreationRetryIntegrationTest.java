@@ -75,7 +75,7 @@ final class VmCreationRetryIntegrationTest {
 
         final var vmList = createVms();
         failedVm = vmList.getLast();
-        failedVm.addOnCreationFailureListener(evt -> creationFailures.incrementAndGet());
+        failedVm.listeners().addOnCreationFailure(evt -> creationFailures.incrementAndGet());
         broker.submitVmList(vmList);
         broker.submitCloudletList(List.of(createCloudlet(vmList.getFirst())));
     }

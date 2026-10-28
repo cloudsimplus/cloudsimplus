@@ -76,9 +76,9 @@ public class CloudletTest {
 
         assertEquals(Vm.NULL, Cloudlet.NULL.getVm());
         assertFalse(Cloudlet.NULL.hasRequiresFiles());
-        assertFalse(Cloudlet.NULL.removeOnFinishListener(null));
+        assertFalse(Cloudlet.NULL.listeners().removeOnFinish(null));
         final EventListener listener = Mockito.mock(EventListener.class);
-        Cloudlet.NULL.addOnFinishListener(listener);
+        Cloudlet.NULL.listeners().addOnFinish(listener);
 
         assertFalse(Cloudlet.NULL.isBoundToVm());
     }

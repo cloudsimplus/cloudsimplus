@@ -34,7 +34,7 @@ import java.util.function.Consumer;
 ///
 /// @since CloudSim Plus 6.0.0
 /// @author Manoel Campos da Silva Filho
-/// @see Simulation#addOnClockTickListener(EventListener)
+/// @see SimulationListeners#addOnClockTick(EventListener)
 final class CircularTimeQueue {
     /// The simulation clock time queue.
     /// It's an array that works as a circular queue with capacity for just 2 elements

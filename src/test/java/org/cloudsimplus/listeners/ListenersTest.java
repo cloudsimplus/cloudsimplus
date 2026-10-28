@@ -71,6 +71,51 @@ class ListenersTest {
     }
 
     @Test
+    void addNullObjectListenerReturnsSameInstance() {
+        final List<EventListener<EventInfo>> listeners = List.of();
+        assertSame(listeners, Listeners.add(listeners, EventListener.NULL));
+    }
+
+    @Test
+    void onceReturnsOneTimeListenerWithoutWrapper() {
+        final OneTimeEventListener<EventInfo> raw = info -> {};
+        final var listener = EventListener.once(raw);
+        assertSame(raw, listener);
+        assertTrue(listener.isOneTime());
+    }
+
+    @Test
+    void regularListenerIsNotOneTime() {
+        final EventListener<EventInfo> listener = info -> {};
+        assertFalse(listener.isOneTime());
+        assertFalse(EventListener.NULL.isOneTime());
+    }
+
+    @Test
+    void removeIfOneTimeRemovesOnlyOneTimeListener() {
+        final EventListener<EventInfo> permanent = info -> {};
+        final var oneTime = EventListener.once(info -> {});
+        final List<EventListener<EventInfo>> listeners = List.of(permanent, oneTime);
+
+        assertSame(listeners, Listeners.removeIfOneTime(listeners, permanent));
+        assertEquals(List.of(permanent), Listeners.removeIfOneTime(listeners, oneTime));
+    }
+
+    @Test
+    void usageExampleNotifiesOneTimeListenerOnlyOnceAndKeepsPermanentListener() {
+        final var example = new ListenersUsageExample();
+        final var calls = new ArrayList<String>();
+        example.addOnEventListener(EventListener.once(info -> calls.add(FIRST)));
+        example.addOnEventListener(info -> calls.add(SECOND));
+
+        example.notifyOnEventListeners(0);
+        assertEquals(List.of(FIRST, SECOND), calls);
+
+        example.notifyOnEventListeners(1);
+        assertEquals(List.of(FIRST, SECOND, SECOND), calls);
+    }
+
+    @Test
     void removeKeepsOrderOfRemainingListeners() {
         assertEquals(List.of(FIRST, THIRD), Listeners.remove(List.of(FIRST, SECOND, THIRD), SECOND));
     }
@@ -132,5 +177,66 @@ class ListenersTest {
 
         assertTrue(example.removeOnEventListener(listener));
         assertFalse(example.removeOnEventListener(listener));
+    }
+
+    @Test
+    void addAllToEmptyListReturnsSharedListItself() {
+        final var shared = List.of(FIRST, SECOND);
+        assertSame(shared, Listeners.addAll(List.of(), shared));
+    }
+
+    @Test
+    void addAllCopiesMutableList() {
+        final var mutable = new ArrayList<>(List.of(FIRST));
+        final var listeners = Listeners.addAll(List.of(), mutable);
+        mutable.add(SECOND);
+
+        assertEquals(List.of(FIRST), listeners);
+        assertThrows(UnsupportedOperationException.class, () -> listeners.add(THIRD));
+    }
+
+    @Test
+    void addAllToNonEmptyListAddsMissingListenersAtTheEnd() {
+        assertEquals(List.of(FIRST, SECOND, THIRD), Listeners.addAll(List.of(FIRST, SECOND), List.of(SECOND, THIRD)));
+    }
+
+    @Test
+    void addAllWithListenersAlreadyInListReturnsSameInstance() {
+        final var listeners = List.of(FIRST, SECOND);
+        assertSame(listeners, Listeners.addAll(listeners, List.of(SECOND, FIRST)));
+    }
+
+    @Test
+    void addAllDoesNotChangeGivenLists() {
+        final var listeners = List.of(FIRST);
+        final var shared = List.of(SECOND);
+        Listeners.addAll(listeners, shared);
+
+        assertEquals(List.of(FIRST), listeners);
+        assertEquals(List.of(SECOND), shared);
+    }
+
+    @Test
+    void listOfNullListenerReturnsEmptyList() {
+        assertTrue(Listeners.listOf(EventListener.NULL).isEmpty());
+    }
+
+    @Test
+    void listOfReturnsListWithListener() {
+        final EventListener<EventInfo> listener = info -> {};
+        assertEquals(List.of(listener), Listeners.listOf(listener));
+    }
+
+    @Test
+    void usageExampleObjectsShareListAndRemovingFromOneDoesNotAffectOther() {
+        final EventListener<EventInfo> listener = info -> {};
+        final List<EventListener<EventInfo>> shared = List.of(listener);
+        final var first = new ListenersUsageExample().addOnEventListeners(shared);
+        final var second = new ListenersUsageExample().addOnEventListeners(shared);
+        assertSame(first.getOnEventListeners(), second.getOnEventListeners());
+
+        assertTrue(first.removeOnEventListener(listener));
+        assertTrue(first.getOnEventListeners().isEmpty());
+        assertSame(shared, second.getOnEventListeners());
     }
 }

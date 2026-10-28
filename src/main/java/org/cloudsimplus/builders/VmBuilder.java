@@ -29,6 +29,7 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.cloudsimplus.brokers.DatacenterBrokerSimple;
 import org.cloudsimplus.listeners.EventListener;
+import org.cloudsimplus.listeners.Listeners;
 import org.cloudsimplus.listeners.VmDatacenterEventInfo;
 import org.cloudsimplus.listeners.VmHostEventInfo;
 import org.cloudsimplus.resources.CoreCapacity;
@@ -64,10 +65,12 @@ public class VmBuilder implements Builder {
     private int numberOfCreatedVms;
     private final DatacenterBrokerSimple broker;
     @Setter @Nullable private Supplier<CloudletScheduler> cloudletSchedulerSupplier;
-    @Setter @NonNull private EventListener<VmHostEventInfo> onHostPlacementListener = EventListener.NULL;
-    @Setter @NonNull private EventListener<VmHostEventInfo> onHostRemovalListener = EventListener.NULL;
-    @Setter @NonNull private EventListener<VmDatacenterEventInfo> onVmCreationFailureListener = EventListener.NULL;
-    @Setter @NonNull private EventListener<VmHostEventInfo> onUpdateVmProcessingListener = EventListener.NULL;
+    /* Each list is created once (in its setter) and shared by all VMs created by this builder,
+     * so each VM doesn't create its own list. */
+    private List<EventListener<VmHostEventInfo>> onHostPlacementListeners = List.of();
+    private List<EventListener<VmHostEventInfo>> onHostRemovalListeners = List.of();
+    private List<EventListener<VmDatacenterEventInfo>> onVmCreationFailureListeners = List.of();
+    private List<EventListener<VmHostEventInfo>> onUpdateVmProcessingListeners = List.of();
 
     public VmBuilder(final DatacenterBrokerSimple broker) {
         this.broker = Objects.requireNonNull(broker);
@@ -91,14 +94,55 @@ public class VmBuilder implements Builder {
                 vm.setCloudletScheduler(cloudletSchedulerSupplier.get());
             }
 
-            vm.addOnHostPlacementListener(onHostPlacementListener)
-              .addOnHostRemovalListener(onHostRemovalListener)
-              .addOnCreationFailureListener(onVmCreationFailureListener)
-              .addOnUpdateProcessingListener(onUpdateVmProcessingListener)
-              .setBroker(broker);
+            vm.listeners()
+              .addOnHostPlacement(onHostPlacementListeners)
+              .addOnHostRemoval(onHostRemovalListeners)
+              .addOnCreationFailure(onVmCreationFailureListeners)
+              .addOnUpdateProcessing(onUpdateVmProcessingListeners);
+            vm.setBroker(broker);
             vms.add(vm);
         }
         broker.submitVmList(vms);
+        return this;
+    }
+
+    /// Sets a listener to be added to each VM created by this builder.
+    /// All VMs share the same list with this listener, to reduce memory use.
+    /// @param listener the listener to set
+    /// @return this builder
+    /// @see VmListeners#addOnHostPlacement(List)
+    public VmBuilder setOnHostPlacementListener(final EventListener<VmHostEventInfo> listener) {
+        this.onHostPlacementListeners = Listeners.listOf(listener);
+        return this;
+    }
+
+    /// Sets a listener to be added to each VM created by this builder.
+    /// All VMs share the same list with this listener, to reduce memory use.
+    /// @param listener the listener to set
+    /// @return this builder
+    /// @see VmListeners#addOnHostRemoval(List)
+    public VmBuilder setOnHostRemovalListener(final EventListener<VmHostEventInfo> listener) {
+        this.onHostRemovalListeners = Listeners.listOf(listener);
+        return this;
+    }
+
+    /// Sets a listener to be added to each VM created by this builder.
+    /// All VMs share the same list with this listener, to reduce memory use.
+    /// @param listener the listener to set
+    /// @return this builder
+    /// @see VmListeners#addOnCreationFailure(List)
+    public VmBuilder setOnVmCreationFailureListener(final EventListener<VmDatacenterEventInfo> listener) {
+        this.onVmCreationFailureListeners = Listeners.listOf(listener);
+        return this;
+    }
+
+    /// Sets a listener to be added to each VM created by this builder.
+    /// All VMs share the same list with this listener, to reduce memory use.
+    /// @param listener the listener to set
+    /// @return this builder
+    /// @see VmListeners#addOnUpdateProcessing(List)
+    public VmBuilder setOnUpdateVmProcessingListener(final EventListener<VmHostEventInfo> listener) {
+        this.onUpdateVmProcessingListeners = Listeners.listOf(listener);
         return this;
     }
 

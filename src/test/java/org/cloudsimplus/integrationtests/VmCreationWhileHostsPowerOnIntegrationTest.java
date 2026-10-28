@@ -113,7 +113,7 @@ final class VmCreationWhileHostsPowerOnIntegrationTest {
         final var slowHost = createHost(HOST_STARTUP_DELAY);
         final var fastHost = createHost(SHORT_HOST_STARTUP_DELAY);
         final var dc = DatacenterSimple.of(simulation, List.of(slowHost, fastHost));
-        fastHost.addOnStartupListener(info -> {
+        fastHost.listeners().addOnStartup(info -> {
             //Just the slow Host is still powering on
             assertEquals(1, dc.getPoweringOnHostsNumber());
             powerOffHostAndSubmitVms(info.getHost());
@@ -148,7 +148,7 @@ final class VmCreationWhileHostsPowerOnIntegrationTest {
         final var list = new ArrayList<Vm>(VMS);
         for (int i = 0; i < VMS; i++) {
             final var vm = VmSimple.of(new CoreCapacity(VM_CORES, MIPS));
-            vm.addOnCreationFailureListener(evt -> creationFailures.incrementAndGet());
+            vm.listeners().addOnCreationFailure(evt -> creationFailures.incrementAndGet());
             list.add(vm);
         }
 

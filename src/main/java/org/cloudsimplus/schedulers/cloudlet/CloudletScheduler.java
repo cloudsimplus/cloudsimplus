@@ -226,16 +226,8 @@ public sealed interface CloudletScheduler
     /// Clears the internal state of the scheduler
     void clear();
 
-    /// Adds a listener object that will be notified every time
-    /// a [CloudletScheduler] is not able to allocate the amount of resource a [Cloudlet]
-    /// is requesting, due to lack of available capacity.
+    /// {@return an object to manage and notify the [EventListener]s of this CloudletScheduler}
     ///
-    /// @param listener the Listener to add
-    /// @return this scheduler
-    CloudletScheduler addOnCloudletResourceShortage(EventListener<CloudletResourceShortageEventInfo> listener);
-
-    /// Removes a Listener object from the registered List.
-    /// @param listener the Listener to remove
-    /// @return true if the Listener was removed, false otherwise
-    boolean removeOnCloudletResourceShortage(EventListener<CloudletResourceShortageEventInfo> listener);
+    /// @see CloudletSchedulerListeners
+    CloudletSchedulerListeners listeners();
 }

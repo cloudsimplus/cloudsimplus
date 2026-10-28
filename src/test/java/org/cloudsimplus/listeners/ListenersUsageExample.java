@@ -23,8 +23,6 @@
  */
 package org.cloudsimplus.listeners;
 
-import lombok.NonNull;
-
 import java.util.List;
 
 /// Shows how a class uses [Listeners] to store its listeners in immutable lists.
@@ -38,12 +36,18 @@ final class ListenersUsageExample {
     // @start region="usage"
     private List<EventListener<EventInfo>> onEventListeners = List.of();
 
-    ListenersUsageExample addOnEventListener(@NonNull final EventListener<EventInfo> listener) {
+    ListenersUsageExample addOnEventListener(final EventListener<EventInfo> listener) {
         onEventListeners = Listeners.add(onEventListeners, listener);
         return this;
     }
 
-    boolean removeOnEventListener(@NonNull final EventListener<EventInfo> listener) {
+    // Receives a list that may be shared by many objects
+    ListenersUsageExample addOnEventListeners(final List<EventListener<EventInfo>> listeners) {
+        onEventListeners = Listeners.addAll(onEventListeners, listeners);
+        return this;
+    }
+
+    boolean removeOnEventListener(final EventListener<EventInfo> listener) {
         final var oldList = onEventListeners;
         onEventListeners = Listeners.remove(oldList, listener);
         return onEventListeners.size() != oldList.size();
@@ -51,8 +55,13 @@ final class ListenersUsageExample {
 
     void notifyOnEventListeners(final double time) {
         for (final var listener : onEventListeners) { // for-each: reads the field once
+            onEventListeners = Listeners.removeIfOneTime(onEventListeners, listener);
             listener.update(EventInfo.of(listener, time));
         }
     }
     // @end
+
+    List<EventListener<EventInfo>> getOnEventListeners() {
+        return onEventListeners;
+    }
 }

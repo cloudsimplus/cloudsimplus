@@ -25,6 +25,7 @@ package org.cloudsimplus.listeners;
 
 import org.cloudsimplus.cloudlets.Cloudlet;
 import org.cloudsimplus.hosts.Host;
+import org.cloudsimplus.hosts.HostListeners;
 import org.cloudsimplus.vms.Vm;
 
 /// An interface that represents data to be passed
@@ -34,7 +35,7 @@ import org.cloudsimplus.vms.Vm;
 /// @author Manoel Campos da Silva Filho
 /// @since CloudSim Plus 1.0
 ///
-/// @see Host#removeOnUpdateProcessingListener(EventListener)
+/// @see HostListeners#removeOnUpdateProcessing(EventListener)
 public interface HostUpdatesVmsProcessingEventInfo extends HostEventInfo  {
     /// @return the expected completion time of the next finishing cloudlet
     double getNextCloudletCompletionTime();
