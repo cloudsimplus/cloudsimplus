@@ -79,30 +79,7 @@ final class VmNull implements Vm {
     @Override public Host getHost() {
         return Host.NULL;
     }
-    @Override public Vm addOnHostPlacementListener(EventListener<VmHostEventInfo> listener) {
-        return this;
-    }
-    @Override public Vm addOnMigrationStartListener(EventListener<VmHostEventInfo> listener) { return this; }
-    @Override public Vm addOnMigrationFinishListener(EventListener<VmHostEventInfo> listener) { return this; }
-    @Override public Vm addOnHostRemovalListener(EventListener<VmHostEventInfo> listener) { return this; }
-    @Override public Vm addOnCreationFailureListener(EventListener<VmDatacenterEventInfo> listener) {
-        return this;
-    }
-    @Override public Vm addOnUpdateProcessingListener(EventListener<VmHostEventInfo> listener) {
-        return this;
-    }
-    @Override public boolean removeOnMigrationStartListener(EventListener<VmHostEventInfo> listener) { return false; }
-    @Override public boolean removeOnMigrationFinishListener(EventListener<VmHostEventInfo> listener) { return false; }
-    @Override public boolean removeOnUpdateProcessingListener(EventListener<VmHostEventInfo> listener) {
-        return false;
-    }
-    @Override public boolean removeOnHostPlacementListener(EventListener<VmHostEventInfo> listener) {
-        return false;
-    }
-    @Override public boolean removeOnHostRemovalListener(EventListener<VmHostEventInfo> listener) {
-        return false;
-    }
-    @Override public boolean removeOnCreationFailureListener(EventListener<VmDatacenterEventInfo> listener) { return false; }
+    @Override public VmListeners listeners() { return VmListeners.NULL; }
     @Override public Resource getRam() {
         return Resource.NULL;
     }

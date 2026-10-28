@@ -476,44 +476,10 @@ public sealed interface Cloudlet
     /// @return
     Startable setStartTime(double clockTime);
 
-    /// Adds a Listener object that will be notified when
-    /// the Cloudlet starts executing in some [Vm].
+    /// {@return an object to manage and notify the [EventListener]s of this Cloudlet}
     ///
-    /// @param listener the listener to add
-    Cloudlet addOnStartListener(EventListener<CloudletVmEventInfo> listener);
-
-    /// Removes a listener from the onStartListener List.
-    ///
-    /// @param listener the listener to remove
-    /// @return true if the listener was found and removed; false otherwise
-    boolean removeOnStartListener(EventListener<CloudletVmEventInfo> listener);
-
-    /// Adds a Listener object that will be notified every time
-    /// the processing of the Cloudlet is updated in its [Vm].
-    ///
-    /// @param listener the listener to add
-    /// @see #getFinishedLengthSoFar()
-    Cloudlet addOnUpdateProcessingListener(EventListener<CloudletVmEventInfo> listener);
-
-    /// Removes a listener from the onUpdateCloudletProcessingListener List.
-    ///
-    /// @param listener the listener to remove
-    /// @return true if the listener was found and removed; false otherwise
-    boolean removeOnUpdateProcessingListener(EventListener<CloudletVmEventInfo> listener);
-
-    /// Adds a Listener object that will be notified when a cloudlet finishes
-    /// its execution at a given [Vm].
-    ///
-    /// @param listener the listener to add
-    /// @return
-    Cloudlet addOnFinishListener(EventListener<CloudletVmEventInfo> listener);
-
-    /// Removes a listener from the onCloudletFinishEventListener List
-    ///
-    /// @param listener the listener to remove
-    /// @return true if the listener was found and removed; false otherwise
-    /// @see #addOnFinishListener(EventListener)
-    boolean removeOnFinishListener(EventListener<CloudletVmEventInfo> listener);
+    /// @see CloudletListeners
+    CloudletListeners listeners();
 
     /// Gets the [DatacenterBroker] that represents the owner of this Cloudlet.
     ///

@@ -23,6 +23,7 @@
  */
 package org.cloudsimplus.vms;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
@@ -77,11 +78,22 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
     protected final Processor processor;
     /// @see #getStateHistory()
     protected final List<VmStateHistoryEntry> stateHistory;
+    @Getter(AccessLevel.PACKAGE) @Setter(AccessLevel.PACKAGE)
     private List<EventListener<VmHostEventInfo>> onMigrationStartListeners = List.of();
+
+    @Getter(AccessLevel.PACKAGE) @Setter(AccessLevel.PACKAGE)
     private List<EventListener<VmHostEventInfo>> onMigrationFinishListeners = List.of();
+
+    @Getter(AccessLevel.PACKAGE) @Setter(AccessLevel.PACKAGE)
     private List<EventListener<VmHostEventInfo>> onHostPlacementListeners = List.of();
+
+    @Getter(AccessLevel.PACKAGE) @Setter(AccessLevel.PACKAGE)
     private List<EventListener<VmHostEventInfo>> onHostRemovalListeners = List.of();
+
+    @Getter(AccessLevel.PACKAGE) @Setter(AccessLevel.PACKAGE)
     private List<EventListener<VmHostEventInfo>> onUpdateProcessingListeners = List.of();
+
+    @Getter(AccessLevel.PACKAGE) @Setter(AccessLevel.PACKAGE)
     private List<EventListener<VmDatacenterEventInfo>> onCreationFailureListeners = List.of();
 
     @Setter @NonNull
@@ -266,7 +278,7 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
     }
 
     private double processing(final double currentTime, final CoreCapacity mipsShare) {
-        notifyOnUpdateProcessingListeners();
+        VmListeners.notifyOnUpdateProcessing(this);
         return isStartingUp() ? bootProcessing() : cloudletsProcessing(currentTime, mipsShare);
     }
 
@@ -434,7 +446,7 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
 
     @Override
     protected void onFinish(final double time) {
-        notifyOnHostRemovalListeners(host);
+        VmListeners.notifyOnHostRemoval(this, host);
     }
 
     /// Checks if the VM has ever started some Cloudlet.
@@ -513,24 +525,6 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
         return this;
     }
 
-    /// Notifies the listeners when the VM starts migration to a target Host.
-    ///
-    /// @param targetHost the Host the VM is migrating to
-    public void updateMigrationStartListeners(final Host targetHost) {
-        for (final var listener : onMigrationStartListeners) {
-            listener.update(VmHostEventInfo.of(listener, this, targetHost));
-        }
-    }
-
-    /// Notifies the listeners when the VM finishes migration to a target Host.
-    ///
-    /// @param targetHost the Host the VM has just migrated to
-    public void updateMigrationFinishListeners(final Host targetHost) {
-        for (final var listener : onMigrationFinishListeners) {
-            listener.update(VmHostEventInfo.of(listener, this, targetHost));
-        }
-    }
-
     @Override
     public boolean isSuitableForCloudlet(final Cloudlet cloudlet) {
         return processor.getCores() >= cloudlet.getRequiredCores() &&
@@ -599,79 +593,8 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
     }
 
     @Override
-    public Vm addOnHostPlacementListener(@NonNull final EventListener<VmHostEventInfo> listener) {
-        onHostPlacementListeners = Listeners.add(onHostPlacementListeners, listener);
-        return this;
-    }
-
-    @Override
-    public Vm addOnMigrationStartListener(@NonNull final EventListener<VmHostEventInfo> listener) {
-        onMigrationStartListeners = Listeners.add(onMigrationStartListeners, listener);
-        return this;
-    }
-
-    @Override
-    public Vm addOnMigrationFinishListener(@NonNull final EventListener<VmHostEventInfo> listener) {
-        onMigrationFinishListeners = Listeners.add(onMigrationFinishListeners, listener);
-        return this;
-    }
-
-    @Override
-    public Vm addOnHostRemovalListener(@NonNull final EventListener<VmHostEventInfo> listener) {
-        if (listener.equals(EventListener.NULL)) {
-            return this;
-        }
-
-        onHostRemovalListeners = Listeners.add(onHostRemovalListeners, listener);
-        return this;
-    }
-
-    @Override
-    public Vm addOnCreationFailureListener(@NonNull final EventListener<VmDatacenterEventInfo> listener) {
-        if (listener.equals(EventListener.NULL)) {
-            return this;
-        }
-
-        onCreationFailureListeners = Listeners.add(onCreationFailureListeners, listener);
-        return this;
-    }
-
-    @Override
-    public Vm addOnUpdateProcessingListener(@NonNull final EventListener<VmHostEventInfo> listener) {
-        if (listener.equals(EventListener.NULL)) {
-            return this;
-        }
-
-        onUpdateProcessingListeners = Listeners.add(onUpdateProcessingListeners, listener);
-        return this;
-    }
-
-    @Override
-    public boolean removeOnCreationFailureListener(@NonNull final EventListener<VmDatacenterEventInfo> listener) {
-        final var oldList = onCreationFailureListeners;
-        onCreationFailureListeners = Listeners.remove(oldList, listener);
-        return onCreationFailureListeners.size() != oldList.size();
-    }
-
-    @Override
-    public boolean removeOnUpdateProcessingListener(@NonNull final EventListener<VmHostEventInfo> listener) {
-        final var oldList = onUpdateProcessingListeners;
-        onUpdateProcessingListeners = Listeners.remove(oldList, listener);
-        return onUpdateProcessingListeners.size() != oldList.size();
-    }
-
-    @Override
-    public boolean removeOnHostPlacementListener(@NonNull final EventListener<VmHostEventInfo> listener) {
-        final var oldList = onHostPlacementListeners;
-        onHostPlacementListeners = Listeners.remove(oldList, listener);
-        return onHostPlacementListeners.size() != oldList.size();
-    }
-
-    @Override
-    public boolean removeOnHostRemovalListener(@NonNull final EventListener<VmHostEventInfo> listener) {
-        final var oldList = onHostRemovalListeners;
-        onHostRemovalListeners = Listeners.remove(oldList, listener);
-        return onHostRemovalListeners.size() != oldList.size();
+    public VmListeners listeners() {
+        return new VmListeners(this);
     }
 
     @Override
@@ -703,53 +626,6 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
     @Override
     public boolean isSubmissionDelayed() {
         return submissionDelay > 0;
-    }
-
-    /// Notifies all registered listeners when the [Vm] is placed into a [Host].
-    public void notifyOnHostPlacementListeners() {
-        for (final var listener : onHostPlacementListeners) {
-            listener.update(VmHostEventInfo.of(listener, this));
-        }
-    }
-
-    /// Notifies all registered listeners when the [Vm] is moved/removed from a [Host].
-    ///
-    /// @param deallocatedHost the [Host] the [Vm] was moved/removed from
-    private void notifyOnHostRemovalListeners(@NonNull final Host deallocatedHost) {
-        for (final var listener : onHostRemovalListeners) {
-            listener.update(VmHostEventInfo.of(listener, this, deallocatedHost));
-        }
-    }
-
-    /// Notifies all registered listeners when the processing of the Vm is updated in its [Host].
-    private void notifyOnUpdateProcessingListeners() {
-        for (final var listener : onUpdateProcessingListeners) {
-            listener.update(VmHostEventInfo.of(listener, this));
-        }
-    }
-
-    /// Notifies all registered listeners when the Vm fail in
-    /// being placed for lack of a [Host] with enough resources in a specific [Datacenter].
-    ///
-    /// @param failedDatacenter the Datacenter where the VM creation failed
-    public void notifyOnCreationFailureListeners(@NonNull final Datacenter failedDatacenter) {
-        for (final var listener : onCreationFailureListeners) {
-            listener.update(VmDatacenterEventInfo.of(listener, this, failedDatacenter));
-        }
-    }
-
-    @Override
-    public boolean removeOnMigrationStartListener(@NonNull final EventListener<VmHostEventInfo> listener) {
-        final var oldList = onMigrationStartListeners;
-        onMigrationStartListeners = Listeners.remove(oldList, listener);
-        return onMigrationStartListeners.size() != oldList.size();
-    }
-
-    @Override
-    public boolean removeOnMigrationFinishListener(@NonNull final EventListener<VmHostEventInfo> listener) {
-        final var oldList = onMigrationFinishListeners;
-        onMigrationFinishListeners = Listeners.remove(oldList, listener);
-        return onMigrationFinishListeners.size() != oldList.size();
     }
 
     @Override
@@ -786,7 +662,7 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
         }
 
         vmScaling.setVm(this);
-        this.addOnUpdateProcessingListener(vmScaling::requestUpScalingIfPredicateMatches);
+        this.listeners().addOnUpdateProcessing(vmScaling::requestUpScalingIfPredicateMatches);
     }
 
     @Override

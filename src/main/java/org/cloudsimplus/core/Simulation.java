@@ -159,56 +159,10 @@ public sealed interface Simulation permits CloudSim, SimulationNull {
     /// @return the current number of entities in the simulation.
     int getNumEntities();
 
-    /// Removes a listener from the onEventProcessingListener List.
+    /// {@return an object to manage and notify the [EventListener]s of this Simulation}
     ///
-    /// @param listener the listener to remove
-    /// @return true if the listener was found and removed, false otherwise
-    boolean removeOnEventProcessingListener(EventListener<SimEvent> listener);
-
-    /// Adds an [EventListener] object that will be notified when the simulation is paused.
-    /// When this Listener is notified, it will receive an [EventInfo] informing
-    /// the time the pause occurred.
-    ///
-    /// This object is just information about the event
-    /// that happened. In fact, it isn't generated an actual [SimEvent] for a pause event
-    /// because there is no need for that.
-    ///
-    /// @param listener the event listener to add
-    /// @returnn this simulation
-    Simulation addOnSimulationPauseListener(EventListener<EventInfo> listener);
-
-    Simulation addOnSimulationStartListener(EventListener<EventInfo> listener);
-
-    /// Removes a listener from the onSimulationPausedListener List.
-    ///
-    /// @param listener the listener to remove
-    /// @return true if the listener was found and removed, false otherwise
-     boolean removeOnSimulationPauseListener(EventListener<EventInfo> listener);
-
-    /// Adds a [EventListener] object that will be notified when any event
-    /// is processed by CloudSim Plus. When this Listener is notified, it will receive
-    /// the [SimEvent] that was processed.
-    ///
-    /// @param listener the event listener to add
-    /// @return this simulation
-    Simulation addOnEventProcessingListener(EventListener<SimEvent> listener);
-
-    /// Adds a [EventListener] object that will be notified every time when the
-    /// simulation clock advances.
-    /// **WARNING:** Notifications are sent in an integer interval to avoid notification flood.
-    /// Thus, if the clock changes, for instance, from 1.0, to 1.1, 2.0, 2.1, 2.2, 2.5 and then 3.2,
-    /// notifications will just be sent for the times 1, 2 and 3 that represent the integer
-    /// part of the simulation time.
-    ///
-    /// @param listener the event listener to add
-    /// @return this simulation
-    Simulation addOnClockTickListener(EventListener<EventInfo> listener);
-
-    /// Removes a listener from the onClockTickListener List.
-    ///
-    /// @param listener the listener to remove
-    /// @return true if the listener was found and removed, false otherwise
-    boolean removeOnClockTickListener(EventListener<? extends EventInfo> listener);
+    /// @see SimulationListeners
+    SimulationListeners listeners();
 
     /// Pauses an entity for some time.
     /// @param src   entity to be paused

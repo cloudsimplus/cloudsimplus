@@ -108,8 +108,7 @@ final class CloudletNull implements Cloudlet {
     @Override public Cloudlet setUtilizationModelCpu(UtilizationModel utilizationModelCpu) { return this; }
     @Override public Cloudlet setUtilizationModelRam(UtilizationModel utilizationModelRam) { return this; }
     @Override public Cloudlet setVm(Vm vm) { return this; }
-    @Override public boolean removeOnFinishListener(EventListener<CloudletVmEventInfo> listener) { return false; }
-    @Override public Cloudlet addOnFinishListener(EventListener<CloudletVmEventInfo> listener) { return Cloudlet.NULL; }
+    @Override public CloudletListeners listeners() { return CloudletListeners.NULL; }
     @Override public Simulation getSimulation() {
         return Simulation.NULL;
     }
@@ -117,8 +116,6 @@ final class CloudletNull implements Cloudlet {
     @Override public double getBrokerArrivalTime() { return 0; }
     @Override public double getCreationTime() { return 0; }
     @Override public double getCreationWaitTime() { return 0; }
-    @Override public boolean removeOnUpdateProcessingListener(EventListener<CloudletVmEventInfo> listener) { return false; }
-    @Override public Cloudlet addOnUpdateProcessingListener(EventListener<CloudletVmEventInfo> listener) { return Cloudlet.NULL; }
     @Override public double getSubmissionDelay() { return 0; }
     @Override public boolean isSubmissionDelayed() { return false; }
     @Override public void setSubmissionDelay(double submissionDelay) {/**/}
@@ -126,8 +123,6 @@ final class CloudletNull implements Cloudlet {
     @Override public int compareTo(Cloudlet cloudlet) { return 0; }
     @Override public String toString() { return "Cloudlet.NULL"; }
     @Override public Startable setStartTime(double time) { return this; }
-    @Override public Cloudlet addOnStartListener(EventListener<CloudletVmEventInfo> listener) { return this; }
-    @Override public boolean removeOnStartListener(EventListener<CloudletVmEventInfo> listener) { return false; }
     @Override public Cloudlet reset() { return this; }
     @Override public Cloudlet setLifeTime(final double lifeTime) { return this; }
     @Override public double getLifeTime() { return -1; }

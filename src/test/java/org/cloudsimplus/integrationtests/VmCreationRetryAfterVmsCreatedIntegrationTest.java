@@ -75,7 +75,7 @@ final class VmCreationRetryAfterVmsCreatedIntegrationTest {
 
         broker.submitVmList(List.of(firstVm));
         broker.submitCloudletList(List.of(createCloudlet(firstVm)));
-        simulation.addOnClockTickListener(this::submitLateVm);
+        simulation.listeners().addOnClockTick(this::submitLateVm);
 
         simulation.start();
 

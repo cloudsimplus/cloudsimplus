@@ -23,7 +23,9 @@
  */
 package org.cloudsimplus.core;
 
-import lombok.NonNull;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 import org.cloudsimplus.core.events.SimEvent;
 import org.cloudsimplus.listeners.EventInfo;
 import org.cloudsimplus.listeners.EventListener;
@@ -40,9 +42,16 @@ public class CloudSimPlus extends CloudSim {
 
     private final CircularTimeQueue clockQueue;
 
+    @Getter(AccessLevel.PACKAGE) @Setter(AccessLevel.PACKAGE)
     private List<EventListener<SimEvent>> onEventProcessingListeners = List.of();
+
+    @Getter(AccessLevel.PACKAGE) @Setter(AccessLevel.PACKAGE)
     private List<EventListener<EventInfo>> onSimulationPauseListeners = List.of();
+
+    @Getter(AccessLevel.PACKAGE) @Setter(AccessLevel.PACKAGE)
     private List<EventListener<EventInfo>> onClockTickListeners = List.of();
+
+    @Getter(AccessLevel.PACKAGE) @Setter(AccessLevel.PACKAGE)
     private List<EventListener<EventInfo>> onSimulationStartListeners = List.of();
 
     /// Creates a CloudSim Plus simulation.
@@ -88,16 +97,15 @@ public class CloudSimPlus extends CloudSim {
     @Override
     protected void processEvent(SimEvent evt) {
         super.processEvent(evt);
-        for (final var listener : onEventProcessingListeners) {
-            listener.update(evt);
-        }
+        SimulationListeners.notifyOnEventProcessing(this, evt);
     }
 
     @Override
     protected boolean doPause() {
         final boolean wasPaused = super.doPause();
-        if(wasPaused)
-            notifyEventListeners(onSimulationPauseListeners, clock());
+        if (wasPaused) {
+            SimulationListeners.notifyOnSimulationPause(this);
+        }
 
         return wasPaused;
     }
@@ -107,67 +115,17 @@ public class CloudSimPlus extends CloudSim {
     @Override
     protected double setClock(double newTime) {
         final double oldTime = super.setClock(newTime);
-        clockQueue.tryToUpdateListeners(previousTime -> notifyEventListeners(onClockTickListeners, previousTime));
+        clockQueue.tryToUpdateListeners(clock -> SimulationListeners.notifyOnClockTick(this, clock));
         return oldTime;
-    }
-
-    private void notifyEventListeners(final List<EventListener<EventInfo>> listeners, final double clock) {
-        for (final var listener : listeners) {
-            listener.update(EventInfo.of(listener, clock));
-        }
     }
 
     @Override
     protected void notifyOnSimulationStartListeners() {
-        if(!onSimulationStartListeners.isEmpty() && clock() > 0) {
-            notifyEventListeners(onSimulationStartListeners, clock());
-            //Since the simulation starts just once, clear the listeners to avoid them to be notified again
-            onSimulationStartListeners = List.of();
-        }
+        SimulationListeners.notifyOnSimulationStart(this);
     }
 
     @Override
-    public Simulation addOnSimulationPauseListener(@NonNull final EventListener<EventInfo> listener) {
-        onSimulationPauseListeners = Listeners.add(onSimulationPauseListeners, listener);
-        return this;
-    }
-
-    @Override
-    public Simulation addOnSimulationStartListener(@NonNull final EventListener<EventInfo> listener) {
-        onSimulationStartListeners = Listeners.add(onSimulationStartListeners, listener);
-        return this;
-    }
-
-    @Override
-    public boolean removeOnSimulationPauseListener(@NonNull final EventListener<EventInfo> listener) {
-        final var oldList = onSimulationPauseListeners;
-        onSimulationPauseListeners = Listeners.remove(oldList, listener);
-        return onSimulationPauseListeners.size() != oldList.size();
-    }
-
-    @Override
-    public Simulation addOnEventProcessingListener(@NonNull final EventListener<SimEvent> listener) {
-        onEventProcessingListeners = Listeners.add(onEventProcessingListeners, listener);
-        return this;
-    }
-
-    @Override
-    public boolean removeOnEventProcessingListener(@NonNull final EventListener<SimEvent> listener) {
-        final var oldList = onEventProcessingListeners;
-        onEventProcessingListeners = Listeners.remove(oldList, listener);
-        return onEventProcessingListeners.size() != oldList.size();
-    }
-
-    @Override
-    public Simulation addOnClockTickListener(@NonNull final EventListener<EventInfo> listener) {
-        onClockTickListeners = Listeners.add(onClockTickListeners, listener);
-        return this;
-    }
-
-    @Override
-    public boolean removeOnClockTickListener(@NonNull final EventListener<? extends EventInfo> listener) {
-        final var oldList = onClockTickListeners;
-        onClockTickListeners = Listeners.remove(oldList, listener);
-        return onClockTickListeners.size() != oldList.size();
+    public SimulationListeners listeners() {
+        return new SimulationListeners(this);
     }
 }

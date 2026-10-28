@@ -29,9 +29,11 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.cloudsimplus.brokers.DatacenterBrokerSimple;
 import org.cloudsimplus.cloudlets.Cloudlet;
+import org.cloudsimplus.cloudlets.CloudletListeners;
 import org.cloudsimplus.cloudlets.CloudletSimple;
 import org.cloudsimplus.listeners.CloudletVmEventInfo;
 import org.cloudsimplus.listeners.EventListener;
+import org.cloudsimplus.listeners.Listeners;
 import org.cloudsimplus.utilizationmodels.UtilizationModel;
 import org.cloudsimplus.utilizationmodels.UtilizationModelFull;
 import org.cloudsimplus.vms.Vm;
@@ -71,7 +73,9 @@ public class CloudletBuilder implements Builder {
     /// It must receive the length of the Cloudlet (in MI) and the number of CPU cores it will require.
     @Setter private BiFunction<Long, Long, Cloudlet> cloudletCreationFunction;
 
-    @Setter private EventListener<CloudletVmEventInfo> onCloudletFinishListener = EventListener.NULL;
+    /// Created once (in its setter) and shared by all Cloudlets created by this builder,
+    /// so each Cloudlet doesn't create its own list.
+    private List<EventListener<CloudletVmEventInfo>> onCloudletFinishListeners = List.of();
     @Setter @NonNull private List<String> requiredFiles;
 
 	public CloudletBuilder(final BrokerBuilderDecorator brokerBuilder, final DatacenterBrokerSimple broker) {
@@ -83,6 +87,16 @@ public class CloudletBuilder implements Builder {
 		this.requiredFiles = new ArrayList<>();
         this.createdCloudlets = 0;
         this.cloudletCreationFunction = this::defaultCloudletCreationFunction;
+    }
+
+    /// Sets a listener to be added to each Cloudlet created by this builder.
+    /// All Cloudlets share the same list with this listener, to reduce memory use.
+    /// @param listener the listener to set
+    /// @return this builder
+    /// @see CloudletListeners#addOnFinish(List)
+    public CloudletBuilder setOnCloudletFinishListener(final EventListener<CloudletVmEventInfo> listener) {
+        this.onCloudletFinishListeners = Listeners.listOf(listener);
+        return this;
     }
 
     public CloudletBuilder create(final int amount, final int initialId) {
@@ -119,7 +133,7 @@ public class CloudletBuilder implements Builder {
             cloudlet.setUtilizationModelCpu(utilizationModelCpu);
             cloudlet.setUtilizationModelRam(utilizationModelRam);
             cloudlet.setUtilizationModelBw(utilizationModelBw);
-            cloudlet.addOnFinishListener(onCloudletFinishListener);
+            cloudlet.listeners().addOnFinish(onCloudletFinishListeners);
             cloudlet.setId(cloudletId);
             cloudlet.setBroker(broker);
             cloudlet.addRequiredFiles(requiredFiles);

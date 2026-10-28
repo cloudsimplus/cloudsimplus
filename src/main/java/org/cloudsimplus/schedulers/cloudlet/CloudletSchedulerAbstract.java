@@ -10,6 +10,7 @@ package org.cloudsimplus.schedulers.cloudlet;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NonNull;
+import lombok.Setter;
 import org.cloudsimplus.cloudlets.Cloudlet;
 import org.cloudsimplus.cloudlets.CloudletAbstract;
 import org.cloudsimplus.cloudlets.CloudletExecution;
@@ -17,6 +18,7 @@ import org.cloudsimplus.core.CloudSimTag;
 import org.cloudsimplus.datacenters.Datacenter;
 import org.cloudsimplus.listeners.CloudletResourceShortageEventInfo;
 import org.cloudsimplus.listeners.EventListener;
+import org.cloudsimplus.listeners.Listeners;
 import org.cloudsimplus.resources.Bandwidth;
 import org.cloudsimplus.resources.Ram;
 import org.cloudsimplus.resources.ResourceManageable;
@@ -93,9 +95,9 @@ public abstract non-sealed class CloudletSchedulerAbstract implements CloudletSc
 
     private boolean cloudletSubmittedListEnabled;
 
-    /// @see #addOnCloudletResourceShortage(EventListener)
-    @Getter(AccessLevel.NONE)
-    private final List<EventListener<CloudletResourceShortageEventInfo>> resourceAllocationFailListeners;
+    /// @see CloudletSchedulerListeners#addOnResourceShortage(EventListener)
+    @Getter(AccessLevel.PACKAGE) @Setter(AccessLevel.PACKAGE)
+    private List<EventListener<CloudletResourceShortageEventInfo>> resourceAllocationFailListeners = List.of();
 
     /// Creates a CloudletScheduler.
     protected CloudletSchedulerAbstract() {
@@ -110,7 +112,6 @@ public abstract non-sealed class CloudletSchedulerAbstract implements CloudletSc
         cloudletReturnedList = new HashSet<>();
         currentMipsShare = CoreCapacity.NULL;
         taskScheduler = CloudletTaskScheduler.NULL;
-        resourceAllocationFailListeners = new ArrayList<>();
     }
 
     @Override
@@ -633,36 +634,15 @@ public abstract non-sealed class CloudletSchedulerAbstract implements CloudletSc
                 vm.getSimulation().clockStr(), getClass().getSimpleName(), cloudlet,
                 requested, vmResource.getUnit(), vmResource.getClass().getSimpleName(), msg1, msg2);
 
-            updateOnResourceShortageListeners(vmResource, cloudlet, requested, available);
+            CloudletSchedulerListeners.notifyOnResourceShortage(this, vmResource, cloudlet, requested, available);
         }
 
         vmResource.occupy(Math.min(requested, available));
     }
 
-    private void updateOnResourceShortageListeners(
-        final ResourceManageable resource, final Cloudlet cloudlet,
-        final long requested, final long available)
-    {
-        // Uses reversed indexed loop to avoid ConcurrentModificationException if some Listener is deregistered during loop
-        for (int i = resourceAllocationFailListeners.size()-1; i >= 0; i--) {
-            final var listener = resourceAllocationFailListeners.get(i);
-            listener.update(of(listener, cloudlet, resource.getClass(), requested, available, vm.getSimulation().clock()));
-        }
-    }
-
     @Override
-    public CloudletScheduler addOnCloudletResourceShortage(final EventListener<CloudletResourceShortageEventInfo> listener) {
-        if(EventListener.NULL.equals(listener)){
-            return this;
-        }
-
-        resourceAllocationFailListeners.add(requireNonNull(listener));
-        return this;
-    }
-
-    @Override
-    public boolean removeOnCloudletResourceShortage(final EventListener<CloudletResourceShortageEventInfo> listener) {
-        return resourceAllocationFailListeners.remove(listener);
+    public CloudletSchedulerListeners listeners() {
+        return new CloudletSchedulerListeners(this);
     }
 
     /// Gets the absolute utilization of a given Cloudlet's resource

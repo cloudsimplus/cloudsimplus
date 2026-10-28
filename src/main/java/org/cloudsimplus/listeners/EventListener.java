@@ -47,6 +47,8 @@ import org.cloudsimplus.vms.Vm;
 ///
 /// @author Manoel Campos da Silva Filho
 /// @since CloudSim Plus 1.0
+/// @see OneTimeEventListener
+/// @see #once(OneTimeEventListener)
 @FunctionalInterface
 public interface EventListener<T extends EventInfo> {
 
@@ -62,4 +64,29 @@ public interface EventListener<T extends EventInfo> {
     ///
     /// @param info the data about the happened event.
     void update(T info);
+
+    /// {@return true if this listener must be automatically removed from the listener list
+    /// after being notified once, false if it stays registered}
+    /// @see #once(OneTimeEventListener)
+    default boolean isOneTime() {
+        return false;
+    }
+
+    /// Target-types a lambda or method reference as a [OneTimeEventListener]
+    /// that is notified only once and then automatically removed from the listener list:
+    ///
+    /// ```java
+    /// broker.listeners().addOnVmsCreated(EventListener.once(this::submitNextBatch));
+    /// ```
+    ///
+    /// Since the parameter is already a [OneTimeEventListener], the compiler synthesizes
+    /// the lambda directly with that type and this method returns it as-is,
+    /// without creating any wrapper object.
+    ///
+    /// @param listener the one-time listener to return
+    /// @param <T> the type of the event information
+    /// @return the given listener
+    static <T extends EventInfo> OneTimeEventListener<T> once(final OneTimeEventListener<T> listener) {
+        return listener;
+    }
 }

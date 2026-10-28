@@ -27,6 +27,7 @@ import org.cloudsimplus.brokers.DatacenterBroker;
 import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.listeners.VmHostEventInfo;
 import org.cloudsimplus.vms.Vm;
+import org.cloudsimplus.vms.VmListeners;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,7 +62,7 @@ public sealed interface VmScaling permits HorizontalVmScaling, VerticalVmScaling
     /// of the scaling mechanism.
     ///
     /// The Vm to which this VmScaling is related to, creates an
-    /// [UpdateProcessingListener][Vm#addOnUpdateProcessingListener(EventListener)]
+    /// [UpdateProcessingListener][VmListeners#addOnUpdateProcessing(EventListener)]
     /// that will call this method to check if it's time to perform a down or up scaling,
     /// every time the Vm processing is updated.
     ///

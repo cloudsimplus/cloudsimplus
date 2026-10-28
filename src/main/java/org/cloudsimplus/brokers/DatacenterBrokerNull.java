@@ -73,8 +73,7 @@ final class DatacenterBrokerNull implements DatacenterBroker, SimEntityNullBase 
     @Override public DatacenterBroker setSelectClosestDatacenter(boolean select) { return this; }
     @Override public boolean isSelectClosestDatacenter() { return false; }
     @Override public List<Cloudlet> getCloudletCreatedList() { return Collections.emptyList(); }
-    @Override public DatacenterBroker addOnVmsCreatedListener(EventListener<DatacenterBrokerEventInfo> listener) { return this; }
-    @Override public DatacenterBroker removeOnVmsCreatedListener(EventListener<? extends EventInfo> listener) { return this; }
+    @Override public DatacenterBrokerListeners listeners() { return DatacenterBrokerListeners.NULL; }
     @Override public DatacenterBroker setVmDestructionDelayFunction(@Nullable Function<Vm, Double> function) { return this; }
     @Override public DatacenterBroker setVmDestructionDelay(double delay) { return this; }
     @Override public List<Cloudlet> getCloudletSubmittedList() { return Collections.emptyList(); }

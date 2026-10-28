@@ -60,26 +60,26 @@ public class CloudletSimpleTest {
     @Test
     public void testAddOnCloudletFinishEventListener() {
         final EventListener<CloudletVmEventInfo> listener = (info) -> {};
-        cloudlet.addOnFinishListener(listener);
-        assertTrue(cloudlet.removeOnFinishListener(listener));
+        cloudlet.listeners().addOnFinish(listener);
+        assertTrue(cloudlet.listeners().removeOnFinish(listener));
     }
 
     @Test()
     public void testAddOnCloudletFinishEventListenerWhenNull() {
-        assertThrows(NullPointerException.class, () -> cloudlet.addOnFinishListener(null));
+        assertThrows(NullPointerException.class, () -> cloudlet.listeners().addOnFinish((EventListener<CloudletVmEventInfo>) null));
     }
 
     @Test
     public void testRemoveOnCloudletFinishEventListener() {
         final EventListener<CloudletVmEventInfo> listener = (info) -> {};
-        cloudlet.addOnFinishListener(listener);
-        assertTrue(cloudlet.removeOnFinishListener(listener));
+        cloudlet.listeners().addOnFinish(listener);
+        assertTrue(cloudlet.listeners().removeOnFinish(listener));
     }
 
     @Test
     public void testRemoveOnCloudletFinishEventListenerWhenNull() {
-        cloudlet.addOnFinishListener(e->{});
-        assertFalse(cloudlet.removeOnFinishListener(null));
+        cloudlet.listeners().addOnFinish(e->{});
+        assertFalse(cloudlet.listeners().removeOnFinish(null));
     }
 
     @Test
@@ -93,33 +93,33 @@ public class CloudletSimpleTest {
     @Test
     public void testRemoveOnUpdateProcessingListenerNotAdded() {
         final EventListener<CloudletVmEventInfo> listener = info -> {};
-        assertFalse(cloudlet.removeOnUpdateProcessingListener(listener));
+        assertFalse(cloudlet.listeners().removeOnUpdateProcessing(listener));
     }
 
     @Test
     public void testAddSameOnUpdateProcessingListenerTwiceNotifiesOnce() {
         final var calls = new ArrayList<String>();
         final EventListener<CloudletVmEventInfo> listener = info -> calls.add("listener");
-        cloudlet.addOnUpdateProcessingListener(listener);
-        cloudlet.addOnUpdateProcessingListener(listener);
+        cloudlet.listeners().addOnUpdateProcessing(listener);
+        cloudlet.listeners().addOnUpdateProcessing(listener);
 
-        cloudlet.notifyOnUpdateProcessingListeners(0);
+        CloudletListeners.notifyOnUpdateProcessing(cloudlet, 0);
         assertEquals(List.of("listener"), calls);
     }
 
     @Test
     public void testOnUpdateProcessingListenerRemovingItselfDoesNotSkipNextListener() {
         final var calls = new ArrayList<String>();
-        cloudlet.addOnUpdateProcessingListener(info -> {
+        cloudlet.listeners().addOnUpdateProcessing(info -> {
             calls.add("first");
-            cloudlet.removeOnUpdateProcessingListener(info.getListener());
+            cloudlet.listeners().removeOnUpdateProcessing(info.getListener());
         });
-        cloudlet.addOnUpdateProcessingListener(info -> calls.add("second"));
+        cloudlet.listeners().addOnUpdateProcessing(info -> calls.add("second"));
 
-        cloudlet.notifyOnUpdateProcessingListeners(0);
+        CloudletListeners.notifyOnUpdateProcessing(cloudlet, 0);
         assertEquals(List.of("first", "second"), calls);
 
-        cloudlet.notifyOnUpdateProcessingListeners(1);
+        CloudletListeners.notifyOnUpdateProcessing(cloudlet, 1);
         assertEquals(List.of("first", "second", "second"), calls);
     }
 
@@ -127,15 +127,15 @@ public class CloudletSimpleTest {
     public void testOnUpdateProcessingListenerAddedDuringNotificationIsCalledOnlyInNextRound() {
         final var calls = new ArrayList<String>();
         final EventListener<CloudletVmEventInfo> added = info -> calls.add("added");
-        cloudlet.addOnUpdateProcessingListener(info -> {
+        cloudlet.listeners().addOnUpdateProcessing(info -> {
             calls.add("first");
-            cloudlet.addOnUpdateProcessingListener(added);
+            cloudlet.listeners().addOnUpdateProcessing(added);
         });
 
-        cloudlet.notifyOnUpdateProcessingListeners(0);
+        CloudletListeners.notifyOnUpdateProcessing(cloudlet, 0);
         assertEquals(List.of("first"), calls);
 
-        cloudlet.notifyOnUpdateProcessingListeners(1);
+        CloudletListeners.notifyOnUpdateProcessing(cloudlet, 1);
         assertEquals(List.of("first", "first", "added"), calls);
     }
 
@@ -371,7 +371,7 @@ public class CloudletSimpleTest {
         assertFalse(cloudlet.isFinished());
 
         cloudlet.addFinishedLengthSoFar(length);
-        cloudlet.notifyOnUpdateProcessingListeners(1000);
+        CloudletListeners.notifyOnUpdateProcessing(cloudlet, 1000);
         assertTrue(cloudlet.isFinished());
     }
 

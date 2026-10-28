@@ -284,33 +284,10 @@ public sealed interface DatacenterBroker extends SimEntity
     /// {@return  a **read-only** list of cloudlets created inside some Vm}
     List<Cloudlet> getCloudletCreatedList();
 
-    /// Adds an [EventListener] that will be notified every time
-    /// all VMs in the waiting list are created (placed) in some Host.
+    /// {@return an object to manage and notify the [EventListener]s of this DatacenterBroker}
     ///
-    /// Events are fired according to the following conditions:
-    ///
-    /// - if all VMs are submitted before the simulation start and all those VMs are created after starting,
-    ///   then the event will be fired just once, in the entire simulation execution time, for every registered Listener;
-    /// - if new VMs are submitted during simulation execution, the event may be fired multiple times.
-    ///   For instance, consider new VMs are submitted during simulation execution at times 10 and 20.
-    ///   If for every submission time, all VMs could be created, then every Listener will be notified 2 times
-    ///   (one for VMs submitted at time 10 and other for those at time 20).
-    ///
-    /// If all VMs submitted at a given time cannot be created due to lack of suitable Hosts,
-    /// the event will not be fired for that submission.
-    ///
-    /// @param listener the Listener that will be notified
-    /// @return this broker instance
-    /// @see #getVmWaitingList()
-    DatacenterBroker addOnVmsCreatedListener(EventListener<DatacenterBrokerEventInfo> listener);
-
-    /// Removes an [EventListener] to stop it from being notified when
-    /// VMs in the waiting list are all created.
-    ///
-    /// @param listener the Listener that will be removed
-    /// @return this broker instance
-    /// @see #addOnVmsCreatedListener(EventListener)
-    DatacenterBroker removeOnVmsCreatedListener(EventListener<? extends EventInfo> listener);
+    /// @see DatacenterBrokerListeners
+    DatacenterBrokerListeners listeners();
 
     /// Sets the delay after which an idle VM should be destroyed.
     /// Using such a method, it defines the same delay for any VM that becomes idle.

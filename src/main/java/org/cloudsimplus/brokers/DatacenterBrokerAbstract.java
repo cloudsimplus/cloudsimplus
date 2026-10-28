@@ -34,6 +34,7 @@ import org.cloudsimplus.utilizationmodels.UtilizationModel;
 import org.cloudsimplus.vms.Vm;
 import org.cloudsimplus.vms.VmAbstract;
 import org.cloudsimplus.vms.VmGroup;
+import org.cloudsimplus.vms.VmListeners;
 import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -65,8 +66,8 @@ public non-sealed abstract class DatacenterBrokerAbstract extends CloudSimEntity
 
     /// A List of registered event listeners for the onVmsCreatedListeners event.
     ///
-    /// @see #addOnVmsCreatedListener(EventListener)
-    @Getter(AccessLevel.NONE)
+    /// @see DatacenterBrokerListeners#addOnVmsCreated(EventListener)
+    @Getter(AccessLevel.PACKAGE) @Setter(AccessLevel.PACKAGE)
     private List<EventListener<DatacenterBrokerEventInfo>> onVmsCreatedListeners = List.of();
 
     private final VmCreation vmCreation;
@@ -631,7 +632,7 @@ public non-sealed abstract class DatacenterBrokerAbstract extends CloudSimEntity
             if (vm.isCreated()) {
                 createdVms++;
                 processSuccessVmCreationInDatacenter(vm);
-                ((VmAbstract)vm).notifyOnHostPlacementListeners();
+                VmListeners.notifyOnHostPlacement(vm);
             } else {
                 vm.setFailed(true);
                 if (!vmCreation.isRetryFailedVms()) {
@@ -642,7 +643,7 @@ public non-sealed abstract class DatacenterBrokerAbstract extends CloudSimEntity
                         getSimulation().clockStr(), getName(), vm);
                 }
 
-                ((VmAbstract)vm).notifyOnCreationFailureListeners(lastSelectedDc);
+                VmListeners.notifyOnCreationFailure(vm, lastSelectedDc);
             }
         }
 
@@ -666,21 +667,6 @@ public non-sealed abstract class DatacenterBrokerAbstract extends CloudSimEntity
     /// first created VM.
     private boolean allNonDelayedVmsCreated() {
         return vmWaitingList.stream().noneMatch(vm -> vm.getSubmissionDelay() == 0);
-    }
-
-    @SuppressWarnings("ForLoopReplaceableByForEach")
-    private void notifyOnVmsCreatedListeners() {
-        if(!vmWaitingList.isEmpty()) {
-            return;
-        }
-
-        for (final var listener : onVmsCreatedListeners) {
-            listener.update(DatacenterBrokerEventInfo.of(listener, this));
-        }
-
-        if (vmWaitingList.isEmpty()) {
-            vmCreation.resetCurrentRetries();
-        }
     }
 
     /// After the response (ack) of all VM creation requests were received,
@@ -897,7 +883,7 @@ public non-sealed abstract class DatacenterBrokerAbstract extends CloudSimEntity
         vmWaitingList.remove(vm);
         vmExecList.add(vm);
         vmCreatedList.add(vm);
-        notifyOnVmsCreatedListeners();
+        DatacenterBrokerListeners.notifyOnVmsCreated(this);
     }
 
     /// Processes the end of execution of a given cloudlet inside a Vm.
@@ -1207,15 +1193,8 @@ public non-sealed abstract class DatacenterBrokerAbstract extends CloudSimEntity
     }
 
     @Override
-    public DatacenterBroker addOnVmsCreatedListener(@NonNull final EventListener<DatacenterBrokerEventInfo> listener) {
-        onVmsCreatedListeners = Listeners.add(onVmsCreatedListeners, listener);
-        return this;
-    }
-
-    @Override
-    public DatacenterBroker removeOnVmsCreatedListener(@NonNull final EventListener<? extends EventInfo> listener) {
-        onVmsCreatedListeners = Listeners.remove(onVmsCreatedListeners, listener);
-        return this;
+    public DatacenterBrokerListeners listeners() {
+        return new DatacenterBrokerListeners(this);
     }
 
     @Override

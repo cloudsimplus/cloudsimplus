@@ -23,6 +23,7 @@
  */
 package org.cloudsimplus.hosts;
 
+import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
@@ -93,13 +94,16 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
     /// @see #getVmsMigratingOut()
     protected final Set<Vm> vmsMigratingOut;
 
-    /// @see #addOnUpdateProcessingListener(EventListener)
+    /// @see HostListeners#addOnUpdateProcessing(EventListener)
+    @Getter(AccessLevel.PACKAGE) @Setter(AccessLevel.PACKAGE)
     private List<EventListener<HostUpdatesVmsProcessingEventInfo>> onUpdateProcessingListeners = List.of();
 
-    /// @see #addOnStartupListener(EventListener) (EventListener)
+    /// @see HostListeners#addOnStartup(EventListener)
+    @Getter(AccessLevel.PACKAGE) @Setter(AccessLevel.PACKAGE)
     private List<EventListener<HostEventInfo>> onStartupListeners = List.of();
 
-    /// @see #addOnShutdownListener(EventListener) (EventListener)
+    /// @see HostListeners#addOnShutdown(EventListener)
+    @Getter(AccessLevel.PACKAGE) @Setter(AccessLevel.PACKAGE)
     private List<EventListener<HostEventInfo>> onShutdownListeners = List.of();
 
     protected final List<Vm> vmCreatedList;
@@ -277,7 +281,7 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
             nextSimulationDelay = updateVmProcessing(vmList.get(i), currentTime, nextSimulationDelay);
         }
 
-        notifyOnUpdateProcessingListeners(currentTime);
+        HostListeners.notifyOnUpdateProcessing(this, currentTime);
         cpuUtilizationStats.add(currentTime);
         addStateHistory(currentTime);
         if (!vmList.isEmpty()) {
@@ -290,12 +294,6 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
     protected double updateVmProcessing(final Vm vm, final double currentTime, final double nextSimulationDelay) {
         final double delay = ((VmAbstract)vm).updateProcessing(currentTime, vmScheduler.getAllocatedMips(vm));
         return delay > 0 ? Math.min(delay, nextSimulationDelay) : nextSimulationDelay;
-    }
-
-    private void notifyOnUpdateProcessingListeners(final double nextSimulationTime) {
-        for (final var listener : onUpdateProcessingListeners) {
-            listener.update(HostUpdatesVmsProcessingEventInfo.of(listener, this, nextSimulationTime));
-        }
     }
 
     @Override
@@ -583,23 +581,11 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
 
         if (activate && !wasActive) {
             LOGGER.info("{}: {} is powered on.", getSimulation().clockStr(), this);
-            updateOnStartupListeners();
+            HostListeners.notifyOnStartup(this);
         } else if (!activate && wasActive) {
             final String reason = isIdleEnough(idleShutdownDeadline) ? " after becoming idle" : "";
             LOGGER.info("{}: {} is powered off{}.", getSimulation().clockStr(), this, reason);
-            updateOnShutdownListeners();
-        }
-    }
-
-    private void updateOnShutdownListeners() {
-        for (final var listener : onShutdownListeners) {
-            listener.update(HostEventInfo.of(listener, this, simulation.clock()));
-        }
-    }
-
-    private void updateOnStartupListeners() {
-        for (final var listener : onStartupListeners) {
-            listener.update(HostEventInfo.of(listener, this, simulation.clock()));
+            HostListeners.notifyOnShutdown(this);
         }
     }
 
@@ -654,54 +640,8 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
     }
 
     @Override
-    public Host addOnStartupListener(@NonNull final EventListener<HostEventInfo> listener) {
-        if (EventListener.NULL.equals(listener)) {
-            return this;
-        }
-
-        onStartupListeners = Listeners.add(onStartupListeners, listener);
-        return this;
-    }
-
-    @Override
-    public boolean removeOnStartupListener(@NonNull final EventListener<HostEventInfo> listener) {
-        final var oldList = onStartupListeners;
-        onStartupListeners = Listeners.remove(oldList, listener);
-        return onStartupListeners.size() != oldList.size();
-    }
-
-    @Override
-    public Host addOnShutdownListener(@NonNull final EventListener<HostEventInfo> listener) {
-        if (EventListener.NULL.equals(listener)) {
-            return this;
-        }
-
-        onShutdownListeners = Listeners.add(onShutdownListeners, listener);
-        return this;
-    }
-
-    @Override
-    public boolean removeOnShutdownListener(@NonNull final EventListener<HostEventInfo> listener) {
-        final var oldList = onShutdownListeners;
-        onShutdownListeners = Listeners.remove(oldList, listener);
-        return onShutdownListeners.size() != oldList.size();
-    }
-
-    @Override
-    public boolean removeOnUpdateProcessingListener(@NonNull final EventListener<HostUpdatesVmsProcessingEventInfo> listener) {
-        final var oldList = onUpdateProcessingListeners;
-        onUpdateProcessingListeners = Listeners.remove(oldList, listener);
-        return onUpdateProcessingListeners.size() != oldList.size();
-    }
-
-    @Override
-    public Host addOnUpdateProcessingListener(@NonNull final EventListener<HostUpdatesVmsProcessingEventInfo> listener) {
-        if (EventListener.NULL.equals(listener)) {
-            return this;
-        }
-
-        onUpdateProcessingListeners = Listeners.add(onUpdateProcessingListeners, listener);
-        return this;
+    public HostListeners listeners() {
+        return new HostListeners(this);
     }
 
     /// Gets the MIPS share of each core that is allocated to a given [Vm].
@@ -865,7 +805,7 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
         }
 
         if (allocateResourcesForVm(vm, true).fully()) {
-            ((VmSimple) vm).updateMigrationStartListeners(this);
+            VmListeners.notifyOnMigrationStart(vm, this);
 
             updateProcessing(simulation.clock());
             if (vm.getHost() instanceof HostAbstract sourceHost) {

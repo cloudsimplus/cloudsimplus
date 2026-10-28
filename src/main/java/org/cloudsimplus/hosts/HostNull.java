@@ -108,12 +108,7 @@ final class HostNull implements Host {
     @Override public HostSuitability createVm(Vm vm) {
         return HostSuitability.NULL;
     }
-    @Override public Host addOnStartupListener(EventListener<HostEventInfo> listener) { return this; }
-    @Override public boolean removeOnStartupListener(EventListener<HostEventInfo> listener) { return false; }
-    @Override public Host addOnShutdownListener(EventListener<HostEventInfo> listener) { return this; }
-    @Override public boolean removeOnShutdownListener(EventListener<HostEventInfo> listener) { return false; }
-    @Override public boolean removeOnUpdateProcessingListener(EventListener<HostUpdatesVmsProcessingEventInfo> listener) { return false; }
-    @Override public Host addOnUpdateProcessingListener(EventListener<HostUpdatesVmsProcessingEventInfo> listener) { return NULL; }
+    @Override public HostListeners listeners() { return HostListeners.NULL; }
     @Override public boolean setFailed(boolean failed) { return false; }
     @Override public Simulation getSimulation() { return Simulation.NULL; }
     @Override public double getTotalExecutionTime() { return 0; }

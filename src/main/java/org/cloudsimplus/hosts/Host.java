@@ -239,40 +239,10 @@ public sealed interface Host
     /// @see #isLazySuitabilityEvaluation()
     HostSuitability createVm(Vm vm);
 
-    /// Adds a listener object that will be notified every time the host is **powered on**.
+    /// {@return an object to manage and notify the [EventListener]s of this Host}
     ///
-    /// @param listener the Listener to add
-    /// @return this Host
-    Host addOnStartupListener(EventListener<HostEventInfo> listener);
-
-    /// Removes a Listener object from the OnStartup List.
-    /// @param listener the Listener to remove
-    /// @return true if the Listener was removed, false otherwise
-    boolean removeOnStartupListener(EventListener<HostEventInfo> listener);
-
-    /// Adds a listener object that will be notified every time the host is **powered off**.
-    ///
-    /// @param listener the Listener to add
-    /// @return this Host
-    Host addOnShutdownListener(EventListener<HostEventInfo> listener);
-
-    /// Removes a Listener object from the OnShutdown List.
-    /// @param listener the Listener to remove
-    /// @return true if the Listener was removed, false otherwise
-    boolean removeOnShutdownListener(EventListener<HostEventInfo> listener);
-
-    /// Adds a listener object that will be notified every time
-    /// the host updates the processing of all its [VMs][Vm].
-    ///
-    /// @param listener the OnUpdateProcessingListener to add
-    /// @return this Host
-    Host addOnUpdateProcessingListener(EventListener<HostUpdatesVmsProcessingEventInfo> listener);
-
-    /// Removes a Listener object from the OnUpdateProcessing List.
-    ///
-    /// @param listener the listener to remove
-    /// @return true if the listener was found and removed, false otherwise
-    boolean removeOnUpdateProcessingListener(EventListener<HostUpdatesVmsProcessingEventInfo> listener);
+    /// @see HostListeners
+    HostListeners listeners();
 
     /// Provisions part of a Host resource, such as [Ram] or [Bandwidth], to a VM placed on this Host.
     /// It asks the [RAM][#getRamAllocator()] or [BW][#getBwAllocator()] allocator to allocate (reserve) the given amount

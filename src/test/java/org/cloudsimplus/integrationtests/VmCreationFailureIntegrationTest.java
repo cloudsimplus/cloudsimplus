@@ -171,7 +171,7 @@ public final class VmCreationFailureIntegrationTest {
     public void setUp() {
         Log.setLevel(Level.WARN);
         simulation = new CloudSimPlus();
-        simulation.addOnEventProcessingListener(this::onEventProcessing);
+        simulation.listeners().addOnEventProcessing(this::onEventProcessing);
         scenario = new SimulationScenarioBuilder(simulation);
         scenario.getDatacenterBuilder().create(
                 new HostBuilder()

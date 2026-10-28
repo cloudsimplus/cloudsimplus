@@ -68,16 +68,7 @@ final class SimulationNull implements Simulation {
     @Override public int getNumEntities() {
         return 0;
     }
-    @Override public boolean removeOnEventProcessingListener(EventListener<SimEvent> listener) {
-        return false;
-    }
-    @Override public Simulation addOnSimulationPauseListener(EventListener<EventInfo> listener) {
-        return this;
-    }
-    @Override public Simulation addOnSimulationStartListener(EventListener<EventInfo> listener) { return this; }
-    @Override public boolean removeOnSimulationPauseListener(EventListener<EventInfo> listener) {
-        return false;
-    }
+    @Override public SimulationListeners listeners() { return SimulationListeners.NULL; }
     @Override public boolean isPaused() {
         return false;
     }
@@ -101,15 +92,6 @@ final class SimulationNull implements Simulation {
     @Override public void sendFirst(SimEntity src, SimEntity dest, double delay, int tag, @Nullable Object data) {/**/}
     @Override public void sendNow(SimEntity src, SimEntity dest, int tag, @Nullable Object data) {/**/}
     @Override public double runFor(double interval) { return 0; }
-    @Override public Simulation addOnEventProcessingListener(EventListener<SimEvent> listener) {
-        return this;
-    }
-    @Override public Simulation addOnClockTickListener(EventListener<EventInfo> listener) {
-        return this;
-    }
-    @Override public boolean removeOnClockTickListener(EventListener<? extends EventInfo> listener) {
-        return false;
-    }
     @Override public double start() throws RuntimeException { return 0; }
     @Override public void startSync() { /**/ }
     @Override public boolean isTimeToTerminateSimulationUnderRequest() { return false; }

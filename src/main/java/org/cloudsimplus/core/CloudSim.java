@@ -349,7 +349,7 @@ non-sealed abstract class CloudSim implements Simulation {
     /// Updates the simulation clock and notify listeners if the clock has changed.
     /// @param newTime simulation time to set (in seconds)
     /// @return the old simulation time (in seconds)
-    /// @see #addOnClockTickListener(EventListener)
+    /// @see SimulationListeners#addOnClockTick(EventListener)
     protected double setClock(final double newTime){
         final double oldTime = clock;
         this.clock = newTime;

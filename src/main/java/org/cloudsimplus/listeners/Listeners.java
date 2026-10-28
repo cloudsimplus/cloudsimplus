@@ -23,8 +23,6 @@
  */
 package org.cloudsimplus.listeners;
 
-import lombok.NonNull;
-
 import java.util.List;
 
 /// Utility methods to add and remove [EventListener]s from **immutable lists**.
@@ -60,7 +58,7 @@ import java.util.List;
 /// | `HashSet`                                            | 64 B / ~150 B               |
 /// | `CopyOnWriteArrayList`                               | 56 B / 64 B                 |
 /// | `Collections.unmodifiableList(Arrays.asList(array))` | 0 B / 64 B                  |
-/// | **`List.of(array)` (chosen)**                        | **0 B / 16 B**              |
+/// | **`List.of(array)` (chosen)**                        | **0 B / 24 B**              |
 ///
 /// Why the other options weren't chosen:
 /// - `ArrayList`: throws `ConcurrentModificationException`; indexed loops skip listeners.
@@ -81,6 +79,25 @@ import java.util.List;
 ///
 /// {@snippet class=org.cloudsimplus.listeners.ListenersUsageExample region=usage}
 ///
+/// ## Sharing a list across objects
+///
+/// When the same listeners are added to many objects (such as Cloudlets created in a loop),
+/// each object creates its own list, even if the listeners are the same instances.
+/// [#addAll(List, List)] lets these objects share a single immutable list, created once by the user:
+/// an object without listeners of that type just stores the given list.
+/// Since the list is immutable, adding or removing a listener on one object
+/// creates a new list just for that object, so the other objects are never affected.
+///
+/// ```java
+/// // Created once, outside the loop
+/// final List<EventListener<CloudletVmEventInfo>> finishListeners = List.of(this::onCloudletFinish);
+/// for (int i = 0; i < CLOUDLETS; i++) {
+///     final var cloudlet = CloudletSimple.of(LENGTH, PES);
+///     cloudlet.listeners().addOnFinish(finishListeners);
+///     cloudletList.add(cloudlet);
+/// }
+/// ```
+///
 /// @author Manoel Campos da Silva Filho
 /// @since CloudSim Plus 9.0.0
 public final class Listeners {
@@ -88,13 +105,13 @@ public final class Listeners {
 
     /// Creates a new immutable list with the given listener added at the end.
     /// @param listeners the current immutable list of listeners
-    /// @param listener the listener to add
+    /// @param listener the listener to add (if [EventListener#NULL], nothing is added)
     /// @param <T> the type of the listeners
     /// @return a new list with the listener added,
-    ///         or the given list if it already has the listener
+    ///         or the given list if it already has the listener or if the listener is [EventListener#NULL]
     @SuppressWarnings("unchecked")
-    public static <T> List<T> add(@NonNull final List<T> listeners, @NonNull final T listener) {
-        if (listeners.contains(listener)) {
+    public static <T> List<T> add(final List<T> listeners, final T listener) {
+        if (listener == EventListener.NULL || listeners.contains(listener)) {
             return listeners;
         }
 
@@ -105,6 +122,56 @@ public final class Listeners {
         return (List<T>) List.of(array);
     }
 
+    /// Adds all listeners from a list that may be shared by many objects.
+    /// If the current list is empty, returns the given list itself (or an immutable copy of it, if it's mutable),
+    /// so all objects receiving the same list share it, instead of each one creating its own.
+    /// @param listeners the current immutable list of listeners
+    /// @param shared the listeners to add, usually created once with `List.of(...)`.
+    ///               A mutable list is copied, so changing it later doesn't affect any object.
+    /// @param <T> the type of the listeners
+    /// @return the shared list (or an immutable copy of it) if the current list is empty;
+    ///         otherwise, a new list with the shared listeners the current list doesn't have, added at the end
+    ///         (or the current list, if it already has all of them)
+    public static <T> List<T> addAll(final List<T> listeners, final List<? extends T> shared) {
+        // List.copyOf() doesn't copy lists created with List.of() or List.copyOf(), since they are already immutable
+        final List<T> immutable = List.copyOf(shared);
+        if (listeners.isEmpty()) {
+            return immutable;
+        }
+
+        var result = listeners;
+        for (final T listener : immutable) {
+            result = add(result, listener);
+        }
+
+        return result;
+    }
+
+    /// Creates an immutable list with a single listener, to be shared by many objects
+    /// (see [#addAll(List, List)]).
+    /// @param listener the listener the list must have
+    /// @param <T> the type of event information the listener receives
+    /// @return a list with the given listener, or an empty list if the listener is [EventListener#NULL]
+    public static <T extends EventInfo> List<EventListener<T>> listOf(final EventListener<T> listener) {
+        return EventListener.NULL.equals(listener) ? List.of() : List.of(listener);
+    }
+
+    /// Removes the listener from the given list if it's a [one-time listener][EventListener#isOneTime()].
+    /// Call this inside notification loops before (or after) notifying each listener,
+    /// assigning the returned list back to the field.
+    ///
+    /// @param listeners the current immutable list of listeners
+    /// @param listener the listener being notified
+    /// @param <T> the type of the event info
+    /// @return a new list without the listener if it's a one-time listener,
+    ///         or the given list (the same instance) otherwise
+    public static <T extends EventInfo> List<EventListener<T>> removeIfOneTime(
+        final List<EventListener<T>> listeners,
+        final EventListener<T> listener)
+    {
+        return listener.isOneTime() ? remove(listeners, listener) : listeners;
+    }
+
     /// Creates a new immutable list without the given listener.
     /// @param listeners the current immutable list of listeners
     /// @param listener the listener to remove (if null, nothing is removed)
@@ -113,7 +180,7 @@ public final class Listeners {
     ///         or the given list (the same instance) if it doesn't have the listener.
     ///         If the removed listener was the last one, returns the shared empty `List.of()`.
     @SuppressWarnings("unchecked")
-    public static <T> List<T> remove(@NonNull final List<T> listeners, final Object listener) {
+    public static <T> List<T> remove(final List<T> listeners, final Object listener) {
         // List.of() lists can't have nulls and throw a NullPointerException when searching for null
         final int index = listener == null ? -1 : listeners.indexOf(listener);
         if (index < 0) {

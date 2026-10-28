@@ -211,57 +211,57 @@ public class VmSimpleTest {
     @Test
     public void testRemoveOnHostPlacementListener() {
         final EventListener<VmHostEventInfo> listener = (info) -> {};
-        vm.addOnHostPlacementListener(listener);
-        assertTrue(vm.removeOnHostPlacementListener(listener));
+        vm.listeners().addOnHostPlacement(listener);
+        assertTrue(vm.listeners().removeOnHostPlacement(listener));
     }
 
-    @Test()
+    @Test
     public void testRemoveOnHostPlacementListenerWhenNull() {
-        assertThrows(NullPointerException.class, () -> vm.removeOnHostPlacementListener(null));
+        assertFalse(vm.listeners().removeOnHostPlacement(null));
     }
 
-    @Test()
+    @Test
     public void testRemoveOnHostRemovalListenerWhenNull() {
-        assertThrows(NullPointerException.class, () -> vm.removeOnHostRemovalListener(null));
+        assertFalse(vm.listeners().removeOnHostRemoval(null));
     }
 
     @Test
     public void testRemoveOnHostRemovalListener() {
         final EventListener<VmHostEventInfo> listener = (info) -> {};
-        vm.addOnHostRemovalListener(listener);
-        assertTrue(vm.removeOnHostRemovalListener(listener));
+        vm.listeners().addOnHostRemoval(listener);
+        assertTrue(vm.listeners().removeOnHostRemoval(listener));
     }
 
     @Test
     public void testRemoveOnHostPlacementListenerNotAdded() {
         final EventListener<VmHostEventInfo> listener = (info) -> {};
-        assertFalse(vm.removeOnHostPlacementListener(listener));
+        assertFalse(vm.listeners().removeOnHostPlacement(listener));
     }
 
     @Test
     public void testAddSameOnHostPlacementListenerTwiceNotifiesOnce() {
         final var calls = new ArrayList<String>();
         final EventListener<VmHostEventInfo> listener = info -> calls.add("listener");
-        vm.addOnHostPlacementListener(listener);
-        vm.addOnHostPlacementListener(listener);
+        vm.listeners().addOnHostPlacement(listener);
+        vm.listeners().addOnHostPlacement(listener);
 
-        vm.notifyOnHostPlacementListeners();
+        VmListeners.notifyOnHostPlacement(vm);
         assertEquals(List.of("listener"), calls);
     }
 
     @Test
     public void testOnHostPlacementListenerRemovingItselfDoesNotSkipNextListener() {
         final var calls = new ArrayList<String>();
-        vm.addOnHostPlacementListener(info -> {
+        vm.listeners().addOnHostPlacement(info -> {
             calls.add("first");
-            vm.removeOnHostPlacementListener(info.getListener());
+            vm.listeners().removeOnHostPlacement(info.getListener());
         });
-        vm.addOnHostPlacementListener(info -> calls.add("second"));
+        vm.listeners().addOnHostPlacement(info -> calls.add("second"));
 
-        vm.notifyOnHostPlacementListeners();
+        VmListeners.notifyOnHostPlacement(vm);
         assertEquals(List.of("first", "second"), calls);
 
-        vm.notifyOnHostPlacementListeners();
+        VmListeners.notifyOnHostPlacement(vm);
         assertEquals(List.of("first", "second", "second"), calls);
     }
 
@@ -269,40 +269,40 @@ public class VmSimpleTest {
     public void testOnHostPlacementListenerAddedDuringNotificationIsCalledOnlyInNextRound() {
         final var calls = new ArrayList<String>();
         final EventListener<VmHostEventInfo> added = info -> calls.add("added");
-        vm.addOnHostPlacementListener(info -> {
+        vm.listeners().addOnHostPlacement(info -> {
             calls.add("first");
-            vm.addOnHostPlacementListener(added);
+            vm.listeners().addOnHostPlacement(added);
         });
 
-        vm.notifyOnHostPlacementListeners();
+        VmListeners.notifyOnHostPlacement(vm);
         assertEquals(List.of("first"), calls);
 
-        vm.notifyOnHostPlacementListeners();
+        VmListeners.notifyOnHostPlacement(vm);
         assertEquals(List.of("first", "first", "added"), calls);
     }
 
-    @Test()
+    @Test
     public void testRemoveOnVmCreationFailureListenerWhenNull() {
-        assertThrows(NullPointerException.class, () -> vm.removeOnCreationFailureListener(null));
+        assertFalse(vm.listeners().removeOnCreationFailure(null));
     }
 
     @Test
     public void testRemoveOnVmCreationFailureListener() {
         final EventListener<VmDatacenterEventInfo> listener = (info) -> {};
-        vm.addOnCreationFailureListener(listener);
-        assertTrue(vm.removeOnCreationFailureListener(listener));
+        vm.listeners().addOnCreationFailure(listener);
+        assertTrue(vm.listeners().removeOnCreationFailure(listener));
     }
 
-    @Test()
+    @Test
     public void testRemoveOnUpdateVmProcessingListenerWhenNull() {
-        assertThrows(NullPointerException.class, () -> vm.removeOnUpdateProcessingListener(null));
+        assertFalse(vm.listeners().removeOnUpdateProcessing(null));
     }
 
     @Test
     public void testRemoveOnUpdateVmProcessingListener() {
         final EventListener<VmHostEventInfo> listener = (info) -> {};
-        vm.addOnUpdateProcessingListener(listener);
-        assertTrue(vm.removeOnUpdateProcessingListener(listener));
+        vm.listeners().addOnUpdateProcessing(listener);
+        assertTrue(vm.listeners().removeOnUpdateProcessing(listener));
     }
 
     @Test
