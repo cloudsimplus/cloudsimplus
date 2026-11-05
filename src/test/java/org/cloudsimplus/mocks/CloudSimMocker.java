@@ -149,14 +149,4 @@ public final class CloudSimMocker {
             .when(mock.getMinTimeBetweenEvents())
             .thenReturn(clockTimeToReturn);
     }
-
-    public void sendNow() {
-        Mockito.doNothing()
-               .when(mock)
-               .sendNow(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any());
-    }
-
-    public void send() {
-        Mockito.doNothing().when(mock).send(Mockito.any());
-    }
 }

@@ -55,10 +55,10 @@ public class CloudInformationService extends CloudSimEntity {
     public void processEvent(final SimEvent evt) {
         switch (evt.getTag()) {
             case CloudSimTag.REGISTER_REGIONAL_CIS -> cisList.add((CloudInformationService) evt.getData());
-            case CloudSimTag.REQUEST_REGIONAL_CIS -> super.send(evt.getSource(), 0, evt.getTag(), cisList);
+            case CloudSimTag.REQUEST_REGIONAL_CIS -> schedule(evt.getSource(), evt.getTag(), cisList);
             case CloudSimTag.DC_REGISTRATION_REQUEST -> datacenterList.add((Datacenter) evt.getData());
             // A Broker is requesting a list of all datacenters.
-            case CloudSimTag.DC_LIST_REQUEST -> super.send(evt.getSource(), 0, evt.getTag(), datacenterList);
+            case CloudSimTag.DC_LIST_REQUEST -> schedule(evt.getSource(), evt.getTag(), datacenterList);
         }
     }
 
@@ -83,6 +83,6 @@ public class CloudInformationService extends CloudSimEntity {
             return;
         }
 
-        list.forEach(entity -> super.send(entity, 0L, CloudSimTag.SIMULATION_END));
+        list.forEach(entity -> schedule(entity, CloudSimTag.SIMULATION_END));
     }
 }

@@ -126,7 +126,7 @@ public class PowerMeter extends CloudSimEntity {
     /// Otherwise, the simulation has finished and no more measurements should be scheduled.
     private void scheduleMeasurement() {
         if (getSimulation().isThereAnyFutureEvt(evt -> evt.getTag() != CloudSimTag.POWER_MEASUREMENT)) {
-            schedule(measurementInterval, CloudSimTag.POWER_MEASUREMENT);
+            schedule(measurementInterval, CloudSimTag.POWER_MEASUREMENT, null);
         }
     }
 

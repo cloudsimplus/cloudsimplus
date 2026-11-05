@@ -204,8 +204,6 @@ public class HostSimpleTest {
             mocker.isTerminationTimeSet();
             mocker.addEntity();
             mocker.clockStr();
-            //Broker shutdown event
-            mocker.send();
         });
 
         final List<Vm> vms = new ArrayList<>(numberOfVms);

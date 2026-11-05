@@ -410,7 +410,7 @@ public non-sealed class DatacenterSimple extends CloudSimEntity implements Datac
             pkt.setDestination(pkt.getSource());
 
             // returns the packet to the sender
-            sendNow(pkt.getSource(), CloudSimTag.ICMP_PKT_RETURN, pkt);
+            schedule(pkt.getSource(), CloudSimTag.ICMP_PKT_RETURN, pkt);
         }
 
         throw new InvalidEventDataTypeException(evt, "ICMP_PKT_SUBMIT", IcmpPacket.class.getName());
@@ -471,9 +471,9 @@ public non-sealed class DatacenterSimple extends CloudSimEntity implements Datac
 
         // if this cloudlet is in the exec queue
         if (estimatedFinishTime > 0.0 && !Double.isInfinite(estimatedFinishTime)) {
-            send(this,
+            schedule(
                 getCloudletProcessingUpdateInterval(estimatedFinishTime),
-                CloudSimTag.VM_UPDATE_CLOUDLET_PROCESSING);
+                CloudSimTag.VM_UPDATE_CLOUDLET_PROCESSING, null);
         }
 
         ((CustomerEntityAbstract)cloudlet).setCreationTime();
@@ -518,9 +518,9 @@ public non-sealed class DatacenterSimple extends CloudSimEntity implements Datac
         final double estimatedFinishTime = cloudlet.getVm().getCloudletScheduler().cloudletResume(cloudlet);
 
         if (estimatedFinishTime > 0.0 && estimatedFinishTime > clock()) {
-            schedule(this,
+            schedule(
                 getCloudletProcessingUpdateInterval(estimatedFinishTime),
-                CloudSimTag.VM_UPDATE_CLOUDLET_PROCESSING);
+                CloudSimTag.VM_UPDATE_CLOUDLET_PROCESSING, null);
         }
 
         sendAck(ack, cloudlet, CloudSimTag.CLOUDLET_RESUME_ACK);
@@ -529,7 +529,7 @@ public non-sealed class DatacenterSimple extends CloudSimEntity implements Datac
 
     private void sendAck(final boolean ack, final Cloudlet cloudlet, final int tag) {
         if (ack) {
-            sendNow(cloudlet.getBroker(), tag, cloudlet);
+            schedule(cloudlet.getBroker(), tag, cloudlet);
         }
     }
 
@@ -549,7 +549,7 @@ public non-sealed class DatacenterSimple extends CloudSimEntity implements Datac
     /// @return true to indicate the event was processed
     protected boolean processCloudletCancel(final Cloudlet cloudlet) {
         cloudlet.getVm().getCloudletScheduler().cloudletCancel(cloudlet);
-        sendNow(cloudlet.getBroker(), CloudSimTag.CLOUDLET_CANCEL, cloudlet);
+        schedule(cloudlet.getBroker(), CloudSimTag.CLOUDLET_CANCEL, cloudlet);
         return true;
     }
 
@@ -584,7 +584,7 @@ public non-sealed class DatacenterSimple extends CloudSimEntity implements Datac
         final var vm = VmAbstract.getFirstVm(evt.getData());
         /* Acknowledges that the request was received by the Datacenter,
         (the broker is expecting that if the Vm was created or not). */
-        send(vm.getBroker(), getSimulation().getMinTimeBetweenEvents(), CloudSimTag.VM_CREATE_ACK, evt.getData());
+        schedule(vm.getBroker(), getSimulation().getMinTimeBetweenEvents(), CloudSimTag.VM_CREATE_ACK, evt.getData());
         return created;
     }
 
@@ -676,7 +676,7 @@ public non-sealed class DatacenterSimple extends CloudSimEntity implements Datac
             vm.getBroker().getVmExecList().add(vm);
 
             if (ack) {
-                sendNow(evt.getSource(), CloudSimTag.VM_CREATE_ACK, vm);
+                schedule(evt.getSource(), CloudSimTag.VM_CREATE_ACK, vm);
             }
         }
 
@@ -716,7 +716,7 @@ public non-sealed class DatacenterSimple extends CloudSimEntity implements Datac
         */
         sendCloudletSubmitAckToBroker(cloudlet, ack);
 
-        sendNow(cloudlet.getBroker(), CloudSimTag.CLOUDLET_RETURN, cloudlet);
+        schedule(cloudlet.getBroker(), CloudSimTag.CLOUDLET_RETURN, cloudlet);
     }
 
     /// Sends an ACK to the DatacenterBroker that submitted the Cloudlet for execution
@@ -731,7 +731,7 @@ public non-sealed class DatacenterSimple extends CloudSimEntity implements Datac
     /// receives the cloudlet submission
     private void sendCloudletSubmitAckToBroker(final Cloudlet cloudlet, final boolean ack) {
         if (ack) {
-            sendNow(cloudlet.getBroker(), CloudSimTag.CLOUDLET_SUBMIT_ACK, cloudlet);
+            schedule(cloudlet.getBroker(), CloudSimTag.CLOUDLET_SUBMIT_ACK, cloudlet);
         }
     }
 
@@ -777,7 +777,7 @@ public non-sealed class DatacenterSimple extends CloudSimEntity implements Datac
 
         if (nextSimulationDelay != Double.MAX_VALUE) {
             nextSimulationDelay = getCloudletProcessingUpdateInterval(nextSimulationDelay);
-            schedule(nextSimulationDelay, CloudSimTag.VM_UPDATE_CLOUDLET_PROCESSING);
+            schedule(nextSimulationDelay, CloudSimTag.VM_UPDATE_CLOUDLET_PROCESSING, null);
         }
         setLastProcessTime(clock());
 
@@ -859,7 +859,7 @@ public non-sealed class DatacenterSimple extends CloudSimEntity implements Datac
 
         if(((HostAbstract)targetHost).addMigratingInVm(sourceVm)) {
             ((HostAbstract)sourceHost).addVmMigratingOut(sourceVm);
-            send(this, delay, CloudSimTag.VM_MIGRATE, new TreeMap.SimpleEntry<>(sourceVm, targetHost));
+            schedule(delay, CloudSimTag.VM_MIGRATE, new TreeMap.SimpleEntry<>(sourceVm, targetHost));
             shutdownVmIfNonLiveMigration(sourceVm, targetHost, delay, nonLiveMigration);
         }
     }
@@ -921,7 +921,7 @@ public non-sealed class DatacenterSimple extends CloudSimEntity implements Datac
     @Override
     protected void startInternal() {
         LOGGER.info("{}: {} is starting...", getSimulation().clockStr(), this);
-        sendNow(getSimulation().getCis(), CloudSimTag.DC_REGISTRATION_REQUEST, this);
+        schedule(getSimulation().getCis(), CloudSimTag.DC_REGISTRATION_REQUEST, this);
     }
 
     @Override
@@ -1012,7 +1012,7 @@ public non-sealed class DatacenterSimple extends CloudSimEntity implements Datac
     /// @see #addBrokerWaitingHostPowerOn(DatacenterBroker)
     private void notifyBrokersWaitingHostPowerOn() {
         final double delay = getSimulation().getMinTimeBetweenEvents();
-        brokersWaitingHostPowerOn.forEach(broker -> send(broker, delay, CloudSimTag.VM_CREATE_RETRY));
+        brokersWaitingHostPowerOn.forEach(broker -> schedule(broker, delay, CloudSimTag.VM_CREATE_RETRY, null));
         brokersWaitingHostPowerOn.clear();
     }
 

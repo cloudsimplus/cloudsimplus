@@ -18,7 +18,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.function.Predicate;
 
-import static java.util.Objects.requireNonNull;
 import static java.util.Objects.requireNonNullElseGet;
 import org.jspecify.annotations.Nullable;
 
@@ -104,93 +103,76 @@ public abstract class CloudSimEntity implements SimEntity {
 
     @Override
     public boolean schedule(final SimEntity dest, final double delay, final int tag, @Nullable final Object data) {
-        return schedule(new CloudSimEvent(delay, this, dest, tag, data));
+        return isValidDestination(dest) && schedule(newEvent(dest, delay, tag, data));
     }
 
     @Override
-    public boolean schedule(final double delay, final int tag, @Nullable final Object data) {
-        return schedule(this, delay, tag, data);
-    }
-
-    @Override
-    public boolean schedule(final double delay, final int tag) {
-        return schedule(this, delay, tag, null);
-    }
-
-    @Override
-    public boolean schedule(final SimEntity dest, final double delay, final int tag) {
-        return schedule(dest, delay, tag, null);
-    }
-
-    @Override
-    public boolean schedule(final int tag, @Nullable final Object data) {
-        return schedule(this, 0, tag, data);
+    public boolean scheduleFirst(final SimEntity dest, final double delay, final int tag, @Nullable final Object data) {
+        return isValidDestination(dest) && scheduleFirst(newEvent(dest, delay, tag, data));
     }
 
     /// {@inheritDoc}
     /// Events sent before the simulation starts are held and only sent when it starts.
-    /// Events sent after the simulation stops are rejected.
+    /// Events sent after the simulation stops are rejected,
+    /// as well as events to a destination that isn't part of the simulation of this entity.
+    /// The other overloads also check the destination before building the event,
+    /// so the network delay is never looked up for an invalid destination.
     ///
     /// @param evt {@inheritDoc}
     /// @return {@inheritDoc}
     @Override
-    public boolean schedule(final SimEvent evt) {
-        return simulation instanceof CloudSim sim && sim.trySend(evt);
+    public boolean schedule(@NonNull final SimEvent evt) {
+        return isValidDestination(evt.getDestination()) && simulation instanceof CloudSim sim && sim.schedule(evt);
     }
 
-    /// Sends an event to another entity with no delay.
+    /// {@inheritDoc}
+    /// It follows the same rules of [#schedule(SimEvent)].
     ///
-    /// @param dest the destination entity
-    /// @param tag  a tag representing the type of event, according to the [CloudSimTag] or some custom one.
-    /// @param data the data to be sent with the event, according to the tag
-    public void scheduleNow(final SimEntity dest, final int tag, @Nullable final Object data) {
-        schedule(dest, 0, tag, data);
+    /// @param evt {@inheritDoc}
+    /// @return {@inheritDoc}
+    @Override
+    public boolean scheduleFirst(@NonNull final SimEvent evt) {
+        return isValidDestination(evt.getDestination()) && simulation instanceof CloudSim sim && sim.scheduleFirst(evt);
     }
 
-    /// Sends an event to another entity with **no** attached data and no delay.
-    ///
-    /// @param dest the destination entity
-    /// @param tag  a tag representing the type of event, according to the [CloudSimTag] or some custom one.
-    public void scheduleNow(final SimEntity dest, final int tag) {
-        schedule(dest, 0, tag, null);
+    private CloudSimEvent newEvent(final SimEntity dest, final double delay, final int tag, @Nullable final Object data) {
+        return new CloudSimEvent(totalDelay(dest, delay), this, dest, tag, data);
     }
 
-    /// Sends a high-priority event to another entity with no delay.
-    ///
-    /// @param dest the destination entity
-    /// @param tag  a tag representing the type of event, according to the [CloudSimTag] or some custom one.
-    /// @param data The data to be sent with the event, according to the tag
-    public void scheduleFirstNow(final SimEntity dest, final int tag, @Nullable final Object data) {
-        scheduleFirst(dest, 0, tag, data);
-    }
-
-    /// Sends a high-priority event to another entity with **no** attached data and no delay.
-    /// @param dest the destination entity
-    /// @param tag  a tag representing the type of event, according to the [CloudSimTag] or some custom one.
-    public void scheduleFirstNow(final SimEntity dest, final int tag) {
-        scheduleFirst(dest, 0, tag, null);
-    }
-
-    /// Sends a high-priority event to another entity and with **no** attached data.
+    /// Gets the delay for an event sent from this entity to a destination,
+    /// the single place where the delay given by the caller is checked and the network delay is added.
     ///
     /// @param dest  the destination entity
-    /// @param delay How many seconds after the current simulation time the event should be sent
-    /// @param tag   a tag representing the type of event, according to the [CloudSimTag] or some custom one.
-    public void scheduleFirst(final SimEntity dest, final double delay, final int tag) {
-        scheduleFirst(dest, delay, tag, null);
-    }
-
-    /// Sends a high-priority event to another entity.
-    ///
-    /// @param dest  the destination entity
-    /// @param delay How many seconds after the current simulation time the event should be sent
-    /// @param tag   a tag representing the type of event, according to the [CloudSimTag] or some custom one.
-    /// @param data  The data to be sent with the event, according to the tag
-    public void scheduleFirst(final SimEntity dest, final double delay, final int tag, @Nullable final Object data) {
-        final var evt = new CloudSimEvent(delay, this, dest, tag, data);
-        if (simulation instanceof CloudSim sim) {
-            sim.trySendFirst(evt);
+    /// @param delay the delay given by the caller
+    /// @return the given delay (0 if negative) plus the network delay when the destination is another entity
+    /// @throws IllegalArgumentException when the delay is infinite
+    double totalDelay(final SimEntity dest, final double delay) {
+        if (Double.isInfinite(delay)) {
+            throw new IllegalArgumentException("The specified delay is infinite value");
         }
+
+        final double validDelay = nonNegativeDelay(delay);
+        return dest == this ? validDelay : validDelay + getNetworkDelay(this, dest);
+    }
+
+    private double nonNegativeDelay(final double delay) {
+        if (delay >= 0) {
+            return delay;
+        }
+
+        LOGGER.warn("{}: negative event delay {} changed to 0.", getName(), delay);
+        return 0;
+    }
+
+    /// Checks if the destination is part of the simulation of this entity.
+    /// An entity from another simulation may have the same id, so both are checked.
+    private boolean isValidDestination(@NonNull final SimEntity dest) {
+        if (dest.getId() >= 0 && dest.getSimulation() == simulation) {
+            return true;
+        }
+
+        LOGGER.error("{}: destination {} (id {}) isn't part of this simulation. Event not sent.", getName(), dest, dest.getId());
+        return false;
     }
 
     /// Sets the entity to be inactive for a time period.
@@ -312,63 +294,6 @@ public abstract class CloudSimEntity implements SimEntity {
     /// @param evt the new event buffer
     protected void setEventBuffer(@NonNull final SimEvent evt) {
         this.buffer = evt;
-    }
-
-    /// Sends an event/message to another entity by **delaying** the
-    /// simulation time from the current time, with a tag representing the event type.
-    /// @param dest the destination entity
-    /// @param delay How many seconds after the current simulation time the event should be sent.
-    /// If the delay is a negative number, then it will be changed to 0
-    /// @param tag a tag representing the type of event, according to the [CloudSimTag] or some custom one.
-    /// @param data A reference to data to be sent with the event
-    protected void send(final SimEntity dest, double delay, final int tag, @Nullable final Object data) {
-        requireNonNull(dest);
-        if (dest.getId() < 0) {
-            LOGGER.error("{}.send(): invalid entity id {} for {}", getName(), dest.getId(), dest);
-            return;
-        }
-
-        // if the delay is negative, then it doesn't make sense. So resets to 0.0
-        if (delay < 0) {
-            delay = 0;
-        }
-
-        if (Double.isInfinite(delay)) {
-            throw new IllegalArgumentException("The specified delay is infinite value");
-        }
-
-        // only considers network delay when sending messages between different entities
-        if (dest.getId() != getId()) {
-            delay += getNetworkDelay(this, dest);
-        }
-
-        schedule(dest, delay, tag, data);
-    }
-
-    /// Sends an event/message to another entity by **delaying** the
-    /// simulation time from the current time, with a tag representing the event type.
-    /// @param dest    the destination entity
-    /// @param delay   How many seconds after the current simulation time the event should be sent.
-    /// If the delay is a negative number, then it will be changed to 0
-    /// @param tag a tag representing the type of event, according to the [CloudSimTag] or some custom one
-    protected void send(final SimEntity dest, final double delay, final int tag) {
-        send(dest, delay, tag, null);
-    }
-
-    /// Sends an event/message to another entity, with a tag representing the
-    /// event type.
-    /// @param dest    the destination entity
-    /// @param tag a tag representing the type of event, according to the [CloudSimTag] or some custom one
-    /// @param data  the data to be sent with the event, according to the tag
-    protected void sendNow(final SimEntity dest, final int tag, @Nullable final Object data) {
-        send(dest, 0, tag, data);
-    }
-
-    /// Sends an event/message to another entity, with a tag representing the event type.
-    /// @param dest    the destination entity
-    /// @param tag a tag representing the type of event, according to the [CloudSimTag] or some custom one
-    protected void sendNow(final SimEntity dest, final int tag) {
-        send(dest, 0, tag, null);
     }
 
     /// Gets the network delay to send a message from a given

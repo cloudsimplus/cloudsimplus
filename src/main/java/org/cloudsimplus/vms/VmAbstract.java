@@ -311,7 +311,7 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
     private double bootProcessing() {
         final var dc = host.getDatacenter();
         final double nextProcessingTime = dc.getSchedulingInterval() > -1 ? dc.getSchedulingInterval() : getRemainingStartupTime();
-        dc.schedule(nextProcessingTime, CloudSimTag.VM_UPDATE_CLOUDLET_PROCESSING);
+        dc.schedule(nextProcessingTime, CloudSimTag.VM_UPDATE_CLOUDLET_PROCESSING, null);
         return nextProcessingTime;
     }
 
@@ -756,6 +756,6 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
             "{}: {}: Requesting {} destruction on {}{}. Shutdown {}.",
             getSimulation().clockStr(), getClass().getSimpleName(), this, this.host, lifeTimeMsg, shutDownMsg);
         final var dc = host.getDatacenter();
-        dc.schedule(dc, this.getShutDownDelay(), CloudSimTag.VM_DESTROY, this);
+        dc.schedule(this.getShutDownDelay(), CloudSimTag.VM_DESTROY, this);
     }
 }

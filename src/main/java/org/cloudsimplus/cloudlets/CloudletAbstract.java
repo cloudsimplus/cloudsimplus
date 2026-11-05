@@ -277,8 +277,7 @@ public non-sealed abstract class CloudletAbstract extends CustomerEntityAbstract
     private void returnToBrokerIfFinished() {
         if(isFinished() && !isReturnedToBroker()){
             returnedToBroker = true;
-            final var targetEntity = getSimulation().getCis();
-            getSimulation().sendNow(targetEntity, getBroker(), CloudSimTag.CLOUDLET_RETURN, this);
+            getBroker().schedule(CloudSimTag.CLOUDLET_RETURN, this);
             vm.getCloudletScheduler().addCloudletToReturnedList(this);
         }
     }

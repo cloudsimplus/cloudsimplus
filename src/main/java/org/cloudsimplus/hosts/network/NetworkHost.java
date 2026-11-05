@@ -175,9 +175,7 @@ public class NetworkHost extends HostSimple {
             final double delay = getEdgeSwitch().downlinkTransferDelay(pkt, pktsToSendForExternalVms.size());
             totalDataTransferBytes += pkt.getSize();
 
-            getSimulation().send(
-                    getDatacenter(), getEdgeSwitch(),
-                    delay, CloudSimTag.NETWORK_EVENT_UP, pkt);
+            getDatacenter().schedule(getEdgeSwitch(), delay, CloudSimTag.NETWORK_EVENT_UP, pkt);
         }
 
         pktsToSendForExternalVms.clear();

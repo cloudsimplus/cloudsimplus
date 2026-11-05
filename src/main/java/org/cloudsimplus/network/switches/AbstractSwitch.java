@@ -110,7 +110,7 @@ public abstract non-sealed class AbstractSwitch extends CloudSimEntity implement
     protected void processPacketDown(final SimEvent evt) {
         // A packet coming from an up-level router has to be sent downward.
         getSimulation().cancelAll(this, new PredicateType(CloudSimTag.NETWORK_EVENT_SEND));
-        schedule(this, getSwitchingDelay(), CloudSimTag.NETWORK_EVENT_SEND);
+        schedule(getSwitchingDelay(), CloudSimTag.NETWORK_EVENT_SEND, null);
     }
 
     /// Gets the Host where a VM is placed.
@@ -125,7 +125,7 @@ public abstract non-sealed class AbstractSwitch extends CloudSimEntity implement
     protected void processPacketUp(final SimEvent evt) {
         // A packet coming from a down-level router has to be sent up.
         getSimulation().cancelAll(this, new PredicateType(CloudSimTag.NETWORK_EVENT_SEND));
-        schedule(this, switchingDelay, CloudSimTag.NETWORK_EVENT_SEND);
+        schedule(switchingDelay, CloudSimTag.NETWORK_EVENT_SEND, null);
     }
 
     /// Sends a packet to hosts connected to the Switch.
@@ -163,7 +163,7 @@ public abstract non-sealed class AbstractSwitch extends CloudSimEntity implement
     {
         for (final HostPacket pkt : packetList) {
             final double delay = packetTransferDelay(pkt, bandwidth, packetList.size());
-            send(destinationSwitch, delay, tag, pkt);
+            schedule(destinationSwitch, delay, tag, pkt);
         }
 
         packetList.clear();
