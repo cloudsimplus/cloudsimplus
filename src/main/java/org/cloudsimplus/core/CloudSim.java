@@ -272,7 +272,7 @@ non-sealed abstract class CloudSim implements Simulation {
     /// Then, waits for such events to be received and processed.
     private void notifyEndOfSimulationToEntities() {
         entityList.stream()
-                  .filter(CloudSimEntity::isAlive)
+                  .filter(entity -> !entity.isFinished())
                   .forEach(e -> schedule(new CloudSimEvent(0, cis, e, CloudSimTag.SIMULATION_END, null)));
         LOGGER.info("{}: Processing last events before simulation shutdown.", clockStr());
 
@@ -380,8 +380,8 @@ non-sealed abstract class CloudSim implements Simulation {
     }
 
     protected void removeFinishedEntity(final CloudSimEntity entity){
-        if(entity.isAlive()){
-            final var msg = "Alive entity %s cannot be removed from the simulation entity list.";
+        if(!entity.isFinished()){
+            final var msg = "Unfinished entity %s cannot be removed from the simulation entity list.";
             throw new IllegalStateException(msg.formatted(entity));
         }
 

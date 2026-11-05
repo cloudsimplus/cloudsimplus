@@ -109,6 +109,7 @@ final class VmNull implements Vm {
     }
     @Override public Vm setBroker(DatacenterBroker broker) { return this; }
     @Override public double getStartTime() { return 0; }
+    @Override public boolean hasStarted() { return false; }
     @Override public boolean isFinished() { return true; }
     @Override public Vm setStartTime(double startTime) { return this; }
     @Override public double getFinishTime() { return 0; }

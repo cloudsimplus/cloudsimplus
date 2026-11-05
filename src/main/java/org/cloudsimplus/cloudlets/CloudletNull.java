@@ -69,6 +69,7 @@ final class CloudletNull implements Cloudlet {
     @Override public long getOutputSize() { return 0L; }
     @Override public long getTotalLength() { return 0L; }
     @Override public double getStartTime() { return 0; }
+    @Override public boolean hasStarted() { return false; }
     @Override public double getFinishTime() { return 0; }
     @Override public Startable setFinishTime(double stopTime) { return this; }
     @Override public double getLastBusyTime() { return 0; }

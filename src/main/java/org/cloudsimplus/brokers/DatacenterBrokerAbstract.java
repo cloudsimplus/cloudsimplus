@@ -219,7 +219,7 @@ public non-sealed abstract class DatacenterBrokerAbstract extends CloudSimEntity
         lastSubmittedVm = setIdForEntitiesWithoutOne(list, lastSubmittedVm);
         vmWaitingList.addAll(list);
 
-        if (isStarted() && !list.isEmpty()) {
+        if (hasStarted() && !list.isEmpty()) {
             LOGGER.info(
                 "{}: {}: List of {} VMs submitted to the broker during simulation execution. VMs creation request sent to Datacenter.",
                 getSimulation().clockStr(), getName(), list.size());
@@ -337,7 +337,7 @@ public non-sealed abstract class DatacenterBrokerAbstract extends CloudSimEntity
         cloudletWaitingList.addAll(list);
         wereThereWaitingCloudlets = true;
 
-        if (!isStarted()) {
+        if (!hasStarted()) {
             return this;
         }
 
@@ -988,9 +988,9 @@ public non-sealed abstract class DatacenterBrokerAbstract extends CloudSimEntity
         return false;
     }
 
-    /// {@return true if the broker is still alive and idle, so that it may be shutdown, false otherwise}
+    /// {@return true if the broker is still running and idle, so that it may be shutdown, false otherwise}
     private boolean isTimeToShutdownBroker() {
-        return isAlive() && isTimeToTerminateSimulation() && shutdownWhenIdle && isBrokerIdle();
+        return isRunning() && isTimeToTerminateSimulation() && shutdownWhenIdle && isBrokerIdle();
     }
 
     private boolean isTimeToTerminateSimulation() {

@@ -35,8 +35,8 @@ import org.jspecify.annotations.Nullable;
 public interface SimEntityNullBase extends SimEntity {
     @Override default State getState() { return State.FINISHED; }
     @Override default SimEntity setState(State state) { return this; }
-    @Override default boolean isStarted() { return false; }
-    @Override default boolean isAlive() { return false; }
+    @Override default boolean hasStarted() { return false; }
+    @Override default boolean isRunning() { return false; }
     @Override default boolean isFinished() { return false; }
     @Override default Simulation getSimulation() { return Simulation.NULL; }
     @Override default void processEvent(SimEvent evt) {/**/}

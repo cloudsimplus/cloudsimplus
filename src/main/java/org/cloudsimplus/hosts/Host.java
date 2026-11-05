@@ -81,11 +81,6 @@ public sealed interface Host
     @Override
     boolean isFinished();
 
-    /// @return true if the Host has ever started sometime,
-    /// i.e., if it was active sometime in the simulation execution;
-    /// false otherwise.
-    boolean hasEverStarted();
-
     /// Requests the Host to be powered on or off.
     /// If there is no [#getStartupDelay()]
     /// or [#getShutDownDelay()] (which is the default),
