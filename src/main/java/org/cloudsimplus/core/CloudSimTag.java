@@ -51,30 +51,11 @@ public class CloudSimTag{
     /// That ensures a graceful shutdown, after other entity events are processed.
     public static final int ENTITY_SHUTDOWN = -3;
 
-    /// Denotes a request from a [Datacenter] to register itself. This tag is normally used
-    /// between [CloudInformationService] and Datacenter entities.
-    /// When such a [SimEvent] is sent, the [SimEvent#getData()]
-    /// must be a [Datacenter] object.
-    public static final int DC_REGISTRATION_REQUEST = BASE + 2;
-
-    /// Denotes a request from a [DatacenterBroker] to a [CloudInformationService] to get
-    /// the list of all [Datacenter]s, including the ones that can support advanced reservation.
-    public static final int DC_LIST_REQUEST = BASE + 4;
-
     /// Tag used by an entity to send ping requests.
     public static final int ICMP_PKT_SUBMIT = NET_BASE + 5;
 
     /// Tag used to return the ping request back to the sender.
     public static final int ICMP_PKT_RETURN = NET_BASE + 6;
-
-    /// Denotes a request to register a [CloudInformationService] entity as a regional CIS.
-    /// When such a [SimEvent] is sent, the [SimEvent#getData()]
-    /// must be a [CloudInformationService] object.
-    public static final int REGISTER_REGIONAL_CIS = BASE + 12;
-
-    /// Denotes a request to get a list of other regional [CloudInformationService] (CIS) entities from the
-    /// system CIS entity.
-    public static final int REQUEST_REGIONAL_CIS = BASE + 13;
 
     /// Denotes a [DatacenterBroker] request to schedule creation of waiting [Cloudlet]s.
     public static final int CLOUDLET_CREATION = BASE + 14;

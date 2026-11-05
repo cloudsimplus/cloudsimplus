@@ -921,7 +921,6 @@ public non-sealed class DatacenterSimple extends CloudSimEntity implements Datac
     @Override
     protected void startInternal() {
         LOGGER.info("{}: {} is starting...", getSimulation().clockStr(), this);
-        schedule(getSimulation().getCis(), CloudSimTag.DC_REGISTRATION_REQUEST, this);
     }
 
     @Override

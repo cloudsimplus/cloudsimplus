@@ -7,36 +7,27 @@
  */
 package org.cloudsimplus.core;
 
-import lombok.Getter;
 import org.cloudsimplus.core.events.SimEvent;
 import org.cloudsimplus.datacenters.Datacenter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
-/// A Cloud Information Service (CIS) is an entity that provides cloud resource
-/// registration, indexing and discovery services. The Cloud datacenters tell their
-/// readiness to process Cloudlets by registering themselves with this entity.
-/// Other entities such as the broker can contact this class for
-/// resource discovery service, which returns a list of registered resources.
+/// A Cloud Information Service (CIS) is an entity that keeps the list of [Datacenter]s
+/// in the simulation, which other entities (such as brokers) use to discover them.
+/// Each Datacenter is added to the list when it is created,
+/// so the list is available even before the simulation starts.
 ///
-/// In summary, it acts like a yellow page service.
+/// It's also the source of events sent by the simulation itself.
 /// An instance of this class is automatically created by [CloudSimPlus] upon initialization of the simulation.
 ///
 /// @author Manzur Murshed
 /// @author Rajkumar Buyya
 /// @since CloudSim Toolkit 1.0
 public class CloudInformationService extends CloudSimEntity {
-    private static final Logger LOGGER = LoggerFactory.getLogger(CloudInformationService.class.getSimpleName());
-
-    /// A list containing all Datacenters that are registered at the
-    /// Cloud Information Service (CIS).
-    @Getter
+    /// The Datacenters created in the simulation.
     private final List<Datacenter> datacenterList;
-
-    /// List of all regional CIS.
-    private final Set<CloudInformationService> cisList;
 
     /// Instantiates a new CloudInformationService object.
     ///
@@ -44,45 +35,30 @@ public class CloudInformationService extends CloudSimEntity {
     CloudInformationService(final CloudSim simulation) {
         super(simulation);
         datacenterList = new ArrayList<>();
-        cisList = new TreeSet<>();
+    }
+
+    /// {@return a read-only list of the Datacenters created in the simulation}
+    public List<Datacenter> getDatacenterList() {
+        return Collections.unmodifiableList(datacenterList);
+    }
+
+    /// Adds a Datacenter to the list. Called by the simulation when the Datacenter is created.
+    /// @param datacenter the Datacenter to add
+    void addDatacenter(final Datacenter datacenter) {
+        datacenterList.add(datacenter);
     }
 
     /// The method has no effect on the current class.
     @Override
     protected void startInternal() {/**/}
 
+    /// The method has no effect on the current class.
     @Override
-    public void processEvent(final SimEvent evt) {
-        switch (evt.getTag()) {
-            case CloudSimTag.REGISTER_REGIONAL_CIS -> cisList.add((CloudInformationService) evt.getData());
-            case CloudSimTag.REQUEST_REGIONAL_CIS -> schedule(evt.getSource(), evt.getTag(), cisList);
-            case CloudSimTag.DC_REGISTRATION_REQUEST -> datacenterList.add((Datacenter) evt.getData());
-            // A Broker is requesting a list of all datacenters.
-            case CloudSimTag.DC_LIST_REQUEST -> schedule(evt.getSource(), evt.getTag(), datacenterList);
-        }
-    }
+    public void processEvent(final SimEvent evt) {/**/}
 
     @Override
     public void shutdown() {
         super.shutdown();
-        LOGGER.info("{}: Notify all CloudSim Plus entities to shutdown.{}", super.getName(), System.lineSeparator());
-
-        signalShutdown(datacenterList);
-        signalShutdown(cisList);
-
-        // reset the values
         datacenterList.clear();
-        cisList.clear();
-    }
-
-    /// Sends a [CloudSimTag#SIMULATION_END] signal to all entities in the given list.
-    ///
-    /// @param list List of entities to notify about simulation termination
-    private void signalShutdown(final Collection<? extends SimEntity> list) {
-        if (list == null) {
-            return;
-        }
-
-        list.forEach(entity -> schedule(entity, CloudSimTag.SIMULATION_END));
     }
 }
