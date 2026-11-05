@@ -208,41 +208,6 @@ public sealed interface Simulation permits CloudSim, SimulationNull {
     /// @return the removed event or [SimEvent#NULL] if not found
     SimEvent select(SimEntity dest, Predicate<SimEvent> predicate);
 
-    /// Sends an event where all data required is defined inside the event instance.
-    /// @param evt the event to send
-    void send(SimEvent evt);
-
-    /// Sends an event from one entity to another.
-    /// @param src  entity that scheduled the event
-    /// @param dest  entity that the event will be sent to
-    /// @param delay how many seconds after the current simulation time the event should be sent
-    /// @param tag   the [tag][SimEvent#getTag()] that classifies the event
-    /// @param data  the [data][SimEvent#getData()] to be sent inside the event, according to the tag
-    void send(SimEntity src, SimEntity dest, double delay, int tag, @Nullable Object data);
-
-    /// Sends an event where all data required is defined inside the event instance,
-    /// adding it to the beginning of the queue to give priority to it.
-    /// @param evt the event to send
-    void sendFirst(SimEvent evt);
-
-    /// Sends an event from one entity to another,
-    /// adding it to the beginning of the queue to give priority to it.
-    ///
-    /// @param src  entity that scheduled the event
-    /// @param dest  entity that the event will be sent to
-    /// @param delay how many seconds after the current simulation time the event should be sent
-    /// @param tag   the [tag][SimEvent#getTag()] that classifies the event
-    /// @param data  the [data][SimEvent#getData()] to be sent inside the event, according to the tag
-    void sendFirst(SimEntity src, SimEntity dest, double delay, int tag, @Nullable Object data);
-
-    /// Sends an event from one entity to another without delaying the message.
-    ///
-    /// @param src  entity that scheduled the event
-    /// @param dest entity that the event will be sent to
-    /// @param tag  the [tag][SimEvent#getTag()] that classifies the event
-    /// @param data the [data][SimEvent#getData()] to be sent inside the event, according to the tag
-    void sendNow(SimEntity src, SimEntity dest, int tag, @Nullable Object data);
-
     /// Runs the simulation for a specific period of time and then immediately returns.
     /// You need to invoke this method multiple times to complete the whole simulation.
     ///

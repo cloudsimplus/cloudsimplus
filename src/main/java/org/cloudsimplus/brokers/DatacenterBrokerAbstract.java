@@ -554,7 +554,7 @@ public non-sealed abstract class DatacenterBrokerAbstract extends CloudSimEntity
         if(prevLength < 0){
             final double delay = cloudlet.getSimulation().getMinTimeBetweenEvents();
             final Datacenter dc = cloudlet.getVm().getHost().getDatacenter();
-            dc.schedule(delay, CloudSimTag.VM_UPDATE_CLOUDLET_PROCESSING);
+            dc.schedule(delay, CloudSimTag.VM_UPDATE_CLOUDLET_PROCESSING, null);
         }
 
         return true;
@@ -581,8 +581,8 @@ public non-sealed abstract class DatacenterBrokerAbstract extends CloudSimEntity
 
     private boolean requestVmVerticalScaling(final SimEvent evt) {
         if (evt.getData() instanceof VerticalVmScaling scaling) {
-            getSimulation().sendNow(
-                evt.getSource(), scaling.getVm().getHost().getDatacenter(),
+            evt.getSource().schedule(
+                scaling.getVm().getHost().getDatacenter(),
                 CloudSimTag.VM_VERTICAL_SCALING, scaling);
             return true;
         }
@@ -697,7 +697,7 @@ public non-sealed abstract class DatacenterBrokerAbstract extends CloudSimEntity
         if (vmCreation.isRetryFailedVms()) {
             lastSelectedDc = datacenterList.get(0);
             this.vmCreationRetrySent = true;
-            schedule(vmCreation.getRetryDelay(), CloudSimTag.VM_CREATE_RETRY);
+            schedule(vmCreation.getRetryDelay(), CloudSimTag.VM_CREATE_RETRY, null);
             vmCreation.incCurrentRetries();
         }
         else shutdown();
@@ -831,7 +831,7 @@ public non-sealed abstract class DatacenterBrokerAbstract extends CloudSimEntity
         }
 
         logVmCreationRequest(dc, isFallbackDatacenter, vmOrList);
-        send(dc, vm.getSubmissionDelay(), CloudSimTag.VM_CREATE_ACK, vmOrList);
+        schedule(dc, vm.getSubmissionDelay(), CloudSimTag.VM_CREATE_ACK, vmOrList);
         vm.setLastTriedDatacenter(dc);
         return 1;
     }
@@ -938,7 +938,7 @@ public non-sealed abstract class DatacenterBrokerAbstract extends CloudSimEntity
             }
 
             if(isVmIdlenessVerificationRequired((VmAbstract)vm)) {
-                getSimulation().send(
+                schedule(
                     new CloudSimEvent(vmDestructionDelayFunction.apply(vm),
                         vm.getHost().getDatacenter(),
                         CloudSimTag.VM_UPDATE_CLOUDLET_PROCESSING));
@@ -1039,7 +1039,7 @@ public non-sealed abstract class DatacenterBrokerAbstract extends CloudSimEntity
             logCloudletCreationRequest(cloudlet);
             final Datacenter dc = getDatacenter(lastSelectedVm);
             final double totalDelay = cloudlet.getSubmissionDelay() + getVmStartupDelay(cloudlet);
-            send(dc, totalDelay, CloudSimTag.CLOUDLET_SUBMIT, cloudlet);
+            schedule(dc, totalDelay, CloudSimTag.CLOUDLET_SUBMIT, cloudlet);
             cloudlet.setLastTriedDatacenter(dc);
             cloudletCreatedList.add(cloudlet);
             iterator.remove();
@@ -1126,7 +1126,7 @@ public non-sealed abstract class DatacenterBrokerAbstract extends CloudSimEntity
     @Override
     public void startInternal() {
         LOGGER.info("{} is starting...", this);
-        schedule(getSimulation().getCis(), 0, CloudSimTag.DC_LIST_REQUEST);
+        schedule(getSimulation().getCis(), CloudSimTag.DC_LIST_REQUEST);
     }
 
     @Override

@@ -22,8 +22,8 @@ import org.cloudsimplus.vms.Vm;
 
 /// Tags indicating a type of action that
 /// needs to be undertaken by CloudSim entities when they receive or send events.
-/// Such tags are used when sending events using [Simulation#send(SimEntity,SimEntity,double,int,Object)]
-/// or [SimEntity#schedule(double,int)] or overloaded methods.
+/// Such tags are used when sending events using [SimEntity#schedule(SimEntity,double,int,Object)]
+/// or its overloaded methods.
 ///
 /// **NOTE:** To avoid conflicts with other tags,
 /// CloudSim reserves numbers lower than 300 and the number 9600.

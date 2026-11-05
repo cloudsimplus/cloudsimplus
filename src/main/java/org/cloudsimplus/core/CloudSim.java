@@ -116,7 +116,7 @@ non-sealed abstract class CloudSim implements Simulation {
     /// when [#running] is false, but this attribute is still true.
     /// This way, events sent before the start are held until the simulation starts,
     /// while events sent after the stop are rejected.
-    /// @see #trySend(SimEvent)
+    /// @see #schedule(SimEvent)
     private boolean everStarted;
 
     /// Creates a CloudSim simulation.
@@ -273,7 +273,7 @@ non-sealed abstract class CloudSim implements Simulation {
     private void notifyEndOfSimulationToEntities() {
         entityList.stream()
                   .filter(CloudSimEntity::isAlive)
-                  .forEach(e -> sendNow(e, CloudSimTag.SIMULATION_END));
+                  .forEach(e -> schedule(new CloudSimEvent(0, cis, e, CloudSimTag.SIMULATION_END, null)));
         LOGGER.info("{}: Processing last events before simulation shutdown.", clockStr());
 
         while (true) {
@@ -468,26 +468,9 @@ non-sealed abstract class CloudSim implements Simulation {
         }
     }
 
-    private void sendNow(final SimEntity dest, final int tag) {
-        sendNow(cis, dest, tag, null);
-    }
-
-    @Override
-    public void sendNow(final SimEntity src, final SimEntity dest, final int tag, @Nullable final Object data) {
-        send(src, dest, 0, tag, data);
-    }
-
-    @Override
-    public void send(final SimEntity src, final SimEntity dest, final double delay, final int tag, @Nullable final Object data) {
-        send(new CloudSimEvent(SimEvent.Type.SEND, delay, src, dest, tag, data));
-    }
-
-    @Override
-    public void send(@NonNull final SimEvent evt) {
-        trySend(evt);
-    }
-
-    /// Tries to send an event.
+    /// Adds an event to the future queue: the single place where events are queued.
+    /// Entities send events through [SimEntity#schedule(SimEvent)] and the other `schedule*()` methods,
+    /// which validate the delay and add the network delay. Here, the event time is kept as given.
     /// If the simulation hasn't started yet, the event is held and only sent when it starts.
     /// If the simulation has stopped, the event is rejected.
     ///
@@ -495,7 +478,7 @@ non-sealed abstract class CloudSim implements Simulation {
     /// @return true if the event was sent or held until the simulation starts;
     /// false if it was rejected because the simulation has stopped
     /// @see #isEventRejectedAfterStop(SimEvent)
-    boolean trySend(@NonNull final SimEvent evt) {
+    boolean schedule(@NonNull final SimEvent evt) {
         if (!everStarted) {
             eventsSentBeforeStart().addLast(evt);
             return true;
@@ -512,23 +495,13 @@ non-sealed abstract class CloudSim implements Simulation {
         return true;
     }
 
-    @Override
-    public void sendFirst(final SimEntity src, final SimEntity dest, final double delay, final int tag, @Nullable final Object data) {
-        sendFirst(new CloudSimEvent(SimEvent.Type.SEND, delay, src, dest, tag, data));
-    }
-
-    @Override
-    public void sendFirst(SimEvent evt) {
-        trySendFirst(evt);
-    }
-
-    /// Tries to send a high-priority event, following the same rules of [#trySend(SimEvent)].
+    /// Adds a high-priority event to the future queue, following the same rules of [#schedule(SimEvent)].
     /// If the simulation hasn't started yet, the event is held ahead of the other held events.
     ///
     /// @param evt the event to send
     /// @return true if the event was sent or held until the simulation starts;
     /// false if it was rejected because the simulation has stopped
-    boolean trySendFirst(@NonNull final SimEvent evt) {
+    boolean scheduleFirst(@NonNull final SimEvent evt) {
         if (!everStarted) {
             eventsSentBeforeStart().addFirst(evt);
             return true;

@@ -53814,150 +53814,87 @@
 										},
 										{
 											"_type": "UMLOperation",
-											"_id": "AAAAAAFW1qU6sPDcCeI=",
+											"_id": "HwjRxad4B0UnGg7/eW8=",
 											"_parent": {
 												"$ref": "AAAAAAFW1qU6sPDVW20="
 											},
 											"name": "schedule",
-											"documentation": "Sends an event to another entity by id number, with data. Note that the\ntag <code>9999</code> is reserved.\n@param dest The unique id number of the destination entity\n@param delay How many seconds after the current simulation time the event should be sent\n@param tag An user-defined number representing the type of event.\n@param data The data to be sent with the event.",
+											"documentation": "Sends an event where all data required is defined inside the event instance. The event time is kept as given: no network delay is added.\n@param evt the event to send\n@return true if the event was sent (or held until the simulation starts); false if the simulation has stopped",
 											"parameters": [
 												{
 													"_type": "UMLParameter",
-													"_id": "AAAAAAFW1qU6sPDdbw4=",
+													"_id": "MEjoKqDVsHEF8br1we8=",
 													"_parent": {
-														"$ref": "AAAAAAFW1qU6sPDcCeI="
+														"$ref": "HwjRxad4B0UnGg7/eW8="
 													},
-													"name": "dest",
-													"type": "int"
-												},
-												{
-													"_type": "UMLParameter",
-													"_id": "AAAAAAFW1qU6sPDe+Q8=",
-													"_parent": {
-														"$ref": "AAAAAAFW1qU6sPDcCeI="
-													},
-													"name": "delay",
-													"type": "double"
-												},
-												{
-													"_type": "UMLParameter",
-													"_id": "AAAAAAFW1qU6sPDfpqU=",
-													"_parent": {
-														"$ref": "AAAAAAFW1qU6sPDcCeI="
-													},
-													"name": "tag",
-													"type": "int"
-												},
-												{
-													"_type": "UMLParameter",
-													"_id": "AAAAAAFW1qU6sPDgLPY=",
-													"_parent": {
-														"$ref": "AAAAAAFW1qU6sPDcCeI="
-													},
-													"name": "data",
+													"name": "evt",
 													"type": {
-														"$ref": "AAAAAAFW1qU/QflgqGo="
+														"$ref": "AAAAAAFW1qU6wfFLCFc="
 													}
 												},
 												{
 													"_type": "UMLParameter",
-													"_id": "AAAAAAFW1qU6sPDhca0=",
+													"_id": "IA2dAjK3XdM9AYXALj8=",
 													"_parent": {
-														"$ref": "AAAAAAFW1qU6sPDcCeI="
+														"$ref": "HwjRxad4B0UnGg7/eW8="
 													},
-													"type": "void",
+													"type": "boolean",
 													"direction": "return"
 												}
 											]
 										},
 										{
 											"_type": "UMLOperation",
-											"_id": "AAAAAAFW1qU6sPDiGhY=",
+											"_id": "fDWdrkBI6bZ1sKjtB6k=",
 											"_parent": {
 												"$ref": "AAAAAAFW1qU6sPDVW20="
 											},
 											"name": "schedule",
-											"documentation": "Sends an event to another entity by id number and with <b>no</b> data.\nNote that the tag <code>9999</code> is reserved.\n@param dest The unique id number of the destination entity\n@param delay How many seconds after the current simulation time the event should be sent\n@param tag An user-defined number representing the type of event.",
+											"documentation": "Sends an event from the entity to itself with no delay and no data.\n@param tag a tag representing the type of event, according to the CloudSimTag or some custom one.\n@return true if the event was sent (or held until the simulation starts); false if the simulation has stopped",
 											"parameters": [
 												{
 													"_type": "UMLParameter",
-													"_id": "AAAAAAFW1qU6sPDjHAg=",
+													"_id": "bQmzo7SLx4k4AL7CR6w=",
 													"_parent": {
-														"$ref": "AAAAAAFW1qU6sPDiGhY="
-													},
-													"name": "dest",
-													"type": "int"
-												},
-												{
-													"_type": "UMLParameter",
-													"_id": "AAAAAAFW1qU6sPDk3k4=",
-													"_parent": {
-														"$ref": "AAAAAAFW1qU6sPDiGhY="
-													},
-													"name": "delay",
-													"type": "double"
-												},
-												{
-													"_type": "UMLParameter",
-													"_id": "AAAAAAFW1qU6sPDl5V4=",
-													"_parent": {
-														"$ref": "AAAAAAFW1qU6sPDiGhY="
+														"$ref": "fDWdrkBI6bZ1sKjtB6k="
 													},
 													"name": "tag",
 													"type": "int"
 												},
 												{
 													"_type": "UMLParameter",
-													"_id": "AAAAAAFW1qU6sPDmOJk=",
+													"_id": "49twjmHX2mx0PJDjrBw=",
 													"_parent": {
-														"$ref": "AAAAAAFW1qU6sPDiGhY="
+														"$ref": "fDWdrkBI6bZ1sKjtB6k="
 													},
-													"type": "void",
+													"type": "boolean",
 													"direction": "return"
 												}
 											]
 										},
 										{
 											"_type": "UMLOperation",
-											"_id": "AAAAAAFW1qU6sPDnIO0=",
+											"_id": "cQPsff1eQan202oY/BQ=",
 											"_parent": {
 												"$ref": "AAAAAAFW1qU6sPDVW20="
 											},
 											"name": "schedule",
-											"documentation": "Sends an event to another entity through a port with a given name, with\ndata. Note that the tag <code>9999</code> is reserved.\n@param dest The name of the port to send the event through\n@param delay How many seconds after the current simulation time the event should be sent\n@param tag An user-defined number representing the type of event.\n@param data The data to be sent with the event.",
+											"documentation": "Sends an event from the entity to itself with no delay.\n@param tag a tag representing the type of event, according to the CloudSimTag or some custom one.\n@param data the data to be sent with the event, according to the tag (may be null).\n@return true if the event was sent (or held until the simulation starts); false if the simulation has stopped",
 											"parameters": [
 												{
 													"_type": "UMLParameter",
-													"_id": "AAAAAAFW1qU6sPDoRJU=",
+													"_id": "NLwL9Vwz1IR/DCxpmvY=",
 													"_parent": {
-														"$ref": "AAAAAAFW1qU6sPDnIO0="
-													},
-													"name": "dest",
-													"type": "String"
-												},
-												{
-													"_type": "UMLParameter",
-													"_id": "AAAAAAFW1qU6sPDpWKM=",
-													"_parent": {
-														"$ref": "AAAAAAFW1qU6sPDnIO0="
-													},
-													"name": "delay",
-													"type": "double"
-												},
-												{
-													"_type": "UMLParameter",
-													"_id": "AAAAAAFW1qU6sPDq3eI=",
-													"_parent": {
-														"$ref": "AAAAAAFW1qU6sPDnIO0="
+														"$ref": "cQPsff1eQan202oY/BQ="
 													},
 													"name": "tag",
 													"type": "int"
 												},
 												{
 													"_type": "UMLParameter",
-													"_id": "AAAAAAFW1qU6sPDr2Vg=",
+													"_id": "WF6iYYiDhBfWCShd15s=",
 													"_parent": {
-														"$ref": "AAAAAAFW1qU6sPDnIO0="
+														"$ref": "cQPsff1eQan202oY/BQ="
 													},
 													"name": "data",
 													"type": {
@@ -53966,94 +53903,47 @@
 												},
 												{
 													"_type": "UMLParameter",
-													"_id": "AAAAAAFW1qU6sPDsADU=",
+													"_id": "nAzjcDFBuAnJJQDDP40=",
 													"_parent": {
-														"$ref": "AAAAAAFW1qU6sPDnIO0="
+														"$ref": "cQPsff1eQan202oY/BQ="
 													},
-													"type": "void",
+													"type": "boolean",
 													"direction": "return"
 												}
 											]
 										},
 										{
 											"_type": "UMLOperation",
-											"_id": "AAAAAAFW1qU6sPDtA68=",
+											"_id": "VBb/grVSYwAW/u97G0g=",
 											"_parent": {
 												"$ref": "AAAAAAFW1qU6sPDVW20="
 											},
 											"name": "schedule",
-											"documentation": "Sends an event to another entity through a port with a given name, with\n<b>no</b> data. Note that the tag <code>9999</code> is reserved.\n@param dest The name of the port to send the event through\n@param delay How many seconds after the current simulation time the event should be sent\n@param tag An user-defined number representing the type of event.",
+											"documentation": "Sends an event from the entity to itself.\n@param delay how many seconds after the current simulation time the event should be sent. A negative delay is changed to 0 (with a warning).\n@param tag a tag representing the type of event, according to the CloudSimTag or some custom one.\n@param data the data to be sent with the event, according to the tag (may be null).\n@return true if the event was sent (or held until the simulation starts); false if the simulation has stopped",
 											"parameters": [
 												{
 													"_type": "UMLParameter",
-													"_id": "AAAAAAFW1qU6sPDu7l4=",
+													"_id": "U7ZfYphRPPnqr3P+/pc=",
 													"_parent": {
-														"$ref": "AAAAAAFW1qU6sPDtA68="
-													},
-													"name": "dest",
-													"type": "String"
-												},
-												{
-													"_type": "UMLParameter",
-													"_id": "AAAAAAFW1qU6sPDvZKQ=",
-													"_parent": {
-														"$ref": "AAAAAAFW1qU6sPDtA68="
+														"$ref": "VBb/grVSYwAW/u97G0g="
 													},
 													"name": "delay",
 													"type": "double"
 												},
 												{
 													"_type": "UMLParameter",
-													"_id": "AAAAAAFW1qU6sPDw4Jo=",
+													"_id": "JGvmPgvl6vfG5qB9gQU=",
 													"_parent": {
-														"$ref": "AAAAAAFW1qU6sPDtA68="
+														"$ref": "VBb/grVSYwAW/u97G0g="
 													},
 													"name": "tag",
 													"type": "int"
 												},
 												{
 													"_type": "UMLParameter",
-													"_id": "AAAAAAFW1qU6sPDx7Gk=",
+													"_id": "TcW4u7dK3twoygPTkUo=",
 													"_parent": {
-														"$ref": "AAAAAAFW1qU6sPDtA68="
-													},
-													"type": "void",
-													"direction": "return"
-												}
-											]
-										},
-										{
-											"_type": "UMLOperation",
-											"_id": "AAAAAAFW1qU6sPDy8Wg=",
-											"_parent": {
-												"$ref": "AAAAAAFW1qU6sPDVW20="
-											},
-											"name": "scheduleNow",
-											"documentation": "Sends an event to another entity by id number, with data but no delay.\nNote that the tag <code>9999</code> is reserved.\n@param dest The unique id number of the destination entity\n@param tag An user-defined number representing the type of event.\n@param data The data to be sent with the event.",
-											"parameters": [
-												{
-													"_type": "UMLParameter",
-													"_id": "AAAAAAFW1qU6sPDzklI=",
-													"_parent": {
-														"$ref": "AAAAAAFW1qU6sPDy8Wg="
-													},
-													"name": "dest",
-													"type": "int"
-												},
-												{
-													"_type": "UMLParameter",
-													"_id": "AAAAAAFW1qU6sPD0cmE=",
-													"_parent": {
-														"$ref": "AAAAAAFW1qU6sPDy8Wg="
-													},
-													"name": "tag",
-													"type": "int"
-												},
-												{
-													"_type": "UMLParameter",
-													"_id": "AAAAAAFW1qU6sPD1Zo0=",
-													"_parent": {
-														"$ref": "AAAAAAFW1qU6sPDy8Wg="
+														"$ref": "VBb/grVSYwAW/u97G0g="
 													},
 													"name": "data",
 													"type": {
@@ -54062,85 +53952,89 @@
 												},
 												{
 													"_type": "UMLParameter",
-													"_id": "AAAAAAFW1qU6sPD2FlE=",
+													"_id": "0kiaFANRTQJ/4muI+Es=",
 													"_parent": {
-														"$ref": "AAAAAAFW1qU6sPDy8Wg="
+														"$ref": "VBb/grVSYwAW/u97G0g="
 													},
-													"type": "void",
+													"type": "boolean",
 													"direction": "return"
 												}
 											]
 										},
 										{
 											"_type": "UMLOperation",
-											"_id": "AAAAAAFW1qU6sfD3CEk=",
+											"_id": "nXCHBLX3aPKBspGOTcQ=",
 											"_parent": {
 												"$ref": "AAAAAAFW1qU6sPDVW20="
 											},
-											"name": "scheduleNow",
-											"documentation": "Sends an event to another entity by id number and with <b>no</b> data and\nno delay. Note that the tag <code>9999</code> is reserved.\n@param dest The unique id number of the destination entity\n@param tag An user-defined number representing the type of event.",
+											"name": "schedule",
+											"documentation": "Sends an event to another entity with no delay and no data. The network delay between the entities is added when the destination is another entity.\n@param dest the destination entity\n@param tag a tag representing the type of event, according to the CloudSimTag or some custom one.\n@return true if the event was sent (or held until the simulation starts); false if the simulation has stopped",
 											"parameters": [
 												{
 													"_type": "UMLParameter",
-													"_id": "AAAAAAFW1qU6sfD4aOI=",
+													"_id": "FJkXIZrty8BQ+1F2rrs=",
 													"_parent": {
-														"$ref": "AAAAAAFW1qU6sfD3CEk="
+														"$ref": "nXCHBLX3aPKBspGOTcQ="
 													},
 													"name": "dest",
-													"type": "int"
+													"type": {
+														"$ref": "AAAAAAFW1qU6sPDVW20="
+													}
 												},
 												{
 													"_type": "UMLParameter",
-													"_id": "AAAAAAFW1qU6sfD5bfE=",
+													"_id": "9RNbe21I3X91hrDLaJY=",
 													"_parent": {
-														"$ref": "AAAAAAFW1qU6sfD3CEk="
+														"$ref": "nXCHBLX3aPKBspGOTcQ="
 													},
 													"name": "tag",
 													"type": "int"
 												},
 												{
 													"_type": "UMLParameter",
-													"_id": "AAAAAAFW1qU6sfD6nI8=",
+													"_id": "xxLaO+xJNUBTAH5mOTY=",
 													"_parent": {
-														"$ref": "AAAAAAFW1qU6sfD3CEk="
+														"$ref": "nXCHBLX3aPKBspGOTcQ="
 													},
-													"type": "void",
+													"type": "boolean",
 													"direction": "return"
 												}
 											]
 										},
 										{
 											"_type": "UMLOperation",
-											"_id": "AAAAAAFW1qU6sfD7GdY=",
+											"_id": "jxlal9dO/VZHjzqgRsU=",
 											"_parent": {
 												"$ref": "AAAAAAFW1qU6sPDVW20="
 											},
-											"name": "scheduleNow",
-											"documentation": "Sends an event to another entity through a port with a given name, with\ndata but no delay. Note that the tag <code>9999</code> is reserved.\n@param dest The name of the port to send the event through\n@param tag An user-defined number representing the type of event.\n@param data The data to be sent with the event.",
+											"name": "schedule",
+											"documentation": "Sends an event to another entity with no delay. The network delay between the entities is added when the destination is another entity.\n@param dest the destination entity\n@param tag a tag representing the type of event, according to the CloudSimTag or some custom one.\n@param data the data to be sent with the event, according to the tag (may be null).\n@return true if the event was sent (or held until the simulation starts); false if the simulation has stopped",
 											"parameters": [
 												{
 													"_type": "UMLParameter",
-													"_id": "AAAAAAFW1qU6sfD8T70=",
+													"_id": "KVr6BdBPE2c8orFeflc=",
 													"_parent": {
-														"$ref": "AAAAAAFW1qU6sfD7GdY="
+														"$ref": "jxlal9dO/VZHjzqgRsU="
 													},
 													"name": "dest",
-													"type": "String"
+													"type": {
+														"$ref": "AAAAAAFW1qU6sPDVW20="
+													}
 												},
 												{
 													"_type": "UMLParameter",
-													"_id": "AAAAAAFW1qU6sfD9qNE=",
+													"_id": "KbeJfQ7PhCfvk8+hXRo=",
 													"_parent": {
-														"$ref": "AAAAAAFW1qU6sfD7GdY="
+														"$ref": "jxlal9dO/VZHjzqgRsU="
 													},
 													"name": "tag",
 													"type": "int"
 												},
 												{
 													"_type": "UMLParameter",
-													"_id": "AAAAAAFW1qU6sfD+BGw=",
+													"_id": "0SfYMe/j8FGFopdKIaw=",
 													"_parent": {
-														"$ref": "AAAAAAFW1qU6sfD7GdY="
+														"$ref": "jxlal9dO/VZHjzqgRsU="
 													},
 													"name": "data",
 													"type": {
@@ -54149,199 +54043,158 @@
 												},
 												{
 													"_type": "UMLParameter",
-													"_id": "AAAAAAFW1qU6sfD/z/4=",
+													"_id": "2Lm3Hcq13zJaBQDJGxA=",
 													"_parent": {
-														"$ref": "AAAAAAFW1qU6sfD7GdY="
+														"$ref": "jxlal9dO/VZHjzqgRsU="
 													},
-													"type": "void",
+													"type": "boolean",
 													"direction": "return"
 												}
 											]
 										},
 										{
 											"_type": "UMLOperation",
-											"_id": "AAAAAAFW1qU6sfEAQnk=",
+											"_id": "Ztr0Eqpa1hRI/8eTzSw=",
 											"_parent": {
 												"$ref": "AAAAAAFW1qU6sPDVW20="
 											},
-											"name": "scheduleNow",
-											"documentation": "Send an event to another entity through a port with a given name, with\n<b>no</b> data and no delay. Note that the tag <code>9999</code> is\nreserved.\n@param dest The name of the port to send the event through\n@param tag An user-defined number representing the type of event.",
+											"name": "schedule",
+											"documentation": "Sends an event to another entity. The network delay between the entities is added when the destination is another entity. The event is not sent if the destination is not part of a simulation.\n@param dest the destination entity\n@param delay how many seconds after the current simulation time the event should be sent. A negative delay is changed to 0 (with a warning).\n@param tag a tag representing the type of event, according to the CloudSimTag or some custom one.\n@param data the data to be sent with the event, according to the tag (may be null).\n@return true if the event was sent (or held until the simulation starts); false if the simulation has stopped",
 											"parameters": [
 												{
 													"_type": "UMLParameter",
-													"_id": "AAAAAAFW1qU6sfEB+Nc=",
+													"_id": "ksoVQbcqP12LPLIMKk8=",
 													"_parent": {
-														"$ref": "AAAAAAFW1qU6sfEAQnk="
+														"$ref": "Ztr0Eqpa1hRI/8eTzSw="
 													},
 													"name": "dest",
-													"type": "String"
+													"type": {
+														"$ref": "AAAAAAFW1qU6sPDVW20="
+													}
 												},
 												{
 													"_type": "UMLParameter",
-													"_id": "AAAAAAFW1qU6sfEC/P8=",
+													"_id": "Q+Di6+w7bqxRsNpK8Fc=",
 													"_parent": {
-														"$ref": "AAAAAAFW1qU6sfEAQnk="
+														"$ref": "Ztr0Eqpa1hRI/8eTzSw="
+													},
+													"name": "delay",
+													"type": "double"
+												},
+												{
+													"_type": "UMLParameter",
+													"_id": "W37nP1dlRGTZDEMDyEE=",
+													"_parent": {
+														"$ref": "Ztr0Eqpa1hRI/8eTzSw="
 													},
 													"name": "tag",
 													"type": "int"
 												},
 												{
 													"_type": "UMLParameter",
-													"_id": "AAAAAAFW1qU6sfED2wA=",
+													"_id": "yX331fJB0tjnw7XTmOI=",
 													"_parent": {
-														"$ref": "AAAAAAFW1qU6sfEAQnk="
+														"$ref": "Ztr0Eqpa1hRI/8eTzSw="
 													},
-													"type": "void",
+													"name": "data",
+													"type": {
+														"$ref": "AAAAAAFW1qU/QflgqGo="
+													}
+												},
+												{
+													"_type": "UMLParameter",
+													"_id": "zSR7CUlj8vXh8OLgwr4=",
+													"_parent": {
+														"$ref": "Ztr0Eqpa1hRI/8eTzSw="
+													},
+													"type": "boolean",
 													"direction": "return"
 												}
 											]
 										},
 										{
 											"_type": "UMLOperation",
-											"_id": "AAAAAAFW1qU6sfEEQYo=",
+											"_id": "heSUAgYPIhaMvi16S30=",
 											"_parent": {
 												"$ref": "AAAAAAFW1qU6sPDVW20="
 											},
 											"name": "scheduleFirst",
-											"documentation": "Sends a high priority event to another entity by id number, with data.\nNote that the tag <code>9999</code> is reserved.\n@param dest The unique id number of the destination entity\n@param delay How many seconds after the current simulation time the event should be sent\n@param tag An user-defined number representing the type of event.\n@param data The data to be sent with the event.",
+											"documentation": "Sends a high-priority event where all data required is defined inside the event instance. High-priority: processed before the other events with the same time. The event time is kept as given: no network delay is added.\n@param evt the event to send\n@return true if the event was sent (or held until the simulation starts); false if the simulation has stopped",
 											"parameters": [
 												{
 													"_type": "UMLParameter",
-													"_id": "AAAAAAFW1qU6sfEFWFo=",
+													"_id": "7i4HsIhrNUCyFt7N0So=",
 													"_parent": {
-														"$ref": "AAAAAAFW1qU6sfEEQYo="
+														"$ref": "heSUAgYPIhaMvi16S30="
 													},
-													"name": "dest",
-													"type": "int"
-												},
-												{
-													"_type": "UMLParameter",
-													"_id": "AAAAAAFW1qU6sfEGgmA=",
-													"_parent": {
-														"$ref": "AAAAAAFW1qU6sfEEQYo="
-													},
-													"name": "delay",
-													"type": "double"
-												},
-												{
-													"_type": "UMLParameter",
-													"_id": "AAAAAAFW1qU6sfEHHwI=",
-													"_parent": {
-														"$ref": "AAAAAAFW1qU6sfEEQYo="
-													},
-													"name": "tag",
-													"type": "int"
-												},
-												{
-													"_type": "UMLParameter",
-													"_id": "AAAAAAFW1qU6sfEIchw=",
-													"_parent": {
-														"$ref": "AAAAAAFW1qU6sfEEQYo="
-													},
-													"name": "data",
+													"name": "evt",
 													"type": {
-														"$ref": "AAAAAAFW1qU/QflgqGo="
+														"$ref": "AAAAAAFW1qU6wfFLCFc="
 													}
 												},
 												{
 													"_type": "UMLParameter",
-													"_id": "AAAAAAFW1qU6sfEJCUE=",
+													"_id": "Et6SQ7PnY5vDAf4msw4=",
 													"_parent": {
-														"$ref": "AAAAAAFW1qU6sfEEQYo="
+														"$ref": "heSUAgYPIhaMvi16S30="
 													},
-													"type": "void",
+													"type": "boolean",
 													"direction": "return"
 												}
 											]
 										},
 										{
 											"_type": "UMLOperation",
-											"_id": "AAAAAAFW1qU6sfEKqHI=",
+											"_id": "cBgdQ/oUeipb9PBcABo=",
 											"_parent": {
 												"$ref": "AAAAAAFW1qU6sPDVW20="
 											},
 											"name": "scheduleFirst",
-											"documentation": "Sends a high priority event to another entity by id number and with\n<b>no</b> data. Note that the tag <code>9999</code> is reserved.\n@param dest The unique id number of the destination entity\n@param delay How many seconds after the current simulation time the event should be sent\n@param tag An user-defined number representing the type of event.",
+											"documentation": "Sends a high-priority event from the entity to itself with no delay and no data. High-priority: processed before the other events with the same time.\n@param tag a tag representing the type of event, according to the CloudSimTag or some custom one.\n@return true if the event was sent (or held until the simulation starts); false if the simulation has stopped",
 											"parameters": [
 												{
 													"_type": "UMLParameter",
-													"_id": "AAAAAAFW1qU6sfELc8Y=",
+													"_id": "84HhmcH3iyPoMgpC2Yg=",
 													"_parent": {
-														"$ref": "AAAAAAFW1qU6sfEKqHI="
-													},
-													"name": "dest",
-													"type": "int"
-												},
-												{
-													"_type": "UMLParameter",
-													"_id": "AAAAAAFW1qU6sfEM9v0=",
-													"_parent": {
-														"$ref": "AAAAAAFW1qU6sfEKqHI="
-													},
-													"name": "delay",
-													"type": "double"
-												},
-												{
-													"_type": "UMLParameter",
-													"_id": "AAAAAAFW1qU6sfEN4SQ=",
-													"_parent": {
-														"$ref": "AAAAAAFW1qU6sfEKqHI="
+														"$ref": "cBgdQ/oUeipb9PBcABo="
 													},
 													"name": "tag",
 													"type": "int"
 												},
 												{
 													"_type": "UMLParameter",
-													"_id": "AAAAAAFW1qU6sfEOj4E=",
+													"_id": "Nw5JbN2ArFY7XX+lG1s=",
 													"_parent": {
-														"$ref": "AAAAAAFW1qU6sfEKqHI="
+														"$ref": "cBgdQ/oUeipb9PBcABo="
 													},
-													"type": "void",
+													"type": "boolean",
 													"direction": "return"
 												}
 											]
 										},
 										{
 											"_type": "UMLOperation",
-											"_id": "AAAAAAFW1qU6sfEPZac=",
+											"_id": "uSyfoo1frjA9ybxUqY0=",
 											"_parent": {
 												"$ref": "AAAAAAFW1qU6sPDVW20="
 											},
 											"name": "scheduleFirst",
-											"documentation": "Sends a high priority event to another entity through a port with a given\nname, with data. Note that the tag <code>9999</code> is reserved.\n@param dest The name of the port to send the event through\n@param delay How many seconds after the current simulation time the event should be sent\n@param tag An user-defined number representing the type of event.\n@param data The data to be sent with the event.",
+											"documentation": "Sends a high-priority event from the entity to itself with no delay. High-priority: processed before the other events with the same time.\n@param tag a tag representing the type of event, according to the CloudSimTag or some custom one.\n@param data the data to be sent with the event, according to the tag (may be null).\n@return true if the event was sent (or held until the simulation starts); false if the simulation has stopped",
 											"parameters": [
 												{
 													"_type": "UMLParameter",
-													"_id": "AAAAAAFW1qU6sfEQ/Uo=",
+													"_id": "tdJDdqQ1rntuQfYRPSc=",
 													"_parent": {
-														"$ref": "AAAAAAFW1qU6sfEPZac="
-													},
-													"name": "dest",
-													"type": "String"
-												},
-												{
-													"_type": "UMLParameter",
-													"_id": "AAAAAAFW1qU6sfERm2E=",
-													"_parent": {
-														"$ref": "AAAAAAFW1qU6sfEPZac="
-													},
-													"name": "delay",
-													"type": "double"
-												},
-												{
-													"_type": "UMLParameter",
-													"_id": "AAAAAAFW1qU6sfESDWA=",
-													"_parent": {
-														"$ref": "AAAAAAFW1qU6sfEPZac="
+														"$ref": "uSyfoo1frjA9ybxUqY0="
 													},
 													"name": "tag",
 													"type": "int"
 												},
 												{
 													"_type": "UMLParameter",
-													"_id": "AAAAAAFW1qU6sfET3LM=",
+													"_id": "0mYJMHTPYCfjShpKAqI=",
 													"_parent": {
-														"$ref": "AAAAAAFW1qU6sfEPZac="
+														"$ref": "uSyfoo1frjA9ybxUqY0="
 													},
 													"name": "data",
 													"type": {
@@ -54350,94 +54203,47 @@
 												},
 												{
 													"_type": "UMLParameter",
-													"_id": "AAAAAAFW1qU6sfEUSI0=",
+													"_id": "QoF5N5e3Qtq4YoC60N4=",
 													"_parent": {
-														"$ref": "AAAAAAFW1qU6sfEPZac="
+														"$ref": "uSyfoo1frjA9ybxUqY0="
 													},
-													"type": "void",
+													"type": "boolean",
 													"direction": "return"
 												}
 											]
 										},
 										{
 											"_type": "UMLOperation",
-											"_id": "AAAAAAFW1qU6sfEV1fY=",
+											"_id": "tWV+wRajUVyfF6lFilA=",
 											"_parent": {
 												"$ref": "AAAAAAFW1qU6sPDVW20="
 											},
 											"name": "scheduleFirst",
-											"documentation": "Sends a high priority event to another entity through a port with a given\nname, with <b>no</b>\ndata. Note that the tag <code>9999</code> is reserved.\n@param dest The name of the port to send the event through\n@param delay How many seconds after the current simulation time the event should be sent\n@param tag An user-defined number representing the type of event.",
+											"documentation": "Sends a high-priority event from the entity to itself. High-priority: processed before the other events with the same time.\n@param delay how many seconds after the current simulation time the event should be sent. A negative delay is changed to 0 (with a warning).\n@param tag a tag representing the type of event, according to the CloudSimTag or some custom one.\n@param data the data to be sent with the event, according to the tag (may be null).\n@return true if the event was sent (or held until the simulation starts); false if the simulation has stopped",
 											"parameters": [
 												{
 													"_type": "UMLParameter",
-													"_id": "AAAAAAFW1qU6sfEWYHA=",
+													"_id": "eubzdB7ArxxQED22SxE=",
 													"_parent": {
-														"$ref": "AAAAAAFW1qU6sfEV1fY="
-													},
-													"name": "dest",
-													"type": "String"
-												},
-												{
-													"_type": "UMLParameter",
-													"_id": "AAAAAAFW1qU6sfEX1hg=",
-													"_parent": {
-														"$ref": "AAAAAAFW1qU6sfEV1fY="
+														"$ref": "tWV+wRajUVyfF6lFilA="
 													},
 													"name": "delay",
 													"type": "double"
 												},
 												{
 													"_type": "UMLParameter",
-													"_id": "AAAAAAFW1qU6sfEY4fs=",
+													"_id": "zOhcKnnLEqRJGGkoGZM=",
 													"_parent": {
-														"$ref": "AAAAAAFW1qU6sfEV1fY="
+														"$ref": "tWV+wRajUVyfF6lFilA="
 													},
 													"name": "tag",
 													"type": "int"
 												},
 												{
 													"_type": "UMLParameter",
-													"_id": "AAAAAAFW1qU6svEZeMw=",
+													"_id": "l6rirkz8LaYcy9+aO18=",
 													"_parent": {
-														"$ref": "AAAAAAFW1qU6sfEV1fY="
-													},
-													"type": "void",
-													"direction": "return"
-												}
-											]
-										},
-										{
-											"_type": "UMLOperation",
-											"_id": "AAAAAAFW1qU6svEamE4=",
-											"_parent": {
-												"$ref": "AAAAAAFW1qU6sPDVW20="
-											},
-											"name": "scheduleFirstNow",
-											"documentation": "Sends a high priority event to another entity by id number, with data and\nno delay. Note that the tag <code>9999</code> is reserved.\n@param dest The unique id number of the destination entity\n@param tag An user-defined number representing the type of event.\n@param data The data to be sent with the event.",
-											"parameters": [
-												{
-													"_type": "UMLParameter",
-													"_id": "AAAAAAFW1qU6svEbeTw=",
-													"_parent": {
-														"$ref": "AAAAAAFW1qU6svEamE4="
-													},
-													"name": "dest",
-													"type": "int"
-												},
-												{
-													"_type": "UMLParameter",
-													"_id": "AAAAAAFW1qU6svEcvjM=",
-													"_parent": {
-														"$ref": "AAAAAAFW1qU6svEamE4="
-													},
-													"name": "tag",
-													"type": "int"
-												},
-												{
-													"_type": "UMLParameter",
-													"_id": "AAAAAAFW1qU6svEdWCA=",
-													"_parent": {
-														"$ref": "AAAAAAFW1qU6svEamE4="
+														"$ref": "tWV+wRajUVyfF6lFilA="
 													},
 													"name": "data",
 													"type": {
@@ -54446,85 +54252,89 @@
 												},
 												{
 													"_type": "UMLParameter",
-													"_id": "AAAAAAFW1qU6svEeeSg=",
+													"_id": "Iq4xHrRRrs5qqbToQYM=",
 													"_parent": {
-														"$ref": "AAAAAAFW1qU6svEamE4="
+														"$ref": "tWV+wRajUVyfF6lFilA="
 													},
-													"type": "void",
+													"type": "boolean",
 													"direction": "return"
 												}
 											]
 										},
 										{
 											"_type": "UMLOperation",
-											"_id": "AAAAAAFW1qU6svEfGLo=",
+											"_id": "FJNBE2FxW+umBcNmHoE=",
 											"_parent": {
 												"$ref": "AAAAAAFW1qU6sPDVW20="
 											},
-											"name": "scheduleFirstNow",
-											"documentation": "Sends a high priority event to another entity by id number and with\n<b>no</b> data and no delay. Note that the tag <code>9999</code> is\nreserved.\n@param dest The unique id number of the destination entity\n@param tag An user-defined number representing the type of event.",
+											"name": "scheduleFirst",
+											"documentation": "Sends a high-priority event to another entity with no delay and no data. High-priority: processed before the other events with the same time. The network delay between the entities is added when the destination is another entity.\n@param dest the destination entity\n@param tag a tag representing the type of event, according to the CloudSimTag or some custom one.\n@return true if the event was sent (or held until the simulation starts); false if the simulation has stopped",
 											"parameters": [
 												{
 													"_type": "UMLParameter",
-													"_id": "AAAAAAFW1qU6svEgFkI=",
+													"_id": "E1cXZXhjTDi4G0LTeFM=",
 													"_parent": {
-														"$ref": "AAAAAAFW1qU6svEfGLo="
+														"$ref": "FJNBE2FxW+umBcNmHoE="
 													},
 													"name": "dest",
-													"type": "int"
+													"type": {
+														"$ref": "AAAAAAFW1qU6sPDVW20="
+													}
 												},
 												{
 													"_type": "UMLParameter",
-													"_id": "AAAAAAFW1qU6svEhw+c=",
+													"_id": "nTYT3vQ/grfCGUI6wmM=",
 													"_parent": {
-														"$ref": "AAAAAAFW1qU6svEfGLo="
+														"$ref": "FJNBE2FxW+umBcNmHoE="
 													},
 													"name": "tag",
 													"type": "int"
 												},
 												{
 													"_type": "UMLParameter",
-													"_id": "AAAAAAFW1qU6svEiUbs=",
+													"_id": "GePuWUzsjdJ0W6lk10E=",
 													"_parent": {
-														"$ref": "AAAAAAFW1qU6svEfGLo="
+														"$ref": "FJNBE2FxW+umBcNmHoE="
 													},
-													"type": "void",
+													"type": "boolean",
 													"direction": "return"
 												}
 											]
 										},
 										{
 											"_type": "UMLOperation",
-											"_id": "AAAAAAFW1qU6svEjC3o=",
+											"_id": "ryZ97fELYIMpzuleMCw=",
 											"_parent": {
 												"$ref": "AAAAAAFW1qU6sPDVW20="
 											},
-											"name": "scheduleFirstNow",
-											"documentation": "Sends a high priority event to another entity through a port with a given\nname, with data and no delay. Note that the tag <code>9999</code> is\nreserved.\n@param dest The name of the port to send the event through\n@param tag An user-defined number representing the type of event.\n@param data The data to be sent with the event.",
+											"name": "scheduleFirst",
+											"documentation": "Sends a high-priority event to another entity with no delay. High-priority: processed before the other events with the same time. The network delay between the entities is added when the destination is another entity.\n@param dest the destination entity\n@param tag a tag representing the type of event, according to the CloudSimTag or some custom one.\n@param data the data to be sent with the event, according to the tag (may be null).\n@return true if the event was sent (or held until the simulation starts); false if the simulation has stopped",
 											"parameters": [
 												{
 													"_type": "UMLParameter",
-													"_id": "AAAAAAFW1qU6svEkRgQ=",
+													"_id": "YHLawPkqh6cvF2HRoaA=",
 													"_parent": {
-														"$ref": "AAAAAAFW1qU6svEjC3o="
+														"$ref": "ryZ97fELYIMpzuleMCw="
 													},
 													"name": "dest",
-													"type": "String"
+													"type": {
+														"$ref": "AAAAAAFW1qU6sPDVW20="
+													}
 												},
 												{
 													"_type": "UMLParameter",
-													"_id": "AAAAAAFW1qU6svElprc=",
+													"_id": "+oVO7AxLPgS8kULUQoE=",
 													"_parent": {
-														"$ref": "AAAAAAFW1qU6svEjC3o="
+														"$ref": "ryZ97fELYIMpzuleMCw="
 													},
 													"name": "tag",
 													"type": "int"
 												},
 												{
 													"_type": "UMLParameter",
-													"_id": "AAAAAAFW1qU6svEm/9w=",
+													"_id": "0fuzz0Wrucom0NRCBq8=",
 													"_parent": {
-														"$ref": "AAAAAAFW1qU6svEjC3o="
+														"$ref": "ryZ97fELYIMpzuleMCw="
 													},
 													"name": "data",
 													"type": {
@@ -54533,49 +54343,71 @@
 												},
 												{
 													"_type": "UMLParameter",
-													"_id": "AAAAAAFW1qU6svEnJNc=",
+													"_id": "DgMzC/GqsbvZoGXB85M=",
 													"_parent": {
-														"$ref": "AAAAAAFW1qU6svEjC3o="
+														"$ref": "ryZ97fELYIMpzuleMCw="
 													},
-													"type": "void",
+													"type": "boolean",
 													"direction": "return"
 												}
 											]
 										},
 										{
 											"_type": "UMLOperation",
-											"_id": "AAAAAAFW1qU6svEo3c4=",
+											"_id": "jAbWpJqGwK3ei5voiA0=",
 											"_parent": {
 												"$ref": "AAAAAAFW1qU6sPDVW20="
 											},
-											"name": "scheduleFirstNow",
-											"documentation": "Sends a high priority event to another entity through a port with a given\nname, with <b>no</b>\ndata and no delay. Note that the tag <code>9999</code> is reserved.\n@param dest The name of the port to send the event through\n@param tag An user-defined number representing the type of event.",
+											"name": "scheduleFirst",
+											"documentation": "Sends a high-priority event to another entity. High-priority: processed before the other events with the same time. The network delay between the entities is added when the destination is another entity. The event is not sent if the destination is not part of a simulation.\n@param dest the destination entity\n@param delay how many seconds after the current simulation time the event should be sent. A negative delay is changed to 0 (with a warning).\n@param tag a tag representing the type of event, according to the CloudSimTag or some custom one.\n@param data the data to be sent with the event, according to the tag (may be null).\n@return true if the event was sent (or held until the simulation starts); false if the simulation has stopped",
 											"parameters": [
 												{
 													"_type": "UMLParameter",
-													"_id": "AAAAAAFW1qU6svEpN1M=",
+													"_id": "RRAL0NesYoiTEpTs4lo=",
 													"_parent": {
-														"$ref": "AAAAAAFW1qU6svEo3c4="
+														"$ref": "jAbWpJqGwK3ei5voiA0="
 													},
 													"name": "dest",
-													"type": "String"
+													"type": {
+														"$ref": "AAAAAAFW1qU6sPDVW20="
+													}
 												},
 												{
 													"_type": "UMLParameter",
-													"_id": "AAAAAAFW1qU6svEqOUs=",
+													"_id": "16++MQcQy8klWlOpHZc=",
 													"_parent": {
-														"$ref": "AAAAAAFW1qU6svEo3c4="
+														"$ref": "jAbWpJqGwK3ei5voiA0="
+													},
+													"name": "delay",
+													"type": "double"
+												},
+												{
+													"_type": "UMLParameter",
+													"_id": "Nce8ZcbQ6Abnb8hiXBg=",
+													"_parent": {
+														"$ref": "jAbWpJqGwK3ei5voiA0="
 													},
 													"name": "tag",
 													"type": "int"
 												},
 												{
 													"_type": "UMLParameter",
-													"_id": "AAAAAAFW1qU6svErkdg=",
+													"_id": "pYrXSqgUCX1AOcoE5Bg=",
 													"_parent": {
-														"$ref": "AAAAAAFW1qU6svEo3c4="
+														"$ref": "jAbWpJqGwK3ei5voiA0="
 													},
-													"type": "void",
+													"name": "data",
+													"type": {
+														"$ref": "AAAAAAFW1qU/QflgqGo="
+													}
+												},
+												{
+													"_type": "UMLParameter",
+													"_id": "04iZumKW98KovFDK4Us=",
+													"_parent": {
+														"$ref": "jAbWpJqGwK3ei5voiA0="
+													},
+													"type": "boolean",
 													"direction": "return"
 												}
 											]

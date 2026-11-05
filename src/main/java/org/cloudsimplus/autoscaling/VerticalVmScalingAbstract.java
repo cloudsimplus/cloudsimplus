@@ -189,7 +189,7 @@ public non-sealed abstract class VerticalVmScalingAbstract extends VmScalingAbst
     @Override
     protected boolean requestScaling(final double time) {
         final var broker = this.getVm().getBroker();
-        broker.getSimulation().sendNow(broker, broker, CloudSimTag.VM_VERTICAL_SCALING, this);
+        broker.schedule(CloudSimTag.VM_VERTICAL_SCALING, this);
         return true;
     }
 

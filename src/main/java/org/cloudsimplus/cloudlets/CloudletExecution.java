@@ -281,7 +281,7 @@ public class CloudletExecution {
          * then sends a request to finish the Cloudlet. */
         if(finishRequestTime <= 0 && terminate && cloudlet.getLength() < 0){
             finishRequestTime = simulation.clock();
-            simulation.sendFirst(new CloudSimEvent(cloudlet.getBroker(), CloudSimTag.CLOUDLET_FINISH, cloudlet));
+            cloudlet.getBroker().scheduleFirst(new CloudSimEvent(cloudlet.getBroker(), CloudSimTag.CLOUDLET_FINISH, cloudlet));
         }
     }
 

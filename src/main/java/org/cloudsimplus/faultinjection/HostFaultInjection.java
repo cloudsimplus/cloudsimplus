@@ -239,7 +239,7 @@ public class HostFaultInjection extends CloudSimEntity {
         in the short-circuit below.
         */
         if (sim.clock() < getMaxTimeToFailInSecs() || sim.isThereAnyFutureEvt(otherEventsPredicate)) {
-            schedule(this, getTimeDelayForNextFault(), HOST_FAILURE);
+            schedule(getTimeDelayForNextFault(), HOST_FAILURE, null);
         }
     }
 
@@ -520,7 +520,7 @@ public class HostFaultInjection extends CloudSimEntity {
          As the broker is expected to request vm creation and destruction,
          it is set here as the sender of the vm destroy request.
          */
-        getSimulation().sendNow(broker, datacenter, CloudSimTag.VM_DESTROY, vm);
+        broker.schedule(datacenter, CloudSimTag.VM_DESTROY, vm);
     }
 
     /// Register 1 more fault happened which caused all VMs from a given [DatacenterBroker] to fault.

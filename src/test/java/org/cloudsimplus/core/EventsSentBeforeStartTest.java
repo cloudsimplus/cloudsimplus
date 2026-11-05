@@ -23,6 +23,7 @@
  */
 package org.cloudsimplus.core;
 
+import org.cloudsimplus.core.events.CloudSimEvent;
 import org.cloudsimplus.core.events.SimEvent;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -85,7 +86,7 @@ class EventsSentBeforeStartTest {
     @Test
     void highPriorityEventIsProcessedBeforeOtherEventsSentBeforeStart() {
         entity.schedule(TAG, "evt");
-        entity.scheduleFirstNow(entity, TAG, "first");
+        entity.scheduleFirst(TAG, "first");
         simulation.start();
 
         final var expected = List.of(new RecordedEvent(0, "first"), new RecordedEvent(0, "evt"));
@@ -101,8 +102,8 @@ class EventsSentBeforeStartTest {
     @Test
     void eventSentDirectlyToSimulationAfterItFinishesIsNotQueued() {
         simulation.start();
-        simulation.sendNow(entity, entity, TAG, "evt");
-        simulation.sendFirst(entity, entity, 0, TAG, "first");
+        assertFalse(simulation.schedule(new CloudSimEvent(entity, TAG, "evt")));
+        assertFalse(simulation.scheduleFirst(new CloudSimEvent(entity, TAG, "first")));
         assertTrue(simulation.noFutureEvents());
     }
 
