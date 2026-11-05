@@ -27,7 +27,9 @@ import lombok.Getter;
 import lombok.NonNull;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -44,6 +46,12 @@ public abstract class TableBuilderAbstract<T> {
 
     /// A list containing information about columns to be added to a table later on.
     private List<ColumnMapping<T>> colsMappings;
+
+    /// Actions to be performed over the table columns, after they are created in [#build()].
+    private final List<Consumer<List<TableColumn>>> columnActions = new ArrayList<>();
+
+    /// Indexes of the columns to be removed in [#build()].
+    private final Set<Integer> removedColIndexes = new LinkedHashSet<>();
 
     @Getter
     private Table table;
@@ -82,12 +90,13 @@ public abstract class TableBuilderAbstract<T> {
     }
 
     /// Access a column at a given position in order to perform some configuration on it.
-    /// @param index index of the column to access
+    /// The consumer is only called when the table is built, after the columns are created.
+    /// @param index index of the column to access, considering all columns before any removal
     /// @param consumer a [Consumer] that will be called to use the column accessed at the requested position.
     /// The consumer should provide the code you want to be performed over that column.
     /// @return this TableBuilder object
     public final TableBuilderAbstract<T> column(final int index, @NonNull final Consumer<TableColumn> consumer){
-        consumer.accept(table.getColumns().get(index));
+        columnActions.add(cols -> consumer.accept(cols.get(index)));
         return this;
     }
 
@@ -120,7 +129,8 @@ public abstract class TableBuilderAbstract<T> {
     }
 
     /// Removes columns from given positions.
-    /// @param indexes the indexes of the columns to remove.
+    /// The columns are only removed when the table is built, after they are created.
+    /// @param indexes the indexes of the columns to remove, considering all columns before any removal.
     /// @return this TableBuilder object
     /// @see #removeColumn(int)
     public final TableBuilderAbstract<T> removeColumn(final int ...indexes){
@@ -131,11 +141,12 @@ public abstract class TableBuilderAbstract<T> {
     }
 
     /// Removes a column from a given position.
-    /// @param index the index of the column to remove.
+    /// The column is only removed when the table is built, after it is created.
+    /// @param index the index of the column to remove, considering all columns before any removal.
     /// @return this TableBuilder object
     /// @see #removeColumn(int...)
     public final TableBuilderAbstract<T> removeColumn(final int index){
-        table.getColumns().remove(index);
+        removedColIndexes.add(index);
         return this;
     }
 
@@ -156,6 +167,17 @@ public abstract class TableBuilderAbstract<T> {
 
         final var tb = (AbstractTable)table;
         colsMappings.forEach(mapping -> tb.addColumn(mapping.col(), mapping.index()));
+        columnActions.forEach(action -> action.accept(table.getColumns()));
+        removeColumns();
+    }
+
+    /// Removes the requested columns from the table, together with their mappings,
+    /// so that the data of the remaining columns stays under the right headers.
+    private void removeColumns() {
+        final var cols = table.getColumns();
+        final var removedCols = removedColIndexes.stream().map(cols::get).toList();
+        cols.removeIf(removedCols::contains);
+        colsMappings.removeIf(mapping -> removedCols.contains(mapping.col()));
     }
 
     /// Creates the columns of the table and define how the data for those columns
