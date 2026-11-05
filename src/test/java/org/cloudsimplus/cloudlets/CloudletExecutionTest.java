@@ -51,4 +51,13 @@ class CloudletExecutionTest {
         final double expected = 1.7;
         assertEquals(expected, instance.processingTimeSpan(expected), 0.01);
     }
+
+    @Test
+    public void testTakeWholeFinishedMIKeepsFractionAcrossCalls(){
+        final var cle = new CloudletExecution(Cloudlet.NULL);
+        assertEquals(0, cle.takeWholeFinishedMI(0.625));
+        assertEquals(1, cle.takeWholeFinishedMI(0.625));
+        assertEquals(0, cle.takeWholeFinishedMI(0.5));
+        assertEquals(1, cle.takeWholeFinishedMI(0.25));
+    }
 }

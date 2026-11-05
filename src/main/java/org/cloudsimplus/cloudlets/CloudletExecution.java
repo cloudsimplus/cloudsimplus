@@ -74,6 +74,10 @@ public class CloudletExecution {
     /// length of the cloudlet (not just the executed length in the current Datacenter).
     private long partialFinishedMI;
 
+    /// The fraction of a Million Instruction (MI) executed but not yet added to [#partialFinishedMI].
+    /// It's kept across processing updates so that intervals executing less than 1 MI aren't lost.
+    private double fractionalFinishedMI;
+
     /// Latest cloudlet execution start time in the current Datacenter.
     /// This attribute will only hold the latest
     /// time since a Cloudlet can be canceled, paused or resumed.
@@ -255,6 +259,18 @@ public class CloudletExecution {
         if (cloudlet instanceof CloudletAbstract c) {
             c.addFinishedLengthSoFar(partialFinishedMI - c.getFinishedLengthSoFar());
         }
+    }
+
+    /// Adds an amount of executed MI to the [fraction][#fractionalFinishedMI] not yet
+    /// accounted for and takes its integer part out.
+    ///
+    /// @param executedMI the amount of MI just executed (which may have a fractional part)
+    /// @return the integer amount of MI to be added to the Cloudlet's finished length
+    public long takeWholeFinishedMI(final double executedMI) {
+        final double totalMI = fractionalFinishedMI + executedMI;
+        final long wholeMI = (long) totalMI;
+        fractionalFinishedMI = totalMI - wholeMI;
+        return wholeMI;
     }
 
     /// Updates the length of the Cloudlet that has executed so far.
