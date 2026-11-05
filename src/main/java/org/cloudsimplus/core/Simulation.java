@@ -96,6 +96,7 @@ public sealed interface Simulation permits CloudSim, SimulationNull {
 
     /// Adds a new entity to the simulation. Each [CloudSimEntity] object
     /// register itself when it is instantiated.
+    /// A [org.cloudsimplus.datacenters.Datacenter] is also added to the [CloudInformationService].
     ///
     /// @param entity the new entity to add
     void addEntity(CloudSimEntity entity);

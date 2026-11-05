@@ -474,11 +474,6 @@ public non-sealed abstract class DatacenterBrokerAbstract extends CloudSimEntity
     }
 
     private boolean processGeneralEvents(final SimEvent evt) {
-        if (evt.getTag() == CloudSimTag.DC_LIST_REQUEST) {
-            processDatacenterListRequest(evt);
-            return true;
-        }
-
         if (evt.getTag() == CloudSimTag.ENTITY_SHUTDOWN || evt.getTag() == CloudSimTag.SIMULATION_END) {
             shutdown();
             return true;
@@ -588,21 +583,6 @@ public non-sealed abstract class DatacenterBrokerAbstract extends CloudSimEntity
         }
 
         throw new InvalidEventDataTypeException(evt, "VM_VERTICAL_SCALING", "VerticalVmScaling");
-    }
-
-    /// Process a request to get the list of all Datacenters registered in the
-    /// Cloud Information Service (CIS) of the [simulation][#getSimulation()].
-    ///
-    /// @param evt a CloudSimEvent object
-    private void processDatacenterListRequest(final SimEvent evt) {
-        if(evt.getData() instanceof List dcList) {
-            setDatacenterList(dcList);
-            LOGGER.info("{}: {}: List of {} datacenters(s) received.", getSimulation().clockStr(), getName(), this.datacenterList.size());
-            requestDatacenterToCreateWaitingVms(false, false);
-            return;
-        }
-
-        throw new InvalidEventDataTypeException(evt, "DC_LIST_REQUEST", "List<Datacenter>");
     }
 
     /// Process the ack received from a Datacenter to a broker's request for
@@ -1126,7 +1106,9 @@ public non-sealed abstract class DatacenterBrokerAbstract extends CloudSimEntity
     @Override
     public void startInternal() {
         LOGGER.info("{} is starting...", this);
-        schedule(getSimulation().getCis(), CloudSimTag.DC_LIST_REQUEST);
+        setDatacenterList(getSimulation().getCis().getDatacenterList());
+        LOGGER.info("{}: {}: {} datacenter(s) found.", getSimulation().clockStr(), getName(), datacenterList.size());
+        requestDatacenterToCreateWaitingVms(false, false);
     }
 
     @Override

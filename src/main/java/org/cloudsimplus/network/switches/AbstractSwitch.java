@@ -81,7 +81,6 @@ public abstract non-sealed class AbstractSwitch extends CloudSimEntity implement
     @Override
     protected void startInternal() {
         LOGGER.info("{} is starting...", this);
-        schedule(CloudSimTag.DC_LIST_REQUEST);
     }
 
     @Override

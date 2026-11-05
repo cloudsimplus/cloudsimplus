@@ -376,6 +376,9 @@ non-sealed abstract class CloudSim implements Simulation {
         if (entity.getId() == -1) { // Only add once!
             entity.setId(entityList.size());
             entityList.add(entity);
+            if (entity instanceof Datacenter dc) {
+                cis.addDatacenter(dc);
+            }
         }
     }
 

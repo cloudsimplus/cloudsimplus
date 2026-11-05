@@ -56,7 +56,7 @@ So changes to cloudlet or VM execution logic usually affect this update chain an
 
 ### Typical interaction flow
 
-`DatacenterBroker` (the customer agent) → asks CIS for datacenters (`DC_LIST_REQUEST`) → sends VMs to a datacenter. The Datacenter places them on hosts using its `VmPlacementPolicy` and answers with `VM_CREATE_ACK`. Failed VMs are retried in the next datacenter or later (`VM_CREATE_RETRY`). The broker then submits cloudlets (`CLOUDLET_SUBMIT`) to the VMs it picks, and finished cloudlets come back with `CLOUDLET_RETURN`. Broker choices can be customized without subclassing via `setVmMapper`, `setDatacenterMapper`, `setVmComparator` and `setCloudletComparator`.
+`DatacenterBroker` (the customer agent) → gets the datacenters from the CIS when it starts → sends VMs to a datacenter. The Datacenter places them on hosts using its `VmPlacementPolicy` and answers with `VM_CREATE_ACK`. Failed VMs are retried in the next datacenter or later (`VM_CREATE_RETRY`). The broker then submits cloudlets (`CLOUDLET_SUBMIT`) to the VMs it picks, and finished cloudlets come back with `CLOUDLET_RETURN`. Broker choices can be customized without subclassing via `setVmMapper`, `setDatacenterMapper`, `setVmComparator` and `setCloudletComparator`.
 
 ### Pluggable policies (Strategy pattern)
 

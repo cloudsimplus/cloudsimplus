@@ -46,7 +46,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
-import java.util.stream.Stream;
 
 /// Process "machine events" trace files from
 /// [Google Cluster Data](https://github.com/google/cluster-data/blob/master/ClusterData2011_2.md).
@@ -205,19 +204,7 @@ public final class GoogleMachineEventsTraceReader extends GoogleTraceReaderAbstr
         laterAvailableHosts.forEach(host -> cis.schedule(datacenterForLaterHosts, host.getStartTime(), CloudSimTag.HOST_ADD, host));
 
         //Sends a request to every Datacenter to try to remove the Hosts (since we don't have how to know which Datacenter each Host is)
-        datacenters().forEach(this::sendHostsRemovalRequests);
-    }
-
-    /// {@return the Datacenters in the simulation}
-    /// The simulation entity list is used instead of the [CloudInformationService#getDatacenterList()],
-    /// since Datacenters are only registered in the CIS after the simulation starts.
-    private Stream<Datacenter> datacenters() {
-        return datacenterForLaterHosts
-                .getSimulation()
-                .getEntityList()
-                .stream()
-                .filter(Datacenter.class::isInstance)
-                .map(Datacenter.class::cast);
+        cis.getDatacenterList().forEach(this::sendHostsRemovalRequests);
     }
 
     /// Send requests to remove Hosts from a given Datacenter.
