@@ -41,6 +41,7 @@ import org.cloudsimplus.network.switches.EdgeSwitch;
 import org.cloudsimplus.schedulers.cloudlet.CloudletSchedulerSpaceShared;
 import org.cloudsimplus.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudsimplus.schedulers.vm.VmSchedulerTimeShared;
+import org.cloudsimplus.utilizationmodels.UtilizationModelDynamic;
 import org.cloudsimplus.utilizationmodels.UtilizationModelFull;
 import org.cloudsimplus.vms.network.NetworkVm;
 import org.jspecify.annotations.Nullable;
@@ -85,6 +86,12 @@ class CloudletTaskSchedulerSimpleTest {
     /// Timeout for receive tasks (in seconds), which is longer than the time
     /// to run an execution task of [#LENGTH] MI.
     private static final double TIMEOUT = 50;
+    /// Scheduling interval and CPU utilization that make an execution task
+    /// run less than 1 MI per processing update (issue #598).
+    private static final double SUB_MI_SCHEDULING_INTERVAL = 0.5;
+    private static final double SUB_MI_CPU_UTILIZATION = 1.0 / MIPS;
+    private static final long SUB_MI_TASK_LENGTH = 10;
+
     private static final String WAIT_WARNING_MSG = "has been waiting for";
 
     private ListAppender<ILoggingEvent> logAppender;
@@ -94,6 +101,7 @@ class CloudletTaskSchedulerSimpleTest {
     private Level previousLogLevel;
 
     private CloudSimPlus simulation;
+    private NetworkDatacenter datacenter;
     private DatacenterBroker broker;
     private List<NetworkVm> vmList;
 
@@ -220,6 +228,29 @@ class CloudletTaskSchedulerSimpleTest {
         assertTrue(receiveTask.getPacketsReceived().isEmpty());
         assertEquals(receiveTask.getStartTime() + TIMEOUT, receiveTask.getFinishTime(), FINISH_TIME_TOLERANCE);
         final double expectedFinishTime = receiveTask.getFinishTime() + LENGTH / (double) MIPS;
+        assertEquals(expectedFinishTime, c.getFinishTime(), FINISH_TIME_TOLERANCE);
+    }
+
+    /// C waits for a packet A never sends, then runs an execution task at 1 MIPS,
+    /// so each processing update executes just 0.5 MI.
+    /// The fraction of MI must be kept across updates so that C finishes (issue #598),
+    /// but the time C spent waiting for packets must not count as CPU progress.
+    @Test
+    void subMiProgressIsKeptButNotAccruedWhileWaitingForPackets() {
+        datacenter.setSchedulingInterval(SUB_MI_SCHEDULING_INTERVAL);
+        final var a = createCloudlet(vmList.get(0));
+        addExecutionTask(a, LENGTH);
+        final var c = createCloudlet(vmList.get(1));
+        c.setUtilizationModelCpu(new UtilizationModelDynamic(SUB_MI_CPU_UTILIZATION));
+        final var receiveTask = addReceiveTask(c, a, true).setTimeout(TIMEOUT);
+        addExecutionTask(c, SUB_MI_TASK_LENGTH);
+        broker.submitCloudletList(List.of(a, c));
+        simulation.start();
+
+        assertTrue(c.isFinished(), "Cloudlet C didn't finish");
+        assertEquals(SUB_MI_TASK_LENGTH, c.getFinishedLengthSoFar());
+        final double cloudletMips = MIPS * SUB_MI_CPU_UTILIZATION;
+        final double expectedFinishTime = receiveTask.getFinishTime() + SUB_MI_TASK_LENGTH / cloudletMips;
         assertEquals(expectedFinishTime, c.getFinishTime(), FINISH_TIME_TOLERANCE);
     }
 
@@ -371,9 +402,9 @@ class CloudletTaskSchedulerSimpleTest {
 
     private void createDatacenter() {
         final var hostList = IntStream.range(0, HOSTS).mapToObj(_ -> createHost()).toList();
-        final var dc = NetworkDatacenter.of(simulation, hostList);
-        final var edgeSwitch = new EdgeSwitch(simulation, dc);
-        dc.addSwitch(edgeSwitch);
+        datacenter = NetworkDatacenter.of(simulation, hostList);
+        final var edgeSwitch = new EdgeSwitch(simulation, datacenter);
+        datacenter.addSwitch(edgeSwitch);
         hostList.forEach(edgeSwitch::connectHost);
     }
 

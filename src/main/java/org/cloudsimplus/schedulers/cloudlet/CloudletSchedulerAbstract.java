@@ -561,7 +561,7 @@ public abstract non-sealed class CloudletSchedulerAbstract implements CloudletSc
             return cle.remainingOverSubscriptionDelay(currentTime);
         }
 
-        final long cloudletUsedMips = (long)getAllocatedMipsForCloudlet(cle, currentTime, true);
+        final double cloudletUsedMips = getAllocatedMipsForCloudlet(cle, currentTime, true);
 
         /* The time the Cloudlet spent actually executing, since the last time Cloudlet update was
          * called by the scheduler. If it is zero, that indicates the Cloudlet didn't use
@@ -583,9 +583,9 @@ public abstract non-sealed class CloudletSchedulerAbstract implements CloudletSc
         }
 
         final double maxDelay = getMaxOversubscriptionDelay(vMemDelaySecs, reducedBwDelaySecs);
-        final long partialFinishedMI = (long)(cloudletUsedMips * processingTimeSpan);
-
+        long partialFinishedMI = 0;
         if(taskScheduler.isTimeToUpdateCloudletProcessing(cle.getCloudlet())){
+            partialFinishedMI = cle.takeWholeFinishedMI(cloudletUsedMips * processingTimeSpan);
             cle.updateProcessing(partialFinishedMI);
             updateVmResourceAbsoluteUtilization(cle, vmAbstract().getRam());
             updateVmResourceAbsoluteUtilization(cle, vmAbstract().getBw());
