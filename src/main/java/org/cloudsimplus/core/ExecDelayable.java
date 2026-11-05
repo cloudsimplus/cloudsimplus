@@ -36,7 +36,7 @@ public interface ExecDelayable extends Startable {
     /// @return true if the entity is starting up, false otherwise.
     default boolean isStartingUp(){
         final double timeToCompleteStartup = getStartupCompletionTime();
-        return hasStarted() && getSimulation().clock() < timeToCompleteStartup;
+        return isRunning() && getSimulation().clock() < timeToCompleteStartup;
     }
 
     /// @return true if the entity is shutting down, false otherwise.

@@ -34,9 +34,16 @@ public interface Startable {
     /// or [#NOT_ASSIGNED] if it was not started yet.
     double getStartTime();
 
-    /// @return true if the entity has started and it's not finished yet; false otherwise.
+    /// @return true if the entity has started at some point, even if it's finished now; false otherwise.
+    /// @see #isRunning()
     default boolean hasStarted(){
-        return !isFinished() && getStartTime() > NOT_ASSIGNED;
+        return getStartTime() > NOT_ASSIGNED;
+    }
+
+    /// @return true if the entity has started and it's not finished yet; false otherwise.
+    /// @see #hasStarted()
+    default boolean isRunning(){
+        return hasStarted() && !isFinished();
     }
 
     /// @return true if this entity has finished execution; false otherwise

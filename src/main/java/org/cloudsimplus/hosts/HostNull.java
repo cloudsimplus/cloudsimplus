@@ -98,7 +98,6 @@ final class HostNull implements Host {
     @Override public HostSuitability getSuitabilityFor(Vm vm) { return HostSuitability.NULL; }
     @Override public boolean isActive() { return false; }
     @Override public boolean isFinished() { return true; }
-    @Override public boolean hasEverStarted() { return false; }
     @Override public Host setActive(boolean activate) { return this; }
     @Override public void shutdown() {/**/}
     @Override public <T extends Vm> Set<T> getVmsMigratingIn() {

@@ -28,7 +28,7 @@ public interface SimEntity extends Nameable, Runnable, Comparable<SimEntity> {
     double getStartTime();
 
     /// @return the time the entity was shutdown (in seconds),
-    /// or -1 if the entity [#isAlive()] yet.
+    /// or -1 if the entity is not [#isFinished()] yet.
     double getShutdownTime();
 
     /// @return the entity state.
@@ -39,13 +39,13 @@ public interface SimEntity extends Nameable, Runnable, Comparable<SimEntity> {
     /// @param state the new state to set
     SimEntity setState(@NonNull State state);
 
-    /// @return true if the entity already was started, false otherwise.
-    boolean isStarted();
+    /// @return true if the entity has started at some point, even if it's finished now; false otherwise.
+    /// @see #isRunning()
+    boolean hasStarted();
 
-    /// @return true if the entity is alive, i.e, it's not finished; false otherwise.
-    // TODO: isStarted and isAlive seems to be redundant
-    // See https://github.com/cloudsimplus/cloudsimplus/issues/591
-    boolean isAlive();
+    /// @return true if the entity has started and it's not finished yet; false otherwise.
+    /// @see #hasStarted()
+    boolean isRunning();
 
     /// @return true if the entity is finished, false otherwise.
     boolean isFinished();

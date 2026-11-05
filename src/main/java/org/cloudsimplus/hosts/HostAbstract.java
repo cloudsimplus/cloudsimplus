@@ -487,11 +487,6 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
     }
 
     @Override
-    public boolean hasEverStarted() {
-        return this.firstStartTime > -1;
-    }
-
-    @Override
     public final Host setActive(final boolean activate) {
         if (!activate) {
             activateOnDatacenterStartup = false;

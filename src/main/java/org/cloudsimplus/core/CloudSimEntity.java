@@ -71,7 +71,7 @@ public abstract class CloudSimEntity implements SimEntity {
     /// @return {@inheritDoc}
     @Override
     public final boolean start() {
-        if(this.isStarted()){
+        if(this.hasStarted()){
             return false;
         }
 
@@ -307,13 +307,13 @@ public abstract class CloudSimEntity implements SimEntity {
     }
 
     @Override
-    public boolean isStarted() {
+    public boolean hasStarted() {
         return startTime > -1;
     }
 
     @Override
-    public boolean isAlive() {
-        return state != State.FINISHED;
+    public boolean isRunning() {
+        return hasStarted() && !isFinished();
     }
 
     @Override

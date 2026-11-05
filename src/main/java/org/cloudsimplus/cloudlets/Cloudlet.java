@@ -318,11 +318,6 @@ public sealed interface Cloudlet
     /// or -1 if the cloudlet hasn't started executing yet.
     double getStartWaitTime();
 
-    /// Checks whether this Cloudlet is still executing.
-    ///
-    /// @return true if this Cloudlet is running, false otherwise
-    default boolean isRunning(){ return !isFinished(); }
-
     /// Sets the input file size of this Cloudlet before execution (in bytes).
     /// This size has to be considered the program + input data sizes.
     ///
