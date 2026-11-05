@@ -55,8 +55,8 @@ import java.util.List;
 ///
 /// @author Manoel Campos da Silva Filho
 /// @since CloudSim Plus 1.0.0
-public final class CheckHostAvailableMipsTest {
-    private static final Logger LOGGER = LoggerFactory.getLogger(CheckHostAvailableMipsTest.class.getSimpleName());
+public final class CheckHostAvailableMipsIT {
+    private static final Logger LOGGER = LoggerFactory.getLogger(CheckHostAvailableMipsIT.class.getSimpleName());
 
     private static final double HOST_MIPS = 1000;
     private static final int    HOST_CORES = 5;

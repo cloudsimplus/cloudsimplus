@@ -48,7 +48,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /// An integration test to check if cloudlet lifetime is as expected using a datacenter scheduling interval or not.
 /// @author Manoel Campos da Silva Filho
-public class CloudletLifeTimeTest {
+public class CloudletLifeTimeIT {
 
     private static final int HOST_MIPS = 1000;
     private static final int HOST_CORES = 1;

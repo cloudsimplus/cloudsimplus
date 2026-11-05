@@ -56,7 +56,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 /// to the Vm has to be added to cloudlet finish time.
 ///
 /// @author Manoel Campos da Silva Filho
-public final class CheckCloudletStartDelayForTransferRequiredFilesTest {
+public final class CheckCloudletStartDelayForTransferRequiredFilesIT {
     private static final int HOST_MIPS = 1000;
     private static final int HOST_CORES = 2;
     private static final int VM_MIPS = HOST_MIPS;

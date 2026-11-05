@@ -37,7 +37,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 /// @author Sun Lingyu
 /// @author Manoel Campos da Silva Filho
 /// @since CloudSim Plus 7.2.1
-public final class CheckCloudletLifetimeTest {
+public final class CheckCloudletLifetimeIT {
     private static final int HOST_MIPS = 1000;
     private static final int HOST_CORES = 1;
     private static final int VM_MIPS = HOST_MIPS;
