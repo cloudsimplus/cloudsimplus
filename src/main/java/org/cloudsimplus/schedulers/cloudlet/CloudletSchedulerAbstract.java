@@ -257,8 +257,9 @@ public abstract non-sealed class CloudletSchedulerAbstract implements CloudletSc
     /// @param cloudlet the Cloudlet to check
     /// @param fileTransferTime time required to move the required files from the SAN to the VM (in seconds)
     private double getEstimatedFinishTime(final Cloudlet cloudlet, final double fileTransferTime) {
-        // Estimated total time if no lifetime is set
-        final double estimatedTotalTime = fileTransferTime + Math.abs(cloudlet.getLength() / currentMipsShare.mips());
+        // Estimated time if no lifetime is set (until the first task finishes, for a NetworkCloudlet)
+        final long length = taskScheduler.getRemainingLengthUntilTaskFinish(cloudlet, cloudlet.getLength());
+        final double estimatedTotalTime = fileTransferTime + Math.abs(length / currentMipsShare.mips());
         return Math.min(cloudlet.getLifeTime(), estimatedTotalTime);
     }
 
@@ -856,7 +857,8 @@ public abstract non-sealed class CloudletSchedulerAbstract implements CloudletSc
          * In such a case, it gets the last allocated MIPS to compute that.
          * That value will be the current allocated MIPS if some MIPS were
          * actually allocated or the previous allocated MIPS otherwise.*/
-        final double finishTimeForRemainingLen = cle.getRemainingCloudletLength() / cle.getLastAllocatedMips();
+        final long remainingLength = taskScheduler.getRemainingLengthUntilTaskFinish(cle.getCloudlet(), cle.getRemainingCloudletLength());
+        final double finishTimeForRemainingLen = remainingLength / cle.getLastAllocatedMips();
 
         final double estimatedFinishTime = Math.min(remainingLifeTime, finishTimeForRemainingLen);
         return Math.max(estimatedFinishTime, vm.getSimulation().getMinTimeBetweenEvents());

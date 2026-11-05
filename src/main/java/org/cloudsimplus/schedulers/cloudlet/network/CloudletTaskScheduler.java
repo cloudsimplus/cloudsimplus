@@ -102,4 +102,18 @@ public interface CloudletTaskScheduler {
     /// @return the delay (in seconds) until the next event of the current task;
     /// or [Double#MAX_VALUE] if the Cloudlet isn't waiting for packets or there is no such event.
     double getNextTaskUpdateDelay(Cloudlet cloudlet);
+
+    /// Gets the length a Cloudlet has to execute until its current task finishes.
+    /// It's used to schedule the next processing update, so that a task finishes on time,
+    /// instead of only when the whole Cloudlet is expected to finish.
+    /// This method has no side effects.
+    ///
+    /// @param cloudlet the Cloudlet to check
+    /// @param remainingCloudletLength the length of the whole Cloudlet still to be executed (in MI)
+    /// @return the remaining length (in MI) of the current [CloudletExecutionTask]
+    /// (or of the first task, if no task has started yet) of a [NetworkCloudlet];
+    /// or the given remainingCloudletLength if there is no such task or it has nothing left to execute.
+    default long getRemainingLengthUntilTaskFinish(final Cloudlet cloudlet, final long remainingCloudletLength) {
+        return remainingCloudletLength;
+    }
 }

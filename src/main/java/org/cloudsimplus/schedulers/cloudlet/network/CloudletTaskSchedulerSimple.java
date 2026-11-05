@@ -135,6 +135,21 @@ public class CloudletTaskSchedulerSimple implements CloudletTaskScheduler {
                  .orElse(Double.MAX_VALUE);
     }
 
+    @Override
+    public long getRemainingLengthUntilTaskFinish(@NonNull final Cloudlet cloudlet, final long remainingCloudletLength) {
+        if (!(cloudlet instanceof NetworkCloudlet nc)) {
+            return remainingCloudletLength;
+        }
+
+        return nc.getCurrentOrFirstTask()
+                 .filter(CloudletExecutionTask.class::isInstance)
+                 .map(CloudletExecutionTask.class::cast)
+                 .map(CloudletExecutionTask::getRemainingLength)
+                 // A 0 length would make the estimate 0, so that no processing update is scheduled
+                 .filter(length -> length > 0)
+                 .orElse(remainingCloudletLength);
+    }
+
     /// Gets the time remaining to warn that a task is waiting too long.
     ///
     /// @param task the task to check
