@@ -49,7 +49,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 /// they are configure to use just 25% of the VM RAM each one.
 ///
 /// @author Manoel Campos da Silva Filho
-public final class CloudletSchedulerTimeSharedWithMoreCloudletsThanCores {
+public final class CloudletSchedulerTimeSharedWithMoreCloudletsThanCoresIT {
     private static final int HOST_MIPS = 1000;
     private static final int HOST_CORES = 2;
     private static final int NUMBER_OF_VMS = 1;

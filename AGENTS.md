@@ -11,18 +11,21 @@ CloudSim Plus is a discrete event simulation framework for cloud computing infra
 Use `./mvnw` (or `mvnw.cmd` on Windows) if Maven isn't installed. Requires JDK 25.
 
 ```bash
-# Build and run unit tests (default profile excludes **/integrationtests/*)
+# Build and run unit tests (surefire) + integration tests (failsafe, *IT classes)
 mvn clean install
 
-# Run unit + integration tests (same command used by CI in .github/workflows/build.yml)
-mvn clean verify -Pintegration-tests
+# Same command used by CI in .github/workflows/build.yml
+mvn clean verify
+
+# Run only unit tests (failsafe runs in the later integration-test phase)
+mvn test
 
 # Run a single test class / method
 mvn test -Dtest=VmSimpleTest
 mvn test -Dtest=VmSimpleTest#testMethod
 
-# Run a single integration test (the profile is required, otherwise it's excluded)
-mvn test -Pintegration-tests -Dtest=VmCreationFailureIntegrationTest
+# Run a single integration test
+mvn verify -Dtest=skip -Dsurefire.failIfNoSpecifiedTests=false -Dit.test=VmCreationFailureIT
 
 # Coverage report (JaCoCo agent is always attached) -> target/site/jacoco
 mvn test jacoco:report
@@ -127,7 +130,7 @@ Time and space complexity are crucial. CloudSim Plus is used for large-scale sim
 
 - **JUnit 5** (Jupiter) + **Mockito**.
 - Unit tests mirror the main source structure under `src/test/java/org/cloudsimplus/`.
-- Integration tests in `src/test/java/org/cloudsimplus/integrationtests/` run full simulations and only execute with `-Pintegration-tests`.
+- Integration tests in `src/test/java/org/cloudsimplus/integrationtests/` run full simulations. Their names end with `IT` so the maven-failsafe-plugin runs them in the `integration-test` phase (e.g. `mvn verify`).
 - Mocking helpers in `src/test/java/org/cloudsimplus/mocks/` (`CloudSimMocker`, `MocksHelper`) create mocked `Simulation` objects with a controlled clock.
 
 ### Run related examples before pushing

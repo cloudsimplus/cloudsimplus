@@ -49,7 +49,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 /// instead of failing to create the VMs.
 ///
 /// @see <a href="https://github.com/cloudsimplus/cloudsimplus-examples/issues/30">Issue #30 in the examples repository</a>
-final class VmCreationWhileHostsPowerOnIntegrationTest {
+final class VmCreationWhileHostsPowerOnIT {
     private static final int TIMEOUT_SECS = 10;
     private static final int HOST_CORES = 4;
     private static final int VM_CORES = 2;

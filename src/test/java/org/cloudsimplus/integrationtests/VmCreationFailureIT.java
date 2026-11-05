@@ -81,8 +81,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 /// @see Cloudlet#addOnFinishListener(EventListener)
 ///
 /// @author Manoel Campos da Silva Filho
-public final class VmCreationFailureIntegrationTest {
-    private static final Logger LOGGER = LoggerFactory.getLogger(VmCreationFailureIntegrationTest.class.getSimpleName());
+public final class VmCreationFailureIT {
+    private static final Logger LOGGER = LoggerFactory.getLogger(VmCreationFailureIT.class.getSimpleName());
 
     /// The number of times a host was allocated to a VM.
     private int numberOfHostAllocations;

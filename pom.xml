@@ -62,32 +62,13 @@
     </issueManagement>
 
     <profiles>
-        <!-- The profiles 'default' and 'integration-tests' are specified to allow
-        using the maven-surefire-plugin instead of the maven-failsafe-plugin to run
-        Integration/Functional tests. By this way, it is possible to see the
-        Integration/Functional tests results directly at the NetBeans JUnit graphical
-        test results interface.
-        -->
         <profile>
-            <!-- This is the default profile that runs just the Unit Tests,
-            ignoring the Integration/Functional tests.
-            -->
             <id>default</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
             <build>
                 <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-surefire-plugin</artifactId>
-                        <configuration>
-                            <excludes>
-                                <exclude>**/integrationtests/*.java</exclude>
-                            </excludes>
-                        </configuration>
-                    </plugin>
-
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-source-plugin</artifactId>
@@ -126,36 +107,6 @@
                                 </goals>
                             </execution>
                         </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-
-        <profile>
-            <!--
-            This is the profile that runs all the Unit and Integration/Functional Tests.
-            -->
-            <id>integration-tests</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-surefire-plugin</artifactId>
-                    </plugin>
-
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-javadoc-plugin</artifactId>
-                        <configuration>
-                            <tags>
-                                <tag>
-                                    <name>TODO</name>
-                                    <!-- "to do" tag for all places -->
-                                    <placement>a</placement>
-                                    <head>To do something:</head>
-                                </tag>
-                            </tags>
-                        </configuration>
                     </plugin>
                 </plugins>
             </build>
@@ -295,6 +246,21 @@
         </pluginManagement>
 
         <plugins>
+            <!-- Runs the *IT integration tests in the integration-test phase (unit tests run with surefire). -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <version>3.5.3</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>integration-test</goal>
+                            <goal>verify</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
             <plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>

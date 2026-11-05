@@ -18,7 +18,7 @@ jobs:
           java-version: 25
           cache: 'maven'
       - name: Maven Build
-        run: mvn clean verify -B -V -Pintegration-tests
+        run: mvn clean verify -B -V
       - name: Codacy coverage report upload
         env:
           CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}
