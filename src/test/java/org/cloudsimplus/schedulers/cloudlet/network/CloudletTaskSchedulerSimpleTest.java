@@ -48,6 +48,8 @@ import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
@@ -91,6 +93,11 @@ class CloudletTaskSchedulerSimpleTest {
     private static final double SUB_MI_SCHEDULING_INTERVAL = 0.5;
     private static final double SUB_MI_CPU_UTILIZATION = 1.0 / MIPS;
     private static final long SUB_MI_TASK_LENGTH = 10;
+
+    /// Length of the first execution task of a cloudlet, which must finish
+    /// without waiting for the whole cloudlet to finish (issue #599).
+    private static final long FIRST_TASK_LENGTH = 100;
+    private static final double TASK_FINISH_TIME_TOLERANCE = 0.01;
 
     private static final String WAIT_WARNING_MSG = "has been waiting for";
 
@@ -252,6 +259,26 @@ class CloudletTaskSchedulerSimpleTest {
         final double cloudletMips = MIPS * SUB_MI_CPU_UTILIZATION;
         final double expectedFinishTime = receiveTask.getFinishTime() + SUB_MI_TASK_LENGTH / cloudletMips;
         assertEquals(expectedFinishTime, c.getFinishTime(), FINISH_TIME_TOLERANCE);
+    }
+
+    /// A cloudlet has 2 execution tasks and only the length of the second one changes.
+    /// The first task must finish when its own length is executed,
+    /// not when the whole cloudlet is expected to finish (issue #599).
+    @ParameterizedTest
+    @ValueSource(longs = {900, 9000})
+    void firstTaskFinishTimeDoesNotDependOnLaterTasksLength(final long secondTaskLength) {
+        final var cloudlet = createCloudlet(vmList.getFirst());
+        addExecutionTask(cloudlet, FIRST_TASK_LENGTH);
+        addExecutionTask(cloudlet, secondTaskLength);
+        final var firstTask = cloudlet.getTasks().getFirst();
+        broker.submitCloudlet(cloudlet);
+        simulation.start();
+
+        assertTrue(cloudlet.isFinished(), "Cloudlet didn't finish");
+        final double expectedFinishTime = cloudlet.getStartTime() + FIRST_TASK_LENGTH / (double) MIPS;
+        assertEquals(expectedFinishTime, firstTask.getFinishTime(), TASK_FINISH_TIME_TOLERANCE);
+        final double expectedCloudletFinishTime = expectedFinishTime + secondTaskLength / (double) MIPS;
+        assertEquals(expectedCloudletFinishTime, cloudlet.getFinishTime(), TASK_FINISH_TIME_TOLERANCE);
     }
 
     /// The packets arrive before the timeout, so the receive tasks must not time out.

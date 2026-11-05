@@ -119,6 +119,13 @@ public class NetworkCloudlet extends CloudletSimple {
         return Optional.of(tasks.get(currentTaskNum));
     }
 
+    /// {@return an [Optional] containing the current task, or the first one if no task has started yet}
+    /// It's empty if there are no tasks or all of them were already processed.
+    /// This method has no side effects: it doesn't start any task.
+    public Optional<CloudletTask> getCurrentOrFirstTask() {
+        return isTasksStarted() ? getCurrentTask() : tasks.stream().findFirst();
+    }
+
     /// Gets an [Optional] containing the next task in the list if the current task is finished.
     ///
     /// @return the next task if the current one is finished;

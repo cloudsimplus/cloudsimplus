@@ -41,6 +41,11 @@ public non-sealed class CloudletExecutionTask extends CloudletTask {
         this.length = executionLength;
     }
 
+    /// {@return the length of this task that is still to be executed (in MI)}
+    public long getRemainingLength() {
+        return length - totalExecutedLength;
+    }
+
     /// Sets a given number of MI to the [total MI executed so far][#getTotalExecutedLength()] by the cloudlet.
     ///
     /// @param partialFinishedMI the partial executed length of this Cloudlet (in MI)
@@ -50,7 +55,7 @@ public non-sealed class CloudletExecutionTask extends CloudletTask {
             return false;
         }
 
-        final long maxLengthToAdd = Math.min(partialFinishedMI, length - totalExecutedLength);
+        final long maxLengthToAdd = Math.min(partialFinishedMI, getRemainingLength());
         this.totalExecutedLength += maxLengthToAdd;
         setFinished(this.totalExecutedLength == length);
         return true;
