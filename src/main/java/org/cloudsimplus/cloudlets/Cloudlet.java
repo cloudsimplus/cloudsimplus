@@ -224,13 +224,6 @@ public sealed interface Cloudlet
     /// @see CloudletSchedulerCompletelyFair
     Cloudlet setPriority(int priority);
 
-    /// Gets the Type of Service (ToS) of IPv4 for sending Cloudlet over the network.
-    /// It is the ToS this cloudlet receives in the network
-    /// (applicable to selected [CloudletTaskScheduler] class only).
-    ///
-    /// @return the network service level
-    int getNetServiceLevel();
-
     /// Gets the number of CPU cores from the VM, that is
     /// required to execute this cloudlet.
     ///
@@ -352,15 +345,6 @@ public sealed interface Cloudlet
     /// @see #setFileSize(long)
     /// @see #setOutputSize(long)
     Cloudlet setSizes(long size);
-
-    /// Sets the [Type of Service (ToS)](https://en.wikipedia.org/wiki/Type_of_service)
-    /// for sending this cloudlet over a network.
-    ///
-    /// @param netServiceLevel the new type of service (ToS) of this cloudlet
-    /// @return this Cloudlet
-    /// TODO This attribute is not used and should be removed (we need confirm it is not used)
-    /// See https://github.com/cloudsimplus/cloudsimplus/issues/591
-    Cloudlet setNetServiceLevel(int netServiceLevel);
 
     /// Sets the number of CPU cores required to run this Cloudlet. <br>
     /// NOTE: The Cloudlet length is computed only for 1 core for simplicity. <br>

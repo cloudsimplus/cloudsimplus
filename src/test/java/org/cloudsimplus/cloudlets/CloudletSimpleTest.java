@@ -278,21 +278,6 @@ public class CloudletSimpleTest {
     }
 
     @Test
-    public void testSetNetServiceLevel() {
-        final int valid0 = 0;
-        cloudlet.setNetServiceLevel(valid0);
-        assertEquals(valid0, cloudlet.getNetServiceLevel());
-
-        final int valid1 = 1;
-        cloudlet.setNetServiceLevel(valid1);
-        assertEquals(valid1, cloudlet.getNetServiceLevel());
-
-        final int invalidNegative = -1;
-        assertThrows(IllegalArgumentException.class, () -> cloudlet.setNetServiceLevel(invalidNegative));
-        assertEquals(valid1, cloudlet.getNetServiceLevel());
-    }
-
-    @Test
     public void testSetUtilizationModels() {
         final CloudletSimple cloudlet = CloudletTestUtil.createCloudlet();
         assertNotNull(cloudlet.getUtilizationModelCpu());

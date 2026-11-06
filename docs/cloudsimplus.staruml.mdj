@@ -56388,53 +56388,6 @@
 										},
 										{
 											"_type": "UMLOperation",
-											"_id": "AAAAAAFYsNyttMVmxQA=",
-											"_parent": {
-												"$ref": "AAAAAAFYsNyts8VLj6A="
-											},
-											"name": "setNetServiceLevel",
-											"parameters": [
-												{
-													"_type": "UMLParameter",
-													"_id": "AAAAAAFYsNyttMVn3Y8=",
-													"_parent": {
-														"$ref": "AAAAAAFYsNyttMVmxQA="
-													},
-													"name": "netServiceLevel",
-													"type": "int"
-												},
-												{
-													"_type": "UMLParameter",
-													"_id": "AAAAAAFYsNyttMVo0xw=",
-													"_parent": {
-														"$ref": "AAAAAAFYsNyttMVmxQA="
-													},
-													"type": "boolean",
-													"direction": "return"
-												}
-											]
-										},
-										{
-											"_type": "UMLOperation",
-											"_id": "AAAAAAFYsNyttMVp/2I=",
-											"_parent": {
-												"$ref": "AAAAAAFYsNyts8VLj6A="
-											},
-											"name": "getNetServiceLevel",
-											"parameters": [
-												{
-													"_type": "UMLParameter",
-													"_id": "AAAAAAFYsNyttMVqLP4=",
-													"_parent": {
-														"$ref": "AAAAAAFYsNyttMVp/2I="
-													},
-													"type": "int",
-													"direction": "return"
-												}
-											]
-										},
-										{
-											"_type": "UMLOperation",
 											"_id": "AAAAAAFYsNyttMVrxXM=",
 											"_parent": {
 												"$ref": "AAAAAAFYsNyts8VLj6A="
@@ -69611,44 +69564,6 @@
 													"width": 1124,
 													"height": 13,
 													"text": "+setCloudletLength(cloudletLength: long): boolean",
-													"horizontalAlignment": 0
-												},
-												{
-													"_type": "UMLOperationView",
-													"_id": "AAAAAAFYsSwyx5RbgSk=",
-													"_parent": {
-														"$ref": "AAAAAAFYsSwyeZQBogQ="
-													},
-													"model": {
-														"$ref": "AAAAAAFYsNyttMVmxQA="
-													},
-													"visible": false,
-													"fillColor": "#ffffd8",
-													"font": "Arial;13;0",
-													"left": -487,
-													"top": 328,
-													"width": 1124,
-													"height": 13,
-													"text": "+setNetServiceLevel(netServiceLevel: int): boolean",
-													"horizontalAlignment": 0
-												},
-												{
-													"_type": "UMLOperationView",
-													"_id": "AAAAAAFYsSwyyJRefvU=",
-													"_parent": {
-														"$ref": "AAAAAAFYsSwyeZQBogQ="
-													},
-													"model": {
-														"$ref": "AAAAAAFYsNyttMVp/2I="
-													},
-													"visible": false,
-													"fillColor": "#ffffd8",
-													"font": "Arial;13;0",
-													"left": -487,
-													"top": 343,
-													"width": 1124,
-													"height": 13,
-													"text": "+getNetServiceLevel(): int",
 													"horizontalAlignment": 0
 												},
 												{
