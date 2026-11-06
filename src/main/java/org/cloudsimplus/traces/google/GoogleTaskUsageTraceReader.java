@@ -296,10 +296,6 @@ public final class GoogleTaskUsageTraceReader extends GoogleTraceReaderAbstract<
         return super.process();
     }
 
-    /// There is not pre-process for this implementation.
-    @Override
-    protected void preProcess(){/**/}
-
     /// Sends the messages to change Cloudlet resource usage.
     @Override
     protected void postProcess(){
