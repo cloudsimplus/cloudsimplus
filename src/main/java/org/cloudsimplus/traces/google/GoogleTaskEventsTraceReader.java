@@ -34,6 +34,7 @@ import org.cloudsimplus.core.CloudSimTag;
 import org.cloudsimplus.core.events.CloudSimEvent;
 import org.cloudsimplus.traces.TraceReaderAbstract;
 import org.cloudsimplus.util.ResourceLoader;
+import org.cloudsimplus.utilizationmodels.UtilizationModel;
 import org.cloudsimplus.utilizationmodels.UtilizationModelDynamic;
 
 import java.io.IOException;
@@ -190,10 +191,6 @@ public class GoogleTaskEventsTraceReader extends GoogleTraceReaderAbstract<Cloud
         return super.process();
     }
 
-    /// There aren't pre-process requirements for this implementation.
-    @Override
-    protected void preProcess(){/**/}
-
     @Override
     protected void postProcess(){
         cloudletEvents.values().forEach(this::sendCloudletEvents);
@@ -233,105 +230,87 @@ public class GoogleTaskEventsTraceReader extends GoogleTraceReaderAbstract<Cloud
     /// the status and the attributes to change in the Cloudlet
     /// @return the Cloudlet to have its status and attributes changed
     private Cloudlet addCloudletStatusChangeEvents(final CloudSimEvent statusChangeSimEvt, final TaskEvent taskEvent){
-        // TODO This method is too large and confusing, thus it needs to be refactored
-        // See https://github.com/cloudsimplus/cloudsimplus/issues/590
-
-        /*The actual Cloudlet that needs to have its status and/or attributes changed
-         * by sending a request message to the broker.*/
         final var cloudlet = (Cloudlet)statusChangeSimEvt.getData();
-
         addEventToSend(cloudlet, statusChangeSimEvt);
 
-        /*
-        Creates a temporary Cloudlet that will be discharged after the method finishes.
-        It is used just because the "cloudlet creation function" provided
-        by the researcher is the only one that actually knows how to create a Cloudlet
-        from the trace line.
-
-        The TaskEvent object contains the data read from a trace line,
-        but some Cloudlet attributes such as RAM and CPU UtilizationModel
-        are instantiated based on a class chosen by the researcher.
-        The UtilizationModel instance will just use the data read
-        from the trace.
-
-        This way, the temporary Cloudlet is created using the researcher's
-        provided function so that the correct objects for such attributes
-        are created and then set to the Cloudlet being updated.
-         */
-        final var clone = createCloudlet(taskEvent);
-        clone.setId(cloudlet.getId());
-
-        /* If some attribute of the Cloudlet that needs to be changed,
-         * sends a message requesting the change.*/
-        if(!areCloudletAttributesDifferent(cloudlet, clone)){
-            return cloudlet;
+        final var traceCloudlet = createTemporaryCloudlet(cloudlet, taskEvent);
+        if(areCloudletAttributesDifferent(cloudlet, traceCloudlet)){
+            final Runnable updater = () -> updateCloudletAttributes(cloudlet, traceCloudlet);
+            addEventToSend(cloudlet, new CloudSimEvent(taskEvent.getTimestamp(), statusChangeSimEvt.getDestination(), CloudSimTag.CLOUDLET_UPDATE_ATTRIBUTES, updater));
         }
 
-        /* Defines a Runnable that will be executed when
-         * the message is processed by the broker to update the Cloudlet attributes.
-         * The "resource request" fields define the max amount of a resource the Cloudlet
-         * is allowed to use, and they are just used to define an initial number of CPUs,
-         * RAM utilization and Cloudlet file size/output size.
-         *
-         * This way, when they change along the time in the trace,
-         * these new values are ignored because
-         */
-        final Runnable attributesUpdateRunnable = () -> {
-            final DatacenterBroker broker = cloudlet.getBroker();
-            final var builder = new StringBuilder();
-
-            if(clone.getPriority() != cloudlet.getPriority()){
-                builder.append("priority: ")
-                    .append(cloudlet.getPriority()).append(VAL_SEPARATOR)
-                    .append(clone.getPriority()).append(COL_SEPARATOR);
-                cloudlet.setPriority(clone.getPriority());
-            }
-
-            /* The output size doesn't always have a relation with file size.
-             * This way, if the file size is changed, we don't change
-             * the output size. This may be performed by the researcher if he/she needs. */
-            if(clone.getFileSize() != cloudlet.getFileSize()){
-                builder.append("file size: ")
-                    .append(cloudlet.getFileSize()).append(VAL_SEPARATOR)
-                    .append(clone.getFileSize()).append(COL_SEPARATOR);
-                cloudlet.setFileSize(clone.getFileSize());
-            }
-
-            if(clone.getRequiredCores() != cloudlet.getRequiredCores()){
-                builder.append("CPU cores: ")
-                       .append(cloudlet.getRequiredCores()).append(VAL_SEPARATOR)
-                       .append(clone.getRequiredCores()).append(COL_SEPARATOR);
-                cloudlet.setRequiredCores(clone.getRequiredCores());
-            }
-
-            // It's ensured when creating the Cloudlet that a UtilizationModelDynamic is used for RAM
-            final var cloneRamUM = (UtilizationModelDynamic)clone.getUtilizationModelRam();
-            final var cloudletRamUM = (UtilizationModelDynamic)cloudlet.getUtilizationModelRam();
-            if(cloneRamUM.getMaxResourceUtilization() != cloudletRamUM.getMaxResourceUtilization()){
-                builder.append("Max RAM Usage: ")
-                    .append(formatPercentValue(cloudletRamUM.getMaxResourceUtilization())).append(VAL_SEPARATOR)
-                    .append(formatPercentValue(cloneRamUM.getMaxResourceUtilization())).append("% | ");
-                cloudletRamUM.setMaxResourceUtilization(cloneRamUM.getMaxResourceUtilization());
-            }
-
-            /* We don't need to check if some Cloudlet attribute was changed because
-             * if this Runnable is executed is because something was.
-             * An event to execute such Runnable is just sent in such a condition.*/
-            broker.LOGGER.trace("{}: {}: {} attributes updated: {}", getSimulation().clockStr(), broker.getName(), cloudlet, builder);
-        };
-
-        /* The Runnable is the data of the event that is sent to the broker.
-         * This way, it will be executed only when the event is processed.*/
-        final var attrsChangeSimEvt =
-            new CloudSimEvent(
-                taskEvent.getTimestamp(),
-                statusChangeSimEvt.getDestination(),
-                CloudSimTag.CLOUDLET_UPDATE_ATTRIBUTES, attributesUpdateRunnable);
-
-        //Sends the event to change the Cloudlet attributes
-        addEventToSend(cloudlet, attrsChangeSimEvt);
-
         return cloudlet;
+    }
+
+    /// Creates a temporary Cloudlet with the attributes from a trace line, which is just used to update an existing Cloudlet.
+    /// The [cloudlet creation function][#getCloudletCreationFunction()] provided by the researcher
+    /// is the only one that knows how to create a Cloudlet from a trace line.
+    /// For instance, the class of the [UtilizationModel]s is chosen by the researcher
+    /// and the [TaskEvent] only has the data used to instantiate them.
+    ///
+    /// @param cloudlet the Cloudlet to be updated
+    /// @param taskEvent the task event read from the trace file
+    /// @return the temporary Cloudlet
+    private Cloudlet createTemporaryCloudlet(final Cloudlet cloudlet, final TaskEvent taskEvent) {
+        final var traceCloudlet = createCloudlet(taskEvent);
+        traceCloudlet.setId(cloudlet.getId());
+        return traceCloudlet;
+    }
+
+    /// Updates the attributes of a Cloudlet that are different from the ones in the trace, logging the changes.
+    /// The "resource request" fields in the trace define the max amount of a resource the Cloudlet is allowed to use.
+    ///
+    /// @param cloudlet the Cloudlet to be updated
+    /// @param traceCloudlet the temporary Cloudlet having the new attributes
+    private void updateCloudletAttributes(final Cloudlet cloudlet, final Cloudlet traceCloudlet) {
+        final var changes = new StringBuilder();
+        updatePriority(cloudlet, traceCloudlet, changes);
+        updateFileSize(cloudlet, traceCloudlet, changes);
+        updateRequiredCores(cloudlet, traceCloudlet, changes);
+        updateMaxRamUsage(cloudlet, traceCloudlet, changes);
+
+        final DatacenterBroker broker = cloudlet.getBroker();
+        broker.LOGGER.trace("{}: {}: {} attributes updated: {}", getSimulation().clockStr(), broker.getName(), cloudlet, changes);
+    }
+
+    private void updatePriority(final Cloudlet cloudlet, final Cloudlet traceCloudlet, final StringBuilder changes) {
+        if(traceCloudlet.getPriority() != cloudlet.getPriority()){
+            appendChange(changes, "priority", cloudlet.getPriority(), traceCloudlet.getPriority());
+            cloudlet.setPriority(traceCloudlet.getPriority());
+        }
+    }
+
+    /// Updates the file size, but not the output size, since they aren't always related.
+    /// That can be done by the researcher if needed.
+    private void updateFileSize(final Cloudlet cloudlet, final Cloudlet traceCloudlet, final StringBuilder changes) {
+        if(traceCloudlet.getFileSize() != cloudlet.getFileSize()){
+            appendChange(changes, "file size", cloudlet.getFileSize(), traceCloudlet.getFileSize());
+            cloudlet.setFileSize(traceCloudlet.getFileSize());
+        }
+    }
+
+    private void updateRequiredCores(final Cloudlet cloudlet, final Cloudlet traceCloudlet, final StringBuilder changes) {
+        if(traceCloudlet.getRequiredCores() != cloudlet.getRequiredCores()){
+            appendChange(changes, "CPU cores", cloudlet.getRequiredCores(), traceCloudlet.getRequiredCores());
+            cloudlet.setRequiredCores(traceCloudlet.getRequiredCores());
+        }
+    }
+
+    /// Updates the max RAM usage. [#createCloudlet(TaskEvent)] ensures Cloudlets use a [UtilizationModelDynamic] for RAM.
+    private void updateMaxRamUsage(final Cloudlet cloudlet, final Cloudlet traceCloudlet, final StringBuilder changes) {
+        final var traceRamModel = (UtilizationModelDynamic)traceCloudlet.getUtilizationModelRam();
+        final var ramModel = (UtilizationModelDynamic)cloudlet.getUtilizationModelRam();
+        final double newMaxUsage = traceRamModel.getMaxResourceUtilization();
+        if(newMaxUsage != ramModel.getMaxResourceUtilization()){
+            appendChange(changes, "Max RAM Usage", formatPercentValue(ramModel.getMaxResourceUtilization()), formatPercentValue(newMaxUsage) + "%");
+            ramModel.setMaxResourceUtilization(newMaxUsage);
+        }
+    }
+
+    private static void appendChange(final StringBuilder changes, final String attribute, final Object oldValue, final Object newValue) {
+        changes.append(attribute).append(": ")
+               .append(oldValue).append(VAL_SEPARATOR)
+               .append(newValue).append(COL_SEPARATOR);
     }
 
     /// Adds a Cloudlet event to the map of events to send
