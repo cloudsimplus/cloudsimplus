@@ -102,9 +102,7 @@ final class SimulationEventQueues implements SimulationEvents {
 
     @Override
     public boolean cancelAll(final SimEntity src, final Predicate<SimEvent> predicate) {
-        final int previousSize = future.size();
-        future.removeIf(isEventSourceEqualsTo(predicate, src));
-        return previousSize < future.size();
+        return future.removeIf(isEventSourceEqualsTo(predicate, src));
     }
 
     private Predicate<SimEvent> isEventSourceEqualsTo(final Predicate<SimEvent> predicate, final SimEntity src) {
