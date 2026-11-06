@@ -755,6 +755,25 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
         vmCreatedList.add(vm);
     }
 
+    /// Changes the capacity of this Host's resources.
+    /// Each resource is handled on its own, so one refused change doesn't prevent the other.
+    /// This method is only called by the framework.
+    /// @param update the data about the capacity to change
+    public void updateCapacity(final HostCapacityUpdate update) {
+        updateResourceCapacity(processor, "CPU cores", update.cores());
+        updateResourceCapacity(ramAllocator.getPmResource(), "RAM", update.ram());
+    }
+
+    private void updateResourceCapacity(final ResourceManageable resource, final String name, final long newCapacity) {
+        if (newCapacity == HostCapacityUpdate.KEEP_CURRENT || resource.setCapacity(newCapacity)) {
+            return;
+        }
+
+        LOGGER.warn(
+            "{}: {}: {} capacity was kept at {} because the requested {} is lower than what is in use.",
+            getSimulation().clockStr(), this, name, resource.getCapacity(), newCapacity);
+    }
+
     @Override
     public final boolean setFailed(final boolean failed) {
         this.failed = failed;

@@ -60,17 +60,9 @@ public enum MachineEventType {
 
     /// 2: A [Host] available to the cluster had its available resources changed.
     UPDATE{
-        /// Update events aren't being processed yet.
-        ///
-        /// @param reader the trace file reader
-        /// @return always false to indicate the method is not implemented yet
-        ///
-        /// @TODO Update events are NOT being processed yet.
-        /// See https://github.com/cloudsimplus/cloudsimplus/issues/590
         @Override
         protected boolean process(final GoogleMachineEventsTraceReader reader) {
-            System.err.printf("%s: Update events are NOT being processed yet.%n", getClass().getSimpleName());
-            return false;
+            return reader.addHostUpdate(reader.createMachineEventFromTraceLine());
         }
     };
 

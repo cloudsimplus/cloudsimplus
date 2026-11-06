@@ -23,6 +23,7 @@
  */
 package org.cloudsimplus.traces.google;
 
+import org.cloudsimplus.hosts.HostCapacityUpdate;
 import org.cloudsimplus.util.TimeUtil;
 
 /// The index of each field in the Google Machine Events trace file.
@@ -74,8 +75,7 @@ public enum MachineEventField implements TraceField<GoogleMachineEventsTraceRead
         /// according the [GoogleMachineEventsTraceReader#getMaxCpuCores()].
         @Override
         public Integer getValue(final GoogleMachineEventsTraceReader reader) {
-            final double fieldValue = reader.getFieldDoubleValue(this);
-            return (int) Math.round(fieldValue * reader.getMaxCpuCores());
+            return (int) capacity(reader, this, reader.getMaxCpuCores());
         }
     },
 
@@ -87,8 +87,14 @@ public enum MachineEventField implements TraceField<GoogleMachineEventsTraceRead
         /// according the [GoogleMachineEventsTraceReader#getMaxRamCapacity()].
         @Override
         public Long getValue(final GoogleMachineEventsTraceReader reader) {
-            final double fieldValue = reader.getFieldDoubleValue(this);
-            return Math.round(fieldValue * reader.getMaxRamCapacity());
+            return capacity(reader, this, reader.getMaxRamCapacity());
         }
+    };
+
+    /// Computes the actual capacity from a field containing a percentage of a maximum value.
+    /// @return the actual capacity or [HostCapacityUpdate#KEEP_CURRENT] if the field is blank
+    private static long capacity(final GoogleMachineEventsTraceReader reader, final MachineEventField field, final long maxCapacity) {
+        final double percent = reader.getFieldDoubleValue(field, HostCapacityUpdate.KEEP_CURRENT);
+        return percent < 0 ? HostCapacityUpdate.KEEP_CURRENT : Math.round(percent * maxCapacity);
     }
 }
