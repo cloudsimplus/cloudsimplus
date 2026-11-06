@@ -78,9 +78,6 @@ public abstract non-sealed class CloudletSchedulerAbstract implements CloudletSc
     /// {@return the list} of currently paused cloudlets.
     private final List<CloudletExecution> cloudletPausedList;
 
-    /// {@return the list} of cloudlets that failed executing.
-    private final List<CloudletExecution> cloudletFailedList;
-
     /// @see #getCloudletExecList()
     private final List<CloudletExecution> cloudletExecList;
 
@@ -107,7 +104,6 @@ public abstract non-sealed class CloudletSchedulerAbstract implements CloudletSc
         cloudletExecList = new ArrayList<>();
         cloudletPausedList = new ArrayList<>();
         cloudletFinishedList = new ArrayList<>();
-        cloudletFailedList = new ArrayList<>();
         cloudletWaitingList = new ArrayList<>();
         cloudletReturnedList = new HashSet<>();
         currentMipsShare = CoreCapacity.NULL;
@@ -284,8 +280,7 @@ public abstract non-sealed class CloudletSchedulerAbstract implements CloudletSc
     /// Cloudlet was found or not
     protected Optional<CloudletExecution> findCloudletInAllLists(final double cloudletId) {
         final var cloudletExecInfoListStream = Stream.of(
-            cloudletExecList, cloudletPausedList, cloudletWaitingList,
-            cloudletFinishedList, cloudletFailedList
+            cloudletExecList, cloudletPausedList, cloudletWaitingList, cloudletFinishedList
         );
 
         // Gets all elements in each list and makes them a single full list,
@@ -338,9 +333,13 @@ public abstract non-sealed class CloudletSchedulerAbstract implements CloudletSc
          Since the next message to be received may take a long time,
          the processing update is requested right away.
          */
+        requestProcessingUpdate();
+        return true;
+    }
+
+    private void requestProcessingUpdate() {
         final Datacenter dc = vm.getHost().getDatacenter();
         dc.schedule(CloudSimTag.VM_UPDATE_CLOUDLET_PROCESSING);
-        return true;
     }
 
     private void changeToReady(final CloudletExecution cle) {
@@ -381,33 +380,47 @@ public abstract non-sealed class CloudletSchedulerAbstract implements CloudletSc
     /// @return the stopped cloudlet or [Cloudlet#NULL] if not found
     private Cloudlet stopCloudlet(final Cloudlet cloudlet, final Cloudlet.Status stopStatus) {
         //Removes finished cloudlets from the list without changing its status
-        boolean found = changeStatusOfCloudletIntoList(cloudletFinishedList, cloudlet, cle -> {});
-        if (found) {
+        if (changeStatusOfCloudletIntoList(cloudletFinishedList, cloudlet, cle -> {})) {
             return cloudlet;
         }
 
-        found = changeStatusOfCloudletIntoList(
-            cloudletExecList, cloudlet,
-            cle -> changeStatusOfCloudlet(cle, Cloudlet.Status.INEXEC, stopStatus));
-        if (found) {
-            return cloudlet;
+        final boolean found =
+            stopRunningCloudlet(cloudlet, stopStatus) ||
+            stopCloudletInList(cloudletPausedList, cloudlet, Cloudlet.Status.PAUSED, stopStatus) ||
+            stopCloudletInList(cloudletWaitingList, cloudlet, Cloudlet.Status.READY, stopStatus);
+        if (!found) {
+            return Cloudlet.NULL;
         }
 
-        found = changeStatusOfCloudletIntoList(
-            cloudletPausedList, cloudlet,
-            cle -> changeStatusOfCloudlet(cle, Cloudlet.Status.PAUSED, stopStatus));
-        if (found) {
-            return cloudlet;
+        cloudlet.setFinishTime(cloudlet.getSimulation().clock());
+        ((CloudletAbstract)cloudlet).returnToBroker();
+        return cloudlet;
+    }
+
+    /// Stops a running Cloudlet, releasing its cores and requesting a processing update,
+    /// so that waiting Cloudlets can use those cores right away.
+    ///
+    /// @param cloudlet the Cloudlet to stop
+    /// @param stopStatus the status to set
+    /// @return true if the Cloudlet was running, false otherwise
+    private boolean stopRunningCloudlet(final Cloudlet cloudlet, final Cloudlet.Status stopStatus) {
+        final boolean stopped = changeStatusOfCloudletIntoList(cloudletExecList, cloudlet, cle -> {
+            changeStatusOfCloudlet(cle, Cloudlet.Status.INEXEC, stopStatus);
+            removeUsedCores(cloudletUsedCores(cle.getCloudlet()));
+        });
+
+        if (stopped) {
+            requestProcessingUpdate();
         }
 
-        changeStatusOfCloudletIntoList(
-            cloudletWaitingList, cloudlet,
-            cle -> changeStatusOfCloudlet(cle, Cloudlet.Status.READY, stopStatus));
-        if (found) {
-            return cloudlet;
-        }
+        return stopped;
+    }
 
-        return Cloudlet.NULL;
+    private boolean stopCloudletInList(
+        final List<CloudletExecution> cloudletList, final Cloudlet cloudlet,
+        final Cloudlet.Status currentStatus, final Cloudlet.Status stopStatus)
+    {
+        return changeStatusOfCloudletIntoList(cloudletList, cloudlet, cle -> changeStatusOfCloudlet(cle, currentStatus, stopStatus));
     }
 
     /// Changes the status of a given cloudlet.

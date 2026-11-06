@@ -77,7 +77,12 @@ public sealed interface Cloudlet
         /// The cloudlet has failed to start in reason of a failure in some resource, such as a Host or VM.
         /// That may also happen when the VM to run the Cloudlet cannot be created for some reason
         /// (such as the lack of a suitable Host).
-        FAILED_RESOURCE_UNAVAILABLE
+        FAILED_RESOURCE_UNAVAILABLE;
+
+        /// {@return true if the status means the Cloudlet was stopped before finishing and won't run anymore, false otherwise}
+        public boolean isStopped() {
+            return this == FAILED || this == CANCELED;
+        }
     }
 
     /// An attribute that implements the Null Object Design Pattern for [Cloudlet]

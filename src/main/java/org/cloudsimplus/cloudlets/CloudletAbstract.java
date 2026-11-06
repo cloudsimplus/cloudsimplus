@@ -272,14 +272,23 @@ public non-sealed abstract class CloudletAbstract extends CustomerEntityAbstract
         return true;
     }
 
-    /// Notifies the broker about the end of execution of the Cloudlet,
-    /// by returning the Cloudlet to it.
     private void returnToBrokerIfFinished() {
-        if(isFinished() && !isReturnedToBroker()){
-            returnedToBroker = true;
-            getBroker().schedule(CloudSimTag.CLOUDLET_RETURN, this);
-            vm.getCloudletScheduler().addCloudletToReturnedList(this);
+        if(isFinished()){
+            returnToBroker();
         }
+    }
+
+    /// Notifies the broker about the end of execution of the Cloudlet,
+    /// by returning the Cloudlet to it, if it wasn't returned yet.
+    /// That happens when the Cloudlet finishes or is stopped (such as when it fails or is canceled).
+    public void returnToBroker() {
+        if(returnedToBroker){
+            return;
+        }
+
+        returnedToBroker = true;
+        getBroker().schedule(CloudSimTag.CLOUDLET_RETURN, this);
+        vm.getCloudletScheduler().addCloudletToReturnedList(this);
     }
 
     @Override
