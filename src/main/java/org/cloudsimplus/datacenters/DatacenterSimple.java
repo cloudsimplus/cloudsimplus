@@ -33,7 +33,6 @@ import org.cloudsimplus.resources.DatacenterStorage;
 import org.cloudsimplus.resources.SanStorage;
 import org.cloudsimplus.util.Conversion;
 import org.cloudsimplus.util.InvalidEventDataTypeException;
-import org.cloudsimplus.util.MathUtil;
 import org.cloudsimplus.vms.Vm;
 import org.cloudsimplus.vms.VmAbstract;
 import org.cloudsimplus.vms.VmListeners;
@@ -311,9 +310,9 @@ public non-sealed class DatacenterSimple extends CloudSimEntity implements Datac
 
     /// Process a Host removal request received during simulation runtime.
     /// This way, the Datacenter capacity is decreased by removing one Host.
-    /// @param srcEvt the event to process
-    private void processHostRemovalRequest(final SimEvent srcEvt) {
-        final long hostId = (long)srcEvt.getData();
+    /// @param evt the event to process
+    private void processHostRemovalRequest(final SimEvent evt) {
+        final long hostId = (long)evt.getData();
         final Host host = getHostById(hostId);
         if(Host.NULL.equals(host)) {
             LOGGER.warn(
@@ -331,14 +330,6 @@ public non-sealed class DatacenterSimple extends CloudSimEntity implements Datac
         } finally{
             fault.shutdown();
         }
-
-        /*If the Host was found in this Datacenter, cancel the message sent to others
-        * Datacenters to try to find the Host for removal.*/
-        getSimulation().events().cancelAll(
-            getSimulation().getCis(),
-            evt -> MathUtil.same(evt.getTime(), srcEvt.getTime()) &&
-                   evt.getTag() == CloudSimTag.HOST_REMOVE &&
-                   (long)evt.getData() == host.getId());
     }
 
     private Optional<Host> getHostFromHostEvent(final SimEvent evt) {

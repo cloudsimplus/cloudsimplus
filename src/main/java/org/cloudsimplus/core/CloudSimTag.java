@@ -247,7 +247,9 @@ public class CloudSimTag{
     /// with the specified ID should be looked into the Datacenter Host list to remove it.
     /// A Host should be removed in case of maintenance or failure,
     /// but there isn't such a distinction yet, so a failure is simulated to remove the Host.
-    /// The source of such events is the [CloudInformationService].
+    ///
+    /// When the Datacenter of the Host isn't known, send the event to the [CloudInformationService],
+    /// which forwards it to the Datacenter that has the Host.
     public static final int HOST_REMOVE = BASE + 61;
 
     /// Denotes a power measurement performed periodically by a [PowerMeter] on

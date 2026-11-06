@@ -9,6 +9,9 @@ package org.cloudsimplus.core;
 
 import org.cloudsimplus.core.events.SimEvent;
 import org.cloudsimplus.datacenters.Datacenter;
+import org.cloudsimplus.hosts.Host;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -26,6 +29,8 @@ import java.util.List;
 /// @author Rajkumar Buyya
 /// @since CloudSim Toolkit 1.0
 public class CloudInformationService extends CloudSimEntity {
+    private static final Logger LOGGER = LoggerFactory.getLogger(CloudInformationService.class.getSimpleName());
+
     /// The Datacenters created in the simulation.
     private final List<Datacenter> datacenterList;
 
@@ -52,9 +57,24 @@ public class CloudInformationService extends CloudSimEntity {
     @Override
     protected void startInternal() {/**/}
 
-    /// The method has no effect on the current class.
     @Override
-    public void processEvent(final SimEvent evt) {/**/}
+    public void processEvent(final SimEvent evt) {
+        if (evt.getTag() == CloudSimTag.HOST_REMOVE) {
+            forwardHostRemovalRequest((long) evt.getData());
+        }
+    }
+
+    /// Forwards a Host removal request to the first Datacenter that has the Host.
+    /// @param hostId the ID of the Host to remove
+    private void forwardHostRemovalRequest(final long hostId) {
+        datacenterList.stream()
+            .filter(dc -> !Host.NULL.equals(dc.getHostById(hostId)))
+            .findFirst()
+            .ifPresentOrElse(
+                //The Datacenter sends the event to itself, so that no network delay changes the removal time.
+                dc -> dc.schedule(CloudSimTag.HOST_REMOVE, hostId),
+                () -> LOGGER.warn("{}: {}: Host {} was not found in any Datacenter to be removed.", getSimulation().clockStr(), this, hostId));
+    }
 
     @Override
     public void shutdown() {

@@ -23,14 +23,67 @@
  */
 package org.cloudsimplus.traces.google;
 
+import org.cloudsimplus.core.CloudSimPlus;
+import org.cloudsimplus.core.CloudSimTag;
+import org.cloudsimplus.core.SimEntity;
+import org.cloudsimplus.core.events.SimEvent;
+import org.cloudsimplus.datacenters.DatacenterSimple;
+import org.cloudsimplus.hosts.Host;
+import org.cloudsimplus.hosts.HostSimple;
+import org.cloudsimplus.resources.CoreCapacity;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.cloudsimplus.resources.Processor.workingCores;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /// @author Manoel Campos da Silva Filho
 /// @since CloudSim Plus 4.0.0
 public class GoogleMachineEventsTraceReaderTest {
+    private static final long HOST_ID = 10;
+    private static final double REMOVAL_TIME = 5.0;
+
+    /// The Host is added at time 0 and removed at [#REMOVAL_TIME] (5 seconds in microseconds).
+    private static final String TRACE = """
+        0,%1$d,0,platform,0.5,0.5
+        5000000,%1$d,1,platform,0.5,0.5
+        """.formatted(HOST_ID);
+
+    /// The Datacenter that has the Host is created after the trace is processed
+    /// and has a non-zero ID, which must not change the removal time.
+    @Test
+    public void hostRemovalIsSentOnceToTheCisAndForwardedToTheHostDatacenter(@TempDir final Path dir) throws IOException {
+        final var simulation = new CloudSimPlus();
+        final var capacity = new CoreCapacity(1, 1000);
+        final var otherDc = DatacenterSimple.of(simulation, List.of(HostSimple.of(capacity)));
+
+        final var traceFile = Files.writeString(dir.resolve("machine-events.csv"), TRACE);
+        final var reader = new GoogleMachineEventsTraceReader(traceFile.toString(), evt -> HostSimple.of(capacity));
+        reader.setDatacenterForLaterHosts(otherDc);
+        final List<Host> traceHosts = new ArrayList<>(reader.process());
+        final var hostDc = DatacenterSimple.of(simulation, traceHosts);
+
+        final List<SimEvent> removalEvents = new ArrayList<>();
+        simulation.listeners().addOnEventProcessing(evt -> {
+            if (evt.getTag() == CloudSimTag.HOST_REMOVE) {
+                removalEvents.add(evt);
+            }
+        });
+
+        simulation.start();
+
+        final List<SimEntity> destinations = removalEvents.stream().map(SimEvent::getDestination).toList();
+        assertEquals(List.of(simulation.getCis(), hostDc), destinations);
+        removalEvents.forEach(evt -> assertEquals(REMOVAL_TIME, evt.getTime()));
+        assertEquals(0, workingCores(hostDc.getHostById(HOST_ID)));
+    }
 
     /// Ensures the order or enums is not changed,
     /// because that will cause the enums ordinal values to change.
