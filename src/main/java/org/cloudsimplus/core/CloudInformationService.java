@@ -18,6 +18,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static org.cloudsimplus.resources.Processor.workingCores;
+
 /// A Cloud Information Service (CIS) is an entity that keeps the list of [Datacenter]s
 /// in the simulation, which other entities (such as brokers) use to discover them.
 /// Each Datacenter is added to the list when it is created,
@@ -68,21 +70,19 @@ public class CloudInformationService extends CloudSimEntity {
     }
 
     /// Forwards a Host request to the first Datacenter that has a working Host with the given ID.
-    /// A Host removed from the cluster has failed and may be added again later, possibly to another Datacenter.
+    /// A removed Host has all its cores failed and may be added again later, possibly to another Datacenter.
+    /// The check uses working cores because a removal doesn't change [Host#isFailed()],
+    /// and it also excludes [Host#NULL], which has no cores.
     /// @param evt the request to forward
     /// @param hostId the ID of the Host the request is about
     private void forwardHostRequest(final SimEvent evt, final long hostId) {
         datacenterList.stream()
-            .filter(dc -> isHostWorking(dc.getHostById(hostId)))
+            .filter(dc -> workingCores(dc.getHostById(hostId)) > 0)
             .findFirst()
             .ifPresentOrElse(
                 //The Datacenter sends the event to itself, so that no network delay changes the request time.
                 dc -> dc.schedule(evt.getTag(), evt.getData()),
                 () -> LOGGER.warn("{}: {}: Working Host {} was not found in any Datacenter to process a request.", getSimulation().clockStr(), this, hostId));
-    }
-
-    private static boolean isHostWorking(final Host host) {
-        return !Host.NULL.equals(host) && !host.isFailed();
     }
 
     @Override
