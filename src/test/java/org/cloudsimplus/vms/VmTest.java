@@ -76,9 +76,9 @@ public class VmTest {
             () -> assertEquals(0, instance.getTotalCpuMipsUtilization(0)),
             () -> assertEquals(0, instance.getBw().getCapacity()),
             () -> assertEquals(0, instance.getBw().getOccupied()),
-            () -> assertEquals(0, instance.getCurrentRequestedBw()),
-            () -> assertTrue(instance.getCurrentRequestedMips().isEmpty()),
-            () -> assertEquals(0, instance.getCurrentRequestedRam()),
+            () -> assertEquals(0, instance.getRequestedBw()),
+            () -> assertTrue(instance.getRequestedMips().isEmpty()),
+            () -> assertEquals(0, instance.getRequestedRam()),
             () -> assertEquals(0, instance.getRam().getCapacity()),
             () -> assertEquals(0, instance.getRam().getOccupied()),
             () -> assertEquals(0, instance.getStorage().getCapacity())

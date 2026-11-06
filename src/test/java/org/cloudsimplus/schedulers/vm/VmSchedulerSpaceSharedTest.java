@@ -89,7 +89,7 @@ class VmSchedulerSpaceSharedTest {
         assertFalse(scheduler.resizeVmCores(vm, HOST_CORES));
         assertAll(
             () -> assertEquals(VM_CORES - 1, vm.getProcessor().getCores(), "VM cores"),
-            () -> assertEquals(VM_CORES - 1, vm.getRequestedMips().cores(), "requested cores"),
+            () -> assertEquals(VM_CORES - 1, vm.getLastRequestedMips().cores(), "requested cores"),
             () -> assertEquals(VM_CORES - 1, vm.getAllocatedMips().cores(), "allocated cores"),
             () -> assertEquals(VM_CORES - 1, host.getProcessor().getBusyCores(), "Host busy cores")
         );

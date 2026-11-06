@@ -70,7 +70,7 @@ public class VmSchedulerTimeSharedTest {
     @Test
     public void testResizeVmCores() {
         vmScheduler.getHost().getVmList().add(vm1);
-        assertTrue(vmScheduler.allocateCoresForVm(vm1, vm1.getCurrentRequestedMips()));
+        assertTrue(vmScheduler.allocateCoresForVm(vm1, vm1.getRequestedMips()));
 
         assertTrue(vmScheduler.resizeVmCores(vm1, -1));
         assertAll(
@@ -90,7 +90,7 @@ public class VmSchedulerTimeSharedTest {
     @Test
     public void testResizeVmCoresWhenAllVmCoresAreBusy() {
         vmScheduler.getHost().getVmList().add(vm1);
-        assertTrue(vmScheduler.allocateCoresForVm(vm1, vm1.getCurrentRequestedMips()));
+        assertTrue(vmScheduler.allocateCoresForVm(vm1, vm1.getRequestedMips()));
         vm1.getProcessor().setOccupied(VM_CORES_NUMBER);
 
         assertTrue(vmScheduler.resizeVmCores(vm1, -1));
@@ -103,7 +103,7 @@ public class VmSchedulerTimeSharedTest {
     @Test
     public void testResizeVmCoresFailsWhenHostHasNoRoom() {
         vmScheduler.getHost().getVmList().add(vm1);
-        assertTrue(vmScheduler.allocateCoresForVm(vm1, vm1.getCurrentRequestedMips()));
+        assertTrue(vmScheduler.allocateCoresForVm(vm1, vm1.getRequestedMips()));
         assertFalse(vmScheduler.resizeVmCores(vm1, VM_CORES_NUMBER));
         assertEquals(VM_CORES_NUMBER, vm1.getProcessor().getCores());
         assertEquals(VM_CORES_NUMBER, vmScheduler.getAllocatedMips(vm1).cores());
@@ -112,7 +112,7 @@ public class VmSchedulerTimeSharedTest {
     @Test
     public void testResizeVmCoresFailsWhenRemovingMoreCoresThanVmHas() {
         vmScheduler.getHost().getVmList().add(vm1);
-        assertTrue(vmScheduler.allocateCoresForVm(vm1, vm1.getCurrentRequestedMips()));
+        assertTrue(vmScheduler.allocateCoresForVm(vm1, vm1.getRequestedMips()));
         assertFalse(vmScheduler.resizeVmCores(vm1, -(VM_CORES_NUMBER + 1)));
         assertEquals(VM_CORES_NUMBER, vm1.getProcessor().getCores());
     }

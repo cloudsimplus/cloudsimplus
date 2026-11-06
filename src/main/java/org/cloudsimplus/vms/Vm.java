@@ -79,26 +79,25 @@ public sealed interface Vm
     /// @return the expected number of free cores
     long getExpectedFreeCores();
 
-    /// Gets the current requested bw.
+    /// Gets the current requested bandwidth (in Megabits/s).
     ///
-    /// @return the current requested bw
-    long getCurrentRequestedBw();
+    /// @return the current requested bandwidth
+    long getRequestedBw();
 
-    /// Gets a  **copy** list of current requested MIPS of each virtual core,
-    /// avoiding the original list to be changed.
+    /// Gets the current requested MIPS of each virtual core.
     ///
     /// @return the current requested MIPS of each core
-    CoreCapacity getCurrentRequestedMips();
+    CoreCapacity getRequestedMips();
 
-    /// Gets the current requested ram (in Megabytes).
-    /// @return
-    long getCurrentRequestedRam();
+    /// Gets the current requested RAM (in Megabytes).
+    /// @return the current requested RAM
+    long getRequestedRam();
 
     /// Gets the current requested total MIPS. It is the sum of MIPS capacity
     /// requested for every virtual core.
     ///
     /// @return the current requested total MIPS
-    /// @see #getCurrentRequestedMips()
+    /// @see #getRequestedMips()
     double getTotalCpuMipsRequested();
 
     /// Gets the [Host] where the Vm is or will be placed.
