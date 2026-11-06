@@ -161,13 +161,6 @@ public final class TaskEvent extends TaskData {
     /// @return this instance
     public static TaskEvent of(final GoogleTaskEventsTraceReader reader) {
         final var builder = new Builder();
-        /* TODO The tasks with the same username must run inside the same user's VM,
-         *      unless the machineID is different.
-         *      The task (cloudlet) needs to be mapped to a specific Host (according to the machineID).
-         *      The challenge here is because the task requirements are usually not known,
-         *      for instance when the task is submitted. It's just know when it starts to execute.
-         * See https://github.com/cloudsimplus/cloudsimplus/issues/590
-         */
         builder
             .type(TaskEventField.EVENT_TYPE.getValue(reader))
             .timestamp(TaskEventField.TIMESTAMP.getValue(reader))
@@ -181,6 +174,7 @@ public final class TaskEvent extends TaskData {
         final TaskEvent evt = builder.build();
         evt.setJobId(TaskEventField.JOB_ID.getValue(reader));
         evt.setTaskIndex(TaskEventField.TASK_INDEX.getValue(reader));
+        evt.setMachineId(TaskEventField.MACHINE_ID.getValue(reader));
         return evt;
     }
 }

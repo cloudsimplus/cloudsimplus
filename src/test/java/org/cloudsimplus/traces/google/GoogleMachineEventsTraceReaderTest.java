@@ -202,9 +202,11 @@ public class GoogleMachineEventsTraceReaderTest {
 
     /// A Host removed and added again has a new instance, in the Datacenter for later Hosts.
     /// Requests that come later must reach this instance, not the removed one.
+    /// The Datacenter of the removed Host is created first, so that it's the first one the CIS checks.
     @Test
     public void requestsAfterHostIsAddedAgainReachTheNewInstance(@TempDir final Path dir) throws IOException {
         final var simulation = new CloudSimPlus();
+        final var firstDc = newDatacenter(simulation);
         final var laterDc = newDatacenter(simulation);
         final var reader = newReader(dir, laterDc, """
             0,10,0,platform,0.5,0.5
@@ -214,7 +216,7 @@ public class GoogleMachineEventsTraceReaderTest {
             4000000,10,1,platform,0.25,0.75
             """);
         final var firstHost = new ArrayList<Host>(reader.process()).getFirst();
-        DatacenterSimple.of(simulation, List.of(firstHost));
+        firstDc.addHost(firstHost);
         final Host secondHost = reader.getLaterAvailableHosts().getFirst();
         simulation.start();
 

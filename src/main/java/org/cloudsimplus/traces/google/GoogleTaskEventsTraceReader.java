@@ -28,14 +28,19 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import org.cloudsimplus.brokers.DatacenterBroker;
+import org.cloudsimplus.brokers.VmCreation;
 import org.cloudsimplus.cloudlets.Cloudlet;
 import org.cloudsimplus.core.CloudSimPlus;
 import org.cloudsimplus.core.CloudSimTag;
 import org.cloudsimplus.core.events.CloudSimEvent;
+import org.cloudsimplus.hosts.Host;
+import org.cloudsimplus.placementpolicies.VmPlacementPolicy;
 import org.cloudsimplus.traces.TraceReaderAbstract;
 import org.cloudsimplus.util.ResourceLoader;
 import org.cloudsimplus.utilizationmodels.UtilizationModel;
 import org.cloudsimplus.utilizationmodels.UtilizationModelDynamic;
+import org.cloudsimplus.vms.Vm;
+import org.jspecify.annotations.Nullable;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -43,6 +48,7 @@ import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import static java.util.Objects.requireNonNull;
@@ -102,6 +108,12 @@ public class GoogleTaskEventsTraceReader extends GoogleTraceReaderAbstract<Cloud
     private Function<TaskEvent, Cloudlet> cloudletCreationFunction;
 
     private final CloudSimPlus simulation;
+
+    /// Maps tasks to VMs according to the user and machine in the trace.
+    /// It's null when such a mapping is disabled, so that simulations that don't use it have no cost.
+    /// @see #mapTasksToHosts(Function)
+    @Getter(AccessLevel.NONE) @Nullable
+    private TaskVmMapper taskVmMapper;
 
     /// Gets a [GoogleTaskEventsTraceReader] instance to read a "task events" trace file
     /// inside the **application's resource directory**.
@@ -193,6 +205,10 @@ public class GoogleTaskEventsTraceReader extends GoogleTraceReaderAbstract<Cloud
 
     @Override
     protected void postProcess(){
+        if(taskVmMapper != null) {
+            taskVmMapper.bindCloudletsToVms(getAvailableObjects(), brokerManager);
+        }
+
         cloudletEvents.values().forEach(this::sendCloudletEvents);
         cloudletEvents.clear();
     }
@@ -204,7 +220,67 @@ public class GoogleTaskEventsTraceReader extends GoogleTraceReaderAbstract<Cloud
     @Override
     protected boolean processParsedLineInternal() {
         final var eventType = TaskEventType.of(this);
-        return eventType.process(this);
+        final boolean processed = eventType.process(this);
+        if(taskVmMapper != null) {
+            updateTaskVmMapper(taskVmMapper);
+        }
+
+        return processed;
+    }
+
+    /// Updates the VM mapping according to the last line read, if it has a Cloudlet.
+    /// Lines of tasks that have no Cloudlet (such as due to the [#setMaxCloudletsToCreate(int)]) are ignored.
+    private void updateTaskVmMapper(final TaskVmMapper mapper) {
+        final var taskEvent = TaskEvent.of(this);
+        if(findObject(taskEvent.getUniqueTaskId()).isPresent()) {
+            mapper.process(taskEvent);
+        }
+    }
+
+    /// Enables running each task inside the VM of its user in the machine given by the trace,
+    /// and placing that VM in the Host with that machine ID.
+    /// Call it before [#process()].
+    ///
+    /// When the trace is processed, the given function is called once for each user and machine pair.
+    /// The created VM is submitted to the user's broker and the Cloudlets are bound to it.
+    /// The function defines the VM capacity, which must fit in the Host. The trace just has normalized values.
+    ///
+    /// Each Datacenter must use [#findHostForVm(VmPlacementPolicy, Vm)] to find the Host of those VMs:
+    /// `datacenter.getVmPlacementPolicy().setFindHostForVmFunction(reader::findHostForVm)`.
+    /// Otherwise, the VMs are placed according to the Datacenter's policy.
+    ///
+    /// Limitations:
+    ///
+    /// - a task only uses the first machine it's related to in the trace,
+    ///   even when it's evicted and scheduled on another machine later;
+    /// - a task that never has a machine in the trace isn't bound to a VM, so its broker selects one.
+    ///   Therefore, the broker needs at least one VM, or the task doesn't run;
+    /// - VMs are requested when the simulation starts. If the Host is added just later,
+    ///   the broker has to [retry creating the VM][VmCreation#setRetryDelay(double)].
+    ///
+    /// @param vmCreationFunction a [Function] that receives the data about the tasks of a user in a machine
+    /// and creates a VM to run them
+    /// @return this instance
+    public GoogleTaskEventsTraceReader mapTasksToHosts(final Function<TaskVmRequest, Vm> vmCreationFunction) {
+        this.taskVmMapper = new TaskVmMapper(vmCreationFunction);
+        return this;
+    }
+
+    /// Finds the Host for a VM created by the [#mapTasksToHosts(Function)] function, which is the one with the ID of the VM's machine.
+    /// Any other VM is placed in the first suitable Host.
+    /// It's intended to be used in [VmPlacementPolicy#setFindHostForVmFunction(BiFunction)].
+    ///
+    /// @param policy the placement policy requesting a Host
+    /// @param vm the VM to find a Host for
+    /// @return an [Optional] containing the suitable Host; or an empty [Optional] if the Host isn't in the policy's
+    /// Datacenter or doesn't have enough capacity for the VM
+    public Optional<Host> findHostForVm(final VmPlacementPolicy policy, final Vm vm) {
+        final Long machineId = taskVmMapper == null ? null : taskVmMapper.getMachineId(vm);
+        if(machineId == null) {
+            return policy.getHostList().stream().filter(host -> host.isSuitableForVm(vm)).findFirst().map(Host.class::cast);
+        }
+
+        return Optional.of(policy.getDatacenter().getHostById(machineId)).filter(host -> host.isSuitableForVm(vm));
     }
 
     /// Send a message to the broker to request change in a Cloudlet status,
