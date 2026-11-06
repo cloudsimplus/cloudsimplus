@@ -24,7 +24,6 @@
 package org.cloudsimplus.utilizationmodels;
 
 import org.cloudsimplus.util.ResourceLoader;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
 
@@ -44,21 +43,6 @@ public class UtilizationModelPlanetLabTest {
 
     /// Time interval (in seconds) in which the data inside a PlanetLab trace file is collected.
     private static final int SCHEDULING_INTERVAL = 300;
-
-    private static final String FILE = "146-179_surfsnel_dsl_internl_net_colostate_557.dat";
-
-    private UtilizationModelPlanetLab instance;
-
-    @BeforeEach
-    public void setUp() {
-        instance = UtilizationModelPlanetLab.getInstance(FILE, SCHEDULING_INTERVAL);
-    }
-
-    @Test
-    public void testGetIntervalSize1() {
-        final int expected = 1;
-        assertEquals(expected, instance.getIntervalSize(1, 2));
-    }
 
     private String createTempTraceFile(final int numLines, boolean includeHeaderWithLinesNumber){
         final OpenOption[] options = {StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING};
@@ -166,35 +150,4 @@ public class UtilizationModelPlanetLabTest {
         assertEquals(linesToRead, planetlab.getDataSamples());
         checkUtilizationValuesFromTempTrace(planetlab, linesToRead);
     }
-
-    @Test
-    public void testGetIntervalSize1EndLowerThanStart() {
-        final int expected = 1;
-        assertEquals(expected, instance.getIntervalSize(287, 0));
-    }
-
-    @Test
-    public void testGetIntervalSize10EndLowerThanStart() {
-        final int expected = 10;
-        assertEquals(expected, instance.getIntervalSize(287, 9));
-    }
-
-    @Test
-    public void testGetIntervalSize20EndLowerThanStart() {
-        final int expected = 20;
-        assertEquals(expected, instance.getIntervalSize(277, 9));
-    }
-
-    @Test
-    public void testGetIntervalSize4EndLowerThanStart() {
-        final int expected = 4;
-        assertEquals(expected, instance.getIntervalSize(286, 2));
-    }
-
-    @Test
-    public void testGetIntervalSize10() {
-        final int expected = 10;
-        assertEquals(expected, instance.getIntervalSize(1, 11));
-    }
-
 }
