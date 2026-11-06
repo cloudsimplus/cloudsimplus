@@ -27,7 +27,6 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
-import org.cloudsimplus.core.CloudInformationService;
 import org.cloudsimplus.core.CloudSimTag;
 import org.cloudsimplus.datacenters.Datacenter;
 import org.cloudsimplus.hosts.Host;
@@ -203,25 +202,8 @@ public final class GoogleMachineEventsTraceReader extends GoogleTraceReaderAbstr
         final var cis = datacenterForLaterHosts.getSimulation().getCis();
         laterAvailableHosts.forEach(host -> cis.schedule(datacenterForLaterHosts, host.getStartTime(), CloudSimTag.HOST_ADD, host));
 
-        //Sends a request to every Datacenter to try to remove the Hosts (since we don't have how to know which Datacenter each Host is)
-        cis.getDatacenterList().forEach(this::sendHostsRemovalRequests);
-    }
-
-    /// Send requests to remove Hosts from a given Datacenter.
-    ///
-    /// @param dc the first Datacenter to look for the Host to remove
-    /// since we don't have how to know from the trace in which Datacenter the Host is
-    private void sendHostsRemovalRequests(final Datacenter dc) {
-        final CloudInformationService cis = dc.getSimulation().getCis();
-
-        /* The shutdown time is increased by a small fraction
-         * to ensure that for each Datacenter, a request to find and remove
-         * a Host will be sent in different times.
-         * This way, if a DC finds a Host and removes it,
-         * it cancels the subsequent messages to the next Datacenters.
-         * Since the Host was already found, the simulator doesn't need
-         * to keep looking for the Host inside the other datacenters.*/
-        hostsForRemoval.forEach(host -> cis.schedule(dc, host.getFinishTime() + dc.getId() * 0.00001, CloudSimTag.HOST_REMOVE, host.getId()));
+        //The trace doesn't say which Datacenter has each Host, so the CIS finds it when the Host must be removed.
+        hostsForRemoval.forEach(host -> cis.schedule(host.getFinishTime(), CloudSimTag.HOST_REMOVE, host.getId()));
     }
 
     @Override
