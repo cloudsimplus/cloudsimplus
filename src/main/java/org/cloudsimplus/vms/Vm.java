@@ -231,15 +231,6 @@ public sealed interface Vm
     /// @return true, if it was created inside the Host, false otherwise
     boolean isCreated();
 
-    /// Checks if the VM has enough capacity to run a Cloudlet.
-    ///
-    /// @param cloudlet the candidate Cloudlet to run inside the VM
-    /// @return true if the VM can run the Cloudlet, false otherwise
-    /// TODO the Method is not being called anywhere to check if a VM has
-    /// enough capacity to run a Cloudlet
-    /// See https://github.com/cloudsimplus/cloudsimplus/issues/591
-    boolean isSuitableForCloudlet(Cloudlet cloudlet);
-
     /// Checks if the VM is in migration process or not,
     /// that is, if it is migrating in or out of a Host.
     ///
