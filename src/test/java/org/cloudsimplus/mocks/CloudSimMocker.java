@@ -25,6 +25,7 @@ package org.cloudsimplus.mocks;
 
 import lombok.NonNull;
 import org.cloudsimplus.core.CloudSimPlus;
+import org.cloudsimplus.core.SimulationEvents;
 import org.mockito.Mockito;
 import org.mockito.stubbing.OngoingStubbing;
 
@@ -82,6 +83,7 @@ public final class CloudSimMocker {
         final var mocker = new CloudSimMocker();
         consumer.accept(mocker);
         Mockito.when(mocker.mock.isRunning()).thenReturn(true);
+        Mockito.when(mocker.mock.events()).thenReturn(SimulationEvents.NULL);
         return mocker.mock;
     }
 

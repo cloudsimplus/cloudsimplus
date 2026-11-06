@@ -184,7 +184,7 @@ public abstract class CloudSimEntity implements SimEntity {
         }
 
         if (simulation.isRunning()) {
-            simulation.pauseEntity(this, delay);
+            simulation.events().pauseEntity(this, delay);
         }
     }
 
@@ -196,7 +196,7 @@ public abstract class CloudSimEntity implements SimEntity {
     /// or [SimEvent#NULL] if not found or the simulation is not running
     public SimEvent selectEvent(final Predicate<SimEvent> predicate) {
         if (simulation.isRunning()) {
-            return simulation.select(this, predicate);
+            return simulation.events().select(this, predicate);
         }
 
         return SimEvent.NULL;
@@ -208,7 +208,7 @@ public abstract class CloudSimEntity implements SimEntity {
     /// @param predicate the event selection predicate
     /// @return the removed event or [SimEvent#NULL] if not found
     public SimEvent cancelEvent(final Predicate<SimEvent> predicate) {
-        return simulation.isRunning() ? simulation.cancel(this, predicate) : SimEvent.NULL;
+        return simulation.isRunning() ? simulation.events().cancel(this, predicate) : SimEvent.NULL;
     }
 
     /// Gets the first event matching a predicate from the deferred queue, or if
@@ -240,7 +240,7 @@ public abstract class CloudSimEntity implements SimEntity {
     /// @param predicate the predicate to match
     public void waitForEvent(final Predicate<SimEvent> predicate) {
         if (simulation.isRunning()) {
-            simulation.wait(this, predicate);
+            simulation.events().wait(this, predicate);
             state = State.WAITING;
         }
     }
