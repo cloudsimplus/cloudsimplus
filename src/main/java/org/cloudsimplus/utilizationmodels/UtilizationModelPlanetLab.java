@@ -412,32 +412,6 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
         return (int)Math.ceil(getUtilizationIndex(time)) % utilization.length;
     }
 
-    /// {@return the number of utilization samples between two indexes}
-    ///
-    /// Since the utilization array is implemented as a circular list,
-    /// when the last index is read, it restarts from the first index again.
-    /// Accordingly, we can have situations where the end index is the last
-    /// array element and the start index is the first or some subsequent index.
-    /// This way, computing the difference between the two indexes would return a negative value.
-    /// The method ensures that a positive value is returned, correctly
-    /// computing the size of the interval between the two indexes.
-    ///
-    /// Consider that the trace file has 288 lines, indexed from line 0 to 287.
-    /// Think of the trace as a circular list with indexes 0, 1, 2, 3 ...... 286, 287, 0, 1, 2, 3 ...
-    /// If the start index is 286 and the end index 2, then the interval size is 4
-    /// (the number of indexes between 286 and 2).
-    ///
-    /// @param startIndex the start index in the interval
-    /// @param endIndex the end index in the interval
-    protected final int getIntervalSize(final int startIndex, final int endIndex) {
-        /*TODO The interval size should add 1, but this is the original formula.
-               It needs to be checked the impact in tests.
-               See https://github.com/cloudsimplus/cloudsimplus/issues/591 */
-        final int index = endIndex - startIndex;
-
-        return index >= 0 ? index : (utilization.length - startIndex) + endIndex;
-    }
-
     /// Sets the scheduling interval.
     ///
     /// @param schedulingInterval the scheduling interval to set
