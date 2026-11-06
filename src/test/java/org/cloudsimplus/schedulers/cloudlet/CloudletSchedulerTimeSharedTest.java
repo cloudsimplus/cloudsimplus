@@ -29,11 +29,14 @@ import org.cloudsimplus.cloudlets.CloudletExecution;
 import org.cloudsimplus.cloudlets.CloudletSimple;
 import org.cloudsimplus.cloudlets.CloudletTestUtil;
 import org.cloudsimplus.mocks.CloudSimMocker;
+import org.cloudsimplus.resources.CoreCapacity;
+import org.cloudsimplus.schedulers.cloudlet.network.CloudletTaskScheduler;
 import org.cloudsimplus.utilizationmodels.UtilizationModelDynamic;
 import org.cloudsimplus.utilizationmodels.UtilizationModelFull;
 import org.cloudsimplus.vms.VmSimple;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 import java.util.ArrayList;
 
@@ -128,6 +131,37 @@ public class CloudletSchedulerTimeSharedTest {
         assertEquals(vmCores, vmProcessor.getBusyCores());
 
         instance.cloudletCancel(instance.getCloudletExecList().getFirst().getCloudlet());
+        assertEquals(vmCores, vmProcessor.getBusyCores());
+    }
+
+    /// A stopped Cloudlet must release its cores right away, not just at the next processing update.
+    @Test
+    public void testStoppingRunningCloudletReleasesItsCores() {
+        final int vmCores = 2;
+        final var instance = newSchedulerWithSingleCoreRunningCloudlets(1000, vmCores, vmCores);
+        final var vmProcessor = instance.getVm().getProcessor();
+        assertEquals(vmCores, vmProcessor.getBusyCores());
+
+        instance.cloudletFail(instance.getCloudletExecList().getFirst().getCloudlet());
+        assertEquals(vmCores - 1, vmProcessor.getBusyCores());
+    }
+
+    /// A Cloudlet blocked waiting for packets isn't using cores, so stopping it must not release any.
+    /// Otherwise, the VM would have free cores that the running Cloudlets are using.
+    @Test
+    public void testStoppingCloudletBlockedWaitingForPacketsKeepsOtherCloudletsCores() {
+        final int vmCores = 2;
+        final var instance = newSchedulerWithSingleCoreRunningCloudlets(1000, vmCores, vmCores + 1);
+        final var blocked = instance.getCloudletExecList().getFirst().getCloudlet();
+        final var taskScheduler = Mockito.mock(CloudletTaskScheduler.class);
+        Mockito.when(taskScheduler.isCloudletWaitingForPackets(blocked)).thenReturn(true);
+        instance.setTaskScheduler(taskScheduler);
+        instance.updateProcessing(1, new CoreCapacity(vmCores, 1000));
+
+        final var vmProcessor = instance.getVm().getProcessor();
+        assertEquals(vmCores, vmProcessor.getBusyCores());
+
+        instance.cloudletFail(blocked);
         assertEquals(vmCores, vmProcessor.getBusyCores());
     }
 

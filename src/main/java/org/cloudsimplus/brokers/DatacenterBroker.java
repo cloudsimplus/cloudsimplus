@@ -69,6 +69,8 @@ public sealed interface DatacenterBroker extends SimEntity
 
     /// Gets a **copy** of the list of cloudlets that have finished executing,
     /// to avoid the original list to be changed.
+    /// It includes Cloudlets stopped before finishing, such as the ones that failed or were canceled.
+    /// Check [Cloudlet#getStatus()] to know the result of each one.
     ///
     /// @param <T> the class of Cloudlets inside the list
     /// @return the list of finished cloudlets

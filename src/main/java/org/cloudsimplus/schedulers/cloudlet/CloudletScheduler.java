@@ -39,13 +39,13 @@ public sealed interface CloudletScheduler
     /// An attribute that implements the Null Object Design Pattern for [CloudletScheduler] objects.
     CloudletScheduler NULL = new CloudletSchedulerNull();
 
-    /// Sets a cloudlet as failed.
+    /// Sets a cloudlet as failed and returns it to the broker.
     ///
     /// @param cloudlet cloudlet to set as failed
     /// @return the failed cloudlet or [Cloudlet#NULL] if not found
     Cloudlet cloudletFail(Cloudlet cloudlet);
 
-    /// Cancels the execution of a cloudlet.
+    /// Cancels the execution of a cloudlet and returns it to the broker.
     ///
     /// @param cloudlet the cloudlet being canceled
     /// @return the canceled cloudlet or [Cloudlet#NULL] if not found

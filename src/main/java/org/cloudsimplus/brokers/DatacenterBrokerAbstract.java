@@ -577,6 +577,7 @@ public non-sealed abstract class DatacenterBrokerAbstract extends CloudSimEntity
 
     private boolean processCloudletFail(final SimEvent evt){
         final var cloudlet = (Cloudlet)evt.getData();
+        logCloudletStatusChange(cloudlet, "fail");
         cloudlet.getVm().getCloudletScheduler().cloudletFail(cloudlet);
         return true;
     }
@@ -881,9 +882,11 @@ public non-sealed abstract class DatacenterBrokerAbstract extends CloudSimEntity
         cloudletFinishedList.add(cloudlet);
         ((VmAbstract) cloudlet.getVm()).addExpectedFreeCores(cloudlet.getRequiredCores());
         final String lifeTime = cloudlet.getLifeTime() == Double.MAX_VALUE ? "" : " (after defined lifetime expired)";
+        final var status = cloudlet.getStatus();
+        final String result = status.isStopped() ? "stopped as " + status : "finished";
         LOGGER.info(
-            "{}: {}: {} finished{} in {} and returned to broker.",
-            getSimulation().clockStr(), getName(), cloudlet, lifeTime, cloudlet.getVm());
+            "{}: {}: {} {}{} in {} and returned to broker.",
+            getSimulation().clockStr(), getName(), cloudlet, result, lifeTime, cloudlet.getVm());
 
         if (cloudlet.getVm().getCloudletScheduler().isEmpty()) {
             requestIdleVmDestruction(cloudlet.getVm());
