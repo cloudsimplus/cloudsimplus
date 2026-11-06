@@ -10,6 +10,7 @@ package org.cloudsimplus.core;
 import org.cloudsimplus.core.events.SimEvent;
 import org.cloudsimplus.datacenters.Datacenter;
 import org.cloudsimplus.hosts.Host;
+import org.cloudsimplus.hosts.HostCapacityUpdate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,20 +61,28 @@ public class CloudInformationService extends CloudSimEntity {
     @Override
     public void processEvent(final SimEvent evt) {
         if (evt.getTag() == CloudSimTag.HOST_REMOVE) {
-            forwardHostRemovalRequest((long) evt.getData());
+            forwardHostRequest(evt, (long) evt.getData());
+        } else if (evt.getTag() == CloudSimTag.HOST_UPDATE) {
+            forwardHostRequest(evt, ((HostCapacityUpdate) evt.getData()).hostId());
         }
     }
 
-    /// Forwards a Host removal request to the first Datacenter that has the Host.
-    /// @param hostId the ID of the Host to remove
-    private void forwardHostRemovalRequest(final long hostId) {
+    /// Forwards a Host request to the first Datacenter that has a working Host with the given ID.
+    /// A Host removed from the cluster has failed and may be added again later, possibly to another Datacenter.
+    /// @param evt the request to forward
+    /// @param hostId the ID of the Host the request is about
+    private void forwardHostRequest(final SimEvent evt, final long hostId) {
         datacenterList.stream()
-            .filter(dc -> !Host.NULL.equals(dc.getHostById(hostId)))
+            .filter(dc -> isHostWorking(dc.getHostById(hostId)))
             .findFirst()
             .ifPresentOrElse(
-                //The Datacenter sends the event to itself, so that no network delay changes the removal time.
-                dc -> dc.schedule(CloudSimTag.HOST_REMOVE, hostId),
-                () -> LOGGER.warn("{}: {}: Host {} was not found in any Datacenter to be removed.", getSimulation().clockStr(), this, hostId));
+                //The Datacenter sends the event to itself, so that no network delay changes the request time.
+                dc -> dc.schedule(evt.getTag(), evt.getData()),
+                () -> LOGGER.warn("{}: {}: Working Host {} was not found in any Datacenter to process a request.", getSimulation().clockStr(), this, hostId));
+    }
+
+    private static boolean isHostWorking(final Host host) {
+        return !Host.NULL.equals(host) && !host.isFailed();
     }
 
     @Override

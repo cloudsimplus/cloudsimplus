@@ -20,6 +20,7 @@ import org.cloudsimplus.datacenters.DatacenterCharacteristics.Distribution;
 import org.cloudsimplus.faultinjection.HostFaultInjection;
 import org.cloudsimplus.hosts.Host;
 import org.cloudsimplus.hosts.HostAbstract;
+import org.cloudsimplus.hosts.HostCapacityUpdate;
 import org.cloudsimplus.hosts.HostSimple;
 import org.cloudsimplus.hosts.HostSuitability;
 import org.cloudsimplus.listeners.DatacenterVmMigrationEventInfo;
@@ -283,6 +284,9 @@ public non-sealed class DatacenterSimple extends CloudSimEntity implements Datac
         } else if (evt.getTag() == CloudSimTag.HOST_REMOVE) {
             processHostRemovalRequest(evt);
             return true;
+        } else if (evt.getTag() == CloudSimTag.HOST_UPDATE) {
+            processHostUpdateRequest((HostCapacityUpdate) evt.getData());
+            return true;
         } else if (evt.getTag() == CloudSimTag.HOST_POWER_ON || evt.getTag() == CloudSimTag.HOST_POWER_OFF) {
             final HostSimple host = (HostSimple)evt.getData();
             host.processActivation(evt.getTag() == CloudSimTag.HOST_POWER_ON);
@@ -330,6 +334,18 @@ public non-sealed class DatacenterSimple extends CloudSimEntity implements Datac
         } finally{
             fault.shutdown();
         }
+    }
+
+    /// Process a request received during simulation runtime to change the capacity of a Host.
+    /// @param update the data about the capacity to change
+    private void processHostUpdateRequest(final HostCapacityUpdate update) {
+        final Host host = getHostById(update.hostId());
+        if(Host.NULL.equals(host)) {
+            LOGGER.warn("{}: {}: Host {} was not found to be updated.", getSimulation().clockStr(), this, update.hostId());
+            return;
+        }
+
+        ((HostAbstract)host).updateCapacity(update);
     }
 
     private Optional<Host> getHostFromHostEvent(final SimEvent evt) {
@@ -1013,7 +1029,15 @@ public non-sealed class DatacenterSimple extends CloudSimEntity implements Datac
 
     @Override
     public Host getHostById(final long id) {
-        return hostList.stream().filter(host -> host.getId() == id).findFirst().map(host -> (Host)host).orElse(Host.NULL);
+        //Searches from the end because a Host removed and added again has a new instance, and the last one is the current.
+        for (final var iterator = hostList.listIterator(hostList.size()); iterator.hasPrevious(); ) {
+            final Host host = iterator.previous();
+            if (host.getId() == id) {
+                return host;
+            }
+        }
+
+        return Host.NULL;
     }
 
     @Override

@@ -30,6 +30,7 @@ import lombok.Setter;
 import org.cloudsimplus.core.CloudSimTag;
 import org.cloudsimplus.datacenters.Datacenter;
 import org.cloudsimplus.hosts.Host;
+import org.cloudsimplus.hosts.HostCapacityUpdate;
 import org.cloudsimplus.traces.TraceReaderAbstract;
 import org.cloudsimplus.util.BytesConversion;
 import org.cloudsimplus.util.ResourceLoader;
@@ -101,6 +102,10 @@ public final class GoogleMachineEventsTraceReader extends GoogleTraceReaderAbstr
     /// List of Hosts to be removed from the Datacenter.
     private final List<Host> hostsForRemoval;
 
+    /// List of events that change the capacity of Hosts.
+    @Getter(AccessLevel.NONE)
+    private final List<MachineEvent> hostUpdates;
+
     /// Gets a [GoogleMachineEventsTraceReader] instance to read a "machine events" trace file
     /// inside the **application's resource directory**.
     /// Created Hosts will have 16GB of maximum RAM and the maximum of 8 cores.
@@ -171,6 +176,7 @@ public final class GoogleMachineEventsTraceReader extends GoogleTraceReaderAbstr
         this.setMaxCpuCores(8);
         this.laterAvailableHosts = new ArrayList<>();
         this.hostsForRemoval = new ArrayList<>();
+        this.hostUpdates = new ArrayList<>();
     }
 
     /// Process the [trace file][#getFilePath()] creating a Set of [Host]s
@@ -196,7 +202,7 @@ public final class GoogleMachineEventsTraceReader extends GoogleTraceReaderAbstr
         }
     }
 
-    /// Process the addition and removal of Hosts occurring for a timestamp greater than zero.
+    /// Process the addition, removal and update of Hosts occurring for a timestamp greater than zero.
     @Override
     protected void postProcess() {
         final var cis = datacenterForLaterHosts.getSimulation().getCis();
@@ -204,6 +210,11 @@ public final class GoogleMachineEventsTraceReader extends GoogleTraceReaderAbstr
 
         //The trace doesn't say which Datacenter has each Host, so the CIS finds it when the Host must be removed.
         hostsForRemoval.forEach(host -> cis.schedule(host.getFinishTime(), CloudSimTag.HOST_REMOVE, host.getId()));
+        hostUpdates.forEach(evt -> cis.schedule(evt.getTimestamp(), CloudSimTag.HOST_UPDATE, newHostCapacityUpdate(evt)));
+    }
+
+    private static HostCapacityUpdate newHostCapacityUpdate(final MachineEvent evt) {
+        return new HostCapacityUpdate(evt.getMachineId(), evt.getCpuCores(), evt.getRam());
     }
 
     @Override
@@ -234,16 +245,27 @@ public final class GoogleMachineEventsTraceReader extends GoogleTraceReaderAbstr
     ///
     /// @return the Host instance
     Host createHostFromTraceLine() {
-        final var event =
-            MachineEvent.builder()
-                .cpuCores(MachineEventField.CPU_CAPACITY.getValue(this))
-                .ram(MachineEventField.RAM_CAPACITY.getValue(this))
-                .timestamp(MachineEventField.TIMESTAMP.getValue(this))
-                .machineId(MachineEventField.MACHINE_ID.getValue(this))
-                .build();
-        final Host host = hostCreationFunction.apply(event);
+        final Host host = hostCreationFunction.apply(createMachineEventFromTraceLine());
         host.setId(MachineEventField.MACHINE_ID.getValue(this));
         return host;
+    }
+
+    /// {@return a [MachineEvent] from the [last parsed line][#getLastParsedLineArray()]}
+    MachineEvent createMachineEventFromTraceLine() {
+        return MachineEvent.builder()
+            .cpuCores(MachineEventField.CPU_CAPACITY.getValue(this))
+            .ram(MachineEventField.RAM_CAPACITY.getValue(this))
+            .timestamp(MachineEventField.TIMESTAMP.getValue(this))
+            .machineId(MachineEventField.MACHINE_ID.getValue(this))
+            .build();
+    }
+
+    /// Adds an event to the List of events that change the capacity of Hosts.
+    ///
+    /// @param event the event to add
+    /// @return true if the event was added, false otherwise
+    boolean addHostUpdate(final MachineEvent event) {
+        return hostUpdates.add(event);
     }
 
     /// Adds a Host to the List of Hosts to be removed from the Datacenter.

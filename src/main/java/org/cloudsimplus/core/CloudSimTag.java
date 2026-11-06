@@ -13,6 +13,7 @@ import org.cloudsimplus.cloudlets.Cloudlet;
 import org.cloudsimplus.core.events.SimEvent;
 import org.cloudsimplus.datacenters.Datacenter;
 import org.cloudsimplus.hosts.Host;
+import org.cloudsimplus.hosts.HostCapacityUpdate;
 import org.cloudsimplus.network.HostPacket;
 import org.cloudsimplus.power.PowerMeter;
 import org.cloudsimplus.power.models.PowerModel;
@@ -251,6 +252,13 @@ public class CloudSimTag{
     /// When the Datacenter of the Host isn't known, send the event to the [CloudInformationService],
     /// which forwards it to the Datacenter that has the Host.
     public static final int HOST_REMOVE = BASE + 61;
+
+    /// Denotes a request to change the capacity of a [Host] during simulation runtime.
+    /// The [SimEvent#getData()] must be a [HostCapacityUpdate].
+    ///
+    /// When the Datacenter of the Host isn't known, send the event to the [CloudInformationService],
+    /// which forwards it to the Datacenter that has the Host.
+    public static final int HOST_UPDATE = BASE + 62;
 
     /// Denotes a power measurement performed periodically by a [PowerMeter] on
     /// entities having a [PowerModel], such as [Datacenter]s and [Host]s.
