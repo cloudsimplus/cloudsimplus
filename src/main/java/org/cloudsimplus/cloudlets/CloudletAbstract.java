@@ -49,7 +49,6 @@ public non-sealed abstract class CloudletAbstract extends CustomerEntityAbstract
     @Setter(AccessLevel.NONE)
     private boolean returnedToBroker;
     private int priority;
-    private int netServiceLevel;
     private long fileSize;
     private long outputSize;
     private double dcArrivalTime;
@@ -164,7 +163,6 @@ public non-sealed abstract class CloudletAbstract extends CustomerEntityAbstract
 
     @Override
     public final Cloudlet reset() {
-        this.netServiceLevel = 0;
         setBroker(DatacenterBroker.NULL);
         this.vm = Vm.NULL;
         this.setStartTime(NOT_ASSIGNED);
@@ -196,16 +194,6 @@ public non-sealed abstract class CloudletAbstract extends CustomerEntityAbstract
         final long len = getLength();
         if(isLifeTimeReached() || len > 0 && finishedLengthSoFar >= len)
             setFinishTime(getSimulation().clock());
-    }
-
-    @Override
-    public Cloudlet setNetServiceLevel(final int netServiceLevel) {
-        if (netServiceLevel < 0) {
-            throw new IllegalArgumentException("Net Service Level cannot be negative");
-        }
-
-        this.netServiceLevel = netServiceLevel;
-        return this;
     }
 
     @Override
