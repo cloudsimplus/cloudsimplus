@@ -47,7 +47,7 @@ public abstract non-sealed class VmSchedulerAbstract implements VmScheduler {
 
     @Override
     public final boolean isSuitableForVm(final Vm vm) {
-        return isSuitableForVm(vm, vm.getCurrentRequestedMips());
+        return isSuitableForVm(vm, vm.getRequestedMips());
     }
 
     @Override
@@ -163,7 +163,7 @@ public abstract non-sealed class VmSchedulerAbstract implements VmScheduler {
     ///         false if the Host doesn't have room for them (the VM is kept as it was)
     private boolean growVmCores(final Vm vm, final long cores) {
         final var vmAbstract = vmAbstract(vm);
-        final CoreCapacity currentRequest = vmAbstract.getRequestedMips();
+        final CoreCapacity currentRequest = vmAbstract.getLastRequestedMips();
 
         // Releases the current VM allocation, so that it isn't counted when checking if the new request fits
         deallocateCoresFromVm(vm);
@@ -181,7 +181,7 @@ public abstract non-sealed class VmSchedulerAbstract implements VmScheduler {
     @Override
     public final void deallocateCoresFromVm(final Vm vm) {
         final var vmAbstract = vmAbstract(vm);
-        deallocateCoresFromVm(vm, Math.max(vmAbstract.getRequestedMips().cores(), vmAbstract.getAllocatedMips().cores()));
+        deallocateCoresFromVm(vm, Math.max(vmAbstract.getLastRequestedMips().cores(), vmAbstract.getAllocatedMips().cores()));
     }
 
     /// Removes a given number of cores from the VM requested and allocated MIPS shares,
@@ -198,7 +198,7 @@ public abstract non-sealed class VmSchedulerAbstract implements VmScheduler {
 
         final var vmAbstract = vmAbstract(vm);
         vmAbstract.setMipsShares(
-            vmAbstract.getRequestedMips().withoutCores(coresToRemove),
+            vmAbstract.getLastRequestedMips().withoutCores(coresToRemove),
             vmAbstract.getAllocatedMips().withoutCores(coresToRemove));
         updateHostBusyCores(vm);
     }
@@ -241,7 +241,7 @@ public abstract non-sealed class VmSchedulerAbstract implements VmScheduler {
 
     @Override
     public CoreCapacity getRequestedMips(final Vm vm) {
-        return vmAbstract(vm).getRequestedMips();
+        return vmAbstract(vm).getLastRequestedMips();
     }
 
     @Override

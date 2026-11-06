@@ -123,7 +123,7 @@ public class VmSimpleTest {
     @Test
     public void testRequestedMipsWithNoCpuCapUsesFullProcessorCapacity() {
         final CoreCapacity expected = vm.getProcessor().toCoreCapacity();
-        final CoreCapacity requested = vm.getCurrentRequestedMips();
+        final CoreCapacity requested = vm.getRequestedMips();
         assertEquals(expected.cores(), requested.cores());
         assertEquals(expected.mips(), requested.mips());
     }
@@ -374,7 +374,7 @@ public class VmSimpleTest {
     }
 
     @Test
-    public void testGetCurrentRequestedBwWhenVmWasCreatedInsideHost() {
+    public void testGetRequestedBwWhenVmWasCreatedInsideHost() {
         final double currentBwUsagePercent = 0.5;
 
         final CloudletScheduler scheduler = Mockito.mock(CloudletSchedulerAbstract.class);
@@ -386,19 +386,19 @@ public class VmSimpleTest {
         vm0.setCreated(true);
 
         final long expectedCurrentBwUtilization = (long)(currentBwUsagePercent* VmTestUtil.BANDWIDTH);
-        assertEquals(expectedCurrentBwUtilization, vm0.getCurrentRequestedBw());
+        assertEquals(expectedCurrentBwUtilization, vm0.getRequestedBw());
     }
 
     @Test
-    public void testGetCurrentRequestedBwWhenVmWasNotCreatedInsideHost() {
+    public void testGetRequestedBwWhenVmWasNotCreatedInsideHost() {
         final var vm0 = VmTestUtil.createVm(CloudletScheduler.NULL);
         vm0.setCreated(false);
         final long expectedCurrentBwUsage = VmTestUtil.BANDWIDTH;
-        assertEquals(expectedCurrentBwUsage, vm0.getCurrentRequestedBw());
+        assertEquals(expectedCurrentBwUsage, vm0.getRequestedBw());
     }
 
     @Test
-    public void testGetCurrentRequestedRamWhenVmWasCreatedInsideHost() {
+    public void testGetRequestedRamWhenVmWasCreatedInsideHost() {
         final double currentRamUsagePercent = 0.5;
         final long expectedCurrentRamUsage = (long)(currentRamUsagePercent* VmTestUtil.RAM);
 
@@ -409,25 +409,25 @@ public class VmSimpleTest {
 
         final var vm0 = VmTestUtil.createVm(scheduler);
         vm0.setCreated(true);
-        assertEquals(expectedCurrentRamUsage, vm0.getCurrentRequestedRam());
+        assertEquals(expectedCurrentRamUsage, vm0.getRequestedRam());
         Mockito.verify(scheduler).getCurrentRequestedRamPercentUtilization();
     }
 
     @Test
-    public void testGetCurrentRequestedRamWhenVmWasNotCreatedInsideHost() {
+    public void testGetRequestedRamWhenVmWasNotCreatedInsideHost() {
         final var vm0 = VmTestUtil.createVm(CloudletScheduler.NULL);
         vm0.setCreated(false);
         final long expectedCurrentRamUsage = VmTestUtil.RAM;
-        assertEquals(expectedCurrentRamUsage, vm0.getCurrentRequestedRam());
+        assertEquals(expectedCurrentRamUsage, vm0.getRequestedRam());
     }
 
     @Test
-    public void testGetCurrentRequestedMipsTimeSharedSchedulerWhenVmWasCreatedInsideHost() {
+    public void testGetRequestedMipsTimeSharedSchedulerWhenVmWasCreatedInsideHost() {
         final CloudletScheduler cloudletScheduler = new CloudletSchedulerTimeShared();
         final var vm = VmTestUtil.createVm(cloudletScheduler);
         vm.setCreated(true);
 
-        assertTrue(vm.getCurrentRequestedMips().isEmpty());
+        assertTrue(vm.getRequestedMips().isEmpty());
     }
 
     /// Checks that a CloudletScheduler passed in the constructor is preserved

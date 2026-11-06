@@ -115,8 +115,12 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
     protected long expectedFreeCores;
     /// @see #setMipsShares(CoreCapacity, CoreCapacity)
     protected CoreCapacity allocatedMips;
+    /// The MIPS share stored by the last [VmScheduler] allocation.
+    /// Use [#getRequestedMips()] to get what the VM is requesting now:
+    /// it returns this share only after the VM is created and has finished booting.
     /// @see #setMipsShares(CoreCapacity, CoreCapacity)
-    protected CoreCapacity requestedMips;
+    /// @see #getRequestedMips()
+    protected CoreCapacity lastRequestedMips;
     @Setter
     private String vmm;
     private Host host;
@@ -170,7 +174,7 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
         this.expectedFreeCores = capacity.cores();
 
         this.allocatedMips = CoreCapacity.NULL;
-        this.requestedMips = CoreCapacity.NULL;
+        this.lastRequestedMips = CoreCapacity.NULL;
         this.stateHistory = new LinkedList<>();
         mutableAttributesInit();
     }
@@ -405,13 +409,11 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
 
     @Override
     public double getTotalCpuMipsRequested() {
-        return getCurrentRequestedMips().totalMips();
+        return getRequestedMips().totalMips();
     }
 
     @Override
-    public CoreCapacity getCurrentRequestedMips() {
-        // TODO This method is confusing, since there is a getRequestedMips() (created with lombok)
-        // See https://github.com/cloudsimplus/cloudsimplus/issues/591
+    public CoreCapacity getRequestedMips() {
         if (isCreated() && !isStartingUp()) {
             return host.getVmScheduler().getRequestedMips(this);
         }
@@ -427,7 +429,7 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
         return isStartingUp() ? cpuCap.limit(processor, bootModel.getCpuPercentUtilization()) : cpuCap.limit(processor);
     }
 
-    /// Sets the MIPS shares a [VmScheduler][org.cloudsimplus.schedulers.vm.VmScheduler] requested for and allocated to this VM.
+    /// Sets the MIPS shares a [VmScheduler] requested for and allocated to this VM.
     /// Both shares always change together. This method is meant to be called just by VmSchedulers,
     /// since the Host cores depend on these shares.
     ///
@@ -435,13 +437,13 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
     /// @param allocatedMips the MIPS share allocated to the VM
     /// @return this VM
     public VmAbstract setMipsShares(@NonNull final CoreCapacity requestedMips, @NonNull final CoreCapacity allocatedMips) {
-        this.requestedMips = requestedMips;
+        this.lastRequestedMips = requestedMips;
         this.allocatedMips = allocatedMips;
         return this;
     }
 
     @Override
-    public long getCurrentRequestedBw() {
+    public long getRequestedBw() {
         if (isCreated()) {
             return (long)(cloudletScheduler.getCurrentRequestedBwPercentUtilization() * bw.getCapacity());
         }
@@ -455,7 +457,7 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
     }
 
     @Override
-    public long getCurrentRequestedRam() {
+    public long getRequestedRam() {
         if (isCreated()) {
             final double percent = isStartingUp() ? bootModel.getRamPercentUtilization() : cloudletScheduler.getCurrentRequestedRamPercentUtilization();
             return (long)(percent * ram.getCapacity());

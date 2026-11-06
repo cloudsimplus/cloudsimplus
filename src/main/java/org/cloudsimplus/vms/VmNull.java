@@ -63,13 +63,13 @@ final class VmNull implements Vm {
     }
     @Override public CloudletScheduler getCloudletScheduler() { return CloudletScheduler.NULL; }
     @Override public long getExpectedFreeCores() { return 0; }
-    @Override public long getCurrentRequestedBw() {
+    @Override public long getRequestedBw() {
         return 0;
     }
-    @Override public CoreCapacity getCurrentRequestedMips() {
+    @Override public CoreCapacity getRequestedMips() {
         return CoreCapacity.NULL;
     }
-    @Override public long getCurrentRequestedRam() {
+    @Override public long getRequestedRam() {
         return 0;
     }
     @Override public double getTotalCpuMipsRequested() {

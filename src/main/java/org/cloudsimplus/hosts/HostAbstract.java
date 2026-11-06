@@ -398,10 +398,10 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
     }
 
     private void allocateResourcesForVm(final Vm vm) {
-        provisionResourceForVm(vm, Ram.class, vm.getCurrentRequestedRam());
-        provisionResourceForVm(vm, Bandwidth.class, vm.getCurrentRequestedBw());
+        provisionResourceForVm(vm, Ram.class, vm.getRequestedRam());
+        provisionResourceForVm(vm, Bandwidth.class, vm.getRequestedBw());
         disk.getStorage().occupy(vm.getStorage());
-        vmScheduler.allocateCoresForVm(vm, vm.getCurrentRequestedMips());
+        vmScheduler.allocateCoresForVm(vm, vm.getRequestedMips());
     }
 
     private void logAllocationError(
