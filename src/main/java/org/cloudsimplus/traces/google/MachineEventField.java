@@ -88,7 +88,7 @@ public enum MachineEventField implements TraceField<GoogleMachineEventsTraceRead
         @Override
         public Long getValue(final GoogleMachineEventsTraceReader reader) {
             final double fieldValue = reader.getFieldDoubleValue(this);
-            return Math.round(fieldValue * reader.getMaxCpuCores());
+            return Math.round(fieldValue * reader.getMaxRamCapacity());
         }
     }
 }
