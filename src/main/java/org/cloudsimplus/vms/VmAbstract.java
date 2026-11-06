@@ -548,12 +548,6 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
         return this;
     }
 
-    @Override
-    public boolean isSuitableForCloudlet(final Cloudlet cloudlet) {
-        return processor.getCores() >= cloudlet.getRequiredCores() &&
-            storage.getFree() >= cloudlet.getFileSize();
-    }
-
     /// Changes the created status of the Vm inside the Host.
     /// Only the [Host] calls it, when it creates or destroys the VM, so that the VM and the Host are always in sync.
     ///

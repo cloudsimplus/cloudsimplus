@@ -26,7 +26,6 @@ package org.cloudsimplus.vms;
 import org.cloudsimplus.autoscaling.HorizontalVmScaling;
 import org.cloudsimplus.autoscaling.VerticalVmScaling;
 import org.cloudsimplus.brokers.DatacenterBroker;
-import org.cloudsimplus.cloudlets.Cloudlet;
 import org.cloudsimplus.core.*;
 import org.cloudsimplus.datacenters.Datacenter;
 import org.cloudsimplus.hosts.Host;
@@ -129,7 +128,6 @@ final class VmNull implements Vm {
     @Override public boolean isCreated() {
         return false;
     }
-    @Override public boolean isSuitableForCloudlet(Cloudlet cloudlet) { return false; }
     @Override public boolean isInMigration() {
         return false;
     }
