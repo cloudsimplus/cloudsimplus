@@ -34,6 +34,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 /// @author Manoel Campos da Silva Filho
@@ -49,7 +50,9 @@ class CloudSimEntityTest {
         final var bufferedEvt = new CloudSimEvent(entity, TAG, "buffered");
         final var deferredEvt = new CloudSimEvent(entity, TAG, "deferred");
 
-        when(simulation.select(eq(entity), any())).thenReturn(deferredEvt, SimEvent.NULL);
+        final var events = mock(SimulationEventQueues.class);
+        when(simulation.events()).thenReturn(events);
+        when(events.select(eq(entity), any())).thenReturn(deferredEvt, SimEvent.NULL);
         entity.setEventBuffer(bufferedEvt);
         entity.run();
 

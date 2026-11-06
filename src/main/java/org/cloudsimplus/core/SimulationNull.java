@@ -23,7 +23,6 @@
  */
 package org.cloudsimplus.core;
 
-import org.cloudsimplus.core.events.SimEvent;
 import org.cloudsimplus.listeners.EventInfo;
 import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.network.topologies.NetworkTopology;
@@ -31,7 +30,6 @@ import org.cloudsimplus.network.topologies.NetworkTopology;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
-import java.util.function.Predicate;
 import org.jspecify.annotations.Nullable;
 
 /// A class that implements the Null Object Design Pattern for [Simulation] class.
@@ -39,21 +37,13 @@ import org.jspecify.annotations.Nullable;
 /// @author Manoel Campos da Silva Filho
 /// @see Simulation#NULL
 final class SimulationNull implements Simulation {
-    @Override public boolean isThereAnyFutureEvt(Predicate<SimEvent> predicate) { return false; }
     @Override public boolean isTerminationTimeSet() { return false; }
     @Override public void abort() {/**/}
     @Override public void addEntity(CloudSimEntity entity) {/**/}
-    @Override public SimEvent cancel(SimEntity src, Predicate<SimEvent> predicate) {
-        return SimEvent.NULL;
-    }
-    @Override public boolean cancelAll(SimEntity src, Predicate<SimEvent> predicate) {
-        return false;
-    }
     @Override public double clock() { return 0.0; }
     @Override public String clockStr() { return ""; }
     @Override public double clockInMinutes() { return 0.0; }
     @Override public double clockInHours() { return 0.0; }
-    @Override public SimEvent findFirstDeferred(SimEntity dest, Predicate<SimEvent> predicate) { return SimEvent.NULL; }
     @Override public Calendar getCalendar() {
         return Calendar.getInstance();
     }
@@ -69,10 +59,10 @@ final class SimulationNull implements Simulation {
         return 0;
     }
     @Override public SimulationListeners listeners() { return SimulationListeners.NULL; }
+    @Override public SimulationEvents events() { return SimulationEvents.NULL; }
     @Override public boolean isPaused() {
         return false;
     }
-    @Override public void pauseEntity(SimEntity src, double delay) {/**/}
     @Override public boolean pause() {
         return false;
     }
@@ -85,7 +75,6 @@ final class SimulationNull implements Simulation {
     @Override public boolean isRunning() {
         return false;
     }
-    @Override public SimEvent select(SimEntity dest, Predicate<SimEvent> predicate) { return SimEvent.NULL; }
     @Override public double runFor(double interval) { return 0; }
     @Override public double start() throws RuntimeException { return 0; }
     @Override public void startSync() { /**/ }
@@ -96,10 +85,8 @@ final class SimulationNull implements Simulation {
     @Override public boolean terminateAt(double time) {
         return false;
     }
-    @Override public void wait(CloudSimEntity src, Predicate<SimEvent> predicate) {/**/}
     @Override public NetworkTopology getNetworkTopology() { return NetworkTopology.NULL; }
     @Override public Simulation setNetworkTopology(NetworkTopology networkTopology) { return this; }
-    @Override public long getNumberOfFutureEvents(Predicate<SimEvent> predicate) { return 0; }
     @Override public double getLastCloudletProcessingUpdate() { return 0; }
     @Override public Simulation setLastCloudletProcessingUpdate(double lastCloudletProcessingUpdate) { return this; }
     @Override public boolean isAbortRequested() {return true;}

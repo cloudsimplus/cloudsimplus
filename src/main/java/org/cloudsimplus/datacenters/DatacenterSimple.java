@@ -334,7 +334,7 @@ public non-sealed class DatacenterSimple extends CloudSimEntity implements Datac
 
         /*If the Host was found in this Datacenter, cancel the message sent to others
         * Datacenters to try to find the Host for removal.*/
-        getSimulation().cancelAll(
+        getSimulation().events().cancelAll(
             getSimulation().getCis(),
             evt -> MathUtil.same(evt.getTime(), srcEvt.getTime()) &&
                    evt.getTag() == CloudSimTag.HOST_REMOVE &&
@@ -680,7 +680,7 @@ public non-sealed class DatacenterSimple extends CloudSimEntity implements Datac
             }
         }
 
-        final var event = getSimulation().findFirstDeferred(this, new PredicateType(CloudSimTag.VM_MIGRATE));
+        final var event = getSimulation().events().findFirstDeferred(this, new PredicateType(CloudSimTag.VM_MIGRATE));
         if (event == null || event.getTime() > clock()) {
             //Updates processing of all Hosts again to get their latest state after the VMs migrations
             updateHostsProcessing();

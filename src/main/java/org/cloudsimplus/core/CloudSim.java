@@ -22,8 +22,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
-import java.util.function.Predicate;
-import java.util.stream.Stream;
 import org.jspecify.annotations.Nullable;
 
 /// An abstract class to manage Cloud Computing simulations,
@@ -72,13 +70,10 @@ non-sealed abstract class CloudSim implements Simulation {
 
     private final List<CloudSimEntity> entityList;
 
-    /// The queue of events that will be sent in a future simulation time.
-    private final FutureQueue future;
+    /// The queues of events of this simulation.
+    private final SimulationEventQueues events;
 
-    /// The deferred event queue.
-    private final DeferredQueue deferred;
-
-    /// Events sent before the simulation starts, in the order they must be added to the [#future] queue.
+    /// Events sent before the simulation starts, in the order they must be added to the future queue.
     /// They are added right after the entities start, so that the entities' own start events come first.
     /// It's only created when some event is sent before the start.
     private @Nullable Deque<SimEvent> eventsSentBeforeStart;
@@ -88,11 +83,6 @@ non-sealed abstract class CloudSim implements Simulation {
 
     @Getter
     private boolean running;
-
-    /// A map of entities and predicates that define the events a given entity is waiting for.
-    /// Received events are filtered based on the predicate associated with each entity
-    /// so that just the resulting events are sent to the entity.
-    private final Map<SimEntity, Predicate<SimEvent>> waitPredicates;
 
     @Getter
     private boolean paused;
@@ -135,9 +125,7 @@ non-sealed abstract class CloudSim implements Simulation {
     /// Events within shorter periods after the last event are discarded.
     public CloudSim(final double minTimeBetweenEvents) {
         this.entityList = new ArrayList<>();
-        this.future = new FutureQueue();
-        this.deferred = new DeferredQueue();
-        this.waitPredicates = new HashMap<>();
+        this.events = new SimulationEventQueues();
         this.networkTopology = NetworkTopology.NULL;
         this.clock = 0;
         this.running = false;
@@ -285,7 +273,7 @@ non-sealed abstract class CloudSim implements Simulation {
 
     private void printSimulationFinished() {
         final String msg1 = "Simulation finished at time %.2f".formatted(clock);
-        final String extra = future.isEmpty() ? "" : ", before completing,";
+        final String extra = events.noFutureEvents() ? "" : ", before completing,";
         final String msg2 = isTimeToTerminateSimulationUnderRequest()
             ? extra + " in reason of an explicit request to terminate() or terminateAt()"
             : "";
@@ -370,7 +358,7 @@ non-sealed abstract class CloudSim implements Simulation {
     public void addEntity(@NonNull final CloudSimEntity entity) {
         if (running) {
             final var evt = new CloudSimEvent(SimEvent.Type.CREATE, 0, entity, SimEntity.NULL, CloudSimTag.NONE, entity);
-            future.addEvent(evt);
+            events.addFutureEvent(evt);
         }
 
         if (entity.getId() == -1) { // Only add once!
@@ -392,16 +380,16 @@ non-sealed abstract class CloudSim implements Simulation {
     }
 
     /// Run one tick of the simulation, processing and removing the
-    /// events in the [#future] event queue that happen up to a given time.
+    /// events in the future event queue that happen up to a given time.
     /// @param until the interval for which the events should be processed (in seconds)
     /// @return true if some event was processed, false otherwise
     private boolean runClockTickAndProcessFutureEvents(final double until) {
         executeRunnableEntities(until);
-        if (future.isEmpty()) {
+        if (events.noFutureEvents()) {
             return false;
         }
 
-        final SimEvent first = future.first();
+        final SimEvent first = events.firstFutureEvent();
         if(first.getTime() <= until) {
             processFutureEventsHappeningAtSameTimeOfTheFirstOne(first);
             return true;
@@ -446,14 +434,14 @@ non-sealed abstract class CloudSim implements Simulation {
 
     private void processFutureEventsHappeningAtSameTimeOfTheFirstOne(final SimEvent firstEvent) {
         processEvent(firstEvent);
-        future.remove(firstEvent);
+        events.removeFutureEvent(firstEvent);
 
-        while(!future.isEmpty()) {
-            final SimEvent evt = future.first();
+        while(!events.noFutureEvents()) {
+            final SimEvent evt = events.firstFutureEvent();
             if(evt.getTime() != firstEvent.getTime())
                 break;
             processEvent(evt);
-            future.remove(evt);
+            events.removeFutureEvent(evt);
         }
     }
 
@@ -493,8 +481,8 @@ non-sealed abstract class CloudSim implements Simulation {
 
         //Events with a negative tag have higher priority
         if(evt.getTag() < 0)
-            future.addEventFirst(evt);
-        else future.addEvent(evt);
+            events.addFutureEventFirst(evt);
+        else events.addFutureEvent(evt);
         return true;
     }
 
@@ -514,7 +502,7 @@ non-sealed abstract class CloudSim implements Simulation {
             return false;
         }
 
-        future.addEventFirst(evt);
+        events.addFutureEventFirst(evt);
         return true;
     }
 
@@ -524,7 +512,7 @@ non-sealed abstract class CloudSim implements Simulation {
     /// since it has to be processed to enable entities to shut down.
     ///
     /// @param evt the event to check
-    /// @return true if the event was rejected, false if it can be added to the [#future] queue
+    /// @return true if the event was rejected, false if it can be added to the future queue
     private boolean isEventRejectedAfterStop(final SimEvent evt) {
         if (running || evt.getTag() == CloudSimTag.SIMULATION_END) {
             return false;
@@ -546,7 +534,7 @@ non-sealed abstract class CloudSim implements Simulation {
         return eventsSentBeforeStart;
     }
 
-    /// Adds the events sent before the simulation starts to the [#future] queue,
+    /// Adds the events sent before the simulation starts to the future queue,
     /// in the order they were sent, keeping the time they were scheduled to.
     /// This way, events at time 0 are processed at time 0, after the entities' own start events.
     private void addEventsSentBeforeStartToFutureQueue() {
@@ -554,74 +542,8 @@ non-sealed abstract class CloudSim implements Simulation {
             return;
         }
 
-        eventsSentBeforeStart.forEach(future::addEvent);
+        eventsSentBeforeStart.forEach(events::addFutureEvent);
         eventsSentBeforeStart = null;
-    }
-
-    @Override
-    public void wait(final CloudSimEntity src, final Predicate<SimEvent> predicate) {
-        src.setState(SimEntity.State.WAITING);
-        if (predicate != ANY_EVT) {
-            // If a predicate has been used, store it in order to check incoming events that matches it
-            waitPredicates.put(src, predicate);
-        }
-    }
-
-    @Override
-    public SimEvent select(final SimEntity dest, final Predicate<SimEvent> predicate) {
-        final SimEvent evt = findFirstDeferred(dest, predicate);
-        if(evt != SimEvent.NULL) {
-            deferred.remove(evt);
-        }
-
-        return evt;
-    }
-
-    @Override
-    public SimEvent findFirstDeferred(final SimEntity dest, final Predicate<SimEvent> predicate) {
-        return filterEventsToDestinationEntity(deferred, predicate, dest).findFirst().orElse(SimEvent.NULL);
-    }
-
-    /// Gets a stream of events inside a specific queue that match a given predicate
-    /// and are targeted to a specific entity.
-    ///
-    /// @param queue the queue to get the events from
-    /// @param predicate the event selection predicate
-    /// @param dest entity that the event has to be sent to
-    /// @return a Stream of events from the queue
-    private Stream<SimEvent> filterEventsToDestinationEntity(final EventQueue queue, final Predicate<SimEvent> predicate, final SimEntity dest) {
-        return filterEvents(queue, predicate.and(evt -> evt.getDestination() == dest));
-    }
-
-    @Override
-    public SimEvent cancel(final SimEntity src, final Predicate<SimEvent> predicate) {
-        final SimEvent canceled =
-            future.stream()
-                  .filter(isEventSourceEqualsTo(predicate, src))
-                  .findFirst()
-                  .orElse(SimEvent.NULL);
-        future.remove(canceled);
-        return canceled;
-    }
-
-    @Override
-    public boolean cancelAll(final SimEntity src, final Predicate<SimEvent> predicate) {
-        final int previousSize = future.size();
-        future.removeIf(isEventSourceEqualsTo(predicate, src));
-        return previousSize < future.size();
-    }
-
-    private Predicate<SimEvent> isEventSourceEqualsTo(final Predicate<SimEvent> predicate, final SimEntity src) {
-        return predicate.and(evt -> evt.getSource().equals(src));
-    }
-
-    /// Gets a stream of events inside a specific queue that match a given predicate.
-    ///
-    /// @param queue the queue to get the events from
-    /// @param predicate the event selection predicate
-    /// @return a Stream of events from the queue
-    private Stream<SimEvent> filterEvents(final EventQueue queue, final Predicate<SimEvent> predicate) {
-        return queue.stream().filter(predicate);
     }
 
     /// Processes an event.
@@ -640,7 +562,7 @@ non-sealed abstract class CloudSim implements Simulation {
         switch (evt.getType()) {
             case NULL -> throw new IllegalArgumentException("Event has a null type.");
             case CREATE -> processCreateEvent(evt);
-            case SEND -> processSendEvent(evt);
+            case SEND -> events.processSendEvent(evt);
             case HOLD_DONE -> processHoldEvent(evt);
         }
     }
@@ -662,28 +584,6 @@ non-sealed abstract class CloudSim implements Simulation {
         }
 
         evt.getSource().setState(SimEntity.State.RUNNABLE);
-    }
-
-    private void processSendEvent(final SimEvent evt) {
-        if (evt.getDestination() == SimEntity.NULL) {
-            throw new IllegalArgumentException("Attempt to send to a null entity detected.");
-        }
-
-        final var destEnt = (CloudSimEntity)evt.getDestination();
-        if (destEnt.getState() != SimEntity.State.WAITING) {
-            deferred.addEvent(evt);
-            return;
-        }
-
-        final var eventPredicate = waitPredicates.get(destEnt);
-        if (eventPredicate == null || eventPredicate.test(evt)) {
-            destEnt.setEventBuffer(new CloudSimEvent(evt));
-            destEnt.setState(SimEntity.State.RUNNABLE);
-            waitPredicates.remove(destEnt);
-            return;
-        }
-
-        deferred.addEvent(evt);
     }
 
     private void startEntitiesIfNotRunning() {
@@ -727,23 +627,11 @@ non-sealed abstract class CloudSim implements Simulation {
         return wasPaused;
     }
 
-    @Override
-    public void pauseEntity(final SimEntity src, final double delay) {
-        final var evt = new CloudSimEvent(SimEvent.Type.HOLD_DONE, delay, src);
-        addHoldingFutureEvent(src, evt);
-    }
-
-    private void addHoldingFutureEvent(final SimEntity src, final SimEvent evt) {
-        future.addEvent(evt);
-        src.setState(SimEntity.State.HOLDING);
-    }
-
     /// Holds an entity for some time.
     /// @param src   entity to be held
     /// @param delay How many seconds after the current time the entity has to be held
     protected void holdEntity(final SimEntity src, final long delay) {
-        final var evt = new CloudSimEvent(SimEvent.Type.HOLD_DONE, delay, src);
-        addHoldingFutureEvent(src, evt);
+        events.pauseEntity(src, delay);
     }
 
     private void checkIfSimulationPauseRequested() {
@@ -780,22 +668,17 @@ non-sealed abstract class CloudSim implements Simulation {
         pauseAt = -1;
     }
 
-    @Override
-    public long getNumberOfFutureEvents(final Predicate<SimEvent> predicate){
-        return future.stream().filter(predicate).count();
-    }
-
-    @Override
-    public boolean isThereAnyFutureEvt(final Predicate<SimEvent> predicate){
-        return future.stream().anyMatch(predicate);
-    }
-
     private boolean isThereFutureEvtsAndNextOneHappensAfterTimeToPause() {
-        return !future.isEmpty() && clock <= pauseAt && isNextFutureEventHappeningAfterTimeToPause();
+        return !events.noFutureEvents() && clock <= pauseAt && isNextFutureEventHappeningAfterTimeToPause();
     }
 
     private boolean isNotThereNextFutureEvtsAndIsTimeToPause() {
-        return future.isEmpty() && clock >= pauseAt;
+        return events.noFutureEvents() && clock >= pauseAt;
+    }
+
+    @Override
+    public SimulationEvents events() {
+        return events;
     }
 
     @Override
@@ -804,7 +687,7 @@ non-sealed abstract class CloudSim implements Simulation {
     }
 
     private boolean isNextFutureEventHappeningAfterTimeToPause() {
-        return future.iterator().next().getTime() >= pauseAt;
+        return events.firstFutureEvent().getTime() >= pauseAt;
     }
 
     @Override
@@ -814,18 +697,18 @@ non-sealed abstract class CloudSim implements Simulation {
     }
 
     /// @return the maximum number of events that have ever existed at the same time
-    /// inside the [FutureQueue].
+    /// inside the future queue.
     public long getMaxEventsNumber() {
-        return future.getMaxEventsNumber();
+        return events.getMaxFutureEventsNumber();
     }
 
-    /// @return the total number of events generated in the [FutureQueue]
+    /// @return the total number of events generated in the future queue
     public long getGeneratedEventsNumber() {
-        return future.getSerial();
+        return events.getGeneratedFutureEventsNumber();
     }
 
     /// @return true if there are no future events (the future queue is empty), false otherwise
     public boolean noFutureEvents(){
-        return future.isEmpty();
+        return events.noFutureEvents();
     }
 }

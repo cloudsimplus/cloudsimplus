@@ -101,22 +101,6 @@ public sealed interface Simulation permits CloudSim, SimulationNull {
     /// @param entity the new entity to add
     void addEntity(CloudSimEntity entity);
 
-    /// Cancels the first event from the future event queue that matches a given [Predicate]
-    /// and was sent by a given entity, then removes it from the queue.
-    ///
-    /// @param src entity that scheduled the event
-    /// @param predicate   the event selection predicate
-    /// @return the removed event or [SimEvent#NULL] if not found
-    SimEvent cancel(SimEntity src, Predicate<SimEvent> predicate);
-
-    /// Cancels all events from the future event queue that matches a given [Predicate]
-    /// and were sent by a given entity, then removes those from the queue.
-    ///
-    /// @param src entity that scheduled the event
-    /// @param predicate   the event selection predicate
-    /// @return true if at least one event has been canceled; false otherwise
-    boolean cancelAll(SimEntity src, Predicate<SimEvent> predicate);
-
     /// @return the current simulation time in seconds.
     /// @see #clockInMinutes()
     /// @see #clockInHours()
@@ -136,13 +120,6 @@ public sealed interface Simulation permits CloudSim, SimulationNull {
     /// @see #clockInMinutes()
     /// @see #isRunning()
     double clockInHours();
-
-    /// Find the first-deferred event matching a [Predicate].
-    ///
-    /// @param dest entity that the event has to be sent to
-    /// @param predicate    the event selection predicate
-    /// @return the first matched event or [SimEvent#NULL] if not found
-    SimEvent findFirstDeferred(SimEntity dest, Predicate<SimEvent> predicate);
 
     /// @return the simulation Calendar
     Calendar getCalendar();
@@ -165,10 +142,11 @@ public sealed interface Simulation permits CloudSim, SimulationNull {
     /// @see SimulationListeners
     SimulationListeners listeners();
 
-    /// Pauses an entity for some time.
-    /// @param src   entity to be paused
-    /// @param delay the time period for which the entity will be inactive
-    void pauseEntity(SimEntity src, double delay);
+    /// {@return the object that manages the events of this simulation}
+    /// Entities send events through [SimEntity#schedule(SimEvent)] and the other `schedule*()` methods.
+    /// This object enables finding, selecting and canceling events already sent, and
+    /// making entities wait or pause.
+    SimulationEvents events();
 
     /// @return true if the simulation is paused, false otherwise.
     boolean isPaused();
@@ -200,14 +178,6 @@ public sealed interface Simulation permits CloudSim, SimulationNull {
     ///
     /// @return true if the simulation is running, false otherwise
     boolean isRunning();
-
-    /// Selects the first deferred event that matches a given predicate
-    /// and removes it from the queue.
-    ///
-    /// @param dest entity that the event has to be sent to
-    /// @param predicate    the event selection predicate
-    /// @return the removed event or [SimEvent#NULL] if not found
-    SimEvent select(SimEntity dest, Predicate<SimEvent> predicate);
 
     /// Runs the simulation for a specific period of time and then immediately returns.
     /// You need to invoke this method multiple times to complete the whole simulation.
@@ -271,15 +241,6 @@ public sealed interface Simulation permits CloudSim, SimulationNull {
     /// @return true if the time given is greater than the current simulation time, false otherwise
     boolean terminateAt(double time);
 
-    /// Sets the state of an entity to [SimEntity.State#WAITING],
-    /// making it to wait for events that satisfy a given predicate.
-    /// Only such events will be passed to the entity.
-    /// This is done to avoid unnecessary context switch.
-    ///
-    /// @param src entity that scheduled the event
-    /// @param predicate   the event selection predicate
-    void wait(CloudSimEntity src, Predicate<SimEvent> predicate);
-
     /// @return the [NetworkTopology] used for Network simulations.
     NetworkTopology getNetworkTopology();
 
@@ -288,16 +249,6 @@ public sealed interface Simulation permits CloudSim, SimulationNull {
     /// @param networkTopology the network topology to set
     /// @return this simulation
     Simulation setNetworkTopology(NetworkTopology networkTopology);
-
-    /// {@return the number of events in the future queue which match a given predicate}
-    /// @param predicate the predicate to filter the list of future events.
-    long getNumberOfFutureEvents(Predicate<SimEvent> predicate);
-
-    /// Checks if there is any event in the future queue that matches a given predicate.
-    ///
-    /// @param predicate the predicate to select the desired events
-    /// @return true if any event matching the given predicate is found, false otherwise
-    boolean isThereAnyFutureEvt(Predicate<SimEvent> predicate);
 
     /// @return the last time (in seconds) some Cloudlet was processed in the simulation.
     double getLastCloudletProcessingUpdate();

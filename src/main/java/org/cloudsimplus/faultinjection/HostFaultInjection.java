@@ -238,7 +238,7 @@ public class HostFaultInjection extends CloudSimEntity {
         The 2nd condition may be a complex operation that must be called only when necessary
         in the short-circuit below.
         */
-        if (sim.clock() < getMaxTimeToFailInSecs() || sim.isThereAnyFutureEvt(otherEventsPredicate)) {
+        if (sim.clock() < getMaxTimeToFailInSecs() || sim.events().isThereAnyFutureEvt(otherEventsPredicate)) {
             schedule(getTimeDelayForNextFault(), HOST_FAILURE, null);
         }
     }
