@@ -27,10 +27,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.statistics.distribution.PoissonDistribution;
 
-import java.util.function.BiConsumer;
-import java.util.function.Function;
-import java.util.stream.IntStream;
-
 /// A Pseudo-Random Number Generator which returns numbers
 /// following a Poisson Distribution, modeling the probability of an event
 /// to happen a number of times in a given time interval.
@@ -38,10 +34,6 @@ import java.util.stream.IntStream;
 /// @author Manoel Campos da Silva Filho
 /// @see <a href="https://en.wikipedia.org/wiki/Poisson_distribution">Poisson Distribution</a>
 /// @since CloudSim Plus 1.2.0
-/// TODO The [PoissonDistribution] from Apache Commons Statistics is just used to compute
-/// the [#eventsArrivalProbability()]. It could also be used to generate the random numbers,
-/// as the classes extending [ContinuousDistributionAbstract] do.
-/// See https://github.com/cloudsimplus/cloudsimplus/issues/591
 public class PoissonDistr implements DiscreteDistribution {
     /// @see #isApplyAntitheticVariates()
     private boolean applyAntitheticVariates;
@@ -193,87 +185,5 @@ public class PoissonDistr implements DiscreteDistribution {
     /// considered when setting a value to the [lambda][#getLambda()] attribute.
     public double getInterArrivalMeanTime() {
         return 1.0 / lambda;
-    }
-
-    /// Tests the simulations of customer arrivals in a Poisson process.
-    /// All the code inside this method is just to try the class.
-    /// That is why it declares internal methods as Functional
-    /// objects, instead of declaring such methods
-    /// at the class level and just calling them.
-    public static void main(final String[] args) {
-        //@TODO This method should be moved to a meaningful example class that creates Cloudlets instead of customers
-        // See https://github.com/cloudsimplus/cloudsimplus/issues/591
-
-        /*
-         * Mean number of customers that arrives per minute.
-         * The value of 0.4 customers per minute means that 1 customer will arrive at every 2.5 minutes
-         * (i.e., 1 minute / 0.4 customer per minute = 1 customer at every 2.5 minutes).
-         * This is the inter-arrival time (in average).
-         *
-         * The time unit is irrelevant for the generator.
-         * If you are considering minutes, you just have to ensure your simulation
-         * clock is in minutes too.
-         */
-        final double MEAN_CUSTOMERS_ARRIVAL_MINUTE = 0.4;
-
-        /*
-         * Time length of each simulation in minutes.
-         */
-        final int SIMULATION_TIME_LENGTH = 25;
-
-        //If the arrival of each customer must be shown.
-        final boolean showCustomerArrivals = true;
-
-        /*
-         * Number of simulations to run.
-         */
-        final int NUMBER_OF_SIMULATIONS = 100;
-
-        final BiConsumer<PoissonDistr, Integer> printArrivals = (poisson, minute) -> {
-            if (showCustomerArrivals) {
-                System.out.printf("%d customers arrived at minute %d%n", poisson.getK(), minute);
-            }
-        };
-
-        /// A [Function] to simulate the arrival of customers for a given time period.
-        /// This is just a method to test the implementation.
-        ///
-        /// @param poisson the PoissonDistr object that will compute the customer arrivals probabilities
-        /// @return the number of arrived customers
-        final Function<PoissonDistr, Integer> runSimulation = poisson -> {
-            /*We want to check the probability of 1 customer (k) to arrive at each
-            single minute. The default k value is 1, so we don't need to set it.*/
-            final int totalArrivedCustomers =
-                IntStream.range(0, SIMULATION_TIME_LENGTH)
-                         .filter(time -> poisson.eventsHappened())
-                         .peek(time -> printArrivals.accept(poisson, time))
-                         .map(time -> poisson.getK())
-                         .sum();
-
-            System.out.printf(
-                "\t%d customers arrived in %d minutes%n", totalArrivedCustomers, SIMULATION_TIME_LENGTH);
-            System.out.printf(
-                "\tArrival rate: %.2f customers per minute. Customers inter-arrival time: %.2f minutes in average%n",
-                poisson.getLambda(), poisson.getInterArrivalMeanTime());
-
-            return totalArrivedCustomers;
-        };
-
-        double customersInAllSimulations = 0;
-        final long seed = System.currentTimeMillis();
-        var poisson = new PoissonDistr(MEAN_CUSTOMERS_ARRIVAL_MINUTE, seed);
-        for (int i = 0; i < NUMBER_OF_SIMULATIONS; i++) {
-            poisson = new PoissonDistr(MEAN_CUSTOMERS_ARRIVAL_MINUTE, seed + i);
-            System.out.printf("Simulation number %d%n", i);
-            customersInAllSimulations += runSimulation.apply(poisson);
-        }
-
-        final double mean = customersInAllSimulations / NUMBER_OF_SIMULATIONS;
-        System.out.printf("%nArrived customers average after %d simulations: %.2f%n",
-            NUMBER_OF_SIMULATIONS, mean);
-        System.out.printf(
-            "%.2f customers expected by each %d minutes of simulation with inter-arrival time of %.2f minutes%n",
-            poisson.getLambda() * SIMULATION_TIME_LENGTH, SIMULATION_TIME_LENGTH,
-            poisson.getInterArrivalMeanTime());
     }
 }
