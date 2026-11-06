@@ -103,11 +103,21 @@ class SimulationEventQueuesTest {
         addFutureEvent(src, TAG);
         addFutureEvent(src, TAG);
 
-        queues.cancelAll(src, evt -> evt.getTag() == TAG);
+        assertTrue(queues.cancelAll(src, evt -> evt.getTag() == TAG));
 
         assertEquals(2, queues.getNumberOfFutureEvents(Simulation.ANY_EVT));
         assertTrue(queues.isThereAnyFutureEvt(otherSrcEvt::equals));
         assertTrue(queues.isThereAnyFutureEvt(otherTagEvt::equals));
+    }
+
+    @Test
+    void cancelAllReturnsFalseAndKeepsEventsWhenNoneMatches() {
+        addFutureEvent(otherSrc, TAG);
+        addFutureEvent(src, OTHER_TAG);
+
+        assertFalse(queues.cancelAll(src, evt -> evt.getTag() == TAG));
+
+        assertEquals(2, queues.getNumberOfFutureEvents(Simulation.ANY_EVT));
     }
 
     @Test
