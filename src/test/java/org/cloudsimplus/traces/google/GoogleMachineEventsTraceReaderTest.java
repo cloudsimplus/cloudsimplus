@@ -85,6 +85,28 @@ public class GoogleMachineEventsTraceReaderTest {
         assertEquals(0, workingCores(hostDc.getHostById(HOST_ID)));
     }
 
+    /// Checks that each capacity field is computed from its own maximum value.
+    @Test
+    public void capacitiesAreComputedFromTheirOwnMaximumValues(@TempDir final Path dir) throws IOException {
+        final var simulation = new CloudSimPlus();
+        final var capacity = new CoreCapacity(1, 1000);
+        final var traceFile = Files.writeString(dir.resolve("machine-events.csv"), "0,1,0,platform,0.5,0.25\n");
+        final List<MachineEvent> events = new ArrayList<>();
+        final var reader = new GoogleMachineEventsTraceReader(traceFile.toString(), evt -> {
+            events.add(evt);
+            return HostSimple.of(capacity);
+        });
+        reader.setDatacenterForLaterHosts(DatacenterSimple.of(simulation, List.of(HostSimple.of(capacity))));
+        reader.setMaxCpuCores(10);
+        reader.setMaxRamCapacity(1000);
+        reader.process();
+
+        assertAll(
+            () -> assertEquals(5, events.getFirst().getCpuCores()),
+            () -> assertEquals(250, events.getFirst().getRam())
+        );
+    }
+
     /// Ensures the order or enums is not changed,
     /// because that will cause the enums ordinal values to change.
     /// These values are defined in the Google Cluster Data documentation.

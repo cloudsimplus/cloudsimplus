@@ -60,6 +60,27 @@ public class GoogleTaskEventsTraceReaderTest {
         10000000,,1,0,0,4,user,3,9,0.5,0.1,0.1,0
         """;
 
+    private static final double SCHEDULE_TIME = 5;
+    private static final double TIME_DELTA = 1;
+
+    /// A trace where a task is submitted at timestamp 0, but only scheduled at [#SCHEDULE_TIME].
+    private static final String TRACE_SCHEDULED_AFTER_TIME_ZERO = """
+        0,,1,0,0,0,user,3,9,0.5,0.1,0.1,0
+        5000000,,1,0,0,1,user,3,9,0.5,0.1,0.1,0
+        10000000,,1,0,0,4,user,3,9,0.5,0.1,0.1,0
+        """;
+
+    private static final int UPDATED_PRIORITY = 5;
+    private static final long FILE_SIZE_SCALE = 1000;
+    private static final long UPDATED_FILE_SIZE = 200;
+
+    /// A trace where the task priority and disk request change when it's scheduled.
+    private static final String TRACE_CHANGING_ATTRIBUTES = """
+        0,,1,0,0,0,user,3,9,0.5,0.1,0.1,0
+        5000000,,1,0,0,1,user,3,%d,0.5,0.1,0.2,0
+        10000000,,1,0,0,4,user,3,%1$d,0.5,0.1,0.2,0
+        """.formatted(UPDATED_PRIORITY);
+
     /// Checks that trace events happening before the first simulation clock tick
     /// are processed instead of being detected as past events.
     /// See [#563](https://github.com/cloudsimplus/cloudsimplus/issues/563).
@@ -83,6 +104,45 @@ public class GoogleTaskEventsTraceReaderTest {
     private static Cloudlet createCloudlet(final TaskEvent event) {
         return CloudletSimple.of(CLOUDLET_LENGTH, 1)
             .setUtilizationModelRam(new UtilizationModelDynamic(0, event.getResourceRequestForRam()));
+    }
+
+    /// Checks that a task submitted at timestamp 0 waits for its SCHEDULE event to start running.
+    @Test @Timeout(TIMEOUT_SECS)
+    public void taskSubmittedAtTimeZeroStartsOnlyWhenScheduled(@TempDir final Path tempDir) throws IOException {
+        final var simulation = new CloudSimPlus();
+        DatacenterSimple.of(simulation, List.of(HostSimple.of(new CoreCapacity(CORES, MIPS))));
+
+        final var traceFile = Files.writeString(tempDir.resolve("task-events.csv"), TRACE_SCHEDULED_AFTER_TIME_ZERO);
+        final var reader = new GoogleTaskEventsTraceReader(simulation, traceFile.toString(), GoogleTaskEventsTraceReaderTest::createCloudlet);
+        final var cloudlet = reader.process().iterator().next();
+        reader.getBrokerManager().getBrokers().forEach(broker -> broker.submitVm(VmSimple.of(new CoreCapacity(CORES, MIPS))));
+        simulation.start();
+
+        assertEquals(SCHEDULE_TIME, cloudlet.getStartTime(), TIME_DELTA);
+    }
+
+    /// Checks that changes in the priority and in the resource requests are applied to the Cloudlet.
+    @Test @Timeout(TIMEOUT_SECS)
+    public void cloudletAttributesAreUpdatedFromTrace(@TempDir final Path tempDir) throws IOException {
+        final var simulation = new CloudSimPlus();
+        DatacenterSimple.of(simulation, List.of(HostSimple.of(new CoreCapacity(CORES, MIPS))));
+
+        final var traceFile = Files.writeString(tempDir.resolve("task-events.csv"), TRACE_CHANGING_ATTRIBUTES);
+        final var reader = new GoogleTaskEventsTraceReader(simulation, traceFile.toString(), GoogleTaskEventsTraceReaderTest::createCloudletWithAttributes);
+        final var cloudlet = reader.process().iterator().next();
+        reader.getBrokerManager().getBrokers().forEach(broker -> broker.submitVm(VmSimple.of(new CoreCapacity(CORES, MIPS))));
+        simulation.start();
+
+        assertAll(
+            () -> assertEquals(UPDATED_PRIORITY, cloudlet.getPriority()),
+            () -> assertEquals(UPDATED_FILE_SIZE, cloudlet.getFileSize())
+        );
+    }
+
+    private static Cloudlet createCloudletWithAttributes(final TaskEvent event) {
+        return createCloudlet(event)
+            .setPriority(event.getPriority())
+            .setFileSize(Math.round(event.getResourceRequestForLocalDiskSpace() * FILE_SIZE_SCALE));
     }
 
     /// Ensures the order or enums is not changed,

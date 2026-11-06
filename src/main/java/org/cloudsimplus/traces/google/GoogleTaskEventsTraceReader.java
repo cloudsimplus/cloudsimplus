@@ -280,13 +280,20 @@ public class GoogleTaskEventsTraceReader extends GoogleTraceReaderAbstract<Cloud
             final DatacenterBroker broker = cloudlet.getBroker();
             final var builder = new StringBuilder();
 
-            /* The output size doesn't always have a relation with file size.
-             * This way, if the file size is changed, we don't change
-             * the output size. This may be performed by the researcher if he/she needs. */
             if(clone.getPriority() != cloudlet.getPriority()){
                 builder.append("priority: ")
                     .append(cloudlet.getPriority()).append(VAL_SEPARATOR)
                     .append(clone.getPriority()).append(COL_SEPARATOR);
+                cloudlet.setPriority(clone.getPriority());
+            }
+
+            /* The output size doesn't always have a relation with file size.
+             * This way, if the file size is changed, we don't change
+             * the output size. This may be performed by the researcher if he/she needs. */
+            if(clone.getFileSize() != cloudlet.getFileSize()){
+                builder.append("file size: ")
+                    .append(cloudlet.getFileSize()).append(VAL_SEPARATOR)
+                    .append(clone.getFileSize()).append(COL_SEPARATOR);
                 cloudlet.setFileSize(clone.getFileSize());
             }
 
@@ -350,7 +357,8 @@ public class GoogleTaskEventsTraceReader extends GoogleTraceReaderAbstract<Cloud
     }
 
     private boolean areCloudletAttributesDifferent(final Cloudlet cloudlet1, final Cloudlet cloudlet2) {
-        return cloudlet2.getFileSize() != cloudlet1.getFileSize() ||
+        return cloudlet2.getPriority() != cloudlet1.getPriority() ||
+               cloudlet2.getFileSize() != cloudlet1.getFileSize() ||
                cloudlet2.getRequiredCores() != cloudlet1.getRequiredCores() ||
                cloudlet2.getUtilizationOfCpu() != cloudlet1.getUtilizationOfCpu() ||
                cloudlet2.getUtilizationOfRam() != cloudlet1.getUtilizationOfRam();

@@ -15,6 +15,7 @@ import lombok.experimental.Accessors;
 import org.cloudsimplus.placementpolicies.VmPlacementPolicy;
 import org.cloudsimplus.autoscaling.VerticalVmScaling;
 import org.cloudsimplus.cloudlets.Cloudlet;
+import org.cloudsimplus.cloudlets.CloudletAbstract;
 import org.cloudsimplus.cloudlets.CloudletSimple;
 import org.cloudsimplus.core.*;
 import org.cloudsimplus.core.events.CloudSimEvent;
@@ -495,6 +496,12 @@ public non-sealed abstract class DatacenterBrokerAbstract extends CloudSimEntity
         if(cloudlet.getStatus() == Cloudlet.Status.PAUSED)
              logCloudletStatusChange(cloudlet, "resume execution of");
         else logCloudletStatusChange(cloudlet, "start executing");
+
+        //Without a VM, no scheduler can change the status, and the Cloudlet would stay frozen after being sent to a VM.
+        if(Vm.NULL.equals(cloudlet.getVm())) {
+            ((CloudletAbstract)cloudlet).setStatus(Cloudlet.Status.READY);
+            return true;
+        }
 
         cloudlet.getVm().getCloudletScheduler().cloudletReady(cloudlet);
         return true;

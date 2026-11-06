@@ -47,14 +47,11 @@ public enum TaskEventType {
             // Since Cloudlet id must be unique, it will be the concatenation of the job and task id
             cloudlet.setId(event.getUniqueTaskId());
             cloudlet.setJobId(event.getJobId());
-            final double delay = TaskEventField.TIMESTAMP.getValue(reader);
-            cloudlet.setSubmissionDelay(delay);
+            cloudlet.setSubmissionDelay(TaskEventField.TIMESTAMP.getValue(reader));
 
             /* Set status to FROZEN to avoid the cloudlet to start running after being submitted.
             The execution must start only after a SCHEDULE event happens. */
-            if(delay > 0) {
-                ((CloudletAbstract)cloudlet).setStatus(Cloudlet.Status.FROZEN);
-            }
+            ((CloudletAbstract)cloudlet).setStatus(Cloudlet.Status.FROZEN);
 
             final var broker = reader.getBrokerManager().getOrCreateBroker(event.getUserName());
             if(reader.isAutoSubmitCloudlets()) {
