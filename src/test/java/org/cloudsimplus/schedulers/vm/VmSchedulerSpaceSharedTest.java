@@ -24,6 +24,7 @@
 package org.cloudsimplus.schedulers.vm;
 
 import org.cloudsimplus.hosts.Host;
+import org.cloudsimplus.hosts.HostAbstract;
 import org.cloudsimplus.hosts.HostSimple;
 import org.cloudsimplus.resources.CoreCapacity;
 import org.cloudsimplus.vms.VmSimple;
@@ -47,15 +48,14 @@ class VmSchedulerSpaceSharedTest {
         final VmSimple vm = VmTestUtil.createVm(0, MIPS, VM_CORES);
         allocate(source, vm);
 
-        target.getVmsMigratingIn().add(vm);
-        assertTrue(target.getVmScheduler().allocateCoresForVm(vm, new CoreCapacity(VM_CORES, MIPS)));
+        assertTrue(((HostAbstract) target).addMigratingInVm(vm));
         assertEquals(VM_CORES, source.getProcessor().getBusyCores(), "source busy cores during migration");
         assertEquals(VM_CORES, target.getProcessor().getBusyCores(), "target busy cores during migration");
 
         source.getVmScheduler().deallocateCoresFromVm(vm);
         source.getVmList().remove(vm);
         source.getVmScheduler().updateHostBusyCores();
-        target.getVmsMigratingIn().remove(vm);
+        ((HostAbstract) target).removeMigratingInVm(vm);
         allocate(target, vm);
         assertEquals(0, source.getProcessor().getBusyCores(), "source busy cores after migration");
         assertEquals(VM_CORES, target.getProcessor().getBusyCores(), "target busy cores after migration");
@@ -69,8 +69,9 @@ class VmSchedulerSpaceSharedTest {
         final Host host = createHost();
         host.setVmScheduler(new VmSchedulerTimeShared());
         final VmSimple vm = VmTestUtil.createVm(0, MIPS, VM_CORES);
-        host.getVmsMigratingIn().add(vm);
-        allocate(host, vm);
+        assertTrue(((HostAbstract) host).addMigratingInVm(vm));
+        vm.setHost(host);
+        host.getVmList().add(vm);
 
         assertEquals(VM_CORES, host.getProcessor().getBusyCores());
         assertEquals((HOST_CORES - VM_CORES) * MIPS, host.getVmScheduler().getTotalAvailableMips());

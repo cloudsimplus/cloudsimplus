@@ -573,13 +573,6 @@ public non-sealed abstract class VmPlacementPolicyMigrationAbstract
         savedAllocation.clear();
         for (final var host : getHostList()) {
             for (final var vm : host.<VmAbstract>getVmList()) {
-                /* TODO: this VM loop has a quadratic wost-case complexity (when
-                    all Vms already in the VM list are migrating into this Host).
-                *  Instead of looping over the vmsMigratingIn list for every VM,
-                *  we could add a Host migratingIn attribute to the Vm.
-                * Then, for every VM on the Host, we check this VM attribute
-                * to see if the VM is migrating into the Host.
-                * See https://github.com/cloudsimplus/cloudsimplus/issues/94 */
                 if (!host.getVmsMigratingIn().contains(vm)) {
                     savedAllocation.put(vm, host);
                 }
