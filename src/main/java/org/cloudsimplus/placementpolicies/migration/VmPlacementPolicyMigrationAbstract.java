@@ -371,7 +371,8 @@ public non-sealed abstract class VmPlacementPolicyMigrationAbstract
     /// See https://github.com/cloudsimplus/cloudsimplus/issues/94
     private Map<Vm, Host> getMigrationMapFromOverloadedHosts(final Set<Host> overloadedHosts) {
         if(overloadedHosts.isEmpty()) {
-            return Collections.emptyMap();
+            // Mutable, since the VMs from underloaded Hosts are added to it later
+            return new HashMap<>();
         }
 
         saveAllocation();
