@@ -38,6 +38,7 @@ import org.mockito.Mockito;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -320,6 +321,52 @@ public class HostSimpleTest {
         host.removeMigratingInVm(vm);
         assertFalse(vm.isInMigration());
         assertFalse(host.getVmsMigratingIn().contains(vm));
+    }
+
+    /// Removing VMs from the migration sets before any migration must not fail,
+    /// since the sets start as the shared and immutable `Set.of()`.
+    @Test
+    public void testRemoveMigratingVmsBeforeAnyMigration() {
+        final var host = createHostSimple(0, 2);
+        final VmSimple vm = VmTestUtil.createVm(0, MIPS, 2, RAM, BW, STORAGE, new CloudletSchedulerTimeShared());
+        assertAll(
+            () -> assertDoesNotThrow(() -> host.removeMigratingInVm(vm)),
+            () -> assertFalse(host.removeVmMigratingOut(vm)),
+            () -> assertFalse(host.hasMigratingVms())
+        );
+    }
+
+    /// Hosts without migrating VMs must return the shared `Set.of()`,
+    /// instead of creating a read-only view at each call.
+    @Test
+    public void testMigratingVmsSetsAreSharedWhenEmpty() {
+        final var host = createHostSimple(0, 2);
+        assertAll(
+            () -> assertSame(Set.of(), host.getVmsMigratingIn()),
+            () -> assertSame(Set.of(), host.getVmsMigratingOut())
+        );
+    }
+
+    @Test
+    public void testAddAndRemoveVmMigratingOut() {
+        final var host = createHostSimple(0, 2);
+        final VmSimple vm = VmTestUtil.createVm(0, MIPS, 2, RAM, BW, STORAGE, new CloudletSchedulerTimeShared());
+        assertAll(
+            () -> assertTrue(host.addVmMigratingOut(vm)),
+            () -> assertTrue(host.getVmsMigratingOut().contains(vm)),
+            () -> assertTrue(host.removeVmMigratingOut(vm)),
+            () -> assertFalse(host.hasMigratingVms())
+        );
+    }
+
+    @Test
+    public void testVmsMigratingInIsReadOnly() {
+        final int cores = 2;
+        final var host = createHostSimple(0, cores);
+        final VmSimple vm = VmTestUtil.createVm(0, MIPS, cores, RAM, BW, STORAGE, new CloudletSchedulerTimeShared());
+        vm.setHost(Host.NULL);
+        assertTrue(host.addMigratingInVm(vm));
+        assertThrows(UnsupportedOperationException.class, () -> host.getVmsMigratingIn().remove(vm));
     }
 
     @Test

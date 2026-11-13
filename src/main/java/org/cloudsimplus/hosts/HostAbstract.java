@@ -88,11 +88,14 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
     /// @see #getStateHistory()
     private HostStateHistorySimple stateHistory;
 
+    /// Starts as the shared and immutable `Set.of()`, and is only created when the first VM migrates into the Host,
+    /// so that Hosts that never receive a migrating VM don't use memory for it.
     /// @see #getVmsMigratingIn()
-    protected final Set<Vm> vmsMigratingIn;
+    private Set<Vm> vmsMigratingIn = Set.of();
 
+    /// Starts as the shared and immutable `Set.of()`, and is only created when the first VM migrates out of the Host.
     /// @see #getVmsMigratingOut()
-    protected final Set<Vm> vmsMigratingOut;
+    private Set<Vm> vmsMigratingOut = Set.of();
 
     /// @see HostListeners#addOnUpdateProcessing(EventListener)
     @Getter(AccessLevel.PACKAGE) @Setter(AccessLevel.PACKAGE)
@@ -222,8 +225,6 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
         this.disk = storage;
         this.cpuUtilizationStats = HostResourceStats.NULL;
         this.stateHistory = HostStateHistoryNull.INSTANCE;
-        this.vmsMigratingIn = new HashSet<>();
-        this.vmsMigratingOut = new HashSet<>();
         this.resources = new ArrayList<>();
         this.vmCreatedList = new ArrayList<>();
         this.lazySuitabilityEvaluation = true;
@@ -389,6 +390,7 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
         }
 
         if (inMigration) {
+            vmsMigratingIn = mutableSet(vmsMigratingIn);
             vmsMigratingIn.add(vm);
         }
         ((VmAbstract)vm).setInMigration(inMigration);
@@ -796,7 +798,7 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
 
     @Override
     public <T extends Vm> Set<T> getVmsMigratingIn() {
-        return (Set<T>) vmsMigratingIn;
+        return readOnly(vmsMigratingIn);
     }
 
     @Override
@@ -838,7 +840,7 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
     ///
     /// @param vm the Vm to remove
     public void removeMigratingInVm(@NonNull final Vm vm) {
-        vmsMigratingIn.remove(vm);
+        remove(vmsMigratingIn, vm);
         vmList.remove(vm);
         ((VmAbstract)vm).setInMigration(false);
         vmScheduler.updateHostBusyCores();
@@ -846,21 +848,47 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
 
     @Override
     public Set<Vm> getVmsMigratingOut() {
-        return Collections.unmodifiableSet(vmsMigratingOut);
+        return readOnly(vmsMigratingOut);
     }
 
     /// Adds a [Vm] to the list of VMs migrating out this Host.
     /// @param vm the Vm to be added
     /// @return true if the Vm was added, false otherwise
     public boolean addVmMigratingOut(@NonNull final Vm vm) {
-        return this.vmsMigratingOut.add(vm);
+        vmsMigratingOut = mutableSet(vmsMigratingOut);
+        return vmsMigratingOut.add(vm);
     }
 
     /// Removes a [Vm] from the list of VMs migrating out this Host.
     /// @param vm the Vm to be removed
     /// @return true if the Vm was removed, false otherwise
     public boolean removeVmMigratingOut(@NonNull final Vm vm) {
-        return this.vmsMigratingOut.remove(vm);
+        return remove(vmsMigratingOut, vm);
+    }
+
+    /// {@return a read-only view of a set of VMs}
+    /// It doesn't create a view when the set is empty (as for most Hosts, most of the time),
+    /// since the getters that call it run for each VM at each processing update.
+    /// @param vms a set of VMs, which may still be the shared and immutable `Set.of()`
+    /// @param <T> the type of the VMs
+    @SuppressWarnings("unchecked")
+    private static <T extends Vm> Set<T> readOnly(final Set<Vm> vms) {
+        return vms.isEmpty() ? Set.of() : Collections.unmodifiableSet((Set<T>) vms);
+    }
+
+    /// {@return a set where VMs can be added}
+    /// @param vms a set of VMs, which may still be the shared and immutable `Set.of()`
+    private static Set<Vm> mutableSet(final Set<Vm> vms) {
+        /* The field is either the shared Set.of() (an immutable JDK class, not a HashSet)
+           or the HashSet created on the first add. Being a HashSet means it was already created and is mutable. */
+        return vms instanceof HashSet ? vms : new HashSet<>(vms);
+    }
+
+    /// Removes a VM from a set, which may still be the shared and immutable `Set.of()`
+    /// (whose `remove()` always throws [UnsupportedOperationException]).
+    /// @return true if the VM was removed, false otherwise
+    private static boolean remove(final Set<Vm> vms, final Vm vm) {
+        return !vms.isEmpty() && vms.remove(vm);
     }
 
     /// Sets the [Datacenter] where the host is placed.
@@ -994,14 +1022,14 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
     /// @return the total allocated MIPS for the given Vm
     private double addVmResourceUseToHistoryIfNotMigratingIn(final Vm vm, final double currentTime) {
         double totalAllocatedMips = getVmScheduler().getTotalAllocatedMipsForVm(vm);
-        if (getVmsMigratingIn().contains(vm)) {
+        if (vmsMigratingIn.contains(vm)) {
             LOGGER.info("{}: {}: {} is migrating in", getSimulation().clockStr(), this, vm);
             return totalAllocatedMips;
         }
 
         final double totalRequestedMips = vm.getTotalCpuMipsRequested();
         if (totalAllocatedMips + 0.1 < totalRequestedMips) {
-            final String reason = getVmsMigratingOut().contains(vm) ? "migration overhead" : "capacity unavailability";
+            final String reason = vmsMigratingOut.contains(vm) ? "migration overhead" : "capacity unavailability";
             final long vmCores = cores(vm);
             final double notAllocatedMipsByCore = (totalRequestedMips - totalAllocatedMips) / vmCores;
             LOGGER.warn(
@@ -1011,7 +1039,7 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
 
         final var entry = new VmStateHistoryEntry(
             currentTime, totalAllocatedMips, totalRequestedMips,
-            vm.isInMigration() && !getVmsMigratingIn().contains(vm));
+            vm.isInMigration() && !vmsMigratingIn.contains(vm));
         ((VmAbstract)vm).addStateHistoryEntry(entry);
 
         if (vm.isInMigration()) {

@@ -101,7 +101,8 @@ public sealed interface Host
     @Override
     void shutdown();
 
-    /// Gets the list of VMs migrating into this host.
+    /// Gets a **read-only** set of VMs migrating into this host.
+    /// The returned set may not show VMs that start migrating later, so call this method again to get them.
     ///
     /// @param <T> the generic type
     /// @return the VMs migrating in
@@ -110,7 +111,8 @@ public sealed interface Host
     /// @return true if there is any VM migrating in or out this host; false otherwise.
     boolean hasMigratingVms();
 
-    /// @return a **read-only** list of VMs migrating out from the Host.
+    /// @return a **read-only** set of VMs migrating out from the Host.
+    /// The returned set may not show VMs that start migrating later, so call this method again to get them.
     Set<Vm> getVmsMigratingOut();
 
     /// @return the bandwidth (BW) allocator with capacity in Megabits/s,
