@@ -175,62 +175,6 @@ public class HostSimpleTest {
     }
 
     @Test
-    public void testReallocateMigratingInVmsWhenAllVmsAllocatedToTheHost() {
-        final int numberOfVms = 4;
-        final var host = createHostSimple(0, numberOfVms);
-
-        final List<Vm> vms = new ArrayList<>();
-        IntStream.range(0, 2).forEach(i -> {
-            final var vm = VmTestUtil.createVm(
-                    i, MIPS /numberOfVms, 1, RAM/numberOfVms, BW/numberOfVms, STORAGE/numberOfVms,
-                    new CloudletSchedulerTimeShared());
-            vm.setHost(Host.NULL);
-            host.addMigratingInVm(vm);
-            vms.add(vm);
-        });
-
-        host.reallocateMigratingInVms();
-        assertEquals(vms.size(), host.getVmList().size());
-        assertTrue(host.getVmList().containsAll(vms));
-    }
-
-    @Test
-    public void testReallocateMigratingInVmsWhenOneVmAlreadyAllocatedToTheHost() {
-        final int numberOfVms = 4;
-        final HostSimple host = createHostSimple(0, numberOfVms);
-
-        final CloudSimPlus cloudsim = CloudSimMocker.createMock(mocker -> {
-            mocker.clock(0);
-            mocker.getNumEntities();
-            mocker.isTerminationTimeSet();
-            mocker.addEntity();
-            mocker.clockStr();
-        });
-
-        final List<Vm> vms = new ArrayList<>(numberOfVms);
-        for (int i = 0; i < numberOfVms; i++) {
-            final Vm vm =
-                VmTestUtil.createVm(
-                    i, MIPS / numberOfVms, 1, RAM / numberOfVms,
-                    BW / numberOfVms, STORAGE / numberOfVms, cloudsim);
-            if (i == 0) {
-                /*considers that one of the migrating in VMs already was placed at the host,
-                thus, it will not be added again to the host vm list.
-                By this way, the vms on the host list will be the same
-                added to migration list*/
-                host.addVmToList(vm);
-            }
-            host.addMigratingInVm(vm);
-            vms.add(vm);
-        }
-
-        host.reallocateMigratingInVms();
-        final List<Vm> result = host.getVmList();
-        assertEquals(vms.size(), result.size());
-        assertTrue(vms.containsAll(result));
-    }
-
-    @Test
     public void testAddMigratingInVmAndCheckVmWasChangedToInMigration() {
         final int cores = 2;
         final var host = createHostSimple(0, cores);

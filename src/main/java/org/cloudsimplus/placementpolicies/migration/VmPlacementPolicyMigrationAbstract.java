@@ -16,17 +16,15 @@ import org.cloudsimplus.placementpolicies.VmPlacementPolicyAbstract;
 import org.cloudsimplus.core.CloudInformationService;
 import org.cloudsimplus.datacenters.Datacenter;
 import org.cloudsimplus.hosts.Host;
-import org.cloudsimplus.hosts.HostAbstract;
 import org.cloudsimplus.selectionpolicies.VmSelectionPolicy;
 import org.cloudsimplus.util.TimeUtil;
 import org.cloudsimplus.vms.Vm;
-import org.cloudsimplus.vms.VmAbstract;
-import org.cloudsimplus.vms.VmSimple;
 
 import java.util.*;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 import static java.util.Comparator.comparingDouble;
 import static java.util.stream.Collectors.*;
@@ -68,8 +66,10 @@ public non-sealed abstract class VmPlacementPolicyMigrationAbstract
     @Getter
     private boolean overloaded;
 
-    /// A map between a VM and the host where it is placed.
-    private final Map<VmAbstract, Host> savedAllocation;
+    /// The migrations planned by the current migration check,
+    /// or [MigrationPlan#NONE] when no check is running.
+    /// Hosts are evaluated against it, so the check never changes the real VM placement.
+    private MigrationPlan plan = MigrationPlan.NONE;
 
     /// The datacenter to try migrating VMs to.
     /// The initial value is the [datacenter][#getDatacenter()] this policy is linked to,
@@ -106,7 +106,6 @@ public non-sealed abstract class VmPlacementPolicyMigrationAbstract
     {
         super(findHostForVmFunction);
         this.underUtilizationThreshold = DEF_UNDER_UTILIZATION_THRESHOLD;
-        this.savedAllocation = new HashMap<>();
         setVmSelectionPolicy(vmSelectionPolicy);
     }
 
@@ -117,21 +116,42 @@ public non-sealed abstract class VmPlacementPolicyMigrationAbstract
         return this;
     }
 
+    /// {@inheritDoc}
+    /// The returned map keeps the order the migrations were planned.
     @Override
     public Map<Vm, Host> getOptimizedPlacementMap(final List<? extends Vm> vmList) {
-        //@TODO See https://github.com/cloudsimplus/cloudsimplus/issues/94
         final var overloadedHosts = getOverloadedHosts();
         this.overloaded = !overloadedHosts.isEmpty();
         printOverUtilizedHosts(overloadedHosts);
 
-        final Map<Vm, Host> migrationMap = getMigrationMapFromOverloadedHosts(overloadedHosts);
-        updateMigrationMapFromUnderloadedHosts(overloadedHosts, migrationMap);
+        setMigrationPlan(new MigrationPlan());
+        try {
+            final Map<Vm, Host> migrationMap = getMigrationMapFromOverloadedHosts(overloadedHosts);
+            updateMigrationMapFromUnderloadedHosts(overloadedHosts, migrationMap);
 
-        if (overloaded && migrationMap.isEmpty()) {
-            hostSearchRetry();
+            if (overloaded && migrationMap.isEmpty()) {
+                hostSearchRetry();
+            }
+
+            return migrationMap;
+        } finally {
+            setMigrationPlan(MigrationPlan.NONE);
         }
+    }
 
-        return migrationMap;
+    /// Sets the migrations planned by the current migration check.
+    /// A policy that delegates Host evaluations to another one (such as a fallback policy)
+    /// overrides it to pass the plan to that policy too.
+    /// @param plan the plan of the current check, or [MigrationPlan#NONE] when the check finishes
+    void setMigrationPlan(final MigrationPlan plan) {
+        this.plan = plan;
+    }
+
+    /// {@return the MIPS a Host's VMs use, considering the migrations planned by the current migration check}
+    /// Outside a check, it's the [Host#getCpuMipsUtilization()].
+    /// @param host the Host to get the MIPS utilization
+    protected final double getPlannedCpuMipsUtilization(final Host host) {
+        return plan.cpuMipsUtilization(host);
     }
 
     private void hostSearchRetry() {
@@ -168,16 +188,8 @@ public non-sealed abstract class VmPlacementPolicyMigrationAbstract
         // overloaded hosts + hosts that are selected to migrate VMs from overloaded hosts
         final var ignoredSourceHosts = getIgnoredHosts(overloadedHosts, switchedOffHosts);
 
-        /*
-        During the computation of the new placement for VMs,
-        the current VM placement is changed temporarily, before the actual migration of VMs.
-        If VMs are being migrated from overloaded Hosts, they in fact already were removed
-        from such Hosts and moved to destination ones.
-        The target Host that maybe was shut down, might become underloaded too.
-        This way, such Hosts are added to be ignored when
-        looking for underloaded Hosts.
-        See https://github.com/cloudsimplus/cloudsimplus/issues/94
-         */
+        /* Hosts that will receive VMs from overloaded Hosts aren't sources of VMs from underloaded Hosts,
+         * since the planned VMs will take them out of the underload state. */
         ignoredSourceHosts.addAll(migrationMap.values());
 
         // overloaded + underloaded hosts
@@ -259,35 +271,29 @@ public non-sealed abstract class VmPlacementPolicyMigrationAbstract
     protected double powerDiffAfterAllocation(final Host host, final Vm vm){
         final double powerAfterAllocation = getPowerAfterAllocation(host, vm);
         if (powerAfterAllocation > 0) {
-            return powerAfterAllocation - host.getPowerModel().getPower();
+            return powerAfterAllocation - plan.power(host);
         }
 
         return 0;
     }
 
-    /// Checks if a host will be over-utilized after placing a candidate VM.
+    /// Checks if a Host has enough resources for a candidate VM and isn't overloaded.
+    /// The overload is computed from the MIPS requested by the Host's VMs and by the VMs
+    /// already planned to migrate into it by the current check, without the candidate VM's MIPS.
     ///
     /// @param host the host to verify
     /// @param vm the candidate vm
-    /// @return true, if the host will be over utilized after VM placement; false otherwise
+    /// @return true if the Host is suitable for the VM and isn't overloaded; false otherwise
     private boolean isNotHostOverloadedAfterAllocation(final Host host, final Vm vm) {
-        final var tempVm = VmSimple.of(vm);
-
-        if (!((HostAbstract)host).createTemporaryVm(tempVm).fully()) {
-            return false;
-        }
-
-        final double usagePercent = getHostCpuPercentRequested(host);
-        final boolean notOverloadedAfterAllocation = !isHostOverloaded(host, usagePercent);
-        ((HostAbstract)host).destroyTemporaryVm(tempVm);
-        return notOverloadedAfterAllocation;
+        return plan.isSuitable(host, vm) && !isHostOverloaded(host, getHostCpuPercentRequested(host));
     }
 
     /// {@inheritDoc}
     /// It's based on the current CPU usage.
+    /// During a migration check, it considers the migrations already planned by the check.
     @Override
     public boolean isOverloaded(final Host host) {
-        return isHostOverloaded(host, host.getCpuPercentUtilization());
+        return isHostOverloaded(host, plan.cpuPercentUtilization(host));
     }
 
     /// Checks if a Host is overloaded based on the given CPU utilization percent (between 0 and 1).
@@ -295,18 +301,16 @@ public non-sealed abstract class VmPlacementPolicyMigrationAbstract
     /// @param cpuUsagePercent the Host's CPU utilization percent. The values may be:
     ///
     /// - the current CPU utilization, in case you want to check if the Host is overloaded right now;
-    /// - the requested CPU utilization after temporarily placing a VM into the Host,
+    /// - the requested CPU utilization after the supposed placement of a VM into the Host,
     ///   just to check if it supports that VM without being overloaded.
-    ///   In this case, if the Host doesn't support the already temporarily placed VM,
-    ///   the method will return true to indicate the Host will be overloaded
-    ///   if the VM is actually placed into it.
     ///
     /// @return true if the Host is overloaded, false otherwise
     private boolean isHostOverloaded(final Host host, final double cpuUsagePercent){
         return cpuUsagePercent > getOverUtilizationThreshold(host);
     }
 
-    /// Checks if a host is under-utilized, based on current CPU usage.
+    /// Checks if a host is under-utilized, based on the MIPS its VMs request.
+    /// During a migration check, it considers the migrations already planned by the check.
     ///
     /// @param host the host to check
     /// @return true, if the host is underloaded; false otherwise
@@ -336,7 +340,6 @@ public non-sealed abstract class VmPlacementPolicyMigrationAbstract
         final var newPredicate =
             predicate
                 .and(host -> !host.equals(vm.getHost()))
-                .and(host -> host.isSuitableForVm(vm))
                 .and(host -> isNotHostOverloadedAfterAllocation(host, vm));
 
         return findHostForVmInternal(vm, newPredicate);
@@ -364,41 +367,63 @@ public non-sealed abstract class VmPlacementPolicyMigrationAbstract
     ///
     /// @param overloadedHosts the list of overloaded Hosts
     /// @return the new VM placement map where each key is a VM
-    /// and each value is the Host to place it;
+    /// and each value is the Host to place it, in the order the migrations were planned;
     /// an empty map if no suitable target Hosts were found
     /// or if there is no overloaded host.
-    /// TODO: See issue in [#getVmsToMigrateFromOverloadedHost(Host)]
-    /// See https://github.com/cloudsimplus/cloudsimplus/issues/94
+    /// The map is mutable, since the VMs from underloaded Hosts are added to it later.
     private Map<Vm, Host> getMigrationMapFromOverloadedHosts(final Set<Host> overloadedHosts) {
+        final var migrationMap = new LinkedHashMap<Vm, Host>();
         if(overloadedHosts.isEmpty()) {
-            return Collections.emptyMap();
+            return migrationMap;
         }
 
-        saveAllocation();
-        final var migrationMap = new HashMap<Vm, Host>();
-        try {
-            final var vmsToMigrateList = getVmsToMigrateFromOverloadedHosts(overloadedHosts);
-            sortByCpuUtilization(vmsToMigrateList, getDatacenter().getSimulation().clock());
+        final var vmsToMigrateList = getVmsToMigrateFromOverloadedHosts(overloadedHosts);
+        sortByCpuUtilization(vmsToMigrateList, getDatacenter().getSimulation().clock());
 
-            final var builder = new StringBuilder();
-            final var targetVmPlacementPolicy = targetMigrationDc.getVmPlacementPolicy();
-            for (final var vm : vmsToMigrateList) {
-                targetVmPlacementPolicy.findHostForVm(vm).ifPresent(targetHost -> {
+        final var builder = new StringBuilder();
+        for (final var vm : vmsToMigrateList) {
+            findTargetHostForVmFromOverloadedHost(vm).ifPresentOrElse(
+                targetHost -> {
                     addVmToMigrationMap(migrationMap, vm, targetHost);
                     appendVmMigrationMsgToStringBuilder(builder, vm, targetHost);
-                });
-            }
+                },
+                () -> plan.removeVmOut(vm));
+        }
 
-            if(!migrationMap.isEmpty()) {
-                LOGGER.info(
-                    "{}: {}: Reallocation of VMs from overloaded hosts: {}{}",
-                    getDatacenter().getSimulation().clockStr(), getClass().getSimpleName(), System.lineSeparator(), builder);
-            }
-        } finally {
-            restoreAllocation();
+        if(!migrationMap.isEmpty()) {
+            LOGGER.info(
+                "{}: {}: Reallocation of VMs from overloaded hosts: {}{}",
+                getDatacenter().getSimulation().clockStr(), getClass().getSimpleName(), System.lineSeparator(), builder);
         }
 
         return migrationMap;
+    }
+
+    /// Finds a target Host for a VM selected to leave an overloaded Host,
+    /// using the placement policy of the [#targetMigrationDc].
+    /// If it's a migration policy of another datacenter, it gets the plan of this check while it searches.
+    /// Any other policy, or a custom [VmPlacementPolicy#setFindHostForVmFunction(BiFunction) function],
+    /// doesn't know the plan, so the Host it selects is only accepted
+    /// if it's not the VM's current Host and fits the VM besides the VMs already planned to it.
+    ///
+    /// @param vm the VM to find a target Host for
+    /// @return an [Optional] containing the target Host, or an empty one if no suitable Host was found
+    private Optional<Host> findTargetHostForVmFromOverloadedHost(final Vm vm) {
+        final var targetPolicy = targetMigrationDc.getVmPlacementPolicy();
+        if (targetPolicy == this || !(targetPolicy instanceof VmPlacementPolicyMigrationAbstract targetMigrationPolicy)) {
+            return findAcceptedTargetHost(targetPolicy, vm);
+        }
+
+        targetMigrationPolicy.setMigrationPlan(plan);
+        try {
+            return findAcceptedTargetHost(targetPolicy, vm);
+        } finally {
+            targetMigrationPolicy.setMigrationPlan(MigrationPlan.NONE);
+        }
+    }
+
+    private Optional<Host> findAcceptedTargetHost(final VmPlacementPolicy targetPolicy, final Vm vm) {
+        return targetPolicy.findHostForVm(vm).filter(host -> !host.equals(vm.getHost()) && plan.isSuitable(host, vm));
     }
 
     private void appendVmMigrationMsgToStringBuilder(final StringBuilder builder, final Vm vm, final Host targetHost) {
@@ -416,16 +441,17 @@ public non-sealed abstract class VmPlacementPolicyMigrationAbstract
         final List<? extends Vm> vmsToMigrate,
         final Set<? extends Host> excludedHosts)
     {
-        final var migrationMap = new HashMap<Vm, Host>();
+        final var migrationMap = new LinkedHashMap<Vm, Host>();
         sortByCpuUtilization(vmsToMigrate, getDatacenter().getSimulation().clock());
         for (final Vm vm : vmsToMigrate) {
             //try to find a target Host to place a VM from an underloaded Host that is not underloaded too
-            final var optionalHost = findHostForVm(vm, host -> !isUnderloaded(host));
+            final var optionalHost = findHostForVm(vm, host -> !excludedHosts.contains(host) && !isUnderloaded(host));
             if (optionalHost.isEmpty()) {
                 LOGGER.warn(
                     "{}: VmPlacementPolicy: A new Host, which isn't also underloaded or won't be overloaded, couldn't be found to migrate {}. Migration of VMs from the underloaded {} cancelled.",
                     getDatacenter().getSimulation().clockStr(), vm, vm.getHost());
-                return new HashMap<>();
+                migrationMap.forEach(plan::removeMigration);
+                return new LinkedHashMap<>();
             }
             addVmToMigrationMap(migrationMap, vm, optionalHost.get());
         }
@@ -442,15 +468,11 @@ public non-sealed abstract class VmPlacementPolicyMigrationAbstract
         vmList.sort(comparator.reversed());
     }
 
+    /// Adds a VM to the migration map and to the plan of the current check,
+    /// so that if the same target Host is evaluated for the next VMs,
+    /// the resources of the VMs already planned to it are considered.
     private <T extends Host> void addVmToMigrationMap(final Map<Vm, T> migrationMap, final Vm vm, final T targetHost) {
-        /*
-        Temporarily creates the VM into the target Host so that
-        when the next VM is got to be migrated, if the same Host
-        is selected as destination, the resource to be
-        used by the previous VM will be considered when
-        assessing the suitability of such a Host for the next VM.
-         */
-        ((HostAbstract)targetHost).createTemporaryVm(vm);
+        plan.addMigration(vm, targetHost);
         migrationMap.put(vm, targetHost);
     }
 
@@ -467,24 +489,23 @@ public non-sealed abstract class VmPlacementPolicyMigrationAbstract
         return vmsToMigrateList;
     }
 
+    /// Selects VMs to migrate from an overloaded Host until it isn't overloaded anymore,
+    /// planning each selected VM to leave the Host.
+    ///
+    /// @param host the overloaded Host
+    /// @return the VMs selected to migrate
     private List<Vm> getVmsToMigrateFromOverloadedHost(final Host host) {
-        /*
-        @TODO The method doesn't just gets a list of VMs to migrate from an overloaded Host,
-        but it temporarily destroys VMs on such Hosts.
-        See https://github.com/cloudsimplus/cloudsimplus/issues/94
-        */
         final var vmsToMigrateList = new LinkedList<Vm>();
+        final Predicate<Vm> notSelected = vm -> !plan.isMigratingOut(vm);
         while (true) {
-            final var optionalVm = getVmSelectionPolicy().getVmToMigrate(host);
+            final var optionalVm = getVmSelectionPolicy().getVmToMigrate(host, notSelected);
             if (optionalVm.isEmpty()) {
                 break;
             }
 
             final var vm = optionalVm.get();
             vmsToMigrateList.add(vm);
-            /*Temporarily destroys the selected VM into the overloaded Host so that
-            the loop gets VMs from such a Host until it is not overloaded anymore.*/
-            ((HostAbstract)host).destroyTemporaryVm(vm);
+            plan.addVmOut(vm);
             if (!isOverloaded(host)) {
                 break;
             }
@@ -522,7 +543,7 @@ public non-sealed abstract class VmPlacementPolicyMigrationAbstract
         return this.getHostList().stream()
             .filter(this::isOverloaded)
             .filter(host -> host.getVmsMigratingOut().isEmpty())
-            .collect(toSet());
+            .collect(toCollection(LinkedHashSet::new));
     }
 
     /// Gets the most underloaded Host.
@@ -541,7 +562,7 @@ public non-sealed abstract class VmPlacementPolicyMigrationAbstract
             .filter(this::isUnderloaded)
             .filter(host -> host.getVmsMigratingIn().isEmpty())
             .filter(this::notAllVmsAreMigratingOut)
-            .min(comparingDouble(Host::getCpuPercentUtilization))
+            .min(comparingDouble(plan::cpuPercentUtilization))
             .orElse(Host.NULL);
     }
 
@@ -549,12 +570,17 @@ public non-sealed abstract class VmPlacementPolicyMigrationAbstract
         return getHostTotalRequestedMips(host) / totalMips(host);
     }
 
-    /// {@return the total MIPS that is currently being used by all VMs inside the Host}
+    /// {@return the total MIPS requested by all VMs inside the Host and the ones migrating into it,
+    /// considering the migrations planned by the current check}
     /// @param host the Host to get the total MIPS
     private double getHostTotalRequestedMips(final Host host) {
-        return host.getVmList().stream()
-            .mapToDouble(Vm::getTotalCpuMipsRequested)
-            .sum();
+        return hostVmsAndMigratingIn(host).mapToDouble(Vm::getTotalCpuMipsRequested).sum() + plan.cpuMipsRequestedDelta(host);
+    }
+
+    /// {@return the VMs inside a Host and the ones migrating into it}
+    /// VMs migrating in are not in the Host VM list until their migration finishes.
+    private static Stream<Vm> hostVmsAndMigratingIn(final Host host) {
+        return Stream.concat(host.getVmList().stream(), host.getVmsMigratingIn().stream());
     }
 
     /// Checks if all VMs of a Host are **NOT** migrating out.
@@ -564,40 +590,6 @@ public non-sealed abstract class VmPlacementPolicyMigrationAbstract
     /// @return true if at least one VM isn't migrating, false if all VMs are migrating
     private boolean notAllVmsAreMigratingOut(final Host host) {
         return host.getVmList().stream().anyMatch(vm -> !vm.isInMigration());
-    }
-
-    /// Saves the current map between a VM and the host where it is placed.
-    ///
-    /// @see #savedAllocation
-    private void saveAllocation() {
-        savedAllocation.clear();
-        for (final var host : getHostList()) {
-            for (final var vm : host.<VmAbstract>getVmList()) {
-                if (!host.getVmsMigratingIn().contains(vm)) {
-                    savedAllocation.put(vm, host);
-                }
-            }
-        }
-    }
-
-    /// Restore VM allocation from the allocation history.
-    /// TODO: The allocation map only needs to be restored because
-    /// VMs are destroyed in order to assess a new VM placement.
-    /// After fixing this issue, there will be no need to restore VM mapping.
-    /// https://github.com/cloudsimplus/cloudsimplus/issues/94
-    ///
-    /// @see #savedAllocation
-    private void restoreAllocation() {
-        for (final var host : this.<HostAbstract>getHostList()) {
-            host.destroyAllVms();
-            host.reallocateMigratingInVms();
-        }
-
-        for (final var vm : savedAllocation.keySet()) {
-            final var host = savedAllocation.get(vm);
-            if (!((HostAbstract)host).createTemporaryVm(vm).fully())
-                LOGGER.error("VmPlacementPolicy: Couldn't restore {} on {}", vm, host);
-        }
     }
 
     /// {@return the power consumption of a host after the supposed placement of a candidate VM,
@@ -629,16 +621,14 @@ public non-sealed abstract class VmPlacementPolicyMigrationAbstract
         return hostPotentialMipsUse / totalMips(host);
     }
 
-    /// {@return the utilization of the CPU in MIPS for the current potentially allocated VMs in a given host}
+    /// {@return the MIPS allocated to the VMs inside a given Host and the ones migrating into it,
+    /// considering the migrations planned by the current check}
     /// @param host the host to get the utilization of CPU MIPS
     protected double getUtilizationOfCpuMips(final Host host) {
-        double hostUtilizationMips = 0;
-        for (final var vm : host.getVmList()) {
-            final double additionalMips = additionalCpuUtilizationDuringMigration(host, vm);
-            hostUtilizationMips += additionalMips + host.getVmScheduler().getTotalAllocatedMipsForVm(vm);
-        }
-
-        return hostUtilizationMips;
+        final double allocatedMips = hostVmsAndMigratingIn(host)
+            .mapToDouble(vm -> additionalCpuUtilizationDuringMigration(host, vm) + host.getVmScheduler().getTotalAllocatedMipsForVm(vm))
+            .sum();
+        return allocatedMips + plan.allocatedMipsDelta(host);
     }
 
     /// {@return the additional potential CPU usage (in MIPS) the Host will use if a VM is migrating into it;

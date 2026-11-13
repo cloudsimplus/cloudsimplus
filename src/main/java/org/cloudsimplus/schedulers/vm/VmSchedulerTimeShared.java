@@ -71,6 +71,13 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
     }
 
     /// {@inheritDoc}
+    /// Cores are shared among VMs, so just the reserved MIPS must also be available.
+    @Override
+    protected boolean isCapacityEnoughBesidesReserved(final CoreCapacity requestedMips, final long reservedCores, final double reservedMips) {
+        return getTotalAvailableMips() - reservedMips >= requestedMips.totalMips();
+    }
+
+    /// {@inheritDoc}
     /// If the VM is in migration, this will cause overhead, reducing
     /// the amount of MIPS allocated to the VM.
     ///
