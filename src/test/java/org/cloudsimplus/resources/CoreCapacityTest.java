@@ -81,13 +81,24 @@ class CoreCapacityTest {
     }
 
     @Test
-    void processorToCoreCapacity() {
-        assertEquals(capacity, processor().toCoreCapacity());
+    void processorKeepsGivenCapacity() {
+        assertSame(capacity, processor().toCoreCapacity());
     }
 
     @Test
-    void capLimitOfProcessor() {
-        assertEquals(capacity, CpuCap.NONE.limit(processor()));
+    void processorCapacityFollowsCoresAndMipsChanges() {
+        final Processor processor = processor();
+        processor.addCapacity(1);
+        assertEquals(new CoreCapacity(CORES + 1, MIPS), processor.toCoreCapacity());
+
+        processor.setMips(MIPS / 2);
+        assertEquals(new CoreCapacity(CORES + 1, MIPS / 2), processor.toCoreCapacity());
+        assertEquals(new CoreCapacity(CORES, MIPS), capacity, "The shared capacity must not change");
+    }
+
+    @Test
+    void capLimitOfProcessorIsItsCapacityWhenNotLimited() {
+        assertSame(capacity, CpuCap.NONE.limit(processor()));
     }
 
     @Test

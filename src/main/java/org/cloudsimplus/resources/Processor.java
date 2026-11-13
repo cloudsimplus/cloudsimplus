@@ -114,6 +114,8 @@ public sealed interface Processor extends ResourceManageable permits ProcessorSi
 
     /// @return a [CoreCapacity] with the [total number of cores][#getCores()] and the [MIPS of each core][#getMips()]
     /// (such as to create another processor with the same configuration).
+    /// Implementations may return the same object while these values don't change,
+    /// such as the one given to create the processor.
     default CoreCapacity toCoreCapacity() {
         return new CoreCapacity(getCores(), getMips());
     }

@@ -23,6 +23,7 @@
  */
 package org.cloudsimplus.resources;
 
+import lombok.With;
 import org.cloudsimplus.hosts.Host;
 import org.cloudsimplus.vms.Vm;
 
@@ -32,13 +33,17 @@ import static org.cloudsimplus.util.MathUtil.nonNegative;
 /// It represents the capacity of a [Processor] (such as the one of a [Host] or [Vm])
 /// or the MIPS requested by or allocated to a [Vm].
 ///
-/// Since it's immutable, objects that keep a capacity (such as a [Processor])
-/// should copy its values instead of storing the object.
+/// Since it's immutable, a single instance can be safely shared by any number of objects
+/// (such as all Hosts or VMs with the same capacity). The `with` methods return a new capacity
+/// with a changed value (or this one if the value doesn't change), leaving the objects that share it unaffected.
+/// A [Processor] keeps the capacity given to it, so that the MIPS shares of VMs created from
+/// the same capacity are that same object, while they request their full capacity.
 ///
 /// @param cores the number of cores
 /// @param mips the MIPS capacity of each core
 /// @author Manoel Campos da Silva Filho
 /// @since CloudSim Plus 9.0.0
+@With
 public record CoreCapacity(long cores, double mips) {
     /// A capacity with no cores and no MIPS.
     public static final CoreCapacity NULL = new CoreCapacity(0, 0);
@@ -77,13 +82,6 @@ public record CoreCapacity(long cores, double mips) {
         return withCores(cores - removed);
     }
 
-    /// Gets a capacity with a given number of cores and the same MIPS of each core.
-    /// @param newCores the number of cores of the new capacity
-    /// @return this capacity if it already has the given number of cores; a new one otherwise
-    public CoreCapacity withCores(final long newCores) {
-        return newCores == cores ? this : new CoreCapacity(newCores, mips);
-    }
-
     /// Gets a capacity having at most a given number of cores.
     /// @param maxCores the maximum number of cores
     /// @return this capacity if it doesn't have more cores than the given maximum;
@@ -97,13 +95,13 @@ public record CoreCapacity(long cores, double mips) {
     /// @return this capacity if its MIPS doesn't exceed the given maximum;
     ///         a new one with that maximum otherwise
     public CoreCapacity limitMips(final double maxMips) {
-        return mips <= maxMips ? this : new CoreCapacity(cores, maxMips);
+        return mips <= maxMips ? this : withMips(maxMips);
     }
 
     /// Gets a capacity with the MIPS of each core multiplied by a given factor.
     /// @param factor the factor to multiply the MIPS of each core (such as a percentage from 0 to 1)
-    /// @return this capacity if the factor is 1; a new one otherwise
+    /// @return this capacity if the MIPS doesn't change (such as when the factor is 1); a new one otherwise
     public CoreCapacity scaleMips(final double factor) {
-        return factor == 1 ? this : new CoreCapacity(cores, mips * factor);
+        return withMips(mips * factor);
     }
 }

@@ -23,54 +23,38 @@
  */
 package org.cloudsimplus.utilizationmodels;
 
-import lombok.NoArgsConstructor;
 import lombok.NonNull;
-import lombok.Setter;
+import lombok.With;
 import org.cloudsimplus.core.CustomerEntity;
 import org.cloudsimplus.core.Machine;
 
 /// Defines how a [Machine] uses resources
 /// such as CPU and RAM during the boot process.
-/// The default constructor doesn't set any utilization model.
-/// You need to set a model for the resources you wish by calling the respective setter.
-/// If you don't call any setter, the boot process won't use any resources,
+/// If a model is [UtilizationModel#NULL], the boot process doesn't use that resource,
 /// indicating there is no overhead during the machine boot (which is not accurate).
 ///
-/// The [UtilizationModel]s must be stateless to be shared by many machines
+/// Since it's immutable, a single instance can be safely shared by all machines with the same boot behaviour,
+/// instead of creating one for each machine. To change a model, use the `with` methods,
+/// which return a new BootModel (or this one if the model doesn't change),
+/// leaving the machines that share this one unaffected.
+/// The [UtilizationModel]s must also be stateless to be shared
 /// (for instance, a [UtilizationModelDynamic] with an update function keeps its current utilization, so it's not).
 /// See [UtilizationModel#isStateful()] for details.
 ///
+/// @param cpuModel the utilization model which defines how the machine uses CPU during the boot process
+/// @param ramModel the utilization model which defines how the machine uses RAM during the boot process
 /// @author Manoel Campos da Silva Filho
 /// @since CloudSim Plus 8.3.0
-@Setter @NoArgsConstructor
-public class BootModel {
-    /// An attribute that implements the Null Object Design Pattern for [BootModel] objects.
-    public static final BootModel NULL = new BootModel();
+@With
+public record BootModel(@NonNull UtilizationModel cpuModel, @NonNull UtilizationModel ramModel) {
+    /// A BootModel where the boot process doesn't use any resources.
+    public static final BootModel NULL = new BootModel(UtilizationModel.NULL);
 
-    /// The utilization model which defines how the machine uses
-    /// CPU during the boot process.
-    @NonNull
-    private UtilizationModel utilizationModelCpu = UtilizationModel.NULL;
-
-    /// The utilization model which defines how the machine uses
-    /// RAM during the boot process.
-    @NonNull
-    private UtilizationModel utilizationModelRam = UtilizationModel.NULL;
-
-    /// Creates a BootModel object for a Vm, setting the same [UtilizationModel] for CPU and RAM.
-    /// @param utilizationModel the utilization model to set for VM CPU and RAM resources
+    /// Creates a BootModel setting the same [UtilizationModel] for CPU and RAM.
+    /// @param utilizationModel the utilization model to set for CPU and RAM resources
     /// @see BootModel#BootModel(UtilizationModel, UtilizationModel)
-    public BootModel(final @NonNull UtilizationModel utilizationModel) {
+    public BootModel(final UtilizationModel utilizationModel) {
         this(utilizationModel, utilizationModel);
-    }
-
-    /// Creates a BootModel object for a Vm, setting specific [UtilizationModel] for CPU and RAM.
-    /// @param cpuModel the utilization model to set for CPU
-    /// @param ramModel the utilization model to set for RAM
-    /// @see BootModel#BootModel(UtilizationModel)
-    public BootModel(@NonNull UtilizationModel cpuModel, @NonNull UtilizationModel ramModel) {
-        this.utilizationModelCpu = cpuModel;
-        this.utilizationModelRam = ramModel;
     }
 
     /// Registers the machine using this BootModel as the owner of its [UtilizationModel]s.
@@ -80,20 +64,20 @@ public class BootModel {
     /// @see UtilizationModel#registerOwner(CustomerEntity)
     public BootModel registerOwner(final CustomerEntity owner) {
         // Validates both models first, so a failure doesn't leave one of them registered
-        utilizationModelCpu.validateOwner(owner);
-        utilizationModelRam.validateOwner(owner);
-        utilizationModelCpu.registerOwner(owner);
-        utilizationModelRam.registerOwner(owner);
+        cpuModel.validateOwner(owner);
+        ramModel.validateOwner(owner);
+        cpuModel.registerOwner(owner);
+        ramModel.registerOwner(owner);
         return this;
     }
 
-    /// @return \[0..1\] to indicate the VM boot CPU utilization percentage for the current time.
+    /// @return \[0..1\] to indicate the boot CPU utilization percentage for the current time.
     public double getCpuPercentUtilization(){
-        return utilizationModelCpu.getUtilization();
+        return cpuModel.getUtilization();
     }
 
-    /// @return \[0..1\] to indicate the VM boot RAM utilization percentage for the current time.
+    /// @return \[0..1\] to indicate the boot RAM utilization percentage for the current time.
     public double getRamPercentUtilization(){
-        return utilizationModelRam.getUtilization();
+        return ramModel.getUtilization();
     }
 }

@@ -60,9 +60,12 @@ public sealed interface CpuCap permits CpuCapNone {
     /// its [working cores][Processor#getWorkingCores()], each one with the
     /// [limited MIPS][#limitCoreMips(Processor)].
     /// @param processor the processor to get its capacity
-    /// @return the capacity limited by this cap
+    /// @return the capacity limited by this cap.
+    ///         It's the [processor capacity][Processor#toCoreCapacity()] object itself when it isn't limited
+    ///         (all cores are working and the cap doesn't reduce the MIPS),
+    ///         so machines sharing a [CoreCapacity] also share the capacity they request.
     default CoreCapacity limit(final Processor processor) {
-        return new CoreCapacity(processor.getWorkingCores(), limitCoreMips(processor));
+        return processor.toCoreCapacity().withCores(processor.getWorkingCores()).withMips(limitCoreMips(processor));
     }
 
     /// Gets the capacity a processor can request according to this cap,
