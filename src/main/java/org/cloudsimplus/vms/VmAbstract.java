@@ -97,7 +97,6 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
     @Getter(AccessLevel.PACKAGE) @Setter(AccessLevel.PACKAGE)
     private List<EventListener<VmDatacenterEventInfo>> onCreationFailureListeners = List.of();
 
-    @Setter @NonNull
     private BootModel bootModel;
 
     /// @see #getCpuCap()
@@ -423,6 +422,12 @@ public non-sealed abstract class VmAbstract extends CustomerEntityAbstract imple
 
     /// Gets the MIPS share the VM has to request from its Host, according to its processor,
     /// [CPU cap][#getCpuCap()] and [boot state][#isStartingUp()].
+    @Override
+    public Vm setBootModel(@NonNull final BootModel model) {
+        this.bootModel = model.registerOwner(this);
+        return this;
+    }
+
     /// While the VM is booting, it requests just the CPU percentage defined by its [BootModel].
     /// @return the MIPS share to request from the Host
     public CoreCapacity getMipsToRequest() {

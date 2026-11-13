@@ -24,6 +24,7 @@
 package org.cloudsimplus.utilizationmodels;
 
 import org.cloudsimplus.cloudlets.Cloudlet;
+import org.cloudsimplus.core.CustomerEntity;
 import org.cloudsimplus.core.Simulation;
 
 /// A class that implements the Null Object Design Pattern for [UtilizationModel]
@@ -46,4 +47,7 @@ final class UtilizationModelNull implements UtilizationModel {
     }
     @Override public boolean isOverCapacityRequestAllowed() { return false; }
     @Override public UtilizationModel setOverCapacityRequestAllowed(boolean allow) {return this;}
+    @Override public boolean isStateful() { return false; }
+    @Override public void validateOwner(final CustomerEntity owner) {/**/}
+    @Override public UtilizationModel registerOwner(final CustomerEntity owner) { return this; }
 }

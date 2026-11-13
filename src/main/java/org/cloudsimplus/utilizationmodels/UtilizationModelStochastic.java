@@ -89,10 +89,11 @@ public class UtilizationModelStochastic extends UtilizationModelAbstract {
     /// He/she usually wants that every Cloudlet has an independent resource utilization value.
     ///
     /// To reduce simulation time and memory consumption, you can use a single utilization
-    /// model instance for a given Cloudlet resource (such as CPU) and set this attribute to false.
+    /// model instance for a given Cloudlet resource (such as CPU) and set this attribute to true.
     /// This way, it will always generate different utilization values for every time
     /// the utilization is requested (even if the same previous time is given).
-    @Getter @Setter
+    /// @see #setAlwaysGenNewRandUtilization(boolean)
+    @Getter
     private boolean alwaysGenNewRandUtilization;
 
     /// Instantiates a stochastic utilization model
@@ -205,6 +206,31 @@ public class UtilizationModelStochastic extends UtilizationModelAbstract {
         }
 
         return utilization;
+    }
+
+    /// Sets if a new random utilization is generated at every request,
+    /// even for the same time. See [#isAlwaysGenNewRandUtilization()] for details.
+    ///
+    /// @param alwaysGenNewRandUtilization true to always generate a new value, false otherwise
+    ///        (which makes the model [stateful][#isStateful()])
+    /// @return this
+    /// @throws IllegalStateException if the value is false and a VM or Cloudlet already uses the model
+    public final UtilizationModelStochastic setAlwaysGenNewRandUtilization(final boolean alwaysGenNewRandUtilization) {
+        if (this.alwaysGenNewRandUtilization && !alwaysGenNewRandUtilization) {
+            requireNotInUse("disabling alwaysGenNewRandUtilization");
+        }
+
+        this.alwaysGenNewRandUtilization = alwaysGenNewRandUtilization;
+        return this;
+    }
+
+    /// {@return true if [#isAlwaysGenNewRandUtilization()] is false, false otherwise}
+    /// In such a case, the model stores the previous utilization and returns it for the same time,
+    /// so Cloudlets or VMs sharing the model get the same random values.
+    /// Each one needs its own instance, with a distinct seed.
+    @Override
+    public boolean isStateful() {
+        return !alwaysGenNewRandUtilization;
     }
 
     /// Gets the utilization percentage for a given time from the internal [#historyMap].

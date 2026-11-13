@@ -42,9 +42,17 @@ import java.util.function.Function;
 /// logarithmic or exponential is possible.
 /// For more details, see the [#setUtilizationUpdateFunction(Function)].
 ///
+/// A model with an update function is [stateful][#isStateful()]:
+/// each [Cloudlet] or VM needs its own instance,
+/// which can be created by the [copy constructor][#UtilizationModelDynamic(UtilizationModelDynamic, double)]
+/// before the simulation starts.
+///
 /// @author Manoel Campos da Silva Filho
 /// @since CloudSim Plus 1.0
 public class UtilizationModelDynamic extends UtilizationModelAbstract {
+    /// The default [#utilizationUpdateFunction], which keeps the current utilization.
+    private static final Function<UtilizationModelDynamic, Double> NO_UPDATE_FUNCTION = model -> model.currentUtilization;
+
     /// Indicates whether the utilization model is readonly or not.
     /// It's set to true when using the
     /// [copy constructor][#UtilizationModelDynamic(UtilizationModelDynamic)]
@@ -64,36 +72,8 @@ public class UtilizationModelDynamic extends UtilizationModelAbstract {
     @Getter
     private double maxResourceUtilization;
 
-    /// A function defining how the resource utilization will be
-    /// incremented or decremented along the time.
-    ///
-    /// Such a function must require one [UtilizationModelDynamic] parameter
-    /// and return the new resource utilization.
-    /// When this function is called internally by this `UtilizationModel`,
-    /// it receives a read-only [UtilizationModelDynamic] instance and allows
-    /// the developer using this `UtilizationModel` to
-    /// define how the utilization must be updated.
-    ///
-    /// For instance, to define an arithmetic increment, a Lambda function
-    /// to be given to this setter could be defined as below:
-    ///
-    /// ```java
-    /// um -> um.getUtilization() + um.getTimeSpan()*0.1
-    /// ```
-    ///
-    /// Considering the `UtilizationModel` [Unit] was defined in [Unit#PERCENTAGE],
-    /// such a Lambda Expression will increment the usage in 10% for each second that has passed
-    /// since the last time the utilization was computed.
-    ///
-    /// The value returned by the given Lambda Expression will be automatically validated
-    /// to avoid negative utilization or utilization over 100%
-    /// (when the `UtilizationModel` [unit][#getUnit()] is defined in percentage).
-    /// The function would be defined to decrement the utilization along the time,
-    /// by just changing the plus to a minus signal.
-    ///
-    /// Implementing a geometric progression for defining resource utilization is as simple as
-    /// changing the plus signal to a multiplication signal.
-    @Setter @NonNull
+    /// A function defining how the resource utilization will be incremented or decremented along the time.
+    /// @see #setUtilizationUpdateFunction(Function)
     private Function<UtilizationModelDynamic, Double> utilizationUpdateFunction;
 
     /// The last time the utilization was updated.
@@ -177,7 +157,7 @@ public class UtilizationModelDynamic extends UtilizationModelAbstract {
         this.currentUtilizationTime = 0;
         this.setCurrentUtilization(initialUtilization);
 
-        utilizationUpdateFunction = modelInstance -> modelInstance.currentUtilization;
+        utilizationUpdateFunction = NO_UPDATE_FUNCTION;
     }
 
     /// A copy constructor that creates a read-only UtilizationModelDynamic based on another one.
@@ -195,7 +175,7 @@ public class UtilizationModelDynamic extends UtilizationModelAbstract {
         /// method inside the update function he/she assigned to the UtilizationModel,
         /// that will cause an infinite loop. This happens since the [#getUtilization(double)] will call
         /// the given function to increase the current utilization and return the current value.
-        this.utilizationUpdateFunction = modelInstance -> modelInstance.currentUtilization;
+        this.utilizationUpdateFunction = NO_UPDATE_FUNCTION;
         this.readOnly = true;
     }
 
@@ -247,6 +227,56 @@ public class UtilizationModelDynamic extends UtilizationModelAbstract {
         }
 
         return currentUtilization;
+    }
+
+    /// {@return true if an [update function][#setUtilizationUpdateFunction(Function)] is set, false otherwise}
+    /// Such a function computes the utilization from the previous one,
+    /// so the model can't be shared by many Cloudlets or VMs.
+    @Override
+    public boolean isStateful() {
+        return utilizationUpdateFunction != NO_UPDATE_FUNCTION;
+    }
+
+    /// Sets a function defining how the resource utilization will be
+    /// incremented or decremented along the time.
+    ///
+    /// Such a function must require one [UtilizationModelDynamic] parameter
+    /// and return the new resource utilization.
+    /// When this function is called internally by this `UtilizationModel`,
+    /// it receives a read-only [UtilizationModelDynamic] instance and allows
+    /// the developer using this `UtilizationModel` to
+    /// define how the utilization must be updated.
+    ///
+    /// For instance, to define an arithmetic increment, a Lambda function
+    /// to be given to this setter could be defined as below:
+    ///
+    /// ```java
+    /// um -> um.getUtilization() + um.getTimeSpan()*0.1
+    /// ```
+    ///
+    /// Considering the `UtilizationModel` [Unit] was defined in [Unit#PERCENTAGE],
+    /// such a Lambda Expression will increment the usage in 10% for each second that has passed
+    /// since the last time the utilization was computed.
+    ///
+    /// The value returned by the given Lambda Expression will be automatically validated
+    /// to avoid negative utilization or utilization over 100%
+    /// (when the `UtilizationModel` [unit][#getUnit()] is defined in percentage).
+    /// The function would be defined to decrement the utilization along the time,
+    /// by just changing the plus to a minus signal.
+    ///
+    /// Implementing a geometric progression for defining resource utilization is as simple as
+    /// changing the plus signal to a multiplication signal.
+    ///
+    /// Setting a function makes the model [stateful][#isStateful()],
+    /// so it must be set before giving the model to a VM or Cloudlet.
+    ///
+    /// @param function the function to set
+    /// @return this
+    /// @throws IllegalStateException if a VM or Cloudlet already uses the model
+    public final UtilizationModelDynamic setUtilizationUpdateFunction(@NonNull final Function<UtilizationModelDynamic, Double> function) {
+        requireNotInUse("setting an update function");
+        this.utilizationUpdateFunction = function;
+        return this;
     }
 
     /// @return the time difference from the current simulation time to the

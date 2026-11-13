@@ -26,6 +26,7 @@ package org.cloudsimplus.utilizationmodels;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.Setter;
+import org.cloudsimplus.core.CustomerEntity;
 import org.cloudsimplus.core.Machine;
 
 /// Defines how a [Machine] uses resources
@@ -34,6 +35,10 @@ import org.cloudsimplus.core.Machine;
 /// You need to set a model for the resources you wish by calling the respective setter.
 /// If you don't call any setter, the boot process won't use any resources,
 /// indicating there is no overhead during the machine boot (which is not accurate).
+///
+/// The [UtilizationModel]s must be stateless to be shared by many machines
+/// (for instance, a [UtilizationModelDynamic] with an update function keeps its current utilization, so it's not).
+/// See [UtilizationModel#isStateful()] for details.
 ///
 /// @author Manoel Campos da Silva Filho
 /// @since CloudSim Plus 8.3.0
@@ -66,6 +71,20 @@ public class BootModel {
     public BootModel(@NonNull UtilizationModel cpuModel, @NonNull UtilizationModel ramModel) {
         this.utilizationModelCpu = cpuModel;
         this.utilizationModelRam = ramModel;
+    }
+
+    /// Registers the machine using this BootModel as the owner of its [UtilizationModel]s.
+    /// @param owner the machine using this BootModel
+    /// @return this
+    /// @throws IllegalStateException if a stateful model is already used by another VM or Cloudlet
+    /// @see UtilizationModel#registerOwner(CustomerEntity)
+    public BootModel registerOwner(final CustomerEntity owner) {
+        // Validates both models first, so a failure doesn't leave one of them registered
+        utilizationModelCpu.validateOwner(owner);
+        utilizationModelRam.validateOwner(owner);
+        utilizationModelCpu.registerOwner(owner);
+        utilizationModelRam.registerOwner(owner);
+        return this;
     }
 
     /// @return \[0..1\] to indicate the VM boot CPU utilization percentage for the current time.

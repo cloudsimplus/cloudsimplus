@@ -57,13 +57,13 @@ public non-sealed abstract class CloudletAbstract extends CustomerEntityAbstract
     @NonNull
     private Vm vm;
 
-    @NonNull
+    @Setter(AccessLevel.NONE)
     private UtilizationModel utilizationModelCpu = UtilizationModel.NULL;
 
-    @NonNull
+    @Setter(AccessLevel.NONE)
     private UtilizationModel utilizationModelRam = UtilizationModel.NULL;
 
-    @NonNull
+    @Setter(AccessLevel.NONE)
     private UtilizationModel utilizationModelBw = UtilizationModel.NULL;
 
     /// The list of required files, which starts as the shared empty `List.of()`
@@ -182,6 +182,24 @@ public non-sealed abstract class CloudletAbstract extends CustomerEntityAbstract
         setUtilizationModelBw(utilizationModel);
         setUtilizationModelRam(utilizationModel);
         setUtilizationModelCpu(utilizationModel);
+        return this;
+    }
+
+    @Override
+    public Cloudlet setUtilizationModelCpu(@NonNull final UtilizationModel utilizationModelCpu) {
+        this.utilizationModelCpu = utilizationModelCpu.registerOwner(this);
+        return this;
+    }
+
+    @Override
+    public Cloudlet setUtilizationModelRam(@NonNull final UtilizationModel utilizationModelRam) {
+        this.utilizationModelRam = utilizationModelRam.registerOwner(this);
+        return this;
+    }
+
+    @Override
+    public Cloudlet setUtilizationModelBw(@NonNull final UtilizationModel utilizationModelBw) {
+        this.utilizationModelBw = utilizationModelBw.registerOwner(this);
         return this;
     }
 

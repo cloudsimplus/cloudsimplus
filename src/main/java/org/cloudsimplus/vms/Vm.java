@@ -22,6 +22,7 @@ import org.cloudsimplus.resources.*;
 import org.cloudsimplus.resources.CoreCapacity;
 import org.cloudsimplus.schedulers.cloudlet.CloudletScheduler;
 import org.cloudsimplus.utilizationmodels.BootModel;
+import org.cloudsimplus.utilizationmodels.UtilizationModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -424,9 +425,11 @@ public sealed interface Vm
     ///
     /// If a model is not set, no resources are used during the boot time,
     /// which is just simulated if a [startup delay][#setStartupDelay(double)] is set.
+    /// The [UtilizationModel]s of a BootModel shared by many VMs must not be [stateful][UtilizationModel#isStateful()].
     ///
     /// @param model the boot model to set
     /// @return this
+    /// @throws IllegalStateException if the model has a stateful [UtilizationModel] already used by another VM or Cloudlet
     Vm setBootModel(BootModel model);
 
     /// {@return the CPU cap that limits the MIPS the VM can request from its Host}
