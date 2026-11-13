@@ -8,6 +8,7 @@
 package org.cloudsimplus.utilizationmodels;
 
 import org.cloudsimplus.cloudlets.Cloudlet;
+import org.cloudsimplus.core.CustomerEntity;
 import org.cloudsimplus.core.Simulation;
 import org.cloudsimplus.schedulers.cloudlet.CloudletScheduler;
 import org.cloudsimplus.vms.Vm;
@@ -15,10 +16,16 @@ import org.cloudsimplus.vms.Vm;
 /// An interface to be implemented to provide a
 /// fine-grained control over resource usage by a [Cloudlet].
 ///
+/// ## Sharing a model
+/// A model whose utilization depends only on the time (such as [UtilizationModelFull], [UtilizationModel#NULL],
+/// [UtilizationModelPlanetLab] and a [UtilizationModelDynamic] without an update function)
+/// can be shared by many [Vm]s or [Cloudlet]s.
+/// A [stateful][#isStateful()] model must have one instance for each Vm or Cloudlet.
+///
 /// @author Anton Beloglazov
 /// @author Manoel Campos da Silva Filho
 /// @since CloudSim Toolkit 2.0
-public sealed interface UtilizationModel permits UtilizationModelAbstract, UtilizationModelNull, UtilizationModelFullShared {
+public sealed interface UtilizationModel permits UtilizationModelAbstract, UtilizationModelNull, UtilizationModelFull {
     /// Defines the unit of the resource utilization.
     /// @see #getUtilization(double)
     /// @see #getUtilization()
@@ -39,11 +46,8 @@ public sealed interface UtilizationModel permits UtilizationModelAbstract, Utili
     /// An **immutable** [UtilizationModel] shared by all objects using it,
     /// which makes a [Cloudlet] always use 100% of a resource.
     /// It's the default CPU utilization model for Cloudlets.
-    ///
-    /// Since the instance is shared, its setters do nothing.
-    /// If you need to change attributes such as [#setOverCapacityRequestAllowed(boolean)],
-    /// create a [UtilizationModelFull] instead.
-    UtilizationModel FULL = new UtilizationModelFullShared();
+    /// @see UtilizationModelFull
+    UtilizationModel FULL = new UtilizationModelFull();
 
     /// @return the simulation that this UtilizationModel belongs to.
     Simulation getSimulation();
@@ -112,4 +116,31 @@ public sealed interface UtilizationModel permits UtilizationModelAbstract, Utili
     ///
     /// @param allow true to allow requesting more than 100% of a resource, false to disallow that
     UtilizationModel setOverCapacityRequestAllowed(boolean allow);
+
+    /// Checks if the model keeps a state that changes along the simulation,
+    /// so that the utilization it returns depends on previous requests, not only on the time.
+    /// Such a model can't be shared by many [Vm]s or [Cloudlet]s,
+    /// since one would change the utilization the others get.
+    ///
+    /// @return true if the model is stateful, false otherwise
+    /// @see #registerOwner(CustomerEntity)
+    boolean isStateful();
+
+    /// Checks if a [Vm] or [Cloudlet] can use this model, without registering it as an owner.
+    /// It enables checking many models before registering the owner in any of them.
+    ///
+    /// @param owner the Vm or Cloudlet that will use this model
+    /// @throws IllegalStateException if this model is stateful and another owner already uses it
+    /// @see #registerOwner(CustomerEntity)
+    void validateOwner(CustomerEntity owner);
+
+    /// Registers a [Vm] or [Cloudlet] that uses this model,
+    /// ensuring a [stateful][#isStateful()] model isn't shared.
+    /// The first owner is kept, and it can register again (for instance, to use the model for CPU and RAM).
+    ///
+    /// @param owner the Vm or Cloudlet that uses this model
+    /// @return this
+    /// @throws IllegalStateException if this model is stateful and another owner already uses it
+    /// @see #validateOwner(CustomerEntity)
+    UtilizationModel registerOwner(CustomerEntity owner);
 }

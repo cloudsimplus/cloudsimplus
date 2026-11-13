@@ -370,16 +370,19 @@ public sealed interface Cloudlet
     /// Sets the [utilization model of BW][#getUtilizationModelBw()].
     /// @param utilizationModelBw the new utilization model of BW
     /// @return this Cloudlet
+    /// @throws IllegalStateException if the model is [stateful][UtilizationModel#isStateful()] and already used by another Cloudlet or VM
     Cloudlet setUtilizationModelBw(UtilizationModel utilizationModelBw);
 
     /// Sets the [utilization model of CPU][#getUtilizationModelCpu()].
     /// @param utilizationModelCpu the new utilization model of CPU
     /// @return this Cloudlet
+    /// @throws IllegalStateException if the model is [stateful][UtilizationModel#isStateful()] and already used by another Cloudlet or VM
     Cloudlet setUtilizationModelCpu(UtilizationModel utilizationModelCpu);
 
     /// Sets the [utilization model of RAM][#getUtilizationModelRam()].
     /// @param utilizationModelRam the new utilization model of RAM
     /// @return this Cloudlet
+    /// @throws IllegalStateException if the model is [stateful][UtilizationModel#isStateful()] and already used by another Cloudlet or VM
     Cloudlet setUtilizationModelRam(UtilizationModel utilizationModelRam);
 
     /// Sets the id of [Vm] that is planned to execute the cloudlet.
