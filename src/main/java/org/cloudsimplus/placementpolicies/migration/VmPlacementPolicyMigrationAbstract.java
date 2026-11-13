@@ -140,7 +140,8 @@ public non-sealed abstract class VmPlacementPolicyMigrationAbstract
     }
 
     /// Sets the migrations planned by the current migration check.
-    /// Subclasses that delegate Host evaluations to other policies must pass the plan to them too.
+    /// A policy that delegates Host evaluations to another one (such as a fallback policy)
+    /// overrides it to pass the plan to that policy too.
     /// @param plan the plan of the current check, or [MigrationPlan#NONE] when the check finishes
     void setMigrationPlan(final MigrationPlan plan) {
         this.plan = plan;
@@ -400,14 +401,29 @@ public non-sealed abstract class VmPlacementPolicyMigrationAbstract
 
     /// Finds a target Host for a VM selected to leave an overloaded Host,
     /// using the placement policy of the [#targetMigrationDc].
-    /// That policy may not know the migrations planned by this check
-    /// (such as a custom [VmPlacementPolicy#setFindHostForVmFunction(BiFunction) function] or another datacenter's policy),
-    /// so the Host it selects is only accepted if it fits the VM besides the VMs already planned to it.
+    /// If it's a migration policy of another datacenter, it gets the plan of this check while it searches.
+    /// Any other policy, or a custom [VmPlacementPolicy#setFindHostForVmFunction(BiFunction) function],
+    /// doesn't know the plan, so the Host it selects is only accepted
+    /// if it's not the VM's current Host and fits the VM besides the VMs already planned to it.
     ///
     /// @param vm the VM to find a target Host for
     /// @return an [Optional] containing the target Host, or an empty one if no suitable Host was found
     private Optional<Host> findTargetHostForVmFromOverloadedHost(final Vm vm) {
-        return targetMigrationDc.getVmPlacementPolicy().findHostForVm(vm).filter(host -> plan.isSuitable(host, vm));
+        final var targetPolicy = targetMigrationDc.getVmPlacementPolicy();
+        if (targetPolicy == this || !(targetPolicy instanceof VmPlacementPolicyMigrationAbstract targetMigrationPolicy)) {
+            return findAcceptedTargetHost(targetPolicy, vm);
+        }
+
+        targetMigrationPolicy.setMigrationPlan(plan);
+        try {
+            return findAcceptedTargetHost(targetPolicy, vm);
+        } finally {
+            targetMigrationPolicy.setMigrationPlan(MigrationPlan.NONE);
+        }
+    }
+
+    private Optional<Host> findAcceptedTargetHost(final VmPlacementPolicy targetPolicy, final Vm vm) {
+        return targetPolicy.findHostForVm(vm).filter(host -> !host.equals(vm.getHost()) && plan.isSuitable(host, vm));
     }
 
     private void appendVmMigrationMsgToStringBuilder(final StringBuilder builder, final Vm vm, final Host targetHost) {
@@ -429,7 +445,7 @@ public non-sealed abstract class VmPlacementPolicyMigrationAbstract
         sortByCpuUtilization(vmsToMigrate, getDatacenter().getSimulation().clock());
         for (final Vm vm : vmsToMigrate) {
             //try to find a target Host to place a VM from an underloaded Host that is not underloaded too
-            final var optionalHost = findHostForVm(vm, host -> !isUnderloaded(host));
+            final var optionalHost = findHostForVm(vm, host -> !excludedHosts.contains(host) && !isUnderloaded(host));
             if (optionalHost.isEmpty()) {
                 LOGGER.warn(
                     "{}: VmPlacementPolicy: A new Host, which isn't also underloaded or won't be overloaded, couldn't be found to migrate {}. Migration of VMs from the underloaded {} cancelled.",

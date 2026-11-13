@@ -24,7 +24,7 @@
 package org.cloudsimplus.placementpolicies.migration;
 
 import org.cloudsimplus.hosts.Host;
-import org.cloudsimplus.resources.CoreCapacity;
+import org.cloudsimplus.schedulers.vm.VmSchedulerAbstract;
 import org.cloudsimplus.vms.Vm;
 
 /// The change in the load of a [Host] planned during one VM migration check,
@@ -32,8 +32,10 @@ import org.cloudsimplus.vms.Vm;
 /// It only keeps totals, so updating and reading it takes constant time,
 /// and the Host's real state never changes.
 ///
-/// Resources of VMs planned to migrate out aren't considered free,
-/// since such VMs keep using them until their migration finishes.
+/// The CPU usage, requested and allocated MIPS of VMs planned to migrate out are subtracted,
+/// so the Host is evaluated as if they had already left it.
+/// But their RAM, BW, storage and cores aren't considered free for other VMs,
+/// since they keep using them until their migration finishes.
 ///
 /// @author Manoel Campos da Silva Filho
 /// @see MigrationPlan
@@ -48,29 +50,24 @@ final class HostLoad {
     /// Change in the MIPS the Host's VM scheduler allocates to its VMs.
     private double allocatedMips;
 
-    /// Total RAM, BW, storage and cores of the VMs planned to migrate in.
+    /// Number of VMs planned to migrate in.
+    private int vmsIn;
+
+    /// Total RAM, BW, storage, cores and MIPS requested by the VMs planned to migrate in.
     private long ramIn;
     private long bwIn;
     private long storageIn;
     private long coresIn;
-
-    /// The highest MIPS per core requested by a VM planned to migrate in.
-    /// It isn't reduced when a VM is removed from the plan, so suitability checks stay on the safe side.
-    private double maxCoreMipsIn;
+    private double mipsIn;
 
     /// Adds a VM planned to migrate into the Host.
     void addVmIn(final Vm vm) {
-        final var requestedMips = vm.getRequestedMips();
-        updateCpu(vm, requestedMips.totalMips(), 1);
-        updateResourcesIn(vm, requestedMips.cores(), 1);
-        maxCoreMipsIn = Math.max(maxCoreMipsIn, requestedMips.mips());
+        updateVmIn(vm, 1);
     }
 
     /// Removes a VM that was planned to migrate into the Host.
     void removeVmIn(final Vm vm) {
-        final var requestedMips = vm.getRequestedMips();
-        updateCpu(vm, requestedMips.totalMips(), -1);
-        updateResourcesIn(vm, requestedMips.cores(), -1);
+        updateVmIn(vm, -1);
     }
 
     /// Adds a VM planned to migrate out of the Host.
@@ -86,34 +83,41 @@ final class HostLoad {
     }
 
     /// @param sign 1 to add the VM values, -1 to subtract them
+    private void updateVmIn(final Vm vm, final int sign) {
+        final var requestedMips = vm.getRequestedMips();
+        updateCpu(vm, requestedMips.totalMips(), sign);
+        vmsIn += sign;
+        ramIn += sign * vm.getRam().getCapacity();
+        bwIn += sign * vm.getBw().getCapacity();
+        storageIn += sign * vm.getStorage().getCapacity();
+        coresIn += sign * requestedMips.cores();
+        mipsIn += sign * requestedMips.totalMips();
+    }
+
+    /// @param sign 1 to add the VM values, -1 to subtract them
     private void updateCpu(final Vm vm, final double vmAllocatedMips, final int sign) {
         cpuMipsUtilization += sign * vm.getTotalCpuMipsUtilization();
         cpuMipsRequested += sign * vm.getTotalCpuMipsRequested();
         allocatedMips += sign * vmAllocatedMips;
     }
 
-    /// @param sign 1 to add the VM values, -1 to subtract them
-    private void updateResourcesIn(final Vm vm, final long cores, final int sign) {
-        ramIn += sign * vm.getRam().getCapacity();
-        bwIn += sign * vm.getBw().getCapacity();
-        storageIn += sign * vm.getStorage().getCapacity();
-        coresIn += sign * cores;
-    }
-
     /// {@return true if the Host has enough resources for a VM, besides the VMs already planned to migrate into it}
-    /// The cores are checked by the Host's VM scheduler, as if a single VM requested
-    /// the cores of all those VMs, with the highest MIPS per core among them.
+    /// The Host's own suitability check is always performed.
+    /// The cores are checked by the Host's VM scheduler, which knows how they are shared among VMs.
     boolean isSuitable(final Host host, final Vm vm) {
-        if (coresIn == 0) {
-            return host.isSuitableForVm(vm);
+        if (!host.isSuitableForVm(vm)) {
+            return false;
         }
 
-        final var requestedMips = vm.getRequestedMips();
-        final var totalRequest = new CoreCapacity(coresIn + requestedMips.cores(), Math.max(maxCoreMipsIn, requestedMips.mips()));
+        if (vmsIn == 0) {
+            return true;
+        }
+
         return host.getStorage().getFree() - storageIn >= vm.getStorage().getCapacity() &&
                host.getRam().getFree() - ramIn >= vm.getRam().getCapacity() &&
                host.getBw().getFree() - bwIn >= vm.getBw().getCapacity() &&
-               host.getVmScheduler().isSuitableForVm(vm, totalRequest);
+               host.getVmScheduler() instanceof VmSchedulerAbstract scheduler &&
+               scheduler.isCapacityEnoughBesidesReserved(vm, coresIn, mipsIn);
     }
 
     double cpuMipsUtilization() {

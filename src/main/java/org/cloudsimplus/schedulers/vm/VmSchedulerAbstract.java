@@ -15,10 +15,9 @@ import org.cloudsimplus.resources.Processor;
 import org.cloudsimplus.vms.Vm;
 import org.cloudsimplus.vms.VmAbstract;
 
-import java.util.List;
-import java.util.Set;
 import java.util.stream.Stream;
 
+import static org.cloudsimplus.resources.Processor.freeCores;
 import static org.cloudsimplus.resources.Processor.totalMips;
 
 
@@ -68,6 +67,29 @@ public abstract non-sealed class VmSchedulerAbstract implements VmScheduler {
     }
 
     protected abstract boolean isSuitableForVmInternal(Vm vm, CoreCapacity requestedMips);
+
+    /// Checks if the Host has enough cores for a VM, besides the cores and MIPS reserved
+    /// for other VMs that aren't allocated in the Host yet (such as VMs planned to migrate into it).
+    /// It complements [#isSuitableForVm(Vm)], which must also be true. It's only used by the framework.
+    ///
+    /// @param vm the VM to check
+    /// @param reservedCores the total cores requested by the VMs with reserved capacity
+    /// @param reservedMips the total MIPS requested by the VMs with reserved capacity
+    /// @return true if the Host has enough cores for the VM besides the reserved capacity; false otherwise
+    public final boolean isCapacityEnoughBesidesReserved(final Vm vm, final long reservedCores, final double reservedMips) {
+        return isCapacityEnoughBesidesReserved(vm.getRequestedMips(), reservedCores, reservedMips);
+    }
+
+    /// Checks if the Host has enough capacity for a MIPS request, besides a reserved capacity.
+    /// By default, each core is given to a single VM, so the reserved cores must also be free.
+    ///
+    /// @param requestedMips the MIPS share requested by a VM
+    /// @param reservedCores the total cores reserved for other VMs
+    /// @param reservedMips the total MIPS reserved for other VMs
+    /// @return true if the Host has enough capacity; false otherwise
+    protected boolean isCapacityEnoughBesidesReserved(final CoreCapacity requestedMips, final long reservedCores, final double reservedMips) {
+        return freeCores(host) - reservedCores >= requestedMips.cores();
+    }
 
     @Override
     public final boolean allocateCoresForVm(@NonNull final Vm vm, @NonNull final CoreCapacity requestedMips) {

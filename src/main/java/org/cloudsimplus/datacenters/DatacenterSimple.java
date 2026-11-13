@@ -848,6 +848,11 @@ public non-sealed class DatacenterSimple extends CloudSimEntity implements Datac
     @Override
     public void requestVmMigration(final Vm sourceVm, final Host targetHost) {
         final var sourceHost = sourceVm.getHost();
+        if (targetHost.equals(sourceHost)) {
+            LOGGER.warn("{}: {}: Migration of {} ignored, since it's already in {}.", getSimulation().clockStr(), this, sourceVm, targetHost);
+            return;
+        }
+
         double delay = timeToMigrateVm(sourceVm, targetHost);
         final boolean nonLiveMigration = delay < 0;
         final var migrationType = nonLiveMigration ? "Non-live Migration (from/to a public-cloud datacenter)" : "Live Migration (across private-cloud datacenters)";

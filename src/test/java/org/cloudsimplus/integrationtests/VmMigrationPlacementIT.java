@@ -178,6 +178,34 @@ public final class VmMigrationPlacementIT {
             firstPlannedMap(hosts, vms, policy));
     }
 
+    /// Host 0 is overloaded and VM 0 must leave it. Host 1 is underloaded and only has RAM for its VM.
+    /// VM 7, from Host 1, can't go to Host 0, which is overloaded, although it will request
+    /// less MIPS after VM 0 leaves. Both VMs go to Host 2.
+    @Test
+    void underloadedHostVmsDontGoToTheOverloadedHost() {
+        final var hosts = List.of(new HostSpec(), new HostSpec(HOST_CORES, VM_RAM), new HostSpec());
+        final var vms = new ArrayList<VmSpec>();
+        for (int i = 0; i < HOST_CORES - 1; i++) {
+            vms.add(new VmSpec(1, 1.0, 0));
+        }
+
+        vms.add(new VmSpec(1, 0.5, 1));
+        vms.add(new VmSpec(4, 0.5, 2));
+        final var policy = staticThreshold(new VmSelectionPolicyMinimumUtilization());
+        assertEquals(new PlannedMap(FIRST_CHECK_TIME, "VM 0: Host 0 -> Host 2", "VM 7: Host 1 -> Host 2"), firstPlannedMap(hosts, vms, policy));
+    }
+
+    /// Hosts 0 and 1 are underloaded, and Host 2 only has RAM for one more VM.
+    /// Host 0 is checked first (it uses less CPU), but only one of its 2 VMs fits Host 2,
+    /// so its migration is cancelled and Host 2 is free again for the VM from Host 1.
+    @Test
+    void cancelledConsolidationFreesTheTargetForAnotherUnderloadedHost() {
+        final var hosts = List.of(new HostSpec(2 * HOST_CORES), new HostSpec(2 * HOST_CORES), new HostSpec(HOST_CORES, 2 * VM_RAM));
+        final var vms = List.of(new VmSpec(1, 0.1, 0), new VmSpec(1, 0.1, 0), new VmSpec(1, 0.5, 1), new VmSpec(4, 1.0, 2));
+        final var policy = staticThreshold(new VmSelectionPolicyMinimumUtilization());
+        assertEquals(new PlannedMap(FIRST_CHECK_TIME, "VM 2: Host 1 -> Host 2"), firstPlannedMap(hosts, vms, policy));
+    }
+
     @Test
     void defaultPlacementSelectsTheHostWithTheLowestPowerIncrease() {
         final var policy = staticThreshold(new VmSelectionPolicyMinimumUtilization());

@@ -97,9 +97,11 @@ final class MigrationPlan {
         return host.getCpuMipsUtilization() + (load == null ? 0 : load.cpuMipsUtilization());
     }
 
-    /// {@return the CPU utilization percentage (between 0 and 1) of a Host after the planned migrations}
+    /// {@return the CPU utilization percentage of a Host after the planned migrations}
+    /// It adds the planned change to the Host's current percentage, keeping how the Host rounds it.
     double cpuPercentUtilization(final Host host) {
-        return loads.containsKey(host) ? cpuMipsUtilization(host) / totalMips(host) : host.getCpuPercentUtilization();
+        final var load = loads.get(host);
+        return host.getCpuPercentUtilization() + (load == null ? 0 : load.cpuMipsUtilization() / totalMips(host));
     }
 
     /// {@return the change in the MIPS a Host's VMs request, due to the planned migrations}
@@ -117,7 +119,12 @@ final class MigrationPlan {
     /// {@return the current power consumption of a Host (in Watts), considering the planned migrations}
     double power(final Host host) {
         final var powerModel = host.getPowerModel();
-        return loads.containsKey(host) && host.isActive() ? powerModel.getPower(cpuMipsUtilization(host) / totalMips(host)) : powerModel.getPower();
+        if (!loads.containsKey(host) || !host.isActive()) {
+            return powerModel.getPower();
+        }
+
+        // Rounding errors in the planned totals must not take the fraction out of the range the power model accepts
+        return powerModel.getPower(Math.clamp(cpuMipsUtilization(host) / totalMips(host), 0.0, 1.0));
     }
 
     /// {@return true if a Host has enough resources for a VM, besides the VMs already planned to migrate into it}

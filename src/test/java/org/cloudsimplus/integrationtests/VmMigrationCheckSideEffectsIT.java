@@ -94,7 +94,7 @@ public final class VmMigrationCheckSideEffectsIT {
 
         assertAll(
             () -> assertTrue(duplicatedVms.isEmpty(), () -> "VMs in the list of 2 Hosts: " + duplicatedVms),
-            () -> assertTrue(scenario.vms().get(0).getHost().getId() == 1, "VM 0 didn't migrate to Host 1"));
+            () -> assertEquals(1, scenario.vms().get(0).getHost().getId(), "VM 0's Host"));
     }
 
     private static VmMigrationScenario noTargetScenario() {
