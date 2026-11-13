@@ -23,7 +23,6 @@
  */
 package org.cloudsimplus.resources;
 
-import lombok.Getter;
 import lombok.NonNull;
 import org.cloudsimplus.core.Machine;
 import org.cloudsimplus.util.MathUtil;
@@ -48,9 +47,11 @@ public final class ProcessorSimple extends ResourceManageableAbstract implements
     /// used to check if the [MIPS can be changed][#setMips(double)] and for logging.
     private final Machine<?> machine;
 
-    /// The individual MIPS of each core.
-    @Getter
-    private double mips;
+    /// The total number of cores and the MIPS of each core.
+    /// It's the object given to the constructor while they don't change,
+    /// so that all machines created from the same [CoreCapacity] share it
+    /// (see [#toCoreCapacity()]).
+    private CoreCapacity coreCapacity;
 
     /// @see #getFailedCores()
     private long failedCores;
@@ -59,12 +60,13 @@ public final class ProcessorSimple extends ResourceManageableAbstract implements
     ///
     /// @param machine the [Machine] to which the processor will belong to
     /// @param capacity the number of cores (the processor [capacity][#getCapacity()]) and the MIPS of each core.
-    ///                 Its values are copied, so the object is not kept.
+    ///                 The object is kept and returned by [#toCoreCapacity()] while these values don't change,
+    ///                 so it can be shared by many machines.
     /// @throws IllegalArgumentException if the number of cores is lower than 1
     public ProcessorSimple(@NonNull final Machine<?> machine, @NonNull final CoreCapacity capacity) {
         super(validateCores(capacity.cores()), UNIT);
         this.machine = machine;
-        this.mips = MathUtil.nonNegative(capacity.mips(), "MIPS");
+        this.coreCapacity = capacity;
     }
 
     private static long validateCores(final long cores) {
@@ -87,7 +89,17 @@ public final class ProcessorSimple extends ResourceManageableAbstract implements
                 "The MIPS of %s can't be changed after it has started, since MIPS shares depend on it.".formatted(machine));
         }
 
-        this.mips = MathUtil.nonNegative(newMips, "MIPS");
+        this.coreCapacity = coreCapacity.withMips(MathUtil.nonNegative(newMips, "MIPS"));
+    }
+
+    @Override
+    public double getMips() {
+        return coreCapacity.mips();
+    }
+
+    @Override
+    public CoreCapacity toCoreCapacity() {
+        return coreCapacity;
     }
 
     @Override
@@ -112,7 +124,12 @@ public final class ProcessorSimple extends ResourceManageableAbstract implements
             return false;
         }
 
-        return super.setCapacity(cores);
+        if(!super.setCapacity(cores)) {
+            return false;
+        }
+
+        this.coreCapacity = coreCapacity.withCores(cores);
+        return true;
     }
 
     /// Allocates a given number of free cores, making them busy.

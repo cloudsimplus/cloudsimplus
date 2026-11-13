@@ -87,8 +87,10 @@ public class HostBuilder implements Builder {
     public HostBuilder create(final int amount) {
         validateAmount(amount);
 
+        // Shared by all Hosts created in this call, since their processors keep it
+        final var capacity = new CoreCapacity(cores, mips);
         for (int i = 0; i < amount; i++) {
-            final var host = hostCreationFunction.apply(new CoreCapacity(cores, mips));
+            final var host = hostCreationFunction.apply(capacity);
             if(vmSchedulerSupplier != null) {
                 host.setVmScheduler(vmSchedulerSupplier.get());
             }

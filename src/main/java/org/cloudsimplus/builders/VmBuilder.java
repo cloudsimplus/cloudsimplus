@@ -88,8 +88,10 @@ public class VmBuilder implements Builder {
     /// @return this builder
     public VmBuilder createAndSubmit(final int amount) {
         final List<Vm> vms = new ArrayList<>(amount);
+        // Shared by all VMs created in this call, so their MIPS shares are the same object
+        final var capacity = new CoreCapacity(cores, mips);
         for (int i = 0; i < amount; i++) {
-            final Vm vm = vmCreationFunction.apply(new CoreCapacity(cores, mips));
+            final Vm vm = vmCreationFunction.apply(capacity);
             if(cloudletSchedulerSupplier != null) {
                 vm.setCloudletScheduler(cloudletSchedulerSupplier.get());
             }

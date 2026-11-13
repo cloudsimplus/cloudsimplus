@@ -425,7 +425,8 @@ public sealed interface Vm
     ///
     /// If a model is not set, no resources are used during the boot time,
     /// which is just simulated if a [startup delay][#setStartupDelay(double)] is set.
-    /// The [UtilizationModel]s of a BootModel shared by many VMs must not be [stateful][UtilizationModel#isStateful()].
+    /// Since a [BootModel] is immutable, the same instance can be shared by all VMs with the same boot behaviour,
+    /// as long as its [UtilizationModel]s aren't [stateful][UtilizationModel#isStateful()].
     ///
     /// @param model the boot model to set
     /// @return this
