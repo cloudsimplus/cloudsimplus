@@ -15,6 +15,7 @@ import org.cloudsimplus.hosts.Host;
 import org.cloudsimplus.vms.Vm;
 
 import java.util.Optional;
+import java.util.function.Predicate;
 
 /// A VM selection policy that randomly selects [Vm]s to migrate from a host.
 /// It uses a uniform Pseudo Random Number Generator (PRNG) as default to select VMs.
@@ -40,14 +41,19 @@ public class VmSelectionPolicyRandomSelection implements VmSelectionPolicy {
         this.rand = rand;
     }
 
-	@Override
-	public Optional<Vm> getVmToMigrate(final Host host) {
-		final var migratableVmList = host.getMigratableVms();
-		if (migratableVmList.isEmpty()) {
-			return Optional.empty();
-		}
+    @Override
+    public Optional<Vm> getVmToMigrate(final Host host) {
+        return getVmToMigrate(host, vm -> true);
+    }
 
-		final int index = (int)(rand.sample() * migratableVmList.size());
-		return Optional.of(migratableVmList.get(index));
-	}
+    @Override
+    public Optional<Vm> getVmToMigrate(final Host host, final Predicate<Vm> filter) {
+        final var migratableVmList = host.getMigratableVms().stream().filter(filter).toList();
+        if (migratableVmList.isEmpty()) {
+            return Optional.empty();
+        }
+
+        final int index = (int)(rand.sample() * migratableVmList.size());
+        return Optional.of(migratableVmList.get(index));
+    }
 }

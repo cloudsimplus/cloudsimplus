@@ -90,6 +90,17 @@ public non-sealed abstract class VmPlacementPolicyMigrationDynamicUpperThreshold
         this.safetyParameter = safetyParameter;
     }
 
+    /// {@inheritDoc}
+    /// The plan is also given to the [fallback policy][#getFallbackVmPlacementPolicy()],
+    /// which checks if Hosts are overloaded when the upper threshold can't be computed.
+    @Override
+    void setMigrationPlan(final MigrationPlan plan) {
+        super.setMigrationPlan(plan);
+        if (fallbackVmPlacementPolicy instanceof VmPlacementPolicyMigrationAbstract fallback) {
+            fallback.setMigrationPlan(plan);
+        }
+    }
+
     @Override
     public final double getSafetyParameter() {
         return this.safetyParameter;

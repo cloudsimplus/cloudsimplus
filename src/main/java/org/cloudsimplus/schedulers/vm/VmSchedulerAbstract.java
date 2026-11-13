@@ -115,12 +115,10 @@ public abstract non-sealed class VmSchedulerAbstract implements VmScheduler {
         processor.setOccupied(Math.min(cores, processor.getWorkingCores()));
     }
 
-    /// @return the VMs placed into the Host plus the ones migrating into it that
-    /// are not in the Host VM list yet (without duplicates).
+    /// @return the VMs placed into the Host plus the ones migrating into it.
+    /// VMs migrating in are not in the Host VM list until their migration finishes.
     private Stream<Vm> hostVms() {
-        final List<Vm> vmList = host.getVmList();
-        final Set<Vm> vmsMigratingIn = host.getVmsMigratingIn();
-        return Stream.concat(vmList.stream(), vmsMigratingIn.stream().filter(vm -> !vmList.contains(vm)));
+        return Stream.concat(host.getVmList().stream(), host.getVmsMigratingIn().stream());
     }
 
     private boolean isOnHost(final Vm vm) {

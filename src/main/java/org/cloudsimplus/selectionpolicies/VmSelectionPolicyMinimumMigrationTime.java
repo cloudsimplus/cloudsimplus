@@ -11,8 +11,6 @@ package org.cloudsimplus.selectionpolicies;
 import org.cloudsimplus.hosts.Host;
 import org.cloudsimplus.vms.Vm;
 
-import java.util.Comparator;
-import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.function.ToLongFunction;
@@ -26,20 +24,17 @@ import static org.cloudsimplus.datacenters.DatacenterCharacteristics.Distributio
 /// @author Manoel Campos da Silva Filho
 /// @since CloudSim Toolkit 3.0
 public class VmSelectionPolicyMinimumMigrationTime implements VmSelectionPolicy {
-	@Override
-	public Optional<Vm> getVmToMigrate(final Host host) {
-		final List<Vm> migratableVms = host.getMigratableVms();
-		if (migratableVms.isEmpty()) {
-			return Optional.empty();
-		}
+    @Override
+    public Optional<Vm> getVmToMigrate(final Host host) {
+        return getVmToMigrate(host, vm -> true);
+    }
 
-        final Comparator<Vm> vmComparator = comparingLong(dataToMigrate(host));
-        final Predicate<Vm> vmPredicate = Vm::isInMigration;
-        return migratableVms
-                     .stream()
-                     .filter(vmPredicate.negate())
-                     .min(vmComparator);
-	}
+    @Override
+    public Optional<Vm> getVmToMigrate(final Host host, final Predicate<Vm> filter) {
+        return host.getMigratableVms().stream()
+                   .filter(filter)
+                   .min(comparingLong(dataToMigrate(host)));
+    }
 
     /// Gets a function that returns the amount of data (in MB) to transfer to migrate a VM from a given Host.
     /// All VMs share the same source Host, so the migration time just depends on that amount.

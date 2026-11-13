@@ -12,6 +12,7 @@ import org.cloudsimplus.hosts.Host;
 import org.cloudsimplus.vms.Vm;
 
 import java.util.Optional;
+import java.util.function.Predicate;
 
 /// An interface to be used to implement [Vm] selection policies for a list of migratable VMs
 /// (VMs that can be migrated to another [Host]).
@@ -29,4 +30,19 @@ public interface VmSelectionPolicy {
     /// @return a [Optional] containing the selected vm to migrate;
     /// or empty Optional if there is not Vm to migrate
     Optional<Vm> getVmToMigrate(Host host);
+
+    /// Gets a VM to migrate from a given Host, among the VMs accepted by a filter.
+    /// It's used to select more VMs from the same Host, ignoring the ones already selected.
+    ///
+    /// The default implementation returns the VM selected by [#getVmToMigrate(Host)]
+    /// only if the filter accepts it.
+    /// Implementations should override it to select among the accepted VMs only.
+    ///
+    /// @param host the Host to get a Vm to migrate from
+    /// @param filter a [Predicate] that accepts the VMs that can be selected
+    /// @return a [Optional] containing the selected vm to migrate;
+    /// or empty Optional if there is no accepted Vm to migrate
+    default Optional<Vm> getVmToMigrate(final Host host, final Predicate<Vm> filter) {
+        return getVmToMigrate(host).filter(filter);
+    }
 }
