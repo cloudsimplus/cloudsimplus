@@ -98,6 +98,19 @@ public class HostSimpleTest {
 
     }
 
+    /// Host ids are unique only inside a Datacenter.
+    @Test
+    public void testHostsWithSameIdInDifferentDatacentersAreNotEqual() {
+        final var simulation = new CloudSimPlus();
+        final var host0 = createHostSimple(0, 1);
+        final var host1 = createHostSimple(0, 1);
+        DatacenterSimple.of(simulation, List.of(host0));
+        DatacenterSimple.of(simulation, List.of(host1));
+
+        assertEquals(host0.getId(), host1.getId());
+        assertNotEquals(host0, host1);
+    }
+
     @Test
     public void testConstructorWithZeroCores() {
         assertThrows(IllegalArgumentException.class, () -> new HostSimple(RAM, BW, STORAGE, new CoreCapacity(0, MIPS)));

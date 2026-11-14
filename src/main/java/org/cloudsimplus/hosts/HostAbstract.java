@@ -852,6 +852,13 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
     /// Sets the [Datacenter] where the host is placed.
     ///
     /// @param datacenter the new data center to move the host
+    /// {@return the id of the [Datacenter] where the Host is placed}
+    /// Host ids are unique only inside a Datacenter, so equality includes this id.
+    @EqualsAndHashCode.Include
+    private long datacenterId() {
+        return datacenter.getId();
+    }
+
     public final void setDatacenter(@NonNull final Datacenter datacenter) {
         if (!Datacenter.NULL.equals(this.datacenter)) {
             checkSimulationIsRunningAndAttemptedToChangeHost("Datacenter");
