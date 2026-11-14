@@ -124,7 +124,7 @@ record VmMigrationScenario(CloudSimPlus simulation, Datacenter datacenter, Datac
         return (policy, vm) -> Optional.of(policy.getHostList().get(vmSpecs.get((int) vm.getId()).hostIndex()));
     }
 
-    private static Host createHost(final HostSpec spec) {
+    static Host createHost(final HostSpec spec) {
         final var host = HostSimple.of(spec.ram(), HOST_BW, HOST_STORAGE, new CoreCapacity(spec.cores(), MIPS));
         host.setVmScheduler(new VmSchedulerTimeShared()).setStateHistoryEnabled(true);
         host.setPowerModel(new PowerModelHostSimple(HOST_MAX_POWER, HOST_STATIC_POWER));

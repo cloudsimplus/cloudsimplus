@@ -23,7 +23,10 @@
  */
 package org.cloudsimplus.integrationtests;
 
+import org.cloudsimplus.datacenters.DatacenterSimple;
 import org.cloudsimplus.hosts.Host;
+import org.cloudsimplus.placementpolicies.migration.VmPlacementPolicyMigration;
+import org.cloudsimplus.placementpolicies.migration.VmPlacementPolicyMigrationDynamicUpperThresholdFirstFit;
 import org.cloudsimplus.selectionpolicies.VmSelectionPolicyMinimumUtilization;
 import org.cloudsimplus.vms.Vm;
 import org.junit.jupiter.api.Test;
@@ -95,6 +98,21 @@ public final class VmMigrationCheckSideEffectsIT {
         assertAll(
             () -> assertTrue(duplicatedVms.isEmpty(), () -> "VMs in the list of 2 Hosts: " + duplicatedVms),
             () -> assertEquals(1, scenario.vms().get(0).getHost().getId(), "VM 0's Host"));
+    }
+
+    /// No Host in the first Datacenter can receive a VM, so its policy looks for Hosts in the second one.
+    /// The second Datacenter's policy uses the first one's as fallback, so sharing the plan with it
+    /// must keep the first policy's plan while its check runs.
+    @Test
+    void vmMigratesToADatacenterWhosePolicyFallsBackToTheSourcePolicy() {
+        final var scenario = noTargetScenario();
+        final var sourcePolicy = (VmPlacementPolicyMigration) scenario.datacenter().getVmPlacementPolicy();
+        final var targetPolicy = new VmPlacementPolicyMigrationDynamicUpperThresholdFirstFit(new VmSelectionPolicyMinimumUtilization(), 0, sourcePolicy);
+        final var targetHost = createHost(new HostSpec());
+        DatacenterSimple.of(scenario.simulation(), List.of(targetHost), targetPolicy).setSchedulingInterval(SCHEDULING_INTERVAL);
+        scenario.simulation().start();
+
+        assertTrue(scenario.vms().stream().anyMatch(vm -> targetHost.equals(vm.getHost())), "some VM migrated to the other Datacenter");
     }
 
     private static VmMigrationScenario noTargetScenario() {

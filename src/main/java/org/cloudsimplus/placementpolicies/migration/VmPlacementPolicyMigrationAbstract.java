@@ -414,11 +414,14 @@ public non-sealed abstract class VmPlacementPolicyMigrationAbstract
             return findAcceptedTargetHost(targetPolicy, vm);
         }
 
-        targetMigrationPolicy.setMigrationPlan(plan);
+        final var currentPlan = plan;
+        targetMigrationPolicy.setMigrationPlan(currentPlan);
         try {
             return findAcceptedTargetHost(targetPolicy, vm);
         } finally {
             targetMigrationPolicy.setMigrationPlan(MigrationPlan.NONE);
+            // The target policy may pass the plan to this one (e.g. as its fallback), clearing it too
+            setMigrationPlan(currentPlan);
         }
     }
 
