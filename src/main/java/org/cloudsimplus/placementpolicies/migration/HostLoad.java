@@ -29,8 +29,8 @@ import org.cloudsimplus.vms.Vm;
 
 /// The change in the load of a [Host] planned during one VM migration check,
 /// from the VMs planned to migrate into or out of it.
-/// It only keeps totals, so updating and reading it takes constant time,
-/// and the Host's real state never changes.
+/// It only keeps totals, so updating it takes constant time and no object is created per VM,
+/// while the Host's real state never changes.
 ///
 /// The CPU usage, requested and allocated MIPS of VMs planned to migrate out are subtracted,
 /// so the Host is evaluated as if they had already left it.

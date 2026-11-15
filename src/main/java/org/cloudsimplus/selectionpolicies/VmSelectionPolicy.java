@@ -35,14 +35,14 @@ public interface VmSelectionPolicy {
     /// It's used to select more VMs from the same Host, ignoring the ones already selected.
     ///
     /// The default implementation returns the VM selected by [#getVmToMigrate(Host)]
-    /// only if the filter accepts it.
-    /// Implementations should override it to select among the accepted VMs only.
+    /// if the filter accepts it. Otherwise, it returns the first accepted [migratable VM][Host#getMigratableVms()].
+    /// Implementations should override it to apply their own criteria among the accepted VMs only.
     ///
     /// @param host the Host to get a Vm to migrate from
     /// @param filter a [Predicate] that accepts the VMs that can be selected
     /// @return a [Optional] containing the selected vm to migrate;
     /// or empty Optional if there is no accepted Vm to migrate
     default Optional<Vm> getVmToMigrate(final Host host, final Predicate<Vm> filter) {
-        return getVmToMigrate(host).filter(filter);
+        return getVmToMigrate(host).filter(filter).or(() -> host.getMigratableVms().stream().filter(filter).findFirst());
     }
 }

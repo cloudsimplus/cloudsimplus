@@ -24,25 +24,46 @@
 package org.cloudsimplus.selectionpolicies;
 
 import org.cloudsimplus.hosts.Host;
-import org.cloudsimplus.vms.Vm;
+import org.cloudsimplus.hosts.HostSimple;
+import org.cloudsimplus.resources.CoreCapacity;
+import org.cloudsimplus.vms.VmSimple;
 import org.cloudsimplus.vms.VmTestUtil;
 import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /// @author Manoel Campos da Silva Filho
 class VmSelectionPolicyTest {
-    /// The default implementation returns the VM selected without the filter only if the filter accepts it,
-    /// so a policy that doesn't override it never selects the same VM again.
-    @Test
-    void defaultFilteredSelectionReturnsTheSelectedVmOnlyIfAccepted() {
-        final Vm vm = VmTestUtil.createVm(0, 1);
-        final VmSelectionPolicy policy = host -> Optional.of(vm);
-        final var host = Host.NULL;
+    private static final long RAM = 10_000;
+    private static final long BW = 10_000;
+    private static final long STORAGE = 100_000;
+    private static final int HOST_CORES = 4;
+    private static final double MIPS = 1000;
 
-        assertEquals(Optional.of(vm), policy.getVmToMigrate(host, candidate -> true));
-        assertEquals(Optional.empty(), policy.getVmToMigrate(host, candidate -> !candidate.equals(vm)));
+    /// The default implementation returns the VM the policy selects if the filter accepts it.
+    /// Otherwise, it returns the first accepted migratable VM,
+    /// so a policy that doesn't override it can still select more VMs from the same Host.
+    @Test
+    void defaultFilteredSelectionFallsBackToTheFirstAcceptedVm() {
+        final var host = HostSimple.of(RAM, BW, STORAGE, new CoreCapacity(HOST_CORES, MIPS));
+        final var vm0 = createdVm(host, 0);
+        final var vm1 = createdVm(host, 1);
+        final VmSelectionPolicy policy = ignored -> Optional.of(vm0);
+
+        assertAll(
+            () -> assertEquals(Optional.of(vm0), policy.getVmToMigrate(host, vm -> true)),
+            () -> assertEquals(Optional.of(vm1), policy.getVmToMigrate(host, vm -> vm != vm0)),
+            () -> assertEquals(Optional.empty(), policy.getVmToMigrate(host, vm -> false)));
+    }
+
+    private static VmSimple createdVm(final Host host, final int id) {
+        final var vm = VmTestUtil.createVm(id, MIPS, 1);
+        vm.setHost(host);
+        vm.setCreated(true);
+        host.getVmList().add(vm);
+        return vm;
     }
 }

@@ -24,6 +24,7 @@
 package org.cloudsimplus.placementpolicies.migration;
 
 import org.cloudsimplus.hosts.Host;
+import org.cloudsimplus.hosts.HostAbstract;
 import org.cloudsimplus.vms.Vm;
 
 import java.util.HashMap;
@@ -98,10 +99,9 @@ final class MigrationPlan {
     }
 
     /// {@return the CPU utilization percentage of a Host after the planned migrations}
-    /// It adds the planned change to the Host's current percentage, keeping how the Host rounds it.
+    /// It's rounded the same way as [Host#getCpuPercentUtilization()].
     double cpuPercentUtilization(final Host host) {
-        final var load = loads.get(host);
-        return host.getCpuPercentUtilization() + (load == null ? 0 : load.cpuMipsUtilization() / totalMips(host));
+        return loads.containsKey(host) ? HostAbstract.cpuPercentUtilization(host, cpuMipsUtilization(host)) : host.getCpuPercentUtilization();
     }
 
     /// {@return the change in the MIPS a Host's VMs request, due to the planned migrations}

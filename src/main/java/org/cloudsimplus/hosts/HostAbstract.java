@@ -52,6 +52,7 @@ import java.util.*;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 import static org.cloudsimplus.resources.Processor.cores;
+import static org.cloudsimplus.resources.Processor.totalMips;
 import static org.cloudsimplus.util.Conversion.boolToInt;
 
 /// A base class for implementing [Host]s.
@@ -849,9 +850,6 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
         return !vms.isEmpty() && vms.remove(vm);
     }
 
-    /// Sets the [Datacenter] where the host is placed.
-    ///
-    /// @param datacenter the new data center to move the host
     /// {@return the id of the [Datacenter] where the Host is placed}
     /// Host ids are unique only inside a Datacenter, so equality includes this id.
     @EqualsAndHashCode.Include
@@ -859,6 +857,9 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
         return datacenter.getId();
     }
 
+    /// Sets the [Datacenter] where the host is placed.
+    ///
+    /// @param datacenter the new data center to move the host
     public final void setDatacenter(@NonNull final Datacenter datacenter) {
         if (!Datacenter.NULL.equals(this.datacenter)) {
             checkSimulationIsRunningAndAttemptedToChangeHost("Datacenter");
@@ -891,11 +892,15 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
 
     @Override
     public double getCpuPercentUtilization() {
-        return computeCpuUtilizationPercent(getCpuMipsUtilization());
+        return cpuPercentUtilization(this, getCpuMipsUtilization());
     }
 
-    private double computeCpuUtilizationPercent(final double mipsUsage) {
-        final double totalMips = processor.getTotalMips();
+    /// {@return the CPU utilization percentage (from 0 to 1) of a Host using a given amount of MIPS}
+    /// Values slightly above 1 (less than 1.01) are rounded to 1.
+    /// @param host the Host to compute the percentage
+    /// @param mipsUsage the MIPS used by the Host's VMs
+    public static double cpuPercentUtilization(final Host host, final double mipsUsage) {
+        final double totalMips = totalMips(host);
         if (totalMips == 0) {
             return 0;
         }

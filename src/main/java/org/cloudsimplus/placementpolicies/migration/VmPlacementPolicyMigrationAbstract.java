@@ -147,6 +147,12 @@ public non-sealed abstract class VmPlacementPolicyMigrationAbstract
         this.plan = plan;
     }
 
+    /// {@return true if this policy already has a given migration plan}
+    /// @param plan the plan to check
+    final boolean hasMigrationPlan(final MigrationPlan plan) {
+        return this.plan == plan;
+    }
+
     /// {@return the MIPS a Host's VMs use, considering the migrations planned by the current migration check}
     /// Outside a check, it's the [Host#getCpuMipsUtilization()].
     /// @param host the Host to get the MIPS utilization
@@ -195,14 +201,8 @@ public non-sealed abstract class VmPlacementPolicyMigrationAbstract
         // overloaded + underloaded hosts
         final var ignoredTargetHosts = getIgnoredHosts(overloadedHosts, switchedOffHosts);
 
-        final int numberOfHosts = getHostList().size();
-
         this.underloaded = false;
         while (true) {
-            if (numberOfHosts == ignoredSourceHosts.size()) {
-                break;
-            }
-
             final var underloadedHost = getUnderloadedHost(ignoredSourceHosts);
             if (Host.NULL.equals(underloadedHost)) {
                 break;
@@ -301,8 +301,9 @@ public non-sealed abstract class VmPlacementPolicyMigrationAbstract
     /// @param cpuUsagePercent the Host's CPU utilization percent. The values may be:
     ///
     /// - the current CPU utilization, in case you want to check if the Host is overloaded right now;
-    /// - the requested CPU utilization after the supposed placement of a VM into the Host,
-    ///   just to check if it supports that VM without being overloaded.
+    /// - the requested CPU utilization before placing a VM into the Host
+    ///   (the VM's MIPS aren't included, see [#653](https://github.com/cloudsimplus/cloudsimplus/issues/653)),
+    ///   to check if the Host can receive that VM.
     ///
     /// @return true if the Host is overloaded, false otherwise
     private boolean isHostOverloaded(final Host host, final double cpuUsagePercent){

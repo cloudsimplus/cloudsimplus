@@ -247,6 +247,36 @@ public final class VmMigrationPlacementIT {
             "VM 1: Host 0 -> Host 1"), firstPlannedMap(consolidationHosts(HOST_RAM), consolidationVms(), policy));
     }
 
+    /// The upper threshold can't be computed, so the fallback policy checks if Host 0 is overloaded.
+    /// It must see the VMs already planned to leave, otherwise all of Host 0's VMs would be selected.
+    @Test
+    void fallbackPolicySeesThePlannedMigrations() {
+        final var fallback = staticThreshold(new VmSelectionPolicyMinimumUtilization());
+        final var policy = new VmPlacementPolicyMigrationDynamicUpperThresholdFirstFit(
+            new VmSelectionPolicyMinimumUtilization(), DYNAMIC_THRESHOLD_SAFETY, fallback)
+        {
+            @Override
+            public double computeHostUtilizationMeasure(final Host host) {
+                throw new IllegalStateException("No utilization history");
+            }
+        };
+        assertEquals(new PlannedMap(
+            FIRST_CHECK_TIME,
+            "VM 2: Host 0 -> Host 1",
+            "VM 4: Host 0 -> Host 1"), firstPlannedMap(OVERLOAD_HOSTS, OVERLOAD_VMS, policy));
+    }
+
+    /// A policy may fall back to itself (directly or through other policies).
+    @Test
+    void fallbackPolicyCycleDoesNotStopTheCheck() {
+        final var policy = new VmPlacementPolicyMigrationDynamicUpperThresholdFirstFit(new VmSelectionPolicyMinimumUtilization());
+        policy.setFallbackVmPlacementPolicy(policy);
+        assertEquals(new PlannedMap(
+            FIRST_CHECK_TIME,
+            "VM 0: Host 0 -> Host 1",
+            "VM 1: Host 0 -> Host 1"), firstPlannedMap(consolidationHosts(HOST_RAM), consolidationVms(), policy));
+    }
+
     @Test
     void minimumMigrationTimeSelection() {
         final var policy = staticThreshold(new VmSelectionPolicyMinimumMigrationTime());
