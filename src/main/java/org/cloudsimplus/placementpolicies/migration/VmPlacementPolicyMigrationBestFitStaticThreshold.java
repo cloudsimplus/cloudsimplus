@@ -85,6 +85,6 @@ public class VmPlacementPolicyMigrationBestFitStaticThreshold extends VmPlacemen
     protected Optional<Host> findHostForVmInternal(final Vm vm, final Predicate<Host> predicate) {
         /* It's ignoring the super class intentionally to avoid the additional filtering performed there
          * and to apply a different method to select the Host to place the VM.*/
-        return getHostList().stream().filter(predicate).max(comparingDouble(Host::getCpuMipsUtilization));
+        return getHostList().stream().filter(predicate).max(comparingDouble(this::getPlannedCpuMipsUtilization));
     }
 }

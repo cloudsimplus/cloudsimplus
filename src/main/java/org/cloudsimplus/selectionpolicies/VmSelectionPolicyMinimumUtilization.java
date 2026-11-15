@@ -11,8 +11,6 @@ package org.cloudsimplus.selectionpolicies;
 import org.cloudsimplus.hosts.Host;
 import org.cloudsimplus.vms.Vm;
 
-import java.util.Comparator;
-import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
 
@@ -26,16 +24,14 @@ import static java.util.Comparator.comparingDouble;
 public class VmSelectionPolicyMinimumUtilization implements VmSelectionPolicy {
     @Override
     public Optional<Vm> getVmToMigrate(final Host host) {
-        final List<Vm> migratableVms = host.getMigratableVms();
-        if (migratableVms.isEmpty()) {
-            return Optional.empty();
-        }
+        return getVmToMigrate(host, vm -> true);
+    }
 
-        final Predicate<Vm> inMigration = Vm::isInMigration;
-        final Comparator<Vm> vmCpuUsageComparator = comparingDouble(Vm::getCpuPercentUtilization);
-        return migratableVms.stream()
-                            .filter(inMigration.negate())
-                            .min(vmCpuUsageComparator);
+    @Override
+    public Optional<Vm> getVmToMigrate(final Host host, final Predicate<Vm> filter) {
+        return host.getMigratableVms().stream()
+                   .filter(filter)
+                   .min(comparingDouble(Vm::getCpuPercentUtilization));
     }
 
 }

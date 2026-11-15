@@ -52,6 +52,7 @@ import java.util.*;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 import static org.cloudsimplus.resources.Processor.cores;
+import static org.cloudsimplus.resources.Processor.totalMips;
 import static org.cloudsimplus.util.Conversion.boolToInt;
 
 /// A base class for implementing [Host]s.
@@ -342,24 +343,6 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
         return groupSuitability;
     }
 
-    /// Try to allocate resources to a new temporary VM in the Host.
-    /// The method is used only to book resources for a given VM.
-    /// If Hosts are being chosen to migrate a set of VMs,
-    /// when a Host is selected for a given VM, using this method:
-    /// - the resources are reserved,
-    /// - then, when the next Vm is selected for the same Host,
-    /// the previous reserved resources were already reduced from the available amount.
-    /// This way, if it was possible to place just one Vm into that Host,
-    /// with the booking, no other VM will be selected to it.
-    ///
-    /// @param vm Vm being started
-    /// @return a [HostSuitability] to indicate if the Vm was placed into the Host or not
-    /// (if the Host doesn't have enough resources to allocate the Vm)
-    /// TODO: https://github.com/cloudsimplus/cloudsimplus/issues/94
-    public HostSuitability createTemporaryVm(final Vm vm) {
-        return createVmInternal(vm);
-    }
-
     private HostSuitability createVmInternal(final Vm vm) {
         if (vm instanceof VmGroup) {
             return new HostSuitability(vm, "Just internal VMs inside a VmGroup can be created, not the VmGroup itself.");
@@ -422,20 +405,6 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
             "{}: {}: [{}] Allocation of {} to {} failed due to lack of {}. Required {} but there is {} available.",
             simulation.clockStr(), getClass().getSimpleName(), migration, vm, this,
             pmResource.getClass().getSimpleName(), vmRequestedResource.getCapacity(), msg);
-    }
-
-    /// Reallocate VMs migrating into this Host. Gets the VMs in the migrating-in queue
-    /// and allocates them on the Host.
-    public void reallocateMigratingInVms() {
-        for (final Vm vm : vmsMigratingIn) {
-            if (!vmList.contains(vm)) {
-                vmList.add(vm);
-            }
-
-            allocateResourcesForVm(vm);
-        }
-
-        vmScheduler.updateHostBusyCores();
     }
 
     @Override
@@ -595,15 +564,6 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
             return;
         }
 
-        destroyVmInternal(vm);
-    }
-
-    /// Destroys a temporary Vm created into the Host to book resources.
-    ///
-    /// @param vm the Vm to be destroyed
-    /// @see #createTemporaryVm(Vm)
-    /// TODO https://github.com/cloudsimplus/cloudsimplus/issues/94
-    public void destroyTemporaryVm(final Vm vm) {
         destroyVmInternal(vm);
     }
 
@@ -841,7 +801,6 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
     /// @param vm the Vm to remove
     public void removeMigratingInVm(@NonNull final Vm vm) {
         remove(vmsMigratingIn, vm);
-        vmList.remove(vm);
         ((VmAbstract)vm).setInMigration(false);
         vmScheduler.updateHostBusyCores();
     }
@@ -891,6 +850,13 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
         return !vms.isEmpty() && vms.remove(vm);
     }
 
+    /// {@return the id of the [Datacenter] where the Host is placed}
+    /// Host ids are unique only inside a Datacenter, so equality includes this id.
+    @EqualsAndHashCode.Include
+    private long datacenterId() {
+        return datacenter.getId();
+    }
+
     /// Sets the [Datacenter] where the host is placed.
     ///
     /// @param datacenter the new data center to move the host
@@ -926,11 +892,15 @@ public non-sealed abstract class HostAbstract extends ExecDelayableAbstract impl
 
     @Override
     public double getCpuPercentUtilization() {
-        return computeCpuUtilizationPercent(getCpuMipsUtilization());
+        return cpuPercentUtilization(this, getCpuMipsUtilization());
     }
 
-    private double computeCpuUtilizationPercent(final double mipsUsage) {
-        final double totalMips = processor.getTotalMips();
+    /// {@return the CPU utilization percentage (from 0 to 1) of a Host using a given amount of MIPS}
+    /// Values slightly above 1 (less than 1.01) are rounded to 1.
+    /// @param host the Host to compute the percentage
+    /// @param mipsUsage the MIPS used by the Host's VMs
+    public static double cpuPercentUtilization(final Host host, final double mipsUsage) {
+        final double totalMips = totalMips(host);
         if (totalMips == 0) {
             return 0;
         }

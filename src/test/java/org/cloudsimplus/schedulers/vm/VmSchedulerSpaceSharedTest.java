@@ -61,22 +61,6 @@ class VmSchedulerSpaceSharedTest {
         assertEquals(VM_CORES, target.getProcessor().getBusyCores(), "target busy cores after migration");
     }
 
-    /// A VM both in the Host VM list and in the set of VMs migrating in must be counted once.
-    /// It uses a time-shared scheduler, which reduces the MIPS allocated to a VM migrating in
-    /// by the migration overhead (as the available MIPS computation expects).
-    @Test
-    void testVmInVmListAndMigratingInIsCountedOnce() {
-        final Host host = createHost();
-        host.setVmScheduler(new VmSchedulerTimeShared());
-        final VmSimple vm = VmTestUtil.createVm(0, MIPS, VM_CORES);
-        assertTrue(((HostAbstract) host).addMigratingInVm(vm));
-        vm.setHost(host);
-        host.getVmList().add(vm);
-
-        assertEquals(VM_CORES, host.getProcessor().getBusyCores());
-        assertEquals((HOST_CORES - VM_CORES) * MIPS, host.getVmScheduler().getTotalAvailableMips());
-    }
-
     /// After removing cores from a VM and failing to add more cores than the Host has,
     /// the VM shares, the VM cores and the Host busy cores must all match.
     @Test
