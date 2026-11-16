@@ -373,6 +373,7 @@ If you want your project to be listed here, send us a Pull Request. Make sure yo
 1. [EPCSAC](https://github.com/TNanukem/EPCSAC): Extensible Platform for Cloud Scheduling Algorithm Comparison.
 1. [SatEdgeSim](https://github.com/wjy491156866/SatEdgeSim): A Toolkit for Modeling and Simulation of Performance Evaluation in Satellite Edge Computing Environments.
 1. [IA-Cloud Adaptive Load Balancing Framework](https://github.com/BenhalimaAnouar/iacloud-framework): An open-source AI-driven framework built on top of CloudSim Plus that automatically predicts and dynamically adapts load balancing algorithms according to QoS requirements. The framework supports dynamic runtime adaptation and optional integration with the IA-Cloud Prediction Service for  AI-assisted algorithm selection. Platform link  https://iacloudac.ma
+1. [cloudsimplus-cei](https://github.com/prawalpokharel/cloudsimplus-cei): Dependency-aware VM placement with rack fault domains, and a host- and rack-failure study of the built-in placement policies using HostFaultInjection.
 
 <p align="right"><a href="#top">:arrow_up:</a></p>
 
