@@ -55,6 +55,7 @@ import static org.junit.jupiter.api.Assertions.*;
 /// and checks what [VmDependencyGraph] reports as broken.
 /// With [VmPlacementPolicyDependencyCriticality] the database survives (the single-replica
 /// caller may fail with it); with [VmPlacementPolicyBestFit], which stacks both replicas, it doesn't.
+@SuppressWarnings("PMD.ClassNamingConventions") // The IT suffix is what makes maven-failsafe-plugin run the class.
 final class VmPlacementPolicyDependencyCriticalityIT {
     private static final int HOSTS = 4;
     private static final int HOST_CORES = 8;
